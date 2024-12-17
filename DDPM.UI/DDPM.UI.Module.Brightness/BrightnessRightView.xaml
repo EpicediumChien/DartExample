@@ -232,6 +232,7 @@
                                                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                                     <UXControls:UXButton
                                                         Name="btnManualBrightnessContrast"
+                                                        IsEnabled="{Binding ManualBCHotkeyBtn}"
                                                         Width="111"
                                                         Height="40"
                                                         Margin="8,0,0,16"
@@ -742,9 +743,10 @@
                                             Margin="0,0,10,0"
                                             Padding="10,0,0,0"
                                             HorizontalAlignment="Right"
+                                            SelectionChanged="cbAutoBrightness_SelectionChanged"
                                             IsEnabled="{Binding AutoBrightnessStatus}"
-                                            ItemsSource="{Binding AutoBrightnessRangeLevel}"
-                                            SelectedIndex="{Binding AutoBrightnessRangeLevel_SelectedIndex}"
+                                            ItemsSource="{Binding AutoBrightnessRangeLevel}"  
+                                            SelectedIndex="{Binding AutoBrightnessRangeLevel_SelectedIndex, Mode=TwoWay}"
                                             Style="{StaticResource DdpmComboBoxStyle}" />
                                         <Border
                                             Grid.Column="0"

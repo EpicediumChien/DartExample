@@ -156,8 +156,16 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isChecked_ProximitySensor = value;
                     DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
                     //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
+
+                    // jim add for PIMS-328195
+                    _isEnable_WalkAwayLock = _isChecked_WalkAwayLock && _isChecked_ProximitySensor;
+
+                    _isEnable_SnoozeLength = _isChecked_Snooze && _isChecked_ProximitySensor;
+
                     OnPropertyChanged("IsChecked_ProximitySensor");
                     OnPropertyChanged("ProximitySensorStatus_String");
+                    OnPropertyChanged("IsEnable_WalkAwayLock");
+                    OnPropertyChanged("IsEnable_SnoozeLength");
 
                     //Derek 11/12
                     //PIMS - 319099
@@ -259,6 +267,32 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 IsWALTimerEnable = value;
                 IsSnoozeEnable = value;
+                // jim add for PIMS-328195
+                _isEnable_WalkAwayLock = _isChecked_WalkAwayLock && _isChecked_ProximitySensor;
+                OnPropertyChanged("IsEnable_WalkAwayLock");
+            }
+        }
+
+        private bool _isEnable_WalkAwayLock = false;
+        public bool IsEnable_WalkAwayLock
+        {
+            get { return _isEnable_WalkAwayLock; }
+            set
+            {
+                _isEnable_WalkAwayLock = value;
+                OnPropertyChanged("IsEnable_WalkAwayLock");
+            }
+        }
+
+        // jim add for PIMS-328195
+        private bool _isEnable_SnoozeLength = false;
+        public bool IsEnable_SnoozeLength
+        {
+            get { return _isEnable_SnoozeLength; }
+            set
+            {
+                _isEnable_SnoozeLength = value;
+                OnPropertyChanged("IsEnable_SnoozeLength");
             }
         }
 
@@ -277,6 +311,10 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 _isChecked_Snooze = value;
+
+                // jim add for PIMS-328195
+                _isEnable_SnoozeLength = _isChecked_Snooze && _isChecked_ProximitySensor;
+
                 if (_isChecked_Snooze)
                 {
                     if (_SelectedSnoozeLength != null)
@@ -332,6 +370,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 OnPropertyChanged("IsChecked_Snooze");
                 OnPropertyChanged("SnoozeStatus_String");
+                OnPropertyChanged("IsEnable_SnoozeLength"); // jim add for PIMS-328195
             }
         }
 
@@ -351,9 +390,9 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 SetProperty(ref _SelectedDelay, value);
                 DdpmCommonHelper.DeviceManagerSA!.SetWALTime(CurrentDeviceInfo!.ID.ToString(), _SelectedDelay.Delay);
-                DdpmCommonHelper.DeviceManagerSA!.SetIsWalkAwayLockEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WalkAwayLock);
-                DdpmCommonHelper.DeviceManagerSA!.SetIsWakeonApproachEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WakeOnApproach);
-                DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
+                //DdpmCommonHelper.DeviceManagerSA!.SetIsWalkAwayLockEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WalkAwayLock);
+                //DdpmCommonHelper.DeviceManagerSA!.SetIsWakeonApproachEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_WakeOnApproach);
+                //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
                 //DdpmCommonHelper.DeviceManagerSA!.SetWALTime(30, CurrentDeviceInfo!.ID);
                 OnPropertyChanged("SelectedDelay");
             }
@@ -555,6 +594,13 @@ namespace DDPM.UI.Plugin.ViewModels
             WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
 
             _isChecked_ProximitySensor = CurrentDeviceInfo!.IsProximitySensorEnable;
+            if (WebcamSettings.IsFirstTime)
+            {
+                IsChecked_ProximitySensor = false;
+                WebcamSettings.IsFirstTime = false;
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            }
+
             IsMicEnumerationOnEnabled = true;
             AlertVisibility = Visibility.Collapsed;
             return true;
@@ -601,7 +647,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _focus = CurrentDeviceInfo.FocusMin;
                 }
                 else
-                    _focus =  focus;
+                    _focus = focus;
             }
             if (CurrentDeviceInfo.IsPropertyPrioritySupported)
             {
@@ -869,6 +915,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(hdr_enable));
             }
         }
+
+        public bool IsNotAutoFramingOn { get => !IsAutoFramingOn; }
         public bool IsNotRecording { get => !IsRecording; }
 
         public int btnRes0_width { get; set; }
@@ -892,8 +940,8 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public bool is_hdr_enable = true;
         public bool usb_hdr_enable = true;
-        public bool hdr_enable 
-        { 
+        public bool hdr_enable
+        {
             get => IsNotRecording && is_hdr_enable;
             set
             {
@@ -966,6 +1014,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => WebcamSettings.WebcamGrid;
             set
             {
+                if (value == WebcamSettings.WebcamGrid)
+                    return;
+
                 WebcamSettings.WebcamGrid = value;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
                 OnPropertyChanged();
@@ -983,8 +1034,17 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentDeviceInfo!.IsMicEnumerationOn;
             set
             {
-                if(!isIsMicEnumerationOnChanged_event)
+                DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 2 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                if (value == IsMicEnumerationOn)
+                    return;
+                DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 3 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+                if (!isIsMicEnumerationOnChanged_event)
+                {
+                    DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 4 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                     DdpmCommonHelper.DeviceManagerSA!.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
+                }
+                DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 5 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsMicEnumerationOnText));
             }
@@ -1001,6 +1061,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsAutoFramingOn;
             set
             {
+
+                OnPropertyChanged(nameof(IsNotAutoFramingOn));
+
                 if (value == CurrentProfile.IsAutoFramingOn)
                     return;
 
@@ -1043,7 +1106,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isAutoFramingTransitionOn;
             set
             {
-                if (value != _isAutoFramingTransitionOn) 
+                if (value != _isAutoFramingTransitionOn)
                 {
                     _isAutoFramingTransitionOn = value;
                     DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), value);
@@ -1211,6 +1274,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsHDROn;
             set
             {
+                if (value == CurrentProfile.IsHDROn)
+                    return;
+
                 AlertType = WebcamAlert.Alert1;
                 AlertVisibility = Visibility.Visible;
                 hdr_change = true;
@@ -1247,6 +1313,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsAutoWhiteBalanceOn;
             set
             {
+                if (value == IsAutoWhiteBalanceOn)
+                    return;
+
                 DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), value);
                 SetProfileProperty(nameof(IsAutoWhiteBalanceOn), value, OperationModule.ColorAndImage);
                 OnPropertyChanged();
@@ -1755,7 +1824,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
                 case "AutoFramingFrameSize":
                     DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), (int)value);
-                    _autoFramingFrameSize= (int)value;
+                    _autoFramingFrameSize = (int)value;
                     OnPropertyChanged(nameof(AutoFramingFrameSize));
                     break;
                 case "FieldOfView":

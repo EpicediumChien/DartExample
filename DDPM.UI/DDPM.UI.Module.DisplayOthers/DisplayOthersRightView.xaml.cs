@@ -19,12 +19,13 @@ namespace DDPM.UI.Module.DisplayOthers
     {
         private static LoadingScreen _dlg_loading = null;
         private static MessageModalDialog _dlg_message = null;
+        private bool isEzMemoryWiped = false;
 
         public DisplayOthersRightView(/*DisplayOthersViewModel vm*/)
         {
             InitializeComponent();
             //DataContext = vm;
-            DisplayOthersViewModel vm = (DisplayOthersViewModel)DataContext;
+            DisplayOthersViewModel vm =  (DisplayOthersViewModel)DataContext;
 
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
@@ -265,11 +266,20 @@ namespace DDPM.UI.Module.DisplayOthers
                 return;
             string result_success = "result_success_";
             string model = string.Empty;
-            if (e.Contains("result_success_") && e.Length > result_success.Length)
+            if (e.Contains("result_success_"))
             {
-                //retrieve model name
-                model = e.Substring(result_success.Length);
-                e = "result_success_model";
+                if (e.Split('_').Count() == 3)
+                {
+                    //retrieve model name
+                    model = e.Split('_')[2];
+                    e = "result_success_model";
+                }
+                else if (e.Split('_').Count() > 3)
+                {
+                    //retrieve model name
+                    model = e.Split('_')[2];
+                    e = "result_success_model_em";
+                }
             }
             switch(e)
             {
@@ -304,9 +314,17 @@ namespace DDPM.UI.Module.DisplayOthers
                 case "result_success_model":
                     Dispatcher.Invoke(new Action(() =>
                     {
-                        string temp = Strings.ImpExp_SuccessMsg1;
+                        string temp = LangHelper.Instance["ImpExp_SuccessMsg.1"];
+                        temp = temp.Replace("%1", model); 
+                        DisplayMsgBox(LangHelper.Instance["Success"], temp);
+                    }));
+                    break;
+                case "result_success_model_em":
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        string temp = LangHelper.Instance["ImpExp_SuccessMsg.2"];
                         temp = temp.Replace("%1", model);
-                        DisplayMsgBox(Strings.ImpExp_Success, temp);
+                        DisplayMsgBox(LangHelper.Instance["Success"], temp);
                     }));
                     break;
                 case "restart":

@@ -208,13 +208,13 @@
     <value>Analiz</value>
   </data>
   <data name="Analytics.1" xml:space="preserve">
-    <value>Tanılama ve kullanım verilerini otomatik olarak göndererek Dell&apos;in ürün ve hizmetlerini geliştirmesine yardımcı olun.</value>
+    <value>Tanılama ve kullanım verilerini otomatik olarak göndererek Dell'in ürün ve hizmetlerini geliştirmesine yardımcı olun.</value>
   </data>
   <data name="Analytics.2" xml:space="preserve">
-    <value>Dell&apos;in Gizlilik İlkesi</value>
+    <value>Dell'in Gizlilik İlkesi</value>
   </data>
   <data name="Analytics.3" xml:space="preserve">
-    <value>Dell&apos;in ürünlerini ve hizmetlerini otomatik olarak geliştirmesine yardımcı olun</value>
+    <value>Dell'in ürünlerini ve hizmetlerini otomatik olarak geliştirmesine yardımcı olun</value>
   </data>
   <data name="AddDevice" xml:space="preserve">
     <value>Aygıt Ekle</value>
@@ -322,7 +322,7 @@
     <value>Aygıtın eşleştirilmesine izin verin veya Windows ayarlarını başlatın ve bulunduktan sonra ilgili aygıtı seçin.</value>
   </data>
   <data name="AddDevice.Pen.4" xml:space="preserve">
-    <value>Mesaj kutusunda eşleştirmeyi onaylamak için &quot;Evet&quot;i seçin</value>
+    <value>Mesaj kutusunda eşleştirmeyi onaylamak için "Evet"i seçin</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
     <value>USB kablosuz alıcı ve hareket halinde bağlantı için</value>
@@ -346,7 +346,7 @@
     <value>Sisteminizdeki USB bağlantı noktasını kullanarak kulaklığınızı bağlayın.</value>
   </data>
   <data name="AddDevice.Speaker.0" xml:space="preserve">
-    <value>Sisteminizdeki USB bağlantı noktasını kullanarak Hoparlörünüzü veya soundbar&apos;ınızı bağlayın.</value>
+    <value>Sisteminizdeki USB bağlantı noktasını kullanarak Hoparlörünüzü veya soundbar'ınızı bağlayın.</value>
   </data>
   <data name="AddDevice.Dock.0" xml:space="preserve">
     <value>Sisteminizdeki USB bağlantı noktası aracılığıyla Bağlantı İstasyonunuzu bağlayın</value>
@@ -535,7 +535,7 @@
     <value>Aydınlık +</value>
   </data>
   <data name="Hotkey.6" xml:space="preserve">
-    <value>Örnek: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.\nBirden fazla monitörde kısayol tuşu işlevini tetiklemek için fare imlecinin hedeflenen monitör ekranında olması gerektiğini unutmayın.</value>
+    <value>Örnek: "Alt + P", "Shift + F", "Ctrl + Shift + F".\nBirden fazla monitörde kısayol tuşu işlevini tetiklemek için fare imlecinin hedeflenen monitör ekranında olması gerektiğini unutmayın.</value>
   </data>
   <data name="ButtonSettings.0" xml:space="preserve">
     <value>Kaydırma Tekerleği Tıklaması</value>
@@ -601,7 +601,7 @@
     <value>Klavyedeki simgeleri tek\ndokunma yerine çift dokunma ile etkinleştirin</value>
   </data>
   <data name="Collaboration.5" xml:space="preserve">
-    <value>İş Birliği Klavyesini Microsoft Teams ile kullanmak için Microsoft Teams&apos;in en son sürümünde oturum açtığınızdan ve kullandığınızdan ve Üçüncü taraf uygulama API&apos;sinin etkinleştirildiğinden emin olun</value>
+    <value>İş Birliği Klavyesini Microsoft Teams ile kullanmak için Microsoft Teams'in en son sürümünde oturum açtığınızdan ve kullandığınızdan ve Üçüncü taraf uygulama API'sinin etkinleştirildiğinden emin olun</value>
   </data>
   <data name="LearnMore" xml:space="preserve">
     <value>Daha fazla bilgi edinin</value>
@@ -886,10 +886,10 @@
     <value>Tümü</value>
   </data>
   <data name="HeadsetDeviceSettings.4" xml:space="preserve">
-    <value>Dell Audio&apos;yu indirin</value>
+    <value>Dell Audio'yu indirin</value>
   </data>
   <data name="HeadsetDeviceSettings.5" xml:space="preserve">
-    <value>Kulaklık ayarlarınızı iPhone veya Android aygıtınızın rahatlığında optimize etmek ve kişiselleştirmek için Dell Audio&apos;yu şimdi indirin.</value>
+    <value>Kulaklık ayarlarınızı iPhone veya Android aygıtınızın rahatlığında optimize etmek ve kişiselleştirmek için Dell Audio'yu şimdi indirin.</value>
   </data>
   <data name="HeadsetDeviceSettings.6" xml:space="preserve">
     <value>Daha fazla bilgi edinin</value>
@@ -958,7 +958,7 @@
     <value>Aygıtlarınıza\n bağlanma</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>Lütfen her bir PC&apos;den\n monitöre bir video kablosu ve USB kablosu bağlayın. En fazla 4 cihaz (bilgisayarlar, oyun\n konsolları vb.) bağlayabilirsiniz.\r\n\r\nLütfen her bağlantı için kablo türünü seçin ve her kaynağa bir ad atayın.</value>
+    <value>Lütfen her bir PC'den\n monitöre bir video kablosu ve USB kablosu bağlayın. En fazla 4 cihaz (bilgisayarlar, oyun\n konsolları vb.) bağlayabilirsiniz.\r\n\r\nLütfen her bağlantı için kablo türünü seçin ve her kaynağa bir ad atayın.</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>Bilgisayarlar arasında geçiş yapma</value>
@@ -1003,10 +1003,10 @@
     <value>USB KVM</value>
   </data>
   <data name="Kvm.21" xml:space="preserve">
-    <value>USB KVM&apos;yi Kurun</value>
+    <value>USB KVM'yi Kurun</value>
   </data>
   <data name="Kvm.22" xml:space="preserve">
-    <value>Yeni USB KVM&apos;yi başlatın</value>
+    <value>Yeni USB KVM'yi başlatın</value>
   </data>
   <data name="Kvm.23" xml:space="preserve">
     <value>Ağ KVM</value>
@@ -1021,7 +1021,7 @@
     <value>Monitörün USB bağlantı noktası üzerinden kurulum</value>
   </data>
   <data name="Kvm.27" xml:space="preserve">
-    <value>Kısayol Tuşları - PC&apos;ler arasında geçiş: Yok</value>
+    <value>Kısayol Tuşları - PC'ler arasında geçiş: Yok</value>
   </data>
   <data name="Kvm.28" xml:space="preserve">
     <value>Birden fazla monitör kurulumu için uygundur</value>
@@ -1030,13 +1030,13 @@
     <value>Ağ üzerinden kurulum</value>
   </data>
   <data name="Kvm.30" xml:space="preserve">
-    <value>PC&apos;ler (Mac ve Windows) arasında güvenli bir şekilde kolay dosya paylaşımı</value>
+    <value>PC'ler (Mac ve Windows) arasında güvenli bir şekilde kolay dosya paylaşımı</value>
   </data>
   <data name="Kvm.31" xml:space="preserve">
     <value>Ağ KVM Aç</value>
   </data>
   <data name="Kvm.32" xml:space="preserve">
-    <value>Ağ KVM&apos;sini yükseltmek veya düzenlemek için başka bir pencere açar</value>
+    <value>Ağ KVM'sini yükseltmek veya düzenlemek için başka bir pencere açar</value>
   </data>
   <data name="MouseSettings.0" xml:space="preserve">
     <value>DPI değerindeki değişikliği tamamlamak için farenizi hareket ettirin</value>
@@ -1246,7 +1246,7 @@
     <value>Kamera Mikrofonu</value>
   </data>
   <data name="WebCameraMicrophone.2" xml:space="preserve">
-    <value>Not: Bu mikrofon Microsoft Teams sertifikalı değildir. En iyi Microsoft Teams arama deneyimi için Dell&apos;in Microsoft Teams sertifikalı ses aygıtlarını kullanın.</value>
+    <value>Not: Bu mikrofon Microsoft Teams sertifikalı değildir. En iyi Microsoft Teams arama deneyimi için Dell'in Microsoft Teams sertifikalı ses aygıtlarını kullanın.</value>
   </data>
   <data name="WebCameraPresenceDetection.0" xml:space="preserve">
     <value>Varlık Algılama</value>
@@ -1399,7 +1399,7 @@
     <value>Eşleştirdiğiniz bu aygıt, bağlı USB kablosuz alıcı ile desteklenmiyor. Aygıtla birlikte gelen alıcıyı kullanın.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>Bu USB kablosuz alıcıdaki kullanılabilir yuvalar dolu. Kullanmak için aygıt ayarları sayfasındaki \&quot;Eşleşmeyi Kaldır\&quot; düğmesine tıklayarak aygıtın eşleşmesini kaldırın.</value>
+    <value>Bu USB kablosuz alıcıdaki kullanılabilir yuvalar dolu. Kullanmak için aygıt ayarları sayfasındaki \"Eşleşmeyi Kaldır\" düğmesine tıklayarak aygıtın eşleşmesini kaldırın.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>Eylem atamak için tıklayın</value>
@@ -1783,7 +1783,7 @@
     <value>Etkin Gürültü Engelleme</value>
   </data>
   <data name="WalkThroughWebCam_Main.0" xml:space="preserve">
-    <value>Zoom&apos;da Hızlı Ayarlar</value>
+    <value>Zoom'da Hızlı Ayarlar</value>
   </data>
   <data name="WalkThroughWebCam_Main.1" xml:space="preserve">
     <value>Kolay Ön Ayarlar</value>
@@ -1798,7 +1798,7 @@
     <value>Güvenlik Özellikleri</value>
   </data>
   <data name="WalkThroughDDPM_Main.0" xml:space="preserve">
-    <value>Dell Display and Peripheral Manager&apos;a\r\nhoş geldiniz</value>
+    <value>Dell Display and Peripheral Manager'a\r\nhoş geldiniz</value>
   </data>
   <data name="WalkThroughDDPM_Sub.2" xml:space="preserve">
     <value>Aygıtınızı, bağlantısını ve aygıt kablosuzsa pil seviyesini görün</value>
@@ -1909,10 +1909,10 @@
     <value>Kaleminizin davranışlarını özelleştirme</value>
   </data>
   <data name="WalkThroughPen_Sub.0" xml:space="preserve">
-    <value>Kaleminizi Tile ile eşleştirmek için:\n1. Mobil aygıtınızda Bluetooth&apos;u etkinleştirin.\n2. Tile uygulamasını mobil aygıtınıza indirmek için QR kodunu tarayın.\n3. Kalemi Tile ile eşleştirmek için kalemin iki yan düğmesini 3 saniye boyunca basılı tutun.</value>
+    <value>Kaleminizi Tile ile eşleştirmek için:\n1. Mobil aygıtınızda Bluetooth'u etkinleştirin.\n2. Tile uygulamasını mobil aygıtınıza indirmek için QR kodunu tarayın.\n3. Kalemi Tile ile eşleştirmek için kalemin iki yan düğmesini 3 saniye boyunca basılı tutun.</value>
   </data>
   <data name="WalkThroughPen_Sub.1" xml:space="preserve">
-    <value>Kaleminiz %X oranında şarj edildi.\n\nKaleminizin tam olarak şarj olabilmesi için tabletinizin ekranına takılı olduğundan emin olun. Kalemin şarj işlemi tamamlandığında size bildirilecektir.\n\nPil şarjı %10&apos;un altına düştüğünde düşük pil bildirimleri gösterilir.</value>
+    <value>Kaleminiz %X oranında şarj edildi.\n\nKaleminizin tam olarak şarj olabilmesi için tabletinizin ekranına takılı olduğundan emin olun. Kalemin şarj işlemi tamamlandığında size bildirilecektir.\n\nPil şarjı %10'un altına düştüğünde düşük pil bildirimleri gösterilir.</value>
   </data>
   <data name="WalkThroughPen_Sub.2" xml:space="preserve">
     <value>Uygulama içinden kaleminizin düğme hareketlerini özelleştirebilir, uç ve eğme hassasiyetini ayarlayabilirsiniz\r\n</value>
@@ -1933,7 +1933,7 @@
     <value>Kameranızın siz yaklaştığınızda ekranı uyandırması ve uzaklaştığınızda kilitlemesi için Varlık Algılama özelliğini açın</value>
   </data>
   <data name="WalkThroughWebCamWB3023_Main.0" xml:space="preserve">
-    <value>Zoom&apos;da Hızlı Ayarlar</value>
+    <value>Zoom'da Hızlı Ayarlar</value>
   </data>
   <data name="WalkThroughWebCamWB3023_Main.1" xml:space="preserve">
     <value>Kolay Ön Ayarlar</value>
@@ -1957,7 +1957,7 @@
     <value>Mikrofonu yukarı doğru katlayıp indirerek sesi kapatın ya da açın.\r\n\r\nİstendiğinde çubuk mikrofonu açarak gelen aramaları yanıtlama özelliği uygulama içinden etkinleştirilebilir.</value>
   </data>
   <data name="WalkThroughHeadsetWL3024_Sub.1" xml:space="preserve">
-    <value>Microsoft Teams&apos;i ve sessize alma durumunuzu her biri için tek bir düğmeye basarak yönetin. Diğer kullanışlı düğmelerle ses seviyenizi ve daha fazla özelliği ayarlayın.</value>
+    <value>Microsoft Teams'i ve sessize alma durumunuzu her biri için tek bir düğmeye basarak yönetin. Diğer kullanışlı düğmelerle ses seviyenizi ve daha fazla özelliği ayarlayın.</value>
   </data>
   <data name="WalkThroughHeadsetWH3024_Main.0" xml:space="preserve">
     <value>Kullanışlı düğmeler</value>
@@ -1975,7 +1975,7 @@
     <value>Mikrofonu yukarı doğru katlayıp indirerek sesi kapatın ya da açın.\r\n\r\nİstendiğinde çubuk mikrofonu açarak gelen aramaları yanıtlama özelliği uygulama içinden etkinleştirilebilir.</value>
   </data>
   <data name="WalkThroughHeadsetWL5024_Sub.1" xml:space="preserve">
-    <value>Microsoft Teams&apos;i ve sessize alma durumunuzu her biri için tek bir düğmeye basarak yönetin. Diğer kullanışlı düğmelerle ses seviyenizi ve daha fazla özelliği ayarlayın.</value>
+    <value>Microsoft Teams'i ve sessize alma durumunuzu her biri için tek bir düğmeye basarak yönetin. Diğer kullanışlı düğmelerle ses seviyenizi ve daha fazla özelliği ayarlayın.</value>
   </data>
   <data name="WalkThroughHeadsetWL5024_Sub.2" xml:space="preserve">
     <value>Dış gürültüyü engelleme düzeyini yönetmek için kulaklığınızdaki ANC düğmesine basın veya uygulamadaki tercihler arasından seçim yapın.\r\n\r\nŞeffaflık özelliğini seçtiyseniz gürültü düzeyini özelleştirmek için uygulamadaki kaydırıcıyı kullanın.</value>
@@ -2124,6 +2124,9 @@
   <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
     <value>Uygulama ayarları, %1 kapsamında başarıyla uygulandı. Monitörünüzü kullanmanın keyfini çıkarın.</value>
   </data>
+  <data name="ImpExp_SuccessMsg.2" xml:space="preserve">
+    <value>Uygulama ayarları, %1 kapsamında başarıyla uygulandı. Monitörünüzü kullanmanın keyfini çıkarın.</value>
+  </data>
   <data name="ImpExp_WarningMsg.0" xml:space="preserve">
     <value>Bu, sizin birincil monitörünüz değil. Devam etmek ve bunu Senkronizasyon için Birincil Monitörünüz olarak ayarlamak istiyor musunuz?</value>
   </data>
@@ -2170,7 +2173,7 @@
     <value>Çözünürlük ve Yenileme Hızı</value>
   </data>
   <data name="Toggle_Vision_Engine" xml:space="preserve">
-    <value>Vision Engine&apos;ı Açma/Kapatma</value>
+    <value>Vision Engine'ı Açma/Kapatma</value>
   </data>
   <data name="Third_Party_Licenses" xml:space="preserve">
     <value>Üçüncü Taraf Lisansları</value>
@@ -2203,7 +2206,7 @@
     <value>Web kamerası WB7022 Varlık Algılama sensörü kapak durumu</value>
   </data>
   <data name="Headset_speakerphone_and_soundbar_mute_unmute" xml:space="preserve">
-    <value>Kulaklık, hoparlör ve soundbar&apos;da sesi kapatma/açma</value>
+    <value>Kulaklık, hoparlör ve soundbar'da sesi kapatma/açma</value>
   </data>
   <data name="Display_Color_Preset_and_Easy_Memory" xml:space="preserve">
     <value>Ekran Rengi Ön Ayarı ve Kolay Bellek</value>

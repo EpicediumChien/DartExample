@@ -133,7 +133,7 @@
     <value>Network fail</value>
   </data>
   <data name="Update_failed_due_to_network_error" xml:space="preserve">
-    <value>Update failed due to network error. Try again.</value>
+    <value>Update failed due to network error. Please try again.</value>
   </data>
   <data name="Dock_FW_is_loaded" xml:space="preserve">
     <value>Dock FW is loaded. Disconnect dock for completing FW application and reconnect dock after 1 min.</value>
@@ -184,7 +184,7 @@
     <value>update download cancel, because PC battery too low.</value>
   </data>
   <data name="FW_is_being_Installing" xml:space="preserve">
-    <value>FW is being Installing. Do not disconnect the device.</value>
+    <value>FW is being installed. Do not disconnect the device.</value>
   </data>
   <data name="Update" xml:space="preserve">
     <value>Update</value>
@@ -503,5 +503,35 @@
   </data>
   <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
     <value>There are Easy Memory profiles associated to this custom layout.\nSaving this custom layout will update the layout for all the associated profiles.\nDo you want to save the layout?</value>
+  </data>
+  <data name="CollabMultipleCalls" xml:space="preserve">
+    <value>Collaboration controls are not available during multiple conference calls</value>
+  </data>
+  <data name="Custom_Color_HDR" xml:space="preserve">
+    <value>Custom Color HDR</value>
+  </data>
+  <data name="Display_P3" xml:space="preserve">
+    <value>Display P3</value>
+  </data>
+  <data name="FPS_Game" xml:space="preserve">
+    <value>FPS Game</value>
+  </data>
+  <data name="HDR_Peak_1000" xml:space="preserve">
+    <value>HDR Peak 1000</value>
+  </data>
+  <data name="Multiscreen_Match" xml:space="preserve">
+    <value>Multiscreen Match</value>
+  </data>
+  <data name="Off_0" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="Presets_Disabled" xml:space="preserve">
+    <value>Presets Disabled</value>
+  </data>
+  <data name="RTS_Game" xml:space="preserve">
+    <value>RTS Game</value>
+  </data>
+  <data name="RPG_Game" xml:space="preserve">
+    <value>RPG Game</value>
   </data>
 </root>

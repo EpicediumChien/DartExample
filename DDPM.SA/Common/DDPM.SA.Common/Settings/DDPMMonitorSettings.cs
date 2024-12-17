@@ -12,20 +12,20 @@ namespace DDPM.SA.Common.Settings
 
     public class InputSource
     {
-        public string strInputSourceList { get; set; }
+        public string strInputSourceList { get; set; } = string.Empty;
     }
 
     public class KVMSettings
     {
-        public string strUSBKVMPCsList { get; set; }
-        public bool isOnUSBKVM { get; set; }
-        public bool isOnNKVM { get; set; }
+        public string strUSBKVMPCsList { get; set; } = string.Empty;
+        public bool isOnUSBKVM { get; set; } = false;
+        public bool isOnNKVM { get; set; } = false;
     }
 
     public class VCPCode
     {
-        public int Code { get; set; }
-        public List<int> Value { get; set; }
+        public int Code { get; set; } = 0;
+        public List<int> Value { get; set; } = new List<int>();
 
         public VCPCode()
         {
@@ -47,11 +47,11 @@ namespace DDPM.SA.Common.Settings
 
     public class Gaming()
     {
-        public Gaming_GameEnhancementMode Current_GameEnhancementMode { get; set; } = new Gaming_GameEnhancementMode();
-        public Gaming_ResponseTime Current_ResponseTime { get; set; } = new Gaming_ResponseTime();
-        public Gaming_DarkStabilizer Current_DarkStabilizer { get; set; } = new Gaming_DarkStabilizer();
-        public Gaming_HDRType Current_HDRType { get; set; } = new Gaming_HDRType();
-        public Gaming_DualResolutionType Current_DualResolutionType { get; set; } = new Gaming_DualResolutionType();
+        public Gaming_GameEnhancementMode Current_GameEnhancementMode { get; set; } = Gaming_GameEnhancementMode.Off;
+        public Gaming_ResponseTime Current_ResponseTime { get; set; } = Gaming_ResponseTime.Disable;
+        public Gaming_DarkStabilizer Current_DarkStabilizer { get; set; } = Gaming_DarkStabilizer.Disable;
+        public Gaming_HDRType Current_HDRType { get; set; } = Gaming_HDRType.Off;
+        public Gaming_DualResolutionType Current_DualResolutionType { get; set; } = Gaming_DualResolutionType.Unknow;
         public bool[] IsEnable_VisionEngineType { get; set; } = new bool[0];
     }
 
@@ -115,23 +115,23 @@ namespace DDPM.SA.Common.Settings
 
     public class DDPMMonitorSettings
     {
-        public double Version { get; set; }
-        public string Model { get; set; }
-        public string ServiceTag { get; set; }
+        public double Version { get; set; } = 0;
+        public string Model { get; set; } = string.Empty;
+        public string ServiceTag { get; set; } = string.Empty;
         public InputSource Input { get; set; } = new InputSource();
         public KVMSettings KVM { get; set; } = new KVMSettings();
         public List<VCPCode> VCPs { get; set; } = new List<VCPCode>();
         public EAMonitorSettings EA { get; set; } = new EAMonitorSettings();
         public ColorPresetSettings ColorPreset { get; set; } = new ColorPresetSettings();
-        public DisplayCurrentPropertiesInfo DisplayPropertiesInfo { get; set; }
-        public HotkeySettings hotkeySettings { get; set; }
+        public DisplayCurrentPropertiesInfo DisplayPropertiesInfo { get; set; } = new DisplayCurrentPropertiesInfo();
+        public HotkeySettings hotkeySettings { get; set; } = new HotkeySettings();
         public List<HotkeyData> hotkeyData { get; set; } = new List<HotkeyData>();//1006 add for input source hotkey settings per monitor
-        public scheduleInfo scheduleInfo { get; set; }
-        public ImpExpSettings ImpExpSettings { get; set; }
-        public EasyArrangementDDPM easyArrangementDDPM { get; set; }
+        public scheduleInfo scheduleInfo { get; set; } = new scheduleInfo();
+        public ImpExpSettings ImpExpSettings { get; set; } = new ImpExpSettings();
+        public EasyArrangementDDPM easyArrangementDDPM { get; set; } = new EasyArrangementDDPM();
         public uint ALSConfig { get; set; } = 0;
         public Gaming Gaming { get; set; } = new Gaming();
-        public PowerNapSetting PowerNap { get; set; }//1126 move powerNap setting to here
+        public PowerNapSetting PowerNap { get; set; } = new PowerNapSetting();//1126 move powerNap setting to here
     }
 
     public class HotkeyData

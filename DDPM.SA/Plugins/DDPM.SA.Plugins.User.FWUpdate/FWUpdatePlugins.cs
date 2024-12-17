@@ -57,7 +57,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         //0531 Bruce 因應IL的現有安裝包修改底層邏輯，FWUpdatePlugins.cs有稍作大改
         //0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
 
-        public static string[] ODM = new string[] { "Chicony", "Primax", "LiteON", "Darfon", "Wacom", "Luxshare", "Wistron", "Horn", "Tymphany" };
+        public static readonly string[] ODM = new string[] { "Chicony", "Primax", "LiteON", "Darfon", "Wacom", "Luxshare", "Wistron", "Horn", "Tymphany" };
         #region Private Members
 
         private const string pluginName = "FWUpdatePlugin";
@@ -893,7 +893,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {url}");
                     }
                     string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
+                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile go");
                     bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA);
+                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile finish");
+                    _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
                     _downloadTimer.Stop();
                     UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                     {
@@ -945,7 +948,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
                             {
                                 fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                                _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} Unzip Faile");
+                                _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} Unzip Fail");
                                 _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                                 continue;
@@ -1008,6 +1011,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             catch (Exception ex)
             {
+                if (_downloadTimer != null)
+                {
+                    _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
+                    _downloadTimer.Stop();
+                    _downloadTimer = null;
+                }
                 foreach (FWUpdateInfo deviceInfo in fwUpdateInfos)
                 {
                     deviceInfo.FWUErrorCode = FWUErrorCode.NetworkDisconnection;
@@ -1555,8 +1564,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                 }
                 string arguments;
-                DDPMFileSecurity ddpmFileSecurity = new DDPMFileSecurity();
-                string AppDataPath = ddpmFileSecurity.GetActiveUserLocalAppDataPath();
+                string AppDataPath = WTSFunction.GetActiveUserLocalAppDataPath(Log);
                 string logPath = "";
                 _ProgressLogPath = string.Empty;
                 _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " create log path start");

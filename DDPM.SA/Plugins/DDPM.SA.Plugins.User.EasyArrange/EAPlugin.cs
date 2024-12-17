@@ -575,7 +575,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #region IEasyArrangeService Implementation
 
-        #region CLI Flags: Enabled/Locked
+        #region Properties
+        //Robert_Lin, 2024-12-15, This property will be removed, for CLI, please use
+        //Get/Set EASelectedLayout() method instead.
         //Robert_Lin, 2024-10-23, this flag should be saved in user settings 
         //Temporary always true
         public bool IsFunctionEnabled
@@ -590,11 +592,27 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
         }
 
-        #endregion CLI Flags: Enabled/Locked
+        /// <summary>
+        /// The last error string after a EAPlugin method return error.
+        /// </summary>
+        public string EALastError
+        {
+            get
+            {
+                if (_eaBroker == null)
+                    return "EABroker is null";
+                if (!_isEaBrokerStarted)
+                    return "EABroker is not started.";
+                if (_eaBroker.VM == null)
+                    return "EABroker.VM is null";
+                return _eaBroker.VM.EAPluginLastError;
+            }
+        }
+        #endregion Properties
 
         #region Events
         /// <summary>
-        /// Notify to DDPM.UI (EasyArrangeModule) that the EditCommand request has been accepted.
+        /// Notify to DDPM.UI (EzArrangeModule) that the EditCommand request has been accepted.
         /// The EAEditWindow is working for user. 
         /// Argument string: return with errMsg. If errMsg is empty it means no error.
         /// DDPM.UI should wait for next EditReturn event.
@@ -613,6 +631,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #endregion Events
 
         #region Methods
+
+
         /// <summary>
         /// Called from DDPM.UI, when user's selection changed.
         /// Robert_Lin, 2024-10-6: This method may be deprecated after confirm that can be replaced with SetEASelectedLayout()
@@ -1052,6 +1072,246 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return Task.FromResult(false);
         }
 
+        #region Set Selected Layout
+        /// <summary>
+        /// Set Selected EA Layout by EAID (Robert_Lin, 2024-12-13, wait for CLI verification)
+        /// Fully simulate the secnario that user select a layout from DDPM UI.
+        /// 1. Set the specified layout (by EAID) as selected layout.
+        /// 2. (if not exist then) Add to Recent list.
+        /// 3. Save the changed to EAMonitorSettings.
+        /// 4. Notify SA.EAPlugin (EABroker) to update/refresh. 
+        /// 5. User will see the selected layout shown and auto fade-out animation.
+        /// 6. Notify UI to reload settings.
+        /// </summary>
+        /// <param name="monitorInfo">It can set to null, if eaId>=1000. </param>
+        /// <param name="eaId">0=Off, [1~49]=Preset layout, [1000~1004]=Custom Layout.</param>
+        /// <returns></returns>
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
+        {
+            if (_eaBroker == null)
+            {
+                LogInfo($"SetEASelectedLayout({eaId}) return false: _eaBroker is null.");
+                return Task.FromResult(false);
+            }
+            if (!_isEaBrokerStarted)
+            {
+                LogInfo($"SetEASelectedLayout({eaId}) return false: _eaBroker is not started.");
+                return Task.FromResult(false);
+            }
+            if (_deviceManagerPlugin == null)
+            {
+                LogInfo($"SetEASelectedLayout({eaId}) return false: _deviceManagerPlugin is not started.");
+                return Task.FromResult(false);
+            }
+            if (_eaBroker.VM == null)
+            {
+                LogInfo($"SetEASelectedLayout({eaId}) return false: EABroker.VM is null.");
+                return Task.FromResult(false);
+            }
+
+            //Validate eaId: 0=Off, [1~49]=Preset, [1000~1004]=Custom
+            //[0 ~ 49]
+            if (ISplitCtrl.IsExistedPresetEAID(eaId))
+            {
+            }
+            else if (eaId >= EAEMConstants.EAID_FirstCustom)
+            {
+                //Custom: will check if exist in CustomList, from UserSettings
+
+                SplitJson[] customArray = _deviceManagerPlugin.ReadEACustomList().Result;
+                if (customArray != null)
+                {
+                    List<SplitJson> customList = customArray.ToList<SplitJson>();
+                    //Check if it's exist in CustomList
+                    SplitJson? cusSplit = customList.Find(x => x.EAID == eaId);
+                    if (cusSplit == null)
+                    {
+                        _eaBroker.VM.EAPluginLastError = $"EAID(={eaId}) not found in CustomList.";
+                        LogInfo($"SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
+                        return Task.FromResult(false);
+                    }
+                }
+            }
+            else
+            {
+                //[50~999] Invalid EAID
+                _eaBroker.VM.EAPluginLastError = $"EAID(={eaId}) is not a valid EA layout ID.";
+                LogInfo($"SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
+                return Task.FromResult(false);
+            }
+
+            //Read EAMonitorSettings by MonitorInfo
+            EAMonitorSettings? eaSettings = _eaBroker.VM.ReadEAMonitorSettings(monitorInfo);
+            if (eaSettings == null)
+            {
+                _eaBroker.VM.EAPluginLastError = "ReadEAMonitorSettings() return null.";
+                LogInfo($"SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
+                return Task.FromResult(false);
+            }
+
+            //Check if current selected layout is the same
+            if (eaSettings.SelectedSplit != null)
+            {
+                if (eaSettings.SelectedSplit.EAID == eaId)
+                {
+                    LogInfo($"SetEASelectedLayout({eaId}) return true: Current selected layout is the same, nothing to do.");
+                    return Task.FromResult(true);
+                }
+            }
+
+            //Launch the major function in UI Thread
+            Thread thread = new Thread(() =>
+            {
+                STA_SetEASelectedLayout(monitorInfo, eaId);
+                System.Windows.Threading.Dispatcher.Run();
+            });
+
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+
+            return Task.FromResult(true);
+
+        }
+
+        private bool STA_SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
+        {
+            if (_eaBroker == null)
+            {
+                LogInfo($"STA_SetEASelectedLayout({eaId}) return false: _eaBroker is null.");
+                return false;
+            }
+            if (_eaBroker.VM == null)
+            {
+                LogInfo($"SetEASelectedLayout({eaId}) return false: EABroker.VM is null.");
+                return false;
+            }
+
+            //Read EAMonitorSettings for SelectedLayout and RecentList
+            EAMonitorSettings? eaSettings = _eaBroker.VM.ReadEAMonitorSettings(monitorInfo);
+            if (eaSettings == null)
+            {
+                _eaBroker.VM.EAPluginLastError = "ReadEAMonitorSettings() return null.";
+                LogInfo($"STA_SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
+                return false;
+            }
+
+            //Update Selected Layout to eaSettngs.SelectedLayout
+            //
+            //If the eaId is a preset layout
+            if (ISplitCtrl.IsExistedPresetEAID(eaId))
+            {
+                ISplitCtrl? isp = ISplitCtrl.Create(eaId);
+                eaSettings.SelectedSplit = new SplitJson()
+                {
+                    CellCount = isp.CellCount,
+                    SplitKey = isp.SplitKey,
+                    EAID = eaId,
+                    Settings = new List<double>(isp.Settings)
+                };
+            }
+            //eaId is a custom layout, need to read settings from CustomList (from UserSettings)
+            else if (eaId >= EAEMConstants.EAID_FirstCustom)
+            {
+                //Read CustomList
+                SplitJson[] customArray = _deviceManagerPlugin.ReadEACustomList().Result;
+                if (customArray != null)
+                {
+                    List<SplitJson> customList = customArray.ToList<SplitJson>();
+                    //Check if it's exist in CustomList
+                    SplitJson? cusSplit = customList.Find(x => x.EAID == eaId);
+                    if (cusSplit == null)
+                    {
+                        _eaBroker.VM.EAPluginLastError = $"Specified EAID({eaId}) is not found in custom list.";
+                        LogInfo($"STA_SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
+                        return false;
+                    }
+                    eaSettings.SelectedSplit = cusSplit.Clone();
+                }
+                else
+                {
+                    //Should naver to here, ReadEACustomList() never return null.
+                    _eaBroker.VM.EAPluginLastError = "ReadEACustomList() return null.";
+                    LogInfo($"STA_SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
+                    return false;
+                }
+            }
+
+            //Update Recent List
+            //
+            //1 eaId==0 (Off) => no need to update RecentList
+            //2 SelectedSplait is null => EAMonitorSettings default value => assume SelectedLayout is Off (EAID=0)
+            if ((eaId != 0) && (eaSettings.SelectedSplit != null))
+            {
+                //RecentList shold never null, even if EAMonitorSetting is default, it will contains 5 default items.
+                //In this method, we will not report error but skip to update.
+                if (eaSettings.RecentList != null)
+                {
+                    //Conver array to List, in order to use List.Find
+                    List<SplitJson> recentList = new List<SplitJson>(eaSettings.RecentList);
+                    //Find the index of spJson in RecentList
+                    int idxRecent = recentList.FindIndex(x => x.EAID == eaId);
+                    //If found in RecentList
+                    if (idxRecent >= 0)
+                    {
+                        //Move the recentSplit to RecentList[0]
+                        //If it's not at [0], then need to move
+                        if (idxRecent > 0)
+                        {
+                            recentList.RemoveAt(idxRecent);
+                            recentList.Insert(0, eaSettings.SelectedSplit.Clone());
+                        }
+                    }
+                    else //Not found in RecentList, need to clone then add into RecentList
+                    {
+                        //If the RecentList.Count < 5, then Insert a new (clone) item to RecentList[0]
+                        if (recentList.Count < EAEMConstants.MaxRecentItems)
+                        {
+                            //Insert new(clone) item to RecentList[0]
+                            recentList.Insert(0, eaSettings.SelectedSplit.Clone());
+                        }
+                        else //RecentList.Count >= 5, need to remove the latest item, then insert new (clone) item to RecentList[0]
+                        {
+                            //Why not using RemoveAt(recentList.Count - 1)?  
+                            // 1 UI will load the first 5 items only
+                            // 2 The settings file (CustomList) may be modified (unknown reason), and count > 5
+                            //   we would like to remove [4] (MaxRecentItems-1)
+                            recentList.RemoveAt(EAEMConstants.MaxRecentItems - 1);
+                            recentList.Insert(0, eaSettings.SelectedSplit.Clone());
+                        }
+                    }
+                    //Convert back to array
+                    eaSettings.RecentList = recentList.ToArray();
+                }
+            }
+
+            //Save new settings (SelectedLayout and RecentList)
+            bool isOKSaveSettings = _eaBroker.VM.WriteEAMonitorSettings(monitorInfo, eaSettings);
+            if (!isOKSaveSettings)
+            {
+                LogInfo(" SetEASelectedLayout() return false: Fail to write to MonitorSettings file.");
+                return false;
+            }
+
+            //Notify EABroker to update related windows/objects
+            //1 Notify WorkWins to refresh WorkSplit and show fadeout animation
+            //2 Notify AwsWindow to release RecentList from settings file
+
+            bool isOKRefreshWorkWin = _eaBroker.NotifyEASelectedLayoutChanged(monitorInfo, eaSettings.SelectedSplit);
+
+            //Notify to EASettingsChanged event handler (the end handler should be DDPM.UI)
+            if (EASettingsChanged != null)
+            {
+                //Only below properties are used currently
+                // Command: 
+                // Message: "{MonitorModel}|{MonitorServiceTag}"
+                string model = monitorInfo.modelName;
+                string serviceTag = monitorInfo.edid.ServiceTag;
+                EAArgs eaArgs = new EAArgs();
+                eaArgs.Message = $"{model}|{serviceTag}";
+                EASettingsChanged(this, eaArgs);
+            }
+            return true;
+        }
         /// <summary>
         /// Called from DDPM.SA DeviceManager, it may triggered by HotkeyManager or CLI.
         /// EAPlugin will make the specified layout (spJson) as current selected Layout,
@@ -1071,6 +1331,48 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 LogInfo(" SetEASelectedLayout() return false: DeviceManager is null.");
                 return Task.FromResult(false);
             }
+            if (_eaBroker == null)
+            {
+                LogInfo(" SetEASelectedLayout() return false: EABroker is null.");
+                return Task.FromResult(false);
+            }
+            if (!_isEaBrokerStarted)
+            {
+                LogInfo(" SetEASelectedLayout() return false: EABroker is not started.");
+                return Task.FromResult(false);
+            }
+
+            //Validation for MonitorInfo
+            if (monitorInfo == null)
+            {
+                LogInfo(" SetEASelectedLayout() return false: monitorInfo is null.");
+                return Task.FromResult(false);
+            }
+            else if (String.IsNullOrWhiteSpace(monitorInfo.modelName))
+            {
+                LogInfo(" SetEASelectedLayout() return false: monitorInfo.modelName is null or empty.");
+                return Task.FromResult(false);
+            }
+            else if (monitorInfo.edid == null)
+            {
+                LogInfo(" SetEASelectedLayout() return false: monitorInfo.edid is null.");
+                return Task.FromResult(false);
+            }
+            else if (String.IsNullOrWhiteSpace(monitorInfo.edid.ServiceTag))
+            {
+                LogInfo(" SetEASelectedLayout() return false: monitorInfo.edit.ServiceTag is null or empty.");
+                return Task.FromResult(false);
+            }
+
+            //Validation spJson
+            // spJson.EAID: [0~49] or [1000~1004]
+            // If EAID in [1000~1004]
+            //    Read CustomList to check if the layout is existed
+            if (spJson == null)
+            {
+                LogInfo(" SetEASelectedLayout() return false: spJson is null.");
+                return Task.FromResult(false);
+            }
 
             //Launch the major function in UI Thread
             Thread thread = new Thread(() =>
@@ -1085,13 +1387,14 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             return Task.FromResult(true);
         }
 
+
         //New for EABroker
         /// <summary>
         /// SetEASelectedLayout() function which is running under STA thread.
         /// </summary>
         /// <param name="monitorInfo"></param>
         /// <param name="spJson"></param>
-        /// <returns></returns>
+        /// <returns>false: no settings for this monitor (under default settings)</returns>
         private bool STA_SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
         {
             //if (_eaBroker == null)
@@ -1113,15 +1416,15 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             _dump_SplitJsonList(recentList.ToList<SplitJson>());
             //If the spJson is a custom layout
-            if (spJson.CustomId != 0)
+            if (spJson.IsCustomLayout)
             {
                 //Read CustomList
                 SplitJson[] customArray = _deviceManagerPlugin.ReadEACustomList().Result;
-                if (customArray != null) 
+                if (customArray != null)
                 {
                     List<SplitJson> customList = customArray.ToList<SplitJson>();
                     //Check if it's exist in CustomList
-                    SplitJson ? cusSplit = customList.Find(x => x.IsEquals(spJson));
+                    SplitJson? cusSplit = customList.Find(x => x.IsEquals(spJson));
                     if (cusSplit == null)
                     {
                         LogInfo(" SetEASelectedLayout() return false: Specified layout is not found in custom list.");
@@ -1170,7 +1473,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 {
                     //eaSettings.RecentList.RemoveAt(EAEMConstants.MaxRecentItems - 2);
                     //eaSettings.RecentList.Insert(0, spJson.Clone());
-                    recentList.RemoveAt(EAEMConstants.MaxRecentItems - 2);
+                    recentList.RemoveAt(EAEMConstants.MaxRecentItems - 1);
                     recentList.Insert(0, spJson.Clone());
                 }
             }
@@ -1222,6 +1525,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             return true;
         }
+        #endregion Set Selected Layout
+
 
         /// <summary>
         /// For developer debug used, dump list of SplitJson to VS2022 Output console.
@@ -1243,21 +1548,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
         }
 
-        /// <summary>
-        /// Set Selected EA Layout by EAID (Robert_Lin, 2024-11-18 not completed)
-        /// It can be used to replace  STA_SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
-        /// The SplitJson will be created in thid method from the input EAID, then calling the method above.
-        /// A new method for CLI /WriteEALayout [x]
-        /// </summary>
-        /// <param name="monitorInfo"></param>
-        /// <param name="eaId"></param>
-        /// <returns></returns>
-        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
-        {
-            //EAID=0 => Empty Layout, SplitCtrl0A
-            return Task.FromResult(true);
-        }
-
+ 
         /// <summary>
         /// Return current Span across multiple monitor option is Enabled/Disabled;
         /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)
@@ -1278,7 +1569,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         /// <summary>
         /// General notification  to EAPlugin from other Plugins inside DDPM.SA.User
         /// </summary>
-        /// <param name="eaArgs"></param>
+        /// <param name="eaArgs">
+        /// eaArgs.Command=EAEMConstants.EACommand_LastSelectedMonitorChanged:
+        ///     Notify EAPlugin when SelectedMonitor is changed, 
+        /// </param>
         /// <returns></returns>
         public Task<bool> NotifyEAMessage(EAArgs eaArgs)
         {
@@ -1419,6 +1713,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
             EventManagerArgs evtArgs = new EventManagerArgs() { Tag = "init" };
             _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, evtArgs);
+
+            //Robert_Lin, 2024-12-10
+            _agent.RegisterForEvent(AgentEventNames.AllInfoMonitorsChanged, AllInfoMonitorChangedHandler);
             ConsoleWriteLine(" = = = = = = = = = =   EABroker Exit");
         }
 
@@ -1722,6 +2019,14 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
         }
 
+        //Robert_Lin, 2024-12-10 added 
+        private void AllInfoMonitorChangedHandler(object sender, EventManagerArgs e)
+        {
+            if (_eaBroker != null)
+            {
+                _eaBroker.Handle_AllInfoMonitorChanged();
+            }
+        }
         #endregion Display Changed event
 
         #region InfoWindow - Unused

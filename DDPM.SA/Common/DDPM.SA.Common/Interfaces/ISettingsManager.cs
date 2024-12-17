@@ -56,7 +56,9 @@ namespace DDPM.SA.Common
         Task<List<string>> GetInfos(bool force_reload = false);
 
         Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam);
-        
+        Task<bool> SaveLog(string saveFolderPath);
+
+
     }
 
     /// <summary>
@@ -102,7 +104,7 @@ namespace DDPM.SA.Common
         //ImpExpSettings
         Task<bool> DisplayExportSettings(string modelname, string seriveTag, List<DDPMMonitorSettings> monitorSettings, string path);
 
-        Task<bool> DisplayImportSettings(string path, bool isSameModel, string serviceTag, out DDPMImpExpSettings ImpExpSettings);
+        Task<DisplayImportResultCode> DisplayImportSettings(string path, bool isSameModel, string serviceTag, out DDPMImpExpSettings ImpExpSettings);
 
         Task<DDPMImpExpSettings> ReadImportSettingsFile(string path);
 
@@ -144,5 +146,6 @@ namespace DDPM.SA.Common
 
         Task<InterruptScreenRoot> ReadInterruptScreen();
         Task<bool> WriteInterruptScreen(InterruptScreenRoot interruptScreenParam);
+        Task<bool> SaveLog(string saveFolderPath);
     }
 }

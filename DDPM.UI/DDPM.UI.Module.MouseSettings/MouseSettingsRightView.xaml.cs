@@ -26,19 +26,10 @@ namespace DDPM.UI.Module.MouseSettings
             _vm.IsSliderDragging = true;
         }
 
-        private bool IsDPIUpdatePending = false;
         private void DPISlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
             _vm.IsSliderDragging = false;
-            if (_vm.ConnectionType == "Dongle")
-            {
-                DPIMessage.Visibility = Visibility.Visible;
-                IsDPIUpdatePending = true;
-            }
-            else
-            {
-                _vm.SetDPIValue();
-            }
+            _vm.SetDPIValue();
         }
 
         private void TouchScrollSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
@@ -54,16 +45,6 @@ namespace DDPM.UI.Module.MouseSettings
             _vm.SetTouchScrollSensitivityLevel();
             _vm.IsTouchScrollHilighted = Visibility.Collapsed;
             _vm.OnPropertyChanged(nameof(_vm.IsTouchScrollHilighted));
-        }
-
-        private void DPISlider_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            if (IsDPIUpdatePending)
-            {
-                DPIMessage.Visibility = Visibility.Collapsed;
-                _vm.SetDPIValue();
-                IsDPIUpdatePending = false;
-            }
         }
     }
 }

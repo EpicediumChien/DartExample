@@ -39,7 +39,15 @@ namespace DDPM.SA.Common
 
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            try
+            {
+                return JsonConvert.SerializeObject(this, Formatting.Indented);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[CLI_RESPONSE] ToJson exception, message: {ex.Message}");
+                return string.Empty;
+            }
         }
 
         public string OutputLog(object o, CommandLineInput commandLineInput)
@@ -495,7 +503,7 @@ namespace DDPM.SA.Common
         public string SpeakerMicrophone { get; set; } = "N/A";
         public string SpeakerVolume { get; set; } = "N/A";
         public string MicrophoneControl { get; set; } = "N/A";
-        public string Uniformity { get; set; } = "N/A";
+        //public string Uniformity { get; set; } = "N/A";
         public string PowerNap { get; set; } = "N/A";
         public string OSD_language { get; set; } = "N/A";
         public string PID { get; set; } = "N/A";
@@ -711,7 +719,7 @@ namespace DDPM.SA.Common
         public string SpeakerMicrophone { get; set; } = "N/A";
         public string SpeakerVolume { get; set; } = "N/A";
         public string MicrophoneControl { get; set; } = "N/A";
-        public string Uniformity { get; set; } = "N/A";
+        //public string Uniformity { get; set; } = "N/A";
         public string PowerNap { get; set; } = "N/A";
         public string OSD_language { get; set; } = "N/A";
     }

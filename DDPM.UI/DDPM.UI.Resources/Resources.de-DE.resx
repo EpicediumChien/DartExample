@@ -2124,6 +2124,9 @@
   <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
     <value>Anwendungseinstellungen erfolgreich auf %1 angewendet. Genießen Sie die Nutzung Ihres Monitors.</value>
   </data>
+  <data name="ImpExp_SuccessMsg.2" xml:space="preserve">
+    <value>Anwendungseinstellungen erfolgreich auf %1 angewendet. Genießen Sie die Nutzung Ihres Monitors.</value>
+  </data>
   <data name="ImpExp_WarningMsg.0" xml:space="preserve">
     <value>Dies ist nicht Ihr primärer Monitor. Möchten Sie fortfahren und diesen als primären Monitor für die Synchronisierung festlegen?</value>
   </data>

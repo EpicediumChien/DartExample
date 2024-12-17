@@ -37,6 +37,11 @@ namespace DdpmSwUpdater
             LogMessage($"DdpmSwUpdater Ver:{version}");
         }
 
+        public static Logs RetrieveLogObject()
+        {
+            return logs;
+        }
+
         public static void LogMessage(string message)
         {
             try

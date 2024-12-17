@@ -178,6 +178,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collaboration controls are not available during multiple conference calls.
+        /// </summary>
+        internal static string CollabMultipleCalls {
+            get {
+                return ResourceManager.GetString("CollabMultipleCalls", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ComfortView.
         /// </summary>
         internal static string ComfortView_0 {
@@ -228,6 +237,15 @@ namespace DDPM.SA.Resources {
         internal static string Custom_Color {
             get {
                 return ResourceManager.GetString("Custom_Color", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Color HDR.
+        /// </summary>
+        internal static string Custom_Color_HDR {
+            get {
+                return ResourceManager.GetString("Custom_Color_HDR", resourceCulture);
             }
         }
         
@@ -291,6 +309,15 @@ namespace DDPM.SA.Resources {
         internal static string Desktop_0 {
             get {
                 return ResourceManager.GetString("Desktop_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display P3.
+        /// </summary>
+        internal static string Display_P3 {
+            get {
+                return ResourceManager.GetString("Display_P3", resourceCulture);
             }
         }
         
@@ -466,6 +493,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to FPS Game.
+        /// </summary>
+        internal static string FPS_Game {
+            get {
+                return ResourceManager.GetString("FPS_Game", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to FW info.
         /// </summary>
         internal static string FW_info {
@@ -475,7 +511,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to FW is being Installing. Do not disconnect the device..
+        ///   Looks up a localized string similar to FW is being installed. Do not disconnect the device..
         /// </summary>
         internal static string FW_is_being_Installing {
             get {
@@ -534,6 +570,15 @@ namespace DDPM.SA.Resources {
         internal static string Go_to_Widget_Settings {
             get {
                 return ResourceManager.GetString("Go_to_Widget_Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HDR Peak 1000.
+        /// </summary>
+        internal static string HDR_Peak_1000 {
+            get {
+                return ResourceManager.GetString("HDR_Peak_1000", resourceCulture);
             }
         }
         
@@ -646,6 +691,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Multiscreen Match.
+        /// </summary>
+        internal static string Multiscreen_Match {
+            get {
+                return ResourceManager.GetString("Multiscreen_Match", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Native.
         /// </summary>
         internal static string Native_0 {
@@ -718,6 +772,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        internal static string Off_0 {
+            get {
+                return ResourceManager.GetString("Off_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ok.
         /// </summary>
         internal static string Ok {
@@ -763,6 +826,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Presets Disabled.
+        /// </summary>
+        internal static string Presets_Disabled {
+            get {
+                return ResourceManager.GetString("Presets_Disabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Processing.
         /// </summary>
         internal static string Processing {
@@ -786,6 +858,24 @@ namespace DDPM.SA.Resources {
         internal static string Reference_0 {
             get {
                 return ResourceManager.GetString("Reference_0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RPG Game.
+        /// </summary>
+        internal static string RPG_Game {
+            get {
+                return ResourceManager.GetString("RPG_Game", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RTS Game.
+        /// </summary>
+        internal static string RTS_Game {
+            get {
+                return ResourceManager.GetString("RTS_Game", resourceCulture);
             }
         }
         
@@ -979,7 +1069,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update failed due to network error. Try again..
+        ///   Looks up a localized string similar to Update failed due to network error. Please try again..
         /// </summary>
         internal static string Update_failed_due_to_network_error {
             get {

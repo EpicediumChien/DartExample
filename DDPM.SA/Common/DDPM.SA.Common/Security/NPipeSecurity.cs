@@ -63,15 +63,69 @@ namespace DDPM.SA.Common.Security
             return pipeSecurity;
         }
 
+        /// <summary>
+        /// System permissions are used, buildin user will be rejected
+        /// </summary>
+        /// <returns></returns>
+        public static PipeSecurity CreatePipeSecurity_System()
+        {
+            var pipeSecurity = new TransportPipeSecurity();
+            // by default, this pipe security object is meant for an elevated pipe
+            pipeSecurity.IsElevated = true;
+            // Disable inherited permissions
+            // Note, the first argument says to protect these rules from inheritance and the second argument is to remove current inherited rules
+            // Add default account rights
+            pipeSecurity.SetAccessRuleProtection(true, false);
+            //Build in user: PipeAccessRights.ReadWrite or PipeAccessRights.FullControl
+            // - Allow System group Full Control
+            // - Allow Administrators group Full Control
+            var accessRule = new PipeAccessRule(LocalAccounts.Users.LocalSystemSid, PipeAccessRights.FullControl, AccessControlType.Allow);
+            pipeSecurity.AddAccessRule(accessRule);
+            // Allow Admin since they could just PSExec us to get to System so just make
+            // easier for debugging reasons
+            accessRule = new PipeAccessRule(LocalAccounts.Groups.BuiltinAdminsSid, PipeAccessRights.FullControl, AccessControlType.Allow);
+            pipeSecurity.AddAccessRule(accessRule);
+            // Denying access to connections coming over the network.
+            // Connections made from within a Remote Desktop (RDP) session still work. This is the behavior we want.
+            var securityId = new SecurityIdentifier(WellKnownSidType.NetworkSid, null);
+            accessRule = new PipeAccessRule(securityId, PipeAccessRights.FullControl, AccessControlType.Deny);
+            pipeSecurity.AddAccessRule(accessRule);
+            // Deny access to connections for AnonymousSid accounts
+            securityId = new SecurityIdentifier(WellKnownSidType.AnonymousSid, null);
+            accessRule = new PipeAccessRule(securityId, PipeAccessRights.FullControl, AccessControlType.Deny);
+            // Deny access to connections for AnonymousSid accounts
+            securityId = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
+            accessRule = new PipeAccessRule(securityId, PipeAccessRights.FullControl, AccessControlType.Deny);
+            pipeSecurity.AddAccessRule(accessRule);
+            return pipeSecurity;
+        }
+
         public static bool NamedPipeClientSecurity(NamedPipeServerStream pipeServer, out string info, string thumbPrint = null)
         {
             info = "success";
-            IntPtr hPipe = pipeServer.SafePipeHandle.DangerousGetHandle();
-            if (!_GetNamedPipeClientProcessId(hPipe, out uint pid))
+            IntPtr hPipe = default;
+            uint pid = default;
+            try
             {
-                info = "[GetNamedPipeClientProcessId] failed";
+                hPipe = pipeServer.SafePipeHandle.DangerousGetHandle();
+
+                if (!_GetNamedPipeClientProcessId(hPipe, out pid))
+                {
+                    info = "[GetNamedPipeClientProcessId] failed";
+                    return false;
+                }
+            }
+            catch (Exception ex) 
+            {
+                info = $"[GetNamedPipeClientProcessId] exception, message :{ex.Message}";
                 return false;
             }
+            //this finally action cause NKVM/FW update namedpipe fail, remove it [Dean 1212]
+            //finally
+            //{
+            //    pipeServer.SafePipeHandle.Close();
+            //}
+
             Console.WriteLine("pid: " + pid);
             Process process = Process.GetProcessById((int)pid);
             string filePath = process.MainModule.FileName;

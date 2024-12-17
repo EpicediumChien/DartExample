@@ -67,6 +67,14 @@ namespace NGA.ThickClient
 
         private const int WM_EXITBYMYSELF = 0xFF30;
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool SetProcessShutdownParameters(uint dwLevel, uint dwFlags);
+        private static bool _SetProcessShutdownParameters(uint dwLevel, uint dwFlags)
+        {
+            return SetProcessShutdownParameters(dwLevel, dwFlags);
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -122,6 +130,9 @@ namespace NGA.ThickClient
             _log?.Info($"{nameof(MainWindow)} - Constructed");
             resourceManager = new ResourceManager();
             _Console = console;
+
+            //Make sure UI shutdown earlier than SA
+            _SetProcessShutdownParameters(0x4FF, 0);
         }
 
         #region Private Methods

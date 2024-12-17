@@ -835,7 +835,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Transison Length 的當地語系化字串。
+        ///   查詢類似 Transition Length 的當地語系化字串。
         /// </summary>
         internal static string Brightness_16 {
             get {
@@ -1618,7 +1618,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Auto Color Temperature is currently enabled. Do you wish to disable it to continue? 的當地語系化字串。
+        ///   查詢類似 Auto Color Temperature is currently enabled. Do you wish to override it? 的當地語系化字串。
         /// </summary>
         internal static string Color_10 {
             get {
@@ -1974,6 +1974,15 @@ namespace DDPM.UI.Resources {
         internal static string DeviceSettings {
             get {
                 return ResourceManager.GetString("DeviceSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Diagnostic report save fail 的當地語系化字串。
+        /// </summary>
+        internal static string DiagnosticReport_SaveFail {
+            get {
+                return ResourceManager.GetString("DiagnosticReport_SaveFail", resourceCulture);
             }
         }
         
@@ -2374,6 +2383,897 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 Empty Layout 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_00 {
+            get {
+                return ResourceManager.GetString("EATooltip_00", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 2.1: 2 columns, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_21H {
+            get {
+                return ResourceManager.GetString("EATooltip_21H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 2.1: 2 rows, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_21V {
+            get {
+                return ResourceManager.GetString("EATooltip_21V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 2.2: 2 rows, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_22H {
+            get {
+                return ResourceManager.GetString("EATooltip_22H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 2.2: 2 columns, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_22V {
+            get {
+                return ResourceManager.GetString("EATooltip_22V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 2.3: 2 columns, split 70/30%. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_23H {
+            get {
+                return ResourceManager.GetString("EATooltip_23H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 2.3: 2 rows, split 30/70%. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_23V {
+            get {
+                return ResourceManager.GetString("EATooltip_23V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 2.4: 2 columns, split 30/70%. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_24H {
+            get {
+                return ResourceManager.GetString("EATooltip_24H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 2.4: 2 rows, split 70/30%. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_24V {
+            get {
+                return ResourceManager.GetString("EATooltip_24V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.1: 3 rows, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_31H {
+            get {
+                return ResourceManager.GetString("EATooltip_31H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.1: 3 columns, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_31V {
+            get {
+                return ResourceManager.GetString("EATooltip_31V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.2: 3 columns, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_32H {
+            get {
+                return ResourceManager.GetString("EATooltip_32H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.2: 3 rows, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_32V {
+            get {
+                return ResourceManager.GetString("EATooltip_32V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.3: 3 columns, split 30/40/30%. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_33H {
+            get {
+                return ResourceManager.GetString("EATooltip_33H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.3: 3 rows, split 30/40/30%. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_33V {
+            get {
+                return ResourceManager.GetString("EATooltip_33V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.4: 2 rows, split equally. Column 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_34H {
+            get {
+                return ResourceManager.GetString("EATooltip_34H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.4: 2 rows, split equally. Row 1, no split. Row 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_34V {
+            get {
+                return ResourceManager.GetString("EATooltip_34V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.5: 2 rows, split equally. Column 1, no split. Column 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_35H {
+            get {
+                return ResourceManager.GetString("EATooltip_35H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.5: 2 rows, split equally. Row 1, split equally. Row 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_35V {
+            get {
+                return ResourceManager.GetString("EATooltip_35V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.6: 2 rows, split equally. Column 1, split 30/70%. Column 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_36H {
+            get {
+                return ResourceManager.GetString("EATooltip_36H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.6: 2 rows, split 70/30%. Row 1, no split, Row 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_36V {
+            get {
+                return ResourceManager.GetString("EATooltip_36V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.7: 2 rows, split equally. Column 1, split 70/30%. Column 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_37H {
+            get {
+                return ResourceManager.GetString("EATooltip_37H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.7: 2 rows, split 30/70%. Row 1, split equally, Row 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_37V {
+            get {
+                return ResourceManager.GetString("EATooltip_37V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.8: 2 rows, split equally. Row 1, no split. Row 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_38H {
+            get {
+                return ResourceManager.GetString("EATooltip_38H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.8: 2 columns, split equally.  Column 1, no split. Column 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_38V {
+            get {
+                return ResourceManager.GetString("EATooltip_38V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.9: 2 rows, split equally. Row 1, split equally. Row 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_39H {
+            get {
+                return ResourceManager.GetString("EATooltip_39H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 3.9: 2 columns, split equally. Column 1, split equally. Column 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_39V {
+            get {
+                return ResourceManager.GetString("EATooltip_39V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 4.1: split in 4 quadrants. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_41H {
+            get {
+                return ResourceManager.GetString("EATooltip_41H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 4.1: split in 4 quadrants. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_41V {
+            get {
+                return ResourceManager.GetString("EATooltip_41V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 4.2: 2 columns, split equally. Column 1, split equally in 3 sections. Column 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_42H {
+            get {
+                return ResourceManager.GetString("EATooltip_42H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 4.2: 2 rows, split equally. Row 1, no split. Row 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_42V {
+            get {
+                return ResourceManager.GetString("EATooltip_42V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 4.3: 2 columns, split equally. Column 1, no split. Column 2, split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_43H {
+            get {
+                return ResourceManager.GetString("EATooltip_43H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 4.3: 2 rows, split equally. Row 1, split equally in 3 sections. Column 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_43V {
+            get {
+                return ResourceManager.GetString("EATooltip_43V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 4.4: 4 columns split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_44H {
+            get {
+                return ResourceManager.GetString("EATooltip_44H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 4.4: 4 rows, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_44V {
+            get {
+                return ResourceManager.GetString("EATooltip_44V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 4.5: 3 columns split equally. Column 1, split equally. Columns 2 and 3, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_45H {
+            get {
+                return ResourceManager.GetString("EATooltip_45H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 4.5: 3 rows, split equally.  Rows 1 and 2, no split. Row 3, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_45V {
+            get {
+                return ResourceManager.GetString("EATooltip_45V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 4.6: 3 columns, split equally. Columns 1 and 2, no split. Column 3, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_46H {
+            get {
+                return ResourceManager.GetString("EATooltip_46H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 4.6: 3 rows, split equally, Row 1, split equally, Rows 2 and 3, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_46V {
+            get {
+                return ResourceManager.GetString("EATooltip_46V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.1: 2 rows, split equally. Row 1, split equally in 3 sections. Row 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_51H {
+            get {
+                return ResourceManager.GetString("EATooltip_51H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.1: 2 columns, split equallly. Column 1, split equally in 3 sections. Column 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_51V {
+            get {
+                return ResourceManager.GetString("EATooltip_51V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.2: 2 rows, split equally. Row 1, split equally. Row 2, split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_52H {
+            get {
+                return ResourceManager.GetString("EATooltip_52H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.2: 2 columns, split equally. Column 1, split equally. Column 2, split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_52V {
+            get {
+                return ResourceManager.GetString("EATooltip_52V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.3: 2 rows, split 30/70% split. Row 1, split equally in 3 sections. Row 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_53H {
+            get {
+                return ResourceManager.GetString("EATooltip_53H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.3: 2 columns, split 30/70%, Row 1, split equally in 3 sections. Row 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_53V {
+            get {
+                return ResourceManager.GetString("EATooltip_53V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.4: 2 rows, split 70/30%. Row 1, split equally. Row 2, split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_54H {
+            get {
+                return ResourceManager.GetString("EATooltip_54H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.4: 2 columns, split 70/30%. Row 1, split equally, Row 2, split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_54V {
+            get {
+                return ResourceManager.GetString("EATooltip_54V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.5: 2 rows, split 30/70%. Rows 1 and 2, each split equally. Column 1, no split. Column 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_55H {
+            get {
+                return ResourceManager.GetString("EATooltip_55H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.5: 2 rows, split equally. Row 1, split equally in 3 sections. Row 2, split 30/70%. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_55V {
+            get {
+                return ResourceManager.GetString("EATooltip_55V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.6: 2 columns, split equally. Column 1, split equally in 3 sections. Column 2, split 30/70%. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_56H {
+            get {
+                return ResourceManager.GetString("EATooltip_56H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.6: 2 rows, split equally, Row 1, split 30/70%. Row 2, split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_56V {
+            get {
+                return ResourceManager.GetString("EATooltip_56V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.7: 3 columns, split equally, Columns 1 and 3, each split equally, Column 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_57H {
+            get {
+                return ResourceManager.GetString("EATooltip_57H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.7: 3 rows, split equally, Rows 1 and 3, each split equally, Row 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_57V {
+            get {
+                return ResourceManager.GetString("EATooltip_57V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.8: 2 rows, split 70/30%. Row 1, split 70/30%. Row 2, split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_58H {
+            get {
+                return ResourceManager.GetString("EATooltip_58H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.8: 2 columns, split 30/70%. Column 1, split 70/30%, Column 2, split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_58V {
+            get {
+                return ResourceManager.GetString("EATooltip_58V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.9: 2 rows, split 70/30%. Row 1, split 70/30%, Row 2, split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_59H {
+            get {
+                return ResourceManager.GetString("EATooltip_59H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 5.9: 2 columns, split 70/30%. Column 1, split 70/30%, Column 2, split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_59V {
+            get {
+                return ResourceManager.GetString("EATooltip_59V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.1: 3 columns, split equally. Columns 1, 2, and 3, each split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_61H {
+            get {
+                return ResourceManager.GetString("EATooltip_61H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.1: 2 columns, split equally. Columns 1 and 2, each split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_61V {
+            get {
+                return ResourceManager.GetString("EATooltip_61V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.2: 2 rows, split 70/30%. Row 1, split 70/30%. Row 2, split equally in 3 sections.Column 1, no split. Column 2, equally split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_62H {
+            get {
+                return ResourceManager.GetString("EATooltip_62H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.2: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, no split. Column 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_62V {
+            get {
+                return ResourceManager.GetString("EATooltip_62V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.3: 2 rows, split 30/70%. Row 1, split equally in 4 sections. Row 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_63H {
+            get {
+                return ResourceManager.GetString("EATooltip_63H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.3: 2 columns, split 30/70%. Column 1, split equally in 4 sections. Column 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_63V {
+            get {
+                return ResourceManager.GetString("EATooltip_63V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.4: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 70/30%. Column 1, no split. Column 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_64H {
+            get {
+                return ResourceManager.GetString("EATooltip_64H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.4: 2 columns, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, split equally. Column 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_64V {
+            get {
+                return ResourceManager.GetString("EATooltip_64V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.5: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, split equally. Column 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_65H {
+            get {
+                return ResourceManager.GetString("EATooltip_65H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.5: 2 columns, split 30/70%. Row 1, split 30/70%. Row 2, split equally in 3 sections. Column 1, split equally. Column 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_65V {
+            get {
+                return ResourceManager.GetString("EATooltip_65V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.6: 2 rows, split 30/70%. Row 1, split 30/70%. Column 1, split evenly. Column 2, no split. Row 1, split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_66H {
+            get {
+                return ResourceManager.GetString("EATooltip_66H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.6: 2 rows, split 30/70%. Row 1, split 30/70%. Row 2, split equally in 3 sections. Column 1, no split. Column 2, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_66V {
+            get {
+                return ResourceManager.GetString("EATooltip_66V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.7: 2 columns, split equally. Rows 1, 2, and 3, split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_67H {
+            get {
+                return ResourceManager.GetString("EATooltip_67H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.7: 3 columns, split equally. Columns 1, 2, and 3, each split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_67V {
+            get {
+                return ResourceManager.GetString("EATooltip_67V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.8: 4 columns, split equally. Rows 1 and 4, split equally. Rows 2 and 3, no splits. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_68H {
+            get {
+                return ResourceManager.GetString("EATooltip_68H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.8: 4 rows, split equally. Rows 1 and 4, split equally. Rows 2 and 3, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_68V {
+            get {
+                return ResourceManager.GetString("EATooltip_68V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.9: 2 rows, split 70/30%. Row 1, split equally. Row 2, split equally in 4 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_69H {
+            get {
+                return ResourceManager.GetString("EATooltip_69H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.9: 2 rows, split equally. Row 1, split 70/30%. Column 1, no split, Column 2, split equally. Row 2, split 70/30%. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_69V {
+            get {
+                return ResourceManager.GetString("EATooltip_69V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.10: 2 columns, split 70/30%. Columns 1, 2, and 3, each split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_6AH {
+            get {
+                return ResourceManager.GetString("EATooltip_6AH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 6.10: 2 rows, split 70/30%. Rows 1 and 2, each split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_6AV {
+            get {
+                return ResourceManager.GetString("EATooltip_6AV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.1: 2 rows, split 30/70%. Row 1, split equally in 3 sections. Row 2, split 30/70%. Column 1, split equally. Columns 2 and 3, no splits. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_71H {
+            get {
+                return ResourceManager.GetString("EATooltip_71H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.1: 3 rows, split equally. Rows 1 and 2, each split 30/70%, Row 3, split in 3 equal sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_71V {
+            get {
+                return ResourceManager.GetString("EATooltip_71V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.2: 2 rows, 30/70% split. Rows 1 and 2, each split equally in 3 sections. Columns 1 and 2, no split. Column 3, split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_72H {
+            get {
+                return ResourceManager.GetString("EATooltip_72H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.2: 3 rows, split equally. Rows 1 and 3, each split equally in 3 sections. Row 2, split 30/70%. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_72V {
+            get {
+                return ResourceManager.GetString("EATooltip_72V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.3: 2 rows, split equally. Row 1, split equally in 4 sections. Row 2, split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_73H {
+            get {
+                return ResourceManager.GetString("EATooltip_73H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.3: 2 columns, split equally. Column 1, split equally in 4 sections. Column 2, split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_73V {
+            get {
+                return ResourceManager.GetString("EATooltip_73V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.4: 2 rows, split equally. Rows 1 and 3, each split equally. Row 2, split equally in 4 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_74H {
+            get {
+                return ResourceManager.GetString("EATooltip_74H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.4: 2 columns, split equally. Column 1, split equally in 3 sections. Column 2, split equally in 4 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_74V {
+            get {
+                return ResourceManager.GetString("EATooltip_74V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.5: 2 rows, split equally. Row 1, split equally in 4 sections. Row 2, split 25/50/25%. Columns 1 and 3, each split equally. Column 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_75H {
+            get {
+                return ResourceManager.GetString("EATooltip_75H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.5: 3 rows, split 25/50/25%. Row 1, split equally in 3 sections. Row 2, 30/70% split. Column 1, split equally. Column 2, no split. Row 3, split in 3 equal sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_75V {
+            get {
+                return ResourceManager.GetString("EATooltip_75V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.6: 2 rows, split 30/70%. Row 1, split 25/50/25%. Columns 1 and 3, each split equally. Column 2, no split. Row 2, split equally in 4 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_76H {
+            get {
+                return ResourceManager.GetString("EATooltip_76H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.6: 3 rows, split 25/50/25%. Row 1, split equally in 3 sections. Row 2, split 70/30%. Row 3, split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_76V {
+            get {
+                return ResourceManager.GetString("EATooltip_76V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.7: 2 rows, split 30/70%. Row 1, split equally in 4 sections. Row 2, split 50/25/25%. Column 1, no split. Columns 2 and 3, each split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_77H {
+            get {
+                return ResourceManager.GetString("EATooltip_77H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.7: 3 rows, split 25/25/50%. Rows 1 and 2, each split equally in 3 sections. Row 3, 30/70% split. Column 1, split equally. Column 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_77V {
+            get {
+                return ResourceManager.GetString("EATooltip_77V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.8: 2 rows, split 30/70%. Rows 1 and 4, each split equally. Row 2, split 25/25/50%. Columns 1 and 2, each split equally. Column 3, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_78H {
+            get {
+                return ResourceManager.GetString("EATooltip_78H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.8: 3 rows, 30/70% split. Row 1, 30/70% split. Column 1, split equally. Column 2, no split. Rows 2 and 3, each split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_78V {
+            get {
+                return ResourceManager.GetString("EATooltip_78V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.9: 4 columns, split equally. Columns 1, 2, 3, and 4, each split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_79H {
+            get {
+                return ResourceManager.GetString("EATooltip_79H", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.9: 4 columns, split equally. Rows 1, 2, 3, and 4, each split equally. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_79V {
+            get {
+                return ResourceManager.GetString("EATooltip_79V", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.10: 4 columns, split equally, Columns 1, 2, 3, and 4, each split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_7AH {
+            get {
+                return ResourceManager.GetString("EATooltip_7AH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.10: 4 columns, split equally, Columns 1, 2, 3, and 4, each split equally in 3 sections. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_7AV {
+            get {
+                return ResourceManager.GetString("EATooltip_7AV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.11: 2 rows, split 30/70%. Rows 1 and 2, each split 25/50/25%. Columns 1 and 3, each split equally. Column 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_7BH {
+            get {
+                return ResourceManager.GetString("EATooltip_7BH", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Option 7.11: 3 columns, split 30/70%. Columns 1, 2, and 3 split 25/50/25%. Rows 1 and 3, split equally. Row 2, no split. 的當地語系化字串。
+        /// </summary>
+        internal static string EATooltip_7BV {
+            get {
+                return ResourceManager.GetString("EATooltip_7BV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Automatic Startup: 的當地語系化字串。
         /// </summary>
         internal static string EazyMemory_0 {
@@ -2703,6 +3603,15 @@ namespace DDPM.UI.Resources {
         internal static string EazyMemory_41 {
             get {
                 return ResourceManager.GetString("EazyMemory.41", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 The corresponding Easy Memory profile will be deleted too. Do you want to continue? 的當地語系化字串。
+        /// </summary>
+        internal static string EazyMemory_42 {
+            get {
+                return ResourceManager.GetString("EazyMemory.42", resourceCulture);
             }
         }
         
@@ -3625,7 +4534,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Learnmore 的當地語系化字串。
+        ///   查詢類似 Learn more 的當地語系化字串。
         /// </summary>
         internal static string HeadsetDeviceSettings_6 {
             get {
@@ -3868,7 +4777,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Application settings applied to %1 successfully. Enjoy using your monitor. 的當地語系化字串。
+        ///   Looks up a localized string similar to Application settings applied to %1 successfully. Dell Display and Peripheral Manager will restart..
         /// </summary>
         internal static string ImpExp_SuccessMsg_1 {
             get {
@@ -3877,7 +4786,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 An new monitor %1 is detected. 的當地語系化字串。
+        ///   Looks up a localized string similar to Application settings applied to %1 successfully. The Easy Memory setting will be cleaned. Please setup Easy Memory again. Dell Display and Peripheral Manager will restart..
+        /// </summary>
+        internal static string ImpExp_SuccessMsg_2 {
+            get {
+                return ResourceManager.GetString("ImpExp_SuccessMsg.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A new monitor %1 is detected..
         /// </summary>
         internal static string ImpExp_Title_0 {
             get {
@@ -4575,6 +5493,15 @@ namespace DDPM.UI.Resources {
         internal static string MinimizeWindow {
             get {
                 return ResourceManager.GetString("MinimizeWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Monitor asset report save fail 的當地語系化字串。
+        /// </summary>
+        internal static string MonitorAssetReport_SaveFail {
+            get {
+                return ResourceManager.GetString("MonitorAssetReport_SaveFail", resourceCulture);
             }
         }
         
@@ -6658,7 +7585,16 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 USB Wireless Receiver 的當地語系化字串。
+        ///   Looks up a localized string similar to Example: “Alt + P”; “Shift + F”; “Ctrl + Shift + F”\nNote: For multiple monitors, the mouse cursor should be on the targeted monitor screen to trigger the hotkey function..
+        /// </summary>
+        internal static string USBKVM_Tips {
+            get {
+                return ResourceManager.GetString("USBKVM.Tips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to USB Wireless Receiver.
         /// </summary>
         internal static string USBWirelessReceiver {
             get {
@@ -6667,7 +7603,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Others 的當地語系化字串。
+        ///   Looks up a localized string similar to Others.
         /// </summary>
         internal static string VbarText_DisplayOthers {
             get {
@@ -8458,7 +9394,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 New Comment 的當地語系化字串。
+        ///   查詢類似 Insert Comment 的當地語系化字串。
         /// </summary>
         internal static string Word_4 {
             get {

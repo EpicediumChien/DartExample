@@ -34,6 +34,8 @@ namespace DDPM.UI.Module.Kvm
                 _leftView = null;
             }
             //vm.Invoke_RefreshData();
+            //Jason 12/11 add loadleftview
+            //moduleOwner.LoadLeftView();
         }
 
         public string ModuleName { get => Constants.ModuleName_KVM; } //"KvmModule"
@@ -75,6 +77,7 @@ namespace DDPM.UI.Module.Kvm
         //Handle new device coming
         private void InitNewViewModel()
         {
+            vm._log.Debug("[InitNewViewModel] running...");
             vm.ModuleOwner = DdpmCommonHelper.ModuleOwner;
             this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
             vm.Invoke_RefreshData();
@@ -82,10 +85,15 @@ namespace DDPM.UI.Module.Kvm
 
         public void OnActivated()
         {
+            vm._log.Debug("[OnActivated] running....");
             if (isSelectChanged)
             {
                 isSelectChanged = false;
                 InitNewViewModel();
+            }
+            else
+            {
+                vm.Invoke_RefreshData();
             }
         }
 

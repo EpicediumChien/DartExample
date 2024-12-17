@@ -93,7 +93,7 @@ namespace DDPM.SA.Common
         void SetWiredAudioMicMuteSoundEnable(bool newValue, Guid deviceId);
 
         void SetWiredAudioVolumeAdjustmentTone(int newValue, Guid deviceId);
-
+        
         void SetAncMode(int newValue, Guid deviceId);
 
         void SetAncGain(int newValue, Guid deviceId);

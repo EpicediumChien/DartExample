@@ -429,24 +429,9 @@ namespace DDPM.UI.Plugin.ViewModels
             switch (changeType)
             {
                 case DeviceChangedType.Peripherals_SettingsChange:
-                    if (DeviceInfos.ContainsKey(di.ID))
-                    {
-                        DeviceInfos.Remove(di.ID);
-                        DeviceInfos.Add(di.ID, di);
-                    }
-                    else if (di.ModelNumber == Model)
-                    {
-                        switch (property)
-                        {
-                            case "RestoreToDefault":
-                                ResetAction();
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        return;
-                    }
+                    if (di.ModelNumber == Model && property == "RestoreToDefault")
+                        ResetAction();
+
                     if (di.ID == CurrentDeviceID)
                     {
                         CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
@@ -471,6 +456,11 @@ namespace DDPM.UI.Plugin.ViewModels
                             case "BatteryLevelChanged":
                                 OnPropertyChanged(nameof(IsDPIEnalble));
                                 break;
+                            case "DPILevelChangePendingChanged":
+                            case "DPIValueChangePendingChanged":
+                                isDpiChangePanding = di.IsDPILevelChangePending || di.IsDPIValueChangePending;
+                                OnPropertyChanged(nameof(DpiChangePandingVisibility));
+                                break;
 
                             default:
                                 break;
@@ -483,6 +473,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
             }
         }
+
+        private bool isDpiChangePanding = false;
+        public Visibility DpiChangePandingVisibility
+        {
+            get => isDpiChangePanding ? Visibility.Visible : Visibility.Collapsed;
+        }
+
         public Collection<string> ButtonCollection
         {
             get => _buttonCollection;

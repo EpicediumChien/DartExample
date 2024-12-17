@@ -25,7 +25,7 @@ namespace DDPM.UI.Module.Color
             strFolder += "\\";
 
             string info = string.Empty;
-            DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strFolder, out info);   // 20241004 Add for Security
+            //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strFolder, out info);   // 20241004 Add for Security
 
             if (!System.IO.Directory.Exists(strFolder))
                 System.IO.Directory.CreateDirectory(strFolder);
@@ -37,24 +37,31 @@ namespace DDPM.UI.Module.Color
             //    _log.Info($"{nameof(UserControl_Loaded)} {FileInfo}");
             //}
 
-            foreach (KeyValuePair<string, InstalledAppInfo> kvp in data)
+            if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(strFolder, out info))
             {
-                Bind_AddFullPage_AppCollectionData new_Appdata = new Bind_AddFullPage_AppCollectionData();
-
-                new_Appdata.AppName = kvp.Value.AppName;
-                new_Appdata.InstalledDate = kvp.Value.lastModifyTime;
-
-                if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
+                foreach (KeyValuePair<string, InstalledAppInfo> kvp in data)
                 {
-                    new_Appdata.AppIcon = strFolder + kvp.Value.IconName + ".png";
-                }
-                else
-                {
-                    new_Appdata.AppIcon = "Assets/palette.png";
-                }
+                    Bind_AddFullPage_AppCollectionData new_Appdata = new Bind_AddFullPage_AppCollectionData();
 
-                _bind_apps.Add(new_Appdata);
-                _apps_all.Add(new_Appdata);
+                    new_Appdata.AppName = kvp.Value.AppName;
+                    new_Appdata.InstalledDate = kvp.Value.lastModifyTime;
+
+                    if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
+                    {
+                        new_Appdata.AppIcon = strFolder + kvp.Value.IconName + ".png";
+                    }
+                    else
+                    {
+                        new_Appdata.AppIcon = "Assets/palette.png";
+                    }
+
+                    _bind_apps.Add(new_Appdata);
+                    _apps_all.Add(new_Appdata);
+                }
+            }
+            else
+            {
+                DdpmCommonHelper.WriteUILog($"[AddAppFullPageCtrl][UserControl_Loaded] ValidateFilePath failed: {info}, it cause app list empty");
             }
 
             lb_Installed_App.ItemsSource = _bind_apps;

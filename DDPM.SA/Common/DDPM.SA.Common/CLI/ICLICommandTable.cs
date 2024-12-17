@@ -218,6 +218,10 @@ namespace DDPM.SA.Common
 
         public CommandLineInput StringProcessing(string[] args)
         {
+            if (args.Length == 0)
+            {
+                args = ["HELP"];
+            }
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
             CommandLineInput commandInput = new CommandLineInput();
             commandInput.isCliCommandsProcessCompleted = false;
@@ -347,11 +351,11 @@ namespace DDPM.SA.Common
                                         t = tS;
                                     if (t.Length > 1 && t.EndsWith("]"))
                                         t = t.Substring(0, t.Length - 1);
-                                    if (tmpSS[0].ToUpper().Contains("SERVICETAG"))
+                                    if (tmpSS[0].ToUpper().Contains("SERVICETAG") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DEVICEDATA") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                     {
                                         commandInput.ServiceTag.Add(t);
                                     }
-                                    else if (tmpSS[0].ToUpper().Contains("MODEL"))
+                                    else if (tmpSS[0].ToUpper().Contains("MODEL") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DEVICEDATA") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                     {
                                         commandInput.Model.Add(t);
                                     }
@@ -359,7 +363,7 @@ namespace DDPM.SA.Common
                                     {
                                         commandInput.GuidString.Add(t);
                                     }
-                                    else if (tmpSS[0].ToUpper().Contains("INDEX"))
+                                    else if (tmpSS[0].ToUpper().Contains("INDEX") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DEVICEDATA") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                     {
                                         int temp = int.Parse(t) - 1;
                                         commandInput.DeviceIndex.Add(temp.ToString());
@@ -452,6 +456,10 @@ namespace DDPM.SA.Common
         //To support multiple command per command input, it means the command sequence contains /set, /get more than once.
         public List<CommandLineInput> StringProcessing_multi(string[] args)
         {
+            if (args.Length == 0)
+            {
+                args = ["HELP"];
+            }
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
             List<CommandLineInput> commandInputs = new List<CommandLineInput>();
 
@@ -591,11 +599,11 @@ namespace DDPM.SA.Common
                                                 t = tS;
                                             if (t.Length > 1 && t.EndsWith("]"))
                                                 t = t.Substring(0, t.Length - 1);
-                                            if (tmpSS[0].ToUpper().Contains("SERVICETAG"))
+                                            if (tmpSS[0].ToUpper().Contains("SERVICETAG") && (input.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (input.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (input.TargetFeature.ToUpper() != "DEVICEDATA") && (input.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                             {
                                                 input.ServiceTag.Add(t);
                                             }
-                                            else if (tmpSS[0].ToUpper().Contains("MODEL"))
+                                            else if (tmpSS[0].ToUpper().Contains("MODEL") && (input.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (input.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (input.TargetFeature.ToUpper() != "DEVICEDATA") && (input.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                             {
                                                 input.Model.Add(t);
                                             }
@@ -603,7 +611,7 @@ namespace DDPM.SA.Common
                                             {
                                                 input.GuidString.Add(t);
                                             }
-                                            else if (tmpSS[0].ToUpper().Contains("INDEX"))
+                                            else if (tmpSS[0].ToUpper().Contains("INDEX") && (input.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (input.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (input.TargetFeature.ToUpper() != "DEVICEDATA") && (input.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                             {
                                                 int temp = int.Parse(t) - 1;
                                                 input.DeviceIndex.Add(temp.ToString());
@@ -694,6 +702,8 @@ namespace DDPM.SA.Common
 
         private void CheckCommandRoutePath(ref CommandLineInput commandInput)
         {
+            ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);
+
             commandInput.isNormalCommands = false;
             commandInput.isITCommands = false;
             CommandLineInput commandInput_temp = commandInput;
@@ -1209,9 +1219,9 @@ namespace DDPM.SA.Common
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Resolution" },                { "VCP", "ALL" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "RefreshRate" },               { "VCP", "ALL" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ResolutionRefreshRate" },     { "VCP", "ALL" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerMicrophone" },         { "VCP", "62,8D,FE,C0000,01,02" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerVolume" },             { "VCP", "62,FE,C0000" } },
-    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Microphone" },                { "VCP", "8D,01,02,C000" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerMicrophone" },         { "VCP", "62,8D" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "SpeakerVolume" },             { "VCP", "62" } },
+    new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "Microphone" },                { "VCP", "8D" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "ColorPreset" },               { "VCP", "14" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "FWVersion" },                 { "VCP", "ALL" } },
     new Dictionary<string, object> { { "TargetType", "DISPLAY" }, { "TargetFeature", "PowerNap" },                  { "VCP", "E0" } },

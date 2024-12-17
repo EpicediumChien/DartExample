@@ -23,7 +23,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         public NamedPipeStreamServer(string pipeName, string thumbPrint, bool skipSHA) : base(pipeName)
         {
-            PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.FullControl);
+            PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity_System();
             this._Connections = new List<NamedPipeStreamConnection>();
             NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
             state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
@@ -33,7 +33,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         private void ClientConnected(IAsyncResult result)
         {
-            PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.FullControl);
+            PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity_System();
             NamedPipeServerStream? asyncState = result.AsyncState as NamedPipeServerStream;
             if (asyncState != null)
             {

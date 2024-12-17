@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Management;
@@ -96,8 +97,8 @@ namespace DdpmSwUpdater
         /// <returns>回傳裝置資訊表(在這個方法裡將原本傳入的裝置資訊表，再寫入對應裝置的下載安裝的結果碼)</returns>
         public Task<List<SWUpdateInfo>> DownloadAndInstall(string installPath)
         {
-            List<string> InfoPkey = new List<string>();
-            InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+            List<string> InfoPkey = new List<string>(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+            //InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
             bool isSkipCA = GetCheckCAStatus();
             _SkipSHA = GetCheckSHAStatus();
             LogManage.LogMessage(nameof(DownloadAndInstall) + " start");
@@ -371,7 +372,8 @@ namespace DdpmSwUpdater
                 {                    
                     if (File.Exists(fileFullPath))
                     {
-                        if (!DDPMFileSecurity.IsFilePathValid(fileFullPath, out string fileCheckInfo))
+                        //For checkmarx test, [code part1]
+                        /*if (!DDPMFileSecurity.IsFilePathValid(fileFullPath, out string fileCheckInfo))
                         {
                             LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FileIsNoSafe - FileCheckInfo : {fileCheckInfo}");
                             _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
@@ -388,7 +390,42 @@ namespace DdpmSwUpdater
                         //_clientProcess = new Process();                        
                         _clientProcess.StartInfo = startInfo;
                         _clientProcess.Start();
-                        _clientProcess.WaitForExit();
+                        _clientProcess.WaitForExit();*/
+
+                        //For checkmarx test, [code part2]
+                        string fileFullPath_sanitized = DDPMFileSecurity.SanitizePath(fileFullPath, out string info);
+                        if (!string.IsNullOrEmpty(fileFullPath_sanitized))
+                        {
+                            if (DDPMFileSecurity.ValidateFilePath(fileFullPath, out info))
+                            {
+                                ProcessStartInfo startInfo = new ProcessStartInfo()
+                                {
+                                    UseShellExecute = false,
+                                    FileName = fileFullPath_sanitized,//fileFullPath,
+                                    Arguments = arguments
+                                };
+                                //_clientProcess = new Process();                        
+                                _clientProcess.StartInfo = startInfo;
+                                _clientProcess.Start();
+                                _clientProcess.WaitForExit();
+                            }
+                            else
+                            {
+                                LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FilePathIsNotSafe - result : {info}");
+                                _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                                _updateErrorCode = SWUErrorCode.FileIsNoSafe;
+                                return _updateErrorCode;
+                            }
+                        }
+                        else
+                        {
+                            LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FilePath sanitized check - result : {info}");
+                            _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            _updateErrorCode = SWUErrorCode.FileIsNoSafe;
+                            return _updateErrorCode;
+                        }
                     }
                     else
                     {
@@ -441,13 +478,14 @@ namespace DdpmSwUpdater
             {
                 folderInfo = string.Empty;
                 pathSymbolicLinInfo = string.Empty;
-                folderValid = false;
-                folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(path, out pathSymbolicLinInfo);//0924 Bruce Add Security
-                if (!folderValid)
-                {
-                    LogManage.LogMessage(nameof(CheckFold) + " FolderSymbolicFolderIsNotSafe:" + pathSymbolicLinInfo + " Retry:" + (count++));
-                }
-                folderValid = DDPMFileSecurity.IsFolderPathValid(path, out folderInfo) && folderValid;
+                //folderValid = false;
+                //folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(path, out pathSymbolicLinInfo);//0924 Bruce Add Security
+                //if (!folderValid)
+                //{
+                //    LogManage.LogMessage(nameof(CheckFold) + " FolderSymbolicFolderIsNotSafe:" + pathSymbolicLinInfo + " Retry:" + (count++));
+                //}
+                //folderValid = DDPMFileSecurity.IsFolderPathValid(path, out folderInfo) && folderValid;
+                folderValid = DDPMFileSecurity.ValidateFilePath(path, out folderInfo);
                 if (!folderValid)
                 {
                     LogManage.LogMessage(nameof(CheckFold) + " FolderIsNotSafe:" + folderInfo + " Retry:" + (count++));
@@ -561,8 +599,10 @@ namespace DdpmSwUpdater
         ManagementEventWatcher watcher;
         private void RegEvent()
         {
+            LogManage.LogMessage($"RegEvent start");
             try
             {
+                LogManage.LogMessage($"RegEvent watcher go");
                 // 將反斜線進行正確轉義
                 WqlEventQuery query = new WqlEventQuery(
                          "SELECT * FROM RegistryValueChangeEvent WHERE " +
@@ -572,6 +612,7 @@ namespace DdpmSwUpdater
                 LogManage.LogMessage("Waiting for an event...");
                 watcher.EventArrived += new EventArrivedEventHandler(OnRegistryValueChanged);
                 watcher.Start();
+                LogManage.LogMessage($"RegEvent watcher done");
             }
             catch (ManagementException ex)
             {
@@ -581,14 +622,20 @@ namespace DdpmSwUpdater
             {
                 LogManage.LogMessage($"Exception: {ex.Message}");
             }
+            LogManage.LogMessage($"RegEvent done");
         }
         private void CancelRegEvent()
         {
+            LogManage.LogMessage($"CancelRegEvent start");
             if (watcher != null)
             {
+                LogManage.LogMessage($"CancelRegEvent watcher is not null");
+                LogManage.LogMessage($"CancelRegEvent stop watcher go");
                 watcher.Stop();
                 watcher.EventArrived -= new EventArrivedEventHandler(OnRegistryValueChanged);
+                LogManage.LogMessage($"CancelRegEvent stop watcher done");
             }
+            LogManage.LogMessage($"CancelRegEvent done");
         }
         private void OnRegistryValueChanged(object sender, EventArrivedEventArgs e)
         {

@@ -2124,6 +2124,9 @@
   <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
     <value>应用程序设置已成功应用于 %1。畅享使用显示器的乐趣吧。</value>
   </data>
+  <data name="ImpExp_SuccessMsg.2" xml:space="preserve">
+    <value>应用程序设置已成功应用于 %1。畅享使用显示器的乐趣吧。</value>
+  </data>
   <data name="ImpExp_WarningMsg.0" xml:space="preserve">
     <value>这不是您的主显示器。是否要继续并将其设置为用于同步的主显示器？</value>
   </data>

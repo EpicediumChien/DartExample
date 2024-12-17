@@ -101,7 +101,8 @@ namespace DDPM.UI.Module.Color
             {
                 OnPropertyChanged(nameof(ColorOpacity));
                 OnPropertyChanged(nameof(GreayoutAlart));
-                return (IsColorEnable || !Is_Game_DeviceName);
+                //return (IsColorEnable || !Is_Game_DeviceName);
+                return true; // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
             }
         }
 
@@ -109,11 +110,12 @@ namespace DDPM.UI.Module.Color
         {
             get
             {
-                if (IsColorEnable || !Is_Game_DeviceName)
-                {
-                    return "1.0";
-                }
-                return "0.5";
+                // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                //if (IsColorEnable || !Is_Game_DeviceName)
+                //{
+                return "1.0";
+                //}
+                //return "0.5";
             }
         }
 
@@ -121,11 +123,12 @@ namespace DDPM.UI.Module.Color
         {
             get
             {
-                if (IsColorEnable || !Is_Game_DeviceName)
-                {
-                    return Visibility.Collapsed;
-                }
-                return Visibility.Visible;
+                // // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                //if (IsColorEnable || !Is_Game_DeviceName)
+                //{
+                return Visibility.Collapsed;
+                //}
+                //return Visibility.Visible;
             }
         }
 
@@ -206,6 +209,8 @@ namespace DDPM.UI.Module.Color
 
         public bool IsAutoColorPreset_Lock { get; set; }
 
+        public string last_selected_value { get; set; } = string.Empty;
+
         //
         //Dean 0612 add for ALS syncup
         //
@@ -220,6 +225,8 @@ namespace DDPM.UI.Module.Color
             set
             {
                 int temp = _colorPresetSelectedIndex;
+                if(ColorPresets_ItemsCollection != null && temp < ColorPresets_ItemsCollection.Count)//before
+                    last_selected_value = ColorPresets_ItemsCollection[temp];
                 if (CheckIfDisableALSFeature())
                 {
                     _colorPresetSelectedIndex = value;
@@ -230,6 +237,8 @@ namespace DDPM.UI.Module.Color
                     _colorPresetSelectedIndex = temp;
                 }
                 OnPropertyChanged("ColorPresetSelectedIndex");
+                if (ColorPresets_ItemsCollection != null && _colorPresetSelectedIndex < ColorPresets_ItemsCollection.Count)//after: keep or change
+                    last_selected_value = ColorPresets_ItemsCollection[_colorPresetSelectedIndex];
             }
         }
 
@@ -261,6 +270,8 @@ namespace DDPM.UI.Module.Color
         {
             _colorPresetSelectedIndex = selIndex;
             OnPropertyChanged("ColorPresetSelectedIndex");
+            if (ColorPresets_ItemsCollection != null && selIndex < ColorPresets_ItemsCollection.Count)
+                last_selected_value = ColorPresets_ItemsCollection[selIndex];
         }
 
         //
@@ -291,14 +302,14 @@ namespace DDPM.UI.Module.Color
                                 {
                                     DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
                                       MyModule.SelectedHomeDevice?.MonitorInfo,
-                                      SupportColorPresets[idex]);
+                                      SupportColorPresets[idex],0,Is_Game_DeviceName,SmartHDR_ON);
                                 }
                                 else
                                 {
                                     foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
                                     {
                                         if (hd.MonitorInfo.IsDellMonitor)
-                                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, null,false);
+                                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, Is_Game_DeviceName, SmartHDR_ON, null,false);
                                     }
                                 }
                             }
@@ -307,7 +318,7 @@ namespace DDPM.UI.Module.Color
                                 // 20240619 jim modify
                                 DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
                                     MyModule.SelectedHomeDevice?.MonitorInfo,
-                                    SupportColorPresets[idex]);
+                                    SupportColorPresets[idex],0,Is_Game_DeviceName, SmartHDR_ON); // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
                         }
                         
                     });
@@ -329,7 +340,7 @@ namespace DDPM.UI.Module.Color
                                 if (ICCprofile_based_Colorpreset_enable)
                                 {
                                     // add jim 20240830
-                                    DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
+                                    DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex],0,Is_Game_DeviceName,SmartHDR_ON); // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
                                     //DdpmCommonHelper.DeviceManagerSA?.SetMonitorProfile(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
                                     //DdpmCommonHelper.DeviceManagerSA?.AutoColorManagementForMonitorConfig(MyModule.SelectedHomeDevice?.MonitorInfo,"BYMONITOR", SupportColorPresets[idex]);
                                 }
@@ -621,23 +632,29 @@ namespace DDPM.UI.Module.Color
         // jim modify 20240606
         public void WatchForProcessEnd()
         {
-            string queryString =
-                "SELECT TargetInstance" +
-                "  FROM __InstanceDeletionEvent " +
-                "WITHIN 1 " +
-                " WHERE TargetInstance ISA 'Win32_Process' "
-                + "   AND TargetInstance.Name like 'ColorManagement.exe'";
-
-            string scope = @"\\.\root\CIMV2";
-
-            if (endProcWatcher == null)
+            try
             {
-                // Create a watcher and listen for events
-                endProcWatcher = new ManagementEventWatcher(scope, queryString);
-                endProcWatcher.EventArrived += ProcessEnded;
-                endProcWatcher.Start();
+                string queryString =
+                    "SELECT TargetInstance" +
+                    "  FROM __InstanceDeletionEvent " +
+                    "WITHIN 1 " +
+                    " WHERE TargetInstance ISA 'Win32_Process' "
+                    + "   AND TargetInstance.Name like 'ColorManagement.exe'";
+
+                string scope = @"\\.\root\CIMV2";
+
+                if (endProcWatcher == null)
+                {
+                    // Create a watcher and listen for events
+                    endProcWatcher = new ManagementEventWatcher(scope, queryString);
+                    endProcWatcher.EventArrived += ProcessEnded;
+                    endProcWatcher.Start();
+                }
             }
-          
+            catch (System.Exception ex)
+            {
+                Log?.Error("[WatchForProcessEnd] exception with: " + ex.Message);
+            }
         }
 
         // jim modify 20240606
@@ -749,8 +766,11 @@ namespace DDPM.UI.Module.Color
 
                 UpdateHDRStatus();
 
-                //if (MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("AW") || MyModule.SelectedHomeDevice.MonitorInfo.modelName.StartsWith("G"))
-                //    Is_Game_DeviceName = true;
+                // jim 20241207 add and modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                if (MyModule.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("F4"))                    
+                    Is_Game_DeviceName = true;
+
+                DdpmCommonHelper.WriteUILog($"[DoWork_RefreshData] Has Gaming Capability={Is_Game_DeviceName}, HDR Status = {SmartHDR_ON}");
 
                 //OSD control back event
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
@@ -1451,11 +1471,12 @@ namespace DDPM.UI.Module.Color
 
         private void update_ui_over_runtype(ColorPresetSettings config)
         {
-            if (!(IsColorEnable || !Is_Game_DeviceName))
-            {
-                DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", IsAutoColorPreset_Lock);
-                return;
-            }
+            // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+            //if (!(IsColorEnable || !Is_Game_DeviceName))
+            //{
+            //    DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", Is_Game_DeviceName ,IsAutoColorPreset_Lock);
+            //    return;
+            //}
 
 
             if (config.RunType == (int)ColorPresetRunType.Auto)

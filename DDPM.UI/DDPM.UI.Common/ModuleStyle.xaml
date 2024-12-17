@@ -7,14 +7,31 @@
 
     <!-- #region Control Element Default Styles-->
     <!-- Common -->
+    <LinearGradientBrush x:Key="DDPMBackground" ColorInterpolationMode="SRgbLinearInterpolation" EndPoint="1,1" MappingMode="RelativeToBoundingBox" 
+                         SpreadMethod="Pad" StartPoint="0,0" Opacity="0.15">
+        <LinearGradientBrush.RelativeTransform>
+            <MatrixTransform Matrix="Identity" />
+        </LinearGradientBrush.RelativeTransform>
+        <LinearGradientBrush.Transform>
+            <MatrixTransform Matrix="Identity" />
+        </LinearGradientBrush.Transform>
+        <GradientStop Color="#7F306CC7" Offset="0.0537" />
+        <GradientStop Color="#7F0063B8" Offset="0.237" />
+        <GradientStop Color="#E0003ACE" Offset="0.504" />
+        <GradientStop Color="#7F674AB8" Offset="0.7923" />
+        <GradientStop Color="#7F0063B8" Offset="0.9724" />
+    </LinearGradientBrush>
     <!-- #region FakeTransparent: When you need a transparent color and need can response mouse click -->
     <Color x:Key="Color_FakeTransparent">#01FFFFFF</Color>
     <SolidColorBrush x:Key="FakeTransparent" Color="{StaticResource Color_FakeTransparent}" />
     <SolidColorBrush x:Key="Transparent" Color="{StaticResource Color_FakeTransparent}" />
     <!-- #endregion FakeTransparent: When you need a transparent color and need can response mouse click -->
     <SolidColorBrush x:Key="DefaultTheme_TxtColor" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="DefaultTheme_ProcessBarTxtColor" Color="#A4B8CD" />
     <SolidColorBrush x:Key="DefaultTheme_BdBkColor" Color="#99194784" />
+    <SolidColorBrush x:Key="DefaultTheme_BdSolidBkColor" Color="#FF132F54" />
     <SolidColorBrush x:Key="DefaultTheme_BdBdColor" Color="#132F54" />
+    <SolidColorBrush x:Key="DefaultTheme_BdSolidBdColor" Color="#1B385F" />
     <SolidColorBrush x:Key="DefaultTheme_RbBkColor" Color="#800A0E14" />
     <SolidColorBrush x:Key="DefaultTheme_RbBdColor" Color="#7E7E7E" />
     <SolidColorBrush x:Key="DefaultTheme_BtFgColor" Color="#FFF5F6F7" />
@@ -39,6 +56,8 @@
     <SolidColorBrush x:Key="DefaultTheme_ListBoxBkColor" Color="#80141D27" />
     <SolidColorBrush x:Key="DefaultTheme_DialogBoxBkColor" Color="#132F54"/>
     <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
+    <SolidColorBrush x:Key="DefaultThemeRightViewAlertBkColor" Color="#364861" />
+    <SolidColorBrush x:Key="DefaultThemeToggleButtonBdColor" Color="#FFFFFF"/>
     <Style TargetType="UXControls:UXTextBlock"
            BasedOn="{StaticResource {x:Type UXControls:UXTextBlock}}">
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -249,7 +268,17 @@
                   Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
         </Canvas>
     </ControlTemplate>
-    
+
+    <!-- Icon Camera Preset -->
+    <ControlTemplate x:Key="icon_Pause" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+            <Path Data="M5.30957 0.00012207H6.49957V16.0001H5.30957V0.00012207Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+            <Path Data="M10.4996 0.00012207H11.6996V16.0001H10.4996V0.00012207Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
+
     <!-- Icon Undo -->
     <ControlTemplate x:Key="icon_Undo" TargetType="ContentControl">
         <Canvas Width="40" Height="40">
@@ -390,9 +419,9 @@
     <!-- #endregion -->
 
     <!-- #region Main Background-->
-    <SolidColorBrush x:Key="mainWindowBkColor" Color="#F20D121A" />
+    <SolidColorBrush x:Key="mainWindowBkColor" Color="#FF0D121A" />
     <ImageBrush x:Key="bkImage" ImageSource="/DDPM;component/Resources/Images/Background.png" Stretch="UniformToFill" />
-    <SolidColorBrush x:Key="SpinnerBkColor" Color="#F20D121A" />
+    <SolidColorBrush x:Key="SpinnerBkColor" Color="#FF0D121A" />
     <SolidColorBrush x:Key="SpinnerWaitTxtColor" Color="#F5F6F7" />
     <!-- #endregion -->
 
@@ -837,7 +866,13 @@
                         ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
                         ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
                         ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                        IsHitTestVisible="False" />
+                        IsHitTestVisible="False">
+                        <ContentPresenter.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                            </Style>
+                        </ContentPresenter.Resources>
+                    </ContentPresenter>
                 </Grid>
             </Border>
         </Grid>
@@ -1529,8 +1564,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToolTip">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="#293B4D"
+                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}"
                             BorderThickness="1"
                             CornerRadius="4">
                         <!--<TextBlock Text="{TemplateBinding Content}"
@@ -1546,16 +1580,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style x:Key="TabInfoToolTipTextStyle" TargetType="TextBlock">
-        <Setter Property="ToolTipService.InitialShowDelay" Value="1" />
-        <Setter Property="Background" Value="#1D2C3B" />
-        <Setter Property="FontFamily" Value="Roboto" />
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="Foreground" Value="#F5F6F7" />
-        <Setter Property="Padding" Value="8" />
-        <Setter Property="LineHeight" Value="20" />
-        <Setter Property="TextWrapping" Value="Wrap" />
-    </Style>
+    <Style x:Key="TabInfoToolTipTextStyle" TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}"/>
     <Style x:Key="ModuleItemStyle" TargetType="UXControls:UXTextBlock">
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
         <Setter Property="FontFamily" Value="Roboto" />
@@ -1965,7 +1990,7 @@
         <GradientStop Color="#7C674AB8" Offset="0.792288"/>
         <GradientStop Color="#7F0063B8" Offset="0.972444"/>
     </LinearGradientBrush>
-    <!-- #region MsgBoxLinearGradientBrush-->
+    <!-- #endregion MsgBoxLinearGradientBrush-->
 
     <Style x:Key="RemoveActionButtonStyle" TargetType="local:ActionButton">
         <Setter Property="Foreground" Value="#F5F6F7" />
@@ -1982,25 +2007,25 @@
     </Style>
 
     <Style x:Key="EditActionButtonStyle" TargetType="local:ActionButton">
-        <Setter Property="Foreground" Value="#F5F6F7" />
+        <Setter Property="Foreground" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
         <Setter Property="Background" Value="#00000000" />
         <Setter Property="CornerRadius" Value="2" />
         <Setter Property="Width" Value="102.5" />
         <Setter Property="Height" Value="40" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="#F5F6F7" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Medium" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="HorizontalAlignment" Value="Left" />
     </Style>
-    <!-- #region BitmapImage -->
-    <!--<BitmapImage x:Key="popup_ArrowCorner" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/popup_ArrowCorner.png" />
-    <BitmapImage x:Key="down_Expand" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Down.png" />
-    <BitmapImage x:Key="Search_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Search.png" />
-    <BitmapImage x:Key="Close_img" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Close.png" />
-    <BitmapImage x:Key="left_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Left.png" />
-    <BitmapImage x:Key="MonitorImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png" />-->
+    <!-- #endregion BitmapImage -->
+
+    <!-- #region Easy Memory-->
+    <Style TargetType="Border" x:Key="RightBorderPageStyle">
+        <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdSolidBkColor}" />
+    </Style>
+    <!-- #endregion -->
 
 </ResourceDictionary>

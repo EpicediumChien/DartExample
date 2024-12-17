@@ -13,9 +13,6 @@
              d:DesignHeight="675" d:DesignWidth="554" Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
             <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <PluginCommon:ThicknessConverter x:Key="MarginConverter" />
             <PluginCommon:BooleanToInverseConverter x:Key="BooleanToInverseConverter" />
@@ -66,13 +63,13 @@
                         <ContentControl Template="{StaticResource icon_Redo}" Foreground="{DynamicResource Webcam_UndoRedo_DisableFgColor}"
                                         HorizontalAlignment="Center" VerticalContentAlignment="Center"/>
                     </Border>
-                    
+
                     <Border Margin="0,0,67,0" Background="{DynamicResource Webcam_UndoRedo_BkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding UndoVisibility}"
                             MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="0" Cursor="Hand">
                         <ContentControl Template="{StaticResource icon_Undo}" Foreground="{DynamicResource DefaultTheme_PathColor}"
                                         HorizontalAlignment="Center" VerticalContentAlignment="Center"/>
                     </Border>
-                    
+
                     <Border Margin="0,0,17,0" Background="{DynamicResource Webcam_UndoRedo_BkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding RedoVisibility}"
                             MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="1" Cursor="Hand">
                         <ContentControl Template="{StaticResource icon_Redo}" Foreground="{DynamicResource DefaultTheme_PathColor}"
@@ -110,7 +107,7 @@
                                                 <Border.ToolTip>
                                                     <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" />
+                                                            <TextBlock Text="{Binding [WebCameraSettings.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
                                                         </Border>
                                                     </ToolTip>
                                                 </Border.ToolTip>
@@ -126,7 +123,7 @@
                                                 <Border.ToolTip>
                                                     <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" />
+                                                            <TextBlock Text="{Binding [WebCameraSettings.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0"/>
                                                         </Border>
                                                     </ToolTip>
                                                 </Border.ToolTip>
@@ -140,9 +137,9 @@
                                             <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
-                                                    <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" />
+                                                            <TextBlock Text="{Binding [WebCameraSettings.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
                                                         </Border>
                                                     </ToolTip>
                                                 </Border.ToolTip>
@@ -217,11 +214,11 @@
                                         <StackPanel Orientation="Horizontal">
                                             <UXControls:UXTextBlock Text="{Binding [WebCameraSettings.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsAutoFramingOn}" />
                                             <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
-                                                <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                                <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
-                                                    <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.27], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" />
+                                                            <TextBlock Text="{Binding [WebCameraSettings.27], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
                                                         </Border>
                                                     </ToolTip>
                                                 </Border.ToolTip>
@@ -302,9 +299,9 @@
                                             <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
-                                                    <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                            <TextBlock Text="{Binding [WebCameraSettings.13], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" />
+                                                            <TextBlock Text="{Binding [WebCameraSettings.13], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
                                                         </Border>
                                                     </ToolTip>
                                                 </Border.ToolTip>
@@ -314,7 +311,7 @@
                                             <Border x:Name="btnFOV0" CornerRadius="5,0,0,5" Focusable="True" Tag="0" MouseLeftButtonDown="FOV_Click" Height="30" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}">
                                                 <Border.Style>
                                                     <Style TargetType="Border" >
-							                            <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
+                                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding FOV_IsSelected[0]}" Value="true">
                                                                 <Setter Property="Background"  Value="{StaticResource VbarItem_HiBkColor}" />
@@ -347,7 +344,7 @@
                                             <Border x:Name="btnFOV1"  Focusable="True" Tag="1" MouseLeftButtonDown="FOV_Click" Height="30" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}">
                                                 <Border.Style>
                                                     <Style TargetType="Border" >
-						                                <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
+                                                        <Setter Property="Background" Value="{DynamicResource RightView_Header_BkColor}" />
                                                         <Style.Triggers>
                                                             <DataTrigger Binding="{Binding FOV_IsSelected[1]}" Value="true">
                                                                 <Setter Property="Background"  Value="{DynamicResource VbarItem_HiBkColor}" />
@@ -443,17 +440,19 @@
                                 <StackPanel Orientation="Vertical">
                                     <Grid Margin="16,25,16,0">
                                         <StackPanel Orientation="Horizontal">
-                                            <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [WebCameraSettings.16], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                                            <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [WebCameraSettings.16], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsNotAutoFramingOn}" />
                                             <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
-                                                    <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                        <TextBlock Text="{Binding [WebCameraSettings.17], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" MaxWidth="350" />
+                                                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                            <TextBlock Text="{Binding [WebCameraSettings.17], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
+                                                        </Border>
                                                     </ToolTip>
                                                 </Border.ToolTip>
                                             </Border>
                                         </StackPanel>
-                                        <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsFocusOn}" Content="{Binding Path=IsFocusOnText}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" />
+                                        <UXControls:UXToggleSwitch IsChecked="{Binding Path= IsFocusOn}" Content="{Binding Path=IsFocusOnText}" HorizontalAlignment="Right" VerticalAlignment="Center" FontFamily="Roboto" FontSize="16" IsEnabled="{Binding IsNotAutoFramingOn}" />
                                     </Grid>
                                     <StackPanel Orientation="Vertical" Margin="16,16,16,16">
                                         <UXControls:UXSlider Name="AutofocusSlider" Width="402" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center" AutoToolTipPlacement="None" IsEnabled="{Binding IsFocusOn, Converter={StaticResource BooleanToInverseConverter}}"
@@ -468,9 +467,9 @@
                                         <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
                                             <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                             <Border.ToolTip>
-                                                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                        <TextBlock Text="{Binding [WebCameraSettings.19], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350"/>
+                                                        <TextBlock Text="{Binding [WebCameraSettings.19], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
                                                     </Border>
                                                 </ToolTip>
                                             </Border.ToolTip>
@@ -506,7 +505,7 @@
                                                         </Style.Triggers>
                                                     </Style>
                                                 </UXControls:UXTextBlock.Style>
-                                            </UXControls:UXTextBlock> 
+                                            </UXControls:UXTextBlock>
                                         </Border>
                                         <Border x:Name="btnPriority1" CornerRadius="0,5,5,0" Focusable="True" MouseLeftButtonDown="Priority_Click" Height="30" Width="201" Tag="1" IsEnabled="{Binding IsHDROn, Converter={StaticResource BooleanToInverseConverter}}">
                                             <Border.Style>
@@ -559,7 +558,7 @@
                                 <Border.ToolTip>
                                     <ToolTip Visibility="{Binding TooltipVisibility}">
                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                            <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.12], Source={x:Static lang:LangHelper.Instance}}" />
+                                            <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.12], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0"/>
                                         </Border>
                                     </ToolTip>
                                 </Border.ToolTip>
@@ -571,7 +570,7 @@
                                             <Border.ToolTip>
                                                 <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                        <TextBlock Text="{Binding [WebCameraSettings.26], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" />
+                                                        <TextBlock Text="{Binding [WebCameraSettings.26], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
                                                     </Border>
                                                 </ToolTip>
                                             </Border.ToolTip>
@@ -584,7 +583,7 @@
                                 <Border.ToolTip>
                                     <ToolTip Visibility="{Binding TooltipVisibility}">
                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                            <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.12], Source={x:Static lang:LangHelper.Instance}}" />
+                                            <TextBlock Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Camera.12], Source={x:Static lang:LangHelper.Instance}}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0"/>
                                         </Border>
                                     </ToolTip>
                                 </Border.ToolTip>
@@ -596,7 +595,7 @@
                                             <Border.ToolTip>
                                                 <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                        <TextBlock Text="{Binding [WebCameraPresenceDetection.11], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350"/>
+                                                        <TextBlock Text="{Binding [WebCameraSettings.11], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
                                                     </Border>
                                                 </ToolTip>
                                             </Border.ToolTip>

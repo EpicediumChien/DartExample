@@ -108,6 +108,9 @@ namespace DDPM.UI.Module.WebCameraMicrophone
 
         private void UXToggleSwitch_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+
+            DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 1 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
             _vm.CurrentCursor = Cursors.Wait;
             _vm.IsMicEnumerationOnEnabled = false;
             _vm.AlertType = WebcamAlert.Alert1;

@@ -124,6 +124,28 @@ namespace DDPM.UI.Module.WebCameraCapture
                     return;
                 _vm.SetResolution_Selected(idx);
                 InitializeFPS();
+
+                //for default 30 fps
+                try
+                {
+                    if (_vm.WebcamSettings?.SupportedFPSs != null && _vm.WebcamSettings.SelectedResolution != null)
+                    {
+                        if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.SelectedResolution))
+                        {
+                            List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
+                            int index = FPS.FindIndex(x => x == "30");
+                            if (index != -1)
+                            {
+                                _vm.SetFPS_Selected(index);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraCapture\\WebCameraCaptureRightView.xaml.cs btnResolution_Click : " + ex.Message);
+                }
+
                 foreach (var property in _vm.allProperties)
                 {
                     string properties_temp = property.GetFriendlyName();

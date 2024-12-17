@@ -1685,7 +1685,7 @@ namespace DDPM.CLI.Plugins.Display.Test
 
             // Case 03  OSDENABLE,Volume:52
             value = 0x1234;
-            get_SpeakerVolume_status = "Volume:52";
+            get_SpeakerVolume_status = "OSDENABLE";
             get_SpeakerVolume_status_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerVolume_status", value);
             Assert.IsNotNull(get_SpeakerVolume_status_Result);
             Assert.That(get_SpeakerVolume_status, Is.EqualTo(get_SpeakerVolume_status_Result));
@@ -1781,18 +1781,503 @@ namespace DDPM.CLI.Plugins.Display.Test
 
             // Case 01  OSDLOCK,OSDDISABLE,0x8000
             value = 0x8000;
-            get_SpeakerMicrophone_status = "OSDLOCK,OSDDISABLE,";
+            get_SpeakerMicrophone_status = "OSDLOCK,OSDDISABLE";
             get_SpeakerMicrophone_status_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerMicrophone_status", value);
             Assert.IsNotNull(get_SpeakerMicrophone_status_Result);
             Assert.That(get_SpeakerMicrophone_status, Is.EqualTo(get_SpeakerMicrophone_status_Result));
 
             // Case 01  OSDUNLOCK,OSDENABLE,0x4000
             value = 0x4000;
-            get_SpeakerMicrophone_status = "OSDUNLOCK,OSDENABLE,";
+            get_SpeakerMicrophone_status = "OSDUNLOCK,OSDENABLE";
             get_SpeakerMicrophone_status_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerMicrophone_status", value);
             Assert.IsNotNull(get_SpeakerMicrophone_status_Result);
             Assert.That(get_SpeakerMicrophone_status, Is.EqualTo(get_SpeakerMicrophone_status_Result));
         }
+
+        [Test]
+        public void Testget_Uniformity()
+        {
+            string status;
+            string get_Uniformity;
+            string get_Uniformity_Result;
+
+            // Case 01 OFF
+            status = "off";
+            get_Uniformity = "0";
+            get_Uniformity_Result = (string)privatetecLIDisplayPlugins.Invoke("get_Uniformity", status);
+            Assert.IsNotNull(get_Uniformity_Result);
+            Assert.That(get_Uniformity, Is.EqualTo(get_Uniformity_Result));
+
+            // Case 02 high
+            status = "high";
+            get_Uniformity = "1";
+            get_Uniformity_Result = (string)privatetecLIDisplayPlugins.Invoke("get_Uniformity", status);
+            Assert.IsNotNull(get_Uniformity_Result);
+            Assert.That(get_Uniformity, Is.EqualTo(get_Uniformity_Result));
+
+            // Case 03 Low
+            status = "Low";
+            get_Uniformity = "2";
+            get_Uniformity_Result = (string)privatetecLIDisplayPlugins.Invoke("get_Uniformity", status);
+            Assert.IsNotNull(get_Uniformity_Result);
+            Assert.That(get_Uniformity, Is.EqualTo(get_Uniformity_Result));
+
+            // Case 04 on
+            status = "on";
+            get_Uniformity = "2";
+            get_Uniformity_Result = (string)privatetecLIDisplayPlugins.Invoke("get_Uniformity", status);
+            Assert.IsNotNull(get_Uniformity_Result);
+            Assert.That(get_Uniformity, Is.EqualTo(get_Uniformity_Result));
+
+            // default
+            status = "Test get_Uniformity";
+            get_Uniformity = "0";
+            get_Uniformity_Result = (string)privatetecLIDisplayPlugins.Invoke("get_Uniformity", status);
+            Assert.IsNotNull(get_Uniformity_Result);
+            Assert.That(get_Uniformity, Is.EqualTo(get_Uniformity_Result));
+        }
+
+        [Test]
+        public void Testget_ColorManagement()
+        {
+            string priority;
+            ColorManagementRunType get_ColorManagement;
+            ColorManagementRunType get_ColorManagement_Result;
+
+            // Case 01 OFF
+            priority = "OFF";
+            get_ColorManagement = ColorManagementRunType.Off;
+            get_ColorManagement_Result = (ColorManagementRunType)privatetecLIDisplayPlugins.Invoke("get_ColorManagement", priority);
+            Assert.IsNotNull(get_ColorManagement_Result);
+            Assert.That(get_ColorManagement, Is.EqualTo(get_ColorManagement_Result));
+
+            // Case 02 BYMONITOR
+            priority = "BYMONITOR";
+            get_ColorManagement = ColorManagementRunType.Bymonitor;
+            get_ColorManagement_Result = (ColorManagementRunType)privatetecLIDisplayPlugins.Invoke("get_ColorManagement", priority);
+            Assert.IsNotNull(get_ColorManagement_Result);
+            Assert.That(get_ColorManagement, Is.EqualTo(get_ColorManagement_Result));
+
+            // Case 03 BYHOST
+            priority = "BYHOST";
+            get_ColorManagement = ColorManagementRunType.Byhost;
+            get_ColorManagement_Result = (ColorManagementRunType)privatetecLIDisplayPlugins.Invoke("get_ColorManagement", priority);
+            Assert.IsNotNull(get_ColorManagement_Result);
+            Assert.That(get_ColorManagement, Is.EqualTo(get_ColorManagement_Result));
+
+            // default
+            priority = "Test priority";
+            get_ColorManagement = ColorManagementRunType.Off;
+            get_ColorManagement_Result = (ColorManagementRunType)privatetecLIDisplayPlugins.Invoke("get_ColorManagement", priority);
+            Assert.IsNotNull(get_ColorManagement_Result);
+            Assert.That(get_ColorManagement, Is.EqualTo(get_ColorManagement_Result));
+        }
+
+        [Test]
+        public void Testget_USBCPrioritization()
+        {
+            string priority;
+            USBCPrioritizationType get_USBCPrioritization;
+            USBCPrioritizationType get_USBCPrioritization_Result;
+
+            // Case 01 High Speed
+            priority = "High Speed";
+            get_USBCPrioritization = USBCPrioritizationType.HighDataSpeed;
+            get_USBCPrioritization_Result = (USBCPrioritizationType)privatetecLIDisplayPlugins.Invoke("get_USBCPrioritization", priority);
+            Assert.IsNotNull(get_USBCPrioritization_Result);
+            Assert.That(get_USBCPrioritization, Is.EqualTo(get_USBCPrioritization_Result));
+
+            // Case 02 High Data Speed
+            priority = "High Data Speed";
+            get_USBCPrioritization = USBCPrioritizationType.HighDataSpeed;
+            get_USBCPrioritization_Result = (USBCPrioritizationType)privatetecLIDisplayPlugins.Invoke("get_USBCPrioritization", priority);
+            Assert.IsNotNull(get_USBCPrioritization_Result);
+            Assert.That(get_USBCPrioritization, Is.EqualTo(get_USBCPrioritization_Result));
+
+            // Case 03 High Resolution
+            priority = "High Resolution";
+            get_USBCPrioritization = USBCPrioritizationType.HighResolution;
+            get_USBCPrioritization_Result = (USBCPrioritizationType)privatetecLIDisplayPlugins.Invoke("get_USBCPrioritization", priority);
+            Assert.IsNotNull(get_USBCPrioritization_Result);
+            Assert.That(get_USBCPrioritization, Is.EqualTo(get_USBCPrioritization_Result));
+
+            // default
+            priority = "Test priority";
+            get_USBCPrioritization = USBCPrioritizationType.Unknow;
+            get_USBCPrioritization_Result = (USBCPrioritizationType)privatetecLIDisplayPlugins.Invoke("get_USBCPrioritization", priority);
+            Assert.IsNotNull(get_USBCPrioritization_Result);
+            Assert.That(get_USBCPrioritization, Is.EqualTo(get_USBCPrioritization_Result));
+        }
+
+        [Test]
+        public void Testget_PowerNapType_code()
+        {
+            string code;
+            PowerNapType get_PowerNapType_code;
+            PowerNapType get_PowerNapType_code_Result;
+
+            // Case 01 Off
+            code = "Off";
+            get_PowerNapType_code = PowerNapType.Off;
+            get_PowerNapType_code_Result = (PowerNapType)privatetecLIDisplayPlugins.Invoke("get_PowerNapType_code", code);
+            Assert.IsNotNull(get_PowerNapType_code_Result);
+            Assert.That(get_PowerNapType_code, Is.EqualTo(get_PowerNapType_code_Result));
+
+            // Case 02 REDUCEBRIGHTNESS
+            code = "REDUCEBRIGHTNESS";
+            get_PowerNapType_code = PowerNapType.ReduceBrightness;
+            get_PowerNapType_code_Result = (PowerNapType)privatetecLIDisplayPlugins.Invoke("get_PowerNapType_code", code);
+            Assert.IsNotNull(get_PowerNapType_code_Result);
+            Assert.That(get_PowerNapType_code, Is.EqualTo(get_PowerNapType_code_Result));
+
+            // Case 03 SLEEP
+            code = "SLEEP";
+            get_PowerNapType_code = PowerNapType.SleepIfRunning;
+            get_PowerNapType_code_Result = (PowerNapType)privatetecLIDisplayPlugins.Invoke("get_PowerNapType_code", code);
+            Assert.IsNotNull(get_PowerNapType_code_Result);
+            Assert.That(get_PowerNapType_code, Is.EqualTo(get_PowerNapType_code_Result));
+
+            // default
+            code = "Test get_PowerNapType_code";
+            get_PowerNapType_code = PowerNapType.SleepIfRunning;
+            get_PowerNapType_code_Result = (PowerNapType)privatetecLIDisplayPlugins.Invoke("get_PowerNapType_code", code);
+            Assert.IsNotNull(get_PowerNapType_code_Result);
+            Assert.That(get_PowerNapType_code, Is.EqualTo(get_PowerNapType_code_Result));
+        }
+
+        [Test]
+        public void Testget_InputSource_code()
+        {
+            string input;
+            string get_InputSource_code;
+            string get_InputSource_code_Result;
+
+            // Case "VGA-1"
+            input = "VGA-1";
+            get_InputSource_code = "0x01";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "VGA-2"
+            input = "VGA-2";
+            get_InputSource_code = "0x02";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "DVI-1"
+            input = "DVI-1";
+            get_InputSource_code = "0x03";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "DVI-2"
+            input = "DVI-2";
+            get_InputSource_code = "0x04";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "Composite video 1"
+            input = "Composite video 1";
+            get_InputSource_code = "0x05";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "Composite video 2"
+            input = "Composite video 2";
+            get_InputSource_code = "0x06";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "S-Video-1"
+            input = "S-Video-1";
+            get_InputSource_code = "0x07";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "S-Video-2"
+            input = "S-Video-2";
+            get_InputSource_code = "0x08";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "Tuner-1"
+            input = "Tuner-1";
+            get_InputSource_code = "0x09";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "Tuner-2"
+            input = "Tuner-2";
+            get_InputSource_code = "0x0a";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "Tuner-3"
+            input = "Tuner-3";
+            get_InputSource_code = "0x0b";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "Component video (YPrPb/YCrCb) 1"
+            input = "Component video (YPrPb/YCrCb) 1";
+            get_InputSource_code = "0x0c";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "Component video (YPrPb/YCrCb) 2"
+            input = "Component video (YPrPb/YCrCb) 2";
+            get_InputSource_code = "0x0d";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "Component video (YPrPb/YCrCb) 3"
+            input = "Component video (YPrPb/YCrCb) 3";
+            get_InputSource_code = "0x0e";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "DISPLAYPORT-1"
+            input = "DISPLAYPORT-1";
+            get_InputSource_code = "0x0f";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "Mini DisplayPort-1"
+            input = "Mini DisplayPort-1";
+            get_InputSource_code = "0x10";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "HDMI-1"
+            input = "HDMI-1";
+            get_InputSource_code = "0x11";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "HDMI-2"
+            input = "HDMI-2";
+            get_InputSource_code = "0x12";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "DISPLAYPORT-2"
+            input = "DISPLAYPORT-2";
+            get_InputSource_code = "0x13";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "Mini DisplayPort-2"
+            input = "Mini DisplayPort-2";
+            get_InputSource_code = "0x14";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "HDMI3"
+            input = "HDMI3";
+            get_InputSource_code = "0x15";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "HDMI4"
+            input = "HDMI4";
+            get_InputSource_code = "0x16";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "DISPLAYPORT-3"
+            input = "DISPLAYPORT-3";
+            get_InputSource_code = "0x17";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "Mini DisplayPort-3"
+            input = "Mini DisplayPort-3";
+            get_InputSource_code = "0x18";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "Thunderbolt-1"
+            input = "Thunderbolt-1";
+            get_InputSource_code = "0x19";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "Thunderbolt-2"
+            input = "Thunderbolt-2";
+            get_InputSource_code = "0x1a";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "USB-C1"
+            input = "USB-C1";
+            get_InputSource_code = "0x1b";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "USB-C2"
+            input = "USB-C2";
+            get_InputSource_code = "0x1c";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "USB-C3"
+            input = "USB-C3";
+            get_InputSource_code = "0x1d";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "USB-C4"
+            input = "USB-C4";
+            get_InputSource_code = "0x1e";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "USB Comm from USB1 (Type-B, port 1)"
+            input = "USB Comm from USB1 (Type-B, port 1)";
+            get_InputSource_code = "0x80";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "USB Comm from USB2 (Type-B, port 2)"
+            input = "USB Comm from USB2 (Type-B, port 2)";
+            get_InputSource_code = "0x81";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "USB Comm from USB-C1 (Type-C, port 1)"
+            input = "USB Comm from USB-C1 (Type-C, port 1)";
+            get_InputSource_code = "0x82";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "USB Comm from USB-C2 (Type-C, port 2)"
+            input = "USB Comm from USB-C2 (Type-C, port 2)";
+            get_InputSource_code = "0x83";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "USB Comm from USB-C3 (Type-C, port 3)"
+            input = "USB Comm from USB-C3 (Type-C, port 3)";
+            get_InputSource_code = "0x84";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Case "USB Comm from USB-C4 (Type-C, port 4)"
+            input = "USB Comm from USB-C4 (Type-C, port 4)";
+            get_InputSource_code = "0x85";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+
+            // Default case
+            input = "UnknownInput";
+            get_InputSource_code = "0x11";
+            get_InputSource_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_InputSource_code", input);
+            Assert.IsNotNull(get_InputSource_code_Result);
+            Assert.That(get_InputSource_code, Is.EqualTo(get_InputSource_code_Result));
+        }
+
+        [Test]
+        public void TestSetCurrentInput()
+        {
+            IDeviceManagerSA? devMgr;
+            devMgr = null;
+            string index = "0";
+            string input = "INPUT1";
+            int null_device_manager = 1;
+            if (devMgr == null)
+            {
+                var SetCurrentInput_Result1 = (Task<int>)privatetecLIDisplayPlugins.Invoke("SetCurrentInput", devMgr, index, input); //devMgr == null
+                Assert.IsNotNull(SetCurrentInput_Result1);
+                Assert.That(null_device_manager, Is.EqualTo(SetCurrentInput_Result1.Result));
+            }
+
+            string input2 = monitorInfo1.inputSource;
+            int SetCurrentInput = 0;
+            Mock<IDeviceManagerSA> devMgr2 = new Mock<IDeviceManagerSA>();
+            List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
+            _allInfoMonitors.Add(monitorInfo1);
+            devMgr2.Setup(m => m.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
+            devMgr2.Setup(m => m.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            if (devMgr2 != null)
+            {
+                var SetCurrentInput_Result2 = (Task<int>)privatetecLIDisplayPlugins.Invoke("SetCurrentInput", devMgr2.Object, index, input); //devMgr2 != null
+                Assert.IsNotNull(SetCurrentInput_Result2);
+                Assert.That(SetCurrentInput, Is.EqualTo(SetCurrentInput_Result2.Result));
+            }
+        }
+
+        [Test]
+        public void Testget_PowerSetting_code()
+        {
+            string code;
+            string get_PowerSetting_code;
+            string get_PowerSetting_code_Result;
+
+            // Case "On"
+            code = "On";
+            get_PowerSetting_code = "0";
+            get_PowerSetting_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_PowerSetting_code", code);
+            Assert.IsNotNull(get_PowerSetting_code_Result);
+            Assert.That(get_PowerSetting_code, Is.EqualTo(get_PowerSetting_code_Result));
+
+            // Case "Off"
+            code = "Off";
+            get_PowerSetting_code = "1";
+            get_PowerSetting_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_PowerSetting_code", code);
+            Assert.IsNotNull(get_PowerSetting_code_Result);
+            Assert.That(get_PowerSetting_code, Is.EqualTo(get_PowerSetting_code_Result));
+
+            // Case "STANDBY"
+            code = "STANDBY";
+            get_PowerSetting_code = "2";
+            get_PowerSetting_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_PowerSetting_code", code);
+            Assert.IsNotNull(get_PowerSetting_code_Result);
+            Assert.That(get_PowerSetting_code, Is.EqualTo(get_PowerSetting_code_Result));
+
+            // default
+            code = "Test get_PowerSetting_code";
+            get_PowerSetting_code = "unknown_command";
+            get_PowerSetting_code_Result = (string)privatetecLIDisplayPlugins.Invoke("get_PowerSetting_code", code);
+            Assert.IsNotNull(get_PowerSetting_code_Result);
+            Assert.That(get_PowerSetting_code, Is.EqualTo(get_PowerSetting_code_Result));
+        }
+
 
         [OneTimeTearDown]
         public void TearDown()

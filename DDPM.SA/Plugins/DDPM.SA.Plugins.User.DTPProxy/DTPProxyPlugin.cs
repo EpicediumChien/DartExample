@@ -2069,28 +2069,41 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
         }
-        public async Task<bool> GetZoomMeetingType(string Guid)
+
+        //Derek 1209 ZoomMeetingType should not return bool value
+        //public async Task<bool> GetZoomMeetingType(string Guid)
+        public async Task<int> GetZoomMeetingTypeAsync(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
-            { return false; }
+            {
+                //return false; 
+
+                return 4;
+            }
 
             if (_webcamMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_webcamInterfaceType, commodity, "ZoomMeetingType");
-                    return (bool)value;
+
+                    //return (bool)value;
+                    return (int)value;
                 }
                 else
                 {
                     writelog($"[GetZoomMeetingType]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    return false;
+
+                    //return false;
+                    return 4;
                 }
             }
             else
             {
                 writelog($"[GetZoomMeetingType]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                return false;
+                //return false;
+
+                return 4;
             }
 
         }
@@ -3006,7 +3019,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":26,\"actionName\":\"\"}}");
             await SetSideBottomSwitchSinglePressSetting(PenItemID0, newValue);
             await SetTipSensitivity(PenItemID0, 3);
-            await SetTiltSensitivity(PenItemID0, 1);
+            await SetTiltSensitivity(PenItemID0, 0);
             await SetIsSideTopButtonHoverClick(PenItemID0, false);
             await SetIsSideBottomButtonHoverClick(PenItemID0, false);
 
@@ -3058,8 +3071,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #region Headset set
 
         // 1125 Add log
-        public async Task<bool> SetMicNoiseCancellationAsync(string guidString, bool newValue)
+        public async Task<bool> SetMicNoiseCancellationAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3085,8 +3100,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetSidetoneAsync(string guidString, bool newValue)
+        public async Task<bool> SetSidetoneAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3112,8 +3129,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetBusyLightAsync(string guidString, bool newValue)
+        public async Task<bool> SetBusyLightAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3139,8 +3158,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetVoiceGuidanceAsync(string guidString, bool newValue)
+        public async Task<bool> SetVoiceGuidanceAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3166,8 +3187,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetSelectedPresetAsync(string guidString, int newValue)
+        public async Task<bool> SetSelectedPresetAsync(string Guid, int newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3193,8 +3216,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetSidetoneLevelAsync(string guidString, int newValue)
+        public async Task<bool> SetSidetoneLevelAsync(string Guid, int newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3220,8 +3245,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetBandsGainAsync(string guidString, byte[] newValue)
+        public async Task<bool> SetBandsGainAsync(string Guid, byte[] newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3247,8 +3274,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetBand1GainAsync(string guidString, int newValue)
+        public async Task<bool> SetBand1GainAsync(string Guid, int newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3274,8 +3303,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetBand2GainAsync(string guidString, int newValue)
+        public async Task<bool> SetBand2GainAsync(string Guid, int newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3301,8 +3332,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetBand3GainAsync(string guidString, int newValue)
+        public async Task<bool> SetBand3GainAsync(string Guid, int newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3328,8 +3361,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetBand4GainAsync(string guidString, int newValue)
+        public async Task<bool> SetBand4GainAsync(string Guid, int newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3355,8 +3390,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetBand5GainAsync(string guidString, int newValue)
+        public async Task<bool> SetBand5GainAsync(string Guid, int newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3381,8 +3418,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return false;
             }
         }
-        public async Task<bool> SetAncModeAsync(string guidString, int newValue)
+        public async Task<bool> SetAncModeAsync(string Guid, int newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3408,8 +3447,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetAncGainAsync(string guidString, int newValue)
+        public async Task<bool> SetAncGainAsync(string Guid, int newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3435,8 +3476,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetWearDetectionAsync(string guidString, bool newValue)
+        public async Task<bool> SetWearDetectionAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3462,8 +3505,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetIsWearDetectionMuteMicEnabledAsync(string guidString, bool newValue)
+        public async Task<bool> SetIsWearDetectionMuteMicEnabledAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3489,8 +3534,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetIsWearDetectionPauseMusicEnabledAsync(string guidString, bool newValue)
+        public async Task<bool> SetIsWearDetectionPauseMusicEnabledAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3516,8 +3563,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetWearDetectionQuickPauseAsync(string guidString, int newValue)
+        public async Task<bool> SetWearDetectionQuickPauseAsync(string Guid, int newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3543,8 +3592,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetWearDetectionSensitivityAsync(string guidString, int newValue)
+        public async Task<bool> SetWearDetectionSensitivityAsync(string Guid, int newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3570,8 +3621,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetMicNCIncomingAsync(string guidString, bool newValue)
+        public async Task<bool> SetMicNCIncomingAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3597,8 +3650,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetUnPairAsync(string guidString, bool newValue)
+        public async Task<bool> SetUnPairAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3624,8 +3679,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetFactoryResetAsyncValueForHeadset(string guidString, bool newValue)
+        public async Task<bool> SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue)
         {
+            string guidString = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3651,8 +3708,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetBoomMicAsync(string guidString, bool newValue)
+        public async Task<bool> SetBoomMicAsync(string Guid, bool newValue)
         {
+            string guidString = Guid;
             try
             {
                 if (!await GetItemIDAsync("Headset", guidString))
@@ -3709,8 +3767,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<DeviceInterfaceType> GetHeadsetInterfaceTypeAsync(string guid)
+        public async Task<DeviceInterfaceType> GetHeadsetInterfaceTypeAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -3734,8 +3794,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetHeadsetDeviceNameAsync(string guid)
+        public async Task<string> GetHeadsetDeviceNameAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -3759,8 +3821,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetHeadsetDeviceIdAsync(string guid)
+        public async Task<string> GetHeadsetDeviceIdAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -3784,8 +3848,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetHeadsetPluginIdAsync(string guid)
+        public async Task<string> GetHeadsetPluginIdAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -3809,8 +3875,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetHeadsetODMIdAsync(string guid)
+        public async Task<int> GetHeadsetODMIdAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -3834,8 +3902,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetHeadsetModelNumberAsync(string guid)
+        public async Task<string> GetHeadsetModelNumberAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -3859,8 +3929,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetHeadsetInstanceNumberAsync(string guid)
+        public async Task<int> GetHeadsetInstanceNumberAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -3884,8 +3956,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetHeadsetInstanceIdAsync(string guid)
+        public async Task<int> GetHeadsetInstanceIdAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -3909,8 +3983,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetHeadsetFirmwareVersionAsync(string guid)
+        public async Task<string> GetHeadsetFirmwareVersionAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -3934,8 +4010,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetHeadsetDeviceTypeAsync(string guid)
+        public async Task<string> GetHeadsetDeviceTypeAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -3959,8 +4037,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetHeadsetParentDeviceTypeAsync(string guid)
+        public async Task<string> GetHeadsetParentDeviceTypeAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -3984,8 +4064,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetHeadsetIsBatteryLevelSupportedAsync(string guid)
+        public async Task<bool> GetHeadsetIsBatteryLevelSupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4009,8 +4091,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetHeadsetBatteryLevelAsync(string guid)
+        public async Task<int> GetHeadsetBatteryLevelAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4034,8 +4118,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetHeadsetDeviceBatteryStatusAsync(string guid)
+        public async Task<string> GetHeadsetDeviceBatteryStatusAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4059,8 +4145,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetHeadsetPairingStatusAsync(string guid)
+        public async Task<string> GetHeadsetPairingStatusAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4084,8 +4172,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetHeadsetPairedHostName1Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName1Async(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4109,8 +4199,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetHeadsetPairedHostName2Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName2Async(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4134,8 +4226,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetHeadsetPairedHostName3Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName3Async(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4159,8 +4253,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetHeadsetMaxPairingSlotsAsync(string guid)
+        public async Task<int> GetHeadsetMaxPairingSlotsAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4184,8 +4280,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetHeadsetPairedDeviceCountAsync(string guid)
+        public async Task<int> GetHeadsetPairedDeviceCountAsync(string Guid)
         {
+            string guid = Guid;
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4210,8 +4307,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         #region Headset Get (continued)
 
-        public async Task<int> GetHeadsetTotalNumberOfPairedHostNameAsync(string guid)
+        public async Task<int> GetHeadsetTotalNumberOfPairedHostNameAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4235,8 +4334,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetHeadsetSerialNumberAsync(string guid)
+        public async Task<string> GetHeadsetSerialNumberAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4260,8 +4361,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsReadyAsync(string guid)
+        public async Task<bool> GetIsReadyAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4285,8 +4388,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsDirtyAsync(string guid)
+        public async Task<bool> GetIsDirtyAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4310,8 +4415,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsMicNoiseCancellationSupportedAsync(string guid)
+        public async Task<bool> GetIsMicNoiseCancellationSupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4335,8 +4442,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsSidetoneSupportedAsync(string guid)
+        public async Task<bool> GetIsSidetoneSupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4360,8 +4469,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsBusyLightSupportedAsync(string guid)
+        public async Task<bool> GetIsBusyLightSupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4385,8 +4496,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsVoiceGuidanceSupportedAsync(string guid)
+        public async Task<bool> GetIsVoiceGuidanceSupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4410,8 +4523,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsPresetsSupportedAsync(string guid)
+        public async Task<bool> GetIsPresetsSupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4435,8 +4550,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsEqualizerSupportedAsync(string guid)
+        public async Task<bool> GetIsEqualizerSupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4460,8 +4577,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<HeadsetConnectionType> GetConnectionTypeAsync(string guid)
+        public async Task<HeadsetConnectionType> GetConnectionTypeAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4485,8 +4604,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsANCSupportedAsync(string guid)
+        public async Task<bool> GetIsANCSupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4510,8 +4631,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsWearDetectionSupportedAsync(string guid)
+        public async Task<bool> GetIsWearDetectionSupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4535,8 +4658,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsWearDetectionSensitivitySupportedAsync(string guid)
+        public async Task<bool> GetIsWearDetectionSensitivitySupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4560,8 +4685,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsWearDetectionPauseMusicSupportedAsync(string guid)
+        public async Task<bool> GetIsWearDetectionPauseMusicSupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4585,8 +4712,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsWearDetectionMuteMicSupportedAsync(string guid)
+        public async Task<bool> GetIsWearDetectionMuteMicSupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4610,8 +4739,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsWearDetectionQuickPauseSupportedAsync(string guid)
+        public async Task<bool> GetIsWearDetectionQuickPauseSupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4635,8 +4766,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetMicNoiseCancellationAsync(string guid)
+        public async Task<bool> GetMicNoiseCancellationAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4660,8 +4793,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetMicNCIncomingAsync(string guid)
+        public async Task<bool> GetMicNCIncomingAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4685,8 +4820,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetSidetoneAsync(string guid)
+        public async Task<bool> GetSidetoneAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4710,8 +4847,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetBusyLightAsync(string guid)
+        public async Task<bool> GetBusyLightAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4735,8 +4874,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetVoiceGuidanceAsync(string guid)
+        public async Task<bool> GetVoiceGuidanceAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4760,8 +4901,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetSelectedPresetAsync(string guid)
+        public async Task<int> GetSelectedPresetAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4785,8 +4928,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetSidetoneLevelAsync(string guid)
+        public async Task<int> GetSidetoneLevelAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4810,8 +4955,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetMuteStatusAsync(string guid)
+        public async Task<bool> GetMuteStatusAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4835,8 +4982,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<byte[]> GetBandsGainAsync(string guid)
+        public async Task<byte[]> GetBandsGainAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4860,8 +5009,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetBand1GainAsync(string guid)
+        public async Task<int> GetBand1GainAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4885,8 +5036,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetBand2GainAsync(string guid)
+        public async Task<int> GetBand2GainAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4910,8 +5063,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetBand3GainAsync(string guid)
+        public async Task<int> GetBand3GainAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4935,8 +5090,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetBand4GainAsync(string guid)
+        public async Task<int> GetBand4GainAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4960,8 +5117,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetBand5GainAsync(string guid)
+        public async Task<int> GetBand5GainAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -4985,8 +5144,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetAncModeAsync(string guid)
+        public async Task<int> GetAncModeAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -5010,8 +5171,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetAncGainAsync(string guid)
+        public async Task<int> GetAncGainAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -5035,8 +5198,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetWearDetectionAsync(string guid)
+        public async Task<bool> GetWearDetectionAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -5060,8 +5225,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsWearDetectionPauseMusicEnabledAsync(string guid)
+        public async Task<bool> GetIsWearDetectionPauseMusicEnabledAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -5085,8 +5252,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsWearDetectionMuteMicEnabledAsync(string guid)
+        public async Task<bool> GetIsWearDetectionMuteMicEnabledAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -5110,8 +5279,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetWearDetectionSensitivityAsync(string guid)
+        public async Task<int> GetWearDetectionSensitivityAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -5135,8 +5306,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetWearDetectionQuickPauseAsync(string guid)
+        public async Task<int> GetWearDetectionQuickPauseAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -5160,8 +5333,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsMicNCIncomingSupportedAsync(string guid)
+        public async Task<bool> GetIsMicNCIncomingSupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -5185,8 +5360,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsBoomMicSupportedAsync(string guid)
+        public async Task<bool> GetIsBoomMicSupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -5210,8 +5387,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetBoomMicAsync(string guid)
+        public async Task<bool> GetBoomMicAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Headset", guid))
@@ -5431,8 +5610,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #region WiredAudio
 
 
-        public async Task<bool> SetBassAsync(string guid, int newValue)
+        public async Task<bool> SetBassAsync(string Guid, int newValue)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5458,8 +5639,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetMidRangeAsync(string guid, int newValue)
+        public async Task<bool> SetMidRangeAsync(string Guid, int newValue)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5485,8 +5668,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetTrebleAsync(string guid, int newValue)
+        public async Task<bool> SetTrebleAsync(string Guid, int newValue)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5512,8 +5697,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetProfileForSpeaker(string guid, string newValue)
+        public async Task<bool> SetProfileForSpeaker(string Guid, string newValue)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5539,8 +5726,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue)
+        public async Task<bool> SetIsWiredAudioMicMuteSoundEnableAsync(string Guid, bool newValue)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5566,8 +5755,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue)
+        public async Task<bool> SetWiredAudioVolumeAdjustmentToneAsync(string Guid, int newValue)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5593,8 +5784,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetIsWiredAudioIMicNSEnableAsync(string guid, bool newValue)
+        public async Task<bool> SetIsWiredAudioIMicNSEnableAsync(string Guid, bool newValue)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5620,8 +5813,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> SetResetToDefaultAsyncForSoundbar(string guid, bool newValue)
+        public async Task<bool> SetResetToDefaultAsyncForSoundbar(string Guid, bool newValue)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5649,8 +5844,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         /////////////////////////Get////////////////////////////////
 
-        public async Task<string> GetProfileAsync(string guid)
+        public async Task<string> GetProfileAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5674,8 +5871,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetBassAsync(string guid)
+        public async Task<int> GetBassAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5699,8 +5898,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetMidRangeAsync(string guid)
+        public async Task<int> GetMidRangeAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5724,8 +5925,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetTrebleAsync(string guid)
+        public async Task<int> GetTrebleAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5749,8 +5952,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string guid)
+        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5774,8 +5979,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string guid)
+        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5799,8 +6006,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsWiredAudioIMicNSEnableAsync(string guid)
+        public async Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5824,8 +6033,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetIsAudioEqualizerSupportedAsync(string guid)
+        public async Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5851,8 +6062,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<bool> GetMuteStatusAsyncForSpeaker(string guid)
+        public async Task<bool> GetMuteStatusAsyncForSpeaker(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Speaker", guid))
@@ -5880,8 +6093,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         #region Dongle
 
-        public async Task<string> GetFirmwareVersionAsyncForDongle(string guid)
+        public async Task<string> GetFirmwareVersionAsyncForDongle(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Dongle", guid))
@@ -5907,8 +6122,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetConnectedDeviceInfoAsyncForDongle(string guid)
+        public async Task<string> GetConnectedDeviceInfoAsyncForDongle(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Dongle", guid))
@@ -5934,8 +6151,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetDeviceIdAsyncForDongle(string guid)
+        public async Task<string> GetDeviceIdAsyncForDongle(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Dongle", guid))
@@ -5961,8 +6180,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<string> GetPluginIdAsyncForDongle(string guid)
+        public async Task<string> GetPluginIdAsyncForDongle(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Dongle", guid))
@@ -5988,8 +6209,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        public async Task<JArray> GetDeviceItemsExAsyncForDongle(string guid)
+        public async Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid)
         {
+            string guid = Guid;
+
             try
             {
                 if (!await GetItemIDAsync("Dongle", guid))
@@ -6555,7 +6778,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             else
                 return 0;
         }
-        
+
         private async Task<int> GetWebcamDevsCountAsync()
         {
             var webcams = await GetWebcamDeviceItemsExAsync();

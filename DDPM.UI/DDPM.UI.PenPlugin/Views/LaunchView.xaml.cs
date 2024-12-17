@@ -39,14 +39,14 @@ namespace DDPM.UI.Plugin.PenPlugin
             //txtRestore.Text = Strings.RestoreToDefault;
 
             InitializeButtonImage();
-            if (_vm!.IsRestoreEnable)
-            {
-                btnRestore.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                btnRestore.Visibility = Visibility.Collapsed;
-            }
+            //if (_vm!.IsRestoreEnable)
+            //{
+            //    btnRestore.Visibility = Visibility.Visible;
+            //}
+            //else
+            //{
+            //    btnRestore.Visibility = Visibility.Collapsed;
+            //}
             _vm!.IsAllButtonsVisible = Visibility.Visible;
             _vm.ActiveModule = null;
 
@@ -166,7 +166,8 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         private void OnVbarItemClicked(VbarItem newItem)
         {
-            if (newItem.Id == _vm!.VbarSelectedIndex) { return; }
+            if (newItem.Id == _vm!.VbarSelectedIndex)
+            { return; }
 
             if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
             {
@@ -200,8 +201,10 @@ namespace DDPM.UI.Plugin.PenPlugin
             _vm.SetLadningMode(false);
             _vm.SelectVBar();
 
-            if (_vm!.VbarSelectedIndex == 0) { _vm.IsAllButtonsVisible = Visibility.Hidden; }
-            else { _vm.IsAllButtonsVisible = Visibility.Visible; }
+            if (_vm!.VbarSelectedIndex == 0)
+            { _vm.IsAllButtonsVisible = Visibility.Hidden; }
+            else
+            { _vm.IsAllButtonsVisible = Visibility.Visible; }
         }
 
         #endregion Vbar
@@ -315,7 +318,8 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         private void Mainframe_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (_vm!.VbarSelectedIndex == -1) { return; }
+            if (_vm!.VbarSelectedIndex == -1)
+            { return; }
 
             _vm.RightFrameWidthTo = 0;
             _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
@@ -330,7 +334,8 @@ namespace DDPM.UI.Plugin.PenPlugin
                 btnRestore.Visibility = Visibility.Collapsed;
             }
 
-            if (_vm.VbarSelectedIndex == 0) { InvokeEnlargeAnimation(); }
+            if (_vm.VbarSelectedIndex == 0)
+            { InvokeEnlargeAnimation(); }
 
             _vm.VbarSelectedIndex = -1;
             _vm.SetLadningMode(true);
@@ -354,6 +359,7 @@ namespace DDPM.UI.Plugin.PenPlugin
             {
                 _vm!.RestoreToDefault();
             }
+            btnRestore.Visibility = Visibility.Collapsed;
         }
 
         private void ButtonHoverIn(object sender, System.Windows.Input.MouseEventArgs e)
@@ -370,7 +376,8 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         private void ButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (_vm!.SelectedButton != "") { _vm.RefreshButtonImageFile(_vm.SelectedButton); }
+            if (_vm!.SelectedButton != "")
+            { _vm.RefreshButtonImageFile(_vm.SelectedButton); }
 
             var btnName = ((Image)sender).Name;
             _vm!.SelectedButton = btnName;

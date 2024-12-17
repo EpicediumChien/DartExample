@@ -39,10 +39,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _ddpmHomePageViewModel.HomeDevicesChanged += _ddpmHomePageViewModel_HomeDevicesChanged;
 
                 ////Robert_Lin, 2024-7-16 for engineer debug,
-                //if (IniReadInt("DDPMDebug", "HomePage.ShowDeviceListViewToolbar", 0, @"C:\temp\DDPMDebug.txt") == 1)
-                //{
-                //    debugRwdParams.Visibility = Visibility.Visible;
-                //}
+                if (DDPM.UI.Common.User32.IniReadInt("DDPMDebug", "HomePage.ShowDeviceListViewToolbar", 0, @"C:\temp\DDPMDebug.txt") == 1)
+                {
+                    UIDebugPanel.Visibility = Visibility.Visible;
+                }
                 _ddpmHomePageViewModel.ShowConsentRequested += _ddpmHomePageViewModel_ShowConsent;
                 _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
             }
@@ -54,6 +54,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 UIDebugPanel.Visibility = Visibility.Visible;
             }
+            this.MinWidth = System.Windows.Application.Current.MainWindow.MinWidth;
         }
 
         private void ImportNotifyEventHandler(object sender, MonitorInfo mo)
@@ -72,7 +73,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                     if (ImpExpSettings != null)
                     {
-                        if (ImpExpSettings.MonitorSettings != null)
+                        if (ImpExpSettings.MonitorSettings != null
+                        && ImpExpSettings.MonitorSettings.ServiceTag != mo.edid.ServiceTag)
                         {
                             if (ImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
                             {
@@ -98,7 +100,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 if (modalDialog.DialogResult != null && modalDialog.DialogResult == true)
                                 {
                                     //For jason to do import
-                                    if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result)
+                                    if((int)DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result > 0)
                                     {
                                         //ignore next check for this model
                                         if (modalDialog.isChecked)
@@ -196,9 +198,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 dispTimer.Start();
             }
             #endregion
-
-            if (_ddpmHomePageViewModel?.MinWidth != null)
-                System.Windows.Application.Current.MainWindow.MinWidth = _ddpmHomePageViewModel?.MinWidth ?? 0;
 
             var primaryScreenScalingRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
 
@@ -671,10 +670,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             if (_ddpmHomePageViewModel != null)
             {
-                int idx = _ddpmHomePageViewModel.HomeDevices.Count;
-                MonitorInfo mi = GetFakeMonitorInfo();
-                mi.Index = idx;
-                _ddpmHomePageViewModel.PrepareMonitorInfos(new List<MonitorInfo> { mi });
+                _ddpmHomePageViewModel.AddFakeMonitorToListView();
+                //int idx = _ddpmHomePageViewModel.HomeDevices.Count;
+                //MonitorInfo mi = GetFakeMonitorInfo();
+                //mi.Index = idx;
+                //_ddpmHomePageViewModel.PrepareMonitorInfos(new List<MonitorInfo> { mi });
             }
             //int id = _ddpmHomePageViewModel.HomeDevices.Count;
             //HomeDevice demo = new HomeDevice()
@@ -766,7 +766,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         }
 
         #region Read/Write INI file - Move to DDPM.UI.Common/User32.cs, can be removed
-
+        /*
         //Robert_Lin 2024-7-5 copy from VCPCorePlugin.cs, shared with other projects
         public static int IniReadInt(string sec, string key, int def, string pathName)
         {
@@ -794,6 +794,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             return GetPrivateProfileString(section, key, def, retVal, size, filePath);
         }
+        */
         #endregion Read/Write INI file
 
         #region Connection Hover View
