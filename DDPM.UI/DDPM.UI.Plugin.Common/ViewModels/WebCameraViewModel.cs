@@ -699,7 +699,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (autoFramingFrameSize == -1)
                 {
                     _log.Error("DTP GetAutoFramingFrameSize fail!");
-                    _autoFramingFrameSize = 0;
+                    _autoFramingFrameSize = 1;
                 }
                 else
                     _autoFramingFrameSize = autoFramingFrameSize;
@@ -726,7 +726,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 var result = task.Result;
                 if (result == null)
                 {
-                    _log.Error("DTP GetAutoFramingFrameSize fail!");
+                    _log.Error("DTP GetIsPrioritizeExternalWebcam fail!");
                     _isPrioritizeExternalWebcam = CurrentDeviceInfo.IsPrioritizeExternalWebcam;
                     //IsDTPReady = false;
                 }
@@ -1425,7 +1425,6 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _saturation;
             set
             {
-                _saturation = value;
                 if (value != _saturation)
                 {
                     _saturation = value;
