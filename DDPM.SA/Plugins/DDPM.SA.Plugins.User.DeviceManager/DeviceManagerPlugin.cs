@@ -60,9 +60,8 @@ using static DDPM.SA.Common.Telementry_GeneralFunction;
 using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
 using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
-
-//using MonitorProfile = DDPM.SA.Utility.MonitorProfile;
 using Point = System.Windows.Point;
+//using MonitorProfile = DDPM.SA.Utility.MonitorProfile;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -220,7 +219,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool isDDPMLaunchedByQAM = false;
         private bool isWidgetSettingPageLoadedByQAM = false;
 
-        private static CancellationTokenSource _ReGetcancellationTokenSource;
+        private static CancellationTokenSource _ReGetcancellationTokenSource = null;
 
         private static bool _isSubagentActive = true;
         private bool userClosedPopup = false;
@@ -233,8 +232,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
 
         private List<NKVMVCPValue> _nKVMVCPValues = new List<NKVMVCPValue>();
-
-        private Debouncer DisplayChangedDebouncer;
 
         #endregion
 
@@ -261,8 +258,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Robert_Lin, 2024-12-1 added, to let TextBox highlight text color can be changed with TextBox.SelectionTextBrush
             //Reference: https://github.com/dotnet/wpf/issues/4571
             AppContext.SetSwitch("Switch.System.Windows.Controls.Text.UseAdornerForTextboxSelectionRendering", false);
-
-            DisplayChangedDebouncer = new Debouncer(5000, _SystemEvents_DisplaySettingsChanged);
         }
 
         private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
@@ -1913,127 +1908,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<List<MonitorInfo>> Re_GetMonitors()
         {
             writelog("DeviceMangerPlugin received Re_GetMonitors requested ...");
-
-            try
-            {
-                if (_AllInfoMonitors != null)
-                    _AllInfoMonitors.Clear();
-
-                if (_DisplayManagerPlugin == null)
-                {
-                    writelog("null _DisplayManagerPlugin in [Re_GetMonitors], retrun empty monitor list");
-                    return Task.FromResult(new List<MonitorInfo>());
-                }
-
-                if (isLetDisplayServiceIdle == true)
-                {
-                    writelog("The idle state is true to drop display settings change event, need caller to unblock this param");
-                    return Task.FromResult(new List<MonitorInfo>());
-                }
-
-                try
-                {
-                    if (_ReGetcancellationTokenSource != null)
-                        _ReGetcancellationTokenSource.Cancel();
-
-                    return Task.FromResult(_AllInfoMonitors);
-                }
-                catch (TaskCanceledException)
-                {
-                    if (_ReGetcancellationTokenSource != null)
-                        _ReGetcancellationTokenSource.Dispose();
-                    writelog("[DeviceMangerPlugin] Re_GetMonitors cancellation happened...");
-
-                    return Task.FromResult(_AllInfoMonitors);
-                }
-                catch (OperationCanceledException)
-                {
-                    if (_ReGetcancellationTokenSource != null)
-                        _ReGetcancellationTokenSource.Dispose();
-                    writelog("[DeviceMangerPlugin] Re_GetMonitors cancellation happened...");
-
-                    return Task.FromResult(_AllInfoMonitors);
-                }
-                catch (Exception ex)
-                {
-                    if (_ReGetcancellationTokenSource != null)
-                        _ReGetcancellationTokenSource.Dispose();
-                    // Failed to complete due to e exception
-                    writelog($"[DeviceMangerPlugin] --Task.Run(Re_GetMonitors) ...there is an exceptionI-- ({ex.Message})");
-
-                    return Task.FromResult(_AllInfoMonitors);
-                    //Done: let's be nice and don't swallow the exception
-                    //throw new InvalidOperationException("some exception happened but not about InitializeMonitorsList cancellation");
-                }
-                finally
-                {
-                    using (_ReGetcancellationTokenSource = new CancellationTokenSource())
-                    {
-                        try
-                        {
-                            var _cancellationTokenSource_tmp = CancellationTokenSource.CreateLinkedTokenSource(_ReGetcancellationTokenSource.Token);
-
-                            var token = _cancellationTokenSource_tmp.Token;
-
-                            writelog("[DeviceMangerPlugin] DeviceMangerPlugin into (Re_GetMonitors) ...");
-
-                            //TODO: May be you'll want to add .ConfigureAwait(false);
-                            Task.Run(() =>
-                            {
-                                try
-                                {
-                                    _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
-                                    ReviewAllMonitorToAvoidDuplicatedInfo();
-
-                                    InitMonitorSettings();
-
-                                    Task.Run(() =>
-                                    {
-                                        //Telementry Collection
-                                        var rt = false;
-                                        var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
-                                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
-                                        rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, _AllInfoMonitors);
-                                        if (rt)
-                                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
-                                        else
-                                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
-                                    }).ConfigureAwait(false);
-                                }
-                                catch (Exception ex)
-                                {
-                                    writelog("(Re_GetMonitors) happened Exception ... " + ex.Message);
-                                }
-                            }, token).ConfigureAwait(false);
-
-                            writelog("[DeviceMangerPlugin] DeviceMangerPlugin (Re_GetMonitors) finish ...");
-                        }
-                        catch (TaskCanceledException)
-                        {
-                            writelog("[DeviceMangerPlugin] DeviceMangerPlugin (Re_GetMonitors) cancellation happened ...");
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            writelog("[DeviceMangerPlugin] DeviceMangerPlugin (Re_GetMonitors) cancellation happened ...");
-                        }
-                        catch (Exception ex)
-                        {
-                            // Failed to complete due to e exception
-                            writelog($"[DeviceMangerPlugin] --Task.Run(Re_GetMonitors) ...there is an exceptionII-- ({ex.Message})");
-                        }
-                        finally
-                        {
-                            if (_ReGetcancellationTokenSource != null)
-                                _ReGetcancellationTokenSource.Dispose();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                writelog("[DeviceMangerPlugin] Initialize Monitors List Exception : " + ex.Message);
-                return Task.FromResult(_AllInfoMonitors);
-            }
+            _SystemEvents_DisplaySettingsChanged(null);
+            return Task.FromResult(_AllInfoMonitors.ToList());
         }
 
         public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo)
@@ -3262,7 +3138,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 bool result = await _DTPProxyPlugin.SetWearDetectionAsync(guid, newValue);
-                if(result)
+                if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync Success");
                 else
                     writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync Fail");
@@ -4504,7 +4380,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                     writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionAsync Fail");
                 return result;
-
             }
             catch (Exception ex)
             {
@@ -6810,7 +6685,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region EasyArrage
 
+        #region Properties - EasyArrange
         /// <summary>
+        /// The last error string after a EAPlugin method return error.
+        /// </summary>
+        public string EALastError
+        {
+            get
+            {
+                if (_DisplayManagerPlugin != null)
+                    return "DisplayManagerPlugin is not constructed.";
+                return _DisplayManagerPlugin.EALastError;
+            }
+        }
+        #endregion Properties - EasyArrange
+
+        #region EAFunctionEanbled - EasyArrange
+
+        /// <summary>
+        /// Robert_Lin, 2024-12-12, To be removed. Use 
         /// Enable/Disable EasyArrange function for all monitors.
         /// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
         /// but user can edit/setup in DDPM.UI and save their settings.
@@ -6826,6 +6719,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        /// <summary>
+        /// Robert_Lin, 2024-12-12, To be removed.
+        /// Old method for CLI
+        /// </summary>
+        /// <returns></returns>
         public Task<ObjGetVCP> GetEAFunctionEnabled()
         {
             if (_DisplayManagerPlugin != null)
@@ -6834,143 +6732,202 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult<ObjGetVCP>(new ObjGetVCP() { result = false, value = false });
         }
+        #endregion EAFunctionEanbled - EasyArrange
 
-        /// <summary>
-        /// Set current WorkSplit (selected layout).
-        /// EAPlugin will show the new WorkSpit layout on the target "Screen" and autofade-out.
-        /// This method will not save to settings file, please use WriteEAMonitorSettings() to
-        /// save new per-monitor settings.
-        /// </summary>
-        /// <param name="monitorInfo">The target monitor, EAPlugin will use this to find the target "Screen"</param>
-        /// <param name="cellCount"></param>
-        /// <param name="splitKey"></param>
-        /// <param name="settings"></param>
-        /// <returns>Always true unless DisplayManager is not ready</returns>
-        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings)
+        #region EzSettings - EasyArrange
+        public Task<EzSettings> ReadEzSettings()
         {
-            if (_DisplayManagerPlugin != null)
+            //Read DDPMSettings
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (ddpmSettings != null)
             {
-                _DisplayManagerPlugin.SetEAWrokSplit(monitorInfo, cellCount, splitKey, settings);
-                //Telemetry
-                //Robert_Lin, 2024-11-15, add monitorInfo for PIMS-321601
-                SendEasyArrangeTelemetry("Change_layout", monitorInfo);
+                return Task.FromResult(ddpmSettings.UserSettings.EzSettings);
             }
+            //Fail to read, will return the default settings
+            return Task.FromResult(new EzSettings());
+        }
+
+        public Task<bool> WriteEzSettings_IsWidthoutGap(bool newValue)
+        {
+            if (_SettingsPlugin != null)
+            {
+                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (ddpmSettings != null)
+                {
+                    //Check if value is changed
+                    if (ddpmSettings.UserSettings.EzSettings.IsWidthoutGap == newValue)
+                        return Task.FromResult(true);
+
+                    //Apply new setting value
+                    ddpmSettings.UserSettings.EzSettings.IsWidthoutGap = newValue;
+                    //Save the DDPMSettings back to Settings file
+                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
+                    {
+                        if (_DisplayManagerPlugin != null)
+                        {
+                            _DisplayManagerPlugin.ReloadEzSettings();
+                        }
+
+                        SendEasyArrangeTelemetry("OverlapBorder");
+                        return Task.FromResult(true);
+                    }
+                }
+            }
+            //Read DDPMSettings
+            //Fail to read, will return false
             return Task.FromResult(false);
         }
 
-        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        public Task<bool> WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed(bool newValue)
         {
-            if (_DisplayManagerPlugin != null)
+            if (_SettingsPlugin != null)
             {
-                _DisplayManagerPlugin.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
-                //Telemetry
-                //Robert_Lin, 2024-11-15, add monitorInfo for PIMS-321601
-                SendEasyArrangeTelemetry("Change_layout", monitorInfo);
-            }
-            return Task.FromResult(false);
-        }
+                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (ddpmSettings != null)
+                {
+                    //Check if value is changed
+                    if (ddpmSettings.UserSettings.EzSettings.IsOnlyAllowWhenShiftKeyPressed == newValue)
+                    {
+                        writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Value is not changed");
+                        return Task.FromResult(true);
+                    }
 
-        //Robert_Lin, 2024-9-13 Remove unused interfaces
-        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
-        //{
-        //    if (_DisplayManagerPlugin != null)
-        //    {
-        //        return _DisplayManagerPlugin.RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
-        //    }
-        //    return Task.FromResult(false);
-        //}
+                    //Apply new setting value
+                    ddpmSettings.UserSettings.EzSettings.IsOnlyAllowWhenShiftKeyPressed = newValue;
+                    writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Value is changed");
+                    //Save the DDPMSettings back to Settings file
+                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
+                    {
+                        writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Update to settings file");
+                        if (_DisplayManagerPlugin != null)
+                        {
+                            writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Notify EAPlugin to refresh itself");
+                            _DisplayManagerPlugin.ReloadEzSettings();
+                        }
 
-        //public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings)
-        //{
-        //    if (_SettingsPlugin == null)
-        //    {
-        //        string err = "SettingsPlugin is null.";
-        //        writelog($"WriteEasyArrangeSettings(), {err}");
-        //        return Task.FromResult(err);
-        //    }
-        //    return _SettingsPlugin.WriteEasyArrangeSettings(eaMonitorSettings);
-        //}
-
-        //public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber)
-        //{
-        //    if (_SettingsPlugin == null)
-        //    {
-        //        string err = "SettingsPlugin is null.";
-        //        writelog($"WriteEasyArrangeSettings(), {err}");
-        //        return Task.FromResult<EAMonitorSettings>(null);
-        //    }
-        //    return _SettingsPlugin.ReadEasyArrangeSettings(monitorModel, serialNumber);
-        //}
-
-        //Robert_Lin, 2024-9-13 Remove unused interfaces
-        //private void _DisplayManagerPlugin_EAEditCompleted(object sender, string e)
-        //{
-        //    if (EAEditCompleted != null)
-        //    {
-        //        Task.Run(() => EAEditCompleted.Invoke(this, e));
-        //    }
-        //}
-
-        /// <summary>
-        /// Notify to UI: The EAPlugin is enter the Edit stage. The Layout you specified in EAEditCommand()
-        /// is under editing. By design, UI should minimized itself.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void _DisplayManagerPlugin_EAEditStarted(object sender, string e)
-        {
-            if (EAEditStarted != null)
-            {
-                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), Call to next handler.");
-                Task.Run(() => EAEditStarted.Invoke(this, e));
+                        SendEasyArrangeTelemetry("Hold-Shift");
+                        return Task.FromResult(true);
+                    }
+                }
             }
             else
             {
-                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), EAEditStarted is null.");
+                writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): _SettingsPlugin is null");
             }
-        }
-
-        //Robert_Lin, 2024-8-4 added
-        /// <summary>
-        /// Request from UI, to initiate a layout edit process.
-        /// </summary>
-        /// <param name="monitorInfo"></param>
-        /// <param name="args">The arguments for the Edit command.</param>
-        /// <returns></returns>
-        public Task<bool> EAEditCommand(MonitorInfo monitorInfo, EAArgs args)
-        {
-            if (_DisplayManagerPlugin != null)
-            {
-                return _DisplayManagerPlugin.EAEditCommand(monitorInfo, args);
-            }
-            writelog("@ DeviceManaerPlugin.EAEditCommand(), _DisplayManagerPlugin is null.");
+            //Read DDPMSettings
+            //Fail to read, will return false
             return Task.FromResult(false);
         }
 
-        /// <summary>
-        /// Notify to UI, the EditCommand has been finished and return to UI.
-        /// UI can get the return from EAArgs.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e">The result of the edit command.
-        /// UI can check if user finish the edit process by clicking "Save", or "Cancel"</param>
-        private void _DisplayManagerPlugin_EAEditReturn(object sender, EAArgs e)
+        public Task<bool> WriteEzSettings_IsSpanAcrossMultiMonitors(bool newValue)
         {
-            if (EAEditReturn != null)
+            if (_SettingsPlugin != null)
             {
-                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), Call to next handler.");
-                Task.Run(() => EAEditReturn.Invoke(this, e));
+                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (ddpmSettings != null)
+                {
+                    //Check if value is changed
+                    if (ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors == newValue)
+                        return Task.FromResult(true);
 
-                //Only if Result==true will send Telemetry
-                if (e.Result)
-                    SendEasyArrangeTelemetry("Custom_Layout");
+                    //Apply new setting value
+                    ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors = newValue;
+                    //Save the DDPMSettings back to Settings file
+                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
+                    {
+                        if (_DisplayManagerPlugin != null)
+                        {
+                            _DisplayManagerPlugin.ReloadEzSettings();
+                        }
+
+                        SendEasyArrangeTelemetry("span_monitors");
+                        return Task.FromResult(true);
+                    }
+                }
             }
-            else
-            {
-                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), EAEditReturn is null.");
-            }
+            //Read DDPMSettings
+            //Fail to read, will return false
+            return Task.FromResult(false);
         }
 
+        public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue)
+        {
+            if (_SettingsPlugin != null)
+            {
+                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (ddpmSettings != null)
+                {
+                    //Check if value is changed
+                    if (ddpmSettings.UserSettings.EzSettings.IsAwsEnabled == newValue)
+                        return Task.FromResult(true);
+                    //Apply new setting value
+                    ddpmSettings.UserSettings.EzSettings.IsAwsEnabled = newValue;
+                    //Save the DDPMSettings back to Settings file
+                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
+                    {
+                        if (_DisplayManagerPlugin != null)
+                        {
+                            _DisplayManagerPlugin.ReloadEzSettings();
+                        }
+
+                        //Telemetry
+                        SendEasyArrangeTelemetry("App-Snap");
+
+                        return Task.FromResult(true);
+                    }
+                }
+            }
+            //Read DDPMSettings
+            //Fail to read, will return false
+            return Task.FromResult(false);
+        }
+        #endregion EzSettings - EasyArrange
+
+        #region EA Custom List - EasyArrange
+        //Robert_Ln, 2024-10-12, Added after move CustomList to UserSettings from MonitorSettings
+        public Task<SplitJson[]> ReadEACustomList()
+        {
+            if (_SettingsPlugin != null)
+            {
+                //Read App Settings
+                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                //Don't return null, return empty array instead
+                if (appSettings != null)
+                {
+                    if (appSettings.UserSettings != null)
+                    {
+                        if (appSettings.UserSettings.EACustomList != null)
+                            return Task.FromResult(appSettings.UserSettings.EACustomList);
+                    }
+                }
+            }
+            //Failed, return an empty array instead of null
+            return Task.FromResult(Array.Empty<SplitJson>());
+        }
+
+        //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
+        public Task<bool> WriteEACustomList(SplitJson[] customList)
+        {
+            if (_SettingsPlugin != null)
+            {
+                //Read App Settings
+                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (appSettings != null)
+                {
+                    if (appSettings.UserSettings != null)
+                    {
+                        appSettings.UserSettings.EACustomList = (SplitJson[])customList.Clone();
+                        //Writeback to app settings
+                        _SettingsPlugin.SetAppConfigData(appSettings);
+                    }
+                }
+            }
+            //Failed, return an empty array instead of null
+            return Task.FromResult(false);
+        }
+        #endregion EA Custom List - EasyArrange
+
+        #region EAMonitorSettings - EasyArrange
         public Task<bool> WriteEAMonitorSettings(MonitorInfo monitorInfo, EAMonitorSettings eaSettings)
         {
             if (_SettingsPlugin == null)
@@ -7118,6 +7075,177 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Return the EA settings from the settings file
             return Task.FromResult(monitorSetting.EA);
         }
+        #endregion EAMonitorSettings - EasyArrange
+
+        #region SelectedLayout - EasyArrange
+        public Task<int> GetEASelectedLayout(MonitorInfo monitorInfo)
+        {
+            //Read the EAMonitorSettings from MonitorSettins.
+            //If faile to read will return default settings. never return null.
+            EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
+            //Return the RAID of EAMonitorSettings.SelectedLayout
+            return Task.FromResult(eaSettings.SelectedSplit.EAID);
+        }
+
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                writelog($"@ DeviceManager.SetEASelectedLayout({eaId})");
+                return _DisplayManagerPlugin.SetEASelectedLayout(monitorInfo, eaId);
+            }
+            writelog($"@ DeviceManager.SetEASelectedLayout({eaId}): _DisplayManagerPlugin is null");
+            return Task.FromResult(false);
+        }
+
+        // [OLD, Use NotifyEASelectedLayoutChanged() instead]
+        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                _DisplayManagerPlugin.SetEAWrokSplit(monitorInfo, cellCount, splitKey, settings);
+                //Telemetry
+                //Robert_Lin, 2024-11-15, add monitorInfo for PIMS-321601
+                SendEasyArrangeTelemetry("Change_layout", monitorInfo);
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                _DisplayManagerPlugin.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
+                //Telemetry
+                //Robert_Lin, 2024-11-15, add monitorInfo for PIMS-321601
+                SendEasyArrangeTelemetry("Change_layout", monitorInfo);
+            }
+            return Task.FromResult(false);
+        }
+
+        /// <summary>
+        /// [Unused Method]
+        /// [OLD, Use SetEASelectedLayout(MonitorInfo monitorInfo, int eaId) instead]
+        /// This method is reserved for CLI command usage. Howevent CLI does not define a command
+        /// to set SelectedLayout (only select Off)
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="spJson"></param>
+        /// <returns></returns>
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.SetEASelectedLayout(monitorInfo, spJson);
+            }
+            writelog("@ DeviceManager.SetEASelectedLayout(): _DisplayManagerPlugin is null");
+            return Task.FromResult(false);
+        }
+
+        #endregion SelectedLayout - EasyArrange
+
+
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
+        //{
+        //    if (_DisplayManagerPlugin != null)
+        //    {
+        //        return _DisplayManagerPlugin.RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
+        //    }
+        //    return Task.FromResult(false);
+        //}
+
+        //public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings)
+        //{
+        //    if (_SettingsPlugin == null)
+        //    {
+        //        string err = "SettingsPlugin is null.";
+        //        writelog($"WriteEasyArrangeSettings(), {err}");
+        //        return Task.FromResult(err);
+        //    }
+        //    return _SettingsPlugin.WriteEasyArrangeSettings(eaMonitorSettings);
+        //}
+
+        //public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber)
+        //{
+        //    if (_SettingsPlugin == null)
+        //    {
+        //        string err = "SettingsPlugin is null.";
+        //        writelog($"WriteEasyArrangeSettings(), {err}");
+        //        return Task.FromResult<EAMonitorSettings>(null);
+        //    }
+        //    return _SettingsPlugin.ReadEasyArrangeSettings(monitorModel, serialNumber);
+        //}
+
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //private void _DisplayManagerPlugin_EAEditCompleted(object sender, string e)
+        //{
+        //    if (EAEditCompleted != null)
+        //    {
+        //        Task.Run(() => EAEditCompleted.Invoke(this, e));
+        //    }
+        //}
+
+        /// <summary>
+        /// Notify to UI: The EAPlugin is enter the Edit stage. The Layout you specified in EAEditCommand()
+        /// is under editing. By design, UI should minimized itself.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _DisplayManagerPlugin_EAEditStarted(object sender, string e)
+        {
+            if (EAEditStarted != null)
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), Call to next handler.");
+                Task.Run(() => EAEditStarted.Invoke(this, e));
+            }
+            else
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), EAEditStarted is null.");
+            }
+        }
+
+        //Robert_Lin, 2024-8-4 added
+        /// <summary>
+        /// Request from UI, to initiate a layout edit process.
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="args">The arguments for the Edit command.</param>
+        /// <returns></returns>
+        public Task<bool> EAEditCommand(MonitorInfo monitorInfo, EAArgs args)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.EAEditCommand(monitorInfo, args);
+            }
+            writelog("@ DeviceManaerPlugin.EAEditCommand(), _DisplayManagerPlugin is null.");
+            return Task.FromResult(false);
+        }
+
+        /// <summary>
+        /// Notify to UI, the EditCommand has been finished and return to UI.
+        /// UI can get the return from EAArgs.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">The result of the edit command.
+        /// UI can check if user finish the edit process by clicking "Save", or "Cancel"</param>
+        private void _DisplayManagerPlugin_EAEditReturn(object sender, EAArgs e)
+        {
+            if (EAEditReturn != null)
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), Call to next handler.");
+                Task.Run(() => EAEditReturn.Invoke(this, e));
+
+                //Only if Result==true will send Telemetry
+                if (e.Result)
+                    SendEasyArrangeTelemetry("Custom_Layout");
+            }
+            else
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), EAEditReturn is null.");
+            }
+        }
+
 
         private void _dump_SplitJsonList(MonitorInfo mi, List<SplitJson> splitJsonList)
         {
@@ -7186,162 +7314,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //     return Task.FromResult(false);
         //}
 
-        public Task<EzSettings> ReadEzSettings()
-        {
-            //Read DDPMSettings
-            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-            if (ddpmSettings != null)
-            {
-                return Task.FromResult(ddpmSettings.UserSettings.EzSettings);
-            }
-            //Fail to read, will return the default settings
-            return Task.FromResult(new EzSettings());
-        }
 
-        public Task<bool> WriteEzSettings_IsWidthoutGap(bool newValue)
-        {
-            if (_SettingsPlugin != null)
-            {
-                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (ddpmSettings != null)
-                {
-                    //Check if value is changed
-                    if (ddpmSettings.UserSettings.EzSettings.IsWidthoutGap == newValue)
-                        return Task.FromResult(true);
 
-                    //Apply new setting value
-                    ddpmSettings.UserSettings.EzSettings.IsWidthoutGap = newValue;
-                    //Save the DDPMSettings back to Settings file
-                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
-                    {
-                        if (_DisplayManagerPlugin != null)
-                        {
-                            _DisplayManagerPlugin.ReloadEzSettings();
-                        }
-
-                        SendEasyArrangeTelemetry("OverlapBorder");
-                        return Task.FromResult(true);
-                    }
-                }
-            }
-            //Read DDPMSettings
-            //Fail to read, will return false
-            return Task.FromResult(false);
-        }
-
-        public Task<bool> WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed(bool newValue)
-        {
-            if (_SettingsPlugin != null)
-            {
-                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (ddpmSettings != null)
-                {
-                    //Check if value is changed
-                    if (ddpmSettings.UserSettings.EzSettings.IsOnlyAllowWhenShiftKeyPressed == newValue)
-                    {
-                        writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Value is not changed");
-                        return Task.FromResult(true);
-                    }
-
-                    //Apply new setting value
-                    ddpmSettings.UserSettings.EzSettings.IsOnlyAllowWhenShiftKeyPressed = newValue;
-                    writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Value is changed");
-                    //Save the DDPMSettings back to Settings file
-                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
-                    {
-                        writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Update to settings file");
-                        if (_DisplayManagerPlugin != null)
-                        {
-                            writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Notify EAPlugin to refresh itself");
-                            _DisplayManagerPlugin.ReloadEzSettings();
-                        }
-
-                        SendEasyArrangeTelemetry("Hold-Shift");
-                        return Task.FromResult(true);
-                    }
-                }
-            }
-            else
-            {
-                writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): _SettingsPlugin is null");
-            }
-            //Read DDPMSettings
-            //Fail to read, will return false
-            return Task.FromResult(false);
-        }
-
-        public Task<bool> WriteEzSettings_IsSpanAcrossMultiMonitors(bool newValue)
-        {
-            if (_SettingsPlugin != null)
-            {
-                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (ddpmSettings != null)
-                {
-                    //Check if value is changed
-                    if (ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors == newValue)
-                        return Task.FromResult(true);
-
-                    //Apply new setting value
-                    ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors = newValue;
-                    //Save the DDPMSettings back to Settings file
-                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
-                    {
-                        if (_DisplayManagerPlugin != null)
-                        {
-                            _DisplayManagerPlugin.ReloadEzSettings();
-                        }
-
-                        SendEasyArrangeTelemetry("span_monitors");
-                        return Task.FromResult(true);
-                    }
-                }
-            }
-            //Read DDPMSettings
-            //Fail to read, will return false
-            return Task.FromResult(false);
-        }
-
-        public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue)
-        {
-            if (_SettingsPlugin != null)
-            {
-                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (ddpmSettings != null)
-                {
-                    //Check if value is changed
-                    if (ddpmSettings.UserSettings.EzSettings.IsAwsEnabled == newValue)
-                        return Task.FromResult(true);
-                    //Apply new setting value
-                    ddpmSettings.UserSettings.EzSettings.IsAwsEnabled = newValue;
-                    //Save the DDPMSettings back to Settings file
-                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
-                    {
-                        if (_DisplayManagerPlugin != null)
-                        {
-                            _DisplayManagerPlugin.ReloadEzSettings();
-                        }
-
-                        //Telemetry
-                        SendEasyArrangeTelemetry("App-Snap");
-
-                        return Task.FromResult(true);
-                    }
-                }
-            }
-            //Read DDPMSettings
-            //Fail to read, will return false
-            return Task.FromResult(false);
-        }
-
-        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
-        {
-            if (_DisplayManagerPlugin != null)
-            {
-                return _DisplayManagerPlugin.SetEASelectedLayout(monitorInfo, spJson);
-            }
-            writelog("@ DeviceManager.SetEASelectedLayout(): _DisplayManagerPlugin is null");
-            return Task.FromResult(false);
-        }
 
         //Robert_Lin, 2024-10-8, bridge of EASettingsChanged
         //DisplayManagerPlugin will call to here, and DeviceManagerPlugin call to its handler
@@ -7358,55 +7332,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        //Robert_Ln, 2024-10-12, Added after move CustomList to UserSettings from MonitorSettings
-        /// <summary>
-        /// Read the EACustomList for current user
-        /// </summary>
-        /// <returns></returns>
-        public Task<SplitJson[]> ReadEACustomList()
-        {
-            if (_SettingsPlugin != null)
-            {
-                //Read App Settings
-                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                //Don't return null, return empty array instead
-                if (appSettings != null)
-                {
-                    if (appSettings.UserSettings != null)
-                    {
-                        if (appSettings.UserSettings.EACustomList != null)
-                            return Task.FromResult(appSettings.UserSettings.EACustomList);
-                    }
-                }
-            }
-            //Failed, return an empty array instead of null
-            return Task.FromResult(new SplitJson[] { });
-        }
-
-        /// <summary>
-        /// Write the EACustomList to current user's settings file
-        /// </summary>
-        /// <param name="customList"></param>
-        /// <returns></returns>
-        public Task<bool> WriteEACustomList(SplitJson[] customList)
-        {
-            if (_SettingsPlugin != null)
-            {
-                //Read App Settings
-                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (appSettings != null)
-                {
-                    if (appSettings.UserSettings != null)
-                    {
-                        appSettings.UserSettings.EACustomList = (SplitJson[])customList.Clone();
-                        //Writeback to app settings
-                        _SettingsPlugin.SetAppConfigData(appSettings);
-                    }
-                }
-            }
-            //Failed, return an empty array instead of null
-            return Task.FromResult(false);
-        }
 
         //Robert_Lin, 2024-11-18, a general method for Subagent to send event to UI
         /// <summary>
@@ -8054,8 +7979,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
                 {
                     writelog($"[DeleteDdpmSwUpdaterFolder], o_String={o.ToString()}.");
-                    DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
-                    string AppDataPath = DDPMFileSecurity.GetActiveUserLocalAppDataPath();
+                    string AppDataPath = WTSFunction.GetActiveUserLocalAppDataPath(Log);
                     if (!string.IsNullOrEmpty(AppDataPath))
                     {
                         string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
@@ -8368,7 +8292,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
-        public Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path)
+        public Task<DisplayImportResultCode> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path)
         {
             writelog("[DisplayImportSettings] Import Settings");
             ImportVCP importVCP = new ImportVCP();
@@ -8376,7 +8300,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SettingsPlugin != null)
             {
                 List<VCPCode> vcps = new List<VCPCode>();
-                if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, monitorInfo.edid.ServiceTag, out DDPMImpExpSettings ImpExpSettings).Result)
+                DisplayImportResultCode backendImportResult = _SettingsPlugin.DisplayImportSettings(path, isSameModel, monitorInfo.edid.ServiceTag, out DDPMImpExpSettings ImpExpSettings).Result;
+                if ((int)backendImportResult > 0)
                 {
                     if (ImpExpSettings != null)
                     {
@@ -8490,7 +8415,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         {
                                             writelog("[SentSettingstoTelementry] _TelementryScheduler is null");
                                         }
-                                        return Task.FromResult(true);
+                                        return Task.FromResult(backendImportResult);
                                     }
                                     else
                                     {
@@ -8505,7 +8430,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             catch
                             {
                                 writelog("[DisplayImportSettings] Import Fail");
-                                return Task.FromResult(false);
+                                return Task.FromResult(DisplayImportResultCode.Error);
                             }
                         }
                         else
@@ -8600,7 +8525,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         {
                                             writelog("[SentSettingstoTelementry] _TelementryScheduler is null");
                                         }
-                                        return Task.FromResult(true);
+                                        if (monitorSettingsList.Find(ms => ms.easyArrangementDDPM.Desktops != null && ms.easyArrangementDDPM.Desktops.Count() > 0) != null) return Task.FromResult(DisplayImportResultCode.DoneWithEzMemoryCleared);
+                                        return Task.FromResult(DisplayImportResultCode.Done);
                                     }
                                     else
                                     {
@@ -8615,7 +8541,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             catch
                             {
                                 writelog("[DisplayImportSettings]import is Fail");
-                                return Task.FromResult(false);
+                                return Task.FromResult(DisplayImportResultCode.Error);
                             }
                         }
                     }
@@ -8625,7 +8551,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 }
             }
-            return Task.FromResult(false);
+            return Task.FromResult(DisplayImportResultCode.Error);
         }
 
         public Task SetSameModel(MonitorInfo monitorInfo, bool isSameModel)
@@ -10108,222 +10034,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> SaveLogFile(string saveFolderPath = "")
+        public Task<bool> SaveLogFile(string saveFolderPath)
         {
             writelog($"{nameof(SaveLogFile)} start");
             bool ret = false;
-            if (string.IsNullOrEmpty(saveFolderPath))
+            writelog($"{nameof(SaveLogFile)} saveFolderPath is null : {string.IsNullOrEmpty(saveFolderPath)}");
+            if (_SettingsPlugin != null && !string.IsNullOrEmpty(saveFolderPath))
             {
-                saveFolderPath = @$"C:\temp\Log";
+                ret = _SettingsPlugin.SaveLog(saveFolderPath).Result;
             }
-            if (_DisplayManagerPlugin != null && !string.IsNullOrEmpty(saveFolderPath))
-            {
-                // 確保資料夾存在
-                if (!Directory.Exists(saveFolderPath))
-                {
-                    Directory.CreateDirectory(saveFolderPath);
-                }
-                //0913 Bruce Add Security
-                string FolderInfo;
-                string PathSymbolicLinInfo;
-                int count = 0;
-                bool folderValid = false;
-                do
-                {
-                    FolderInfo = string.Empty;
-                    PathSymbolicLinInfo = string.Empty;
-                    folderValid = false;
-                    /*folderValid = !DDPMFileSecurity.IsPathSymbolicLinked(saveFolderPath, out PathSymbolicLinInfo);
-                    if (!folderValid)
-                    {
-                        writelog(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + PathSymbolicLinInfo + " Retry:" + (count++));
-                        //Do remove Symbolic Link than delete folder
-                        //Directory.Delete(saveFolderPath, true);
-                        //Directory.CreateDirectory(saveFolderPath);
-                    }*/
-                    // The function call IsPathSymbolicLinked is merged to "IsFolderPathValid"
-                    folderValid = DDPMFileSecurity.IsFolderPathValid(saveFolderPath, out FolderInfo);// && folderValid;
-                    if (!folderValid)
-                    {
-                        writelog(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
-                        /*//Do remove Symbolic Link than delete folder
-                        Directory.Delete(saveFolderPath, true);
-                        Directory.CreateDirectory(saveFolderPath);*/
-                        return Task.FromResult(false); //[Dean] don't remove folder to avoid callback attack
-                    }
-                } while (!folderValid && count < 2);
-
-                string programdataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                writelog("folderPath - programdataPath Line 9169: " + programdataPath);
-                string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                writelog("folderPath - appDataPath Line 9171: " + appDataPath);
-                string fail_info = string.Empty;
-                try
-                {
-                    if (!string.IsNullOrEmpty(appDataPath))
-                    {
-                        string LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
-                        writelog("folderPath - LogFolder Line 9175: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = GetFolderName(LogFolder);
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DDPM.Subagent.User]";
-                        }
-                        LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
-                        writelog("folderPath - LogFolder Line 9185: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = GetFolderName(LogFolder);
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DDPM.GUI]";
-                        }
-                        LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-DdpmSwUpdater";
-                        writelog("folderPath - LogFolder Line 9195: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = GetFolderName(LogFolder);
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DDPM.SwUpdater]";
-                        }
-                        LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog";
-                        writelog("folderPath - LogFolder Line 9205: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = GetFolderName(LogFolder);
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DDPM.FwUpdate]";
-                        }
-                    }
-                    else
-                    {                        
-                        writelog("appDataPath is null, it means is no active user currently");
-                    }
-                    if (!string.IsNullOrEmpty(programdataPath))
-                    {
-                        string LogFolder = @$"{programdataPath}\Dell\DDPM.Subagent";
-                        writelog("folderPath - LogFolder Line 9218: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = GetFolderName(LogFolder);
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DDPM.Subagent]";
-                        }
-                        LogFolder = @$"{programdataPath}\Dell\Dell TechHub";
-                        writelog("folderPath - LogFolder Line 9228: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = GetFolderName(LogFolder);
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[Dell TechHub]";
-                        }
-                        LogFolder = @$"{programdataPath}\Dell\DTP\Logs";
-                        writelog("folderPath - LogFolder Line 9238: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = "DTP_Log";
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DTP_log]";
-                        }
-                        string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM";
-                        object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "GUID").Result;
-                        if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
-                        {
-                            LogFolder = @$"{programdataPath}\{o.ToString()}\DDPMW-NKVM";
-                            writelog("folderPath - LogFolder Line 9252: " + LogFolder);
-                            if (DirectoryContainsFiles(LogFolder))
-                            {
-                                // 取得資料夾名稱
-                                string folderName = GetFolderName(LogFolder);
-                                string savePath = Path.Combine(saveFolderPath, folderName);
-                                // 複製指定的 log 文件到選擇的資料夾
-                                if (!CopyLogFolder(LogFolder, savePath))
-                                    fail_info += "[DDPMW-NKVM]";
-                            }
-                        }
-                        LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPMService\Log";
-                        writelog("folderPath - LogFolder Line 9263: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = "DPMService_Log";
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DPMService_Log]";
-                        }
-                        LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPM\Log";
-                        writelog("folderPath - LogFolder Line 9273: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = "DPM_Log";
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DPM_Log]";
-                        }
-                        LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPeMSDK\Log";
-                        writelog("folderPath - LogFolder Line 9283: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = "DPeMSDK_Log";
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DPeMSDK_Log]";
-                        }
-                    }
-                    string logFileName = "EventLog.evtx";
-                    string logFilePath = Path.Combine(saveFolderPath, logFileName);
-                    if (!ExecuteWevtutilCommand(logFilePath))
-                        fail_info += "[EventLog]";
-
-                    string zipFilePath = saveFolderPath + ".zip";
-                    FileInfo info = new FileInfo(zipFilePath);
-                    zipFilePath = Path.Combine(info.DirectoryName, $"Log_{DateTime.Now.ToString("yyyy_MM_dd_HH.mm.ss.ff")}.zip");//force to set zip file name as Log.zip
-                                                                                                                                 // 壓縮資料夾
-                    if (!CreateZipFile(saveFolderPath, zipFilePath))
-                        fail_info += "[Compression]";
-                    Directory.Delete(saveFolderPath, true);
-
-                    ret = true;
-                    if (fail_info.Length > 0)
-                    {
-                        ret = false;
-                        writelog($"SaveLog was failed at following step(s): {fail_info}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    writelog($"{nameof(SaveLogFile)} got exception ({ex.Message})");
-                    ret = false;
-                }
-            }
-            writelog($"{nameof(SaveLogFile)} end");
-
             //Telemetry Collection
             var ApplicationSettings_Function = new ApplicationSettings_Function();
             writelog("[DeviceMangerPlugin] Send Telemetry for SaveDiagnosticReport...");
@@ -10334,28 +10053,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             else
                 writelog("[DeviceMangerPlugin] Send Telemetry for SaveDiagnosticReport Fail ...");
 
+            writelog($"{nameof(SaveLogFile)} end");
             return Task.FromResult(ret);
-        }
-
-        private bool CreateZipFile(string folderPath, string zipFilePath)
-        {
-            bool result = false;
-            writelog($"{nameof(CreateZipFile)} start");
-            try
-            {
-                if (File.Exists(zipFilePath))
-                {
-                    File.Delete(zipFilePath);
-                }
-                ZipFile.CreateFromDirectory(folderPath, zipFilePath, CompressionLevel.Fastest, includeBaseDirectory: true);
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                writelog($"{nameof(CreateZipFile)} Exception occurred while creating ZIP file: {ex.Message}");
-            }
-            writelog($"{nameof(CreateZipFile)} end");
-            return result;
         }
 
         private bool SaveMonitorAssetReport(List<MonitorAssetReport> monitorAssetReports, string savePath)
@@ -10407,161 +10106,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return ret;
         }
 
-        private bool ExecuteWevtutilCommand(string exportFilePath)
-        {
-            bool result = false;
-            try
-            {
-                // 設定要查詢的日誌名稱
-                string logName = "Application"; // 可選擇 "Application", "System", "Security"
-
-                // 獲取當前時間
-                DateTime now = DateTime.UtcNow;
-
-                // 設定開始和結束時間範圍（UTC）
-                DateTime endTime = now;
-                DateTime startTime = endTime.AddDays(-1);
-
-                // 生成查詢語句
-                string query = $"*[System[TimeCreated[@SystemTime>='{startTime:yyyy-MM-ddTHH:mm:ss.fffZ}' and @SystemTime<='{endTime:yyyy-MM-ddTHH:mm:ss.fffZ}']]]";
-                // 建立我們要執行的命令
-                string command = $"epl {logName} \"{exportFilePath}\" /ow:true /q:\"{query}\"";
-                // 設定 ProcessStartInfo
-                ProcessStartInfo startInfo = new ProcessStartInfo
-                {
-                    FileName = "wevtutil",
-                    Arguments = command,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                // 開啟進程
-                using (Process process = Process.Start(startInfo))
-                {
-                    // 讀取標準輸出和錯誤輸出
-                    string output = process.StandardOutput.ReadToEnd();
-                    string error = process.StandardError.ReadToEnd();
-
-                    // 等待進程結束
-                    process.WaitForExit();
-
-                    // 輸出結果
-                    if (process.ExitCode == 0)
-                    {
-                        Console.WriteLine("Events have been exported successfully.");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Error exporting events: {error}");
-                    }
-                }
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception occurred: {ex.Message}");
-            }
-            return result;
-        }
-
-        private string GetFolderName(string path)
-        {
-            try
-            {
-                string folderName = System.IO.Path.GetFileName(path.TrimEnd(System.IO.Path.DirectorySeparatorChar));
-                return folderName;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception occurred: {ex.Message}");
-                return null;
-            }
-        }
-
-        private bool DirectoryContainsFiles(string folderPath)
-        {
-            bool ret = false;
-            try
-            {
-                if (Directory.Exists(folderPath))
-                {
-                    // 檢查資料夾是否包含檔案
-                    string[] files = Directory.GetFiles(folderPath);
-                    // 檢查資料夾是否包含子資料夾
-                    string[] directories = Directory.GetDirectories(folderPath);
-
-                    // 如果檔案或子資料夾數量大於0，則返回 true
-                    ret = files.Length > 0 || directories.Length > 0;
-                }
-            }
-            catch
-            {
-            }
-            return ret;
-        }
-
-        private bool CopyLogFolder(string sourceFolder, string destinationFolder)
-        {
-            bool result = false;
-            try
-            {
-                if (Directory.Exists(sourceFolder))
-                {
-                    // 複製資料夾及其內容
-                    if (!DirectoryCopy(sourceFolder, destinationFolder, true))
-                    {
-                        writelog("[DirectoryCopy] got some files copy failed");
-                    }
-                    else
-                        result = true;
-                    writelog("Log folder copy action finish.");
-                }
-                else
-                {
-                    writelog("Source folder does not exist.");
-                }
-            }
-            catch (Exception ex)
-            {
-                writelog($"Exception occurred while copying log folder: {ex.Message}");
-            }
-            return result;
-        }
-
-        private bool DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
-        {
-            bool all_pass = true;
-            // 確保目標資料夾存在
-            Directory.CreateDirectory(destDirName);
-            // 複製檔案
-            try
-            {
-                foreach (string file in Directory.GetFiles(sourceDirName))
-                {
-                    string destFile = Path.Combine(destDirName, Path.GetFileName(file));
-                    File.Copy(file, destFile, true);
-                }
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DirectoryCopy] Get files in folder failed, message: {ex.Message}");
-                all_pass = false;
-            }
-
-            // 複製子資料夾
-            if (copySubDirs)
-            {
-                foreach (string subDir in Directory.GetDirectories(sourceDirName))
-                {
-                    string destSubDir = Path.Combine(destDirName, Path.GetFileName(subDir));
-                    if (!DirectoryCopy(subDir, destSubDir, true))
-                        all_pass = false;
-                }
-            }
-            return all_pass;
-        }
-
         #endregion
 
         #endregion
@@ -10582,6 +10126,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private ZoomMeetingType _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
         private bool isWindowsScreenNotLocked = true;
         private string QAMWebcamDeviceGuid = string.Empty;
+        private bool isOpenOSDWhenQAMClosed = true; //Derek 1215 for PIMS 332040
 
         //private bool isHiddenConditionsMet = false;
         private int currentZoomValue = -1;
@@ -10657,7 +10202,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     )
                 {
                     ResetQAMCondition();
-                    QAMClose();
+                    QAMClose(false);
                     CloseQAMOSD();
 
                     writelog($"Abnormal condition occur, close QAM/OSD if it's opened.");
@@ -10707,14 +10252,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"HandleQAM receive QAMClose event");
 
-                        QAMClose();
+                        QAMClose(true);
                     }
+
+                    isOpenOSDWhenQAMClosed = true;
                 }
                 else
                 {
-                    QAMClose();
+                    QAMClose(false);
 
-                    writelog($"Close QAM due to global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
+                    writelog($"Close QAM/OSD due to global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
                 }
             }
             catch (Exception e)
@@ -10776,7 +10323,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"HandleQAM receive QAMClose event");
 
-                QAMClose();
+                QAMClose(false);
             }
 
             //if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING)
@@ -10941,7 +10488,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _QAM = null;
 
                 if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null
-                    && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+                    && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder && 
+                    isOpenOSDWhenQAMClosed)
                 {
                     ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
                 }
@@ -10986,7 +10534,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //    writelog($"QAMShow done");
         //}
-        private Task QAMClose()
+        private Task QAMClose(bool openQAMOSD)
         {
             if (null == _QAM)
                 return Task.CompletedTask;
@@ -10997,6 +10545,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"Try to run QAMClose");
                 _QAM?.Dispatcher.BeginInvoke(DispatcherPriority.Normal, () => _QAM?.Close());
+                isOpenOSDWhenQAMClosed = openQAMOSD;
             }
             catch (Exception e)
             {
@@ -11192,7 +10741,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog($"UI send command CloseQAMByDDPM");
 
-            QAMClose();
+            QAMClose(true);
 
             return Task.CompletedTask;
         }
@@ -11220,26 +10769,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("[DeviceMangerPlugin] YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
 
-            var arg = new DebouncerArg()
+            _SystemEvents_DisplaySettingsChanged(new DebouncerArg()
             {
                 sender = sender,
                 eventArgs = e,
-            };
-
-            DisplayChangedDebouncer.Debounce(arg);
+            });
         }
 
         private void _SystemEvents_DisplaySettingsChanged(object _arg)
         {
-            var arg = (DebouncerArg)_arg;
-            writelog($"Receive DisplaySettingsChanged: {arg.sender}, e:{arg.eventArgs}, rescan monitor");
-            if (displayInOut)
+            try
             {
-                if (_AllInfoMonitors != null)
-                    _AllInfoMonitors.Clear();
+                DebouncerArg arg = null;
 
-                try
+                if (_arg != null)
                 {
+                    arg = (DebouncerArg)_arg;
+                    writelog($"Receive DisplaySettingsChanged: {arg.sender}, e:{arg.eventArgs}, rescan monitor");
+                }
+                else
+                    writelog($"Receive Re-GetMonitor, rescan monitor");
+
+                if (displayInOut)
+                {
+                    if (_AllInfoMonitors != null)
+                        _AllInfoMonitors.Clear();
+
                     if (_UpdateProgress != null && _FWUpdatePlugin != null)
                     {
                         writelog($"DisplaySettingsChanged: Rrconnect FWU eventv go");
@@ -11257,8 +10812,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         return;
                     }
 
-                    writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Bruce count Screen Length ...");
-
+                    //writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Bruce count Screen Length ...");
                     //Bruce 08-09 Added judgment that if the number of screens does not change, the screen orientation adjustment function will not be performed. (For example: PxP change will trigger this event, but the screen is not actually plugged in or out)
                     //bool displayDeviceNumChange = false;
                     //int AllScreens = Screen.AllScreens.Length;
@@ -11267,10 +10821,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    displayDeviceNumChange = true;
                     //    _lastScreenCount = AllScreens;
                     //}
-
                     //writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Bruce count Screen Length finish ...");
-
-                    ///=================================================================================================================================
 
                     try
                     {
@@ -11279,127 +10830,128 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         if (_ReGetcancellationTokenSource != null)
                         {
-                            if (_ReGetcancellationTokenSource.Token.CanBeCanceled)
-                            {
-                                writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _ReGetcancellationTokenSource trigger cancel ...");
-                                _ReGetcancellationTokenSource.Cancel();
-                                _ReGetcancellationTokenSource.Dispose();
-                            }
+                            writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _ReGetcancellationTokenSource trigger cancel ...");
+                            _ReGetcancellationTokenSource.Cancel();
                         }
-
-                        if (_ReGetcancellationTokenSource != null)
-                            _ReGetcancellationTokenSource.Dispose();
-
-                        _ReGetcancellationTokenSource = new CancellationTokenSource();
-                        var token = _ReGetcancellationTokenSource.Token;
-
-                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() into Re-GetDevices ...");
-                        //Call VCP to catch updated monitor info
-                        _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
-
-                        token.ThrowIfCancellationRequested();
-                        //review monitor list to check duplicated data
-                        ReviewAllMonitorToAvoidDuplicatedInfo();
-
-                        //List<MonitorInfo> new_mo = new List<MonitorInfo>();
-                        //if (_AllInfoMonitors.Count > 0)
-                        //    new_mo.AddRange(_AllInfoMonitors);
-
-                        writelog($"[DeviceManager] SystemEvents_DisplaySettingsChanged() Got event, monitor count {_AllInfoMonitors.Count}");
-
-                        token.ThrowIfCancellationRequested();
-                        if (_AllInfoMonitors.Count > 0)
-                            OnDeviceChanged(_AllInfoMonitors[0], null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");//DeviceChangedType.Display_PlugIn);
-                        else
-                            OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");
-
-                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() OnDeviceChanged finish ...");
-
-                        //Robert_Lin, 2024-9-9 Signal a DisplaySettingsChanged event through Agent
-                        //Anyone who would like to receive this event, you can add below code: (refer to EAPlugin.cs)
-                        // _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
-                        //
-                        // private void DisplaySettingsChangedHandler(object sender, EventManagerArgs e)
-                        // {
-                        //    your handler code
-                        // }
-                        //
-
-                        if (_agent != null && !token.IsCancellationRequested)
-                            _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
-
-                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _agent.RaiseEvent finish ...");
-
-                        if (_AllInfoMonitors.Count > 0 && !token.IsCancellationRequested)
-                        {
-                            Task.Run(() =>
-                            {
-                                //Telementry Collection
-                                var rt = false;
-                                var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
-                                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
-                                rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, _AllInfoMonitors);
-                                if (rt)
-                                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
-                                else
-                                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
-                            }, token).ConfigureAwait(false);
-                        }
-
-                        ////1117 Bruce 不用自動旋轉把下兩行註解
-                        //if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
-                        //_DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
-                        //writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
-
-                        token.ThrowIfCancellationRequested();
-                        _DisplayManagerPlugin.UpdateExistAlsConfig(_AllInfoMonitors.ToList());
-                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() UpdateExistAlsConfig finish ...");
-                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
-
-                        if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0 && !token.IsCancellationRequested)
-                            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, _AllInfoMonitors.ToList(), _SettingsPlugin));
                     }
                     catch (TaskCanceledException)
                     {
-                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
-
-                        if (_ReGetcancellationTokenSource != null)
-                            _ReGetcancellationTokenSource.Dispose();
-
-                        OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
+                        writelog("[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
+                        _ReGetcancellationTokenSource.Dispose();
                     }
                     catch (OperationCanceledException)
                     {
-                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
-
-                        if (_ReGetcancellationTokenSource != null)
-                            _ReGetcancellationTokenSource.Dispose();
-
-                        OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
+                        writelog("[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
+                        _ReGetcancellationTokenSource.Dispose();
                     }
                     catch (Exception ex)
                     {
-                        // Failed to complete due to e exception
-                        writelog($"[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() --Task.Run ...there is an exceptionI-- ({ex.Message})");
+                        writelog($"[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() ...there is an exception-- ({ex.Message})");
+                        _ReGetcancellationTokenSource.Dispose();
+                    }
+                    finally
+                    {
+                        try
+                        {
+                            _ReGetcancellationTokenSource = new CancellationTokenSource();
+                            var token = _ReGetcancellationTokenSource.Token;
 
-                        if (_ReGetcancellationTokenSource != null)
-                            _ReGetcancellationTokenSource.Dispose();
+                            writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() into Re-GetDevices ...");
+                            //Call VCP to catch updated monitor info
+                            _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
 
-                        OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
+                            token.ThrowIfCancellationRequested();
+                            //review monitor list to check duplicated data
+                            ReviewAllMonitorToAvoidDuplicatedInfo();
 
-                        //Done: let's be nice and don't swallow the exception
-                        //throw new InvalidOperationException("some exception happened but not about InitializeMonitorsList cancellation");
+                            //List<MonitorInfo> new_mo = new List<MonitorInfo>();
+                            //if (_AllInfoMonitors.Count > 0)
+                            //    new_mo.AddRange(_AllInfoMonitors);
+
+                            writelog($"[DeviceManager] _SystemEvents_DisplaySettingsChanged() Got event, monitor count {_AllInfoMonitors.Count}");
+
+                            token.ThrowIfCancellationRequested();
+                            if (_AllInfoMonitors.Count > 0)
+                                OnDeviceChanged(_AllInfoMonitors[0], null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");//DeviceChangedType.Display_PlugIn);
+                            else
+                                OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");
+
+                            writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() OnDeviceChanged finish ...");
+
+                            //Robert_Lin, 2024-9-9 Signal a DisplaySettingsChanged event through Agent
+                            //Anyone who would like to receive this event, you can add below code: (refer to EAPlugin.cs)
+                            // _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
+                            //
+                            // private void DisplaySettingsChangedHandler(object sender, EventManagerArgs e)
+                            // {
+                            //    your handler code
+                            // }
+                            //
+
+                            if (_agent != null && !token.IsCancellationRequested)
+                                _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
+                            writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() _agent.RaiseEvent finish ...");
+
+                            if (_AllInfoMonitors.Count > 0 && !token.IsCancellationRequested)
+                            {
+                                Task.Run(() =>
+                                {
+                                    //Telementry Collection
+                                    var rt = false;
+                                    var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
+                                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
+                                    rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, _AllInfoMonitors);
+                                    if (rt)
+                                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
+                                    else
+                                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
+                                }, token).ConfigureAwait(false);
+                            }
+
+                            ////1117 Bruce 不用自動旋轉把下兩行註解
+                            //if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
+                            //_DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                            //writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
+
+                            token.ThrowIfCancellationRequested();
+                            _DisplayManagerPlugin.UpdateExistAlsConfig(_AllInfoMonitors.ToList());
+                            writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() UpdateExistAlsConfig finish ...");
+                            writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
+
+                            if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0 && !token.IsCancellationRequested)
+                                Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, _AllInfoMonitors.ToList(), _SettingsPlugin));
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            writelog("[DeviceMangerPlugin] II_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
+                            OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            writelog("[DeviceMangerPlugin] II_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
+                            OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
+                        }
+                        catch (Exception ex)
+                        {
+                            // Failed to complete due to e exception
+                            writelog($"[DeviceMangerPlugin] II_SystemEvents_DisplaySettingsChanged() ...there is an exception-- ({ex.Message})");
+                            OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
+                        }
                     }
                 }
-                catch (Exception ex)
+                else//Add by Bruce
                 {
-                    writelog("[DeviceMangerPlugin] Initialize Monitors List Exception : " + ex.Message);
+                    if (_arg != null)
+                        writelog($"DisplaySettingsChanged: {arg.sender}, e:{arg.eventArgs}, By pass.");
+                    else
+                        writelog($"GetMonitor, By pass.");
+
+                    displayInOut = true;
                 }
             }
-            else//Add by Bruce
+            catch (Exception x)
             {
-                writelog($"DisplaySettingsChanged: {arg.sender}, e:{arg.eventArgs}, By pass.");
-                displayInOut = true;
+                writelog($"[DeviceMangerPlugin] III_SystemEvents_DisplaySettingsChanged()...there is an exception-- ({x.Message})");
             }
         }
 
@@ -11855,18 +11407,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _displaychangedEventArgs.monitors = e.monitors.ToList();
             OnDisplaychanged(_displaychangedEventArgs);
 
-            Task.Run(() =>
+            if (e.monitors.Count > 0)
             {
-                //Telementry Collection
-                var rt = false;
-                var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
-                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
-                rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, e.monitors);
-                if (rt)
-                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
-                else
-                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
-            }).ConfigureAwait(false);
+                Task.Run(() =>
+                {
+                    //Telementry Collection
+                    var rt = false;
+                    var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
+                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
+                    rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, e.monitors);
+                    if (rt)
+                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
+                    else
+                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
+                }).ConfigureAwait(false);
+            }
         }
 
         private void show_colorpreset(object sender, VCPchangedEventArgs e)
@@ -15805,6 +15360,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool CopyFile(string copyPath, string savePath)
         {
             writelog($"{nameof(CopyFile)} start");
+            Method method = new Method(Log);//Bruce 1213 Move the method to the common code
             bool ret = false;
             if (_DisplayManagerPlugin != null)
             {
@@ -15814,15 +15370,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Directory.CreateDirectory(savePath);
                 }
 
-                if (DirectoryContainsFiles(copyPath))
+                if (method.DirectoryContainsFiles(copyPath))//Bruce 1213 Move the method to the common code
                 {
                     // 取得資料夾名稱
-                    string folderName = GetFolderName(copyPath);
+                    string folderName = method.GetFolderName(copyPath);//Bruce 1213 Move the method to the common code
                     // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(copyPath, savePath);
+                    method.CopyLogFolder(copyPath, savePath);//Bruce 1213 Move the method to the common code
                     writelog($"{nameof(CopyFile)} end");
                     return true;
                 }
+            }
+            if (method != null)//Bruce 1213 Move the method to the common code
+            {
+                method.Dispose();
+                method = null;
             }
             writelog($"{nameof(CopyFile)} end");
             return false;
@@ -15917,7 +15478,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     int activeLayout = ddmMonitorSettings.EasyArrangement.Desktops[0].ActiveLayout;
                     SplitJson? selJson = null;
                     //activaLayout: [0~49]=preset layout, [1000~1004]=custom layout
-                    if (activeLayout >= 1000)
+                    if (activeLayout >= 1000) //or EAEMConstants.EAID_FirstCustom
                     {
                         //Find the CustomLayout by EAID
                         selJson = ddpmCustomList.Find(x => x.EAID == activeLayout);

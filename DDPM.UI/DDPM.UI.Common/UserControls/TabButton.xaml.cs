@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Dell.Client.Framework.UX.WPF.Controls;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -48,6 +49,8 @@ namespace DDPM.UI.Common
 
         private readonly SolidColorBrush NormalFillBrush = new();
         private readonly SolidColorBrush NormalBorderBrush = new();
+        private readonly SolidColorBrush NormalTxtBrush = new();
+        private readonly SolidColorBrush FocusWhiteTxtBrush = new();
         private readonly LinearGradientBrush FocusFillBrush = new();
         private readonly LinearGradientBrush FocusBorderBrush = new();
 
@@ -66,6 +69,8 @@ namespace DDPM.UI.Common
             FocusBorderBrush.EndPoint = new Point(1, 0);
             FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromArgb(0xFF, 0x55, 0xB4, 0xFD), 0));
             FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromArgb(0xFF, 0x6E, 0x69, 0xCF), 1));
+            FocusWhiteTxtBrush.Color = Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF);
+            NormalTxtBrush = (SolidColorBrush)System.Windows.Application.Current.Resources["DefaultTheme_TxtColor"];
         }
 
         public ImageSource MainImageSource
@@ -187,11 +192,13 @@ namespace DDPM.UI.Common
             {
                 Border.Background = FocusFillBrush;
                 Border.BorderBrush = FocusBorderBrush;
+                TabCaption.Foreground = FocusWhiteTxtBrush;
             }
             else
             {
                 Border.Background = NormalFillBrush;
                 Border.BorderBrush = NormalBorderBrush;
+                TabCaption.ClearValue(ForegroundProperty);
             }
         }
 

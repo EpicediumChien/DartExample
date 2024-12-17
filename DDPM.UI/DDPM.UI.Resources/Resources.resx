@@ -496,7 +496,7 @@
     <value>AM</value>
   </data>
   <data name="Brightness.16" xml:space="preserve">
-    <value>Transison Length</value>
+    <value>Transition Length</value>
   </data>
   <data name="Brightness.17" xml:space="preserve">
     <value>This feature enables our eyes to adapt to a desired setting</value>
@@ -895,7 +895,7 @@
     <value>Download Dell Audio now to optimize and personalize your headset settings from the convenience of your iPhone or Android device.</value>
   </data>
   <data name="HeadsetDeviceSettings.6" xml:space="preserve">
-    <value>Learnmore</value>
+    <value>Learn more</value>
   </data>
   <data name="Illumination.0" xml:space="preserve">
     <value>Illumination Control</value>
@@ -2128,7 +2128,10 @@
     <value>Application settings exported successfully</value>
   </data>
   <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
-    <value>Application settings applied to %1 successfully. Enjoy using your monitor.</value>
+    <value>Application settings applied to %1 successfully. Dell Display and Peripheral Manager will restart.</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.2" xml:space="preserve">
+    <value>Application settings applied to %1 successfully. The Easy Memory setting will be cleaned. Please setup Easy Memory again. Dell Display and Peripheral Manager will restart.</value>
   </data>
   <data name="ImpExp_WarningMsg.0" xml:space="preserve">
     <value>This not your primary monitor. Do you want to continue and set this as your Primary Monitor for Sync?</value>
@@ -3245,5 +3248,14 @@
   </data>
   <data name="EazyMemory.42" xml:space="preserve">
     <value>The corresponding Easy Memory profile will be deleted too. Do you want to continue?</value>
+  </data>
+  <data name="DiagnosticReport_SaveFail" xml:space="preserve">
+    <value>Diagnostic report save fail</value>
+  </data>
+  <data name="MonitorAssetReport_SaveFail" xml:space="preserve">
+    <value>Monitor asset report save fail</value>
+  </data>
+  <data name="USBKVM.Tips" xml:space="preserve">
+    <value>Example: “Alt + P”; “Shift + F”; “Ctrl + Shift + F”\nNote: For multiple monitors, the mouse cursor should be on the targeted monitor screen to trigger the hotkey function.</value>
   </data>
 </root>

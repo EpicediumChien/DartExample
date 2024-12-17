@@ -208,7 +208,7 @@
     <value>Analisi</value>
   </data>
   <data name="Analytics.1" xml:space="preserve">
-    <value>L&apos;invio automatico dei dati di diagnostica e utilizzo aiuta Dell a migliorare prodotti e servizi.</value>
+    <value>L'invio automatico dei dati di diagnostica e utilizzo aiuta Dell a migliorare prodotti e servizi.</value>
   </data>
   <data name="Analytics.2" xml:space="preserve">
     <value>Informativa sulla privacy Dell</value>
@@ -262,7 +262,7 @@
     <value>Associazione</value>
   </data>
   <data name="AddDevice.Msg.WaitingAlert" xml:space="preserve">
-    <value>L&apos;associazione può richiedere tempo. Non scollegare il dispositivo</value>
+    <value>L'associazione può richiedere tempo. Non scollegare il dispositivo</value>
   </data>
   <data name="AddDevice.Display.1" xml:space="preserve">
     <value>Collegare il display tramite la porta HDMI/USB-C del sistema</value>
@@ -277,25 +277,25 @@
     <value>Per aggiungere un dispositivo Bluetooth, associarlo alle impostazioni di Windows</value>
   </data>
   <data name="AddDevice.KnM.2" xml:space="preserve">
-    <value>Spostare il cursore dell&apos;interruttore di alimentazione su ON</value>
+    <value>Spostare il cursore dell'interruttore di alimentazione su ON</value>
   </data>
   <data name="AddDevice.KnM.3" xml:space="preserve">
     <value>Selezionare un canale Bluetooth, quindi tenere premuto per 3 secondi per rendere il dispositivo individuabile</value>
   </data>
   <data name="AddDevice.KnM.4" xml:space="preserve">
-    <value>Consentire l&apos;associazione del dispositivo o avviare le impostazioni di Windows e selezionare il rispettivo dispositivo una volta individuato</value>
+    <value>Consentire l'associazione del dispositivo o avviare le impostazioni di Windows e selezionare il rispettivo dispositivo una volta individuato</value>
   </data>
   <data name="AddDevice.KnM.6" xml:space="preserve">
     <value>Collegare il ricevitore senza fili USB al sistema</value>
   </data>
   <data name="AddDevice.KnM.7" xml:space="preserve">
-    <value>Spostare l&apos;interruttore di alimentazione su OFF.</value>
+    <value>Spostare l'interruttore di alimentazione su OFF.</value>
   </data>
   <data name="AddDevice.KnM.8" xml:space="preserve">
-    <value>Tenere premuto qualsiasi tasto/pulsante e spostare il pulsante dell&apos;alimentazione su ON</value>
+    <value>Tenere premuto qualsiasi tasto/pulsante e spostare il pulsante dell'alimentazione su ON</value>
   </data>
   <data name="AddDevice.KnM.9" xml:space="preserve">
-    <value>Mantenere aperta questa finestra. L&apos;associazione inizierà dopo alcuni secondi. In caso contrario, ripetere i passaggi 2 e 3 per riprovare.</value>
+    <value>Mantenere aperta questa finestra. L'associazione inizierà dopo alcuni secondi. In caso contrario, ripetere i passaggi 2 e 3 per riprovare.</value>
   </data>
   <data name="AddDevice.KnM.10" xml:space="preserve">
     <value>Più ricevitori senza fili rilevati. Scollegare tutti i ricevitori senza fili Dell per tastiera e mouse. Collegare il dispositivo che si desidera associare.</value>
@@ -319,10 +319,10 @@
     <value>Tenere premuto il pulsante superiore per 3 secondi. Attendere che il dispositivo venga individuato da Windows.</value>
   </data>
   <data name="AddDevice.Pen.3" xml:space="preserve">
-    <value>Consentire l&apos;associazione del dispositivo o avviare le impostazioni di Windows e selezionare il rispettivo dispositivo una volta individuato.</value>
+    <value>Consentire l'associazione del dispositivo o avviare le impostazioni di Windows e selezionare il rispettivo dispositivo una volta individuato.</value>
   </data>
   <data name="AddDevice.Pen.4" xml:space="preserve">
-    <value>Selezionare &quot;Sì&quot; per confermare l&apos;associazione sulla finestra di prompt</value>
+    <value>Selezionare "Sì" per confermare l'associazione sulla finestra di prompt</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
     <value>Per una connettività libera e in movimento del ricevitore senza fili USB</value>
@@ -334,19 +334,19 @@
     <value>Tenere premuto il pulsante di accensione per 3 secondi per rendere le cuffie individuabili tramite Bluetooth</value>
   </data>
   <data name="AddDevice.Headset.3" xml:space="preserve">
-    <value>Consentire l&apos;associazione del dispositivo o avviare le impostazioni di Windows e selezionare il rispettivo dispositivo una volta individuato.</value>
+    <value>Consentire l'associazione del dispositivo o avviare le impostazioni di Windows e selezionare il rispettivo dispositivo una volta individuato.</value>
   </data>
   <data name="AddDevice.Headset.4" xml:space="preserve">
     <value>Spegnere le cuffie. Tenere premuto il pulsante di disattivazione del microfono e riaccendere.</value>
   </data>
   <data name="AddDevice.Headset.5" xml:space="preserve">
-    <value>L&apos;associazione inizia automaticamente dopo alcuni secondi</value>
+    <value>L'associazione inizia automaticamente dopo alcuni secondi</value>
   </data>
   <data name="AddDevice.Headset.6" xml:space="preserve">
     <value>Collegare le cuffie tramite la porta USB del sistema.</value>
   </data>
   <data name="AddDevice.Speaker.0" xml:space="preserve">
-    <value>Collega l&apos;altoparlante o la barra audio tramite la porta USB del sistema.</value>
+    <value>Collega l'altoparlante o la barra audio tramite la porta USB del sistema.</value>
   </data>
   <data name="AddDevice.Dock.0" xml:space="preserve">
     <value>Collegare il Dock tramite porta USB sul sistema</value>
@@ -403,7 +403,7 @@
     <value>Impostazioni della penna</value>
   </data>
   <data name="Soundbar.0" xml:space="preserve">
-    <value>Impostazioni predefinite per l&apos;audio</value>
+    <value>Impostazioni predefinite per l'audio</value>
   </data>
   <data name="Soundbar.1" xml:space="preserve">
     <value>Interazioni</value>
@@ -463,19 +463,19 @@
     <value>Luminosità automatica  </value>
   </data>
   <data name="Brightness.7" xml:space="preserve">
-    <value>Regola la luminosità del display in base alle condizioni di illuminazione nell&apos;ambiente circostante</value>
+    <value>Regola la luminosità del display in base alle condizioni di illuminazione nell'ambiente circostante</value>
   </data>
   <data name="Brightness.8" xml:space="preserve">
     <value>Livello intervallo di luminosità automatico  </value>
   </data>
   <data name="Brightness.9" xml:space="preserve">
-    <value>Fornisce 3 livelli di luminosità in base alle condizioni di illuminazione nell&apos;ambiente circostante (Alta/Media/Bassa)</value>
+    <value>Fornisce 3 livelli di luminosità in base alle condizioni di illuminazione nell'ambiente circostante (Alta/Media/Bassa)</value>
   </data>
   <data name="Brightness.10" xml:space="preserve">
     <value>Temperatura automatica colore  </value>
   </data>
   <data name="Brightness.11" xml:space="preserve">
-    <value>Regola automaticamente la temperatura del colore del display in base alla luce presente nell&apos;ambiente circostante.</value>
+    <value>Regola automaticamente la temperatura del colore del display in base alla luce presente nell'ambiente circostante.</value>
   </data>
   <data name="Brightness.12" xml:space="preserve">
     <value>Monitor primario per sincronizzazione  </value>
@@ -535,7 +535,7 @@
     <value>Luminanza +</value>
   </data>
   <data name="Hotkey.6" xml:space="preserve">
-    <value>Esempio: &quot;ALT + P&quot;, &quot;MAIUSC + F&quot;, &quot;CTRL + MAIUSC + F&quot;.\nPer più monitor, il cursore del mouse deve trovarsi sullo schermo del monitor di destinazione per attivare la funzione dei tasti di scelta rapida.</value>
+    <value>Esempio: "ALT + P", "MAIUSC + F", "CTRL + MAIUSC + F".\nPer più monitor, il cursore del mouse deve trovarsi sullo schermo del monitor di destinazione per attivare la funzione dei tasti di scelta rapida.</value>
   </data>
   <data name="ButtonSettings.0" xml:space="preserve">
     <value>Clic rotellina di scorrimento</value>
@@ -553,7 +553,7 @@
     <value>Pulsante laterale indietro</value>
   </data>
   <data name="ButtonSettings.5" xml:space="preserve">
-    <value>Per personalizzare, cliccare su una delle sezioni evidenziate nell&apos;immagine a sinistra</value>
+    <value>Per personalizzare, cliccare su una delle sezioni evidenziate nell'immagine a sinistra</value>
   </data>
   <data name="ButtonSettings.6" xml:space="preserve">
     <value>Ripristina su tutte le applicazioni</value>
@@ -595,13 +595,13 @@
     <value>Fornisce accesso rapido ai controlli della conferenza. Attivando/disattivando i\ntasti vengono visualizzati o nascosti sulla tastiera durante\nuna chiamata in Microsoft Teams o Zoom.</value>
   </data>
   <data name="Collaboration.3" xml:space="preserve">
-    <value>Attivare l&apos;effetto di lampeggio quando è presente un nuovo messaggio di chat durante la conference\ncall</value>
+    <value>Attivare l'effetto di lampeggio quando è presente un nuovo messaggio di chat durante la conference\ncall</value>
   </data>
   <data name="Collaboration.4" xml:space="preserve">
     <value>Attivare le icone sulla tastiera toccando due volte invece di\nuna sola volta</value>
   </data>
   <data name="Collaboration.5" xml:space="preserve">
-    <value>Per utilizzare la tastiera per la collaborazione con Microsoft Teams, è necessario accedere all&apos;account e utilizzare la versione più recente di Microsoft Teams. Inoltre, è necessario abilitare l&apos;API delle app di terze parti.</value>
+    <value>Per utilizzare la tastiera per la collaborazione con Microsoft Teams, è necessario accedere all'account e utilizzare la versione più recente di Microsoft Teams. Inoltre, è necessario abilitare l'API delle app di terze parti.</value>
   </data>
   <data name="LearnMore" xml:space="preserve">
     <value>Ulteriori informazioni</value>
@@ -655,7 +655,7 @@
     <value>Profilo colore</value>
   </data>
   <data name="Color.7" xml:space="preserve">
-    <value>Colore preimpostato specifico per l&apos;applicazione</value>
+    <value>Colore preimpostato specifico per l'applicazione</value>
   </data>
   <data name="Color.8" xml:space="preserve">
     <value>Luce notturna </value>
@@ -670,7 +670,7 @@
     <value>Sincronizza automaticamente il profilo ICC con il colore preimpostato del monitor.</value>
   </data>
   <data name="Color.13" xml:space="preserve">
-    <value>L&apos;applicazione Dell Color Management è consigliata per la gestione avanzata dei colori.</value>
+    <value>L'applicazione Dell Color Management è consigliata per la gestione avanzata dei colori.</value>
   </data>
   <data name="DisplayHotkeys.0" xml:space="preserve">
     <value>Sorgente di ingresso</value>
@@ -844,7 +844,7 @@
     <value>Azioni automatizzate</value>
   </data>
   <data name="HeadsetAutomatedActions.0" xml:space="preserve">
-    <value>Rilevamento dell&apos;usura</value>
+    <value>Rilevamento dell'usura</value>
   </data>
   <data name="HeadsetAutomatedActions.1" xml:space="preserve">
     <value>Sensibilità</value>
@@ -916,7 +916,7 @@
     <value>USB upstream</value>
   </data>
   <data name="KeyCustomization.0" xml:space="preserve">
-    <value>Per personalizzare un tasto, cliccare su uno dei tasti evidenziati nell&apos;immagine a sinistra</value>
+    <value>Per personalizzare un tasto, cliccare su uno dei tasti evidenziati nell'immagine a sinistra</value>
   </data>
   <data name="KeyCustomization.1" xml:space="preserve">
     <value>Ripristina tutte le azioni sui valori predefiniti</value>
@@ -961,7 +961,7 @@
     <value>Collegare un cavo video e un cavo USB tra ciascun Pc\n e il monitor. È possibile collegare fino a 4 PC (computer, console per\n gaming e così via). \r\n\r\nSelezionare il tipo di cavo e assegnare un nome a ogni sorgente.</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
-    <value>Passa da un PC all&apos;altro</value>
+    <value>Passa da un PC all'altro</value>
   </data>
   <data name="Kvm.9" xml:space="preserve">
     <value>Scambia tastiera e mouse</value>
@@ -982,7 +982,7 @@
     <value>Modifica PIP/PBP</value>
   </data>
   <data name="Kvm.15" xml:space="preserve">
-    <value>Passa da una posizione all&apos;altra</value>
+    <value>Passa da una posizione all'altra</value>
   </data>
   <data name="Finish" xml:space="preserve">
     <value>Fine</value>
@@ -1021,7 +1021,7 @@
     <value>Configurazione tramite la porta USB del monitor</value>
   </data>
   <data name="Kvm.27" xml:space="preserve">
-    <value>Tasti di scelta rapida - Passaggio da un PC all&apos;altro: nessuno</value>
+    <value>Tasti di scelta rapida - Passaggio da un PC all'altro: nessuno</value>
   </data>
   <data name="Kvm.28" xml:space="preserve">
     <value>Ideale per la configurazione di più monitor</value>
@@ -1036,13 +1036,13 @@
     <value>Apri KVM di rete</value>
   </data>
   <data name="Kvm.32" xml:space="preserve">
-    <value>Apre un&apos;altra finestra per configurare o modificare il KVM di rete</value>
+    <value>Apre un'altra finestra per configurare o modificare il KVM di rete</value>
   </data>
   <data name="MouseSettings.0" xml:space="preserve">
     <value>Spostare il mouse per completare la modifica al valore DPI</value>
   </data>
   <data name="MouseSettings.1" xml:space="preserve">
-    <value>L&apos;aumento della velocità di polling può influire sulla durata della batteria del mouse.</value>
+    <value>L'aumento della velocità di polling può influire sulla durata della batteria del mouse.</value>
   </data>
   <data name="Medium" xml:space="preserve">
     <value>Medio</value>
@@ -1075,7 +1075,7 @@
     <value>Cliccare al passaggio</value>
   </data>
   <data name="PenButtonSettings.7" xml:space="preserve">
-    <value>Per personalizzare un pulsante, cliccare su uno dei pulsanti evidenziati nell&apos;immagine a sinistra</value>
+    <value>Per personalizzare un pulsante, cliccare su uno dei pulsanti evidenziati nell'immagine a sinistra</value>
   </data>
   <data name="PenButtonSettings.8" xml:space="preserve">
     <value>Ripristina le azioni predefinite</value>
@@ -1090,16 +1090,16 @@
     <value>Spostando il cursore verso destra, si riduce\ngradualmente la sensibilità alla pressione\ned è necessario applicare una pressione maggiore della penna</value>
   </data>
   <data name="PenSettings.3" xml:space="preserve">
-    <value>Sensibilità all&apos;inclinazione</value>
+    <value>Sensibilità all'inclinazione</value>
   </data>
   <data name="PenSettings.4" xml:space="preserve">
-    <value>Spostando il cursore verso destra, si aumenta\ngradualmente l&apos;effetto di inclinazione ed è necessario\nridurre l&apos;angolo di inclinazione</value>
+    <value>Spostando il cursore verso destra, si aumenta\ngradualmente l'effetto di inclinazione ed è necessario\nridurre l'angolo di inclinazione</value>
   </data>
   <data name="PenSettings.5" xml:space="preserve">
     <value>Associa con Tile</value>
   </data>
   <data name="PenSettings.6" xml:space="preserve">
-    <value>Associare la penna al dispositivo mobile\nutilizzando l&apos;app Tile</value>
+    <value>Associare la penna al dispositivo mobile\nutilizzando l'app Tile</value>
   </data>
   <data name="PenSettings.7" xml:space="preserve">
     <value>Introduzione</value>
@@ -1129,10 +1129,10 @@
     <value>Switch USB</value>
   </data>
   <data name="PipPbp.7" xml:space="preserve">
-    <value>Passa da una posizione all&apos;altra</value>
+    <value>Passa da una posizione all'altra</value>
   </data>
   <data name="SpeakerAudioPreset.0" xml:space="preserve">
-    <value>Impostazioni predefinite per l&apos;audio</value>
+    <value>Impostazioni predefinite per l'audio</value>
   </data>
   <data name="SpeakerAudioPreset.1" xml:space="preserve">
     <value>Queste impostazioni si applicano solo ai file multimediali</value>
@@ -1213,7 +1213,7 @@
     <value>HDR</value>
   </data>
   <data name="WebCameraColorImage.1" xml:space="preserve">
-    <value>High Dynamic Range fornisce la correzione automatica per una qualità dell&apos;immagine ottimale in varie condizioni di illuminazione</value>
+    <value>High Dynamic Range fornisce la correzione automatica per una qualità dell'immagine ottimale in varie condizioni di illuminazione</value>
   </data>
   <data name="WebCameraColorImage.2" xml:space="preserve">
     <value>Bilanciamento del bianco automatico</value>
@@ -1246,7 +1246,7 @@
     <value>Microfono della fotocamera</value>
   </data>
   <data name="WebCameraMicrophone.2" xml:space="preserve">
-    <value>Nota: questo microfono non dispone di certificazione Microsoft Teams. Per un&apos;esperienza ottimale durante le chiamate con Microsoft Teams, utilizzare dispositivi audio Dell con certificazione Microsoft Teams.</value>
+    <value>Nota: questo microfono non dispone di certificazione Microsoft Teams. Per un'esperienza ottimale durante le chiamate con Microsoft Teams, utilizzare dispositivi audio Dell con certificazione Microsoft Teams.</value>
   </data>
   <data name="WebCameraPresenceDetection.0" xml:space="preserve">
     <value>Rilevamento presenza</value>
@@ -1255,7 +1255,7 @@
     <value>Sensore di prossimità</value>
   </data>
   <data name="WebCameraPresenceDetection.2" xml:space="preserve">
-    <value>Rileva la presenza dell&apos;utente nel campo visivo</value>
+    <value>Rileva la presenza dell'utente nel campo visivo</value>
   </data>
   <data name="WebCameraPresenceDetection.3" xml:space="preserve">
     <value>Riattivazione in presenza</value>
@@ -1282,7 +1282,7 @@
     <value>Windows Hello</value>
   </data>
   <data name="WebCameraPresenceDetection.11" xml:space="preserve">
-    <value>Il sistema autentica l&apos;utente tramite il riconoscimento del volto. Questo link consente di accedere alle impostazioni di Windows.</value>
+    <value>Il sistema autentica l'utente tramite il riconoscimento del volto. Questo link consente di accedere alle impostazioni di Windows.</value>
   </data>
   <data name="WebCameraSettings.0" xml:space="preserve">
     <value>Controllo della fotocamera</value>
@@ -1291,19 +1291,19 @@
     <value>Framing automatico AI</value>
   </data>
   <data name="WebCameraSettings.2" xml:space="preserve">
-    <value>Utilizza l&apos;analisi intelligente della scena e il tracciamento del volto per eseguire lo zoom avanti e indietro della vista quando ci si sposta</value>
+    <value>Utilizza l'analisi intelligente della scena e il tracciamento del volto per eseguire lo zoom avanti e indietro della vista quando ci si sposta</value>
   </data>
   <data name="WebCameraSettings.3" xml:space="preserve">
     <value>Transizione fotocamera</value>
   </data>
   <data name="WebCameraSettings.4" xml:space="preserve">
-    <value>Consente di effettuare transizioni fluide eseguendo lo zoom avanti e indietro quando la fotocamera regola nuovamente la posizione nell&apos;inquadratura</value>
+    <value>Consente di effettuare transizioni fluide eseguendo lo zoom avanti e indietro quando la fotocamera regola nuovamente la posizione nell'inquadratura</value>
   </data>
   <data name="WebCameraSettings.5" xml:space="preserve">
     <value>Sensibilità di rilevamento</value>
   </data>
   <data name="WebCameraSettings.6" xml:space="preserve">
-    <value>Regola la rapidità di risposta della fotocamera ai movimenti e riposiziona l&apos;immagine nell&apos;inquadratura</value>
+    <value>Regola la rapidità di risposta della fotocamera ai movimenti e riposiziona l'immagine nell'inquadratura</value>
   </data>
   <data name="WebCameraSettings.7" xml:space="preserve">
     <value>Normale</value>
@@ -1324,7 +1324,7 @@
     <value>Campo visivo</value>
   </data>
   <data name="WebCameraSettings.13" xml:space="preserve">
-    <value>Restringe o allarga l&apos;angolo del campo visivo della fotocamera</value>
+    <value>Restringe o allarga l'angolo del campo visivo della fotocamera</value>
   </data>
   <data name="WebCameraSettings.14" xml:space="preserve">
     <value>°</value>
@@ -1336,13 +1336,13 @@
     <value>Autofocus</value>
   </data>
   <data name="WebCameraSettings.17" xml:space="preserve">
-    <value>Regola in modo intelligente l&apos;obiettivo della fotocamera per messa a fuoco e nitidezza</value>
+    <value>Regola in modo intelligente l'obiettivo della fotocamera per messa a fuoco e nitidezza</value>
   </data>
   <data name="WebCameraSettings.18" xml:space="preserve">
     <value>Priorità</value>
   </data>
   <data name="WebCameraSettings.19" xml:space="preserve">
-    <value>Imposta la priorità sui fotogrammi al secondo per la fluidità del video o sull&apos;esposizione per mantenere il livello ideale di illuminazione</value>
+    <value>Imposta la priorità sui fotogrammi al secondo per la fluidità del video o sull'esposizione per mantenere il livello ideale di illuminazione</value>
   </data>
   <data name="WebCameraSettings.20" xml:space="preserve">
     <value>Esposizione</value>
@@ -1393,19 +1393,19 @@
     <value>Nessun dispositivo trovato. Verificare che il dispositivo senza fili sia completamente carico e attivato.</value>
   </data>
   <data name="Tooltip.2" xml:space="preserve">
-    <value>Dispositivo già associato. Annullare l&apos;associazione del dispositivo se si desidera ristabilire l&apos;associazione.</value>
+    <value>Dispositivo già associato. Annullare l'associazione del dispositivo se si desidera ristabilire l'associazione.</value>
   </data>
   <data name="Tooltip.3" xml:space="preserve">
     <value>Il dispositivo associato non è supportato dal ricevitore senza fili USB collegato. Utilizzare il ricevitore fornito con il dispositivo.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>Gli slot disponibili su questo ricevitore senza fili USB sono occupati. Per utilizzarne uno, annullare l&apos;associazione di un dispositivo cliccando sul pulsante \&quot;Annulla associazione\&quot; nella pagina delle impostazioni del dispositivo.</value>
+    <value>Gli slot disponibili su questo ricevitore senza fili USB sono occupati. Per utilizzarne uno, annullare l'associazione di un dispositivo cliccando sul pulsante \"Annulla associazione\" nella pagina delle impostazioni del dispositivo.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
-    <value>Cliccare per assegnare un&apos;azione</value>
+    <value>Cliccare per assegnare un'azione</value>
   </data>
   <data name="Mouse.15" xml:space="preserve">
-    <value>Selezionare un&apos;azione\ndall&apos;elenco a destra</value>
+    <value>Selezionare un'azione\ndall'elenco a destra</value>
   </data>
   <data name="USBWirelessReceiver" xml:space="preserve">
     <value>Ricevitore senza fili USB</value>
@@ -1414,7 +1414,7 @@
     <value>Versione del firmware del ricevitore</value>
   </data>
   <data name="ReadyToBePaired" xml:space="preserve">
-    <value>Pronto per l&apos;associazione</value>
+    <value>Pronto per l'associazione</value>
   </data>
   <data name="BrightnessOrContrast" xml:space="preserve">
     <value>Luminosità/contrasto</value>
@@ -1603,13 +1603,13 @@
     <value>I layout tastiera che presentano il tasto Copilot potrebbero diventare disponibili in momenti diversi, a seconda della lingua e della regione.</value>
   </data>
   <data name="ITLockToolTip.0" xml:space="preserve">
-    <value>Questa impostazione è bloccata dall&apos;amministratore IT.</value>
+    <value>Questa impostazione è bloccata dall'amministratore IT.</value>
   </data>
   <data name="WebCameraMicrophone.3" xml:space="preserve">
     <value>Abilita il microfono della fotocamera. Quando si attiva o disattiva la funzione, la fotocamera si riavvierà rapidamente.</value>
   </data>
   <data name="Camera.6" xml:space="preserve">
-    <value>Selezionare un&apos;opzione</value>
+    <value>Selezionare un'opzione</value>
   </data>
   <data name="Camera.5" xml:space="preserve">
     <value>Aggiungere un nuovo predefinito</value>
@@ -1618,7 +1618,7 @@
     <value>Applicazione modifiche in corso, attendere</value>
   </data>
   <data name="Camera.Alert.2" xml:space="preserve">
-    <value>Un&apos;altra applicazione sta utilizzando la fotocamera</value>
+    <value>Un'altra applicazione sta utilizzando la fotocamera</value>
   </data>
   <data name="Camera.Alert.3" xml:space="preserve">
     <value>Scollegare e ricollegare la fotocamera e riprovare</value>
@@ -1675,22 +1675,22 @@
     <value>Voci duplicate. Inserire documentazione o applicazioni diverse per il profilo Easy Memory.</value>
   </data>
   <data name="EazyMemory.10" xml:space="preserve">
-    <value>È possibile disporre le finestre sullo schermo e cliccare sull&apos;icona +.\r\nIn alternativa, selezionare un layout esistente di seguito e cliccare sull&apos;icona a forma di matita per modificare il layout.</value>
+    <value>È possibile disporre le finestre sullo schermo e cliccare sull'icona +.\r\nIn alternativa, selezionare un layout esistente di seguito e cliccare sull'icona a forma di matita per modificare il layout.</value>
   </data>
   <data name="EazyMemory.11" xml:space="preserve">
     <value>È stato configurato un altro profilo che sarà attivato automaticamente durante il processo di avvio del computer. Sostituirlo con questo profilo?</value>
   </data>
   <data name="EazyMemory.12" xml:space="preserve">
-    <value>Selezionare un&apos;opzione di avvio</value>
+    <value>Selezionare un'opzione di avvio</value>
   </data>
   <data name="EazyMemory.13" xml:space="preserve">
-    <value>Attivare durante l&apos;avvio del PC</value>
+    <value>Attivare durante l'avvio del PC</value>
   </data>
   <data name="EazyMemory.14" xml:space="preserve">
     <value>Selezionare manualmente i profili creati</value>
   </data>
   <data name="EazyMemory.15" xml:space="preserve">
-    <value>Avvio automatico in base all&apos;ora</value>
+    <value>Avvio automatico in base all'ora</value>
   </data>
   <data name="EazyMemory.16" xml:space="preserve">
     <value>Fine</value>
@@ -1771,10 +1771,10 @@
     <value>Impostazioni di illuminazione</value>
   </data>
   <data name="WalkThroughHeadsetWL3024_Main.0" xml:space="preserve">
-    <value>Attivare/disattivare l&apos;audio utilizzando il microfono a braccio</value>
+    <value>Attivare/disattivare l'audio utilizzando il microfono a braccio</value>
   </data>
   <data name="WalkThroughHeadsetWL5024_Main.0" xml:space="preserve">
-    <value>Attivare/disattivare l&apos;audio utilizzando il microfono a braccio</value>
+    <value>Attivare/disattivare l'audio utilizzando il microfono a braccio</value>
   </data>
   <data name="WalkThroughHeadsetWL5024_Main.1" xml:space="preserve">
     <value>Pulsanti pratici</value>
@@ -1810,7 +1810,7 @@
     <value>Cliccare sul dispositivo per regolarne le impostazioni</value>
   </data>
   <data name="WalkThroughDDPM_Sub.5" xml:space="preserve">
-    <value>Cliccare sull&apos;icona a forma di ingranaggio per accedere alle impostazioni dell&apos;app e agli aggiornamenti software e firmware</value>
+    <value>Cliccare sull'icona a forma di ingranaggio per accedere alle impostazioni dell'app e agli aggiornamenti software e firmware</value>
   </data>
   <data name="WalkThroughDDPM_Main.1" xml:space="preserve">
     <value>Aggiungere un dispositivo</value>
@@ -1828,13 +1828,13 @@
     <value>Impostazioni app</value>
   </data>
   <data name="WalkThroughDDPM_Sub.0" xml:space="preserve">
-    <value>Visualizzare tutti i display e le periferiche Dell supportati in un&apos;unica posizione, personalizzare le impostazioni e tenere aggiornato il firmware</value>
+    <value>Visualizzare tutti i display e le periferiche Dell supportati in un'unica posizione, personalizzare le impostazioni e tenere aggiornato il firmware</value>
   </data>
   <data name="WalkThroughDDPM_Sub.1" xml:space="preserve">
-    <value>Cliccare sull&apos;icona + per visualizzare le istruzioni su come collegare un dispositivo Dell supportato</value>
+    <value>Cliccare sull'icona + per visualizzare le istruzioni su come collegare un dispositivo Dell supportato</value>
   </data>
   <data name="WalkThroughDisplay_Sub.0" xml:space="preserve">
-    <value>Personalizzare l&apos;esperienza di visione regolando i livelli di luminosità/contrasto, i profili colore e altro ancora</value>
+    <value>Personalizzare l'esperienza di visione regolando i livelli di luminosità/contrasto, i profili colore e altro ancora</value>
   </data>
   <data name="WalkThroughDisplay_Sub.1" xml:space="preserve">
     <value>Ridimensionamento di finestre multiple in minor tempo. Scegliere un layout EasyArrange, quindi cliccare e trascinare le finestre in posizione. Se si desidera conservare e riutilizzare in futuro la stessa configurazione di finestre, è possibile utilizzare il servizio Easy Memory</value>
@@ -1864,10 +1864,10 @@
     <value>È possibile personalizzare i tasti sulla tastiera assegnando azioni.</value>
   </data>
   <data name="WalkThroughMouse_Sub.0" xml:space="preserve">
-    <value>Modificare la velocità dello scorrimento tattile delle aree evidenziate nell&apos;app</value>
+    <value>Modificare la velocità dello scorrimento tattile delle aree evidenziate nell'app</value>
   </data>
   <data name="WalkThroughMouse_Sub.1" xml:space="preserve">
-    <value>Scegliere se si desidera che il pulsante principale sia il pulsante sinistro o destro nell&apos;app</value>
+    <value>Scegliere se si desidera che il pulsante principale sia il pulsante sinistro o destro nell'app</value>
   </data>
   <data name="WalkThroughMouseMS355_Main.0" xml:space="preserve">
     <value>Velocità di polling</value>
@@ -1879,7 +1879,7 @@
     <value>Azioni specifiche delle app</value>
   </data>
   <data name="WalkThroughMouseMS355_Sub.0" xml:space="preserve">
-    <value>Migliorare la velocità e la precisione del mouse aumentandone la velocità di polling nell&apos;app</value>
+    <value>Migliorare la velocità e la precisione del mouse aumentandone la velocità di polling nell'app</value>
   </data>
   <data name="WalkThroughMouseMS355_Sub.1" xml:space="preserve">
     <value>Assegnare le azioni preferite per quando clicca sul pulsante di scorrimento</value>
@@ -1894,7 +1894,7 @@
     <value>Azioni specifiche delle app</value>
   </data>
   <data name="WalkThroughMouseMS900_Sub.0" xml:space="preserve">
-    <value>Assegnare le azioni preferite ai pulsanti delineati nell&apos;app</value>
+    <value>Assegnare le azioni preferite ai pulsanti delineati nell'app</value>
   </data>
   <data name="WalkThroughMouseMS900_Sub.1" xml:space="preserve">
     <value>Assegnare azioni personalizzate ai pulsanti del mouse quando si utilizzano determinate applicazioni</value>
@@ -1915,7 +1915,7 @@
     <value>La penna è carica al X%.\n\nPer caricare completamente la penna, assicurarsi che sia collegata allo schermo del tablet. Una volta completata la ricarica della penna, viene visualizzata una notifica.\n\nLe notifiche di batteria scarica vengono visualizzate quando la carica della batteria è inferiore al 10%.</value>
   </data>
   <data name="WalkThroughPen_Sub.2" xml:space="preserve">
-    <value>Nell&apos;app, è possibile personalizzare le azioni dei pulsanti della penna e impostare la sensibilità di inclinazione e della punta\r\n</value>
+    <value>Nell'app, è possibile personalizzare le azioni dei pulsanti della penna e impostare la sensibilità di inclinazione e della punta\r\n</value>
   </data>
   <data name="WalkThroughWebCam_Sub.0" xml:space="preserve">
     <value>Con il nostro nuovo widget Impostazioni rapide, è possibile gestire facilmente le impostazioni principali della fotocamera durante una chiamata su Zoom</value>
@@ -1924,10 +1924,10 @@
     <value>Selezionare un predefinito che rifletta il modo in cui si desidera apparire sulla fotocamera o crearne uno personalizzato</value>
   </data>
   <data name="WalkThroughWebCam_Sub.2" xml:space="preserve">
-    <value>Abilitare il framing automatico AI per mantenere il volto al centro dell&apos;inquadratura mentre ci si muove</value>
+    <value>Abilitare il framing automatico AI per mantenere il volto al centro dell'inquadratura mentre ci si muove</value>
   </data>
   <data name="WalkThroughWebCam_Sub.3" xml:space="preserve">
-    <value>Abilitare High Dynamic Range per migliorare la qualità dell&apos;immagine, in particolare in condizioni di illuminazione estreme</value>
+    <value>Abilitare High Dynamic Range per migliorare la qualità dell'immagine, in particolare in condizioni di illuminazione estreme</value>
   </data>
   <data name="WalkThroughWebCam_Sub.4" xml:space="preserve">
     <value>Attivare la funzione di rilevamento della presenza per far sì che la fotocamera attivi lo schermo quando ci si avvicina e lo blocchi quando ci si allontana</value>
@@ -1954,7 +1954,7 @@
     <value>Pulsanti pratici</value>
   </data>
   <data name="WalkThroughHeadsetWL3024_Sub.0" xml:space="preserve">
-    <value>Ripiegare il microfono per disattivare l&apos;audio e aprirlo per riattivarlo.\r\n\r\nSe si desidera, attivare una funzione nell&apos;app per rispondere alle chiamate in arrivo quando si apre il microfono a braccio.</value>
+    <value>Ripiegare il microfono per disattivare l'audio e aprirlo per riattivarlo.\r\n\r\nSe si desidera, attivare una funzione nell'app per rispondere alle chiamate in arrivo quando si apre il microfono a braccio.</value>
   </data>
   <data name="WalkThroughHeadsetWL3024_Sub.1" xml:space="preserve">
     <value>Gestire Microsoft Teams e lo stato di disattivazione audio con una sola pressione di un pulsante per ciascuno di essi. Regolare il volume audio e altre funzioni con altri pratici pulsanti.</value>
@@ -1963,28 +1963,28 @@
     <value>Pulsanti pratici</value>
   </data>
   <data name="WalkThroughHeadsetWH3024_Main.1" xml:space="preserve">
-    <value>Attivare/disattivare l&apos;audio utilizzando il microfono a braccio</value>
+    <value>Attivare/disattivare l'audio utilizzando il microfono a braccio</value>
   </data>
   <data name="WalkThroughHeadsetWH3024_Sub.0" xml:space="preserve">
     <value>Gestire le chiamate, lo stato di esclusione microfono e il volume audio con i pratici pulsanti sul controllo in linea delle cuffie</value>
   </data>
   <data name="WalkThroughHeadsetWH3024_Sub.1" xml:space="preserve">
-    <value>Ripiegare il microfono per disattivare l&apos;audio e aprirlo per riattivarlo.\r\n\r\nSe si desidera, attivare una funzione nell&apos;app per rispondere alle chiamate in arrivo quando si apre il microfono a braccio.</value>
+    <value>Ripiegare il microfono per disattivare l'audio e aprirlo per riattivarlo.\r\n\r\nSe si desidera, attivare una funzione nell'app per rispondere alle chiamate in arrivo quando si apre il microfono a braccio.</value>
   </data>
   <data name="WalkThroughHeadsetWL5024_Sub.0" xml:space="preserve">
-    <value>Ripiegare il microfono per disattivare l&apos;audio e aprirlo per riattivarlo.\r\n\r\nSe si desidera, attivare una funzione nell&apos;app per rispondere alle chiamate in arrivo quando si apre il microfono a braccio.</value>
+    <value>Ripiegare il microfono per disattivare l'audio e aprirlo per riattivarlo.\r\n\r\nSe si desidera, attivare una funzione nell'app per rispondere alle chiamate in arrivo quando si apre il microfono a braccio.</value>
   </data>
   <data name="WalkThroughHeadsetWL5024_Sub.1" xml:space="preserve">
     <value>Gestire Microsoft Teams e lo stato di disattivazione audio con una sola pressione di un pulsante per ciascuno di essi. Regolare il volume audio e altre funzioni con altri pratici pulsanti.</value>
   </data>
   <data name="WalkThroughHeadsetWL5024_Sub.2" xml:space="preserve">
-    <value>Premere il pulsante ANC sulle cuffie o scegliere tra le opzioni nell&apos;app per gestire la quantità di rumore esterno che si sente.\r\n\r\nSe si seleziona trasparenza, utilizzare il cursore nell&apos;app per personalizzare il livello di rumore.</value>
+    <value>Premere il pulsante ANC sulle cuffie o scegliere tra le opzioni nell'app per gestire la quantità di rumore esterno che si sente.\r\n\r\nSe si seleziona trasparenza, utilizzare il cursore nell'app per personalizzare il livello di rumore.</value>
   </data>
   <data name="WalkThroughHeadsetWH5024_Main.0" xml:space="preserve">
     <value>Pulsanti pratici</value>
   </data>
   <data name="WalkThroughHeadsetWH5024_Main.1" xml:space="preserve">
-    <value>Attivare/disattivare l&apos;audio utilizzando il microfono a braccio</value>
+    <value>Attivare/disattivare l'audio utilizzando il microfono a braccio</value>
   </data>
   <data name="WalkThroughHeadsetWH5024_Main.2" xml:space="preserve">
     <value>Cancellazione attiva del rumore</value>
@@ -1993,19 +1993,19 @@
     <value>Gestire le chiamate, lo stato di esclusione microfono e il volume audio con i pratici pulsanti sul controllo in linea delle cuffie. Regolare la quantità di rumore esterno che si sente con il tasto ANC laterale. </value>
   </data>
   <data name="WalkThroughHeadsetWH5024_Sub.1" xml:space="preserve">
-    <value>Ripiegare il microfono per disattivare l&apos;audio e aprirlo per riattivarlo.\r\n\r\nSe si desidera, attivare una funzione nell&apos;app per rispondere alle chiamate in arrivo quando si apre il microfono a braccio.</value>
+    <value>Ripiegare il microfono per disattivare l'audio e aprirlo per riattivarlo.\r\n\r\nSe si desidera, attivare una funzione nell'app per rispondere alle chiamate in arrivo quando si apre il microfono a braccio.</value>
   </data>
   <data name="WalkThroughHeadsetWH5024_Sub.2" xml:space="preserve">
-    <value>Premere il pulsante ANC sulle cuffie o scegliere tra le opzioni nell&apos;app per gestire la quantità di rumore esterno che si sente.\r\n\r\nSe si seleziona trasparenza, utilizzare il cursore nell&apos;app per personalizzare il livello di rumore.</value>
+    <value>Premere il pulsante ANC sulle cuffie o scegliere tra le opzioni nell'app per gestire la quantità di rumore esterno che si sente.\r\n\r\nSe si seleziona trasparenza, utilizzare il cursore nell'app per personalizzare il livello di rumore.</value>
   </data>
   <data name="WalkThroughHeadsetWL7024_Sub.0" xml:space="preserve">
-    <value>Scorrere verso l&apos;alto e verso il basso per gestire il volume, toccare due volte per rispondere e terminare le chiamate e altro ancora.</value>
+    <value>Scorrere verso l'alto e verso il basso per gestire il volume, toccare due volte per rispondere e terminare le chiamate e altro ancora.</value>
   </data>
   <data name="WalkThroughHeadsetWL7024_Sub.1" xml:space="preserve">
     <value>Gestire lo stato di esclusione microfono, la cancellazione attiva del rumore (ANC) e Microsoft Teams con i pratici pulsanti sulle cuffie</value>
   </data>
   <data name="WalkThroughHeadsetWL7024_Sub.2" xml:space="preserve">
-    <value>Premere il pulsante ANC sulle cuffie o scegliere tra le opzioni nell&apos;app per gestire la quantità di rumore esterno che si sente.\r\n\r\nSe si seleziona trasparenza, utilizzare il cursore nell&apos;app per personalizzare il livello di rumore.</value>
+    <value>Premere il pulsante ANC sulle cuffie o scegliere tra le opzioni nell'app per gestire la quantità di rumore esterno che si sente.\r\n\r\nSe si seleziona trasparenza, utilizzare il cursore nell'app per personalizzare il livello di rumore.</value>
   </data>
   <data name="WalkThroughHeadsetWL7024_Sub.3" xml:space="preserve">
     <value>Ricaricare le cuffie posizionandole sul dock di ricarica o collegandole al PC utilizzando il cavo USB in dotazione</value>
@@ -2029,10 +2029,10 @@
     <value>Opzioni di avvio</value>
   </data>
   <data name="EazyMemory.36" xml:space="preserve">
-    <value>Salvare profili diversi e ripristinarli manualmente, in base all&apos;ora pianificata o all&apos;avvio del sistema.\r\n\r\nIniziare assegnando un nome al profilo Easy Memory e selezionando un layout.</value>
+    <value>Salvare profili diversi e ripristinarli manualmente, in base all'ora pianificata o all'avvio del sistema.\r\n\r\nIniziare assegnando un nome al profilo Easy Memory e selezionando un layout.</value>
   </data>
   <data name="EazyMemory.37" xml:space="preserve">
-    <value>Assegnare applicazioni/documenti a Windows o trascinare l&apos;icona dell&apos;applicazione nella rispettiva partizione.\r\n\r\nNota: l&apos;usabilità della memoria EasyArrange può variare in base al tipo di applicazione e al comportamento di avvio.</value>
+    <value>Assegnare applicazioni/documenti a Windows o trascinare l'icona dell'applicazione nella rispettiva partizione.\r\n\r\nNota: l'usabilità della memoria EasyArrange può variare in base al tipo di applicazione e al comportamento di avvio.</value>
   </data>
   <data name="EazyMemory.38" xml:space="preserve">
     <value>Selezionare un tipo di avvio</value>
@@ -2050,10 +2050,10 @@
     <value>No</value>
   </data>
   <data name="Camera.12" xml:space="preserve">
-    <value>Non disponibile durante l&apos;aggiunta di un predefinito</value>
+    <value>Non disponibile durante l'aggiunta di un predefinito</value>
   </data>
   <data name="Camera.13" xml:space="preserve">
-    <value>Non tutte le funzioni sono disponibili durante l&apos;aggiunta di un predefinito</value>
+    <value>Non tutte le funzioni sono disponibili durante l'aggiunta di un predefinito</value>
   </data>
   <data name="HeadsetAudioSettings.20" xml:space="preserve">
     <value>Controlla la quantità di suono esterno percepita</value>
@@ -2068,13 +2068,13 @@
     <value>Disattiva le funzioni di cancellazione del rumore</value>
   </data>
   <data name="HeadsetAudioSettings.24" xml:space="preserve">
-    <value>Limita il rumore del microfono near-end per offrire agli altri un&apos;esperienza audio migliore</value>
+    <value>Limita il rumore del microfono near-end per offrire agli altri un'esperienza audio migliore</value>
   </data>
   <data name="HeadsetAudioSettings.25" xml:space="preserve">
-    <value>Limita il rumore del microfono far-end per offrire un&apos;esperienza audio migliore</value>
+    <value>Limita il rumore del microfono far-end per offrire un'esperienza audio migliore</value>
   </data>
   <data name="HeadsetAudioSettings.26" xml:space="preserve">
-    <value>L&apos;equalizzatore si regola in base alla preimpostazione scelta</value>
+    <value>L'equalizzatore si regola in base alla preimpostazione scelta</value>
   </data>
   <data name="HeadsetAudioSettings.27" xml:space="preserve">
     <value>Regola la capacità di sentire la propria voce mentre si parla durante una chiamata (non disponibile in modalità Trasparenza).</value>
@@ -2095,7 +2095,7 @@
     <value>Utilizzare il microfono a braccio per rispondere alle chiamate</value>
   </data>
   <data name="HeadsetAutomatedActions.13" xml:space="preserve">
-    <value>Azioni automatiche quando si toglie l&apos;auricolare dall&apos;orecchio</value>
+    <value>Azioni automatiche quando si toglie l'auricolare dall'orecchio</value>
   </data>
   <data name="HeadsetDeviceSettings.7" xml:space="preserve">
     <value>Indicatore luminoso durante una chiamata</value>
@@ -2107,7 +2107,7 @@
     <value>Rimuove il rumore di sottofondo per consentire di sentire chiaramente la voce</value>
   </data>
   <data name="SpeakerToolTip.1" xml:space="preserve">
-    <value>Riproduce un suono quando il dispositivo disattiva l&apos;audio</value>
+    <value>Riproduce un suono quando il dispositivo disattiva l'audio</value>
   </data>
   <data name="SpeakerToolTip.2" xml:space="preserve">
     <value>Riproduce un suono quando il livello del volume viene regolato</value>
@@ -2119,10 +2119,13 @@
     <value>Impostazioni modificate. Dell Display and Peripheral Manager verrà riavviato.</value>
   </data>
   <data name="ImpExp_SuccessMsg.0" xml:space="preserve">
-    <value>Impostazioni dell&apos;applicazione esportate correttamente</value>
+    <value>Impostazioni dell'applicazione esportate correttamente</value>
   </data>
   <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
-    <value>Impostazioni dell&apos;applicazione applicate correttamente a %1. Divertiti a usare il monitor.</value>
+    <value>Impostazioni dell'applicazione applicate correttamente a %1. Divertiti a usare il monitor.</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.2" xml:space="preserve">
+    <value>Impostazioni dell'applicazione applicate correttamente a %1. Divertiti a usare il monitor.</value>
   </data>
   <data name="ImpExp_WarningMsg.0" xml:space="preserve">
     <value>Questo non è il monitor principale. Continuare e impostare questo come monitor principale per la sincronizzazione?</value>
@@ -2224,7 +2227,7 @@
     <value>Attiva il widget di accesso rapido durante le chiamate in conferenza Zoom</value>
   </data>
   <data name="Widget_will_automatically_appear_when_meeting_begins" xml:space="preserve">
-    <value>Il widget viene visualizzato automaticamente all&apos;inizio della riunione per personalizzare le impostazioni per le Webcam supportate</value>
+    <value>Il widget viene visualizzato automaticamente all'inizio della riunione per personalizzare le impostazioni per le Webcam supportate</value>
   </data>
   <data name="Enable_shortcut_reminder_for_Quick_Accesswidget" xml:space="preserve">
     <value>Abilita promemoria di scelta rapida per il widget di accesso rapido</value>
@@ -2266,6 +2269,6 @@
     <value>Interrompi anteprima</value>
   </data>
   <data name="Tooltips_Schedule" xml:space="preserve">
-    <value>Questa funzione consente agli occhi di adattarsi all&apos;ambiente desiderato.</value>
+    <value>Questa funzione consente agli occhi di adattarsi all'ambiente desiderato.</value>
   </data>
 </root>

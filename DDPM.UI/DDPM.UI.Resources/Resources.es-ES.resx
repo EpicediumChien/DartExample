@@ -322,7 +322,7 @@
     <value>Permita que el dispositivo se empareje o inicie la configuración de Windows y seleccione el dispositivo correspondiente una vez detectado.</value>
   </data>
   <data name="AddDevice.Pen.4" xml:space="preserve">
-    <value>Seleccione &quot;Sí&quot; para confirmar el emparejamiento en el cuadro de aviso</value>
+    <value>Seleccione "Sí" para confirmar el emparejamiento en el cuadro de aviso</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
     <value>Para conectividad sin receptores inalámbricos USB y en cualquier lugar</value>
@@ -535,7 +535,7 @@
     <value>Luminancia +</value>
   </data>
   <data name="Hotkey.6" xml:space="preserve">
-    <value>Ejemplo: &quot;Alt + P&quot;, &quot;Mayús + F&quot;, &quot;Ctrl + Mayús + F&quot;.\nTenga en cuenta que, para varios monitores, el cursor del ratón debe estar en la pantalla del monitor objetivo para activar la función de tecla de acceso rápido.</value>
+    <value>Ejemplo: "Alt + P", "Mayús + F", "Ctrl + Mayús + F".\nTenga en cuenta que, para varios monitores, el cursor del ratón debe estar en la pantalla del monitor objetivo para activar la función de tecla de acceso rápido.</value>
   </data>
   <data name="ButtonSettings.0" xml:space="preserve">
     <value>Clic en la rueda de desplazamiento</value>
@@ -1399,7 +1399,7 @@
     <value>El dispositivo que va a emparejar no es compatible con el receptor inalámbrico USB conectado. Utilice el receptor que incluía el dispositivo.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>Las ranuras disponibles en este receptor inalámbrico USB están llenas. Para usarlo, desempareje un dispositivo haciendo clic en el botón \&quot;Desemparejar\&quot; en la página de configuración del dispositivo.</value>
+    <value>Las ranuras disponibles en este receptor inalámbrico USB están llenas. Para usarlo, desempareje un dispositivo haciendo clic en el botón \"Desemparejar\" en la página de configuración del dispositivo.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>Haga clic en Asignar una acción</value>
@@ -2122,6 +2122,9 @@
     <value>La configuración de la aplicación se ha exportado correctamente</value>
   </data>
   <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
+    <value>La configuración de la aplicación se ha aplicado correctamente a %1. Disfrute de su monitor.</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.2" xml:space="preserve">
     <value>La configuración de la aplicación se ha aplicado correctamente a %1. Disfrute de su monitor.</value>
   </data>
   <data name="ImpExp_WarningMsg.0" xml:space="preserve">

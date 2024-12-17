@@ -465,21 +465,21 @@ namespace DDPM.UI.Module.Brightness
                 //if (!SelectedHomeDevice.MonitorInfo.DisplayName.Equals(mo.DisplayName))//0614 add
                 //    return;
 
-				try
-				{
-                	List<ALSConfig> tmp = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
-                	if (tmp == null || tmp.Count == 0)
-                    	return;
+                try
+                {
+                    List<ALSConfig> tmp = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
+                    if (tmp == null || tmp.Count == 0)
+                        return;
 
-                	int idx = tmp.FindIndex(x => x.Edid.Equals(mo.edid));
-                	if (idx < 0)
-                    	return;
+                    int idx = tmp.FindIndex(x => x.Edid.Equals(mo.edid));
+                    if (idx < 0)
+                        return;
 
-                	Start_ALSConfig = tmp[idx];
+                    Start_ALSConfig = tmp[idx];
 
-                	//2.if yes, then update the vcp value to each option
-                	GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
-				}
+                    //2.if yes, then update the vcp value to each option
+                    GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
+                }
                 catch (Exception ex)
                 {
                     DdpmCommonHelper.WriteUILog($"[OnVCPChangedEvent][BrightnessViewModel] exception with {ex.Message}");
@@ -535,6 +535,7 @@ namespace DDPM.UI.Module.Brightness
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged -= OnVCPChangedEvent;
                 DdpmCommonHelper.BitmapImageUpdated -= ALSFontColorUpdate;
             }
+            DdpmCommonHelper.MyConsole.UnregisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
         }
 
         public BrightnessViewModel()
@@ -565,7 +566,7 @@ namespace DDPM.UI.Module.Brightness
             PR1Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
             PR2Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
 
-            DdpmCommonHelper.MyConsole.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
+            DdpmCommonHelper.MyConsole?.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
             DdpmCommonHelper.BitmapImageUpdated += ALSFontColorUpdate;
 
             syncUIvalue_bw.DoWork += new DoWorkEventHandler(SyncUI_Value);
@@ -692,7 +693,7 @@ namespace DDPM.UI.Module.Brightness
                         {
                             for (int i = 0; i < alsList.Count; i++)
                             {
-                                if (alsList[i].Edid == SelectedHomeDevice.MonitorInfo.edid )
+                                if (alsList[i].Edid == SelectedHomeDevice.MonitorInfo.edid)
                                 {
                                     Start_ALSConfig = alsList[i];
                                 }
@@ -1906,7 +1907,7 @@ namespace DDPM.UI.Module.Brightness
             else
                 ScheduleMap.IsEnable = false;
 
-            DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(SelectedHomeDevice.MonitorInfo, ScheduleMap);
+            DdpmCommonHelper.DeviceManagerSA?.WriteScheduleMonitorSettings(SelectedHomeDevice.MonitorInfo, ScheduleMap);
         }
 
         public bool CheckIsTimeOverlap()
@@ -2561,10 +2562,10 @@ namespace DDPM.UI.Module.Brightness
 
         public void UpdateLuminance()
         {
-            if (Luminance_Value < 0)
+            //if (Luminance_Value < 0)
                 Get_Luminance_Value(); //0703 fix update luminance issue
             //NotifyPropertyChanged("LuminanceValue");
-            if (LuminanceMax_Value < 0)
+            //if (LuminanceMax_Value < 0)
                 Get_LuminanceMax_Value();
             //NotifyPropertyChanged("LuminanceMaxValue");
         }
@@ -3206,7 +3207,7 @@ namespace DDPM.UI.Module.Brightness
                     IsBusy = false;
                     NotifyPropertyChanged("IsBusy");
                 }));
-                
+
             }
         }
 
@@ -3259,7 +3260,7 @@ namespace DDPM.UI.Module.Brightness
                     IsBusy = false;
                     NotifyPropertyChanged("IsBusy");
                 }));
-                
+
             }
         }
 
@@ -3446,7 +3447,7 @@ namespace DDPM.UI.Module.Brightness
                     NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
                     IsBusy = false;
                     NotifyPropertyChanged("IsBusy");
-                }));                
+                }));
             }
         }
 
@@ -3593,7 +3594,7 @@ namespace DDPM.UI.Module.Brightness
                         syncUIvalue_bw.ReportProgress(100, Convert.ToDouble(t.value));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog($"[BrightnessViewModel][SyncUI_Value] exception: {ex.Message}");
             }
