@@ -526,7 +526,7 @@ namespace CLI.Plugins.Display
                         if (!String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
                         {
                             string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
-                            if (ss.Length == 2)
+                            if (ss.Length > 2)
                             {
                                 List<InputSourceObj> inputSources = _devMgr.GetSubInputs(mo).Result;
                                 // "Input Select"
@@ -561,9 +561,9 @@ namespace CLI.Plugins.Display
                     string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
                     if (!String.IsNullOrWhiteSpace(stIsDone))
                         continue;
-                    Thread.Sleep(3000);
+                    //Thread.Sleep(3000);
                     MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
-                    Thread.Sleep(3000);
+                    //Thread.Sleep(3000);
                     Trace.WriteLine($"serviceTagList[i] = {serviceTagList[i]}");
                     //Trace.WriteLine($"serviceTagList[i] = {serviceTagLisi]}");
                     Trace.WriteLine($"i = {i}");
@@ -577,7 +577,7 @@ namespace CLI.Plugins.Display
                     if (mo.CapabilityDic.ContainsKey("E9"))
                     {
                         isPass = _devMgr.SetPbpMode(mo, (UInt16)pxpModeObj.ModeCode).Result;
-                        Thread.Sleep(8000);
+                        //Thread.Sleep(8000);
                         if (!isPass)
                         {
                             _AllInfoMonitors = _devMgr.GetMonitors().Result;
@@ -636,13 +636,18 @@ namespace CLI.Plugins.Display
                         if (!String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
                         {
                             string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
-                            if (ss.Length == 2)
+                            string binaryIndex = "";
+                            if (ss.Length > 2)
                             {
+                                for (int ssIndex = ss.Length - 1; ssIndex >= 1; ssIndex--)
+                                {
+                                    int intNum = Convert.ToInt32(get_InputSource_code(get_inputsource_type(ss[ssIndex]).ToString()), 16);
+                                    string strBinary = Convert.ToString(intNum, 2).PadLeft(5,'0');
+                                    binaryIndex = binaryIndex + strBinary;
+                                }
                                 //"PIP/PBP Input"
                                 string vcpcode3 = "0xE8";
-                                string value3 = get_InputSource_code(get_inputsource_type(ss[1]).ToString());
-                                Trace.WriteLine(value3);
-                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode3, 16)), (Convert.ToUInt32(value3, 16))).Result;
+                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode3, 16)), Convert.ToUInt32(binaryIndex, 2)).Result;
                                 if (!isOK)
                                 {
                                     isOK = false;
@@ -656,10 +661,6 @@ namespace CLI.Plugins.Display
                             Command = _cmdLineInput.Command,
                             TargetFeature = _cmdLineInput.TargetFeature
                         };
-                        //response.Index = change_0base_to_1base(i.ToString());
-                        //response.Model = mo.modelName;
-                        //response.SerialNumber = mo.edid.SerialNumber;
-                        //response.ServiceTag = mo.edid.ServiceTag;
                         response.Value = rawValue;
                         swapIsDone.Add(mo.edid.ServiceTag);
                         if (isOK)
