@@ -2806,7 +2806,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetIsMicEnumerationOn requested ...");
             writelog($"Target DeviceID is {deviceId}");
             _PeripheralsPlugin.SetIsMicEnumerationOn(newValue, deviceId);
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
 
         public Task SetWALTime(int newValue, Guid deviceId)
@@ -9427,30 +9427,31 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         public Task SetIsFocusOn(string Guid, bool newValue)
+        public Task<bool> SetIsFocusOn(string guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsFocusOn requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsFocusOn(Guid, newValue);
-            return Task.FromResult(true);
+
+            return _DTPProxyPlugin.SetIsFocusOn(guid, newValue);
         }
 
-        public Task SetFocus(string Guid, int newValue)
+        public Task<bool> SetFocus(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetFocus requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetFocus(Guid, newValue);
-            return Task.FromResult(true);
+
+            return _DTPProxyPlugin.SetFocus(guid, newValue);
         }
 
-        public Task SetPriority(string Guid, int newValue)
+        public Task<bool> SetPriority(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetPriority requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetPriority(Guid, newValue);
-            return Task.FromResult(true);
+
+            return _DTPProxyPlugin.SetPriority(guid, newValue);
         }
 
         public Task<bool> SetIsHDROn(string Guid, bool newValue)
@@ -9461,22 +9462,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return _DTPProxyPlugin.SetIsHDROn(Guid, newValue);
         }
 
-        public Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue)
+        public Task<bool> SetIsAutoWhiteBalanceOn(string guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsAutoWhiteBalanceOn requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsAutoWhiteBalanceOn(Guid, newValue);
-            return Task.FromResult(true);
+
+            return _DTPProxyPlugin.SetIsAutoWhiteBalanceOn(guid, newValue);
         }
 
-        public Task SetAutoWhiteBalance(string Guid, int newValue)
+        public Task<bool> SetAutoWhiteBalance(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAutoWhiteBalance requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetAutoWhiteBalance(Guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetAutoWhiteBalance(guid, newValue);
         }
 
         public Task SetWALTime(string Guid, int newValue)
@@ -10259,6 +10259,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 else
                 {
+                    //Derek 1216
+                    //PIMS 332041 OSD should not be seen on set Widget setting- Activae Quick Access widget
+                    //during Zoom conference calls" = Off (uncheck)
+                    CloseQAMOSD();
+
                     QAMClose(false);
 
                     writelog($"Close QAM/OSD due to global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
@@ -10733,6 +10738,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             //Derek 1209
             //QAMClose();
+
+            //Derek 1216 info homepage navigate to widget setting page
+            isDDPMHomepageReady = false;
+            isDDPMLaunchedByQAM = false;
+            SetIsWidgetSettingPageLoadedByQAMAsync(true);
 
             return Task.CompletedTask;
         }
@@ -12973,7 +12983,71 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             HandleQAMV2();
         }
 
+        //Derek 1217 add Debounce for Keyboard_KeyUpProc
+        private System.Timers.Timer _timerDebounce;
+        //即刻执行，执行之后，在timeMs内再次调用无效
+        public void KeyboardHook_Debounce<T>(int timeMs, ISynchronizeInvoke invoker, 
+                        Action<T> action, T parameter)
+        {
+            System.Threading.Monitor.Enter(this);
+            bool needExit = true;
+
+            try
+            {
+                if (_timerDebounce == null)
+                {
+                    _timerDebounce = new System.Timers.Timer(timeMs);
+                    _timerDebounce.AutoReset = false;
+                    _timerDebounce.Elapsed += (o, e) =>
+                    {
+                        _timerDebounce.Stop();
+                        _timerDebounce.Close();
+                        _timerDebounce = null;
+                    };
+                    _timerDebounce.Start();
+
+                    System.Threading.Monitor.Exit(this);
+                    needExit = false;
+
+                    InvokeAction(action, parameter, invoker);//can't lock this
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch exception[{e.Message}] when run KeyboardHook_Debounce");
+            }
+            finally
+            {
+                if (needExit)
+                    System.Threading.Monitor.Exit(this);
+            }
+        }
+
+        private void InvokeAction<T>(Action<T> action, T parameter, ISynchronizeInvoke invoker)
+        {
+            if (invoker == null)
+            {
+                action(parameter);
+            }
+            else
+            {
+                if (invoker.InvokeRequired)
+                {
+                    _ = invoker.Invoke(action, new object[] { parameter });
+                }
+                else
+                {
+                    action(parameter);
+                }
+            }
+        }
+
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
+        {
+            KeyboardHook_Debounce(3000, null, KeyboardHook_KeyUpProc, e);
+        }
+
+        private void KeyboardHook_KeyUpProc(KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
             Debug.WriteLine($"Keyboard_KeyUpProc ---{strKey}");
@@ -12989,7 +13063,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"ALT+Z conditons: devcnt = {devCnt}, " +
                     $"global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
 
-                //Derek PIMS PIMS-329759 Problem 1
+                //Derek PIMS-329759 Problem 1
                 if (1 == devCnt && _GlobalSettingParam != null &&
                     _GlobalSettingParam.GlobalSetting_WidgetSettings != null &&
                     _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)

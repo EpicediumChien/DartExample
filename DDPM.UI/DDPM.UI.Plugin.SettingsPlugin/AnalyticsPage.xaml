@@ -7,7 +7,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d" 
-             Margin="5,4,60,29"
+             Margin="5,4,0,29"
             d:DesignHeight="450"
                 d:DesignWidth="800"
              SizeChanged="UserControl_SizeChanged">
@@ -22,7 +22,7 @@
                 <UXControls:UXTextBlock Text="{Binding [Analytics.0], Source={x:Static lang:LangHelper.Instance}}"
                                         Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                         Margin="20" FontSize="24" Grid.Row="0" />
-                <Border Style="{StaticResource PartBorderStyle}" CornerRadius="13" Grid.Row="1" Margin="20,0,20,0" >
+                <Border Style="{StaticResource PartBorderStyle}" BorderThickness="0" CornerRadius="13" Grid.Row="1" Margin="20,0,20,0" >
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
