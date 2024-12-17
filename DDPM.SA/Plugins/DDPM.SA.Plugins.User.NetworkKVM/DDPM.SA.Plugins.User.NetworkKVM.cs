@@ -120,6 +120,7 @@ namespace NetworkKVM.Plugins
                 if (pipeServer.IsConnected)
                 {
                     _logs.DebugMsg("[NetworkKVM] Namedpipe is Connected.");
+                    return Task.FromResult(true);
                 }
             }
             return Task.FromResult(false);
