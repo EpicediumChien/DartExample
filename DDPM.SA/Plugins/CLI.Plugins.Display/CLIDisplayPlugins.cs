@@ -949,7 +949,10 @@ namespace DDPM.CLI.Plugins.Display
 
         private string GetPeripheralResponse(int index, string output, DeviceInfo g)
         {
+            // modified @ 20241217 stephen: make string follow json format
+            output += "{";
             output += $"\n  \"Device\": \"{g.LogicalDeviceType}\"";
+            output += "}";
             PeripheralResponse cli_Response2 = new PeripheralResponse(index, g);
             if (g.LogicalDeviceType == "LogicalHeadset")
             {
