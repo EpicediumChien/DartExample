@@ -681,11 +681,13 @@ namespace DDPM.UI.Module.Color
 
         private void cbManualPreset_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            int _previousSelectedIndex = 0;
             var comboBox = sender as System.Windows.Controls.ComboBox;
-            if (comboBox == null) return;
             ColorViewModel vm = (ColorViewModel)DataContext;
-            //Need Jim help to add func
+            if(vm != null && comboBox != null)
+            {
+                if(!string.IsNullOrEmpty(vm.last_selected_value))
+                    comboBox.SelectedValue = vm.last_selected_value;
+            }
         }
     }
 }
