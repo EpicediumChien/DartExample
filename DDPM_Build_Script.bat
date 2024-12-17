@@ -95,7 +95,6 @@ IF "%option_cmd%"=="debug_ui" (
 	set target_folder=%RootDir%\DDPM.UI
 )
 echo [target_folder] is [%target_folder%]
-pause
 Echo -------------------------------------------
 Echo [Clear all temp folder (bin and obj)]
 Echo -------------------------------------------
