@@ -173,6 +173,7 @@ namespace DDPM.SA.Common
         public byte[] ThumbnailImageRawData { get; set; }
 
         public string FirmwareVersion { get; set; }
+        public string Message { get; set; }
 
         public int BatteryLevel { get; set; }
 

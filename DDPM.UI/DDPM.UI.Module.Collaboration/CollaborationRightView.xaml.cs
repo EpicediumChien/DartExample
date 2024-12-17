@@ -19,7 +19,6 @@ namespace DDPM.UI.Module.Collaboration
         private readonly KeyboardViewModel _vm;
 
         private string LearnMoreText = "";
-        private bool ShowAlert = false;
 
         public CollaborationRightView(KeyboardViewModel vm)
         {
@@ -38,12 +37,13 @@ namespace DDPM.UI.Module.Collaboration
             //_vm.OnPropertyChanged(nameof(_vm.IsCollabShadowVisible));
             //bdrVideoShadow.Visibility = _vm.IsCollabShadowVisible ? Visibility.Visible : Visibility.Collapsed;
 
-            CheckCTKMessage();
+            CheckCTKMessage(_vm.CTKMessageHelper.CollaborationMsg);
 
             //lock/unlock
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
 
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
                 if (data != null)
@@ -58,11 +58,23 @@ namespace DDPM.UI.Module.Collaboration
             }
         }
 
+        private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
+        {
+            if (e.changedProperty == "CollaborationMsgChanged")
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    CheckCTKMessage(e.device_peripherals.Message);
+                }));
+            }
+        }
+
         ~CollaborationRightView()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
             }
         }
 
@@ -96,41 +108,43 @@ namespace DDPM.UI.Module.Collaboration
             }
         }
 
-        void CheckCTKMessage()
+        void CheckCTKMessage(string CTKMessage)
         {
-            if (!_vm.CTKMessageHelper.IsZoomClientInstalled && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_NOT_INSTALLED")
+            bdrAlert1.Visibility = Visibility.Collapsed;
+            bdrAlert2.Visibility = Visibility.Collapsed;
+
+            if (CTKMessage == "ZoomNotInstalled, TeamsNotInstalled")
             { // Scenario 1
                 txtAlert1.Text = Strings.Alert1;
                 bdrAlert1.Visibility = Visibility.Visible;
                 tsCollaboration.IsEnabled = false;
                 _vm.IsCollaborationKeyEnable = false;
-                ShowAlert = true;
             }
-            else if (!_vm.CTKMessageHelper.IsZoomClientInstalled && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_CLIENT_UNPAIRED")
+            else if (CTKMessage == "ZoomNotInstalled, ApplicationUnpaired")
             { // Scenario 2
                 txtAlert1.Text = Strings.Alert2;
                 bdrAlert1.Visibility = Visibility.Visible;
             }
-            else if (!_vm.CTKMessageHelper.IsZoomClientInstalled && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_CLIENT_BLOCKED")
+            else if (CTKMessage == "ZoomNotInstalled, ApplicationBlocked")
             { // Scenario 3
                 txtAlert2.Text = Strings.Alert3;
                 bdrAlert2.Visibility = Visibility.Visible;
                 txtLearnMore2.Text = Strings.LearnMoreLink;
                 LearnMoreText = Strings.LearnMoreText1;
             }
-            else if (_vm.CTKMessageHelper.IsZoomClientInstalled && !_vm.CTKMessageHelper.IsZoomVersionSupported && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_NOT_INSTALLED")
+            else if (CTKMessage == "ZoomIncompatibleVersion, TeamsNotInstalled")
             { // Scenario 4
                 txtAlert1.Text = Strings.Alert4;
                 bdrAlert1.Visibility = Visibility.Visible;
             }
-            else if (!_vm.CTKMessageHelper.IsZoomClientInstalled && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_SERVER_OFFLINE")
+            else if (CTKMessage == "ZoomUpToDate, TeamsNotRunning")
             { // Scenario 5
                 txtAlert2.Text = Strings.Alert5;
                 bdrAlert2.Visibility = Visibility.Visible;
                 txtLearnMore2.Text = Strings.LearnMoreLink;
                 LearnMoreText = Strings.LearnMoreText2;
             }
-            else if (_vm.CTKMessageHelper.IsZoomClientInstalled && !_vm.CTKMessageHelper.IsZoomVersionSupported && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_CLIENT_UNPAIRED")
+            else if (CTKMessage == "ZoomIncompatibleVersion, ApplicationUnpaired")
             { // Scenario 6
                 txtAlert1.Text = Strings.Alert2;
                 bdrAlert1.Visibility = Visibility.Visible;
@@ -138,7 +152,7 @@ namespace DDPM.UI.Module.Collaboration
                 bdrAlert2.Visibility = Visibility.Visible;
                 txtLearnMore2.Text = "";
             }
-            else if (_vm.CTKMessageHelper.IsZoomClientInstalled && !_vm.CTKMessageHelper.IsZoomVersionSupported && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_CLIENT_BLOCKED")
+            else if (CTKMessage == "ZoomIncompatibleVersion, ApplicationBlocked")
             { // Scenario 7
                 txtAlert1.Text = Strings.Alert4;
                 bdrAlert1.Visibility = Visibility.Visible;
@@ -147,7 +161,7 @@ namespace DDPM.UI.Module.Collaboration
                 txtLearnMore2.Text = Strings.LearnMoreLink;
                 LearnMoreText = Strings.LearnMoreText1;
             }
-            else if (_vm.CTKMessageHelper.IsZoomClientInstalled && !_vm.CTKMessageHelper.IsZoomVersionSupported && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_SERVER_OFFLINE")
+            else if (CTKMessage == "ZoomIncompatibleVersion, TeamsNotRunning")
             { // Scenario 8
                 txtAlert1.Text = Strings.Alert4;
                 bdrAlert1.Visibility = Visibility.Visible;
@@ -156,37 +170,37 @@ namespace DDPM.UI.Module.Collaboration
                 txtLearnMore2.Text = Strings.LearnMoreLink;
                 LearnMoreText = Strings.LearnMoreText2;
             }
-            else if (_vm.CTKMessageHelper.IsZoomVersionSupported && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_SERVER_OFFLINE")
+            else if (CTKMessage == "ZoomUpToDate, TeamsNotRunning")
             { // Scenario 9
                 txtAlert2.Text = Strings.Alert5;
                 bdrAlert2.Visibility = Visibility.Visible;
                 txtLearnMore2.Text = Strings.LearnMoreLink;
                 LearnMoreText = Strings.LearnMoreText2;
             }
-            else if (_vm.CTKMessageHelper.IsZoomVersionSupported && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_CLIENT_BLOCKED")
+            else if (CTKMessage == "ZoomUpToDate, ApplicationBlocked")
             { // Scenario 10
                 txtAlert2.Text = Strings.Alert3;
                 bdrAlert2.Visibility = Visibility.Visible;
                 txtLearnMore2.Text = Strings.LearnMoreLink;
                 LearnMoreText = Strings.LearnMoreText1;
             }
-            else if (_vm.CTKMessageHelper.IsZoomVersionSupported && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_CLIENT_UNPAIRED")
+            else if (CTKMessage == "ZoomUpToDate, ApplicationUnpaired")
             { // Scenario 11
                 txtAlert1.Text = Strings.Alert2;
                 bdrAlert1.Visibility = Visibility.Visible;
             }
-            else if (_vm.CTKMessageHelper.IsZoomClientInstalled && !_vm.CTKMessageHelper.IsZoomVersionSupported && _vm.CTKMessageHelper.TeamsSDKState == "SDK_STATE_CLIENT_PAIRED")
+            else if (CTKMessage == "ZoomIncompatibleVersion, ApplicationPaired")
             { // Scenario 12
                 txtAlert1.Text = Strings.Alert4;
                 bdrAlert1.Visibility = Visibility.Visible;
             }
             else
             {
-                //txtAlert1.Text = Strings.Alert4;
-                //bdrAlert1.Visibility = Visibility.Visible;
+                //bdrAlert1.Visibility = Visibility.Collapsed;
+                //bdrAlert2.Visibility = Visibility.Collapsed;
             }
 
-            spAlert.Visibility = _vm.IsCollaborationKeyEnable || ShowAlert ? Visibility.Visible : Visibility.Collapsed; // Scenario 13
+            spAlert.Visibility = _vm.IsCollaborationKeyEnable ? Visibility.Visible : Visibility.Collapsed; // Scenario 13
         }
 
         private void CloseDescription1(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -267,6 +281,7 @@ namespace DDPM.UI.Module.Collaboration
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
             }
         }
     }

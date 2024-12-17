@@ -97,8 +97,8 @@ namespace DdpmSwUpdater
         /// <returns>回傳裝置資訊表(在這個方法裡將原本傳入的裝置資訊表，再寫入對應裝置的下載安裝的結果碼)</returns>
         public Task<List<SWUpdateInfo>> DownloadAndInstall(string installPath)
         {
-            List<string> InfoPkey = new List<string>();
-            InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+            List<string> InfoPkey = new List<string>(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+            //InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
             bool isSkipCA = GetCheckCAStatus();
             _SkipSHA = GetCheckSHAStatus();
             LogManage.LogMessage(nameof(DownloadAndInstall) + " start");

@@ -39,6 +39,9 @@ namespace DDPM.EABroker
         private IEasyArrangeService? _easyArrangeService = null;
         private ISettingsManagerDev? _settingsManager = null;
 
+        //EAPlugin
+        private string _eaPluginLastError = "";
+
         //Window Moving
         private IntPtr _hWndForeground = IntPtr.Zero;
         private string _pathNameForeground = "";
@@ -270,7 +273,36 @@ namespace DDPM.EABroker
             }
             return _AllMonitors[0];
         }
+
+        public bool SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
+        {
+            if (_deviceManagerSA != null)
+            {
+                return _deviceManagerSA.SetEASelectedLayout(monitorInfo, eaId).Result;
+            }
+            return false;
+        }
+
+        public SplitJson[] ReadCustomList()
+        {
+            if (_deviceManagerSA != null)
+            {
+                return _deviceManagerSA.ReadEACustomList().Result;
+            }
+            return Array.Empty<SplitJson>();
+        }
         #endregion
+
+        #region EAPlugin
+        public string EAPluginLastError
+        {
+            get => _eaPluginLastError;
+            set
+            {
+                _eaPluginLastError = value;
+            }
+        }
+        #endregion EAPlugin
 
         #region System Event Handlers
         /// <summary>
