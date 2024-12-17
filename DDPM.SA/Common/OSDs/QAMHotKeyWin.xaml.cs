@@ -114,8 +114,9 @@ namespace DDPM.OSDs
                 else
                     DdpmCommonHelper.DeviceManagerSA!.WriteLog($"OAM OSD launch DDPM fail");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                DdpmCommonHelper.DeviceManagerSA!.WriteLog($"OAM OSD launch DDPM catch exception: {ex.Message}");
             }
         }
 
