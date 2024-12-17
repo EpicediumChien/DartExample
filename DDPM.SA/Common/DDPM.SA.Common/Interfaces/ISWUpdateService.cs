@@ -24,7 +24,7 @@ namespace DDPM.SA.Common
 
         Task<List<SWUpdateInfo>> DownloadAndInstall(List<SWUpdateInfo> fwUpdateInfos, bool isUITrigger, string installPath);
 
-        void SetDelaySWUpdateInfoPackage(SWUpdateInfoPackage DelayFWUpdateInfoPackage);
+        void SetDelaySWUpdateInfoPackage(SWUpdateInfoPackage DelaySWUpdateInfoPackage);
 
         void DelayEvent();
 
