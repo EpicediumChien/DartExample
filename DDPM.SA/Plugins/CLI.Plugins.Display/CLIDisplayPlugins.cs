@@ -13185,7 +13185,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13219,7 +13219,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13253,7 +13253,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13287,7 +13287,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13321,7 +13321,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13355,7 +13355,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13389,7 +13389,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13423,7 +13423,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13457,7 +13457,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13491,7 +13491,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13525,7 +13525,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
