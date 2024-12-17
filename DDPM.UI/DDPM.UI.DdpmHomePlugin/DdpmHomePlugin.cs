@@ -211,7 +211,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
                 else if (pluginCondition is PluginRunningCondition)
                 {
-                    //16:42:39.795
                     _log.Info($"{nameof(GetCurrentDeviceManagerPluginPluginCondition)} plugin is in {nameof(PluginRunningCondition)}");
 
                     if (_deviceManager != null)
@@ -219,6 +218,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         if (!_HasRegisted)
                         {
                             //Robert_Lin, 2024-12-16 add log for each key points to trace status.
+                            
 
                             if (_viewModel != null)
                             {
@@ -236,26 +236,29 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //So uncommented below code
                             //Task.Run(async () => await GetDdpmDevicesAsync(_deviceManager));
 
-                            //16:42:39.795
+                            //Elapsed= 4, 2 msec
                             //Robert_Lin, 2024-6-21 UI shown, tell VCPCore to increase polling rate to 0x52
                             //Derek_Du, 2024-10-21 add send process ID to SA
                             _log.Info("Calling to DeviceManager.Reset0x52TimerTick(2000)");
                             Task delayTask = _deviceManager.Reset0x52TimerTick(2000, Process.GetCurrentProcess().Id);
-                            //16:42:39.799
+
+                            //Elapsed= 5, 5 msec
                             _log.Info("Calling to DeviceManager.ReceiveTelemetryInfo(AppSession,AppStarted)");
                             _deviceManager.ReceiveTelemetryInfo("AppSession", "AppStarted", Telementry_Frequency.RealTime);
 
-                            //16:42:39.801
+                            //Elapsed= 484, 316, 314 msec
                             _log.Info("Calling GetDdpmDevicesAsync()");
                             await GetDdpmDevicesAsync(_deviceManager);
-                            //16:42:40.127
+
+                            //Elapsed= 1, 1 msec
                             _log.Info("Calling CloseQAMIfExist()");
                             CloseQAMIfExist();
 
-                            //16:42:40.128
+                            //Elapsed= 2 msec
                             //1030 get global settings for telemetry consent page using
                             _log.Info("Calling to DeviceManager.GetGlobalSettingParam()");
                             _globalSettings = _deviceManager.GetGlobalSettingParam().Result;
+                            _log.Info("Return from DeviceManager.GetGlobalSettingParam()");
                             //1030 Dean
                             //For Hess to read global setting "_globalSettings"
                             //After "GetDdpmDevicesAsync" the user setting cache is ready "DdpmCommonHelper.Settings_Cache"
@@ -263,8 +266,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             {
                                 if (DdpmCommonHelper.DeviceManagerSA != null)
                                 {
+                                    //Elapsed= 2 msec
                                     _log.Info("Calling to ReadDDPMSettings()");
                                     DdpmCommonHelper.ReadDDPMSettings();
+                                    _log.Info("Return to ReadDDPMSettings()");
                                 }
                             }
                             if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null && _viewModel != null)
@@ -293,8 +298,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                     _log.Info("Invoking ShowConsent()");
                                     _viewModel.ShowConsent();
                                     DdpmCommonHelper.Settings_Cache.UserSettings.isDisplayConsentPage = true;
-                                    _log.Info("Caling to WriteDDPMSettings()");
+                                    _log.Info("Calling to WriteDDPMSettings()");
                                     DdpmCommonHelper.WriteDDPMSettings(DdpmCommonHelper.Settings_Cache);
+                                    _log.Info("Return from WriteDDPMSettings()");
                                 }
                             }
 
@@ -309,26 +315,24 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //    return;
                             //}
 
-                            //16:42:40.130
+                            //Elapsed= 78, 61 msec
                             //Wayn 2024-09-04 For WalkThrough
-                            _log.Info($"[Walkthrough] {nameof(GetCurrentDeviceManagerPluginPluginCondition)} Start");
+                            _log.Info("Calling to CollectAndCompareDevicesAsync()");
                             await CollectAndCompareDevicesAsync();
-                            //16:42:40.196
-                            _log.Info($"[Walkthrough] {nameof(GetCurrentDeviceManagerPluginPluginCondition)} Exit");
+                            _log.Info("Return from CollectAndCompareDevicesAsync()");
 
-                            //16:42:40.197
+                            //Elapsed= 3692, 392 msec
                             //Robert_Lin 2024-8-2 DDPMW-579, If there is any FW/SW update available,
                             //then the Gear icon on masthead will show breathe & glow animation.
                             //Call once
                             _log.Info("Calling to CheckIfSwFwUpdateAvailable()");
-                            if (CheckIfSwFwUpdateAvailable(_deviceManager)) // 9 sec
+                            if (CheckIfSwFwUpdateAvailable(_deviceManager)) 
                             {
-                                //16:42:49.173
-                                _log.Info("CheckIfSwFwUpdateAvailable() return true.");
+                                _log.Info("Return from CheckIfSwFwUpdateAvailable(), return true");
                                 //Robert_Lin, 2024-12-9, Change GlowEffect_Start() to GlowEffect_Trigger()
                                 if (_iconGear != null)
                                 {
-                                    //16:42:49.173
+                                    //Elapsed= 1, 1 msec
                                     _log.Info("Calling to GlowEffect_Trigger()");
                                     _iconGear.GlowEffect_Trigger();
                                     //_iconGear.GlowEffect_Start();
@@ -338,14 +342,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                     _log.Info("Not calling to GlowEffect_Trigger(), due to _iconGear is null.");
                                 }
                             }
+                            else
+                                _log.Info("Return from CheckIfSwFwUpdateAvailable(), return false");
+
                             //Robert_Lin, 2024-12-9 install event handler for new update fw/sw info
                             _deviceManager.Peripherals_UpdateNotify += _deviceManager_Peripherals_UpdateNotify;
 
                         }
-                        //16:42:49.174
+                        //Elapsed= 13, 14 msec
                         _log.Info($"Calling to CheckAndQueueDevice(DDPM,DDPM,null)");
                         await CheckAndQueueDevice("DDPM", "DDPM", null);//DDPM WalkThrough no need into setting page.
-                        //16:42:49.203
                         _log.Info($"Returned from CheckAndQueueDevice()");
                         if (WalkThroughQueue.Count != 0 && _showPluginById == false)
                         {
@@ -354,8 +360,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _showPluginById = true;
                         }
 
+                        //Elapsed= 1 msec
                         _log.Info($"Calling to CheckIfNeedImportSetting_Display()");
                         CheckIfNeedImportSetting_Display();
+                        _log.Info($"Return from CheckIfNeedImportSetting_Display()");
 
                         //await DDPMInfoSAHomepageIsReady();
                     }
@@ -1163,12 +1171,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// <returns>True if YES, either FW or SW is available.</returns>
         private bool CheckIfSwFwUpdateAvailable(IDeviceManagerSA devMgr)
         {
+            //Robert_Lin, 2024-12-17 add log for trace elapsed time
+
             bool ret = false;
             Requires.NotNull(devMgr, nameof(devMgr));
             //Get FW avaiable count
             //Check SW avaiable count
+            _log.Info("Calling to GetFWUpdateInfo()");
             FWUpdateInfoPackage fwUpdateInfoPackage = devMgr.GetFWUpdateInfo(false, false, false, null, false, false, true).Result;
+            _log.Info("Calling to SW_GetSWUpdateInfo()");
             SWUpdateInfoPackage sWUpdateInfoPackage = devMgr.SW_GetSWUpdateInfo(false, false, false, true).Result;
+            _log.Info("Return from SW_GetSWUpdateInfo()");
             if (fwUpdateInfoPackage.FWUpdateInfo.Count > 0 || sWUpdateInfoPackage.SWUpdateInfo.Count > 0)
                 ret = true;
 
