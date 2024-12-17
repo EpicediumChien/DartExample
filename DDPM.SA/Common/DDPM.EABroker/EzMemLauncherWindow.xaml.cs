@@ -183,7 +183,7 @@ namespace DDPM.EABroker
         public int AlreadyArrangedCount => _alreadyArrangedCount;
         public bool AreAllAppsArranged => (AlreadyArrangedCount >= ToBeArrangedCount);
 
-        public void LaunchAndArrange(Dictionary<string, Bind_AddFullPage_AppCollectionData> apps, int cellIndex)
+        public void LaunchAndArrange(Dictionary<string, Bind_AddFullPage_AppCollectionData> apps, int cellIndex, ArrangeVM VM)
         {
             if (apps.Count == 0)
                 return;
@@ -217,10 +217,10 @@ namespace DDPM.EABroker
                                     break;
                                 }
                             }
-                            await Task.Delay(500);
+                            await Task.Delay(1000);
                         }
                         else
-                            await Task.Delay(1000);// win32 need to wait long
+                            await Task.Delay(1500);// win32 need to wait long
                     }
 
                     if (handle != IntPtr.Zero)
@@ -239,7 +239,7 @@ namespace DDPM.EABroker
 
                 foreach (var (handle, idxCell) in appHandles)
                 {
-                    ArrangeWindow(handle, idxCell);
+                    ArrangeWindow(handle, idxCell, VM);
                 }
             });
         }
@@ -457,7 +457,7 @@ namespace DDPM.EABroker
         }
 
 
-        public void ArrangeWindow(IntPtr hWnd, int idxCell)
+        public void ArrangeWindow(IntPtr hWnd, int idxCell, ArrangeVM VM)
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -482,7 +482,13 @@ namespace DDPM.EABroker
             }
             _log?.Info($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Rect(({rcArrange.Left},{rcArrange.Top}){rcArrange.Width}x{rcArrange.Height})");
 
-            WinEventHook.SetWindowPosition(hWnd, rcArrange);
+                //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
+                if (VM.IsWithoutGap)
+                {
+                    rcArrange.Inflate(6, 6);
+                }
+                Task.Delay(500);
+                WinEventHook.SetWindowPosition(hWnd, rcArrange);
 
             _alreadyArrangedCount++;
             if (AreAllAppsArranged)
