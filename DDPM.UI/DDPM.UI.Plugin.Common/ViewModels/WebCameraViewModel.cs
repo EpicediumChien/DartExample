@@ -22,6 +22,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
@@ -1432,10 +1433,27 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetSaturation();
                     }
+                    var v = (value * 1.0 - CurrentDeviceInfo!.SaturationMin) / (CurrentDeviceInfo.SaturationMax - CurrentDeviceInfo!.SaturationMin);
+                    int i = (int)(v * 100);
+                    double m = i switch
+                    {
+                        _ when i < 10 => 375 * v,
+                        _ when i >= 10 && i < 20 => 375 * v - 5,
+                        _ when i >= 20 && i < 50 => 375 * v,
+                        _ when i > 90 && i < 100 => 380 * v - 2,
+                        100 => 375,
+                        _ => 380 * v
+                    };
+                    SaturationMargin = new double[] { m, 2, 0, 0 };
+                    SaturationText = $"{i}%";
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SaturationText));
+                    OnPropertyChanged(nameof(SaturationMargin));
                 }
-                OnPropertyChanged();
             }
         }
+        public string SaturationText { get; set; } = "";
+        public double[] SaturationMargin { get; set; } = { 0 };
         public void SetSaturation()
         {
             DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), _saturation);
