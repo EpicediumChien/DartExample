@@ -126,7 +126,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             dDPMImpExpSettings = settingsManager.ReadImportSettingsFile(exportpath).Result;
                             if (dDPMImpExpSettings != null)
                             {
-                                if (dDPMImpExpSettings.MonitorSettings != null)
+                                if (dDPMImpExpSettings.MonitorSettings != null
+                                    && dDPMImpExpSettings.MonitorSettings.ServiceTag != serviceTag)
                                 {
                                     if (dDPMImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
                                     {
