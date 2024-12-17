@@ -26,14 +26,13 @@ namespace DDPM.UI.Plugin.PenPlugin
         {
             InitializeComponent();
             _vm = (PenViewModel?)Penplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
+            if (_vm == null)
+                return;
 
-            if (_vm != null)
-            {
-                _vm.Reset();
-                DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-                BuildModuleGroups();
-            }
+            _vm.Reset();
+            DataContext = _vm;
+            _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+            BuildModuleGroups();
 
             //txtUnpair.Text = Strings.Unpair;
             //txtRestore.Text = Strings.RestoreToDefault;
@@ -47,7 +46,7 @@ namespace DDPM.UI.Plugin.PenPlugin
             //{
             //    btnRestore.Visibility = Visibility.Collapsed;
             //}
-            _vm!.IsAllButtonsVisible = Visibility.Visible;
+            _vm.IsAllButtonsVisible = Visibility.Visible;
             _vm.ActiveModule = null;
 
             if (DdpmCommonHelper.DeviceManagerSA != null)

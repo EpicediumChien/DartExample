@@ -27,8 +27,8 @@ namespace DDPM.UI.Plugin.MousePlugin
     {
         private readonly MouseViewModel? _vm;
         private readonly int[] _rightFrameWidth = { 0, 533, 333 };
-        private readonly Style ConnectionStyle1;
-        private readonly Style ConnectionStyle2;
+        private readonly Style ConnectionStyle1 = new();
+        private readonly Style ConnectionStyle2 = new();
         private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
         private readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
 
@@ -38,6 +38,9 @@ namespace DDPM.UI.Plugin.MousePlugin
         public LaunchView()
         {
             InitializeComponent();
+            _vm = (MouseViewModel?)Mouseplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
+            if (_vm == null)
+                return;
 
             // for Light mode check by leo
             if (UXSystemParameters.Instance.OSTheme == OSThemeEnum.Light)
@@ -47,25 +50,21 @@ namespace DDPM.UI.Plugin.MousePlugin
             }
             UXSystemParameters.Instance.ParameterChangedEvent += MSUXSystemParametersChanged;
 
-            _vm = (MouseViewModel?)Mouseplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
 
-            if (_vm != null)
+            DataContext = _vm;
+            _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+
+            if (_vm.EOLMouseList.Contains(_vm.Model))
             {
-                DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-
-                if (_vm.EOLMouseList.Contains(_vm.Model))
-                {
-                    Battery.Visibility = Visibility.Collapsed;
-                    //btnRestore.Visibility = Visibility.Collapsed;
-                    //txtEOL.Text = Strings.EOLMessage;
-                    txtEOL.Visibility = Visibility.Visible;
-                    SectionA.Visibility = Visibility.Collapsed;
-                    SectionB.Visibility = Visibility.Collapsed;
-                    EOLDongle.Visibility = Visibility.Visible;
-                }
-                BuildModuleGroups();
+                Battery.Visibility = Visibility.Collapsed;
+                //btnRestore.Visibility = Visibility.Collapsed;
+                //txtEOL.Text = Strings.EOLMessage;
+                txtEOL.Visibility = Visibility.Visible;
+                SectionA.Visibility = Visibility.Collapsed;
+                SectionB.Visibility = Visibility.Collapsed;
+                EOLDongle.Visibility = Visibility.Visible;
             }
+            BuildModuleGroups();
 
             //txtUnpair.Text = Strings.Unpair;
             //txtRestore.Text = Strings.RestoreToDefault;

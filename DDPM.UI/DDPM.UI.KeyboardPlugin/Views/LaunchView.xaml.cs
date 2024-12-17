@@ -32,25 +32,25 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         {
             InitializeComponent();
             _vm = (KeyboardViewModel?)Keyboardplugin.PluginIoc?.GetService<IPeripheralViewModel>();
+            if (_vm == null)
+                return;
 
-            if (_vm != null)
+            DataContext = _vm;
+            _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+
+            if (_vm.EOLKBList.Contains(_vm.Model))
             {
-                DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-                if (_vm.EOLKBList.Contains(_vm.Model))
-                {
-                    Battery.Visibility = Visibility.Collapsed;
-                    btnRestore.Visibility = Visibility.Collapsed;
-                    //txtEOL.Text = Strings.EOLMessage;
-                    txtEOL.Visibility = Visibility.Visible;
-                    SectionA.Visibility = Visibility.Collapsed;
-                    SectionF.Visibility = Visibility.Collapsed;
-                    EOLDongle.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    BuildModuleGroups();
-                }
+                Battery.Visibility = Visibility.Collapsed;
+                btnRestore.Visibility = Visibility.Collapsed;
+                //txtEOL.Text = Strings.EOLMessage;
+                txtEOL.Visibility = Visibility.Visible;
+                SectionA.Visibility = Visibility.Collapsed;
+                SectionF.Visibility = Visibility.Collapsed;
+                EOLDongle.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                BuildModuleGroups();
             }
 
             //txtUnpair.Text = Strings.Unpair;
