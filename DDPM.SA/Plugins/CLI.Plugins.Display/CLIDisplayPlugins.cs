@@ -949,7 +949,10 @@ namespace DDPM.CLI.Plugins.Display
 
         private string GetPeripheralResponse(int index, string output, DeviceInfo g)
         {
+            // modified @ 20241217 stephen: make string follow json format
+            output += "{";
             output += $"\n  \"Device\": \"{g.LogicalDeviceType}\"";
+            output += "}";
             PeripheralResponse cli_Response2 = new PeripheralResponse(index, g);
             if (g.LogicalDeviceType == "LogicalHeadset")
             {
@@ -13059,10 +13062,7 @@ namespace DDPM.CLI.Plugins.Display
 
         private async Task<(int code, string result)> Easyarrange(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
         {
-
             string output = string.Empty;
-            bool output_ea = true;
-            bool elable_ea = true;
             bool retcode = false;
 
             if (_AllInfoMonitors == null)
@@ -13087,42 +13087,39 @@ namespace DDPM.CLI.Plugins.Display
                 foreach (int idx in _monitorIndeies)
                 {
                     MonitorInfo monitor = _AllInfoMonitors[idx];
-                    ObjGetVCP rc = new ObjGetVCP();
+                    int rc = -1;
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE(monitor);
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
 
-                    writelog("devMgr.GetEAFunctionEnabled get entry");
-                    rc = devMgr.GetEAFunctionEnabled().Result;
-                    writelog("devMgr.GetEAFunctionEnabled get exit");
+                    writelog("devMgr.GetEASelectedLayout get entry");
+                    rc = devMgr.GetEASelectedLayout(monitor).Result;
+                    writelog("devMgr.GetEASelectedLayout get exit");
 
-                    //if (rc != null)
-                    //    retcode = true;
-
-                    if (rc != null) // 20240911 SAST fix
+                    retcode = true;
+                    cli_Response.Result = "PASS";
+                    if (rc == 0)
                     {
-                        retcode = true;
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
-                        if (rc.value.ToString() == "True")
-                            cli_Response.Value = "EANBLE";
-                        else
-                            cli_Response.Value = "DISABLE";
+                        cli_Response.Value = "OFF";
+                    }
+                    else if (rc > 0)
+                    {
+                        cli_Response.Value = "ON";
                     }
                     else
                     {
+                        retcode = false;
                         cli_Response.Result = "FAIL";
-                        cli_Response.Message = "Invalid command line syntax.";
                     }
+
                     //cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                    Console.WriteLine(cli_Response.ToJson());
+                    output += "\n" + cli_Response.ToJson();
                 }
             }
             if (commandLineInput.Command == "SET")
             {
-
-                writelog("Easyarrange configure entry");
+                writelog("Easyarrange set entry");
                 List<int> _monitorIndeies = new List<int>();
 
                 if (_AllInfoMonitors == null)
@@ -13132,10 +13129,10 @@ namespace DDPM.CLI.Plugins.Display
                 foreach (int idx in _monitorIndeies)
                 {
                     MonitorInfo monitor = _AllInfoMonitors[idx];
-                    ObjGetVCP rc = new ObjGetVCP();
                     CLI_RESPONSE cli_Response = new CLI_RESPONSE(monitor);
                     cli_Response.Command = commandLineInput.Command;
                     cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
 
                     //if (commandLineInput.Options[0].Option_Value == "ENABLE")
                     //{
@@ -13149,42 +13146,23 @@ namespace DDPM.CLI.Plugins.Display
                     //}
                     if (commandLineInput.Options[0].Option_Value == "OFF")
                     {
-                        elable_ea = false;
+                        writelog("SetEAFunctionEnabled set entry");
+                        retcode = devMgr.SetEASelectedLayout(monitor, 0).Result;
+                        writelog("SetEAFunctionEnabled set exit");
                     }
                     else
                     {
-                        //CLI_RESPONSE cli_Response = new CLI_RESPONSE();
-                        cli_Response.Command = commandLineInput.Command;
-                        cli_Response.TargetFeature = commandLineInput.TargetFeature;
                         cli_Response.Result = "FAIL";
                         cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
                         return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
                     }
 
                     //await devMgr.SetAppConfigData(ddpmSettings);
-                    writelog("SetEAFunctionEnabled set entry");
-                    output_ea = devMgr.SetEAFunctionEnabled(elable_ea).Result;
-                    writelog("SetEAFunctionEnabled set exit");
-                    if (output_ea != null)
-                        retcode = true;
 
-                    if (retcode)
-                    {
-                        cli_Response.Result = "PASS";
-                        cli_Response.Message = "N/A";
-                        if (elable_ea)
-                            cli_Response.Value = "EANBLE";
-                        else
-                            cli_Response.Value = "DISABLE";
-                    }
-                    else
-                    {
-                        cli_Response.Result = "FAIL";
-                        cli_Response.Message = "Invalid command line syntax.";
-                    }
+                    cli_Response.Result = retcode ? "PASS" : "FAIL";
                     //cli_Response.Value += "," + (ddpmSettings.LockSettings.Lock_Display_EasyArrangeLayout ? "LOCK" : "UNLOCK");
-                    System.Console.WriteLine(JsonConvert.SerializeObject(cli_Response, Formatting.Indented));
-                    output += "\n" + JsonConvert.SerializeObject(cli_Response, Formatting.Indented);
+                    Console.WriteLine(cli_Response.ToJson());
+                    output += "\n" + cli_Response.ToJson();
                 }
             }
             writelog($"Output={output}");
@@ -13210,7 +13188,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13244,7 +13222,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13278,7 +13256,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13312,7 +13290,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13346,7 +13324,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13380,7 +13358,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13414,7 +13392,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13448,7 +13426,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13482,7 +13460,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13516,7 +13494,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {
@@ -13550,7 +13528,7 @@ namespace DDPM.CLI.Plugins.Display
                         //Process.Start(exeFileAndLocation, arguments);
                         //Trace.WriteLine("Executable Path: " + executablePath);
                         //DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true);
-                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(log, exeFileAndLocation, arguments, true, "", "", false);//lock nkvm
                     }
                     else
                     {

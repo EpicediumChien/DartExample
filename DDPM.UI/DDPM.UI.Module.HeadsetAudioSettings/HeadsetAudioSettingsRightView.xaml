@@ -219,14 +219,16 @@
                                     </Border.Style>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
 
-                                        <UXControls:UXToggleSwitch x:Name="ActiveNoiseCancellingButton" Width="146.67" Height="96" Opacity="1"  BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,8,20" IsChecked="{Binding IsActiveNoiseCancellingChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
+                                        <UXControls:UXToggleSwitch x:Name="ActiveNoiseCancellingButton" Width="146.67" Height="96" Opacity="1"  BorderThickness="1.5,1.5,1.5,1.5" BorderBrush="{DynamicResource ToggleSwitch_BorderBrush}" Margin="0,0,8,20" IsChecked="{Binding IsActiveNoiseCancellingChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                     <Border x:Name="ActiveNoiseCancellingButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <Path x:Name= "ActiveNoiseCancellingPath" Width="24" Height="24" Data="M3.67539 12.0004C3.67539 7.40262 7.40262 3.67539 12.0004 3.67539C16.5982 3.67539 20.3254 7.40262 20.3254 12.0004V13.1254H18.6004C18.2276 13.1254 17.9254 13.4276 17.9254 13.8004V21.0004C17.9254 21.3732 18.2276 21.6754 18.6004 21.6754H19.2004C20.5673 21.6754 21.6754 20.5673 21.6754 19.2004V12.0004C21.6754 6.65704 17.3437 2.32539 12.0004 2.32539C6.65704 2.32539 2.32539 6.65704 2.32539 12.0004V19.2004C2.32539 20.5673 3.43349 21.6754 4.80039 21.6754H5.40039C5.77318 21.6754 6.07539 21.3732 6.07539 21.0004V13.8004C6.07539 13.4276 5.77318 13.1254 5.40039 13.1254H3.67539V12.0004ZM4.72539 14.4754V20.3229C4.13904 20.2843 3.67539 19.7965 3.67539 19.2004V14.4754H4.72539ZM19.2754 14.4754H20.3254V19.2004C20.3254 19.7965 19.8617 20.2843 19.2754 20.3229V14.4754ZM12.6754 12.6004C12.6754 12.2276 12.3732 11.9254 12.0004 11.9254C11.6276 11.9254 11.3254 12.2276 11.3254 12.6004V21.0004C11.3254 21.3732 11.6276 21.6754 12.0004 21.6754C12.3732 21.6754 12.6754 21.3732 12.6754 21.0004V12.6004ZM9.67539 15.0004C9.67539 14.6276 9.37318 14.3254 9.00039 14.3254C8.6276 14.3254 8.32539 14.6276 8.32539 15.0004V19.8004C8.32539 20.1732 8.6276 20.4754 9.00039 20.4754C9.37318 20.4754 9.67539 20.1732 9.67539 19.8004V15.0004ZM15.6754 15.0004C15.6754 14.6276 15.3732 14.3254 15.0004 14.3254C14.6276 14.3254 14.3254 14.6276 14.3254 15.0004V19.8004C14.3254 20.1732 14.6276 20.4754 15.0004 20.4754C15.3732 20.4754 15.6754 20.1732 15.6754 19.8004V15.0004Z" />
-                                                                <UXControls:UXTextBlock x:Name="ActiveNoiseCancellingTextBlock" Text="{Binding [HeadsetAudioSettings.1], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" TextAlignment="Center" Margin="0,8,0,0" />
+                                                                <Path x:Name= "ActiveNoiseCancellingPath" Width="24" Height="24" Data="M3.67539 12.0004C3.67539 7.40262 7.40262 3.67539 12.0004 3.67539C16.5982 3.67539 20.3254 7.40262 20.3254 12.0004V13.1254H18.6004C18.2276 13.1254 17.9254 13.4276 17.9254 13.8004V21.0004C17.9254 21.3732 18.2276 21.6754 18.6004 21.6754H19.2004C20.5673 21.6754 21.6754 20.5673 21.6754 19.2004V12.0004C21.6754 6.65704 17.3437 2.32539 12.0004 2.32539C6.65704 2.32539 2.32539 6.65704 2.32539 12.0004V19.2004C2.32539 20.5673 3.43349 21.6754 4.80039 21.6754H5.40039C5.77318 21.6754 6.07539 21.3732 6.07539 21.0004V13.8004C6.07539 13.4276 5.77318 13.1254 5.40039 13.1254H3.67539V12.0004ZM4.72539 14.4754V20.3229C4.13904 20.2843 3.67539 19.7965 3.67539 19.2004V14.4754H4.72539ZM19.2754 14.4754H20.3254V19.2004C20.3254 19.7965 19.8617 20.2843 19.2754 20.3229V14.4754ZM12.6754 12.6004C12.6754 12.2276 12.3732 11.9254 12.0004 11.9254C11.6276 11.9254 11.3254 12.2276 11.3254 12.6004V21.0004C11.3254 21.3732 11.6276 21.6754 12.0004 21.6754C12.3732 21.6754 12.6754 21.3732 12.6754 21.0004V12.6004ZM9.67539 15.0004C9.67539 14.6276 9.37318 14.3254 9.00039 14.3254C8.6276 14.3254 8.32539 14.6276 8.32539 15.0004V19.8004C8.32539 20.1732 8.6276 20.4754 9.00039 20.4754C9.37318 20.4754 9.67539 20.1732 9.67539 19.8004V15.0004ZM15.6754 15.0004C15.6754 14.6276 15.3732 14.3254 15.0004 14.3254C14.6276 14.3254 14.3254 14.6276 14.3254 15.0004V19.8004C14.3254 20.1732 14.6276 20.4754 15.0004 20.4754C15.3732 20.4754 15.6754 20.1732 15.6754 19.8004V15.0004Z"
+                                                                      Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                                                <UXControls:UXTextBlock x:Name="ActiveNoiseCancellingTextBlock" Text="{Binding [HeadsetAudioSettings.1], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" TextAlignment="Center" Margin="0,8,0,0"
+                                                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
                                                             </StackPanel>
                                                             <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
                                                                 <Image.ToolTip>
@@ -250,50 +252,16 @@
                                                         <Trigger Property="IsChecked" Value="True">
                                                             <Setter TargetName="ActiveNoiseCancellingButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="ActiveNoiseCancellingButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                                                        </Trigger>
-                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsActiveNoiseCancellingChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="ActiveNoiseCancellingTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsActiveNoiseCancellingChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="ActiveNoiseCancellingTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsActiveNoiseCancellingChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
                                                             <Setter TargetName="ActiveNoiseCancellingTextBlock" Property="Foreground" Value="White" />
                                                             <Setter TargetName="ActiveNoiseCancellingPath" Property="Fill" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsActiveNoiseCancellingChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="ActiveNoiseCancellingTextBlock" Property="Foreground" Value="Black" />
-                                                        </MultiDataTrigger>
+                                                        </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
                                         </UXControls:UXToggleSwitch>
-                                        
-                                        
-                                        <UXControls:UXToggleSwitch x:Name="TransparencyButton" Width="146.67" Height="96" Opacity="1" BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,8,20" IsChecked="{Binding IsTransparencyChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
+
+
+                                        <UXControls:UXToggleSwitch x:Name="TransparencyButton" Width="146.67" Height="96" Opacity="1" BorderThickness="1.5,1.5,1.5,1.5" BorderBrush="{DynamicResource ToggleSwitch_BorderBrush}" Margin="0,0,8,20" IsChecked="{Binding IsTransparencyChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                     <Border x:Name="TransparencyButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
@@ -324,56 +292,24 @@
                                                         <Trigger Property="IsChecked" Value="True">
                                                             <Setter TargetName="TransparencyButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="TransparencyButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                                                        </Trigger>
-                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsTransparencyChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="TransparencyButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsTransparencyChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="TransparencyButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsTransparencyChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
                                                             <Setter TargetName="TransparencyButtonTextBlock" Property="Foreground" Value="White" />
                                                             <Setter TargetName="TransparencyButtonPath" Property="Fill" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsTransparencyChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="TransparencyButtonTextBlock" Property="Foreground" Value="Black" />
-                                                        </MultiDataTrigger>
+                                                        </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
                                         </UXControls:UXToggleSwitch>
 
-                                        <UXControls:UXToggleSwitch x:Name="NoiseOffButton" Width="146.67" Height="96" Opacity="1"  BorderThickness="1.5,1.5,1.5,1.5" Margin="0,0,0,20" IsChecked="{Binding IsNoiseOffChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
+                                        <UXControls:UXToggleSwitch x:Name="NoiseOffButton" Width="146.67" Height="96" Opacity="1"  BorderThickness="1.5,1.5,1.5,1.5" BorderBrush="{DynamicResource ToggleSwitch_BorderBrush}" Margin="0,0,0,20" IsChecked="{Binding IsNoiseOffChecked, Mode=TwoWay}" IsEnabled="{Binding isAncEnabled}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                     <Border x:Name="NoiseOffButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <Path x:Name="NoiseOffButtonPath" Width="24" Height="24" Data="M4.34238 12.0004C4.34238 7.40262 8.06961 3.67539 12.6674 3.67539C17.2652 3.67539 20.9924 7.40262 20.9924 12.0004V13.1254H19.2674C18.8946 13.1254 18.5924 13.4276 18.5924 13.8004V21.0004C18.5924 21.3732 18.8946 21.6754 19.2674 21.6754H19.8674C21.2343 21.6754 22.3424 20.5673 22.3424 19.2004V12.0004C22.3424 6.65704 18.0107 2.32539 12.6674 2.32539C7.32403 2.32539 2.99238 6.65704 2.99238 12.0004V19.2004C2.99238 20.5673 4.10048 21.6754 5.46738 21.6754H6.06738C6.44018 21.6754 6.74238 21.3732 6.74238 21.0004V13.8004C6.74238 13.4276 6.44017 13.1254 6.06738 13.1254H4.34238V12.0004ZM5.39238 14.4754V20.3229C4.80603 20.2843 4.34238 19.7965 4.34238 19.2004V14.4754H5.39238ZM19.9424 14.4754H20.9924V19.2004C20.9924 19.7965 20.5287 20.2843 19.9424 20.3229V14.4754Z"/>
-                                                                <UXControls:UXTextBlock x:Name="NoiseOffButtonTextBlock" Text="{Binding [HeadsetAudioSettings.3], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" Margin="0,16,0,0" />
+                                                                <Path x:Name="NoiseOffButtonPath" Width="24" Height="24" Data="M4.34238 12.0004C4.34238 7.40262 8.06961 3.67539 12.6674 3.67539C17.2652 3.67539 20.9924 7.40262 20.9924 12.0004V13.1254H19.2674C18.8946 13.1254 18.5924 13.4276 18.5924 13.8004V21.0004C18.5924 21.3732 18.8946 21.6754 19.2674 21.6754H19.8674C21.2343 21.6754 22.3424 20.5673 22.3424 19.2004V12.0004C22.3424 6.65704 18.0107 2.32539 12.6674 2.32539C7.32403 2.32539 2.99238 6.65704 2.99238 12.0004V19.2004C2.99238 20.5673 4.10048 21.6754 5.46738 21.6754H6.06738C6.44018 21.6754 6.74238 21.3732 6.74238 21.0004V13.8004C6.74238 13.4276 6.44017 13.1254 6.06738 13.1254H4.34238V12.0004ZM5.39238 14.4754V20.3229C4.80603 20.2843 4.34238 19.7965 4.34238 19.2004V14.4754H5.39238ZM19.9424 14.4754H20.9924V19.2004C20.9924 19.7965 20.5287 20.2843 19.9424 20.3229V14.4754Z"
+                                                                      Fill="{DynamicResource DefaultTheme_PathColor}"/>
+                                                                <UXControls:UXTextBlock x:Name="NoiseOffButtonTextBlock" Text="{Binding [HeadsetAudioSettings.3], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" TextAlignment="Center" Margin="0,16,0,0" 
+                                                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
                                                             </StackPanel>
                                                             <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
                                                                 <Image.ToolTip>
@@ -397,43 +333,9 @@
                                                         <Trigger Property="IsChecked" Value="True">
                                                             <Setter TargetName="NoiseOffButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="NoiseOffButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                                                        </Trigger>
-                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsNoiseOffChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="NoiseOffButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsNoiseOffChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="NoiseOffButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsNoiseOffChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
                                                             <Setter TargetName="NoiseOffButtonTextBlock" Property="Foreground" Value="White" />
                                                             <Setter TargetName="NoiseOffButtonPath" Property="Fill" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsNoiseOffChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="NoiseOffButtonTextBlock" Property="Foreground" Value="Black" />
-                                                        </MultiDataTrigger>
+                                                        </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
@@ -444,7 +346,7 @@
                                 <!--可隱藏縮排-->
                                 <Grid Visibility="{Binding IsTransparencyChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <Grid>
-                                        <Line X1="0" Y1="0" X2="456" Y2="0" Stroke="#1E3F6C" Margin="0,0,0,20" StrokeThickness="1" HorizontalAlignment="Center" />
+                                        <Line X1="0" Y1="0" X2="456" Y2="0" Stroke="{DynamicResource EQLine_Color}" Margin="0,0,0,20" StrokeThickness="1" HorizontalAlignment="Center" />
                                     </Grid>
                                     <StackPanel>
                                         <TextBlock Text="{Binding [HeadsetAudioSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="20,20,0,20" />
@@ -480,7 +382,7 @@
                             <StackPanel x:Name="AudioModesStackPanel" Orientation="Vertical">
                                 <UXControls:UXTextBlock x:Name="AudioModesTextBlock" Text="{Binding [HeadsetAudioSettings.5], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" Margin="20" />
                                 <StackPanel x:Name="AudioModesButtonsStackPanel" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,16">
-                                    <UXControls:UXToggleSwitch x:Name="CollaborationButton"  BorderThickness="1.5" Width="224" Height="89" Margin="4" Padding="16" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsCollaborationChecked, Mode=TwoWay}">
+                                    <UXControls:UXToggleSwitch x:Name="CollaborationButton"  BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_BorderBrush}" Width="224" Height="89" Margin="4" Padding="16" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsCollaborationChecked, Mode=TwoWay}">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                 <Border x:Name="CollaborationButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
@@ -552,7 +454,7 @@
                                             </ControlTemplate>
                                         </UXControls:UXToggleSwitch.Template>
                                     </UXControls:UXToggleSwitch>
-                                    <UXControls:UXToggleSwitch x:Name="MultimediaButton" BorderThickness="1.5" Width="224" Height="89" Margin="4" Padding="16" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsMultimediaChecked, Mode=TwoWay}">
+                                    <UXControls:UXToggleSwitch x:Name="MultimediaButton" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_BorderBrush}" Width="224" Height="89" Margin="4" Padding="16" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsMultimediaChecked, Mode=TwoWay}">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                 <Border x:Name="MultimediaButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
@@ -627,7 +529,7 @@
                                 </StackPanel>
 
                                 <!-- Add the line here -->
-                                <Line X1="0" Y1="0" X2="456" Y2="0" Stroke="#1E3F6C" StrokeThickness="1" HorizontalAlignment="Center" />
+                                <Line X1="0" Y1="0" X2="456" Y2="0" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="1" HorizontalAlignment="Center" />
 
                                 <Grid Visibility="{Binding IsMultimediaChecked, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <Grid.RowDefinitions>
@@ -663,7 +565,7 @@
                                     </StackPanel>
 
                                     <UniformGrid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,0">
-                                        <UXControls:UXToggleSwitch x:Name="DefaultButton" Grid.Row="1" Grid.Column="0" BorderThickness="1.5" Width="224" Height="52" Margin="16,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsDefaultChecked, Mode=TwoWay}">
+                                        <UXControls:UXToggleSwitch x:Name="DefaultButton" Grid.Row="1" Grid.Column="0" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_BorderBrush}" Width="224" Height="52" Margin="16,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsDefaultChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                     <Border x:Name="DefaultButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
@@ -677,47 +579,13 @@
                                                         <Trigger Property="IsChecked" Value="True">
                                                             <Setter TargetName="DefaultButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="DefaultButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                            <Setter TargetName="DefaultButtonTextBlock" Property="Foreground" Value="White" />
                                                         </Trigger>
-                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsDefaultChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="DefaultButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsDefaultChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="DefaultButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsDefaultChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="DefaultButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsDefaultChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="DefaultButtonTextBlock" Property="Foreground" Value="Black" />
-                                                        </MultiDataTrigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
                                         </UXControls:UXToggleSwitch>
-                                        <UXControls:UXToggleSwitch x:Name="BassBoostButton" Grid.Row="1" Grid.Column="1" BorderThickness="1.5" Width="224" Height="52" Margin="4,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsBassBoostChecked, Mode=TwoWay}">
+                                        <UXControls:UXToggleSwitch x:Name="BassBoostButton" Grid.Row="1" Grid.Column="1" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_BorderBrush}" Width="224" Height="52" Margin="4,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsBassBoostChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                     <Border x:Name="BassBoostButtonBorder"  BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
@@ -731,48 +599,14 @@
                                                         <Trigger Property="IsChecked" Value="True">
                                                             <Setter TargetName="BassBoostButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="BassBoostButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                            <Setter TargetName="BassBoostButtonTextBlock" Property="Foreground" Value="White" />
                                                         </Trigger>
-                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsBassBoostChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="BassBoostButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsBassBoostChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="BassBoostButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsBassBoostChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="BassBoostButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsBassBoostChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="BassBoostButtonTextBlock" Property="Foreground" Value="Black" />
-                                                        </MultiDataTrigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
                                         </UXControls:UXToggleSwitch>
 
-                                        <UXControls:UXToggleSwitch x:Name="SpeechBoostButton" Grid.Row="2" Grid.Column="0" BorderThickness="1.5" Width="224" Height="52" Margin="16,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsSpeechBoostChecked, Mode=TwoWay}">
+                                        <UXControls:UXToggleSwitch x:Name="SpeechBoostButton" Grid.Row="2" Grid.Column="0" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_BorderBrush}" Width="224" Height="52" Margin="16,0,4,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsSpeechBoostChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                     <Border x:Name="SpeechBoostButtonBorder"  BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
@@ -786,48 +620,14 @@
                                                         <Trigger Property="IsChecked" Value="True">
                                                             <Setter TargetName="SpeechBoostButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="SpeechBoostButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                            <Setter TargetName="SpeechBoostButtonTextBlock" Property="Foreground" Value="White" />
                                                         </Trigger>
-                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsSpeechBoostChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="SpeechBoostButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsSpeechBoostChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="SpeechBoostButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsSpeechBoostChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="SpeechBoostButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsSpeechBoostChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="SpeechBoostButtonTextBlock" Property="Foreground" Value="Black" />
-                                                        </MultiDataTrigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
                                         </UXControls:UXToggleSwitch>
 
-                                        <UXControls:UXToggleSwitch x:Name="TrebleBoostButton" Grid.Row="2" Grid.Column="1" BorderThickness="1.5" Width="224" Height="52" Margin="4,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsTrebleBoostChecked, Mode=TwoWay}">
+                                        <UXControls:UXToggleSwitch x:Name="TrebleBoostButton" Grid.Row="2" Grid.Column="1" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_BorderBrush}" Width="224" Height="52" Margin="4,0,0,8" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsTrebleBoostChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                     <Border x:Name="TrebleBoostButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
@@ -841,49 +641,15 @@
                                                         <Trigger Property="IsChecked" Value="True">
                                                             <Setter TargetName="TrebleBoostButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="TrebleBoostButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                            <Setter TargetName="TrebleBoostButtonTextBlock" Property="Foreground" Value="White" />
                                                         </Trigger>
-                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsTrebleBoostChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="TrebleBoostButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsTrebleBoostChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="TrebleBoostButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsTrebleBoostChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="TrebleBoostButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsTrebleBoostChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="TrebleBoostButtonTextBlock" Property="Foreground" Value="Black" />
-                                                        </MultiDataTrigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
                                         </UXControls:UXToggleSwitch>
                                     </UniformGrid>
 
-                                    <UXControls:UXToggleSwitch x:Name="CustomButton" Grid.Row="3" Grid.ColumnSpan="1" BorderThickness="1.5" Width="456" Height="52" Margin="16,4,0,20" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsCustomChecked, Mode=TwoWay}">
+                                    <UXControls:UXToggleSwitch x:Name="CustomButton" Grid.Row="3" Grid.ColumnSpan="1" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_BorderBrush}" Width="456" Height="52" Margin="16,4,0,20" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsCustomChecked, Mode=TwoWay}">
                                         <UXControls:UXToggleSwitch.Template>
                                             <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                 <Border x:Name="CustomButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
@@ -897,42 +663,8 @@
                                                     <Trigger Property="IsChecked" Value="True">
                                                         <Setter TargetName="CustomButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                         <Setter TargetName="CustomButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                        <Setter TargetName="CustomButtonTextBlock" Property="Foreground" Value="White" />
                                                     </Trigger>
-                                                    <!-- Dark Mode且ToggleSwitch被選中 -->
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                            <Condition Binding="{Binding IsCustomChecked}" Value="True" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter TargetName="CustomButtonTextBlock" Property="Foreground" Value="White" />
-                                                    </MultiDataTrigger>
-
-                                                    <!-- Dark Mode且ToggleSwitch未選中 -->
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                            <Condition Binding="{Binding IsCustomChecked}" Value="False" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter TargetName="CustomButtonTextBlock" Property="Foreground" Value="White" />
-                                                    </MultiDataTrigger>
-
-                                                    <!-- Light Mode且ToggleSwitch被選中 -->
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                            <Condition Binding="{Binding IsCustomChecked}" Value="True" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter TargetName="CustomButtonTextBlock" Property="Foreground" Value="White" />
-                                                    </MultiDataTrigger>
-
-                                                    <!-- Light Mode且ToggleSwitch未選中 -->
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                            <Condition Binding="{Binding IsCustomChecked}" Value="False" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter TargetName="CustomButtonTextBlock" Property="Foreground" Value="Black" />
-                                                    </MultiDataTrigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
                                         </UXControls:UXToggleSwitch.Template>
@@ -1139,7 +871,7 @@
                                                 Visibility="{Binding isMicCancelLocked}"/>
 
                                         <Grid Grid.Row="3" Height="1" Margin="8,20,8,0">
-                                            <Line X1="0" Y1="0" X2="456" Y2="0" Stroke="#1E3F6C" StrokeThickness="1" HorizontalAlignment="Center" />
+                                            <Line X1="0" Y1="0" X2="456" Y2="0" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="1" HorizontalAlignment="Center" />
                                         </Grid>
                                     </Grid>
                                 </StackPanel>

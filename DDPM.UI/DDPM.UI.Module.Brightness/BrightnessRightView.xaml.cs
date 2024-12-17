@@ -954,7 +954,7 @@ namespace DDPM.UI.Module.Brightness
             var comboBox = sender as ComboBox;
             if (comboBox == null) return;
             BrightnessViewModel vm = (BrightnessViewModel)DataContext;
-            if (vm.Start_ALSConfig.AutoBrightnessRangeLevel.Count != 0)
+            if (vm != null && vm.Start_ALSConfig != null && vm.Start_ALSConfig.AutoBrightnessRangeLevel.Count != 0)
             {
                 _previousSelectedIndex = (int)vm.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value;
 

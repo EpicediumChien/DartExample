@@ -10056,6 +10056,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"{nameof(SaveLogFile)} end");
             return Task.FromResult(ret);
         }
+
         private bool SaveMonitorAssetReport(List<MonitorAssetReport> monitorAssetReports, string savePath)
         {
             bool ret = false;
@@ -11416,18 +11417,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _displaychangedEventArgs.monitors = e.monitors.ToList();
             OnDisplaychanged(_displaychangedEventArgs);
 
-            Task.Run(() =>
+            if (e.monitors.Count > 0)
             {
-                //Telementry Collection
-                var rt = false;
-                var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
-                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
-                rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, e.monitors);
-                if (rt)
-                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
-                else
-                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
-            }).ConfigureAwait(false);
+                Task.Run(() =>
+                {
+                    //Telementry Collection
+                    var rt = false;
+                    var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
+                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
+                    rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, e.monitors);
+                    if (rt)
+                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
+                    else
+                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
+                }).ConfigureAwait(false);
+            }
         }
 
         private void show_colorpreset(object sender, VCPchangedEventArgs e)

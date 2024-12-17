@@ -125,7 +125,7 @@
                                                     <Border x:Name="EveryLevelButtonBorder" BorderThickness="1.5,1.5,0,1.5" CornerRadius="4,0,0,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="{Binding [SpeakerAudioSettings.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock x:Name="EveryLevelButtonBorderTxt" Text="{Binding [SpeakerAudioSettings.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -133,6 +133,7 @@
                                                         <Trigger Property="IsChecked" Value="True">
                                                             <Setter TargetName="EveryLevelButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="EveryLevelButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                            <Setter TargetName="EveryLevelButtonBorderTxt" Property="Foreground" Value="White" />
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
@@ -144,7 +145,7 @@
                                                     <Border x:Name="MinMaxOnlyButtonBorder" BorderThickness="0,1.5,1.5,1.5" CornerRadius="0,4,4,0">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="{Binding [SpeakerAudioSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock x:Name="MinMaxOnlyButtonBorderTxt" Text="{Binding [SpeakerAudioSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -152,6 +153,7 @@
                                                         <Trigger Property="IsChecked" Value="True">
                                                             <Setter TargetName="MinMaxOnlyButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="MinMaxOnlyButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                            <Setter TargetName="MinMaxOnlyButtonBorderTxt" Property="Foreground" Value="White" />
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>

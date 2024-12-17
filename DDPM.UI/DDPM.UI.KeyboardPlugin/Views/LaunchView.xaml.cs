@@ -402,13 +402,10 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 hostName = hostName.Substring(0, 15);
 
             txt1.Style = ConnectionStyle2;
-            imgBL1.Source = img2;
             txtBLHost1.Style = ConnectionStyle2;
             txt2.Style = ConnectionStyle2;
-            imgBL2.Source = img2;
             txtBLHost2.Style = ConnectionStyle2;
             txt3.Style = ConnectionStyle2;
-            imgBL3.Source = img2;
             txtBLHost3.Style = ConnectionStyle2;
 
 
@@ -424,13 +421,11 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     if (txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         txt2.Style = ConnectionStyle1;
-                        imgBL2.Source = img1;
                         txtBLHost2.Style = ConnectionStyle1;
                     }
                     else
                     {
                         txt3.Style = ConnectionStyle1;
-                        imgBL3.Source = img1;
                         txtBLHost3.Style = ConnectionStyle1;
                     }
                     break;
@@ -442,13 +437,11 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         txt1.Style = ConnectionStyle1;
-                        imgBL1.Source = img1;
                         txtBLHost1.Style = ConnectionStyle1;
                     }
                     else
                     {
                         txt2.Style = ConnectionStyle1;
-                        imgBL2.Source = img1;
                         txtBLHost2.Style = ConnectionStyle1;
                     }
                     break;
@@ -457,7 +450,6 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     Host1.Visibility = Visibility.Collapsed;
                     Host3.Visibility = Visibility.Collapsed;
                     txt2.Style = ConnectionStyle1;
-                    imgBL2.Source = img1;
                     txtBLHost2.Text = hostName;
                     txtBLHost2.Style = ConnectionStyle1;
                     break;
