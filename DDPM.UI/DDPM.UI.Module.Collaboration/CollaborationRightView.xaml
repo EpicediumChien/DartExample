@@ -14,9 +14,6 @@
              d:DesignHeight="647" d:DesignWidth="520">
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-            </ResourceDictionary.MergedDictionaries>
             <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <Style x:Key="BroderStyle1" TargetType="Border">
                 <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
@@ -191,7 +188,7 @@
                                                        VerticalAlignment="Top" HorizontalAlignment="Left" FontWeight="Light" Content="{Binding [Collaboration.3], Source={x:Static lang:LangHelper.Instance}}"/>
                                 <UXControls:UXCheckBox Margin="10,8,0,0" Width="470" Height="42" IsChecked="{Binding IsCollaborationDoubleTapEnable}" VerticalContentAlignment="Center"
                                                        IsEnabled="{Binding DoubleTapToggleEnabled}"
-                                                       Name="cbCollaborationDoubleTapText" BorderThickness="0" FontFamily="Roboto"
+                                                       Name="cbCollaborationDoubleTapText" BorderThickness="0" Foreground="{DynamicResource DefaultTheme_TxtColor}" FontFamily="Roboto"
                                                        VerticalAlignment="Top" HorizontalAlignment="Left" FontWeight="Light" Content="{Binding [Collaboration.4], Source={x:Static lang:LangHelper.Instance}}"/>
                             </StackPanel>
                         </Grid>
