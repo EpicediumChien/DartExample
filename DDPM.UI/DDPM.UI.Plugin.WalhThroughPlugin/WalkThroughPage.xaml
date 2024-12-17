@@ -228,6 +228,11 @@
             </Grid>
         </StackPanel>
         <StackPanel>
+            <Grid Margin="0" Visibility="{Binding OtherVisibility}">
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="1378" Height="735">
+                    <Image x:Name="img3" Width="1378" Height="671" Source="{Binding Img3Source}" Stretch="UniformToFill" VerticalAlignment="Top"  />
+                </Grid>
+            </Grid>
             <!-- Keep Consent XAML, it will move to here
             <Grid Margin="0" Visibility="{Binding ConsentVisibility}">
                 <Border CornerRadius="4" Height="320" Width="801" VerticalAlignment="Center" HorizontalAlignment="Center" Background="Transparent">

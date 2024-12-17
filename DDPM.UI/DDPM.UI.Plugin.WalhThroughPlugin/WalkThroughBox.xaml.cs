@@ -114,6 +114,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             //_currentPage++;
             //UpdatePage(devicePages["DDPM"][1].MainImageSource);
             base.Owner = owner;
+            UpdatePosition("Top_Right");
         }
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -123,6 +124,10 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 UpdateText(_currentPage);
                 UpdateProgressBar(true);
                 //_currentPage++;
+                if(_currentPage != _totalPages)
+                    UpdatePosition("Left");
+                else
+                    UpdatePosition("Top_Right");
             }
             else
             {
@@ -182,6 +187,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
             UpdatePage(devicePages["DDPM"][page].MainImageSource);
         }
+
         private void UpdatePage(string page)
         {
             //ViewModel.IsPeripheralVisible = false;
@@ -189,6 +195,21 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             //ViewModel.IsOtherVisibility = true;
             //ViewModel.Img3Source = DdpmCommonHelper.GetImageSourceFromCommonResource($"WalkThrough/DDPM/DDPM{page}.png", "DDPM.UI.WalkThroughData");
             ViewModel.Img3Source = DdpmCommonHelper.GetImageSourceFromCommonResource(page, "DDPM.UI.WalkThroughData");
+        }
+
+        private void UpdatePosition(string position)
+        {
+            switch (position.ToLower()) 
+            {
+                case "top_right":
+                    this.Left = base.Owner.Left + base.Owner.Width - this.Width - 122;
+                    this.Top = base.Owner.Top + 64;
+                    break;
+                case "left":
+                    this.Left = base.Owner.Left + 164; // Align with the left edge of the owner
+                    this.Top = base.Owner.Top + (base.Owner.Height - this.Height) / 2; // Center vertically
+                    break;
+            }
         }
 
         private void EndProgress()
