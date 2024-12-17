@@ -397,7 +397,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string funcName, int opt = 0)
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, int opt = 0)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapability requested ...");
 
@@ -408,7 +408,7 @@ namespace VcpCore.Plugins
             {
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
                 _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
-                _logs.DebugMsg("[VcpCorePlugin] VcpCode is " + funcName);
+                _logs.DebugMsg("[VcpCorePlugin] VcpCode is " + FunctionName);
                 _logs.DebugMsg("[VcpCorePlugin] opt is " + opt.ToString());
 
                 foreach (var moX in _AllInfoMonitors_Mix)
@@ -421,7 +421,7 @@ namespace VcpCore.Plugins
                             Guid _guid = Guid.NewGuid();
                             _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                            ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_II, new Type_GetVCPCapability_II(_guid, moX.Item1, funcName, opt));
+                            ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_II, new Type_GetVCPCapability_II(_guid, moX.Item1, FunctionName, opt));
                             _TaskQueue.Enqueue(parameterType);
 
                             Launch_TaskQueueExecutor();
@@ -511,7 +511,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, string FunctionName, string val)
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received SetVCPCapability requested ...");
 
@@ -520,14 +520,14 @@ namespace VcpCore.Plugins
 
             if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
-                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
-                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfoX.DisplayName);
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfoX.AliasDeviceName);
                 _logs.DebugMsg("[VcpCorePlugin] VcpCode is " + FunctionName);
                 _logs.DebugMsg("[VcpCorePlugin] val is " + val);
 
                 foreach (var moX in _AllInfoMonitors_Mix)
                 {
-                    if (monitorInfo.Equals(moX.Item2))
+                    if (monitorInfoX.Equals(moX.Item2))
                     {
                         if (moX.Item2.DDCisON)
                         {
