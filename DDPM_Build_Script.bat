@@ -90,10 +90,16 @@ IF "%1"=="" (
 ) ELSE (
     echo RootDir is [%1].
 )
+set target_folder=%RootDir%
+IF "%option_cmd%"=="debug_ui" (
+	set target_folder=%RootDir%\DDPM.UI
+)
+echo [target_folder] is [%target_folder%]
+pause
 Echo -------------------------------------------
 Echo [Clear all temp folder (bin and obj)]
 Echo -------------------------------------------
-for /d /r "%RootDir%" %%d in (bin,obj,_bin) do (
+for /d /r "%target_folder%" %%d in (bin,obj,_bin) do (
     if exist "%%d" (
         echo Deleting folder %%d and its contents
         rd /s /q "%%d"
@@ -241,8 +247,7 @@ echo errorlevel is %errorlevel%
 Echo --------------------------------------------
 Echo [Build SA]
 Echo --------------------------------------------
-cd /d "%RootDir%"
-cd DDPM.SA
+cd /d "%RootDir%\DDPM.SA"
 dotnet.exe clean -c %build_type% -v minimal /p:Framework="net8.0" /p:platform=%build_arch% /p:EnableWindowsTargeting=true ".\DDPM.SA.sln"
 echo errorlevel is %errorlevel%
 if not %errorlevel% == 0 goto SA_CleanFail
