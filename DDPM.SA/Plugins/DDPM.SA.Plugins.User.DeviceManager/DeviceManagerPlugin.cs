@@ -2806,7 +2806,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetIsMicEnumerationOn requested ...");
             writelog($"Target DeviceID is {deviceId}");
             _PeripheralsPlugin.SetIsMicEnumerationOn(newValue, deviceId);
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
 
         public Task SetWALTime(int newValue, Guid deviceId)
@@ -9337,7 +9337,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetIsMicEnumerationOn(guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
 
         public Task SetProfile(string guid, string newValue)
@@ -9426,31 +9426,31 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return _DTPProxyPlugin.SetFieldOfView(guid, newValue);
         }
 
-        public Task SetIsFocusOn(string guid, bool newValue)
+        public Task<bool> SetIsFocusOn(string guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsFocusOn requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsFocusOn(guid, newValue);
-            return Task.FromResult(true);
+
+            return _DTPProxyPlugin.SetIsFocusOn(guid, newValue);
         }
 
-        public Task SetFocus(string guid, int newValue)
+        public Task<bool> SetFocus(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetFocus requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetFocus(guid, newValue);
-            return Task.FromResult(true);
+
+            return _DTPProxyPlugin.SetFocus(guid, newValue);
         }
 
-        public Task SetPriority(string guid, int newValue)
+        public Task<bool> SetPriority(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetPriority requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetPriority(guid, newValue);
-            return Task.FromResult(true);
+
+            return _DTPProxyPlugin.SetPriority(guid, newValue);
         }
 
         public Task<bool> SetIsHDROn(string guid, bool newValue)
@@ -9461,22 +9461,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return _DTPProxyPlugin.SetIsHDROn(guid, newValue);
         }
 
-        public Task SetIsAutoWhiteBalanceOn(string guid, bool newValue)
+        public Task<bool> SetIsAutoWhiteBalanceOn(string guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsAutoWhiteBalanceOn requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsAutoWhiteBalanceOn(guid, newValue);
-            return Task.FromResult(true);
+
+            return _DTPProxyPlugin.SetIsAutoWhiteBalanceOn(guid, newValue);
         }
 
-        public Task SetAutoWhiteBalance(string guid, int newValue)
+        public Task<bool> SetAutoWhiteBalance(string guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAutoWhiteBalance requested ...");
             writelog($"Target Guid is {guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetAutoWhiteBalance(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetAutoWhiteBalance(guid, newValue);
         }
 
         public Task SetWALTime(string guid, int newValue)

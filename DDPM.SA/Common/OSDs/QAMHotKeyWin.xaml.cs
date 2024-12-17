@@ -109,10 +109,10 @@ namespace DDPM.OSDs
                 //PIMS 332041 need launch DDPM if DDPM not launched
                 if (ShowDDPM())
                 {
-                    DdpmCommonHelper.DeviceManagerSA!.WriteLog($"Lanuch DDPM successfully!");
+                    DdpmCommonHelper.DeviceManagerSA!.WriteLog($"QAM OSD Lanuch DDPM successfully!");
                 }
                 else
-                    DdpmCommonHelper.DeviceManagerSA!.WriteLog($"OAMOSD launch DDPM fail");
+                    DdpmCommonHelper.DeviceManagerSA!.WriteLog($"OAM OSD launch DDPM fail");
             }
             catch (Exception)
             {
@@ -162,14 +162,14 @@ namespace DDPM.OSDs
                     }
                     else
                     {
-                        //string ddpmExePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
-                        string debugPath = "D:\\DDPM\\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+                        string ddpmExePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
+                        //string debugPath = "D:\\DDPM\\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
 
                         result = DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
                             null,
                             new ProcessStartInfo
                             {
-                                FileName = debugPath,
+                                FileName = ddpmExePath,
                                 UseShellExecute = true
                             });
 
