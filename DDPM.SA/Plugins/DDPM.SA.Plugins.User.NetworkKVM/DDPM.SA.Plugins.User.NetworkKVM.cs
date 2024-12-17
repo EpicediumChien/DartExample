@@ -115,19 +115,15 @@ namespace NetworkKVM.Plugins
 
         public Task<bool> IsNamedpipeConnected()
         {
-            bool b = false;
-            try
+            if (pipeServer != null)
             {
-                if (pipeServer != null)
+                if (pipeServer.IsConnected)
                 {
-                    b = pipeServer.IsConnected;
+                    _logs.DebugMsg("[NetworkKVM] Namedpipe is Connected.");
+                    return Task.FromResult(true);
                 }
             }
-            catch
-            {
-                ;
-            }
-            return Task.FromResult(b);
+            return Task.FromResult(false);
         }
 
         /// <summary>
@@ -1093,7 +1089,7 @@ namespace NetworkKVM.Plugins
 #else
                         //Check process with inbox thumbprint and with argument via startInfo
                         //DDPMFileSecurity.StartProcessSafely(Log, proc.StartInfo, true);
-                        DDPMFileSecurity.StartProcessSafely(Log, proc.StartInfo, true, "", "", false, true);//lock nkvm
+                        DDPMFileSecurity.StartProcessSafely(Log, proc.StartInfo, true, "", "", false, false);//lock nkvm
 #endif
 
                         return Task.FromResult(true);
@@ -1731,38 +1727,69 @@ namespace NetworkKVM.Plugins
             _logs.DebugMsg("[NetworkKVM] WriteAsync : " + message);
             byte[] buffer = Encoding.UTF8.GetBytes(message);
 
-            try
+            if (pipeServer != null)
             {
-                await pipeServer.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                _logs.DebugMsg("[NetworkKVM] WriteAsync exception, message: " + ex.Message);
-            }
+                if (pipeServer.IsConnected)
+                {
+                    //try
+                    //{
+                    await pipeServer.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    _logs.DebugMsg("[NetworkKVM] WriteAsync exception, message: " + ex.Message);
+                    //}
 
-            await pipeServer.FlushAsync();
-            pipeServer.WaitForPipeDrain();
+                    await pipeServer.FlushAsync();
+                    //pipeServer.WaitForPipeDrain();
+                }
+                else
+                {
+                    _logs.DebugMsg("[NetworkKVM] pipe not connected");
+                }
+            }
+            else
+            {
+                _logs.DebugMsg("[NetworkKVM] pipe is null");
+            }
         }
 
         private async Task<string> ReadAsync()
         {
+            _logs.DebugMsg("[NetworkKVM] ReadAsync...");
             byte[] buffer = new byte[2048];
 
             int bytesRead = default;
 
-            try
+            string readmessage = string.Empty;
+
+            if (pipeServer != null)
             {
-                bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                if (pipeServer.IsConnected)
+                {
+                    //try
+                    //{
+                    bytesRead = await pipeServer.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
 
-            }
-            catch (Exception ex) 
-            { 
-                _logs.DebugMsg("[NetworkKVM] ReadAsync failed, message: " + ex.Message);
-                return string.Empty;
-            }
+                    //}
+                    //catch (Exception ex) 
+                    //{ 
+                    //    _logs.DebugMsg("[NetworkKVM] ReadAsync failed, message: " + ex.Message);
+                    //    return string.Empty;
+                    //}
 
-            string readmessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-            _logs.DebugMsg("[NetworkKVM] ReadAsync : " + readmessage);
+                    readmessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    _logs.DebugMsg("[NetworkKVM] ReadAsync : " + readmessage);
+                }
+                else
+                {
+                    _logs.DebugMsg("[NetworkKVM] pipe not connected");
+                }
+            }
+            else
+            {
+                _logs.DebugMsg("[NetworkKVM] pipe is null");
+            }
             return readmessage;
         }
 

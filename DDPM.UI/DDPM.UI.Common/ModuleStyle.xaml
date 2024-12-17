@@ -27,6 +27,7 @@
     <SolidColorBrush x:Key="Transparent" Color="{StaticResource Color_FakeTransparent}" />
     <!-- #endregion FakeTransparent: When you need a transparent color and need can response mouse click -->
     <SolidColorBrush x:Key="DefaultTheme_TxtColor" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="DefaultTheme_ProcessBarTxtColor" Color="#A4B8CD" />
     <SolidColorBrush x:Key="DefaultTheme_BdBkColor" Color="#99194784" />
     <SolidColorBrush x:Key="DefaultTheme_BdSolidBkColor" Color="#FF132F54" />
     <SolidColorBrush x:Key="DefaultTheme_BdBdColor" Color="#132F54" />
@@ -1145,6 +1146,7 @@
         <Setter Property="Padding" Value="8,8"/>
         <Setter Property="FontFamily" Value="Roboto"/>
         <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Tag" Value="2"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -1153,7 +1155,7 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             SnapsToDevicePixels="true"
-                            CornerRadius="2">
+                            CornerRadius="{TemplateBinding Tag}">
                         <ContentPresenter x:Name="contentPresenter"
                                           Focusable="False"
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -1563,8 +1565,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToolTip">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="#293B4D"
+                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}"
                             BorderThickness="1"
                             CornerRadius="4">
                         <!--<TextBlock Text="{TemplateBinding Content}"
@@ -1580,16 +1581,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style x:Key="TabInfoToolTipTextStyle" TargetType="TextBlock">
-        <Setter Property="ToolTipService.InitialShowDelay" Value="1" />
-        <Setter Property="Background" Value="#1D2C3B" />
-        <Setter Property="FontFamily" Value="Roboto" />
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="Foreground" Value="#F5F6F7" />
-        <Setter Property="Padding" Value="8" />
-        <Setter Property="LineHeight" Value="20" />
-        <Setter Property="TextWrapping" Value="Wrap" />
-    </Style>
+    <Style x:Key="TabInfoToolTipTextStyle" TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}"/>
     <Style x:Key="ModuleItemStyle" TargetType="UXControls:UXTextBlock">
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
         <Setter Property="FontFamily" Value="Roboto" />
@@ -2016,13 +2008,13 @@
     </Style>
 
     <Style x:Key="EditActionButtonStyle" TargetType="local:ActionButton">
-        <Setter Property="Foreground" Value="#F5F6F7" />
+        <Setter Property="Foreground" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
         <Setter Property="Background" Value="#00000000" />
         <Setter Property="CornerRadius" Value="2" />
         <Setter Property="Width" Value="102.5" />
         <Setter Property="Height" Value="40" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="#F5F6F7" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Medium" />

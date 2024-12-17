@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:DDPM.UI.Plugin.SettingsPlugin" d:DataContext="{d:DesignInstance Type=local:SettingsPageViewModel}"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             Margin="5,4,60,29"
+             Margin="5,4,0,29"
              d:DesignHeight="450"
              d:DesignWidth="800">
     
@@ -32,7 +32,7 @@
                     </Grid>
                     <Grid Margin="20,20,8,8">
                         <Border Style="{StaticResource PartBorderStyle}"
-                                CornerRadius="6">
+                                BorderThickness="0" CornerRadius="6">
                             <StackPanel Orientation="Vertical"
                                         Margin="15,0,0,0">
                                 <UXControls:UXTextBlock Margin="0,5,0,0"
@@ -68,7 +68,7 @@
                     </Grid>
                     <Grid Margin="20,20,8,8">
                         <Border Style="{StaticResource PartBorderStyle}"
-                                CornerRadius="6">
+                                BorderThickness="0" CornerRadius="6">
                             <StackPanel Orientation="Vertical"
                                         Margin="15,0,0,0">
                                 <UXControls:UXTextBlock Margin="0,20,0,0"

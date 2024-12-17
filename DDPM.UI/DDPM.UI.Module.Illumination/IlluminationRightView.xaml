@@ -11,64 +11,64 @@
              d:DataContext="{d:DesignInstance Type=plugin:KeyboardViewModel}"
              mc:Ignorable="d"
              d:DesignHeight="647" d:DesignWidth="507">
-  <UserControl.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
-      </ResourceDictionary.MergedDictionaries>
-      <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-    </ResourceDictionary>
-  </UserControl.Resources>
-  <Border CornerRadius="13" Width="507" Margin="0,0,0,15">
-    <Grid Margin="0,0,0,0">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="70" />
-        <RowDefinition Height="178" />
-        <RowDefinition Height="*" />
-      </Grid.RowDefinitions>
-      <Grid Height="60" VerticalAlignment="top" Grid.Row="0">
-        <UXControls:UXTextBlock Text="{Binding [Illumination.1], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Foreground="{DynamicResource DefaultTheme_TxtColor}"
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border CornerRadius="13" Width="507" Margin="0,0,0,15">
+        <Grid Margin="0,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70" />
+                <RowDefinition Height="178" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Grid Height="60" VerticalAlignment="top" Grid.Row="0">
+                <UXControls:UXTextBlock Text="{Binding [Illumination.1], Source={x:Static lang:LangHelper.Instance}}" FontSize="20" Foreground="{DynamicResource DefaultTheme_TxtColor}"
                                         TextBlockSemanticColorType="Light" Margin="18,24,0,0"
                                         TextBlockType="Caption"
                                         VerticalAlignment="Top" HorizontalAlignment="Left" />
-      </Grid>
-      <Border CornerRadius="6" Width="480" Height="178" VerticalAlignment="Top" Margin="0" Grid.Row="1">
-        <Grid VerticalAlignment="top">
-          <Grid.RowDefinitions>
-            <RowDefinition Height="80" />
-            <RowDefinition Height="40" />
-            <RowDefinition Height="*" />
-          </Grid.RowDefinitions>
-          <Grid VerticalAlignment="top" Grid.Row="0">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,18,0,0">
-              <common:TabButton Name="TabOff" Margin="0" HasInfoIcon="true"
+            </Grid>
+            <Border CornerRadius="6" Width="480" Height="178" VerticalAlignment="Top" Margin="0" Grid.Row="1">
+                <Grid VerticalAlignment="top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="80" />
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid VerticalAlignment="top" Grid.Row="0">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,18,0,0">
+                            <common:TabButton Name="TabOff" Margin="0" HasInfoIcon="true"
                                               Width="147" Height="58" Focused="{Binding TabOffFocused}"
                                               Caption="{Binding TabOffCaption}" Command="{Binding TabOffClickedCommand}"
                                               TabInfo="{Binding TabOffInfoTip}" />
-              <common:TabButton Name="TabAdaptiveLight" Margin="5,0,0,0" HasInfoIcon="true"
+                            <common:TabButton Name="TabAdaptiveLight" Margin="5,0,0,0" HasInfoIcon="true"
                                               Width="147" Height="58" Focused="{Binding TabAdaptiveLightFocused}"
                                               Caption="{Binding TabAdaptiveLightCaption}" Command="{Binding TabAdaptiveLightClickedCommand}"
                                               TabInfo="{Binding TabAdaptiveLightInfoTip}" />
-              <common:TabButton Name="TabManual" Margin="5,0,0,0" HasInfoIcon="true"
+                            <common:TabButton Name="TabManual" Margin="5,0,0,0" HasInfoIcon="true"
                                               Width="147" Height="58"  Focused="{Binding TabManualFocused}"
                                               Caption="{Binding TabManualCaption}" Command="{Binding TabManualClickedCommand}"
                                               TabInfo="{Binding TabManualInfoTip}" />
-            </StackPanel>
-          </Grid>
-          <Grid Height="40" VerticalAlignment="top" Grid.Row="1" Margin="0,20,0,0" Visibility="{Binding IsSliderVisible, Converter={StaticResource BoolToVisibilityConverter}}">
-            <UXControls:UXTextBlock Text="{Binding [Illumination.1], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" Foreground="{DynamicResource DefaultTheme_TxtColor}" FontWeight="Medium"
+                        </StackPanel>
+                    </Grid>
+                    <Grid Height="40" VerticalAlignment="top" Grid.Row="1" Margin="0,20,0,0" Visibility="{Binding IsSliderVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <UXControls:UXTextBlock Text="{Binding [Illumination.1], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" Foreground="{DynamicResource DefaultTheme_TxtColor}" FontWeight="Medium"
                                                 TextBlockSemanticColorType="Light" Margin="20,0,0,0"
                                                 TextBlockType="Caption"
                                                 VerticalAlignment="Top" HorizontalAlignment="Left" />
-          </Grid>
-          <Grid VerticalAlignment="top" Grid.Row="2" Visibility="{Binding IsSliderVisible, Converter={StaticResource BoolToVisibilityConverter}}">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,18,0,0">
-              <UXControls:UXSlider Value="{Binding BackLightingLevel}" Maximum="4" Width="400" Thumb.DragCompleted="BackLightingSlider_DragCompleted" Thumb.DragStarted="BackLightingSlider_DragStarted" />
-              <UXControls:UXTextBlock Text="{Binding BackLightingLevelText}" FontWeight="Light" FontSize="14" Foreground="#A4B8CD" Margin="10,0,0,0" />
-            </StackPanel>
-          </Grid>
+                    </Grid>
+                    <Grid VerticalAlignment="top" Grid.Row="2" Visibility="{Binding IsSliderVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,18,0,0">
+                            <UXControls:UXSlider Value="{Binding BackLightingLevel}" Maximum="4" Width="400" Thumb.DragCompleted="BackLightingSlider_DragCompleted" Thumb.DragStarted="BackLightingSlider_DragStarted" />
+                            <UXControls:UXTextBlock Text="{Binding BackLightingLevelText}" FontWeight="Light" FontSize="14" Foreground="{DynamicResource DefaultTheme_ProcessBarTxtColor}" Margin="10,0,0,0" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
         </Grid>
-      </Border>
-    </Grid>
-  </Border>
+    </Border>
 </UserControl>

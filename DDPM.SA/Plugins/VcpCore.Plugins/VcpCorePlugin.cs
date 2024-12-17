@@ -140,9 +140,9 @@ namespace VcpCore.Plugins
             InitialColorPresets();
 
             if (_cancellationTokenSource != null)
-                Task.Run(() => InitializeMonitorsList(_cancellationTokenSource.Token)).ConfigureAwait(false);
+                Task.Run(() => InitializeMonitorsList(false, _cancellationTokenSource.Token)).ConfigureAwait(false);
             else
-                Task.Run(() => InitializeMonitorsList(CancellationToken.None)).ConfigureAwait(false);
+                Task.Run(() => InitializeMonitorsList(false, CancellationToken.None)).ConfigureAwait(false);
         }
 
         #endregion
@@ -208,7 +208,7 @@ namespace VcpCore.Plugins
             {
                 bool IsFinishedAlready = false;
                 var CancelStatusCheck = Task.Run(() => CancellationCheck(token, ref IsFinishedAlready));
-                var ReGetTask = Task.Run(() => InitializeMonitorsList(token));
+                var ReGetTask = Task.Run(() => InitializeMonitorsList(true, token));
 
                 List<MonitorInfo> _AllDisplays = new List<MonitorInfo>();
 
@@ -1958,11 +1958,10 @@ namespace VcpCore.Plugins
             //This is discussed in GitHub issue dotnet/corefx #5940.
         }
 
-        private void InitializeMonitorsList(CancellationToken token)
+        private void InitializeMonitorsList(bool IsFromReGet, CancellationToken token)
         {
             Guid TheadGUID = Guid.NewGuid();
             {
-                Task T = null;
                 try
                 {
                     Interlocked.Add(ref _InitialThreadCounter, 1);
@@ -2021,6 +2020,7 @@ namespace VcpCore.Plugins
                     }
                     finally
                     {
+                        Task T = null;
                         try
                         {
                             if (!token.Equals(CancellationToken.None))
@@ -2102,7 +2102,7 @@ namespace VcpCore.Plugins
                                                 Initialize0x52toEmpty();
 
                                                 TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
-                                                                                          //------------------------------------------------------------------------------------------------//
+                                                //------------------------------------------------------------------------------------------------//
                                                 DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs()
                                                 {
                                                     count = _AllInfoMonitors_Mix.Count,
@@ -2150,9 +2150,11 @@ namespace VcpCore.Plugins
                                                 _StatusTimer.Start();
                                         }
 
-                                        _logs.DebugMsg("[VcpCorePlugin] _LockerSemaphoreSlim.Release() when mos=0 and Task run in finally");
                                         if (_LockerSemaphoreSlim.CurrentCount < 1)
+                                        {
+                                            _logs.DebugMsg("[VcpCorePlugin] _LockerSemaphoreSlim.Release() when mos=0 and Task run in finally");
                                             _LockerSemaphoreSlim.Release();
+                                        }
                                     }
                                 }, TokenNew);
                             }
@@ -2284,9 +2286,11 @@ namespace VcpCore.Plugins
                                                     _StatusTimer.Start();
                                             }
 
-                                            _logs.DebugMsg("[VcpCorePlugin] _LockerSemaphoreSlim.Release() when mos>0 and Task run in finally");
                                             if (_LockerSemaphoreSlim.CurrentCount < 1)
+                                            {
+                                                _logs.DebugMsg("[VcpCorePlugin] _LockerSemaphoreSlim.Release() when mos>0 and Task run in finally");
                                                 _LockerSemaphoreSlim.Release();
+                                            }
                                         }
                                     }, TokenNew);
                                 }
@@ -2321,10 +2325,20 @@ namespace VcpCore.Plugins
                         }
                         finally
                         {
-                            _logs.DebugMsg($"[VcpCorePlugin] {TheadGUID} Exit ...");
+                            _logs.DebugMsg($"[VcpCorePlugin] {TheadGUID} Ready Exit ...");
 
                             Interlocked.Add(ref _InitialThreadCounter, -1);
                             _logs.DebugMsg($"[VcpCorePlugin] _InitialThreadCounter count : ({_InitialThreadCounter}) when InitializeMonitorsList finished and in finally");
+
+                            if (!IsFromReGet)
+                            {
+                                DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs()
+                                {
+                                    count = _AllInfoMonitors_Mix.Count,
+                                    monitors = new List<MonitorInfo>(_AllInfoMonitors_Mix.Select(x => x.Item2).ToList()),
+                                };
+                                OnDisplaychanged(_displaychangedEventArgss);
+                            }
 
                             if (_InitialThreadCounter < 1)
                             {
@@ -2342,10 +2356,11 @@ namespace VcpCore.Plugins
 
                             if (_CoWorkSignal < 1 && T == null)
                             {
-                                _logs.DebugMsg("[VcpCorePlugin] _LockerSemaphoreSlim.Release() when InitializeMonitorsList finished and in finally");
-
                                 if (_LockerSemaphoreSlim.CurrentCount < 1)
+                                {
+                                    _logs.DebugMsg("[VcpCorePlugin] _LockerSemaphoreSlim.Release() when InitializeMonitorsList finished and in finally");
                                     _LockerSemaphoreSlim.Release();
+                                }
                             }
                         }
                     }

@@ -30,6 +30,7 @@ namespace DDPM.UI.Common
 
                 #region Default Text Color
                 UpdateFreezable("DefaultTheme_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"));
+                UpdateFreezable("DefaultTheme_ProcessBarTxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#A4B8CD"));
                 UpdateFreezable("DefaultTheme_BdBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99194784"));
                 UpdateFreezable("DefaultTheme_BdSolidBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF132F54"));
                 UpdateFreezable("DefaultTheme_BdBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#132F54"));
@@ -364,6 +365,7 @@ namespace DDPM.UI.Common
 
                 #region Headset
                 UpdateFreezable("ToggleSwitch_NormalBackground", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0B1E38"));
+                UpdateFreezable("ToggleSwitch_BorderBrush", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#1E3F6C"));
                 #endregion
 
                 #region Consent page
