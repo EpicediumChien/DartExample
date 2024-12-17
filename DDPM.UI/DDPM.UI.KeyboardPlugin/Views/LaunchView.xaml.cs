@@ -32,25 +32,28 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         {
             InitializeComponent();
             _vm = (KeyboardViewModel?)Keyboardplugin.PluginIoc?.GetService<IPeripheralViewModel>();
-
-            if (_vm != null)
+            if (_vm == null)
             {
-                DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-                if (_vm.EOLKBList.Contains(_vm.Model))
-                {
-                    Battery.Visibility = Visibility.Collapsed;
-                    btnRestore.Visibility = Visibility.Collapsed;
-                    //txtEOL.Text = Strings.EOLMessage;
-                    txtEOL.Visibility = Visibility.Visible;
-                    SectionA.Visibility = Visibility.Collapsed;
-                    SectionF.Visibility = Visibility.Collapsed;
-                    EOLDongle.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    BuildModuleGroups();
-                }
+                DdpmCommonHelper.WriteUILog("Keyboard ViewModel is null");
+                return;
+            }
+
+            DataContext = _vm;
+            _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+
+            if (_vm.EOLKBList.Contains(_vm.Model))
+            {
+                Battery.Visibility = Visibility.Collapsed;
+                btnRestore.Visibility = Visibility.Collapsed;
+                //txtEOL.Text = Strings.EOLMessage;
+                txtEOL.Visibility = Visibility.Visible;
+                SectionA.Visibility = Visibility.Collapsed;
+                SectionF.Visibility = Visibility.Collapsed;
+                EOLDongle.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                BuildModuleGroups();
             }
 
             //txtUnpair.Text = Strings.Unpair;
@@ -408,7 +411,6 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             txt3.Style = ConnectionStyle2;
             txtBLHost3.Style = ConnectionStyle2;
 
-
             switch (_vm!.Model)
             {
                 case "KB700":
@@ -432,8 +434,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
                 case "KB900":
                     Host3.Visibility = Visibility.Collapsed;
-                    txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
-                    txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                    txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                    txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
                     if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         txt1.Style = ConnectionStyle1;
