@@ -235,7 +235,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                             await GetDdpmDevicesAsync(_deviceManager);
                             //CloseQAMIfExist();
-                            await CheckIfNeedNavigateToSettingPage();
+                            await CheckIfNeedNavigateToSettingPageByQAMOSD();  //Derek 1217 for QAM PIMS-332041
 
                             //1030 get global settings for telemetry consent page using
                             _globalSettings = _deviceManager.GetGlobalSettingParam().Result;
@@ -338,7 +338,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         //        DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = false");
         //}
 
-        private async Task CheckIfNeedNavigateToSettingPage()
+        private async Task CheckIfNeedNavigateToSettingPageByQAMOSD()
         {
             if (_deviceManager!.GetIsDDPMLaunchByQAM().Result == true)
             {
