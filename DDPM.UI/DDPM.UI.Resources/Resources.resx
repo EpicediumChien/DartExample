@@ -3255,4 +3255,7 @@
   <data name="MonitorAssetReport_SaveFail" xml:space="preserve">
     <value>Monitor asset report save fail</value>
   </data>
+  <data name="USBKVM.Tips" xml:space="preserve">
+    <value>Example: “Alt + P”; “Shift + F”; “Ctrl + Shift + F”\nNote: For multiple monitors, the mouse cursor should be on the targeted monitor screen to trigger the hotkey function.</value>
+  </data>
 </root>

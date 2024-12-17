@@ -209,6 +209,8 @@ namespace DDPM.UI.Module.Color
 
         public bool IsAutoColorPreset_Lock { get; set; }
 
+        public string last_selected_value { get; set; } = string.Empty;
+
         //
         //Dean 0612 add for ALS syncup
         //
@@ -223,6 +225,8 @@ namespace DDPM.UI.Module.Color
             set
             {
                 int temp = _colorPresetSelectedIndex;
+                if(ColorPresets_ItemsCollection != null && temp < ColorPresets_ItemsCollection.Count)//before
+                    last_selected_value = ColorPresets_ItemsCollection[temp];
                 if (CheckIfDisableALSFeature())
                 {
                     _colorPresetSelectedIndex = value;
@@ -233,6 +237,8 @@ namespace DDPM.UI.Module.Color
                     _colorPresetSelectedIndex = temp;
                 }
                 OnPropertyChanged("ColorPresetSelectedIndex");
+                if (ColorPresets_ItemsCollection != null && _colorPresetSelectedIndex < ColorPresets_ItemsCollection.Count)//after: keep or change
+                    last_selected_value = ColorPresets_ItemsCollection[_colorPresetSelectedIndex];
             }
         }
 
@@ -264,6 +270,8 @@ namespace DDPM.UI.Module.Color
         {
             _colorPresetSelectedIndex = selIndex;
             OnPropertyChanged("ColorPresetSelectedIndex");
+            if (ColorPresets_ItemsCollection != null && selIndex < ColorPresets_ItemsCollection.Count)
+                last_selected_value = ColorPresets_ItemsCollection[selIndex];
         }
 
         //
@@ -624,23 +632,29 @@ namespace DDPM.UI.Module.Color
         // jim modify 20240606
         public void WatchForProcessEnd()
         {
-            string queryString =
-                "SELECT TargetInstance" +
-                "  FROM __InstanceDeletionEvent " +
-                "WITHIN 1 " +
-                " WHERE TargetInstance ISA 'Win32_Process' "
-                + "   AND TargetInstance.Name like 'ColorManagement.exe'";
-
-            string scope = @"\\.\root\CIMV2";
-
-            if (endProcWatcher == null)
+            try
             {
-                // Create a watcher and listen for events
-                endProcWatcher = new ManagementEventWatcher(scope, queryString);
-                endProcWatcher.EventArrived += ProcessEnded;
-                endProcWatcher.Start();
+                string queryString =
+                    "SELECT TargetInstance" +
+                    "  FROM __InstanceDeletionEvent " +
+                    "WITHIN 1 " +
+                    " WHERE TargetInstance ISA 'Win32_Process' "
+                    + "   AND TargetInstance.Name like 'ColorManagement.exe'";
+
+                string scope = @"\\.\root\CIMV2";
+
+                if (endProcWatcher == null)
+                {
+                    // Create a watcher and listen for events
+                    endProcWatcher = new ManagementEventWatcher(scope, queryString);
+                    endProcWatcher.EventArrived += ProcessEnded;
+                    endProcWatcher.Start();
+                }
             }
-          
+            catch (System.Exception ex)
+            {
+                Log?.Error("[WatchForProcessEnd] exception with: " + ex.Message);
+            }
         }
 
         // jim modify 20240606

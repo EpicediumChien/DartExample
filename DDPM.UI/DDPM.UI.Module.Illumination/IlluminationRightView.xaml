@@ -55,7 +55,7 @@
                                               TabInfo="{Binding TabManualInfoTip}" />
                         </StackPanel>
                     </Grid>
-                    <Grid Height="40" VerticalAlignment="top" Grid.Row="1" Margin="0,20,0,0">
+                    <Grid Height="40" VerticalAlignment="top" Grid.Row="1" Margin="0,20,0,0" Visibility="{Binding IsSliderVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                         <UXControls:UXTextBlock Text="{Binding [Illumination.1], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" Foreground="{DynamicResource DefaultTheme_TxtColor}" FontWeight="Medium"
                                                 TextBlockSemanticColorType="Light" Margin="20,0,0,0"
                                                 TextBlockType="Caption"

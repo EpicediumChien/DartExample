@@ -2490,6 +2490,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 Assert.IsTrue(result);
             }
 
+            vcpcode = "67";
+            if (vcpcode != "67" || vcpcode != "68")
+            {
+                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val).Result;  // aconfig == null
+                Assert.IsFalse(result);
+            }
+
+            _AllALSConfig = new List<ALSConfig>();
+            aconfig.Edid = monitorInfo1.edid;
+            _AllALSConfig.Add(aconfig);
+            DisplayMangerPlugin.AllALSConfig = _AllALSConfig;  // aconfig != null
+
             vcpcode = "68";
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
             mockVcpCoreService.Setup(x => x.SetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<uint>())).Returns(Task.FromResult(true));
