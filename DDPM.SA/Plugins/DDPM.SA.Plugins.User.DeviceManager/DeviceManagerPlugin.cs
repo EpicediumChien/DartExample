@@ -12978,7 +12978,71 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             HandleQAMV2();
         }
 
+        //Derek 1217 add Debounce for Keyboard_KeyUpProc
+        private System.Timers.Timer _timerDebounce;
+        //即刻执行，执行之后，在timeMs内再次调用无效
+        public void KeyboardHook_Debounce<T>(int timeMs, ISynchronizeInvoke invoker, 
+                        Action<T> action, T parameter)
+        {
+            System.Threading.Monitor.Enter(this);
+            bool needExit = true;
+
+            try
+            {
+                if (_timerDebounce == null)
+                {
+                    _timerDebounce = new System.Timers.Timer(timeMs);
+                    _timerDebounce.AutoReset = false;
+                    _timerDebounce.Elapsed += (o, e) =>
+                    {
+                        _timerDebounce.Stop();
+                        _timerDebounce.Close();
+                        _timerDebounce = null;
+                    };
+                    _timerDebounce.Start();
+
+                    System.Threading.Monitor.Exit(this);
+                    needExit = false;
+
+                    InvokeAction(action, parameter, invoker);//can't lock this
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch exception[{e.Message}] when run KeyboardHook_Debounce");
+            }
+            finally
+            {
+                if (needExit)
+                    System.Threading.Monitor.Exit(this);
+            }
+        }
+
+        private void InvokeAction<T>(Action<T> action, T parameter, ISynchronizeInvoke invoker)
+        {
+            if (invoker == null)
+            {
+                action(parameter);
+            }
+            else
+            {
+                if (invoker.InvokeRequired)
+                {
+                    _ = invoker.Invoke(action, new object[] { parameter });
+                }
+                else
+                {
+                    action(parameter);
+                }
+            }
+        }
+
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
+        {
+            KeyboardHook_Debounce(3000, null, KeyboardHook_KeyUpProc, e);
+        }
+
+        private void KeyboardHook_KeyUpProc(KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
             Debug.WriteLine($"Keyboard_KeyUpProc ---{strKey}");
@@ -12994,7 +13058,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"ALT+Z conditons: devcnt = {devCnt}, " +
                     $"global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
 
-                //Derek PIMS PIMS-329759 Problem 1
+                //Derek PIMS-329759 Problem 1
                 if (1 == devCnt && _GlobalSettingParam != null &&
                     _GlobalSettingParam.GlobalSetting_WidgetSettings != null &&
                     _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
