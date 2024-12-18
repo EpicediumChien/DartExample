@@ -1351,6 +1351,8 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(AutoWhiteBalance), _autoWhiteBalance, OperationModule.ColorAndImage);
         }
 
+        public string BrightnessText { get; set; } = "";
+        public double[] BrightnessMargin { get; set; } = { 0 };
         private int _brightness = 0;
         public int Brightness
         {
@@ -1374,6 +1376,8 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(Brightness), _brightness, OperationModule.ColorAndImage);
         }
 
+        public string SharpnessText { get; set; } = "";
+        public double[] SharpnessMargin { get; set; } = { 0 };
         private int _sharpness = 0;
         public int Sharpness
         {
@@ -1397,6 +1401,8 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(Sharpness), _sharpness, OperationModule.ColorAndImage);
         }
 
+        public string ContrastText { get; set; } = "";
+        public double[] ContrastMargin { get; set; } = { 0 };
         private int _contrast = 0;
         public int Contrast
         {
@@ -1452,6 +1458,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
+
+
         public string SaturationText { get; set; } = "";
         public double[] SaturationMargin { get; set; } = { 0 };
         public void SetSaturation()

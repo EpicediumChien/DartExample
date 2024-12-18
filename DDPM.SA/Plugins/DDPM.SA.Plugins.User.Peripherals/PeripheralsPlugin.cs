@@ -11,6 +11,7 @@
 #endregion
 
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.SA.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
@@ -2463,6 +2464,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = "BatteryLevelChanged";
                     OnNotify(_EventArgs);
+
+                    var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
+                    if (!settings.GlobalSetting_General.Low_Battery_Level)
+                        return;
 
                     if (arg2 >= 0 && arg2 <= 9)
                     {
