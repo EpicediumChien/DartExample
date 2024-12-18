@@ -10492,7 +10492,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _QAM = null;
 
                 if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null
-                    && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder && 
+                    && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder &&
                     isOpenOSDWhenQAMClosed)
                 {
                     ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
@@ -12644,7 +12644,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
 
                 //overwrite conflict key
-                HotkeyInfo conflictKeyinfo = curHotkey.HotkeyInfo.SingleOrDefault(x => KeysTostr(x.Hotkey).Equals(KeysTostr(hotkeys)));
+                Debug.WriteLine($"overwrite conflict key: {KeysTostr(hotkeys)}");
+                HotkeyInfo conflictKeyinfo = curHotkey.HotkeyInfo.SingleOrDefault(x => !string.IsNullOrEmpty(KeysTostr(hotkeys)) && KeysTostr(x.Hotkey).Equals(KeysTostr(hotkeys)));
                 if (conflictKeyinfo != null)
                 {
                     conflictKeyinfo.Hotkey = new List<VirtualKey>();
