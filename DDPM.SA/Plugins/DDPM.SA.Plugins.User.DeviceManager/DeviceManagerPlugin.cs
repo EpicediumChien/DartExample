@@ -5282,12 +5282,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string orientation)
+        public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string Orientation)
         {
             bool? ret = null;
             if (_DisplayManagerPlugin != null)
             {
-                ret = _DisplayManagerPlugin.SetOSDOrientation(monitorInfo, orientation).Result;
+                ret = _DisplayManagerPlugin.SetOSDOrientation(monitorInfo, Orientation).Result;
             }
             return Task.FromResult(ret);
         }
