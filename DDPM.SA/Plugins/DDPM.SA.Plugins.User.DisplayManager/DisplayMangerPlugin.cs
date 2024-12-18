@@ -1379,15 +1379,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// Update Connected ALS Config
         /// </summary>
         /// <returns>Return List<ALSConfig> type</returns>
-        public Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain)
+        public Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfos)
         {
             try
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig ... in");
                 List<ALSConfig> als_connecte = new List<ALSConfig>();
-                for (int i = 0; i < monitorInfoMain.Count; i++)
+                for (int i = 0; i < monitorInfos.Count; i++)
                 {
-                    ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(monitorInfoMain[i].edid));// && x.serialNumber.ToUpper().Equals(monitorInfoMain[i].edid.SerialNumber.ToUpper()));
+                    ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(monitorInfos[i].edid));// && x.serialNumber.ToUpper().Equals(monitorInfos[i].edid.SerialNumber.ToUpper()));
                     if (aconfig != null)
                     {
                         _logs.DebugMsg($"[DisplayMangerPlugin]UpdateExistAlsConfig aconfig " + aconfig.DisplayName.ToString() + " || " + aconfig.serialNumber.ToString());
