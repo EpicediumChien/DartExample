@@ -568,7 +568,7 @@ namespace DDPM.UI.Module.Gaming.Tests
             uI_DualResolution.DualResolutionType = Gaming_DualResolutionType._4K;
             var result = uI_DualResolution.DisplayText;
             // Assert
-            Assert.That(result, Is.EqualTo(""));
+            Assert.That(result, Is.EqualTo("4K"));
         }
     }
 }

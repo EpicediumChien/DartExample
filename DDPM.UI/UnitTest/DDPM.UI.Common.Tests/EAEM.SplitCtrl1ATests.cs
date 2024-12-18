@@ -71,7 +71,7 @@ namespace DDPM.UI.Common.Tests
             // Act
             splitCtrl1A.Description = "PIP Small";
             // Assert
-            Assert.That(splitCtrl1A.Description, Is.EqualTo($""));
+            Assert.That(splitCtrl1A.Description, Is.EqualTo($"PIP Small"));
 
             // Act
             splitCtrl1A.Description = "0x0001";

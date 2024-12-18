@@ -30,7 +30,8 @@ namespace DDPM.UI.Module.Kvm.Tests
         private Mock<IModuleOwner>? moduleOwnerMock;
         private KvmViewModel kvmViewModel;
         private Mock<IConsole>? MyConsoleMock;
-        private Mock<ILog>? logMock;
+        private Mock<ILog>? _logMock;
+        private KvmModule? kvmModule;
         [SetUp]
         public void Setup()
         {
@@ -44,8 +45,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             _logMock=new Mock<ILog>();
             MyConsoleMock = new Mock<IConsole>();
-            logMock=new Mock<ILog>();
-            MyConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(logMock.Object);
+            MyConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(_logMock.Object);
             DdpmCommonHelper.MyConsole = MyConsoleMock.Object;
             MyConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(_logMock.Object);
             deviceManagerMock = new Mock<IDeviceManagerSA>();
