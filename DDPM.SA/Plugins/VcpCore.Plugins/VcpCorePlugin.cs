@@ -511,7 +511,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val)
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, string FunctionName, string val)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received SetVCPCapability requested ...");
 
@@ -520,14 +520,14 @@ namespace VcpCore.Plugins
 
             if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
-                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfoX.DisplayName);
-                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfoX.AliasDeviceName);
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
                 _logs.DebugMsg("[VcpCorePlugin] VcpCode is " + FunctionName);
                 _logs.DebugMsg("[VcpCorePlugin] val is " + val);
 
                 foreach (var moX in _AllInfoMonitors_Mix)
                 {
-                    if (monitorInfoX.Equals(moX.Item2))
+                    if (monitorInfo.Equals(moX.Item2))
                     {
                         if (moX.Item2.DDCisON)
                         {
@@ -554,12 +554,12 @@ namespace VcpCore.Plugins
                     }
                 }
 
-                _logs.DebugMsg("[VcpCorePlugin] No target display to work. So, ignor requested");
+                _logs.DebugMsg("[VcpCorePlugin] No target display to work. So, ignore requested");
                 return Task.FromResult(false);
             }
             else
             {
-                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignore requested");
                 return Task.FromResult(false);
             }
         }
@@ -599,7 +599,7 @@ namespace VcpCore.Plugins
                 Launch_TaskQueueExecutor();
             }
             else
-                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is in Initialize. So, ignor requested");
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is in Initialize. So, ignore requested");
         }
 
         private void Watcher0x52()
@@ -617,7 +617,7 @@ namespace VcpCore.Plugins
                 Launch_TaskQueueExecutor();
             }
             else
-                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is in Initialize. So, ignor requested");
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is in Initialize. So, ignore requested");
         }
 
         private void Watcher0x02forStatusCheck()
@@ -635,7 +635,7 @@ namespace VcpCore.Plugins
                 Launch_TaskQueueExecutor();
             }
             else
-                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is in Initialize. So, ignor requested");
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is in Initialize. So, ignore requested");
         }
 
         private void Launch_TaskQueueExecutor()
@@ -767,7 +767,7 @@ namespace VcpCore.Plugins
                 else
                     _logs.DebugMsg("[VcpCorePlugin] GetQueueResult CancellationRequested is be true to trigger ...");
 
-                _logs.DebugMsg(r ? ("[VcpCorePlugin] " + "Guid: " + guid.ToString() + " GetQueueResult_() is Susess") : ("[VcpCorePlugin] " + "Guid: " + guid.ToString() + " GetQueueResult_() is Fail"));
+                _logs.DebugMsg(r ? ("[VcpCorePlugin] " + "Guid: " + guid.ToString() + " GetQueueResult_() is Success") : ("[VcpCorePlugin] " + "Guid: " + guid.ToString() + " GetQueueResult_() is Fail"));
 
                 return result;
             }
@@ -941,7 +941,7 @@ namespace VcpCore.Plugins
 
                             if (!string.IsNullOrEmpty(r))
                             {
-                                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetCapabilitiesString_ Sucess ...");
+                                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetCapabilitiesString_ Success ...");
                                 return r;
                             }
                             else
@@ -951,14 +951,14 @@ namespace VcpCore.Plugins
                             }
                         }
                         else
-                            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetCapabilitiesString_ Bcuz ddcci disconnect, capstr is empty ...");
+                            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetCapabilitiesString_ Bcuz ddcci disconnect, CapStr is empty ...");
                     }
 
                     return string.Empty;
                 }
                 else
                 {
-                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose TargetMonitor or is in Initialize, ignor requested ...");
+                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose TargetMonitor or is in Initialize, ignore requested ...");
                     return string.Empty;
                 }
             }
@@ -1116,13 +1116,13 @@ namespace VcpCore.Plugins
                             }
                         }
                         else
-                            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin GetVCPCapabilities_ Bcuz ddcci disconnect, capstr is empty ...");
+                            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin GetVCPCapabilities_ Bcuz ddcci disconnect, CapStr is empty ...");
 
                         return rcString;
                     }
                     else
                     {
-                        _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose TargetMonitor, ignor requested ...");
+                        _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose TargetMonitor, ignore requested ...");
                         return string.Empty;
                     }
                 }
@@ -1164,7 +1164,7 @@ namespace VcpCore.Plugins
                 }
                 else
                 {
-                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose TargetMonitor or is in Initialize, ignor requested ...");
+                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose TargetMonitor or is in Initialize, ignore requested ...");
                     return null;
                 }
             }
@@ -1310,7 +1310,7 @@ namespace VcpCore.Plugins
                 }
                 else
                 {
-                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose TargetMonitor, ignor requested ...");
+                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose TargetMonitor, ignore requested ...");
 
                     return null;
                 }
@@ -1378,7 +1378,7 @@ namespace VcpCore.Plugins
                 }
                 else
                 {
-                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose TargetMonitor or is in Initialize, ignor requested ...");
+                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose TargetMonitor or is in Initialize, ignore requested ...");
                     return false;
                 }
             }
@@ -1536,7 +1536,7 @@ namespace VcpCore.Plugins
                 }
                 else
                 {
-                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose TargetMonitor or is in Initialize, ignor requested ...");
+                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose TargetMonitor or is in Initialize, ignore requested ...");
                     return false;
                 }
             }
@@ -1575,7 +1575,7 @@ namespace VcpCore.Plugins
 
                                 rc = Set_VCPCapability(monitorInfoX, 0x02, 0x01, IsOutInitialize);
 
-                                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin set VCP 0x02 to 1 : " + (rc ? "Sucess" : "Fail"));
+                                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin set VCP 0x02 to 1 : " + (rc ? "Success" : "Fail"));
 
                                 if (rc)
                                     FailTimes = 0;
@@ -1591,7 +1591,7 @@ namespace VcpCore.Plugins
                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin All Monitor Initialize 0x52 to 0 finish ...");
                 }
                 else
-                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose all monitors or in Initialize, ignor requested ...");
+                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose all monitors or in Initialize, ignore requested ...");
             }
             catch (Exception ex)
             {
@@ -1611,7 +1611,7 @@ namespace VcpCore.Plugins
                 if (UpdateMyself(ref monitor, CancellationToken.None))
                 {
                     rc = true;
-                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck UpdateMyself Sucess");
+                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck UpdateMyself Success");
                 }
                 else
                 {
@@ -1706,7 +1706,7 @@ namespace VcpCore.Plugins
                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watching 0x02 for Status Check finish ...");
                 }
                 else
-                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose all monitors, ignor requested ...");
+                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose all monitors, ignore requested ...");
             }
             catch (Exception ex)
             {
@@ -1860,7 +1860,7 @@ namespace VcpCore.Plugins
                                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] 0x52 is null");
 
                                     rc = Set_VCPCapability(monitorInfoX, 0x02, 0x01, IsOutInitialize);
-                                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin set VCP 0x02 to 1 : " + (rc ? "Sucess" : "Fail"));
+                                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin set VCP 0x02 to 1 : " + (rc ? "Success" : "Fail"));
 
                                     if (rc)
                                         FailTimes = 0;
@@ -1905,7 +1905,7 @@ namespace VcpCore.Plugins
                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watching 0x52 finish ...");
                 }
                 else
-                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose all monitors, ignor requested ...");
+                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Lose all monitors, ignore requested ...");
             }
             catch (Exception ex)
             {
@@ -1915,7 +1915,7 @@ namespace VcpCore.Plugins
 
         protected virtual void OnVCPchanged(VCPchangedEventArgs e)
         {
-            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin brocast OnVCPchanged ...");
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin Broadcast OnVCPchanged ...");
 
             //VCPchanged?.Invoke(this, e);
             EventHandler<VCPchangedEventArgs> handler = VCPchanged;
@@ -1930,7 +1930,7 @@ namespace VcpCore.Plugins
 
         protected virtual void OnDisplaychanged(DisplaychangedEventArgs e)
         {
-            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin brocast OnDisplaychanged ...");
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin Broadcast OnDisplaychanged ...");
 
             //Displaychanged?.Invoke(this, e);
             EventHandler<DisplaychangedEventArgs> handler = Displaychanged;
@@ -1945,7 +1945,7 @@ namespace VcpCore.Plugins
 
         protected virtual void OnDDCCIStatuschanged(DDCCIchangedEventArgs e)
         {
-            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin brocast OnDDCCIStatuschanged ...");
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin Broadcast OnDDCCIStatuschanged ...");
 
             //DDCCIStatuschanged?.Invoke(this, e);
             EventHandler<DDCCIchangedEventArgs> handler = DDCCIStatuschanged;
