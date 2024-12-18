@@ -6,9 +6,10 @@ using Dell.Client.Framework.UX.WPF;
 using Moq;
 using NGA.UnitTest.PrivateObject;
 using NUnit.Framework;
+using System.Reflection;
 using System.Windows;
 using VcpCore.Common;
-
+using Dell.Client.Framework.UX.WPF.ResourceManager;
 namespace DDPM.UI.Module.Brightness.Tests
 {
     [Apartment(ApartmentState.STA)]
@@ -20,6 +21,7 @@ namespace DDPM.UI.Module.Brightness.Tests
         private Mock<IDeviceManagerSA>? deviceManagerMock;
         private Mock<IConsole>? myConsoleMock;
         private IConsole? myConsole;
+        private BrightnessModule? brightnessModule;
 
         [SetUp]
         public void Setup()
@@ -28,6 +30,7 @@ namespace DDPM.UI.Module.Brightness.Tests
             {
                 new System.Windows.Application();
             }
+            ResourceManager res = new ResourceManager();
             var resourceDictionary = new ResourceDictionary();
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
@@ -35,21 +38,21 @@ namespace DDPM.UI.Module.Brightness.Tests
             {
                 new System.Windows.Application();
             }
-
             moduleOwnerMock = new Mock<IModuleOwner>();
             var moduleOwner = moduleOwnerMock!.Object;
-            DdpmCommonHelper.ModuleOwner = moduleOwner;
+            DdpmCommonHelper.ModuleOwner = moduleOwnerMock.Object;
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice() {MonitorInfo=new MonitorInfo() });
+            brightnessModule = new BrightnessModule();
             myConsoleMock = new Mock<IConsole>();
             myConsole = myConsoleMock.Object;
             DdpmCommonHelper.MyConsole = myConsole;
+            brightnessViewModel = new BrightnessViewModel();
+            brightnessViewModel.MyModule = brightnessModule;
         }
 
         [Test]
         public void TestMyModule()
         {
-            var brightnessViewModel = new BrightnessViewModel();
-            var brightnessModule = new BrightnessModule();
-            brightnessViewModel.MyModule = brightnessModule;
             Assert.That(brightnessViewModel.MyModule, Is.EqualTo(brightnessModule));
         }
 
@@ -441,7 +444,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         [Test]
         public void TestAutoBrightnessStatus()
         {
-            var brightnessViewModel = new BrightnessViewModel();
             brightnessViewModel.SelectedHomeDevice = new HomeDevice();
             var deviceManagerMock = new Mock<IDeviceManagerSA>();
             var deviceManagerSA = deviceManagerMock.Object;
@@ -511,7 +513,6 @@ namespace DDPM.UI.Module.Brightness.Tests
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
             deviceManagerSAMock.Setup(x => x.GetAllExistAlsConfig()).Returns(Task.FromResult(new List<ALSConfig>()));
             deviceManagerSAMock.Setup(x => x.SetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSConfig>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<string>())).Returns(Task.FromResult(true));
-            var brightnessViewModel = new BrightnessViewModel();
             brightnessViewModel.SelectedHomeDevice = new HomeDevice();
             brightnessViewModel.SelectedHomeDevice.MonitorInfo = new MonitorInfo();
             bool autoColorTempStatus = true;
@@ -595,7 +596,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         [Test]
         public void TestAutoBrightnessRangeLevelVisible()
         {
-            var brightnessViewModel = new BrightnessViewModel();
             var result = brightnessViewModel.AutoBrightnessRangeLevelVisible;
             Assert.That(result, Is.EqualTo(Visibility.Collapsed));
 
@@ -605,10 +605,8 @@ namespace DDPM.UI.Module.Brightness.Tests
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
             deviceManagerSAMock.Setup(x => x.GetAllExistAlsConfig()).Returns(Task.FromResult(new List<ALSConfig>()));
             deviceManagerSAMock.Setup(x => x.SetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSConfig>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<string>())).Returns(Task.FromResult(true));
-            moduleOwnerMock = new Mock<IModuleOwner>();
-            var moduleOwner = moduleOwnerMock!.Object;
-            brightnessViewModel.ModuleOwner = moduleOwner;
-
+            brightnessViewModel.ModuleOwner = moduleOwnerMock.Object;
+            deviceManagerSAMock.Setup(x => x.ReadColorPreset(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new List<string>()));
             brightnessViewModel.AutoBrightnessStatus = true;
             result = brightnessViewModel.AutoBrightnessRangeLevelVisible;
             Assert.That(result, Is.EqualTo(Visibility.Visible));
@@ -617,7 +615,6 @@ namespace DDPM.UI.Module.Brightness.Tests
         [Test]
         public void TestAutoBrightnessRangeLevelVisible_invert()
         {
-            var brightnessViewModel = new BrightnessViewModel();
             var result = brightnessViewModel.AutoBrightnessRangeLevelVisible_invert;
             Assert.That(result, Is.EqualTo(Visibility.Visible));
 
@@ -693,14 +690,15 @@ namespace DDPM.UI.Module.Brightness.Tests
         [Test]
         public void TestAutoBrightnessRangeLevel_SelectedIndex()
         {
-            var brightnessViewModel = new BrightnessViewModel();
             brightnessViewModel.SelectedHomeDevice = new HomeDevice();
             var deviceManagerMock = new Mock<IDeviceManagerSA>();
             var deviceManagerSA = deviceManagerMock.Object;
+            moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             var monitorInfo = new MonitorInfo();
             brightnessViewModel.SelectedHomeDevice.MonitorInfo = monitorInfo;
             deviceManagerMock.Setup(x => x.SetALSFeatureValue(It.IsAny<MonitorInfo>(), It.IsAny<ALSConfig>(), It.IsAny<ALSFeatureQueryType>(), It.IsAny<string>())).Returns(Task.FromResult(true));
+            deviceManagerMock.Setup(x => x.GetAllExistAlsConfig()).Returns(Task.FromResult(new List<ALSConfig>()));
             brightnessViewModel.Start_ALSConfig = new ALSConfig();
             List<AutoBrightnessRangeLevel> AutoBrightnessLevel = new List<AutoBrightnessRangeLevel>();
             brightnessViewModel.Start_ALSConfig.AutoBrightnessRangeLevel = AutoBrightnessLevel;

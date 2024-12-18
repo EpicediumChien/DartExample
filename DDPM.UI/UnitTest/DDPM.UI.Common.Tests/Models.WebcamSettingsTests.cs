@@ -63,7 +63,11 @@ namespace DDPM.UI.Common.Tests
         public void TestImportWebcamSettings()
         {
             // Act
-            var result = WebcamSettings.ImportWebcamSettings("model", new DeviceInfo());
+            var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA = DeviceManagerSAMock.Object;
+            DeviceManagerSAMock.Setup(x => x.GetSupportedResolutions(It.IsAny<string>())).Returns(Task.FromResult(""));
+            DeviceManagerSAMock.Setup(x => x.GetSelectedResolution(It.IsAny<string>())).Returns(Task.FromResult("{\"Resolution\":\"1280x720\",\"FPS\":[\"24\"]}"));
+            var result = WebcamSettings.ImportWebcamSettings("model", new DeviceInfo() { SupportedResolutions="", ModelNumber = "WB5023",CustomProfiles=new Newtonsoft.Json.Linq.JArray(), PresetProfiles=new Newtonsoft.Json.Linq.JArray() });
             // Assert
             Assert.That(result, Is.Not.Null);
         }

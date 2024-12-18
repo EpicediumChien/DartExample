@@ -15,6 +15,7 @@ using Dell.Client.Framework.UX.WPF.ResourceManager;
 using DDPM.SA.Common.Settings;
 using Windows.System;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.Common;
 
 namespace DDPM.UI.Module.Kvm.Tests
 {
@@ -29,6 +30,7 @@ namespace DDPM.UI.Module.Kvm.Tests
         private Mock<IModuleOwner>? moduleOwnerMock;
         private KvmViewModel kvmViewModel;
         private Mock<IConsole>? MyConsoleMock;
+        private Mock<ILog>? logMock;
         [SetUp]
         public void Setup()
         {
@@ -41,6 +43,8 @@ namespace DDPM.UI.Module.Kvm.Tests
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             MyConsoleMock = new Mock<IConsole>();
+            logMock=new Mock<ILog>();
+            MyConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(logMock.Object);
             DdpmCommonHelper.MyConsole = MyConsoleMock.Object;
             kvmViewModel = new KvmViewModel();
             deviceManagerMock = new Mock<IDeviceManagerSA>();

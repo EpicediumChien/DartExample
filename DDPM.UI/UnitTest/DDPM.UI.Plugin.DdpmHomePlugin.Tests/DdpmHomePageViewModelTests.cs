@@ -94,6 +94,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         [Test]
         public void TestPrepareDeviceInfos()
         {
+            var app = new System.Windows.Application();
             List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
             try
             {

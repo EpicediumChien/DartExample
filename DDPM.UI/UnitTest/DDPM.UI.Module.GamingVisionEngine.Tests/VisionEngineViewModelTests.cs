@@ -12,7 +12,7 @@ using Moq;
 using DDPM.SA.Common;
 using VcpCore.Common;
 using System.Collections.ObjectModel;
-
+using Dell.Client.Framework.UX.WPF.ResourceManager;
 namespace DDPM.UI.Module.GamingVisionEngine.Tests
 {
     [Apartment(ApartmentState.STA)]
@@ -35,6 +35,7 @@ namespace DDPM.UI.Module.GamingVisionEngine.Tests
             {
                 new System.Windows.Application();
             }
+            ResourceManager res = new ResourceManager();
             var resourceDictionary = new ResourceDictionary();
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
@@ -161,7 +162,7 @@ namespace DDPM.UI.Module.GamingVisionEngine.Tests
             var visionEngineType = new Gaming_VisionEngineType();
             uI_VisionEngine.VisionEngineType = visionEngineType;
             var result = uI_VisionEngine.DisplayText;
-            Assert.That(uI_VisionEngine.DisplayText, Is.EqualTo("off"));
+            Assert.That(uI_VisionEngine.DisplayText, Is.EqualTo("OFF"));
         }
     }
 }

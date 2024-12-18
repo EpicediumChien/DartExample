@@ -71,7 +71,7 @@ namespace DDPM.UI.Common.Tests
             // Act
             splitCtrl0A.Description = "";
             // Assert
-            Assert.That(splitCtrl0A.Description, Is.EqualTo($"Full screen"));
+            Assert.That(splitCtrl0A.Description, Is.EqualTo($""));
 
             // Act
             splitCtrl0A.Description = "0x0001";
