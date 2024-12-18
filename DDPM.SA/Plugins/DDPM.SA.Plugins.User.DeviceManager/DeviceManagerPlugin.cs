@@ -5162,7 +5162,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //Telementry Collection
                 var rt = false;
                 var Displaysettings_Function = new Displaysettings_Function();
-                rt = Displaysettings_Function.Send_GamingRefreshRate_Telementry(_TelementryScheduler, monitorInfos, properties.Frequency.ToString(), GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                rt = Displaysettings_Function.Send_GamingRefreshRate_Telementry(_TelementryScheduler, monitorInfos, properties.Frequency.ToString(), GetMonitorCurrentResolution(monitorInfos), GetMonitorMaxResolution(monitorInfos));
                 if (rt)
                     writelog("[DeviceMangerPlugin] Send Telementry for GamingRefreshRate Success ...");
                 else
