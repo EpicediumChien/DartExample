@@ -9337,7 +9337,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetIsMicEnumerationOn(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;// Task.FromResult(true);
         }
 
         public Task SetProfile(string Guid, string newValue)
@@ -9346,7 +9346,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetProfile(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task SetProfileName(string Guid, string newValue)
@@ -9355,7 +9355,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetProfileName(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task CreateCustomProfile(string Guid, string newValue)
@@ -9364,7 +9364,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.CreateCustomProfile(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task DeleteProfile(string Guid, string newValue)
@@ -9373,7 +9373,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.DeleteProfile(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task<bool> SetZoom(string Guid, int newValue)
@@ -9484,7 +9484,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetWALTime(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task SetSnooze(string Guid, int newValue)
@@ -9493,7 +9493,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetSnooze(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task SetSnoozeLength(string Guid, int newValue)
@@ -9502,7 +9502,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetSnoozeLength(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task SetIsProximitySensorEnable(string Guid, bool newValue)
@@ -9511,7 +9511,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetIsProximitySensorEnable(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task SetIsWakeonApproachEnable(string Guid, bool newValue)
@@ -9520,7 +9520,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetIsWakeonApproachEnable(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task SetIsWalkAwayLockEnable(string Guid, bool newValue)
@@ -9529,7 +9529,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetIsWalkAwayLockEnable(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task SetIsPrioritizeExternalWebcam(string Guid, bool newValue)
@@ -9538,7 +9538,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetIsPrioritizeExternalWebcam(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task ResetToDefault_webcam(string Guid, bool newValue)
@@ -9547,7 +9547,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.ResetToDefault_webcam(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task SetBrightness(string Guid, int newValue)
@@ -9556,7 +9556,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetBrightness(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task SetSharpness(string Guid, int newValue)
@@ -9565,7 +9565,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetSharpness(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task SetContrast(string Guid, int newValue)
@@ -9574,7 +9574,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetContrast(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task SetSaturation(string Guid, int newValue)
@@ -9583,7 +9583,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetSaturation(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task SetAntiFlicker(string Guid, int newValue)
@@ -9592,7 +9592,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetAntiFlicker(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task SetTilt(string Guid, int newValue)
@@ -9601,7 +9601,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetTilt(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public Task SetPan(string Guid, int newValue)
@@ -9610,7 +9610,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetPan(Guid, newValue);
-            return Task.FromResult(true);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
         public async Task<int> GetWALTime(string Guid)
