@@ -253,8 +253,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             await CheckIfNeedNavigateToSettingPageByQAMOSD();  //Derek 1217 for QAM PIMS-332041
 
                             //Elapsed= 1, 1 msec
-                            _log.Info("Calling CloseQAMIfExist()");
-                            CloseQAMIfExist();
+                            //_log.Info("Calling CloseQAMIfExist()");
+                            //CloseQAMIfExist();
 
                             //Elapsed= 2 msec
                             //1030 get global settings for telemetry consent page using

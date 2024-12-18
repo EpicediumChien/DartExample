@@ -1452,7 +1452,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                return SetPropertyValue(_webcamInterfaceType, commodity, "AutoFramingSensitivity", newValue);
+                return SetPropertyValue(_webcamInterfaceType, commodity, "AutoFramingFrameSize", newValue);
             }
             else
             {

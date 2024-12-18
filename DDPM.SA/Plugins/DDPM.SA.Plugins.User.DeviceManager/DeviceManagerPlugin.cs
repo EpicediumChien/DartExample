@@ -10739,9 +10739,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //QAMClose();
 
             //Derek 1216 info homepage navigate to widget setting page
-            isDDPMHomepageReady = false;
-            isDDPMLaunchedByQAM = false;
-            SetIsWidgetSettingPageLoadedByQAMAsync(true);
+            if (isDDPMLaunchedByQAM && isDDPMHomepageReady)
+            {
+                isDDPMHomepageReady = false;
+                isDDPMLaunchedByQAM = false;
+                SetIsWidgetSettingPageLoadedByQAMAsync(true);
+            }
 
             return Task.CompletedTask;
         }
