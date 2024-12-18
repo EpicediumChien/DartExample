@@ -75,13 +75,16 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock x:Name="AutomaticStartupTextBlock" Grid.Row="0" Grid.Column="0" Margin="222,0,10,10" Text="{Binding [EazyMemory.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"/>
+                                <UXControls:UXTextBlock x:Name="AutomaticStartupTextBlock" Grid.Row="0" Grid.Column="0" Margin="222,0,10,10" Text="{Binding [EazyMemory.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                                                        HorizontalAlignment="Right"/>
                                 <UXControls:UXTextBlock x:Name="AutomaticStartupValueTextBlock" Grid.Row="0" Grid.Column="1" Margin="16,0,10,10" Text="{Binding AutomaticStartupValue}" />
 
-                                <UXControls:UXTextBlock x:Name="LaunchByTimeTextBlock" Grid.Row="1" Grid.Column="0" Margin="206,0,10,10" Text="{Binding [EazyMemory.1], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"/>
+                                <UXControls:UXTextBlock x:Name="LaunchByTimeTextBlock" Grid.Row="1" Grid.Column="0" Margin="206,0,10,10" Text="{Binding [EazyMemory.1], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                                                        HorizontalAlignment="Right"/>
                                 <UXControls:UXTextBlock x:Name="LaunchByTimeValueTextBlock" Grid.Row="1" Grid.Column="1" Margin="16,0,10,10" Text="{Binding LaunchByTimeValue}" />
 
-                                <UXControls:UXTextBlock x:Name="AppDocumentTextBlock" Grid.Row="2" Grid.Column="0" Margin="184,0,10,10" Text="{Binding [EazyMemory.2], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"/>
+                                <UXControls:UXTextBlock x:Name="AppDocumentTextBlock" Grid.Row="2" Grid.Column="0" Margin="184,0,10,10" Text="{Binding [EazyMemory.2], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                                                        HorizontalAlignment="Right"/>
                                 <UXControls:UXTextBlock x:Name="AppDocumentValueTextBlock" Grid.Row="2" Grid.Column="1" Margin="16,0,10,10" Width="220" TextWrapping="Wrap" Text="{Binding AppDocumentValue}" />
                             </Grid>
                         </UXControls:UXScrollViewer >

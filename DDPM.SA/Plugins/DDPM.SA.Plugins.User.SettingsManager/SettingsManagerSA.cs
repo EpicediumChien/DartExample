@@ -2938,8 +2938,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
             if (infos == null || infos.Count == 0)
             {
-                infos = new List<string>();
-                infos.Add(InfoHash.Info_Hash);
+                infos = new List<string>(InfoHash.Info_Hash);
+                //infos.Add(InfoHash.Info_Hash);
             }
             return Task.FromResult(infos);
         }

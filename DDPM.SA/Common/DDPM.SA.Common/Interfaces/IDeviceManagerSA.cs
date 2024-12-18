@@ -21,7 +21,8 @@ namespace DDPM.SA.Common
         Peripherals_SettingsChange = 3,
         Peripherals_PlugIn = 4,
         Peripherals_UnPlug = 5,
-        NotifyOnly = 6
+        NotifyOnly = 6,
+        PleaseWait = 7,
     }
 
     public class DeviceChangedEventArgs : EventArgs
@@ -87,7 +88,7 @@ namespace DDPM.SA.Common
         Task<List<string>> ReadColorPreset(MonitorInfo m);
 
         //Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name);
-        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)       
+        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
         Task<bool> WriteColorPreset(MonitorInfo m, string ColorPreset_Name, int colorPresetRunType = 0, bool blIs_Game_DeviceName = false, bool blSmartHDR_ON = false, string reqAppName = null, bool showOSD = true);
 
         Task<bool> WriteColorPreset_AUTO(MonitorInfo m, string ColorPreset_Name);
@@ -134,7 +135,6 @@ namespace DDPM.SA.Common
         Task<bool> CheckNightLightStatus();
         Task<bool> CheckNightLightScheduler();
         Task<bool> CheckColorICCStatus();
-
 
         Task<bool> StopRegistryMonitor_NightLight();
         Task<bool> StopRegistryMonitor_NightLightScheduler();
@@ -975,7 +975,6 @@ namespace DDPM.SA.Common
         Task<bool> FinishKeyCapturePen();
         Task<string> KeyCaptureData();
 
-
         Task UnPairPen(string Guid);
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
         Task SetEraserLongPressSetting(string itemID, byte[] newValue);
@@ -1311,7 +1310,7 @@ namespace DDPM.SA.Common
 
         #region Dock
         Task<DockData> GetDockData(string guid);
-        #endregion
+        #endregion Dock
 
         #endregion public for DTPProxy
 
@@ -1381,7 +1380,7 @@ namespace DDPM.SA.Common
         Task SetIsWidgetSettingPageLoadedByQAMAsync(bool newValue);
         Task SyncWebcamProfile(string profileName, bool isActionFromQAM = true); //Derek 1212
         Task WriteLog(string logMsg); //Derek 1210
-        #endregion
+        #endregion QAM
 
         #region System Suspend & Resume & SessionEnd
         event EventHandler SystemSuspend;
