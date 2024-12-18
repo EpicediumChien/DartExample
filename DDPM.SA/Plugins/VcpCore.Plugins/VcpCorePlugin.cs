@@ -178,10 +178,16 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Reset0x52TimerTick: " + millisecond.ToString() + " requested ...");
 
-            _CacheTimer.Stop();
+            var Orig = _CacheTimer.Enabled;
+
+            if (Orig)
+                _CacheTimer.Stop();
+
             _CacheTimer.Interval = millisecond;
             _CacheTimer.AutoReset = true;
-            _CacheTimer.Start();
+
+            if (Orig)
+                _CacheTimer.Start();
 
             return Task.FromResult(Task.CompletedTask);
         }
@@ -1259,7 +1265,11 @@ namespace VcpCore.Plugins
                             case nameof(Gaming_GameEnhancementMode):
                                 {
                                     if (IsVcpFunctionSupport(monitorInfoX, 0xF4))
-                                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x1F) & 0x0f);
+                                    {
+                                        var temp = GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x1F);
+                                        if (temp != null)
+                                            ro = ((uint)temp & 0x0f);
+                                    }
                                     else
                                         _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability Gaming_GameEnhancementMode Fail => IsVcpFunctionSupport is false");
                                 }
@@ -1268,7 +1278,11 @@ namespace VcpCore.Plugins
                             case nameof(Gaming_ResponseTime):
                                 {
                                     if (IsVcpFunctionSupport(monitorInfoX, 0xF4))
-                                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x2F) & 0x0f);
+                                    {
+                                        var temp = GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x2F);
+                                        if (temp != null)
+                                            ro = ((uint)temp & 0x0f);
+                                    }
                                     else
                                         _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability Gaming_GameEnhancementMode Fail => IsVcpFunctionSupport is false");
                                 }
@@ -1277,7 +1291,11 @@ namespace VcpCore.Plugins
                             case nameof(Gaming_DarkStabilizer):
                                 {
                                     if (IsVcpFunctionSupport(monitorInfoX, 0xF4))
-                                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x3F) & 0x0f);
+                                    {
+                                        var temp = GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x3F);
+                                        if (temp != null)
+                                            ro = ((uint)temp & 0x0f);
+                                    }
                                     else
                                         _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability Gaming_DarkStabilizer Fail => IsVcpFunctionSupport is false");
                                 }
@@ -1286,7 +1304,11 @@ namespace VcpCore.Plugins
                             case nameof(Gaming_HDRType):
                                 {
                                     if (IsVcpFunctionSupport(monitorInfoX, 0xF4))
-                                        ro = ((uint)GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x4F) & 0x0f);
+                                    {
+                                        var temp = GetVcp2Steps(monitorInfoX, VcpCodeList.VCPctr["Gaming"], 0x4F);
+                                        if (temp != null)
+                                            ro = ((uint)temp & 0x0f);
+                                    }
                                     else
                                         _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability Gaming_HDRType Fail => IsVcpFunctionSupport is false");
                                 }
@@ -1296,9 +1318,8 @@ namespace VcpCore.Plugins
                                 {
                                     byte fucCode = TranslatorVCPctrCode(func);
 
-                                    ro = GetFromCacheTable(monitorInfoX, fucCode);
-                                    if (ro == null)
-                                        ro = Get_VCPCapability(monitorInfoX, fucCode, opt, IsOutInitialize);
+                                    var roo = GetFromCacheTable(monitorInfoX, fucCode);
+                                    ro = roo ?? Get_VCPCapability(monitorInfoX, fucCode, opt, IsOutInitialize);
                                 }
                                 break;
                         }
@@ -3146,7 +3167,7 @@ namespace VcpCore.Plugins
 
                                     token.ThrowIfCancellationRequested();  //*****EXTRA CHECK*****//
 
-                                    var FwTmp = FwVersion(_TargetMonitor.hPhysicalMonitor, _TargetMonitor.modelName, token);
+                                    var FwTmp = FwVersion(ref _TargetMonitor, _TargetMonitor.modelName, token);
                                     _TargetMonitor.FwVersion = FwTmp.Item1;
                                     _TargetMonitor.D_Ctrl = FwTmp.Item2;
                                     _TargetMonitor.SupplierID = FwTmp.Item3;
@@ -3418,6 +3439,8 @@ namespace VcpCore.Plugins
             {
                 //Monitor.Enter(GetVCPLock);
 
+                _logs.DebugMsg("[VcpCorePlugin] IsOutInitialize :" + IsOutInitialize.ToString());
+                _logs.DebugMsg("[VcpCorePlugin] (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid)))) :" + (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid)))).ToString());
                 if ((!IsOutInitialize) || (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid)))))
                 {
                     int count = 0;
@@ -4412,7 +4435,7 @@ namespace VcpCore.Plugins
                 {
                     IsUpdate = true;
 
-                    var FwTmp = FwVersion(_TargetMonitorx.hPhysicalMonitor, _TargetMonitorx.modelName, CancellationToken.None);
+                    var FwTmp = FwVersion(ref _TargetMonitorx, _TargetMonitorx.modelName, CancellationToken.None);
                     _TargetMonitorx.FwVersion = FwTmp.Item1;
                     _TargetMonitorx.D_Ctrl = FwTmp.Item2;
                     _TargetMonitorx.SupplierID = FwTmp.Item3;
@@ -4519,7 +4542,7 @@ namespace VcpCore.Plugins
 
                     if (string.IsNullOrWhiteSpace(_TargetMonitor.series))
                     {
-                        if (CheckIsSupportDisplayByBit(_TargetMonitor.hPhysicalMonitor, _TargetMonitor.modelName))
+                        if (CheckIsSupportDisplayByBit(ref _TargetMonitor, _TargetMonitor.modelName))
                         {
                             _TargetMonitor.series = ChekSeries(_TargetMonitor.modelName);
                             rc = true;
@@ -4541,7 +4564,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        private bool CheckIsSupportDisplayByBit(IntPtr hPhyMonitor, string model)
+        private bool CheckIsSupportDisplayByBit(ref MonitorInfo_complex monitorx, string model)
         {
             try
             {
@@ -4550,7 +4573,7 @@ namespace VcpCore.Plugins
                 do
                 {
                     if (F1supportBit == null)
-                        F1supportBit = Get_VCPCapability(new MonitorInfo_complex() { hPhysicalMonitor = hPhyMonitor }, 0xF1, 0, IsOutInitialize);
+                        F1supportBit = Get_VCPCapability(monitorx, 0xF1, 0, IsOutInitialize);
 
                     if (F1supportBit != null)
                     {
@@ -4658,7 +4681,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        private (string, string, string) FwVersion(IntPtr hPhyMonitor, string modelName, CancellationToken token)
+        private (string, string, string) FwVersion(ref MonitorInfo_complex monitorx, string modelName, CancellationToken token)
         {
             int count = 0;
             var Version = (string.Empty, string.Empty, string.Empty);
@@ -4671,19 +4694,19 @@ namespace VcpCore.Plugins
                     return (string.Empty, string.Empty, string.Empty);
 
                 if (OFWstring == null && (!token.IsCancellationRequested))
-                    OFWstring = Get_VCPCapability(new MonitorInfo_complex() { hPhysicalMonitor = hPhyMonitor }, Convert.ToByte(VcpCode.Version), 0, IsOutInitialize);
+                    OFWstring = Get_VCPCapability(monitorx, Convert.ToByte(VcpCode.Version), 0, IsOutInitialize);
 
                 if (token.IsCancellationRequested)
                     return (string.Empty, string.Empty, string.Empty);
 
                 if (ScalarICID == null && (!token.IsCancellationRequested))
-                    ScalarICID = Get_VCPCapability(new MonitorInfo_complex() { hPhysicalMonitor = hPhyMonitor }, 0xC8, 0, IsOutInitialize);
+                    ScalarICID = Get_VCPCapability(monitorx, 0xC8, 0, IsOutInitialize);
 
                 if (token.IsCancellationRequested)
                     return (string.Empty, string.Empty, string.Empty);
 
                 if (OEMID == null && (!token.IsCancellationRequested))
-                    OEMID = Get_VCPCapability(new MonitorInfo_complex() { hPhysicalMonitor = hPhyMonitor }, 0xFD, 0, IsOutInitialize);
+                    OEMID = Get_VCPCapability(monitorx, 0xFD, 0, IsOutInitialize);
 
                 if ((OFWstring != null) && (ScalarICID != null) && (OEMID != null) && (!token.IsCancellationRequested))
                 {
