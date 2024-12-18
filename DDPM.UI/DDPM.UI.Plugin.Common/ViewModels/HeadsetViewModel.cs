@@ -938,6 +938,14 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(IsMultimediaChecked));
         }
 
+        private void UpdateResetToDefault()
+        {
+            if (CheckIfCurrentSettingsMatchDefault(DeviceInfoDTP, Model))
+                _isRestoreEnable = true;
+            else
+                _isRestoreEnable = false;
+        }
+
         public override void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -974,16 +982,6 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsDTPReady = true;
                 FirmwareVersion2 = Strings.FirmwareVersion + $" {fv}";
             }
-
-            if (IsDTPReady)
-                UpdateDTPValue();
-            else
-                UpdateDTHValue();
-            if (CheckIfCurrentSettingsMatchDefault(DeviceInfoDTP, Model))
-                _isRestoreEnable = true;
-            else
-                _isRestoreEnable = false;
-
             return true;
         }
 
@@ -1126,10 +1124,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     UpdateDTHValue();
                 }
                 CheckHeadsetFunc();
-                if (CheckIfCurrentSettingsMatchDefault(DeviceInfoDTP, Model))
-                    _isRestoreEnable = true;
-                else
-                    _isRestoreEnable = false;
+                UpdateResetToDefault();
                 //OnPropertyChanged(nameof(IsRestoreEnable));
                 //_showPluginManager?.ShowHomePage();
             }
@@ -1445,10 +1440,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 PairedHostName1 = _deviceManager.GetHeadsetPairedHostName2Async(CurrentDeviceInfo.ID.ToString()).Result;
                 PairedHostName2 = _deviceManager.GetHeadsetPairedHostName3Async(CurrentDeviceInfo.ID.ToString()).Result;
 
-                if (CheckIfCurrentSettingsMatchDefault(DeviceInfoDTP, Model))
-                    _isRestoreEnable = true;
-                else
-                    _isRestoreEnable = false;
+                UpdateResetToDefault();
                 //OnPropertyChanged(nameof(IsRestoreEnable));
             }
             catch (Exception ex)
@@ -1660,10 +1652,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 DeviceInfoDTP.SidetoneLevel = CurrentDeviceInfo!.SidetoneLevel;
 
-                if (CheckIfCurrentSettingsMatchDefault(DeviceInfoDTP, Model))
-                    _isRestoreEnable = true;
-                else
-                    _isRestoreEnable = false;
+                UpdateResetToDefault();
                 //OnPropertyChanged(nameof(IsRestoreEnable));
             }
             catch (Exception ex)
@@ -3381,7 +3370,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }},
             { "WH3024", new DeviceDefaultSettings {
                 AncMode = 0,
-                AncGain = 3,
+                AncGain = 0,
                 BusyLight = true,
                 MicNoiseCancellation = true,
                 Sidetone = true,
@@ -3402,12 +3391,12 @@ namespace DDPM.UI.Plugin.ViewModels
             }},
             { "WL3024", new DeviceDefaultSettings {
                 AncMode = 0,
-                AncGain = 3,
-                BusyLight = false,
-                MicNoiseCancellation = false,
+                AncGain = 0,
+                BusyLight = true,
+                MicNoiseCancellation = true,
                 Sidetone = true,
                 VoiceGuidance = true,
-                SelectedPreset = 101,
+                SelectedPreset = 1,
                 Band1Gain = 0,
                 Band2Gain = 0,
                 Band3Gain = 0,
@@ -3438,7 +3427,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 WearDetectionFromDTP = true,
                 IsWearDetectionPauseMusicEnableFromDTP = true,
                 IsWearDetectionMuteMicEnabledFromDTP = true,
-                WearDetectionQuickPauseAsyncFromDTP = 1,
+                WearDetectionQuickPauseAsyncFromDTP = 0,
                 WearDetectionSensitivityFromDTP = 1,
                 AnswerCall = false
             }},
@@ -3554,25 +3543,25 @@ namespace DDPM.UI.Plugin.ViewModels
     }
     public class DeviceDefaultSettings
     {
-        public int AncMode { get; set; }
-        public int AncGain { get; set; }
-        public bool BusyLight { get; set; }
-        public bool MicNoiseCancellation { get; set; }
-        public bool Sidetone { get; set; }
-        public bool VoiceGuidance { get; set; }
-        public int SelectedPreset { get; set; }
-        public int Band1Gain { get; set; }
-        public int Band2Gain { get; set; }
-        public int Band3Gain { get; set; }
-        public int Band4Gain { get; set; }
-        public int Band5Gain { get; set; }
-        public bool MicNCIncoming { get; set; }
-        public bool WearDetectionFromDTP { get; set; }
-        public bool IsWearDetectionPauseMusicEnableFromDTP { get; set; }
-        public bool IsWearDetectionMuteMicEnabledFromDTP { get; set; }
-        public int WearDetectionQuickPauseAsyncFromDTP { get; set; }
-        public int WearDetectionSensitivityFromDTP { get; set; }
-        public bool AnswerCall { get; set; }
+        public int AncMode { get; set; } = 0;
+        public int AncGain { get; set; } = 0;
+        public bool BusyLight { get; set; } = false;
+        public bool MicNoiseCancellation { get; set; } = false;
+        public bool Sidetone { get; set; } = false;
+        public bool VoiceGuidance { get; set; } = false;
+        public int SelectedPreset { get; set; } = 1;
+        public int Band1Gain { get; set; } = 0;
+        public int Band2Gain { get; set; } = 0;
+        public int Band3Gain { get; set; } = 0;
+        public int Band4Gain { get; set; } = 0;
+        public int Band5Gain { get; set; } = 0;
+        public bool MicNCIncoming { get; set; } = false;
+        public bool WearDetectionFromDTP { get; set; } = false;
+        public bool IsWearDetectionPauseMusicEnableFromDTP { get; set; } = false;
+        public bool IsWearDetectionMuteMicEnabledFromDTP { get; set; } = false;
+        public int WearDetectionQuickPauseAsyncFromDTP { get; set; } = 0;
+        public int WearDetectionSensitivityFromDTP { get; set; } = 0;
+        public bool AnswerCall { get; set; } = false;
     }
     //public static class DefaultDeviceSettings
     //{
@@ -3636,21 +3625,20 @@ namespace DDPM.UI.Plugin.ViewModels
     //DetectPageShow...WH3024
 
     //GetIsANCSupportedAsync..............................NO
-    //DeviceInfoDTP.BusyLight...................= False
-    //DeviceInfoDTP.MicNoiseCancellation.............= False
+    //DeviceInfoDTP.BusyLight...................= True
+    //DeviceInfoDTP.MicNoiseCancellation.............= True
     //DeviceInfoDTP.Sidetone...................= True
     //DeviceInfoDTP.VoiceGuidance..............= True
-    //DeviceInfoDTP.SelectedPreset.............= 101
-    //DeviceInfoDTP.Band1Gain..................= -6
-    //DeviceInfoDTP.Band2Gain..................= -6
-    //DeviceInfoDTP.Band3Gain..................= -6
-    //DeviceInfoDTP.Band4Gain..................= -6
-    //DeviceInfoDTP.Band5Gain..................= -6
+    //DeviceInfoDTP.SelectedPreset.............= 1
+    //DeviceInfoDTP.Band1Gain..................= 0
+    //DeviceInfoDTP.Band2Gain..................= 0
+    //DeviceInfoDTP.Band3Gain..................= 0
+    //DeviceInfoDTP.Band4Gain..................= 0
+    //DeviceInfoDTP.Band5Gain..................= 0
     //GetIsMicNCIncomingSupportedAsync.............NO
     //GetIsWearDetectionSupportedAsync.............NO
     //DeviceInfoDTP.AnswerCall.............= False
     //DetectPageShow...WL3024
-
 
 
     //DeviceInfoDTP.AncMode.....................= 0
