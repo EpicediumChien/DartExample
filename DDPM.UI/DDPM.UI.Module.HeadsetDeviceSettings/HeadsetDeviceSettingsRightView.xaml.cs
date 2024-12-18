@@ -88,7 +88,8 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings
         }
         private void Leave(object sender, RoutedEventArgs e)
         {
-            modalDialog.Close();
+            if(modalDialog != null)
+                modalDialog.Close();
         }
     }
 }
