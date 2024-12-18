@@ -642,7 +642,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         /// <param name="splitKey"></param>
         /// <param name="settings"></param>
         /// <returns></returns>
-        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings = null)
+        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings)
         {
             if (_eaBroker != null)
             {
