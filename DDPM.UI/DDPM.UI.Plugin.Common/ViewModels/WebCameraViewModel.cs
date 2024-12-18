@@ -1366,9 +1366,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetBrightness();
                     }
-                    var v = (value * 1.0 - CurrentDeviceInfo!.BrightnessMin) / (CurrentDeviceInfo.BrightnessMax - CurrentDeviceInfo!.BrightnessMin);
-                    BrightnessMargin = GetTextmargin(v);
-                    BrightnessText = $"{v:##0%}";
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.BrightnessMin) / (CurrentDeviceInfo.BrightnessMax - CurrentDeviceInfo!.BrightnessMin);
+                    BrightnessMargin = GetTextmargin(value, CurrentDeviceInfo?.BrightnessMax ?? null, CurrentDeviceInfo?.BrightnessMin ?? null, out string text);
+                    BrightnessText = text;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(BrightnessText));
                     OnPropertyChanged(nameof(BrightnessMargin));
@@ -1396,9 +1396,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetSharpness();
                     }
-                    var v = (value * 1.0 - CurrentDeviceInfo!.SharpnessMin) / (CurrentDeviceInfo.SharpnessMax - CurrentDeviceInfo!.SharpnessMin);
-                    SharpnessMargin = GetTextmargin(v);
-                    SharpnessText = $"{v:##0%}";
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.SharpnessMin) / (CurrentDeviceInfo.SharpnessMax - CurrentDeviceInfo!.SharpnessMin);
+                    SharpnessMargin = GetTextmargin(value, CurrentDeviceInfo?.SharpnessMax ?? null, CurrentDeviceInfo?.SharpnessMin ?? null, out string text);
+                    SharpnessText = text;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(SharpnessText));
                     OnPropertyChanged(nameof(SharpnessMargin));
@@ -1426,9 +1426,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetContrast();
                     }
-                    var v = (value * 1.0 - CurrentDeviceInfo!.ContrastMin) / (CurrentDeviceInfo.ContrastMax - CurrentDeviceInfo!.ContrastMin);
-                    ContrastMargin = GetTextmargin(v);
-                    ContrastText = $"{v:##0%}";
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.ContrastMin) / (CurrentDeviceInfo.ContrastMax - CurrentDeviceInfo!.ContrastMin);
+                    ContrastMargin = GetTextmargin(value, CurrentDeviceInfo?.ContrastMax ?? null, CurrentDeviceInfo?.ContrastMin ?? null, out string text);
+                    ContrastText = text;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(ContrastText));
                     OnPropertyChanged(nameof(ContrastMargin));
@@ -1454,9 +1454,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetSaturation();
                     }
-                    var v = (value * 1.0 - CurrentDeviceInfo!.SaturationMin) / (CurrentDeviceInfo.SaturationMax - CurrentDeviceInfo!.SaturationMin);
-                    SaturationMargin = GetTextmargin(v);
-                    SaturationText = $"{v:##0%}";
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.SaturationMin) / (CurrentDeviceInfo.SaturationMax - CurrentDeviceInfo!.SaturationMin);
+                    SaturationMargin = GetTextmargin(value, CurrentDeviceInfo?.SaturationMax ?? null, CurrentDeviceInfo?.SaturationMin ?? null, out string text);
+                    SaturationText = text;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(SaturationText));
                     OnPropertyChanged(nameof(SaturationMargin));
@@ -1464,10 +1464,17 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private static double[] GetTextmargin(double v)
+        private static double[] GetTextmargin(double value, double? max, double? min, out string text)
         {
-            var txt = v.ToString("##0%");
-            var width = Utility.GetTextWidth(txt, 14);
+            if (max == null || min == null || max.Value == min.Value)
+            {
+                text = "0%";
+                return new double[] { 0, 2, 0, 0 };
+            }
+
+            var v = (value - min.Value) / (max.Value - min.Value);
+            text = v.ToString("##0%");
+            var width = Utility.GetTextWidth(text, 14);
             var m = 380 * v - width / 2 + 10;
             return new double[] { m, 2, 0, 0 };
         }
