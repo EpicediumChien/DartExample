@@ -7711,7 +7711,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DDPM.Subagent.DeviceManager is not ready.
+        ///   查詢類似 DDPM.Subagent.DeviceManager is not ready 的當地語系化字串。
         /// </summary>
         internal static string Wait_DevMgr {
             get {
@@ -7720,7 +7720,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DellTechHub service is not running.
+        ///   查詢類似 DellTechHub service is not running 的當地語系化字串。
         /// </summary>
         internal static string Wait_DTH {
             get {
@@ -7729,7 +7729,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No device detected.
+        ///   查詢類似 No device detected 的當地語系化字串。
         /// </summary>
         internal static string Wait_NoDevice {
             get {
