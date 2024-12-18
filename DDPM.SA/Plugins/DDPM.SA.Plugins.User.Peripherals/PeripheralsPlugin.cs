@@ -625,7 +625,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     if (!_DeviceManagerPlugin.SetAncModeAsync(deviceId.ToString(), newValue).Result)
                     {
                         _logicalDeviceHeadset.SetAncMode(newValue);
-                    }                    
+                    }
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
@@ -696,7 +696,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 {
                                     _deviceInfo.Band1Gain = newValue;
                                     result = false;
-                                }                               
+                                }
                                 break;
 
                             case "band2gain":
@@ -2890,7 +2890,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = $"DonglePairingStatusChanged|{requestDeviceName}";
-                    Debug.WriteLine($"{deviceInfo.PairingStatusName}");
+                    Debug.WriteLine($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
+                    writelog($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
                     OnNotify(_EventArgs);
                 }
             }

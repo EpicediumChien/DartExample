@@ -366,10 +366,10 @@
                                                 </UXControls:UXTextBlock.Text>
                                             </UXControls:UXTextBlock>
                                             <StackPanel x:Name="SensitivityStackPanel" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
-                                                <UXControls:UXToggleSwitch x:Name="NormalButton" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="208" Height="52" Margin="0,20,0,20" Background="{StaticResource SplitItem_NormalBdColor}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" IsChecked="{Binding IsNormalChecked, Mode=TwoWay}" IsTabStop="{Binding isWearTabStopped}">
+                                                <UXControls:UXToggleSwitch x:Name="NormalButton"  BorderBrush="{DynamicResource ToggleSwitch_BorderBrush}" BorderThickness="1.5" Width="208" Height="52" Margin="0,20,0,20" Background="{StaticResource SplitItem_NormalBdColor}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" IsChecked="{Binding IsNormalChecked, Mode=TwoWay}" IsTabStop="{Binding isWearTabStopped}">
                                                     <UXControls:UXToggleSwitch.Template>
                                                         <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                            <Border x:Name="NormalButtonBorder" CornerRadius="4,4,4,4">
+                                                            <Border x:Name="NormalButtonBorder" CornerRadius="4,4,4,4" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                                                                 <Grid>
                                                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                         <!--<UXControls:UXTextBlock Text="{Binding [HeadsetAutomatedActions.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" TextAlignment="Center" />-->
@@ -397,10 +397,10 @@
                                                         </ControlTemplate>
                                                     </UXControls:UXToggleSwitch.Template>
                                                 </UXControls:UXToggleSwitch>
-                                                <UXControls:UXToggleSwitch x:Name="SensitiveButton" BorderBrush="#FF1E3F6C" BorderThickness="1.5" Width="208" Height="52" Margin="8,0,0,0" Background="{StaticResource SplitItem_NormalBdColor}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" IsChecked="{Binding IsSensitiveChecked, Mode=TwoWay}" IsTabStop="{Binding isWearTabStopped}">
+                                                <UXControls:UXToggleSwitch x:Name="SensitiveButton" BorderBrush="{DynamicResource ToggleSwitch_BorderBrush}" BorderThickness="1.5" Width="208" Height="52" Margin="8,0,0,0" Background="{StaticResource SplitItem_NormalBdColor}" IsEnabled="{Binding ElementName=WearDetectionToggleSwitch, Path=IsChecked}" IsChecked="{Binding IsSensitiveChecked, Mode=TwoWay}" IsTabStop="{Binding isWearTabStopped}">
                                                     <UXControls:UXToggleSwitch.Template>
                                                         <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                            <Border x:Name="SensitiveButtonBorder" CornerRadius="4,4,4,4">
+                                                            <Border x:Name="SensitiveButtonBorder" CornerRadius="4,4,4,4" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                                                                 <Grid>
                                                                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                         <!--<UXControls:UXTextBlock Text="{Binding [HeadsetAutomatedActions.1], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" TextAlignment="Center" />-->

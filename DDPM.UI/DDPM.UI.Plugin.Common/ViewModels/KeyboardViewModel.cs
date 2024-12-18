@@ -172,7 +172,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 SwitchTab(IlluminationSelectedTabIndex);
             }
             if (Model == "KB500" || Model == "KB700" || Model == "KB740")
-            { CopilotInfoVisibility = Visibility.Visible; }
+                CopilotInfoVisibility = Visibility.Visible;
+            else
+                CopilotInfoVisibility = Visibility.Collapsed;
 
             return true;
         }

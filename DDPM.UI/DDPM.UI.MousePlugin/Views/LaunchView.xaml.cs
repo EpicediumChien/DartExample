@@ -27,8 +27,8 @@ namespace DDPM.UI.Plugin.MousePlugin
     {
         private readonly MouseViewModel? _vm;
         private readonly int[] _rightFrameWidth = { 0, 533, 333 };
-        private readonly Style ConnectionStyle1;
-        private readonly Style ConnectionStyle2;
+        private readonly Style ConnectionStyle1 = new();
+        private readonly Style ConnectionStyle2 = new();
         private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
         private readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
 
@@ -38,6 +38,12 @@ namespace DDPM.UI.Plugin.MousePlugin
         public LaunchView()
         {
             InitializeComponent();
+            _vm = (MouseViewModel?)Mouseplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
+            if (_vm == null)
+            {
+                DdpmCommonHelper.WriteUILog("Mouse ViewModel is null");
+                return;
+            }
 
             // for Light mode check by leo
             if (UXSystemParameters.Instance.OSTheme == OSThemeEnum.Light)
@@ -47,25 +53,21 @@ namespace DDPM.UI.Plugin.MousePlugin
             }
             UXSystemParameters.Instance.ParameterChangedEvent += MSUXSystemParametersChanged;
 
-            _vm = (MouseViewModel?)Mouseplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
 
-            if (_vm != null)
+            DataContext = _vm;
+            _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+
+            if (_vm.EOLMouseList.Contains(_vm.Model))
             {
-                DataContext = _vm;
-                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-
-                if (_vm.EOLMouseList.Contains(_vm.Model))
-                {
-                    Battery.Visibility = Visibility.Collapsed;
-                    //btnRestore.Visibility = Visibility.Collapsed;
-                    //txtEOL.Text = Strings.EOLMessage;
-                    txtEOL.Visibility = Visibility.Visible;
-                    SectionA.Visibility = Visibility.Collapsed;
-                    SectionB.Visibility = Visibility.Collapsed;
-                    EOLDongle.Visibility = Visibility.Visible;
-                }
-                BuildModuleGroups();
+                Battery.Visibility = Visibility.Collapsed;
+                //btnRestore.Visibility = Visibility.Collapsed;
+                //txtEOL.Text = Strings.EOLMessage;
+                txtEOL.Visibility = Visibility.Visible;
+                SectionA.Visibility = Visibility.Collapsed;
+                SectionB.Visibility = Visibility.Collapsed;
+                EOLDongle.Visibility = Visibility.Visible;
             }
+            BuildModuleGroups();
 
             //txtUnpair.Text = Strings.Unpair;
             //txtRestore.Text = Strings.RestoreToDefault;
@@ -415,18 +417,15 @@ namespace DDPM.UI.Plugin.MousePlugin
             txt3.Style = ConnectionStyle2;
             imgBL3.Source = img2;
             txtBLHost3.Style = ConnectionStyle2;
-            txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
-            txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
-            txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
 
             switch (_vm!.Model)
             {
                 case "MS700":
                     txt3.Visibility = Visibility.Visible;
                     Host3.Visibility = Visibility.Visible;
-                    //txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
-                    //txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
-                    //txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
+                    txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
+                    txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                    txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
                     if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         txt1.Style = ConnectionStyle1;
@@ -450,8 +449,8 @@ namespace DDPM.UI.Plugin.MousePlugin
                 case "MS5320W":
                 case "MS7421W":
                     Host1.Visibility = Visibility.Collapsed;
-                    //txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
-                    //txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                    txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                    txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
                     if (txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         txt2.Style = ConnectionStyle1;
@@ -468,8 +467,8 @@ namespace DDPM.UI.Plugin.MousePlugin
 
                 case "MS900":
                     Host3.Visibility = Visibility.Collapsed;
-                    //txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
-                    //txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                    txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                    txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
                     if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         txt1.Style = ConnectionStyle1;

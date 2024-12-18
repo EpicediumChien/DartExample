@@ -51,7 +51,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     UpdatesPageUI.IsEnabled = false;
                     DownloadUXBusyIndicator.IsActive = true;
                     DownloadUXBusyIndicator.Visibility = Visibility.Visible;
-                    DownloadUXTextBlock.Visibility = Visibility.Visible;
+                    //DownloadUXTextBlock.Visibility = Visibility.Visible;
 
                     Thread t1 = new Thread(() => CallFWU(vm));
                     t1.Start();
@@ -88,7 +88,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 UpdatesPageUI.IsEnabled = true;
                 DownloadUXBusyIndicator.IsActive = false;
                 DownloadUXBusyIndicator.Visibility = Visibility.Collapsed;
-                DownloadUXTextBlock.Visibility = Visibility.Collapsed;
+                //DownloadUXTextBlock.Visibility = Visibility.Collapsed;
             }));
         }
 

@@ -121,7 +121,7 @@
                                                 <Border x:Name="MicrosoftTeamsBorder" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <UXControls:UXTextBlock Text="{Binding [SpeakerInteractions.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock x:Name="MicrosoftTeamsBorderTxt" Text="{Binding [SpeakerInteractions.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>
@@ -133,6 +133,7 @@
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter TargetName="MicrosoftTeamsBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                         <Setter TargetName="MicrosoftTeamsBorder" Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
+                                                        <Setter TargetName="MicrosoftTeamsBorderTxt" Property="Foreground" Value="White" />
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -147,7 +148,7 @@
                                                 <Border x:Name="ZoomButtonBorder"  BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <UXControls:UXTextBlock Text="{Binding [SpeakerInteractions.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock x:Name="ZoomButtonBorderTxt" Text="{Binding [SpeakerInteractions.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>
@@ -159,6 +160,7 @@
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter TargetName="ZoomButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                         <Setter TargetName="ZoomButtonBorder" Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
+                                                        <Setter TargetName="ZoomButtonBorderTxt" Property="Foreground" Value="White" />
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>
@@ -173,7 +175,7 @@
                                                 <Border x:Name="GoogleMeetButtonBorder" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                     <Grid>
                                                         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <UXControls:UXTextBlock Text="{Binding [SpeakerInteractions.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
+                                                            <UXControls:UXTextBlock x:Name="GoogleMeetButtonBorderTxt" Text="{Binding [SpeakerInteractions.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Border>
@@ -185,6 +187,7 @@
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter TargetName="GoogleMeetButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                         <Setter TargetName="GoogleMeetButtonBorder" Property="BorderBrush" Value="{StaticResource SplitItem_HoverBdColor}" />
+                                                        <Setter TargetName="GoogleMeetButtonBorderTxt" Property="Foreground" Value="White" />
                                                     </Trigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>

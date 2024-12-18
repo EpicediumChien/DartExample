@@ -52,7 +52,7 @@
         <UXControls:UXScrollViewer>
             <Border Background="Transparent">
                 <StackPanel Orientation="Vertical">
-                    <Border Name="bdrAlert" Background="{DynamicResource bdrAlert_BgColor}" CornerRadius="4" Margin="17,2,0,10" BorderThickness="7,0,0,0" BorderBrush="{DynamicResource bdrAlert_BgColor}" Visibility="{Binding DongleAlertHeadsetVisibility}">
+                    <Border Name="bdrAlert" Background="{DynamicResource bdrAlert_BgColor}" CornerRadius="4" Margin="17,2,0,10" BorderThickness="7,0,0,0" BorderBrush="#E67F01" Visibility="{Binding DongleAlertHeadsetVisibility}">
                         <StackPanel Orientation="Horizontal">
                             <Grid>
                                 <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Common;component/Resources/alert.png" Stretch="Fill"
