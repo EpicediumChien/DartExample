@@ -247,7 +247,7 @@ namespace DDPM.UI.Module.Brightness
 
         #region hotkey property
 
-        private string _brightnessMinsKey = "None";
+        private string _brightnessMinsKey = LangHelper.Instance["None"];
 
         public string BrightnessMinsKey
         {
@@ -260,7 +260,7 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private string _brightnessAddKey = "None";
+        private string _brightnessAddKey = LangHelper.Instance["None"];
 
         public string BrightnessAddKey
         {
@@ -273,7 +273,7 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private string _contrastMinsKey = "None";
+        private string _contrastMinsKey = LangHelper.Instance["None"];
 
         public string ContrastMinsKey
         {
@@ -286,7 +286,7 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private string _contrastAddKey = "None";
+        private string _contrastAddKey = LangHelper.Instance["None"];
 
         public string ContrastAddKey
         {
@@ -299,7 +299,7 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private string _luminanceMinsKey = "None";
+        private string _luminanceMinsKey = LangHelper.Instance["None"];
 
         public string LuminanceMinsKey
         {
@@ -312,7 +312,7 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private string _luminanceAddKey = "None";
+        private string _luminanceAddKey = LangHelper.Instance["None"];
 
         public string LuminanceAddKey
         {
@@ -2563,10 +2563,10 @@ namespace DDPM.UI.Module.Brightness
         public void UpdateLuminance()
         {
             //if (Luminance_Value < 0)
-                Get_Luminance_Value(); //0703 fix update luminance issue
-            //NotifyPropertyChanged("LuminanceValue");
-            //if (LuminanceMax_Value < 0)
-                Get_LuminanceMax_Value();
+            Get_Luminance_Value(); //0703 fix update luminance issue
+                                   //NotifyPropertyChanged("LuminanceValue");
+                                   //if (LuminanceMax_Value < 0)
+            Get_LuminanceMax_Value();
             //NotifyPropertyChanged("LuminanceMaxValue");
         }
 
@@ -3404,11 +3404,11 @@ namespace DDPM.UI.Module.Brightness
                 if (Start_ALSConfig.AutoBrightnessRangeLevel.Count == 0)
                     return "";
                 if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 0)
-                    return "Brightness level: " + BrightnessValue.ToString() + "%";//40%";
+                    return LangHelper.Instance["BrightnessLevel"] + ": " + BrightnessValue.ToString() + "%";//40%";
                 else if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 1)
-                    return "Brightness level: " + BrightnessValue.ToString() + "%";//60%";
+                    return LangHelper.Instance["BrightnessLevel"] + ": " + BrightnessValue.ToString() + "%";//60%";
                 else
-                    return "Brightness level: " + BrightnessValue.ToString() + "%";//100%";
+                    return LangHelper.Instance["BrightnessLevel"] + ": " + BrightnessValue.ToString() + "%";//100%";
             }
         }
 
