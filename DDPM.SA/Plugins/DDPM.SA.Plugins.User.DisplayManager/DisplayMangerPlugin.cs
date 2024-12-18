@@ -347,15 +347,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(r);
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, string FunctionName, string val)
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received SetVCPCapability requested ...");
-            _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
-            _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
+            _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfoX.DisplayName);
+            _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfoX.AliasDeviceName);
             _logs.DebugMsg("[DisplayMangerPlugin] FunctionName is " + FunctionName);
             _logs.DebugMsg("[DisplayMangerPlugin] val is " + val);
 
-            bool r = _VcpCorePlugin.SetVCPCapability(monitorInfo, FunctionName, val).Result;
+            bool r = _VcpCorePlugin.SetVCPCapability(monitorInfoX, FunctionName, val).Result;
 
             if (r && FunctionName == "Input Select")
             {
@@ -991,7 +991,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// <param name="type">ALSFeatureQueryType</param>
         /// <param name="val">value</param>
         /// <returns></returns>
-        public Task<ALSConfig> GetALSFeatureValue(MonitorInfo monitorInfos, ALSFeatureQueryType type, int val)
+        public Task<ALSConfig> GetALSFeatureValue(MonitorInfo monitorInfos, ALSFeatureQueryType type, int value)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] GetALSFeatureValue ... in");
             if (type != ALSFeatureQueryType.MMS)
