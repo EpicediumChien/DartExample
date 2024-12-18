@@ -2915,7 +2915,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(bools.ToList());
         }
 
-        public Task<string> GetOSDOrientation(MonitorInfo monitorInfo)
+        public Task<string> GetOSDOrientation(MonitorInfo monitorInfos)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] GetOSDOrientation start");
             int count = 0;
@@ -2923,7 +2923,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] GetOSDOrientation GetVCPCapability go");
             do
             {
-                ObjGetVCP = GetVCPCapability(monitorInfo, 0xAA).Result;
+                ObjGetVCP = GetVCPCapability(monitorInfos, 0xAA).Result;
                 count++;
             } while (ObjGetVCP.result != true && count < 3);
             _logs.DebugMsg($"[DisplayMangerPlugin] GetOSDOrientation ObjGetVCP.result :{ObjGetVCP.result}");
@@ -2941,24 +2941,24 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult("");
         }
 
-        public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string orientation)
+        public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfos, string Orientation)
         {
             bool? ret = null;
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation start");
-            _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation orientation : {orientation}");
-            if (monitorInfo != null && !string.IsNullOrEmpty(orientation))
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation orientation : {Orientation}");
+            if (monitorInfos != null && !string.IsNullOrEmpty(Orientation))
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation go");
-                if (IsSupportWriteOSDOrientation(monitorInfo.CapabilityString) == true)
+                if (IsSupportWriteOSDOrientation(monitorInfos.CapabilityString) == true)
                 {
                     ret = false;
                     for (int i = 1; i < OrientationString.Length; i++)
                     {
-                        if (orientation.ToUpper().Equals(OrientationString[i].ToUpper()))
+                        if (Orientation.ToUpper().Equals(OrientationString[i].ToUpper()))
                         {
                             _logs.DebugMsg($"[DisplayMangerPlugin] SetVCPCapability go");
                             _logs.DebugMsg($"[DisplayMangerPlugin] SetVCPCapability(monitorInfo, 0xAA, {(uint)(i & 0xFFFF)})");
-                            ret = SetVCPCapability(monitorInfo, 0xAA, (uint)(i & 0xFFFF)).Result;
+                            ret = SetVCPCapability(monitorInfos, 0xAA, (uint)(i & 0xFFFF)).Result;
                         }
                     }
                 }
