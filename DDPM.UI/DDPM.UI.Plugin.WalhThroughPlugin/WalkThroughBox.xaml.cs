@@ -217,8 +217,8 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
             if(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
                 DdpmHomePlugin.DdpmHomePlugin._showPluginById = false;
-            string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin._userId}";
-            string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
+            //string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin._userId}";
+            //string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
 
             this.Close();
         }
