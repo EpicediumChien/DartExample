@@ -1135,7 +1135,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             bool blRet = true;
 
-            var rt = false;
+            var rt = false; powerNapSetting
             var Displaysettings_Function = new Displaysettings_Function();
 
             if (!string.IsNullOrEmpty(NightLightStatus))
@@ -1151,7 +1151,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(blRet);
         }
 
-        public Task<bool> Send_NightLightschedulerStatus_Telementry_SA(MonitorInfo m, string NightLightschedulerStatus)
+        public Task<bool> Send_NightLightschedulerStatus_Telementry_SA(MonitorInfo m, string NightLightStatus)
         {
             writelog("DeviceManagerPlugin received Send_NightLightschedulerStatus_Telementry_SA requested ...");
 
@@ -1160,10 +1160,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var rt = false;
             var Displaysettings_Function = new Displaysettings_Function();
 
-            if (!string.IsNullOrEmpty(NightLightschedulerStatus))
+            if (!string.IsNullOrEmpty(NightLightStatus))
             {
                 writelog("[DeviceMangerPlugin] Send Telementry for NightLightschedulerStatus...");
-                rt = Displaysettings_Function.Send_NightLightschedulerStatus_Telementry(_TelementryScheduler, m, NightLightschedulerStatus, GetMonitorCurrentResolution(m), GetMonitorMaxResolution(m));
+                rt = Displaysettings_Function.Send_NightLightschedulerStatus_Telementry(_TelementryScheduler, m, NightLightStatus, GetMonitorCurrentResolution(m), GetMonitorMaxResolution(m));
                 if (rt)
                     writelog("[DeviceMangerPlugin] Send Telementry for NightLightschedulerStatus Success ...");
                 else
@@ -14361,8 +14361,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public Task<bool> SavePowerNapSetting(PowerNapSetting powerNapSetting)
+        public Task<bool> SavePowerNapSetting(PowerNapSetting powerNapSettings)
         {
+            PowerNapSetting powerNapSetting = powerNapSettings;
+
             Debug.WriteLine($"{powerNapSetting.ModelName}:{powerNapSetting.SerialNumber}:{powerNapSetting.ServiceTag}:{powerNapSetting.Status}:{powerNapSetting.RunType}");
             List<PowerNapSetting> saveList = new List<PowerNapSetting>();
             bool ret = false;
