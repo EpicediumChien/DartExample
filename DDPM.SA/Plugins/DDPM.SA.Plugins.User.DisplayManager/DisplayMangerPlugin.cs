@@ -321,15 +321,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(result);
         }
 
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string funName, int opt = 0)
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, int opt = 0)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetVCPCapability requested ...");
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
-            _logs.DebugMsg("[DisplayMangerPlugin] VcpCode is " + funName);
+            _logs.DebugMsg("[DisplayMangerPlugin] VcpCode is " + FunctionName);
             _logs.DebugMsg("[DisplayMangerPlugin] opt is " + opt.ToString());
 
-            ObjGetVCP result = _VcpCorePlugin.GetVCPCapability(monitorInfo, funName, opt).Result;
+            ObjGetVCP result = _VcpCorePlugin.GetVCPCapability(monitorInfo, FunctionName, opt).Result;
 
             return Task.FromResult(result);
         }
@@ -347,17 +347,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(r);
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, string FuntionName, string val)
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, string FunctionName, string val)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received SetVCPCapability requested ...");
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
-            _logs.DebugMsg("[DisplayMangerPlugin] FunctionName is " + FuntionName);
+            _logs.DebugMsg("[DisplayMangerPlugin] FunctionName is " + FunctionName);
             _logs.DebugMsg("[DisplayMangerPlugin] val is " + val);
 
-            bool r = _VcpCorePlugin.SetVCPCapability(monitorInfo, FuntionName, val).Result;
+            bool r = _VcpCorePlugin.SetVCPCapability(monitorInfo, FunctionName, val).Result;
 
-            if (r && FuntionName == "Input Select")
+            if (r && FunctionName == "Input Select")
             {
                 _AllInfoMonitors = GetMonitors().Result;
             }

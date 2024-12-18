@@ -1135,7 +1135,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             bool blRet = true;
 
-            var rt = false; powerNapSetting
+            var rt = false; 
             var Displaysettings_Function = new Displaysettings_Function();
 
             if (!string.IsNullOrEmpty(NightLightStatus))
