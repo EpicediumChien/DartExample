@@ -1452,6 +1452,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 if (!Convert.ToBoolean(regValue))
                 {
+                    await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM, true);
                     if (!WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
                     {
                         WalkThroughQueue.Add(new WalkThroughInfo("DDPM", "DDPM", info));

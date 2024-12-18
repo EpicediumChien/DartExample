@@ -996,7 +996,7 @@
                                         </UXControls:UXToggleSwitch>
                                     </Grid>
                                     <!--<UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_2" Grid.Row="1" Text="2" FontSize="14" Margin="0,-20,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" />-->
-                                    <UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_2" Grid.Row="1" Text="2" FontSize="14" Margin="0,-20,0,0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <UXControls:UXTextBlock x:Name="SidetoneSliderMinValueTextBlock2_2" Grid.Row="1" Text="2" FontSize="14" Margin="0,-20,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding SidetoneSliderValue, Converter={StaticResource ValueToVisibilityConverter}, ConverterParameter=2}">
                                         <UXControls:UXTextBlock.Foreground>
                                             <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
                                                 <Binding Path="IsChecked" ElementName="TransparencyButton" />

@@ -1853,7 +1853,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 ManagementObjectCollection queryCollection = searcher.Get();
 
                 // 列舉查詢結果
-                foreach (ManagementObject m in queryCollection)
+                foreach (ManagementObject m in queryCollection.Cast<ManagementObject>())
                 {
                     // 取得裝置識別碼 (Device ID)
                     string deviceId = m["DeviceID"] as string;
