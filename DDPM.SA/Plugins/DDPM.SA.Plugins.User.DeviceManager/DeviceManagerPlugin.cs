@@ -12842,6 +12842,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     }
                 }
+                /* since all monitor use same hotkeys,no need this anymore
                 //diff monitor
                 List<string> monitorSnList = new List<string>();
                 foreach (HotkeySettings hotkeySetting in hotkeySettingList)
@@ -12858,11 +12859,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (distCount != 0 && (allCount == distCount))
                 {
                     return Task.FromResult(HotkeyWarning.ConflictInbox);
-                }
+                }*/
                 return Task.FromResult(HotkeyWarning.None);
             }
             else
             {
+                writelog($"[GetHotkeyConflicts] _SettingsPlugin is null.");
                 return Task.FromResult(HotkeyWarning.ConflictInbox);
             }
         }
@@ -12989,7 +12991,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //Derek 1217 add Debounce for Keyboard_KeyUpProc
         private System.Timers.Timer _timerDebounce;
         //即刻执行，执行之后，在timeMs内再次调用无效
-        public void KeyboardHook_Debounce<T>(int timeMs, ISynchronizeInvoke invoker, 
+        public void KeyboardHook_Debounce<T>(int timeMs, ISynchronizeInvoke invoker,
                         Action<T> action, T parameter)
         {
             System.Threading.Monitor.Enter(this);
@@ -14030,8 +14032,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 string crtInput = monitorInfo.inputSource;
                 List<KeyValuePair<string, InputInfo>> list = result.OrderBy(x => x.Key).ToList();
                 List<InputInfo> inputInfos = result.Select(x => x.Value).ToList();
-                Debug.WriteLine($"Toggle_InputSource,all inputsourc:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
-                writelog($"Toggle_InputSource,all inputsourc:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
+                Debug.WriteLine($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] all inputsourc: {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
+                writelog($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] all inputsourc: {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
                 for (int i = 0; i < list.Count; i++)
                 {
                     if (list[i].Key.Equals(crtInput))
@@ -14046,6 +14048,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     }
                 }
+                Debug.WriteLine($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}],next inputsource: {nextInput}");
+                writelog($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}],next inputsource: {nextInput}");
                 bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
                 writelog($"Toggle_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}]" + (setNextInput ? "success" : "fail"));
             }
