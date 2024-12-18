@@ -1685,6 +1685,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
 
                     _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " StartProcessAndBypassUACWithAdmin done b : " + b);
+                    if (_updateErrorCode == FWUErrorCode.Unknow)
+                    {
+                        _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
+                    }
+                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " _updateErrorCode : " + _updateErrorCode);
                     //UserImpersonator.RunAsUser(token, () =>
                     //{
                     //    using (_clientProcess = new Process())
@@ -2483,9 +2488,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 //    }
                 //    _logs.DebugMsg_1($"BuildArgs DeviceType done");
                 //}
-                _logs.DebugMsg_1($"BuildArgs devicePath go");
-                arguments += $" /devicePath:" + fwUpdateInfo.DevicePath;
-                _logs.DebugMsg_1($"BuildArgs devicePath done");
+                //_logs.DebugMsg_1($"BuildArgs devicePath go");
+                //arguments += $" /devicePath:" + fwUpdateInfo.DevicePath;
+                //_logs.DebugMsg_1($"BuildArgs devicePath done");
                 _logs.DebugMsg_1($"BuildArgs Log go");
                 //Log commandLine
                 switch (fwUpdateInfo.DeviceType)
