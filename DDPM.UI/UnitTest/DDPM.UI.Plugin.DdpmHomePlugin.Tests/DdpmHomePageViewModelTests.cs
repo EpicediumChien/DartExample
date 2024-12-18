@@ -79,6 +79,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         [Test]
         public void TestPrepareMonitorInfos()
         {
+
             List<MonitorInfo> monitorInfos = new List<MonitorInfo>();
             try
             {
@@ -125,6 +126,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         [Test]
         public void TestRefreshCollectionView()
         {
+            //System.Windows.Application app = new System.Windows.Application();
             try
             {
                 ddpmHomePageViewModel.RefreshCollectionView();

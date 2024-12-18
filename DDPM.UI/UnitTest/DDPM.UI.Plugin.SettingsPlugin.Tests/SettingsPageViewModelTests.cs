@@ -15,6 +15,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
     public class SettingsPageViewModelTests
     {
         private SettingsPageViewModel? settingsPageViewModel;
+        private Mock<IDeviceManagerSA>? DeviceManagerSAMock;
 
         [SetUp]
         public void Setup()
@@ -28,6 +29,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             settingsPageViewModel = new SettingsPageViewModel();
+            DeviceManagerSAMock=new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA=DeviceManagerSAMock.Object;
+            DeviceManagerSAMock.Setup(x => x.GetDevices(It.IsAny<bool>())).Returns(Task.FromResult(new DeviceHelper() { deviceInfo = new List<DeviceInfo>() }));
         }
 
         [Test]

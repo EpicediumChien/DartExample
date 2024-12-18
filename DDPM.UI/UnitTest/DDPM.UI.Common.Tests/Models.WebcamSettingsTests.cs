@@ -24,6 +24,7 @@ namespace DDPM.UI.Common.Tests
     public class WebcamSettingsTests
     {
         private WebcamSettings? webcamSettings;
+        private Mock<IDeviceManagerSA> deviceManagerSAMock;
 
         [SetUp]
         public void Setup()
@@ -37,6 +38,9 @@ namespace DDPM.UI.Common.Tests
             webcamSettings = new WebcamSettings();
             webcamSettings.Resolutions = resolutions;
             webcamSettings.SelectedFPSs = selectedFPSs;
+            deviceManagerSAMock=new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA=deviceManagerSAMock.Object;
+            deviceManagerSAMock.Setup(x => x.GetSupportedResolutions(It.IsAny<string>())).Returns(Task.FromResult("10"));
         }
 
         [Test]
@@ -59,6 +63,7 @@ namespace DDPM.UI.Common.Tests
             Assert.That(result, Is.EqualTo(true));
         }
 
+        //Elsa mark
         [Test]
         public void TestImportWebcamSettings()
         {

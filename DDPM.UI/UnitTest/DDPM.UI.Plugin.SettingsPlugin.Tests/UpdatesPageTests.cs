@@ -8,6 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Dell.Client.Framework.UX.WPF.ResourceManager;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using Dell.Client.Framework.Common;
+using DDPM.UI.Plugin.DdpmHomePlugin.ViewModels;
 
 namespace DDPM.UI.Plugin.SettingsPlugin.Tests
 {
@@ -17,6 +20,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         private UpdatesPage? updatesPage;
         private Mock<IDeviceManagerSA>? deviceManagerSAMock;
         private IDeviceManagerSA? deviceManagerSA;
+        private Mock<IServiceProvider>? PluginIocMock;
+
 
         [SetUp]
         public void Setup()
@@ -33,7 +38,13 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             deviceManagerSAMock = new Mock<IDeviceManagerSA>();
             deviceManagerSA = deviceManagerSAMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
-            updatesPage = new UpdatesPage();
+
+            var mockLog = new Mock<ILog>();
+            PluginIocMock = new Mock<IServiceProvider>();
+            //SettingsPlugin.PluginIoc= PluginIocMock.Object as Ioc;
+            PluginIocMock.Setup(x => x.GetService(It.IsAny<Type>())).Returns(mockLog.Object);
+
+            //updatesPage = new UpdatesPage();
         }
         //Elsa mark for PluginIoc readonly
         //[Test]

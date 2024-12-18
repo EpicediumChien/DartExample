@@ -375,6 +375,7 @@ namespace DDPM.UI.Common.Tests
             ezArrangeViewModel.currentUXTextBoxInfo = new Dell.Client.Framework.UX.WPF.Controls.UXTextBox();
             try
             {
+                ezArrangeViewModel.currentUXTextBoxInfo = new Dell.Client.Framework.UX.WPF.Controls.UXTextBox() { AcceptsReturn = true };
                 ezArrangeViewModel.UpdateTextBlockAppName("AddButton2_1", "Window2_1AppName");
                 //Assert.That(ezArrangeViewModel.Window2_1AppName, Is.EqualTo("..."));
                 //ezArrangeViewModel.UpdateTextBlockAppName("AddButton2_2", "Window2_2AppName");

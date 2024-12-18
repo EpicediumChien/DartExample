@@ -39,6 +39,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             _log=_logMock.Object;
             MyConsoleMock = new Mock<IConsole>();
             DdpmCommonHelper.MyConsole = MyConsoleMock.Object;
+            MyConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(_logMock.Object);
             kvmViewModel = new KvmViewModel();
             var deviceManagerMock = new Mock<IDeviceManagerSA>();
             var deviceManagerSA = deviceManagerMock.Object;
