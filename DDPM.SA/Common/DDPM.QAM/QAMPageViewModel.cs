@@ -49,6 +49,8 @@ namespace DDPM.QAM
             get => _fullView;
             set => _fullView = value;
         }
+
+        public bool isStatusChagneByDDPM = false;
         public QAMPageViewModel()
         {
             List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA!.GetDevices().Result.deviceInfo;
@@ -84,6 +86,8 @@ namespace DDPM.QAM
         {
             try
             {
+                isStatusChagneByDDPM = true;
+
                 ZoomValue = DdpmCommonHelper.DeviceManagerSA!.GetZoom(CurrentDeviceInfo!.ID.ToString()).Result;
                 AutoFramingStatus = DdpmCommonHelper.DeviceManagerSA!.GetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString()).Result;
 
@@ -140,6 +144,7 @@ namespace DDPM.QAM
                     {
                         case "Webcam_ZoomChanged":
                             if (int.TryParse(eventMsg.NewValue, out currentValue))
+                                isStatusChagneByDDPM = true;
                                 ZoomValue = currentValue;
 
                             break;
@@ -148,6 +153,7 @@ namespace DDPM.QAM
                         case "Webcam_FieldOfViewChanged":
                             if (int.TryParse(eventMsg.NewValue, out currentValue))
                             {
+                                isStatusChagneByDDPM = true;
                                 FieldOfView = currentValue;
                                 FOV_Selected(ChangeFOVToSelectIndex(FieldOfView));
                             }
@@ -158,7 +164,10 @@ namespace DDPM.QAM
                         case "Webcam_IsAutoFramingOnChanged":
                             bool result = false;
                             if (bool.TryParse(eventMsg.NewValue, out result))
+                            {
+                                isStatusChagneByDDPM = true;
                                 AutoFramingStatus = result;
+                            }
                             break;
                     }
                 }
@@ -457,7 +466,16 @@ namespace DDPM.QAM
             set
             {
                 _AutoFramingStatus = value;
-                DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), _AutoFramingStatus);
+
+                if (!isStatusChagneByDDPM)
+                {
+                    bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), _AutoFramingStatus).Result;
+
+                    LogMsg($"QAM SetIsAutoFramingOn value to {_AutoFramingStatus}, result is {result}");
+                }
+                else
+                    LogMsg($"QAM SetIsAutoFramingOn value has modified by UI");
+
                 RefreshUI();
 
                 OnPropertyChanged(nameof(AutoFramingStatus));
@@ -478,7 +496,15 @@ namespace DDPM.QAM
             set
             {
                 _FieldOfView = value;
-                DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), _FieldOfView);
+
+                if (!isStatusChagneByDDPM)
+                {
+                    bool result = DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), _FieldOfView).Result;
+                    
+                    LogMsg($"QAM SetFieldOfView value to {_FieldOfView}, result is {result}");
+                }
+                else
+                    LogMsg($"QAM SetFieldOfView value has modified by UI");
             }
         }
         public void FOV_Selected(int index)
@@ -510,12 +536,20 @@ namespace DDPM.QAM
                         SetZoom();
                     }
                 }
+
                 RefreshUI();
             }
         }
+
         public void SetZoom()
         {
-            DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), _ZoomValue);
+            if (!isStatusChagneByDDPM)
+            {
+                bool result = DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), _ZoomValue).Result;
+                LogMsg($"QAM set Zoom value to {_ZoomValue}, result is {result}");
+            }
+            else
+                LogMsg($"QAM Zoom value has modified by UI");
         }
         #endregion
 

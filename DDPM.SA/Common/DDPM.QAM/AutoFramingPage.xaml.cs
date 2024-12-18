@@ -28,5 +28,13 @@ namespace DDPM.QAM
                 DataContext = DdpmCommonHelper.QAMPageViewModel;
             }
         }
+
+        private void ToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is QAMPageViewModel vm)
+            {
+                vm.isStatusChagneByDDPM = false;
+            }
+        }
     }
 }
