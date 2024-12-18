@@ -2447,42 +2447,42 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 // 要運行的安裝程式路徑和命令行參數
                 arguments = (fwUpdateInfo.IsUOD ? "/uod " : "") + "/silent" + " /pipename:" + namedPipeName;
-                //if (fwUpdateInfo.DeviceType == DeviceType.LogicalMouse ||
-                //    fwUpdateInfo.DeviceType == DeviceType.LogicalKeyboard)
-                //{
-                //    //updatepath commandLine
-                //    _logs.DebugMsg_1($"BuildArgs updatepath go");
-                //    switch (fwUpdateInfo.Connectivity)
-                //    {
-                //        case "Wired":
-                //            arguments += $" /updatepath:Wired";
-                //            _logs.DebugMsg_1($"BuildArgs Add : /updatepath:Wired");
-                //            break;
-                //        case "RF":
-                //            arguments += $" /updatepath:RF";
-                //            _logs.DebugMsg_1($"BuildArgs Add : /updatepath:RF");
-                //            break;
-                //        case "Bluetooth":
-                //            arguments += $" /updatepath:BLE";
-                //            _logs.DebugMsg_1($"BuildArgs Add : /updatepath:BLE");
-                //            break;
-                //    }
-                //    _logs.DebugMsg_1($"BuildArgs updatepath done");
-                //    _logs.DebugMsg_1($"BuildArgs DeviceType go");
-                //    //DeviceType commandLine
-                //    switch (fwUpdateInfo.DeviceType)
-                //    {
-                //        case DeviceType.LogicalMouse:
-                //            arguments += $" /DeviceType:Mouse";
-                //            _logs.DebugMsg_1($"BuildArgs Add : /DeviceType:Mouse");
-                //            break;
-                //        case DeviceType.LogicalKeyboard:
-                //            arguments += $" /DeviceType:Keyboard";
-                //            _logs.DebugMsg_1($"BuildArgs Add : /DeviceType:Keyboard");
-                //            break;
-                //    }
-                //    _logs.DebugMsg_1($"BuildArgs DeviceType done");
-                //}
+                if (fwUpdateInfo.DeviceType == DeviceType.LogicalMouse ||
+                    fwUpdateInfo.DeviceType == DeviceType.LogicalKeyboard)
+                {
+                    //updatepath commandLine
+                    _logs.DebugMsg_1($"BuildArgs updatepath go");
+                    switch (fwUpdateInfo.Connectivity)
+                    {
+                        case "Wired":
+                            arguments += $" /updatepath:Wired";
+                            _logs.DebugMsg_1($"BuildArgs Add : /updatepath:Wired");
+                            break;
+                        case "RF":
+                            arguments += $" /updatepath:RF";
+                            _logs.DebugMsg_1($"BuildArgs Add : /updatepath:RF");
+                            break;
+                        case "Bluetooth":
+                            arguments += $" /updatepath:BLE";
+                            _logs.DebugMsg_1($"BuildArgs Add : /updatepath:BLE");
+                            break;
+                    }
+                    _logs.DebugMsg_1($"BuildArgs updatepath done");
+                    _logs.DebugMsg_1($"BuildArgs DeviceType go");
+                    //DeviceType commandLine
+                    switch (fwUpdateInfo.DeviceType)
+                    {
+                        case DeviceType.LogicalMouse:
+                            arguments += $" /DeviceType:Mouse";
+                            _logs.DebugMsg_1($"BuildArgs Add : /DeviceType:Mouse");
+                            break;
+                        case DeviceType.LogicalKeyboard:
+                            arguments += $" /DeviceType:Keyboard";
+                            _logs.DebugMsg_1($"BuildArgs Add : /DeviceType:Keyboard");
+                            break;
+                    }
+                    _logs.DebugMsg_1($"BuildArgs DeviceType done");
+                }
                 _logs.DebugMsg_1($"BuildArgs devicePath go");
                 arguments += $" /devicePath:" + fwUpdateInfo.DevicePath;
                 _logs.DebugMsg_1($"BuildArgs devicePath done");
