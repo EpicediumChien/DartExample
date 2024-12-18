@@ -5152,17 +5152,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> SetResolutions(MonitorInfo monitorInfo, Properties properties)
+        public Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties)
         {
             bool ret = false;
             if (_DisplayManagerPlugin != null)
             {
                 displayInOut = false;
-                ret = _DisplayManagerPlugin.SetResolutions(monitorInfo, properties).Result;
+                ret = _DisplayManagerPlugin.SetResolutions(monitorInfos, properties).Result;
                 //Telementry Collection
                 var rt = false;
                 var Displaysettings_Function = new Displaysettings_Function();
-                rt = Displaysettings_Function.Send_GamingRefreshRate_Telementry(_TelementryScheduler, monitorInfo, properties.Frequency.ToString(), GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                rt = Displaysettings_Function.Send_GamingRefreshRate_Telementry(_TelementryScheduler, monitorInfos, properties.Frequency.ToString(), GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
                 if (rt)
                     writelog("[DeviceMangerPlugin] Send Telementry for GamingRefreshRate Success ...");
                 else
@@ -5171,13 +5171,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> SetOrientation(MonitorInfo monitorInfo, DisplayOrientation orientation)
+        public Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation)
         {
             bool ret = false;
             if (_DisplayManagerPlugin != null)
             {
                 displayInOut = false;
-                ret = _DisplayManagerPlugin.SetOrientation(monitorInfo, orientation).Result;
+                ret = _DisplayManagerPlugin.SetOrientation(monitorInfos, orientation).Result;
             }
             return Task.FromResult(ret);
         }
@@ -5192,22 +5192,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> GetHDRStatus(MonitorInfo monitorInfo)
+        public Task<bool> GetHDRStatus(MonitorInfo monitorInfos)
         {
             bool ret = false;
-            return Task.FromResult(_DisplayManagerPlugin.GetHDRStatus(monitorInfo).Result);
+            return Task.FromResult(_DisplayManagerPlugin.GetHDRStatus(monitorInfos).Result);
         }
 
-        public Task<bool> SetHDRStatus(MonitorInfo monitorInfo, bool onoff)
+        public Task<bool> SetHDRStatus(MonitorInfo monitorInfos, bool onoff)
         {
             bool ret = false;
-            return Task.FromResult(_DisplayManagerPlugin.SetHDRStatus(monitorInfo, onoff).Result);
+            return Task.FromResult(_DisplayManagerPlugin.SetHDRStatus(monitorInfos, onoff).Result);
         }
 
-        public Task<bool> SetUSBCPrioritizationType(MonitorInfo monitorInfo, USBCPrioritizationType type)
+        public Task<bool> SetUSBCPrioritizationType(MonitorInfo monitorInfos, USBCPrioritizationType type)
         {
             bool ret = false;
-            return Task.FromResult(_DisplayManagerPlugin.SetUSBCPrioritizationType(monitorInfo, type).Result);
+            return Task.FromResult(_DisplayManagerPlugin.SetUSBCPrioritizationType(monitorInfos, type).Result);
         }
 
         //0606 Bruce 新增鎖定自動旋轉方向
