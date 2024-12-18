@@ -262,13 +262,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
-        public async Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken token)
+        public async Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken Token)
         {
             try
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Re_GetMonitors requested ...");
 
-                _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.Re_GetMonitors(token).Result);
+                _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.Re_GetMonitors(Token).Result);
 
                 InitializeAllALSInfo();
 
