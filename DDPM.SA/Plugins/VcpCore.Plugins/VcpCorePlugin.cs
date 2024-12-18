@@ -1663,15 +1663,15 @@ namespace VcpCore.Plugins
 
                         if (object_0x02 != null)
                         {
-                            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck DDC/CI is connected");
-
-                            monitorInfoX.DDCCIFail = 0;
+                            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck DDC/CI is connected");                            
 
                             var ori_DDCCIStatus = monitorInfoX.DDCisON;
                             var rr = UpdateData(ref monitor);
 
                             if (rr)
                             {
+                                monitorInfoX.DDCCIFail = 0;
+
                                 if (!ori_DDCCIStatus)
                                 {
                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck prepare DDC/CI broadcast off -> on");
@@ -1690,6 +1690,8 @@ namespace VcpCore.Plugins
                             }
                             else
                             {
+                                monitorInfoX.DDCCIFail++;
+
                                 monitorInfoX.DDCisON = false;
                                 monitorInfo.DDCisON = false;
 
