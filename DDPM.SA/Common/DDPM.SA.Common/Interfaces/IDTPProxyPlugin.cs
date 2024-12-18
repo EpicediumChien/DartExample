@@ -22,6 +22,8 @@ namespace DDPM.SA.Common
 {
     public interface IDTPProxyPlugin : IFrameworkPlugin
     {
+        bool GetDTPProxyPluginReady();
+
         #region globalperipheral
         Task<bool> GetIsLockKeyNotificationsEnabledValue();
 

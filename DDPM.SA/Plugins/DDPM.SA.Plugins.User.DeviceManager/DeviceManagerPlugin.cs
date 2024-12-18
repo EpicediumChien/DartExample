@@ -9838,26 +9838,44 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         int count = 0;
         public Task<GlobalSettingParam> GetGlobalSettingParam()
         {
-            if (!_GlobalSettingParam.isSetTelemetryOverInstaller)
-            {
-                DDPMSettings settings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (!settings.UserSettings.isDisplayConsentPage)
-                {
-                    
-                    Task.Run(() =>
-                    {
-                        if (obj == null)
-                        {
-                            count++;
-                            writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Count:{count}...");
-                            GetDPeMGlobalSettings();
-                            obj = new Object();
-                        }
-                    });
+            FirstGetDPeMSettings();
+            return Task.FromResult(_GlobalSettingParam);
+        }
 
+        private void FirstGetDPeMSettings()
+        {
+            try
+            {
+                if (!_GlobalSettingParam.isSetTelemetryOverInstaller)
+                {
+                    DDPMSettings settings = _SettingsPlugin.ReloadAppConfigData().Result;
+                    if (!settings.UserSettings.isDisplayConsentPage)
+                    {
+                        writelog($"[DeviceMangerPlugin] GetFirstReadStatus");
+                        bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", true).Result;
+                    }
                 }
             }
-            return Task.FromResult(_GlobalSettingParam);
+            catch (Exception ex) 
+            {
+                writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Exception:{ex.Message}...");
+            }
+        }
+
+        public async Task<bool> CheckInstallFirstOpen()
+        {
+            var ReadReg = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen").Result;
+            writelog($"[DeviceMangerPlugin] ReadReg Status {ReadReg} And {ReadReg.GetType()}");
+            Boolean.TryParse(ReadReg.ToString(), out var getRegValue);
+            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady())
+            {
+                count++;
+                writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Count:{count}...");
+                GetDPeMGlobalSettings();
+                obj = new Object();
+                return true;
+            }
+            return false;
         }
 
         private void GetDPeMGlobalSettings()
@@ -9869,6 +9887,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _GlobalSettingParam.isTelemetryConsentOn = GetIsAnalyticsEnabledValue().Result;
             _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget = GetIsQuickAccessMenuEnabledValue().Result;
             _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder = GetIsQuickAccessMenuOSDEnabledValue().Result;
+            bool regOK=WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", false).Result;
         }
 
         public Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay)

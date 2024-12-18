@@ -6849,6 +6849,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return null;
             }
         }
+        bool DTPProxyPluginReady = false;
+
+        public bool GetDTPProxyPluginReady() 
+        {
+            return DTPProxyPluginReady;
+        }
 
         private void InitializeDTPProxy()
         {
@@ -6989,7 +6995,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                         {
                             writelog($"Find IDockCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                         }
-
+                        DTPProxyPluginReady = true;
                         _ = RegisterEventAsync();
                     });
                 }

@@ -704,6 +704,8 @@ namespace DDPM.SA.Common
 
         Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
 
+        Task<bool> CheckInstallFirstOpen();
+
         #endregion public for settings
 
         #region public for hotkey
