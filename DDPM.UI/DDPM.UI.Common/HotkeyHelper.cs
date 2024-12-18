@@ -187,8 +187,18 @@ namespace DDPM.UI.Common
                                 keyStr = s;
                                 break;
                         }
+
                         if (!string.IsNullOrEmpty(keyStr))
-                            keyList.Add((VirtualKey)Enum.Parse(typeof(VirtualKey), keyStr));
+                        {
+                            if (keyStr.Trim().Equals(LangHelper.Instance["None"].Trim(), StringComparison.OrdinalIgnoreCase))
+                            {
+                                keyList.Add((VirtualKey)Enum.Parse(typeof(VirtualKey), "None"));
+                            }
+                            else
+                            {
+                                keyList.Add((VirtualKey)Enum.Parse(typeof(VirtualKey), keyStr));
+                            }
+                        }
                     }
                     HotkeyInfo hotkeyInfo = new HotkeyInfo();
                     hotkeyInfo.Job = hotkeyType;
@@ -354,7 +364,7 @@ namespace DDPM.UI.Common
             strShortCutText = strTmpKey;
             if (newHotKeys.Count == 0)
             {
-                strShortCutText = "None";
+                strShortCutText = LangHelper.Instance["None"];
                 return;
             }
 
@@ -393,7 +403,10 @@ namespace DDPM.UI.Common
                 strTmpKey = strTmpKey + " " + VirtualKeyToString(item);
                 break;
             }
-
+            if ("None".Equals(strTmpKey.Trim(), StringComparison.OrdinalIgnoreCase))
+            {
+                strTmpKey = LangHelper.Instance["None"];
+            }
             strShortCutText = strTmpKey;
         }
 

@@ -237,7 +237,9 @@ namespace DDPM.UI.Common.Models
                     //Other peripheals will display {Name} only, because Indilogical has combine {Model} inside {Name}
 
                     if ((DeviceCategory == eDeviceCategory.Mouse) ||
-                        (DeviceCategory == eDeviceCategory.KB))
+                        (DeviceCategory == eDeviceCategory.KB) || 
+                        (DeviceCategory == eDeviceCategory.Headset) ||
+                        (DeviceCategory == eDeviceCategory.Soundbar)) 
                     {
                         string model = DeviceInfo.ModelNumber;
                         //[#PeripheralModelMap] This mapping table has a duplicate code in
