@@ -959,6 +959,7 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!base.SetCurrentDevice(deviceID))
                 return false;
             _log.Info($"[HeadsetViewModel] SetCurrentDevice GUID ... {CurrentDeviceID.ToString()}");
+
             _current_headset = CurrentDeviceID!.ToString();
             var fv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
             if (fv == null || fv == string.Empty)
@@ -973,6 +974,13 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsDTPReady = true;
                 FirmwareVersion2 = Strings.FirmwareVersion + $" {fv}";
             }
+
+            Invoke_PleaseWaitAsync(Model, this);
+            //if (CheckIfCurrentSettingsMatchDefault(DeviceInfoDTP, Model))
+            //    _isRestoreEnable = true;
+            //else
+            //    _isRestoreEnable = false;
+
             return true;
         }
 
@@ -1653,6 +1661,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isRestoreEnable = true;
                 else
                     _isRestoreEnable = false;
+                OnPropertyChanged(nameof(IsRestoreEnable));
             }
             catch (Exception ex)
             {
@@ -1782,16 +1791,17 @@ namespace DDPM.UI.Plugin.ViewModels
                 await UpdateDTHValue();
             // Call DetectPageShow
             await DetectPageShow(model);
+            HidePleaseWait();
         }
 
-        public async Task Invoke_PleaseWaitAsync(string model, HeadsetViewModel vm)
+        public void Invoke_PleaseWaitAsync(string model, HeadsetViewModel vm)
         {
-            vm.ShowPleaseWait();
+            ShowPleaseWait();
             try
             {
                 using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
                 {
-                    await Task.Run(() => DoWork_PleaseWait(model, vm), cts.Token);
+                    Task.Run(() => DoWork_PleaseWait(model, vm), cts.Token);
                 }
             }
             catch (OperationCanceledException)
@@ -1804,10 +1814,10 @@ namespace DDPM.UI.Plugin.ViewModels
                 vm._log!.Error($"[HeadsetViewModel] Invoke_PleaseWaitAsync exception: {ex.Message}");
                 throw;
             }
-            finally
-            {
-                vm.HidePleaseWait();
-            }
+            //finally
+            //{
+            //    HidePleaseWait();
+            //}
         }
 
         private void RunWorkerCompleted_PleaseWait(object sender, RunWorkerCompletedEventArgs e)
@@ -2022,7 +2032,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isSidetoneStatus = value;
                 if (IsDTPReady)
                 {
-                    _debouncerHeadset.Debounce("SidetoneCheck");
+                    _debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
                 }
                 else
                     _deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
@@ -2255,6 +2265,7 @@ namespace DDPM.UI.Plugin.ViewModels
                             else
                                 _deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
                             OnPropertyChanged(nameof(Sidetone_String));
+                            OnPropertyChanged(nameof(SidetoneStatus));                        
                             OnPropertyChanged(nameof(SidetoneSliderStatus));
                         }
                         else
