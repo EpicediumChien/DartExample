@@ -9837,6 +9837,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             GlobalSettingChangeEvent?.Invoke(this, null);
 
             //Derek 1209 to handle QAM event
+            writelog($"HandleQAMV2 launch by event Set_GlobalSetting_EnableQuickAccessWidget");
             HandleQAMV2();
 
             return Task.FromResult(ret);
@@ -10392,6 +10393,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case "Webcam_IsZoomMeetingActiveChanged":
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomMeetingActiveChanged");
                     isQAMHandleEvent = true;
 
                     if (1 == WebcamDevCnt)
@@ -10403,6 +10405,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case "Webcam_IsZoomScreenShareActiveChanged":
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomScreenShareActiveChanged");
                     isQAMHandleEvent = true;
 
                     if (1 == WebcamDevCnt)
@@ -10414,6 +10417,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case "Webcam_ZoomMeetingTypeChanged":
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_ZoomMeetingTypeChanged");
                     isQAMHandleEvent = true;
 
                     if (1 == WebcamDevCnt)
@@ -10429,10 +10433,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case "Webcam_Disconnected":
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_Disconnected");
                     isQAMHandleEvent = true;
                     break;
 
                 case "Webcam_Connected":
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_Connected");
                     isQAMHandleEvent = true;
 
                     if (1 == WebcamDevCnt)
@@ -12969,6 +12975,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //Derek 1205 for Debug
         private void CreateWebcamEventForDebug_ShowUI()
         {
+            writelog($"HandleQAMV2 launch by event CreateWebcamEventForDebug_ShowUI");
+
             _IsZoomMeetingActive = true;
             _IsZoomScreenShareActive = false;
             _ZoomMeetingType = ZoomMeetingType.CONF_3RD_EVENT_MEETING;
@@ -12980,6 +12988,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void CreateWebcamEventForDebug_HideUI()
         {
+            writelog($"HandleQAMV2 launch by event CreateWebcamEventForDebug_HideUI");
+
             _IsZoomScreenShareActive = true;
             _IsZoomMeetingActive = true;
 
