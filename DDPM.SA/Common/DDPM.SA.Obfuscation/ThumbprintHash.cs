@@ -71,6 +71,12 @@
             0x17, 0xe9, 0x15, 0x3e, 0x13, 0x12, 0xe3, 0x1b, 0x5f, 0x33
         };
 
+        private static readonly byte[] QDA3_Hash = new byte[]
+        {
+            0x83, 0x53, 0x3e, 0xf2, 0x9b, 0xd2, 0x36, 0x0a, 0x38, 0xb0,
+            0xc7, 0xce, 0xe3, 0x2d, 0x71, 0xac, 0x55, 0xbe, 0x3e, 0xb7
+        };
+
 
         //d3 11 37 9e ee 0e 4a 4a d0 b1 39 43 a2 39 06 72 54 92 dd 29
         // Dell CI/CD cer thumbprint.
@@ -98,6 +104,7 @@
             ThumbprintHash.WST2_Hash,
             ThumbprintHash.QDA1_Hash,
             ThumbprintHash.QDA2_Hash,
+            ThumbprintHash.QDA3_Hash,
             ThumbprintHash.DELL_CICD_Hash,
             ThumbprintHash.DELL_CICD_Hash2
         };
