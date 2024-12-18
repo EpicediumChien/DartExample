@@ -952,6 +952,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Brightness level.
+        /// </summary>
+        internal static string BrightnessLevel {
+            get {
+                return ResourceManager.GetString("BrightnessLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Brightness/Contrast.
         /// </summary>
         internal static string BrightnessOrContrast {
@@ -4777,7 +4786,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application settings applied to %1 successfully. Dell Display and Peripheral Manager will restart..
+        ///   查詢類似 Application settings applied to %1 successfully. Dell Display and Peripheral Manager will restart. 的當地語系化字串。
         /// </summary>
         internal static string ImpExp_SuccessMsg_1 {
             get {
@@ -4786,7 +4795,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Application settings applied to %1 successfully. The Easy Memory setting will be cleaned. Please setup Easy Memory again. Dell Display and Peripheral Manager will restart..
+        ///   查詢類似 Application settings applied to %1 successfully. The Easy Memory setting will be cleaned. Please setup Easy Memory again. Dell Display and Peripheral Manager will restart. 的當地語系化字串。
         /// </summary>
         internal static string ImpExp_SuccessMsg_2 {
             get {
@@ -4795,7 +4804,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A new monitor %1 is detected..
+        ///   查詢類似 A new monitor %1 is detected. 的當地語系化字串。
         /// </summary>
         internal static string ImpExp_Title_0 {
             get {
@@ -7585,7 +7594,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Example: “Alt + P”; “Shift + F”; “Ctrl + Shift + F”\nNote: For multiple monitors, the mouse cursor should be on the targeted monitor screen to trigger the hotkey function..
+        ///   查詢類似 Example: “Alt + P”; “Shift + F”; “Ctrl + Shift + F”\nNote: For multiple monitors, the mouse cursor should be on the targeted monitor screen to trigger the hotkey function. 的當地語系化字串。
         /// </summary>
         internal static string USBKVM_Tips {
             get {
@@ -7594,7 +7603,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to USB Wireless Receiver.
+        ///   查詢類似 USB Wireless Receiver 的當地語系化字串。
         /// </summary>
         internal static string USBWirelessReceiver {
             get {
@@ -7603,7 +7612,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Others.
+        ///   查詢類似 Others 的當地語系化字串。
         /// </summary>
         internal static string VbarText_DisplayOthers {
             get {
@@ -7702,7 +7711,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connecting to DDPM Subagent....
+        ///   查詢類似 DDPM.Subagent.DeviceManager is not ready 的當地語系化字串。
         /// </summary>
         internal static string Wait_DevMgr {
             get {
@@ -7711,7 +7720,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connecting to Dell.TechHub....
+        ///   查詢類似 DellTechHub service is not running 的當地語系化字串。
         /// </summary>
         internal static string Wait_DTH {
             get {
@@ -7720,7 +7729,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Detecting device....
+        ///   查詢類似 No device detected 的當地語系化字串。
         /// </summary>
         internal static string Wait_NoDevice {
             get {

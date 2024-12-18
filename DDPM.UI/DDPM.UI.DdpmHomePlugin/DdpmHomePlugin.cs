@@ -249,10 +249,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //Elapsed= 484, 316, 314 msec
                             _log.Info("Calling GetDdpmDevicesAsync()");
                             await GetDdpmDevicesAsync(_deviceManager);
+                            //CloseQAMIfExist();
+                            await CheckIfNeedNavigateToSettingPageByQAMOSD();  //Derek 1217 for QAM PIMS-332041
 
                             //Elapsed= 1, 1 msec
-                            _log.Info("Calling CloseQAMIfExist()");
-                            CloseQAMIfExist();
+                            //_log.Info("Calling CloseQAMIfExist()");
+                            //CloseQAMIfExist();
 
                             //Elapsed= 2 msec
                             //1030 get global settings for telemetry consent page using
@@ -400,14 +402,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         //        DdpmCommonHelper.WriteUILog($"GetIsDDPMLaunchByQAM = false");
         //}
 
-        private async Task CheckIfNeedNavigateToWebcamPage()
+        private async Task CheckIfNeedNavigateToSettingPageByQAMOSD()
         {
             if (_deviceManager!.GetIsDDPMLaunchByQAM().Result == true)
             {
                 _log.Info($"GetIsDDPMLaunchByQAM = true");
 
                 await _deviceManager!.SetIsDDPMHomepageReadyAsync(true);
-                await _deviceManager!.SetIsDDPMLaunchByQAMAsync(false);
+                //await _deviceManager!.SetIsDDPMLaunchByQAMAsync(false);
             }
             else
                 _log.Info($"GetIsDDPMLaunchByQAM = false");
@@ -994,15 +996,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private void OnGearIconClicked()
         {
             EventManagerArgs args = new EventManagerArgs();
-            if (_IsAnyUpdate)
-            {
-                _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
-            }
-            else
-            {
-                if (_console != null)
-                    _console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsPlugin, this, args);
-            }
+            if (_console != null)
+                _console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsPlugin, this, args);
         }
 
         private void OnAddIconClicked()
@@ -1027,7 +1022,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //Robert_Lin, 2024-7-17, fix PIMS-286435 in AddDevice menu, the AddDevice icon is in Top Right side.
             if (_iconGear != null)
                 _iconGear.Visibility = Visibility.Collapsed;
-            _console.ShowPluginById(UI.Common.Constants.SettingsPluginId);
+            if(_IsAnyUpdate) _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
+            else _console.ShowPluginById(UI.Common.Constants.SettingsPluginId);
         }
 
         //Robert_Lin 2024-8-2 added for DDMPW-579 story

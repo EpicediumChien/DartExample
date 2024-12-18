@@ -24,6 +24,7 @@ using System.Windows.Interop;
 using Windows.Data.Text;
 using System.Windows.Media.Media3D;
 using System.Linq.Expressions;
+using MS.WindowsAPICodePack.Internal;
 
 namespace DDPM.QAM
 {
@@ -307,90 +308,120 @@ namespace DDPM.QAM
 
         public void SetProfile(UI_Profile CurrentProfileName)
         {
-            if (Profiles.ContainsKey(CurrentProfileName.Profile_Name_Key))
+            try
             {
-                CurrentProfile = Profiles[CurrentProfileName.Profile_Name_Key];
-
-                if (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
+                if (Profiles.ContainsKey(CurrentProfileName.Profile_Name_Key))
                 {
-                    DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingOn);
-                    _AutoFramingStatus = CurrentProfile.IsAutoFramingOn;
-                    if (CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
+                    CurrentProfile = Profiles[CurrentProfileName.Profile_Name_Key];
+
+                    if (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
                     {
-                        DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingTransitionOn);
+                        bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingOn).Result;
+                        LogMsg($"SetProfile --> SetIsAutoFramingOn result is {result}");
+                        _AutoFramingStatus = CurrentProfile.IsAutoFramingOn;
+
+                        if (CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
+                        {
+                            result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingTransitionOn).Result;
+
+                            LogMsg($"SetProfile --> SetIsAutoFramingTransitionOn result is {result}");
+                        }
+
+                        if (CurrentDeviceInfo.IsPropertyAutoFramingSensitivitySupported)
+                        {
+                            result = DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingSensitivity(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingSensitivity).Result;
+                            
+                            LogMsg($"SetProfile --> SetAutoFramingSensitivity result is {result}");
+                        }
+
+                        if (CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported)
+                        {
+                            result = DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingFrameSize).Result;
+
+                            LogMsg($"SetProfile --> SetAutoFramingFrameSize result is {result}");
+                        }
                     }
-                    if (CurrentDeviceInfo.IsPropertyAutoFramingSensitivitySupported)
+
+                    if (CurrentDeviceInfo.IsPropertyFOVSupported)
                     {
-                        DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingSensitivity(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingSensitivity);
+                        if (_fOVs[0] == CurrentProfile.FieldOfView)
+                        {
+                            FOV_Selected(0);
+                        }
+                        else if (_fOVs[1] == CurrentProfile.FieldOfView)
+                        {
+                            FOV_Selected(1);
+                        }
+                        else
+                        {
+                            FOV_Selected(2);
+                        }
                     }
-                    if (CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported)
+
+                    if (CurrentDeviceInfo.IsPropertyZoomSupported)
                     {
-                        DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingFrameSize);
-                    }
-                }
+                        bool result = DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom).Result;
+                        _ZoomValue = CurrentProfile.Zoom;
 
-                if (CurrentDeviceInfo.IsPropertyFOVSupported)
-                {
-                    if (_fOVs[0] == CurrentProfile.FieldOfView)
+                        LogMsg($"SetProfile --> SetZoom result is {result}");
+                    }
+
+                    if (CurrentDeviceInfo.IsPropertyFocusSupported)
                     {
-                        FOV_Selected(0);
+                        bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn).Result;
+                        LogMsg($"SetProfile --> SetIsFocusOn result is {result}");
+
+                        result = DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Focus).Result;
+                        LogMsg($"SetProfile --> SetFocus result is {result}");
                     }
-                    else if (_fOVs[1] == CurrentProfile.FieldOfView)
+
+                    if (CurrentDeviceInfo.IsPropertyPrioritySupported)
                     {
-                        FOV_Selected(1);
+                        bool result = DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Priority).Result;
+                        LogMsg($"SetProfile --> SetPriority result is {result}");
                     }
-                    else
+
+                    if (CurrentDeviceInfo.IsPropertyHDRSupported)
                     {
-                        FOV_Selected(2);
+                        bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsHDROn).Result;
+
+                        LogMsg($"SetProfile --> SetIsHDROn result is {result}");
                     }
-                }
 
-                if (CurrentDeviceInfo.IsPropertyZoomSupported)
-                {
-                    DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom);
-                    _ZoomValue = CurrentProfile.Zoom;
-                }
-
-                if (CurrentDeviceInfo.IsPropertyFocusSupported)
-                {
-                    DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn);
-                    DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Focus);
-                }
-
-                if (CurrentDeviceInfo.IsPropertyPrioritySupported)
-                {
-                    DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Priority);
-                }
-
-                if (CurrentDeviceInfo.IsPropertyHDRSupported)
-                {
-                    DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsHDROn);
-                }
-
-                if (CurrentDeviceInfo.IsPropertyWhiteBalanceSupported)
-                {
-                    DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoWhiteBalanceOn);
-                    DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoWhiteBalance);
-                }
-
-                List<UI_Profile> temp = UI_ProfileList.ToList();
-                UI_ProfileList = new ObservableCollection<UI_Profile>();
-                foreach (var profile in temp)
-                {
-                    profile.IsSelected = false;
-
-                    if (profile.Profile_Name.Equals(CurrentProfileName.Profile_Name))
+                    if (CurrentDeviceInfo.IsPropertyWhiteBalanceSupported)
                     {
-                        profile.IsSelected = true;
-                        selectedProfileName = profile.Profile_Name_Key;
+                        bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoWhiteBalanceOn).Result;
+                        LogMsg($"SetProfile --> SetIsAutoWhiteBalanceOn result is {result}");
+
+                        result = DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoWhiteBalance).Result;
+                        LogMsg($"SetProfile --> SetAutoWhiteBalance result is {result}");
                     }
-                    UI_ProfileList.Add(profile);
+
+                    List<UI_Profile> temp = UI_ProfileList.ToList();
+                    UI_ProfileList = new ObservableCollection<UI_Profile>();
+                    foreach (var profile in temp)
+                    {
+                        profile.IsSelected = false;
+
+                        if (profile.Profile_Name.Equals(CurrentProfileName.Profile_Name))
+                        {
+                            profile.IsSelected = true;
+                            selectedProfileName = profile.Profile_Name_Key;
+                        }
+                        UI_ProfileList.Add(profile);
+                    }
+
+                    RefreshUI();
+
+                    //SaveSelectProfile(CurrentProfileName.Profile_Name_Key);
+                    LogMsg($"QAM SetProfile successfully");
                 }
-
-                RefreshUI();
-
-                //SaveSelectProfile(CurrentProfileName.Profile_Name_Key);
             }
+            catch (Exception e)
+            {
+                LogMsg($"QAM SetProfile Catch exception: {e.Message}");
+            }
+            
         }
 
         private void SaveSelectProfile(string profileName)

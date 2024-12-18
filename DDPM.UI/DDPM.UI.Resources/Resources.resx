@@ -325,7 +325,7 @@
     <value>Select 'Yes' to confirm pairing on the prompt box</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
-    <value>For USB wireless receiver free and on-the-go connectivity</value>
+    <value>For on-the-go connectivity</value>
   </data>
   <data name="AddDevice.Headset.1" xml:space="preserve">
     <value>Power ON headset</value>
@@ -3260,5 +3260,8 @@
   </data>
   <data name="USBKVM.Tips" xml:space="preserve">
     <value>Example: “Alt + P”; “Shift + F”; “Ctrl + Shift + F”\nNote: For multiple monitors, the mouse cursor should be on the targeted monitor screen to trigger the hotkey function.</value>
+  </data>
+  <data name="BrightnessLevel" xml:space="preserve">
+    <value>Brightness level</value>
   </data>
 </root>
