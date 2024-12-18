@@ -53,31 +53,6 @@
             0xa9, 0xc7, 0xf7, 0x43, 0x84, 0x7d, 0x15, 0x7c, 0xd5, 0x98
         };
 
-        private static readonly byte[] QDA1_Hash = new byte[]
-        {
-            //Qisda NKVM Thumbprint : ca7356d58f31d1a4f1e94c37e73c5bd2f894d5ac
-            //ca 73 56 d5 8f 31 d1 a4 f1 e9
-            //4c 37 e7 3c 5b d2 f8 94 d5 ac
-            0xca, 0x73, 0x56, 0xd5, 0x8f, 0x31, 0xd1, 0xa4, 0xf1, 0xe9,
-            0x4c, 0x37, 0xe7, 0x3c, 0x5b, 0xd2, 0xf8, 0x94, 0xd5, 0xac
-        };
-
-        private static readonly byte[] QDA2_Hash = new byte[]
-        {
-            //Qisda NKVM Thumbprint : 4c1234547c6d0ab6f84a17e9153e1312e31b5f33
-            //4c 12 34 54 7c 6d 0a b6 f8 4a
-            //17 e9 15 3e 13 12 e3 1b 5f 33
-            0x4c, 0x12, 0x34, 0x54, 0x7c, 0x6d, 0x0a, 0xb6, 0xf8, 0x4a,
-            0x17, 0xe9, 0x15, 0x3e, 0x13, 0x12, 0xe3, 0x1b, 0x5f, 0x33
-        };
-
-        private static readonly byte[] QDA3_Hash = new byte[]
-        {
-            0x83, 0x53, 0x3e, 0xf2, 0x9b, 0xd2, 0x36, 0x0a, 0x38, 0xb0,
-            0xc7, 0xce, 0xe3, 0x2d, 0x71, 0xac, 0x55, 0xbe, 0x3e, 0xb7
-        };
-
-
         //d3 11 37 9e ee 0e 4a 4a d0 b1 39 43 a2 39 06 72 54 92 dd 29
         // Dell CI/CD cer thumbprint.
         private static readonly byte[] DELL_CICD_Hash = new byte[]
@@ -102,9 +77,6 @@
             ThumbprintHash.DELL_Hash2,
             ThumbprintHash.WST_Hash,
             ThumbprintHash.WST2_Hash,
-            ThumbprintHash.QDA1_Hash,
-            ThumbprintHash.QDA2_Hash,
-            ThumbprintHash.QDA3_Hash,
             ThumbprintHash.DELL_CICD_Hash,
             ThumbprintHash.DELL_CICD_Hash2
         };
