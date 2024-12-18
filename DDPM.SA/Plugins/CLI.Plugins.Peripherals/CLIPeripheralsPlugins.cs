@@ -1958,8 +1958,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                 deviceInfo = new List<DeviceInfo>()
             };
 
-            List<DeviceInfo> _deviceinfo = null;
-            _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+            List<DeviceInfo> deviceInfoList = null;
+            deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
 
             if (!commandLineInput.isCliRunAdmin)
             {
@@ -2190,11 +2190,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else if (!ss_1[0].ToUpper().Equals("DISPLAY"))
                             {
-                                _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+                                deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
 
-                                var fwUpdateDeviceInfos = _deviceinfo.Select(_ => _).ToList();
+                                var fwUpdateDeviceInfos = deviceInfoList.Select(_ => _).ToList();
 
-                                foreach (var g in _deviceinfo)
+                                foreach (var g in deviceInfoList)
                                 {
                                     if (g.LogicalDeviceType == "LogicalMouse" && ss_1[0].ToUpper().Equals("MOUSE"))
                                     {
@@ -2282,7 +2282,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     }
 
                                                     var findDevice = false;
-                                                    foreach (var g in _deviceinfo)
+                                                    foreach (var g in deviceInfoList)
                                                     {
                                                         if (g.ID.ToString().ToUpper() == ss_guid[0].ToUpper())
                                                         {
@@ -2307,7 +2307,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 if (!string.IsNullOrEmpty(ss_min[0]) && !string.IsNullOrEmpty(ss_min[1]))
                                                 {
                                                     var findDevice = false;
-                                                    foreach (var g in _deviceinfo)
+                                                    foreach (var g in deviceInfoList)
                                                     {
                                                         if (g.FirmwareVersion.ToUpper() == ss_min[0].ToUpper())
                                                         {
@@ -2332,7 +2332,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 if (!string.IsNullOrEmpty(ss_mod[0]) && !string.IsNullOrEmpty(ss_mod[1]))
                                                 {
                                                     var findDevice = false;
-                                                    foreach (var g in _deviceinfo)
+                                                    foreach (var g in deviceInfoList)
                                                     {
                                                         if (g.ModelNumber.ToUpper() == ss_mod[0].ToUpper())
                                                         {
@@ -2358,7 +2358,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 if (!string.IsNullOrEmpty(serviceTaInputValues[0]) && !string.IsNullOrEmpty(serviceTaInputValues[1]))
                                                 {
                                                     var findDevice = false;
-                                                    foreach (var g in _deviceinfo)
+                                                    foreach (var g in deviceInfoList)
                                                     {
                                                         if (!string.IsNullOrWhiteSpace(g.DockServiceTag) && g.DockServiceTag.ToUpper() == serviceTaInputValues[0].ToUpper())
                                                         {
@@ -3338,8 +3338,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                 deviceInfo = new List<DeviceInfo>()
             };
 
-            List<DeviceInfo> _deviceinfo = null;
-            _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+            List<DeviceInfo> deviceInfoList = null;
+            deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
 
 
             if (!commandLineInput.isCliRunAdmin)
