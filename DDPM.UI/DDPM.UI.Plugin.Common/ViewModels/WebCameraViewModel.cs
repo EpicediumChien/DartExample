@@ -1455,16 +1455,6 @@ namespace DDPM.UI.Plugin.ViewModels
                         SetSaturation();
                     }
                     var v = (value * 1.0 - CurrentDeviceInfo!.SaturationMin) / (CurrentDeviceInfo.SaturationMax - CurrentDeviceInfo!.SaturationMin);
-                    //int i = (int)(v * 100);
-                    //double m = i switch
-                    //{
-                    //    _ when i < 10 => 375 * v,
-                    //    _ when i >= 10 && i < 20 => 375 * v - 5,
-                    //    _ when i >= 20 && i < 50 => 375 * v,
-                    //    _ when i > 90 && i < 100 => 380 * v - 2,
-                    //    100 => 375,
-                    //    _ => 380 * v
-                    //};
                     SaturationMargin = GetTextmargin(v);
                     SaturationText = $"{v:##0%}";
                     OnPropertyChanged();
@@ -1476,16 +1466,9 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private static double[] GetTextmargin(double v)
         {
-            int i = (int)(v * 100);
-            double m = i switch
-            {
-                _ when i < 10 => 375 * v,
-                _ when i >= 10 && i < 20 => 375 * v - 5,
-                _ when i >= 20 && i < 50 => 375 * v,
-                _ when i > 90 && i < 100 => 380 * v - 2,
-                100 => 375,
-                _ => 380 * v
-            };
+            var txt = v.ToString("##0%");
+            var width = Utility.GetTextWidth(txt, 14);
+            var m = 380 * v - width / 2 + 10;
             return new double[] { m, 2, 0, 0 };
         }
 
