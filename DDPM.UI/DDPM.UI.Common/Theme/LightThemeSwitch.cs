@@ -395,12 +395,12 @@ namespace DDPM.UI.Common
                 #endregion
 
                 #region EzArrange
-                UpdateFreezable("DefaultThemeFullPageBkColor", (ref DropShadowEffect shadow) => {
+                UpdateFreezable("EzArrange_ShadowEffect", (ref DropShadowEffect shadow) => {
                     shadow.Color = (Color)ColorConverter.ConvertFromString("#0A000000");
-                    shadow.ShadowDepth = 2;
-                    shadow.BlurRadius = 2;
-                    shadow.Opacity = 1;
-                    shadow.Direction = 90;
+                    shadow.ShadowDepth = 4;
+                    shadow.BlurRadius = 10;
+                    shadow.Opacity = 0.1;
+                    shadow.Direction = 270;
                 });
                 #endregion
 
