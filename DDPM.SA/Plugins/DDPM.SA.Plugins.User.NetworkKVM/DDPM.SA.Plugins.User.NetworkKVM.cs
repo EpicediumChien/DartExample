@@ -105,10 +105,30 @@ namespace NetworkKVM.Plugins
         #region INKVM implementation
         public Task CreatNewNamedpipe()
         {
-            Disconnect();
-            cts = new CancellationTokenSource();
-            CancellationToken token = cts.Token;
-            _ = Task.Run(async () => await NamedPipeServer_UI(token));
+            _logs.DebugMsg("[NetworkKVM] CreatNewNamedpipe...");
+            if (pipeServer != null)
+            {
+                if (pipeServer.IsConnected)
+                {
+                    _logs.DebugMsg("[NetworkKVM] Named pipe is Connected.");
+                }
+                else
+                {
+                    _logs.DebugMsg("[NetworkKVM] Named pipe is Disconnected.");
+                    Disconnect();
+                    Thread.Sleep(1000);
+                    cts = new CancellationTokenSource();
+                    CancellationToken token = cts.Token;
+                    _ = Task.Run(async () => await NamedPipeServer_UI(token));
+                }
+            }
+            else
+            {
+                _logs.DebugMsg("[NetworkKVM] Named pipe is null.");
+                cts = new CancellationTokenSource();
+                CancellationToken token = cts.Token;
+                _ = Task.Run(async () => await NamedPipeServer_UI(token));
+            }
 
             return Task.CompletedTask;
         }
@@ -151,6 +171,7 @@ namespace NetworkKVM.Plugins
                         MonitorPlug().Wait();
                     }
                     Disconnect();
+                    Thread.Sleep(1000);
                 }
                 _ = Task.Run(async () => await NamedPipeServer(token));
                 _AllInfoMonitors.Clear();
@@ -176,6 +197,7 @@ namespace NetworkKVM.Plugins
                         else
                         {
                             Disconnect();
+                            Thread.Sleep(1000);
                             isMonintorChange = true;
                             //_runloop = true;
                             _ = Task.Run(async () => await NamedPipeServer(token));
@@ -208,6 +230,7 @@ namespace NetworkKVM.Plugins
                             else
                             {
                                 Disconnect();
+                                Thread.Sleep(1000);
                                 isMonintorChange = true;
                                 //_runloop = true;
                                 _ = Task.Run(async () => await NamedPipeServer(token));
@@ -238,6 +261,7 @@ namespace NetworkKVM.Plugins
                             else
                             {
                                 Disconnect();
+                                Thread.Sleep(1000);
                                 isMonintorChange = true;
                                 //_runloop = true;
                                 _ = Task.Run(async () => await NamedPipeServer(token));
@@ -1315,9 +1339,9 @@ namespace NetworkKVM.Plugins
                     //    i = 0;
                     //    //break;
                     //}
-                    if (i > 2)
+                    if (i > 10)
                     {
-                        _logs.DebugMsg("[NetworkKVM] loop error times = 3");
+                        _logs.DebugMsg("[NetworkKVM] loop error times is 10");
                         Disconnect();
                         break;
                     }
@@ -1330,6 +1354,7 @@ namespace NetworkKVM.Plugins
                                 _logs.DebugMsg("[NetworkKVM]Token is cancel");
                                 Trace.WriteLine("[NetworkKVM]Token is cancel");
                                 Disconnect();
+                                Thread.Sleep(1000);
                                 _AllInfoMonitors = GetMonitors().Result;
                                 if (CreateNamedPipe_init())
                                 {
@@ -1338,6 +1363,7 @@ namespace NetworkKVM.Plugins
                                 else
                                 {
                                     i++;
+                                    Thread.Sleep(500);
                                 }
                             }
                             else
@@ -1402,6 +1428,7 @@ namespace NetworkKVM.Plugins
                                     {
                                         _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
                                         Disconnect();
+                                        Thread.Sleep(1000);
                                         _AllInfoMonitors = GetMonitors().Result;
                                         if (CreateNamedPipe_init())
                                         {
@@ -1410,6 +1437,7 @@ namespace NetworkKVM.Plugins
                                         else
                                         {
                                             i++;
+                                            Thread.Sleep(500);
                                         }
                                     }
                                 }
@@ -1418,12 +1446,14 @@ namespace NetworkKVM.Plugins
                         else
                         {
                             i++;
+                            Thread.Sleep(500);
                         }
                     }
                     else
                     {
                         _logs.DebugMsg("pipeServer is null");
                         Disconnect();
+                        Thread.Sleep(1000);
                         _AllInfoMonitors = GetMonitors().Result;
                         break; // 2024-12-13 Elie, break infinite loop when it doesn't support NKVM.
                     }
@@ -1461,6 +1491,7 @@ namespace NetworkKVM.Plugins
                                 _logs.DebugMsg("[NetworkKVM]Token is cancel");
                                 Trace.WriteLine("[NetworkKVM]Token is cancel");
                                 Disconnect();
+                                Thread.Sleep(1000);
                                 _AllInfoMonitors = GetMonitors().Result;
                                 if (CreateNamedPipe())
                                 {
@@ -1533,6 +1564,7 @@ namespace NetworkKVM.Plugins
                                     {
                                         _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
                                         Disconnect();
+                                        Thread.Sleep(1000);
                                         _AllInfoMonitors = GetMonitors().Result;
                                         CreateNamedPipe();
                                         i++;
@@ -1683,6 +1715,7 @@ namespace NetworkKVM.Plugins
             {
                 _logs.DebugMsg($"[NetworkKVM] Client Security Fail....({info})");
                 Disconnect();
+                Thread.Sleep(1000);
                 CreateNamedPipe_init();
             }
 #endif
