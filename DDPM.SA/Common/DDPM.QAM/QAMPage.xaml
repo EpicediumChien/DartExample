@@ -76,6 +76,7 @@
                               M0.589844 7.15H2.07984V8.43H0.589844V7.15Z M3.91984 7.15H5.40984V8.43H3.91984V7.15Z
                               M0.589844 3.57H2.07984V4.85H0.589844V3.57Z M3.91984 3.57H5.40984V4.85H3.91984V3.57Z 
                               M0.589844 10.72H2.07984V12H0.589844V10.72Z M3.91984 10.72H5.40984V12H3.91984V10.72Z"
+                              Fill="{DynamicResource Default_SA_QAM_Path_BkColor}"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center">
                             </Path>
