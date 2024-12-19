@@ -1786,6 +1786,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void btnRecord_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
 
+            bool ret = GetDiskFreeSpaceEx(_vm!.VideoCaptureFolder, out ulong freeBytesAvailable, out _, out _);
+            if (ret)
+            {
+                DdpmCommonHelper.WriteUILog("btnRecord_Click:  DISK Free " + freeBytesAvailable / (1024 * 1024) + "MB");
+            }
+
+            PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+            DdpmCommonHelper.WriteUILog("btnRecord_Click:  Mem Free " + ramCounter.NextValue() + "MB");
+
+
+
             if (!HasEnoughSpace(_vm!.VideoCaptureFolder, 20 * 1024 * 1024))
             {
                 return;
