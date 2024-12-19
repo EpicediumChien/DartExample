@@ -704,6 +704,8 @@ namespace DDPM.SA.Common
 
         Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
 
+        Task<bool> CheckInstallFirstOpen();
+
         #endregion public for settings
 
         #region public for hotkey
@@ -1386,6 +1388,37 @@ namespace DDPM.SA.Common
         event EventHandler SystemSessionEnd;
 
         Task FireSystemSessionEnd();
-        #endregion System Suspend & Resume & SessionEnd
+        #endregion
+
+        #region globalperipheral
+        Task<bool> GetIsLockKeyNotificationsEnabledValue();
+
+        Task<bool> GetIsBatteryNotificationsEnabledValue();
+
+        Task<bool> GetIsPresenceDetectionSensnorStateNotificationsEnabledValue();
+
+        Task<bool> GetIsAnalyticsEnabledValue();
+
+        Task<bool> GetIsQuickAccessMenuEnabledValue();
+
+        Task<bool> GetIsMuteStatusNotificationsEnabledValue();
+
+        Task<bool> GetIsQuickAccessMenuOSDEnabledValue();
+
+        Task<bool> SetIsLockKeyNotificationsEnabledValue(bool newValue);
+
+        Task<bool> SetIsBatteryNotificationsEnabledValue(bool newValue);
+
+        Task<bool> SetIsPresenceDetectionSensnorStateNotificationsEnabledValue(bool newValue);
+
+        Task<bool> SetIsAnalyticsEnabledValue(bool newValue);
+
+        Task<bool> SetIsQuickAccessMenuEnabledValue(bool newValue);
+
+        Task<bool> SetIsMuteStatusNotificationsEnabledValue(bool newValue);
+
+        Task<bool> SetIsQuickAccessMenuOSDEnabledValue(bool newValue);
+
+        #endregion globalperipheral
     }
 }
