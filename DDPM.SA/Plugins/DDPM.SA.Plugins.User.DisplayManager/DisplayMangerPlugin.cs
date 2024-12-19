@@ -130,6 +130,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public event EventHandler<DisplaychangedEventArgs> Displaychanged;
 
+        public event EventHandler<MonitorinfoUpdateEventArgs> MonitorinfoUpdated;
+
         public static List<ALSConfig> AllALSConfig { get => allALSConfig; set => allALSConfig = value; }
 
         private static List<ALSConfig> allALSConfig = new List<ALSConfig>();
@@ -2117,11 +2119,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             EventHandler<VCPchangedEventArgs> handler = VCPchanged;
             if (handler != null)
                 Task.Run(() => handler.Invoke(this, e));
-
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
         }
 
         protected virtual void OnDDCCIStatuschanged(DDCCIchangedEventArgs e)
@@ -2132,11 +2129,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             EventHandler<DDCCIchangedEventArgs> handler = DDCCIStatuschanged;
             if (handler != null)
                 Task.Run(() => handler.Invoke(this, e));
+        }
 
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
+        protected virtual void OnMonitorinfoUpdatechanged(MonitorinfoUpdateEventArgs e)
+        {
+            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin Broadcast MonitorinfoUpdatechanged ...");
+
+            //MonitorUpdatechanged?.Invoke(this, e);
+            EventHandler<MonitorinfoUpdateEventArgs> handler = MonitorinfoUpdated;
+            if (handler != null)
+                Task.Run(() => handler.Invoke(this, e)).ConfigureAwait(false);
         }
 
         protected virtual void OnDisplaychanged(DisplaychangedEventArgs e)
@@ -2147,11 +2149,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             EventHandler<DisplaychangedEventArgs> handler = Displaychanged;
             if (handler != null)
                 Task.Run(() => handler.Invoke(this, e));
-
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
         }
 
         /// <summary>
@@ -2203,6 +2200,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         _VcpCorePlugin.VCPchanged += show_VCPchangedEventArgs;
                         _VcpCorePlugin.Displaychanged += show_DisplaychangedEventArgs;
                         _VcpCorePlugin.DDCCIStatuschanged += show_DDCCIchangedEventArgs;
+                        _VcpCorePlugin.MonitorinfoUpdated += show_MonitorinfoUpdatechangedEventArgs;
                         InitializeMonitorsList();
                         InitializeAllALSInfo();
                     }
@@ -2225,7 +2223,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
             _VCPchangedEventArgs.value = e.value;
             _VCPchangedEventArgs.monitor = e.monitor;
-       
+
             ////0607 Bruce 自動旋轉畫面顧新增下面兩行程式碼
             //SetDisplayOrientation(_VCPchangedEventArgs);
 
@@ -2477,6 +2475,19 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             InitializeAllALSInfo();
             //Robert_Lin, 2024-12-10 added to notify EAPlugin
             NotifyEAPluginAllInfoMonitorsChanged();
+        }
+
+        private void show_MonitorinfoUpdatechangedEventArgs(object sender, MonitorinfoUpdateEventArgs e)
+        {
+            _logs.DebugMsg("[DisplayMangerPlugin] Receive MonitorinfoUpdatechanged Event Notify from VcpCorePlugin");
+            _logs.DebugMsg("[DisplayMangerPlugin] Send MonitorinfoUpdatechanged Event Notify from DisplayMangerPlugin");
+
+            MonitorinfoUpdateEventArgs _EventArgss = new MonitorinfoUpdateEventArgs()
+            {
+                edid = e.edid,
+                monitor = e.monitor,
+            };
+            OnMonitorinfoUpdatechanged(_EventArgss);
         }
 
         #endregion
@@ -3526,12 +3537,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         #region EasyArrange implementation
 
         #region Private members - EasyArrange
+
         private bool _isEaPluginConfigured = false;
         private IEasyArrangeService _eaService;
         private PluginCondition _eaPluginCondition;
+
         #endregion Private members - EasyArrange
 
         #region Properties - EasyArrange
+
         /// <summary>
         /// The last error string after a EAPlugin method return error.
         /// </summary>
@@ -3544,9 +3558,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 if (!_isEaPluginConfigured)
                     return "EAPlugin Condition is NOT configured.";
                 return _eaService.EALastError;
-             }
+            }
         }
+
         #endregion Properties - EasyArrange
+
         //Robert_Lin, 2024-9-13 Remove unused interfaces
         //public event EventHandler<string> EAEditCompleted;
 
@@ -3768,8 +3784,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] @ DisplayManager.SetEASelectedLayout(): _eaService is in null");
             }
             return Task.FromResult(false);
-
         }
+
         /// <summary>
         /// Return current Span across multiple monitor option is Enabled/Disabled;
         /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)

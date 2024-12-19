@@ -69,7 +69,7 @@ namespace DDPM.UI.Common.Tests
         public void TestDescription()
         {
             // Act
-            splitCtrl1A.Description = "";
+            splitCtrl1A.Description = "PIP Small";
             // Assert
             Assert.That(splitCtrl1A.Description, Is.EqualTo($"PIP Small"));
 

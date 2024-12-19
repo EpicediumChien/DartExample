@@ -115,7 +115,7 @@
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                       <UXControls:UXToggleSwitch Name="AWB_ToggleSwitch" IsChecked="{Binding Path= IsAutoWhiteBalanceOn}" Content="{Binding Path=IsAutoWhiteBalanceOnText}" HorizontalAlignment="Right" VerticalAlignment="Center"  Foreground="White" FontFamily="Roboto" FontSize="16" />
                     </Grid>
-                    <UXControls:UXSlider Name="AWBSlider" Margin="0,15,0,0" Height="14" AutoToolTipPlacement="None" Thumb.DragStarted="AWBSlider_DragStarted" Thumb.DragCompleted="AWBSlider_DragCompleted"
+                    <UXControls:UXSlider Name="AWBSlider" Margin="0,15,0,0" Height="14" AutoToolTipPlacement="None" Thumb.DragStarted="AWBSlider_DragStarted" Thumb.DragCompleted="AWBSlider_DragCompleted" PreviewKeyDown="Slider_PreviewKeyDown" KeyUp="AWBSlider_KeyUp"
                                          Value="{Binding AutoWhiteBalance}" IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" IsEnabled="{Binding IsAutoWhiteBalanceOn, Converter={StaticResource BooleanToInverseConverter}}"/>
                   </StackPanel>
                 </Border>
@@ -123,25 +123,33 @@
               <Grid Name="BSCS" Grid.Row="2" Margin="0,0,0,10" Visibility="Collapsed">
                 <Border CornerRadius="6">
                   <StackPanel Orientation="Vertical" Margin="18,8,16,14">
-                    <StackPanel x:Name="spBrightness" Orientation="Vertical" Margin="0,18,0,0" Visibility="Collapsed">
+                    <StackPanel x:Name="spBrightness" Orientation="Vertical" Margin="0,18,-15,0" Visibility="Collapsed">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                      <UXControls:UXSlider Name="BrightnessSlider" Margin="0,15,0,9" Thumb.DragStarted="BrightnessSlider_DragStarted" Thumb.DragCompleted="BrightnessSlider_DragCompleted"
-                                           IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Brightness}"/>
+                      <UXControls:UXTextBlock Text="{Binding BrightnessText}" FontFamily="Roboto" FontSize="14" FontWeight="Normal" 
+                                              Foreground="#A4B8CD" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="{Binding BrightnessMargin, Converter={StaticResource MarginConverter}}" />
+                      <UXControls:UXSlider Name="BrightnessSlider" Margin="0,0,15,9" Thumb.DragStarted="BrightnessSlider_DragStarted" Thumb.DragCompleted="BrightnessSlider_DragCompleted"
+                                           IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Brightness}" PreviewKeyDown="Slider_PreviewKeyDown" KeyUp="BrightnessSlider_KeyUp"/>
                     </StackPanel>
-                    <StackPanel x:Name="spSharpness" Orientation="Vertical" Margin="0,18,0,0" Visibility="Collapsed">
+                    <StackPanel x:Name="spSharpness" Orientation="Vertical" Margin="0,18,-15,0" Visibility="Collapsed">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                      <UXControls:UXSlider Name="SharpnessSlider" Margin="0,15,0,9" Thumb.DragStarted="SharpnessSlider_DragStarted" Thumb.DragCompleted="SharpnessSlider_DragCompleted"
-                                           IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Sharpness}" />
+                      <UXControls:UXTextBlock Text="{Binding SharpnessText}" FontFamily="Roboto" FontSize="14" FontWeight="Normal" 
+                                              Foreground="#A4B8CD" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="{Binding SharpnessMargin, Converter={StaticResource MarginConverter}}" />
+                      <UXControls:UXSlider Name="SharpnessSlider" Margin="0,0,15,9" Thumb.DragStarted="SharpnessSlider_DragStarted" Thumb.DragCompleted="SharpnessSlider_DragCompleted"
+                                           IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Sharpness}" PreviewKeyDown="Slider_PreviewKeyDown" KeyUp="SharpnessSlider_KeyUp"/>
                     </StackPanel>
-                    <StackPanel x:Name="spContrast" Orientation="Vertical" Margin="0,18,0,0" Visibility="Collapsed">
+                    <StackPanel x:Name="spContrast" Orientation="Vertical" Margin="0,18,-15,0" Visibility="Collapsed">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                      <UXControls:UXSlider Name="ContrastSlider" Margin="0,15,0,9" Thumb.DragStarted="ContrastSlider_DragStarted" Thumb.DragCompleted="ContrastSlider_DragCompleted"
-                                           IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Contrast}"/>
+                      <UXControls:UXTextBlock Text="{Binding ContrastText}" FontFamily="Roboto" FontSize="14" FontWeight="Normal" 
+                                              Foreground="#A4B8CD" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="{Binding ContrastMargin, Converter={StaticResource MarginConverter}}" />
+                      <UXControls:UXSlider Name="ContrastSlider" Margin="0,0,15,9" Thumb.DragStarted="ContrastSlider_DragStarted" Thumb.DragCompleted="ContrastSlider_DragCompleted"
+                                           IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Contrast}" PreviewKeyDown="Slider_PreviewKeyDown" KeyUp="ContrastSlider_KeyUp"/>
                     </StackPanel>
-                    <StackPanel x:Name="spSaturation" Orientation="Vertical" Margin="0,18,0,0" Visibility="Collapsed">
+                    <StackPanel x:Name="spSaturation" Orientation="Vertical" Margin="0,18,-15,0" Visibility="Collapsed">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                      <UXControls:UXSlider Name="SaturationSlider" Margin="0,15,0,0" Thumb.DragStarted="SaturationSlider_DragStarted" Thumb.DragCompleted="SaturationSlider_DragCompleted"
-                                           IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Saturation}" />
+                      <UXControls:UXTextBlock Text="{Binding SaturationText}" FontFamily="Roboto" FontSize="14" FontWeight="Normal" 
+                                              Foreground="#A4B8CD" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="{Binding SaturationMargin, Converter={StaticResource MarginConverter}}" />
+                      <UXControls:UXSlider Name="SaturationSlider" Margin="0,0,15,0" Thumb.DragStarted="SaturationSlider_DragStarted" Thumb.DragCompleted="SaturationSlider_DragCompleted"
+                                           IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Saturation}" PreviewKeyDown="Slider_PreviewKeyDown" KeyUp="SaturationSlider_KeyUp"/>
                     </StackPanel>
                   </StackPanel>
                 </Border>

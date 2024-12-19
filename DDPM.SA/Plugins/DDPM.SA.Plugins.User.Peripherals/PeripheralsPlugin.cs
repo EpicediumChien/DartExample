@@ -11,6 +11,7 @@
 #endregion
 
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.SA.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
@@ -2436,16 +2437,49 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                Debug.WriteLine(arg2.ToString());
-                writelog(arg2.ToString());
                 if (deviceInfo != null)
+                {
                     deviceInfo.BatteryStatus = arg2.ToString();
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                    _EventArgs.device_peripherals = deviceInfo;
+                    _EventArgs.changedProperty = "BatteryStatusChanged";
+                    OnNotify(_EventArgs);
+                    Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
+                    writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
 
-                DeviceChangedEventArgs _EventArgs = new();
-                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                _EventArgs.device_peripherals = deviceInfo;
-                _EventArgs.changedProperty = "BatteryStatusChanged";
-                OnNotify(_EventArgs);
+
+                    var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
+                    if (!settings.GlobalSetting_General.Low_Battery_Level)
+                        return;
+
+                    if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9)
+                    {
+                        OSDType_Device type = OSDType_Device.Unknown;
+                        var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
+                        if (deviceType.Contains("PEN"))
+                        {
+                            if (deviceInfo.ModelNumber == "PN5122W" && deviceInfo.BatteryLevel > 6)
+                            { return; }
+                            type = OSDType_Device.Pen;
+                        }
+                        else if (deviceType.Contains("KEYBOARD"))
+                        {
+                            type = OSDType_Device.Keyboard;
+                        }
+                        else if (deviceType.Contains("MOUSE"))
+                        {
+                            type = OSDType_Device.Mouse;
+                        }
+                        else if (deviceType.Contains("HEADSET"))
+                        {
+                            type = OSDType_Device.Headset;
+                        }
+                        _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
+                        Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
+                        writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
+                    }
+                }
             }
         }
 
@@ -2463,6 +2497,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = "BatteryLevelChanged";
                     OnNotify(_EventArgs);
+
+                    var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
+                    if (!settings.GlobalSetting_General.Low_Battery_Level)
+                        return;
 
                     if (arg2 >= 0 && arg2 <= 9)
                     {

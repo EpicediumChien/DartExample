@@ -545,6 +545,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //
             if (selectedHomeDevice?.DeviceCategory == eDeviceCategory.Display)
             {
+                _ddpmHomePageViewModel?.Log.Info("Calling to ShowPluginById(DisplayPluginId)");
                 IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
                 console?.ShowPluginById(DDPM.UI.Common.Constants.DisplayPluginId);
                 return;
@@ -865,6 +866,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private void RenderingDone()
         {
+            if (_ddpmHomePageViewModel != null)
+            {
+                _ddpmHomePageViewModel.Log.Info("DdpmHomePage.RenderingDown() is called.");
+            }
             //RefreshListViewItemWidth();
 
             //System.Windows.Threading.DispatcherTimer dispTimer = new System.Windows.Threading.DispatcherTimer();
