@@ -76,7 +76,6 @@
                               M0.589844 7.15H2.07984V8.43H0.589844V7.15Z M3.91984 7.15H5.40984V8.43H3.91984V7.15Z
                               M0.589844 3.57H2.07984V4.85H0.589844V3.57Z M3.91984 3.57H5.40984V4.85H3.91984V3.57Z 
                               M0.589844 10.72H2.07984V12H0.589844V10.72Z M3.91984 10.72H5.40984V12H3.91984V10.72Z"
-                              Fill="{DynamicResource Default_SA_QAM_Path_BkColor}"
                               HorizontalAlignment="Center"
                               VerticalAlignment="Center">
                             </Path>
@@ -99,11 +98,20 @@
                                     </Style.Triggers>
                                 </Style>
                             </Border.Style>
-                            <Path Data="M16 0.82L15.18 0L8 7.2L0.82 0.05L0 0.87L7.15 8L0.05 15.13L0.87 16L8 8.85L15.13 16L15.95 15.18L8.8 8L16 0.82Z"
-                               Fill="{DynamicResource Default_SA_QAM_Path_BkColor}"
+							<Path Data="M16 0.82L15.18 0L8 7.2L0.82 0.05L0 0.87L7.15 8L0.05 15.13L0.87 16L8 8.85L15.13 16L15.95 15.18L8.8 8L16 0.82Z"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center">
-                            </Path>
+								<Path.Style>
+									<Style TargetType="Path">
+										<Setter Property="Fill" Value="{DynamicResource Default_SA_QAM_Path_BkColor}" />
+										<Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Border}}" Value="True">
+												<Setter Property="Fill" Value="White" />
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</Path.Style>
+							</Path>
                         </Border>
                     </Grid>
                 </Grid>

@@ -36,11 +36,7 @@
                 <Setter Property="CornerRadius" Value="6" />
                 <Setter Property="BorderBrush" Value="{DynamicResource EzBtn_BdColor_Default}" />
                 <Setter Property="Background" Value="{DynamicResource EzBtn_BkColor_Default}" />
-                <Setter Property="Effect">
-                    <Setter.Value>
-                        <DropShadowEffect Color="#7F000000" ShadowDepth="0" BlurRadius="12" Opacity="1" Direction="0" />
-                    </Setter.Value>
-                </Setter>
+                <Setter Property="Effect" Value="{DynamicResource EzArrange_ShadowEffect}" />
                 <!-- Removed, prevBtn and nextBtn will binding to different element
                 <Style.Triggers>
                 <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=Border}}"

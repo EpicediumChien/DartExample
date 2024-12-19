@@ -1,5 +1,6 @@
 ﻿using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 
@@ -391,6 +392,16 @@ namespace DDPM.UI.Common
                 UpdateFreezable("Webcam_TextBox_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
                 UpdateFreezable("Webcam_TextBox_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0D121A"));
                 UpdateFreezable("Webcam_UndoRedo_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99F8FBFE"));
+                #endregion
+
+                #region EzArrange
+                UpdateFreezable("DefaultThemeFullPageBkColor", (ref DropShadowEffect shadow) => {
+                    shadow.Color = (Color)ColorConverter.ConvertFromString("#0A000000");
+                    shadow.ShadowDepth = 2;
+                    shadow.BlurRadius = 2;
+                    shadow.Opacity = 1;
+                    shadow.Direction = 90;
+                });
                 #endregion
 
                 BitmapImageUpdated?.Invoke(OSThemeEnum.Light);

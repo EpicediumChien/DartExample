@@ -3,6 +3,7 @@ using System.Resources;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 
@@ -382,6 +383,16 @@ namespace DDPM.UI.Common
                 UpdateFreezable("Webcam_TextBox_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#141D28"));
                 UpdateFreezable("Webcam_TextBox_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#7E7E7E"));
                 UpdateFreezable("Webcam_UndoRedo_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99193457"));
+                #endregion
+
+                #region EzArrange
+                UpdateFreezable("DefaultThemeFullPageBkColor", (ref DropShadowEffect shadow) => { 
+                    shadow.Color = (Color)ColorConverter.ConvertFromString("#7F000000");
+                    shadow.ShadowDepth = 0;
+                    shadow.BlurRadius = 12;
+                    shadow.Opacity = 1;
+                    shadow.Direction = 0;
+                });
                 #endregion
 
                 BitmapImageUpdated?.Invoke(OSThemeEnum.Dark);
