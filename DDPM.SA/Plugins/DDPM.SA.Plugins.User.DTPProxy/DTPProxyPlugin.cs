@@ -33,6 +33,7 @@ using Google.Protobuf.WellKnownTypes;
 using System.IO;
 using Type = System.Type;
 using DDPM.SA.Common.UI;
+using System.Collections.Generic;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -91,6 +92,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public const string PluginLogId = "DTPProxy";
 
+        //Derek 1219 for webcam events handling
+        private ICommodity _comdityWebcam = null;
+        private List<WebcamEventHandleObject> webcamList = new List<WebcamEventHandleObject>();
+        internal class WebcamEventHandleObject
+        {
+            ICommodity webcamCommodity = null;
+            int webcamIndexId = -1;
+            string webcamDeviceId = string.Empty;
+        };
+        
 
         /// <summary>
         /// Webcam change event
@@ -6880,7 +6891,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             //Derek 1119 for Webcam event
             writelog($"Register Webcam Commodity event...");
-            _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId("DellPeripheral.Webcam"), CancellationToken.None);
+            _comdityWebcam = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId("DellPeripheral.Webcam"), CancellationToken.None);
             if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _WebcamComConnectEvent)
             {
                 try
@@ -6992,6 +7003,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"No any webcam instance to unregister.");
         }
 
+        ICommodity _comdityWebcam0;
         private async Task<bool> RegisterEventsForWebcamAsync(int index)
         {
             if (null == _commSdk || null == _comdity || index < 0)
@@ -6999,9 +7011,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             try
             {
-                _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
+                _comdityWebcam0 = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
+                //_comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
 
-                if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                if (_comdityWebcam0 is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
                 {
                     //PrintWebcamObjectInfo(_Webcamcom);
 
@@ -7061,9 +7074,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             try
             {
-                _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
+                //_comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
 
-                if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                if (_comdityWebcam0 is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
                 {
                     _Webcamcom.ProfileManagerAdded -= Webcam_ProfileManagerAdded;
                     _Webcamcom.IsMicEnumerationOnChanged -= Webcam_IsMicEnumerationOnChanged;
@@ -7609,8 +7622,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_Disconnected(object sender, DisconnectedArgs e)
         {
-            _ = UnregisterEventsForAllWebcamsAsync();
-            //_ = UnregisterEventsForWebcamAsync();
+            //_ = UnregisterEventsForAllWebcamsAsync();
+            _ = UnregisterEventsForWebcamAsync(0);
             _ = RegisterEventsForAllWebcamsAsync();
 
             //SendDTPEventToUI($"3;Device:Webcam;Event:Disconnected;DeviceId:{e.DeviceId}");
