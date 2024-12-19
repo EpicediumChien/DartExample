@@ -20,7 +20,7 @@ namespace VcpCore.Common
             try
             {
                 ManagementObjectSearcher searcher = new ManagementObjectSearcher("Root\\WMI", "SELECT * FROM WmiMonitorDescriptorMethods");
-                foreach (ManagementObject TempMonitor in searcher.Get())
+                foreach (ManagementObject TempMonitor in searcher.Get().Cast<ManagementObject>())
                 {
                     string InstanceName = TempMonitor.GetPropertyValue("InstanceName").ToString();
                     string[] InstanceName_spilit = InstanceName.Split("\\");

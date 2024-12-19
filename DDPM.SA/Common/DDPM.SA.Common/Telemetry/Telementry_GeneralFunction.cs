@@ -1,6 +1,7 @@
 ﻿using DdmLibrary;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Management;
 using System.Text;
 using Windows.System;
@@ -12,7 +13,7 @@ namespace DDPM.SA.Common
         public string GetMonitorAdapter()
         {
             ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
-            foreach (ManagementObject mo in searcher.Get())
+            foreach (ManagementObject mo in searcher.Get().Cast<ManagementObject>())
             {
                 PropertyData currentBitsPerPixel = mo.Properties["CurrentBitsPerPixel"];
                 PropertyData description = mo.Properties["Description"];

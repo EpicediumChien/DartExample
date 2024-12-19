@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             d:Background="Black"
              d:DesignHeight="306" d:DesignWidth="544">
     <UserControl.Resources>
         <ResourceDictionary>

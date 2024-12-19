@@ -93,10 +93,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         public LaunchView()
         {
-            _vm = (WebCameraViewModel?)WebCameraplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
-
+            _vm = (WebCameraViewModel?)WebCameraplugin.PluginIoc?.GetService<IPeripheralViewModel>();
             if (_vm == null)
+            {
+                DdpmCommonHelper.WriteUILog("Webcam ViewModel is null");
                 return;
+            }
 
             InitializeComponent();
             _vm.Reset();
@@ -163,8 +165,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 }
             }
 
-            RecordingTimer = new DispatcherTimer();
-            RecordingTimer.Interval = TimeSpan.FromSeconds(1);
+            RecordingTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
             RecordingTimer.Tick += RecordingTimer_Tick;
 
             _vm!.WebcamSettingChanged += WebcamSettingChanged;
@@ -175,8 +179,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             EnableMonitorOnEvent();
 
 
-            _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromSeconds(3);
+            _timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
             _timer.Tick += Timer_Tick;
 
             exit_status_thread = false;
@@ -214,7 +220,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             initResolutionFPS();
             //usb 2.0限制規則要放在最後做校正
             CheckUSBtype();
-            
+
 
 
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
@@ -248,7 +254,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 DdpmCommonHelper.WriteUILog($"DeviceManagerSA_UIUpdateNotify catch exception: {ex.Message}");
             }
-            
+
         }
 
         private void ChangeProfileByQAM(string profileName)
@@ -310,9 +316,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     }
                 }
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs initResolutionFPS() : " +  ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs initResolutionFPS() : " + ex.Message);
             }
         }
 
@@ -339,7 +345,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             }
 
-            if (!SpecialCase.Contains(model)) return;
+            if (!SpecialCase.Contains(model))
+                return;
 
             //check usb 2.0 / 3.0
             AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
@@ -615,7 +622,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return true;
             }
 
-            if(manufacturer == null)
+            if (manufacturer == null)
                 DdpmCommonHelper.WriteUILog("check_DellPc() manufacturer == null");
 
             return false;
@@ -697,7 +704,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             print_debug("CheckUSBtype() s1 model-" + model);
 
-            if (!SpecialCase.Contains(model)) return;
+            if (!SpecialCase.Contains(model))
+                return;
 
 
             print_debug("CheckUSBtype() s2");
@@ -1101,7 +1109,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             txtTimer.Text = stopwatch.Elapsed.ToString(@"hh\:mm\:ss");
 
             //這邊做錄影長度限制 2小時
-            if( txtTimer.Text == "02:00:01" )
+            if (txtTimer.Text == "02:00:01")
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
@@ -1109,7 +1117,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 }));
             }
 
-            if(!HasEnoughSpace(_vm!.VideoCaptureFolder, 20 * 1024 * 1024))//不到20MB時停止錄影
+            if (!HasEnoughSpace(_vm!.VideoCaptureFolder, 20 * 1024 * 1024))//不到20MB時停止錄影
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
@@ -1259,7 +1267,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (!AllSupportedResolutions)
                 {
                     //規格確認後,可能會再增加需要排除型號
-                    if (_vm!.Model == "WB7022") addPresenceDetection = false;
+                    if (_vm!.Model == "WB7022")
+                        addPresenceDetection = false;
                 }
 
                 if (noPresenceFunction)
@@ -1576,11 +1585,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             if (_vm!.WebcamCountdown)
             {
-                //_countdownValue = 3; // 設置倒數起始值
-                //CountdownText.Text = _countdownValue.ToString();
-
+                _countdownValue = 3; // 設置倒數起始值
+                CountdownText.Text = _countdownValue.ToString();
+                CountDownBox.Visibility = Visibility.Visible;
                 _timer.Start();
-                DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.StartRecording);
+                //DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.StartRecording);
             }
             else
                 StartRecordingAsync().RunSynchronously();
@@ -1594,19 +1603,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         }
         private void Timer_Tick(object? sender, EventArgs e)
         {
-            //_countdownValue--;
-            //if (_countdownValue > 0)
-            //{
-            //    CountdownText.Text = _countdownValue.ToString();
-            //}
-            //else
-            //{
-            //    CountdownText.Text = "";
-            //    StartRecordingAsync().RunSynchronously();
-            //    _timer.Stop();
-            //}
-            _timer.Stop();
-            StartRecordingAsync().RunSynchronously();
+            _countdownValue--;
+            if (_countdownValue > 0)
+            {
+                CountdownText.Text = _countdownValue.ToString();
+            }
+            else
+            {
+                _timer.Stop();
+                CountDownBox.Visibility = Visibility.Collapsed;
+                StartRecordingAsync().RunSynchronously();
+            }
         }
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -1614,7 +1621,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         public static bool HasEnoughSpace(string path, ulong requiredBytes)
         {
             bool ret = GetDiskFreeSpaceEx(path, out ulong freeBytesAvailable, out _, out _);
-            if (ret == false) return false;
+            if (ret == false)
+                return false;
             return freeBytesAvailable >= requiredBytes;
         }
         /// <summary>
@@ -1778,7 +1786,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void btnRecord_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
 
-            if(!HasEnoughSpace(_vm!.VideoCaptureFolder, 20 * 1024 * 1024))
+            if (!HasEnoughSpace(_vm!.VideoCaptureFolder, 20 * 1024 * 1024))
             {
                 return;
             }

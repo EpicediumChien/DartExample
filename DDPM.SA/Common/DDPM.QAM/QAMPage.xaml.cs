@@ -78,8 +78,8 @@ namespace DDPM.QAM
                         _SetForegroundWindow(mainWindowHandle);
 
                         //info DDPM navigate to webcam preview directly
-                        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
-                        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
+                        //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
+                        //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
 
                         result = true;
                     }
@@ -97,7 +97,7 @@ namespace DDPM.QAM
                             });
 
                         //Info SA that new DDPM instance launched by QAM
-                        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
+                        //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
                     }
                 }
                 catch (Exception ex)

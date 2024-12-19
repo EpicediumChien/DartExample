@@ -22,6 +22,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
@@ -699,7 +700,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (autoFramingFrameSize == -1)
                 {
                     _log.Error("DTP GetAutoFramingFrameSize fail!");
-                    _autoFramingFrameSize = 0;
+                    _autoFramingFrameSize = 1;
                 }
                 else
                     _autoFramingFrameSize = autoFramingFrameSize;
@@ -726,7 +727,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 var result = task.Result;
                 if (result == null)
                 {
-                    _log.Error("DTP GetAutoFramingFrameSize fail!");
+                    _log.Error("DTP GetIsPrioritizeExternalWebcam fail!");
                     _isPrioritizeExternalWebcam = CurrentDeviceInfo.IsPrioritizeExternalWebcam;
                     //IsDTPReady = false;
                 }
@@ -1350,6 +1351,8 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(AutoWhiteBalance), _autoWhiteBalance, OperationModule.ColorAndImage);
         }
 
+        public string BrightnessText { get; set; } = "";
+        public double[] BrightnessMargin { get; set; } = { 0 };
         private int _brightness = 0;
         public int Brightness
         {
@@ -1373,6 +1376,8 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(Brightness), _brightness, OperationModule.ColorAndImage);
         }
 
+        public string SharpnessText { get; set; } = "";
+        public double[] SharpnessMargin { get; set; } = { 0 };
         private int _sharpness = 0;
         public int Sharpness
         {
@@ -1396,6 +1401,8 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(Sharpness), _sharpness, OperationModule.ColorAndImage);
         }
 
+        public string ContrastText { get; set; } = "";
+        public double[] ContrastMargin { get; set; } = { 0 };
         private int _contrast = 0;
         public int Contrast
         {
@@ -1425,7 +1432,6 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _saturation;
             set
             {
-                _saturation = value;
                 if (value != _saturation)
                 {
                     _saturation = value;
@@ -1433,10 +1439,29 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetSaturation();
                     }
+                    var v = (value * 1.0 - CurrentDeviceInfo!.SaturationMin) / (CurrentDeviceInfo.SaturationMax - CurrentDeviceInfo!.SaturationMin);
+                    int i = (int)(v * 100);
+                    double m = i switch
+                    {
+                        _ when i < 10 => 375 * v,
+                        _ when i >= 10 && i < 20 => 375 * v - 5,
+                        _ when i >= 20 && i < 50 => 375 * v,
+                        _ when i > 90 && i < 100 => 380 * v - 2,
+                        100 => 375,
+                        _ => 380 * v
+                    };
+                    SaturationMargin = new double[] { m, 2, 0, 0 };
+                    SaturationText = $"{i}%";
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SaturationText));
+                    OnPropertyChanged(nameof(SaturationMargin));
                 }
-                OnPropertyChanged();
             }
         }
+
+
+        public string SaturationText { get; set; } = "";
+        public double[] SaturationMargin { get; set; } = { 0 };
         public void SetSaturation()
         {
             DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), _saturation);

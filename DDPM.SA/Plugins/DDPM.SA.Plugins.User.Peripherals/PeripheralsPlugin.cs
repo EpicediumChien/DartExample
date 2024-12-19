@@ -11,6 +11,7 @@
 #endregion
 
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.SA.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
@@ -625,7 +626,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     if (!_DeviceManagerPlugin.SetAncModeAsync(deviceId.ToString(), newValue).Result)
                     {
                         _logicalDeviceHeadset.SetAncMode(newValue);
-                    }                    
+                    }
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
@@ -696,7 +697,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 {
                                     _deviceInfo.Band1Gain = newValue;
                                     result = false;
-                                }                               
+                                }
                                 break;
 
                             case "band2gain":
@@ -2464,6 +2465,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.changedProperty = "BatteryLevelChanged";
                     OnNotify(_EventArgs);
 
+                    var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
+                    if (!settings.GlobalSetting_General.Low_Battery_Level)
+                        return;
+
                     if (arg2 >= 0 && arg2 <= 9)
                     {
                         OSDType_Device type = OSDType_Device.Unknown;
@@ -2890,7 +2895,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = $"DonglePairingStatusChanged|{requestDeviceName}";
-                    Debug.WriteLine($"{deviceInfo.PairingStatusName}");
+                    Debug.WriteLine($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
+                    writelog($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
                     OnNotify(_EventArgs);
                 }
             }

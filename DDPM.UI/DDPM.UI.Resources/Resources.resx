@@ -325,7 +325,7 @@
     <value>Select 'Yes' to confirm pairing on the prompt box</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
-    <value>For USB wireless receiver free and on-the-go connectivity</value>
+    <value>For on-the-go connectivity</value>
   </data>
   <data name="AddDevice.Headset.1" xml:space="preserve">
     <value>Power ON headset</value>
@@ -2308,13 +2308,16 @@
     <value>A new monitor %1 is detected.</value>
   </data>
   <data name="Wait_DevMgr" xml:space="preserve">
-    <value>DDPM.Subagent.DeviceManager is not ready</value>
+    <value>Connecting to DDPM Subagent...</value>
+    <comment>Robert_1218 Changed</comment>
   </data>
   <data name="Wait_DTH" xml:space="preserve">
-    <value>DellTechHub service is not running</value>
+    <value>Connecting to Dell.TechHub...</value>
+    <comment>Robert_1218 Changed</comment>
   </data>
   <data name="Wait_NoDevice" xml:space="preserve">
-    <value>No device detected</value>
+    <value>Detecting device...</value>
+    <comment>Robert_1218 Changed</comment>
   </data>
   <data name="InvalidURL" xml:space="preserve">
     <value>Invalid URL</value>
@@ -3257,5 +3260,8 @@
   </data>
   <data name="USBKVM.Tips" xml:space="preserve">
     <value>Example: “Alt + P”; “Shift + F”; “Ctrl + Shift + F”\nNote: For multiple monitors, the mouse cursor should be on the targeted monitor screen to trigger the hotkey function.</value>
+  </data>
+  <data name="BrightnessLevel" xml:space="preserve">
+    <value>Brightness level</value>
   </data>
 </root>

@@ -1034,12 +1034,12 @@ namespace DDPM.SA.Common
         Task<bool> SetAutoFramingSensitivity(string Guid, int newValue);
         Task<bool> SetAutoFramingFrameSize(string Guid, int newValue);
         Task<bool> SetFieldOfView(string Guid, int newValue);
-        Task SetIsFocusOn(string Guid, bool newValue);
-        Task SetFocus(string Guid, int newValue);
-        Task SetPriority(string Guid, int newValue);
+        Task<bool> SetIsFocusOn(string Guid, bool newValue);
+        Task<bool> SetFocus(string Guid, int newValue);
+        Task<bool> SetPriority(string Guid, int newValue);
         Task<bool> SetIsHDROn(string Guid, bool newValue);
-        Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
-        Task SetAutoWhiteBalance(string Guid, int newValue);
+        Task<bool> SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
+        Task<bool> SetAutoWhiteBalance(string Guid, int newValue);
         Task SetBrightness(string Guid, int newValue);
         Task SetSharpness(string Guid, int newValue);
         Task SetContrast(string Guid, int newValue);

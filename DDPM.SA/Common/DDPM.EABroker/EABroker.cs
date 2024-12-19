@@ -377,7 +377,7 @@ namespace DDPM.EABroker
                 //}
 
                 int idxCell = 0;
-                emWin.LaunchAndArrange(sortApps, idxCell++);
+                emWin.LaunchAndArrange(sortApps, idxCell++, VM);
             };
 
             emWin.ArrangeDone += delegate

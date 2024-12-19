@@ -130,7 +130,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public event EventHandler<DisplaychangedEventArgs> Displaychanged;
 
-        public static List<ALSConfig> AllALSConfig = new List<ALSConfig>();
+        public static List<ALSConfig> AllALSConfig { get => allALSConfig; set => allALSConfig = value; }
+
+        private static List<ALSConfig> allALSConfig = new List<ALSConfig>();
 
         /// <summary>
         /// HDR status change event，return HDR status
