@@ -3338,8 +3338,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                 deviceInfo = new List<DeviceInfo>()
             };
 
-            List<DeviceInfo> _deviceinfo = null;
-            _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+            List<DeviceInfo> deviceInfoList = null;
+            deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
 
 
             if (!commandLineInput.isCliRunAdmin)
