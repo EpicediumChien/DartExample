@@ -100,6 +100,10 @@ namespace DDPM.UI.Module.EzSettings
                     else
                     {
                         _viewModel.RecentHotkey = _strPreviousKey;
+                        var texBox = (sender as UXTextBox);
+                        if (texBox == null) return;
+                        texBox.Text = _viewModel.RecentHotkey;
+                        texBox.Select(_viewModel.RecentHotkey.Length, 1);
                     }
 
                     BundleNewKeys.Clear();

@@ -130,6 +130,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
 
         public event EventHandler<DisplaychangedEventArgs> Displaychanged;
 
+        public event EventHandler<MonitorinfoUpdateEventArgs> MonitorinfoUpdated;
+
         public static List<ALSConfig> AllALSConfig { get => allALSConfig; set => allALSConfig = value; }
 
         private static List<ALSConfig> allALSConfig = new List<ALSConfig>();
@@ -624,6 +626,27 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                             }
                                         }
                                         usbUpstreamList = inputTypeString.SubInputType(usbUpstreamList);
+
+                                        USBUpstream.Clear();
+                                        foreach (var _usb in usbUpstreamList)
+                                        {
+                                            if (_usb == "USB-B1" || _usb == "USB-B")
+                                            {
+                                                USBUpstream.Add(_usb, "00");
+                                            }
+                                            else if (_usb == "USB-B2")
+                                            {
+                                                USBUpstream.Add(_usb, "01");
+                                            }
+                                            else if (_usb == "USB-C1" || _usb == "USB-C")
+                                            {
+                                                USBUpstream.Add(_usb, "10");
+                                            }
+                                            else if (_usb == "USB-C2")
+                                            {
+                                                USBUpstream.Add(_usb, "11");
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -657,48 +680,56 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ObjGetVCP objGetVCP = new ObjGetVCP();
             if (monitorInfo.CapabilityDic.ContainsKey("E7"))
             {
-                if (monitorInfo.CapabilityDic.ContainsKey("EE"))
+                usbUpstreamList = GetUSBUpstreamList(monitorInfo).Result;
+                if (usbUpstreamList != null && usbUpstreamList.Count > 0)
                 {
-                    usbUpstreamList = GetUSBUpstreamList(monitorInfo).Result;
-                    if (usbUpstreamList != null && usbUpstreamList.Count > 0)
+                    objGetVCP = GetVCPCapability(monitorInfo, 0xE7).Result;
+                    if (objGetVCP.result)
                     {
-                        objGetVCP = GetVCPCapability(monitorInfo, 0xE7).Result;
-                        if (objGetVCP.result)
+                        if (_getVCPCapabilities == string.Empty)
                         {
-                            if (_getVCPCapabilities == string.Empty)
+                            _getVCPCapabilities = GetVCPCapabilities(monitorInfo).Result;
+                        }
+                        if (!string.IsNullOrEmpty(_getVCPCapabilities))
+                        {
+                            JObject VCPjson = JObject.Parse(_getVCPCapabilities);
+
+                            JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
+                            JArray input = (JArray)capsDataMap["Input Select"];
+                            foreach (var tmp in input)
                             {
-                                _getVCPCapabilities = GetVCPCapabilities(monitorInfo).Result;
+                                if (tmp.ToString() == inputsource)
+                                {
+                                    break;
+                                }
+                                input_num = input_num + 1;
                             }
-                            if (!string.IsNullOrEmpty(_getVCPCapabilities))
+
+                            string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
+                            string newstrUpstream = getUpstream;
+                            if (getUpstream.Length < 16)
                             {
-                                JObject VCPjson = JObject.Parse(_getVCPCapabilities);
-
-                                JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
-                                JArray input = (JArray)capsDataMap["Input Select"];
-                                foreach (var tmp in input)
+                                for (int i = 0; i < (16 - getUpstream.Length); i++)
                                 {
-                                    if (tmp.ToString() == inputsource)
-                                    {
-                                        break;
-                                    }
-                                    input_num = input_num + 1;
+                                    newstrUpstream = "0" + newstrUpstream;
                                 }
-
-                                string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
-                                string newstrUpstream = getUpstream;
-                                if (getUpstream.Length < 16)
+                            }
+                            Trace.WriteLine(newstrUpstream);
+                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream : " + newstrUpstream);
+                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] input_num : " + input_num);
+                            if (newstrUpstream.Length == 16)
+                            {
+                                string subUpstream = string.Empty;
+                                if (monitorInfo.CapabilityDic.ContainsKey("EE"))
                                 {
-                                    for (int i = 0; i < (16 - getUpstream.Length); i++)
-                                    {
-                                        newstrUpstream = "0" + newstrUpstream;
-                                    }
+                                    subUpstream = newstrUpstream.Substring(input_num * 2, 2);
                                 }
-                                Trace.WriteLine(newstrUpstream);
-                                _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream : " + newstrUpstream);
-                                _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] input_num : " + input_num);
-                                if (newstrUpstream.Length == 16)
+                                else
                                 {
-                                    string subUpstream = newstrUpstream.Substring(input_num * 2, 2);
+                                    subUpstream = newstrUpstream.Substring(14 - (input_num * 2), 2);
+                                }
+                                if (!string.IsNullOrEmpty(subUpstream))
+                                {
                                     if (USBUpstream != null && USBUpstream.Count != 0)
                                     {
                                         foreach (var tmp in USBUpstream)
@@ -714,25 +745,25 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] USBUpstream is null or Count = 0");
                                     }
                                 }
-                                else
-                                {
-                                    _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream length is not 16");
-                                }
                             }
                             else
                             {
-                                _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] _getVCPCapabilities is null or empty.");
+                                _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream length is not 16");
                             }
                         }
                         else
                         {
-                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] GetVCPCapability 0xE7 fail.");
+                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] _getVCPCapabilities is null or empty.");
                         }
                     }
                     else
                     {
-                        _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] usbUpstreamList is null or count = 0.");
+                        _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] GetVCPCapability 0xE7 fail.");
                     }
+                }
+                else
+                {
+                    _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] usbUpstreamList is null or count = 0.");
                 }
             }
             return Task.FromResult("");
@@ -743,7 +774,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //inputSourcelist[input].USBUpstream = upstream;
             int input_num = 0;
             ObjGetVCP objGetVCP = new ObjGetVCP();
-            if (monitorInfo.CapabilityDic.ContainsKey("EE"))
+            if (monitorInfo.CapabilityDic.ContainsKey("E7"))
             {
                 objGetVCP = GetVCPCapability(monitorInfo, 0xE7).Result;
 
@@ -781,11 +812,24 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             }
                             if (USBUpstream != null && USBUpstream.Count != 0)
                             {
-                                string strsetUpstream = newstrUpstream.Substring(0, input_num * 2) + USBUpstream[upstream] + newstrUpstream.Substring((input_num + 1) * 2, newstrUpstream.Length - ((input_num + 1) * 2));
-                                uint code = Convert.ToUInt16(strsetUpstream, 2);
-                                Trace.WriteLine("strsetUpstream:" + code.ToString());
-                                bool b = SetVCPCapability(monitorInfo, 0xE7, code).Result;
-                                return Task.FromResult(b);
+                                string strsetUpstream = string.Empty;
+                                if (monitorInfo.CapabilityDic.ContainsKey("EE"))
+                                {
+                                    _logs.DebugMsg("[DisplayMangerPlugin][SetUSBUpstream] 0xEE.");
+                                    strsetUpstream = newstrUpstream.Substring(0, input_num * 2) + USBUpstream[upstream] + newstrUpstream.Substring((input_num + 1) * 2, newstrUpstream.Length - ((input_num + 1) * 2));
+                                }
+                                else
+                                {
+                                    Trace.WriteLine("input_num:" + input_num.ToString());
+                                    strsetUpstream = newstrUpstream.Substring(0, newstrUpstream.Length - ((input_num + 1) * 2)) + USBUpstream[upstream] + newstrUpstream.Substring(newstrUpstream.Length - (input_num * 2));
+                                }
+                                if (!string.IsNullOrEmpty(strsetUpstream))
+                                {
+                                    uint code = Convert.ToUInt16(strsetUpstream, 2);
+                                    Trace.WriteLine("strsetUpstream:" + code.ToString());
+                                    bool b = SetVCPCapability(monitorInfo, 0xE7, code).Result;
+                                    return Task.FromResult(b);
+                                }
                             }
                             else
                             {
@@ -2117,11 +2161,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             EventHandler<VCPchangedEventArgs> handler = VCPchanged;
             if (handler != null)
                 Task.Run(() => handler.Invoke(this, e));
-
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
         }
 
         protected virtual void OnDDCCIStatuschanged(DDCCIchangedEventArgs e)
@@ -2132,11 +2171,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             EventHandler<DDCCIchangedEventArgs> handler = DDCCIStatuschanged;
             if (handler != null)
                 Task.Run(() => handler.Invoke(this, e));
+        }
 
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
+        protected virtual void OnMonitorinfoUpdatechanged(MonitorinfoUpdateEventArgs e)
+        {
+            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin Broadcast MonitorinfoUpdatechanged ...");
+
+            //MonitorUpdatechanged?.Invoke(this, e);
+            EventHandler<MonitorinfoUpdateEventArgs> handler = MonitorinfoUpdated;
+            if (handler != null)
+                Task.Run(() => handler.Invoke(this, e)).ConfigureAwait(false);
         }
 
         protected virtual void OnDisplaychanged(DisplaychangedEventArgs e)
@@ -2147,11 +2191,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             EventHandler<DisplaychangedEventArgs> handler = Displaychanged;
             if (handler != null)
                 Task.Run(() => handler.Invoke(this, e));
-
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
         }
 
         /// <summary>
@@ -2203,6 +2242,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         _VcpCorePlugin.VCPchanged += show_VCPchangedEventArgs;
                         _VcpCorePlugin.Displaychanged += show_DisplaychangedEventArgs;
                         _VcpCorePlugin.DDCCIStatuschanged += show_DDCCIchangedEventArgs;
+                        _VcpCorePlugin.MonitorinfoUpdated += show_MonitorinfoUpdatechangedEventArgs;
                         InitializeMonitorsList();
                         InitializeAllALSInfo();
                     }
@@ -2225,7 +2265,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
             _VCPchangedEventArgs.value = e.value;
             _VCPchangedEventArgs.monitor = e.monitor;
-       
+
             ////0607 Bruce 自動旋轉畫面顧新增下面兩行程式碼
             //SetDisplayOrientation(_VCPchangedEventArgs);
 
@@ -2477,6 +2517,19 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             InitializeAllALSInfo();
             //Robert_Lin, 2024-12-10 added to notify EAPlugin
             NotifyEAPluginAllInfoMonitorsChanged();
+        }
+
+        private void show_MonitorinfoUpdatechangedEventArgs(object sender, MonitorinfoUpdateEventArgs e)
+        {
+            _logs.DebugMsg("[DisplayMangerPlugin] Receive MonitorinfoUpdatechanged Event Notify from VcpCorePlugin");
+            _logs.DebugMsg("[DisplayMangerPlugin] Send MonitorinfoUpdatechanged Event Notify from DisplayMangerPlugin");
+
+            MonitorinfoUpdateEventArgs _EventArgss = new MonitorinfoUpdateEventArgs()
+            {
+                edid = e.edid,
+                monitor = e.monitor,
+            };
+            OnMonitorinfoUpdatechanged(_EventArgss);
         }
 
         #endregion
@@ -3526,12 +3579,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         #region EasyArrange implementation
 
         #region Private members - EasyArrange
+
         private bool _isEaPluginConfigured = false;
         private IEasyArrangeService _eaService;
         private PluginCondition _eaPluginCondition;
+
         #endregion Private members - EasyArrange
 
         #region Properties - EasyArrange
+
         /// <summary>
         /// The last error string after a EAPlugin method return error.
         /// </summary>
@@ -3544,9 +3600,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 if (!_isEaPluginConfigured)
                     return "EAPlugin Condition is NOT configured.";
                 return _eaService.EALastError;
-             }
+            }
         }
+
         #endregion Properties - EasyArrange
+
         //Robert_Lin, 2024-9-13 Remove unused interfaces
         //public event EventHandler<string> EAEditCompleted;
 
@@ -3768,8 +3826,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg($"[DisplayMangerPlugin] @ DisplayManager.SetEASelectedLayout(): _eaService is in null");
             }
             return Task.FromResult(false);
-
         }
+
         /// <summary>
         /// Return current Span across multiple monitor option is Enabled/Disabled;
         /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)

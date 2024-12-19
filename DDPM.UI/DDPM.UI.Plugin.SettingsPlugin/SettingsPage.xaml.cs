@@ -16,6 +16,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using VcpCore.Common;
+using static DDPM.UI.Plugin.SettingsPlugin.GlobalSettingsParam;
 
 namespace DDPM.UI.Plugin.SettingsPlugin
 {
@@ -131,7 +132,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 SettingsPageViewModel vm = (SettingsPageViewModel)this.DataContext;
                 if (vm != null)
                 {
-                    vm.GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                    //vm.GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                    vm.GlobalSettingParam = Global.SettingParam;
                     vm.RefreshUI();
                 }
             }));

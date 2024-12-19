@@ -287,7 +287,7 @@
                                                     FontSize="14"
                                                     Margin="20,15"
                                                     Grid.Column="0"
-                                                    Text="Widget Settings"
+                                                    Text="{Binding [Widget_Settings], Source={x:Static lang:LangHelper.Instance}}"
                                                     AutomationProperties.Name="Primary1">
                                 <UXControls:UXTextBlock.Style>
                                     <Style TargetType="UXControls:UXTextBlock">

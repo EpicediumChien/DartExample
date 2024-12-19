@@ -33,7 +33,7 @@ namespace DDPM.UI.Plugin.Common
                 typeface,
                 fontSize,
                 System.Windows.Media.Brushes.Black,
-            new NumberSubstitution(),
+                new NumberSubstitution(),
                 1.0);
             if (formattedText.Width <= width)
             { return text; }
@@ -52,6 +52,22 @@ namespace DDPM.UI.Plugin.Common
                   1.0);
             }
             return $"{text}...";
+        }
+
+        public static double GetTextWidth(string text, double fontSize, string fontFamily = "Roboto")
+        {
+            var typeface = new Typeface(new System.Windows.Media.FontFamily(fontFamily), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+
+            var formattedText = new FormattedText(
+                text,
+                System.Globalization.CultureInfo.CurrentUICulture,
+                System.Windows.FlowDirection.LeftToRight,
+                typeface,
+                fontSize,
+                System.Windows.Media.Brushes.Black,
+                new NumberSubstitution(),
+                1.0);
+            return formattedText.Width;
         }
     }
 }

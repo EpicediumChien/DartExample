@@ -131,11 +131,11 @@ namespace DDPM.UI.Module.Brightness
         public bool IsPR1_Luminance_Preview_ = false;
         public bool IsPR2_Luminance_Preview_ = false;
 
-        public string PR1ButtonContent { get; set; } = "Preview Changes";
-        public string PR2ButtonContent { get; set; } = "Preview Changes";
+        public string PR1ButtonContent { get; set; } = LangHelper.Instance["Preview_Changes"];// "Preview Changes";
+        public string PR2ButtonContent { get; set; } = LangHelper.Instance["Preview_Changes"];//"Preview Changes";
 
-        public string PR1_Luminance_ButtonContent { get; set; } = "Preview Changes";
-        public string PR2_Luminance_ButtonContent { get; set; } = "Preview Changes";
+        public string PR1_Luminance_ButtonContent { get; set; } = LangHelper.Instance["Preview_Changes"];//"Preview Changes";
+        public string PR2_Luminance_ButtonContent { get; set; } = LangHelper.Instance["Preview_Changes"];//"Preview Changes";
 
         public CancellationTokenSource PreviewToken = new CancellationTokenSource();
 

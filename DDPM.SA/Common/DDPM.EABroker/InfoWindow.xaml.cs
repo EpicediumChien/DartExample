@@ -260,7 +260,20 @@ namespace DDPM.EABroker
             //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
             if (_vm.IsWithoutGap)
             {
-                rcArrange.Inflate(6, 6);
+                
+                double extendedFrameBoundsHorz = 3;
+                rcArrange.Inflate(6+ extendedFrameBoundsHorz, 6);
+                if (_vm.WorkScreen != null)
+                {
+                    int scrLeft = _vm.WorkScreen.Bounds.Left;
+                    if (rcArrange.Left < scrLeft)
+                    {
+                        double dx = scrLeft - rcArrange.Left;
+                        rcArrange.X = scrLeft;
+                        rcArrange.Width -= dx;
+
+                    }
+                }
             }
             if (!rcArrange.IsEmpty)
             {

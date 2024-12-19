@@ -201,17 +201,17 @@ namespace DDPM.UI.Common
         public static readonly string VolumeUp = GetString("Multimedia.8");
 
         //pen
-        public static readonly string NextTrack = "Next Track"; //MediaNextTrack?
+        public static readonly string NextTrack = GetString("NextTrack");//Next Track //MediaNextTrack?
 
         //Other
-        public static readonly string PrtSc = "Print Screen";
-        public static readonly string ScrollLock = "Scroll Lock";
-        public static readonly string PauseBreak = "Pause Break";
-        public static readonly string Home = "Home";
-        public static readonly string End = "End";
-        public static readonly string PageDown = "Page Down";
-        public static readonly string PageUp = "Page Up";
-        public static readonly string WebBrowser = "Web Browser";
+        public static readonly string PrtSc = GetString("PrtSc");//Print Screen
+        public static readonly string ScrollLock = GetString("ScrollLock");//Scroll Lock
+        public static readonly string PauseBreak = GetString("PauseBreak");//Pause Break
+        public static readonly string Home = GetString("Home");
+        public static readonly string End = GetString("End");
+        public static readonly string PageDown = GetString("PageDown");//Page Down
+        public static readonly string PageUp = GetString("Page Up");//Page Up
+        public static readonly string WebBrowser = GetString("Web Browser");//Web Browser
 
         //Word
         public static readonly string Autoscroll = GetString("Word.1");
@@ -272,49 +272,49 @@ namespace DDPM.UI.Common
         public static readonly string ReplyToAll = GetString("Outlook.6");
 
         //Open/Run
-        public static readonly string Calendar = "Calendar";
-        public static readonly string Camera = "Camera";
-        public static readonly string Clock = "Clock";
-        public static readonly string Cortana = "Cortana";
-        public static readonly string DellCommandUpdate = "Dell Command Update";
-        public static readonly string DellDigitalDelivery = "Dell Digital Delivery";
-        public static readonly string DellOptimizer = "Dell Optimizer";
-        public static readonly string Family = "Family";
-        public static readonly string FeedbackHub = "Feedback Hub";
-        public static readonly string GameBar = "Game Bar";
-        public static readonly string GetHelp = "Get Help";
-        public static readonly string GetStarted = "Get Started";
-        public static readonly string IntelManagementAndSecurityStatus = "Intel (R) Management and Security Status";
-        public static readonly string IntelGraphicsCommandCenter = "Intel® Graphics Command Center";
-        public static readonly string IntelOptaneMemoryAndStorageManagement = "Intel® Optane™ Memory and Storage Management";
-        public static readonly string Mail = "Mail";
-        public static readonly string Maps = "Maps";
-        public static readonly string MediaPlayer = "Media Player";
-        public static readonly string Microsoft365Office = "Microsoft 365 (Office)";
-        public static readonly string MicrosoftClipchamp = "Microsoft Clipchamp";
-        public static readonly string MicrosoftDefender = "Microsoft Defender";
-        public static readonly string MicrosoftStore = "Microsoft Store";
-        public static readonly string MicrosoftTeams = "Microsoft Teams";
-        public static readonly string MicrosoftTeamsWorkSchool = "Microsoft Teams (work or school)";
-        public static readonly string MicrosoftToDo = "Microsoft To Do";
-        public static readonly string MoviesTV = "Movies & TV";
-        public static readonly string News = "News";
-        public static readonly string Notepad = "Notepad";
-        public static readonly string Paint = "Paint";
-        public static readonly string PhoneLink = "Phone Link";
-        public static readonly string Photos = "Photos";
-        public static readonly string PowerAutomate = "Power Automate";
-        public static readonly string SnippingTool = "Snipping Tool";
-        public static readonly string SolitaireCasualGames = "Solitaire & Casual Games";
-        public static readonly string SoundRecorder = "Sound Recorder";
-        public static readonly string Spotify = "Spotify";
-        public static readonly string SupportAssist = "SupportAssist";
-        public static readonly string Terminal = "Terminal";
-        public static readonly string Tips = "Tips";
-        public static readonly string Weather = "Weather";
-        public static readonly string WindowsBackup = "Windows backup";
-        public static readonly string WindowsSecurity = "Windows Security";
-        public static readonly string Xbox = "Xbox";
+        public static readonly string Calendar = GetString("Calendar");//"Calendar";
+        public static readonly string Camera = GetString("Camera");//"Camera";
+        public static readonly string Clock = GetString("Clock");
+        public static readonly string Cortana = GetString("Cortana");
+        public static readonly string DellCommandUpdate = GetString("DellCommandUpdate");//Dell Command Update
+        public static readonly string DellDigitalDelivery = GetString("DellDigitalDelivery");//Dell Digital Delivery
+        public static readonly string DellOptimizer = GetString("DellOptimizer");//Dell Optimizer
+        public static readonly string Family = GetString("Family");
+        public static readonly string FeedbackHub = GetString("FeedbackHub");//Feedback Hub
+        public static readonly string GameBar = GetString("GameBar");//Game Bar
+        public static readonly string GetHelp = GetString("GetHelp");//Get Help
+        public static readonly string GetStarted = GetString("GetStarted");//Get Started
+        public static readonly string IntelManagementAndSecurityStatus = GetString("IntelManagementAndSecurityStatus");//Intel (R) Management and Security Status
+        public static readonly string IntelGraphicsCommandCenter = GetString("IntelGraphicsCommandCenter");//Intel® Graphics Command Center
+        public static readonly string IntelOptaneMemoryAndStorageManagement = GetString("IntelOptaneMemoryAndStorageManagement");//Intel® Optane™ Memory and Storage Management
+        public static readonly string Mail = GetString("Mail");//"Mail";
+        public static readonly string Maps = GetString("Maps");//"Maps";
+        public static readonly string MediaPlayer = GetString("MediaPlayer");//Media Player
+        public static readonly string Microsoft365Office = GetString("Microsoft365Office");//Microsoft 365 (Office)
+        public static readonly string MicrosoftClipchamp = GetString("MicrosoftClipchamp");//Microsoft Clipchamp
+        public static readonly string MicrosoftDefender = GetString("MicrosoftDefender");//Microsoft Defender
+        public static readonly string MicrosoftStore = GetString("MicrosoftStore");//Microsoft Store
+        public static readonly string MicrosoftTeams = GetString("MicrosoftTeams");//
+        public static readonly string MicrosoftTeamsWorkSchool = GetString("MicrosoftTeamsWorkSchool");
+        public static readonly string MicrosoftToDo = GetString("MicrosoftToDo");
+        public static readonly string MoviesTV = GetString("MoviesTV");
+        public static readonly string News = GetString("News");
+        public static readonly string Notepad = GetString("Notepad");
+        public static readonly string Paint = GetString("Paint");
+        public static readonly string PhoneLink = GetString("PhoneLink");
+        public static readonly string Photos = GetString("Photos");
+        public static readonly string PowerAutomate = GetString("PowerAutomate");
+        public static readonly string SnippingTool = GetString("SnippingTool");
+        public static readonly string SolitaireCasualGames = GetString("SolitaireCasualGames");
+        public static readonly string SoundRecorder = GetString("SoundRecorder");
+        public static readonly string Spotify = GetString("Spotify");
+        public static readonly string SupportAssist = GetString("SupportAssist");
+        public static readonly string Terminal = GetString("Terminal");
+        public static readonly string Tips = GetString("Tips");
+        public static readonly string Weather = GetString("Weather");
+        public static readonly string WindowsBackup = GetString("WindowsBackup");
+        public static readonly string WindowsSecurity = GetString("WindowsSecurity");//"Windows Security";
+        public static readonly string Xbox = GetString("Xbox");//"Xbox";
 
         //Radial Menu
         public static readonly string Disabled = GetString("RadialMenu.1");
@@ -609,7 +609,7 @@ namespace DDPM.UI.Common
         public static readonly string InputTitle1 = GetString("InputSource.5");
 
 
-        public static readonly string DTPUnavailable = "DTP service is unavailable!";
+        public static readonly string DTPUnavailable = GetString("DTPUnavailable");//"DTP service is unavailable!";
 
         public static readonly string Auto_Color_Temperature_MSG = GetString("Color.10");
     }
