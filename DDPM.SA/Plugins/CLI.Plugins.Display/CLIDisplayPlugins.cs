@@ -966,53 +966,75 @@ namespace DDPM.CLI.Plugins.Display
 
         private PeripheralResponse GetDeviceDataPeripheralResponse(int index, DeviceInfo device)
         {
+            writelog("GetDeviceDataPeripheralResponse entry");
             var guid = device.ID.ToString();
 
             switch (device.LogicalDeviceType)
             {
                 case "LogicalWebcam":
+                    writelog("LogicalWebcam entry");
                     var webcam = new DeviceDataWebcamResponse(index, device);
 
+                    writelog("_devMgr.GetIsPropertyFOVSupportedByDTP entry");
                     if (_devMgr.GetIsPropertyFOVSupportedByDTP(guid).Result)
                     {
+                        writelog("_devMgr.GetFieldOfView entry");
                         webcam.FieldOfView = _devMgr.GetFieldOfView(guid).Result.ToString();
                     }
+                    writelog("_devMgr.GetIsPropertyHDRSupported entry");
                     if (_devMgr.GetIsPropertyHDRSupported(guid).Result)
                     {
+                        writelog("_devMgr.GetIsHDROn entry");
                         webcam.HDR = _devMgr.GetIsHDROn(guid).Result ? "ON" : "OFF";
                     }
+                    writelog("_devMgr.GetIsPropertyAntiFlickerSupported entry");
                     if (_devMgr.GetIsPropertyAntiFlickerSupported(guid).Result)
                     {
+                        writelog("_devMgr.GetAntiFlicker entry");
                         webcam.AntiFlicker = _devMgr.GetAntiFlicker(guid).Result.ToString();
                     }
+                    writelog("device.IsMicEnumerationSupported entry");
                     if (device.IsMicEnumerationSupported)
                     {
+                        writelog("device.IsMicEnumerationOn set entry");
                         webcam.MicSwitch = device.IsMicEnumerationOn ? "ON" : "OFF";
                     }
+                    writelog("_devMgr.GetIsPropertyAutoFramingSupported entry");
                     if (_devMgr.GetIsPropertyAutoFramingSupported(guid).Result)
                     {
+                        writelog("_devMgr.GetIsAutoFramingOn entry");
                         webcam.AIAutoFraming = _devMgr.GetIsAutoFramingOn(guid).Result ? "ON" : "OFF";
                     }
+                    writelog("device.IsESISupported entry");
                     if (device.IsESISupported)
                     {
+                        writelog("_devMgr.GetIsProximitySensorEnable entry");
                         webcam.PresenceDetection = _devMgr.GetIsProximitySensorEnable(guid).Result ? "ON" : "OFF";
                     }
 
                     return webcam;
                 case "LogicalHeadset":
+                    writelog("LogicalHeadset entry");
                     var audio = new DeviceDataAudioResponse(index, device);
 
+                    writelog("_devMgr.GetConnectionTypeAsync entry");
                     audio.Connectiontype = get_headsetconnection_type(_devMgr.GetConnectionTypeAsync(guid).Result);
+                    writelog("_devMgr.GetIsANCSupportedAsync entry");
                     if (_devMgr.GetIsANCSupportedAsync(guid).Result)
                     {
+                        writelog("device.AncMode set entry");
                         audio.ANCMode = device.AncMode > 0 ? "ON" : "OFF";
                     }
+                    writelog("_devMgr.GetIsMicNoiseCancellationSupportedAsync entry");
                     if (_devMgr.GetIsMicNoiseCancellationSupportedAsync(guid).Result)
                     {
+                        writelog("device.MicNoiseCancellation set entry");
                         audio.MicNoiseCancellation = device.MicNoiseCancellation ? "ON" : "OFF";
                     }
+                    writelog("_devMgr.GetIsWearDetectionSupportedAsync entry");
                     if (_devMgr.GetIsWearDetectionSupportedAsync(guid).Result)
                     {
+                        writelog("device.WearDetection set entry");
                         audio.WearDetection = device.WearDetection > 0 ? "ON" : "OFF";
                     }
 
@@ -11709,6 +11731,7 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                                 break;
                             case "KEYBOARD":
+                                writelog("KEYBOARD set entry");
                                 foreach (var device in _deviceinfo)
                                 {
                                     if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
@@ -11720,13 +11743,18 @@ namespace DDPM.CLI.Plugins.Display
                                             switch (property.Name.ToString())
                                             {
                                                 case "COLLABSCREENSHARE":
+                                                    writelog("COLLABSCREENSHARE entry");
                                                     if (property.Value.ToString() == "ON")
                                                     {
+                                                        writelog("_devMgr.SetCollaborationScreenShareEnable entry");
                                                         _devMgr.SetCollaborationScreenShareEnable(true, device.ID);
+                                                        writelog("_devMgr.SetCollaborationScreenShareEnable exit");
                                                     }
                                                     else if (property.Value.ToString() == "OFF")
                                                     {
+                                                        writelog("_devMgr.SetCollaborationScreenShareEnable entry");
                                                         _devMgr.SetCollaborationScreenShareEnable(false, device.ID);
+                                                        writelog("_devMgr.SetCollaborationScreenShareEnable exit");
                                                     }
                                                     else
                                                     {
@@ -11745,6 +11773,7 @@ namespace DDPM.CLI.Plugins.Display
                                 }
                                 break;
                             case "WEBCAM":
+                                writelog("WEBCAM set entry");
                                 foreach (var device in _deviceinfo)
                                 {
                                     if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase))
@@ -11756,15 +11785,21 @@ namespace DDPM.CLI.Plugins.Display
                                             switch (property.Name.ToString())
                                             {
                                                 case "HDR":
+                                                    writelog("HDR entry");
+                                                    writelog("_devMgr.GetIsPropertyHDRSupported entry");
                                                     if (_devMgr.GetIsPropertyHDRSupported(device.ID.ToString()).Result)
                                                     {
                                                         if (property.Value.ToString() == "ON")
                                                         {
+                                                            writelog("_devMgr.SetIsHDROn entry");
                                                             _devMgr.SetIsHDROn(device.ID.ToString(), true);
+                                                            writelog("_devMgr.SetIsHDROn exit");
                                                         }
                                                         else if (property.Value.ToString() == "OFF")
                                                         {
+                                                            writelog("_devMgr.SetIsHDROn entry");
                                                             _devMgr.SetIsHDROn(device.ID.ToString(), false);
+                                                            writelog("_devMgr.SetIsHDROn exit");
                                                         }
                                                         else
                                                         {
@@ -11778,11 +11813,15 @@ namespace DDPM.CLI.Plugins.Display
                                                     }
                                                     break;
                                                 case "ANTIFLICKER":
+                                                    writelog("ANTIFLICKER entry");
+                                                    writelog("_devMgr.GetIsPropertyAntiFlickerSupported entry");
                                                     if (_devMgr.GetIsPropertyAntiFlickerSupported(device.ID.ToString()).Result)
                                                     {
                                                         if (property.Value.ToString() == "50" || property.Value.ToString() == "60")
                                                         {
+                                                            writelog("_devMgr.SetAntiFlicker entry");
                                                             _devMgr.SetAntiFlicker(device.ID.ToString(), int.Parse(property.Value.ToString()));
+                                                            writelog("_devMgr.SetAntiFlicker exit");
                                                         }
                                                         else
                                                         {
@@ -11796,15 +11835,21 @@ namespace DDPM.CLI.Plugins.Display
                                                     }
                                                     break;
                                                 case "MICSWITCH":
+                                                    writelog("MICSWITCH entry");
+                                                    writelog("device.IsMicEnumerationSupported entry");
                                                     if (device.IsMicEnumerationSupported)
                                                     {
                                                         if (property.Value.ToString() == "ON")
                                                         {
+                                                            writelog("_devMgr.SetIsMicEnumerationOn entry");
                                                             _devMgr.SetIsMicEnumerationOn(true, device.ID);
+                                                            writelog("_devMgr.SetIsMicEnumerationOn exit");
                                                         }
                                                         else if(property.Value.ToString() == "OFF")
                                                         {
+                                                            writelog("_devMgr.SetIsMicEnumerationOn entry");
                                                             _devMgr.SetIsMicEnumerationOn(false, device.ID);
+                                                            writelog("_devMgr.SetIsMicEnumerationOn exit");
                                                         }
                                                         else
                                                         {
@@ -11818,15 +11863,21 @@ namespace DDPM.CLI.Plugins.Display
                                                     }
                                                     break;
                                                 case "AIAUTOFRAMING":
+                                                    writelog("AIAUTOFRAMING entry");
+                                                    writelog("_devMgr.GetIsPropertyAutoFramingSupported entry");
                                                     if (_devMgr.GetIsPropertyAutoFramingSupported(device.ID.ToString()).Result)
                                                     {
                                                         if (property.Value.ToString() == "ON")
                                                         {
+                                                            writelog("_devMgr.SetIsAutoFramingOn entry");
                                                             _devMgr.SetIsAutoFramingOn(device.ID.ToString(), true);
+                                                            writelog("_devMgr.SetIsAutoFramingOn exit");
                                                         }
                                                         else if (property.Value.ToString() == "OFF")
                                                         {
+                                                            writelog("_devMgr.SetIsAutoFramingOn entry");
                                                             _devMgr.SetIsAutoFramingOn(device.ID.ToString(), false);
+                                                            writelog("_devMgr.SetIsAutoFramingOn exit");
                                                         }
                                                         else
                                                         {
@@ -11852,6 +11903,7 @@ namespace DDPM.CLI.Plugins.Display
                             case "WIREDAUDIO":
                             case "HEADSET":
                             case "AUDIO":
+                                writelog("AUDIO set entry");
                                 foreach (var device in _deviceinfo)
                                 {
                                     if (device.LogicalDeviceType.Contains(ss_1[0], StringComparison.OrdinalIgnoreCase) || device.LogicalDeviceType.Contains("HEADSET", StringComparison.OrdinalIgnoreCase))
@@ -11863,15 +11915,21 @@ namespace DDPM.CLI.Plugins.Display
                                             switch (property.Name.ToString())
                                             {
                                                 case "ANCMODE":
+                                                    writelog("ANCMODE entry");
+                                                    writelog("_devMgr.GetIsANCSupportedAsync entry");
                                                     if (_devMgr.GetIsANCSupportedAsync(device.ID.ToString()).Result)
                                                     {
                                                         if (property.Value.ToString() == "ON")
                                                         {
+                                                            writelog("_devMgr.SetAncMode entry");
                                                             _devMgr.SetAncMode(1, device.ID);
+                                                            writelog("_devMgr.SetAncMode exit");
                                                         }
                                                         else if (property.Value.ToString() == "OFF")
                                                         {
+                                                            writelog("_devMgr.SetAncMode entry");
                                                             _devMgr.SetAncMode(0, device.ID);
+                                                            writelog("_devMgr.SetAncMode exit");
                                                         }
                                                         else
                                                         {
@@ -11885,28 +11943,38 @@ namespace DDPM.CLI.Plugins.Display
                                                     }
                                                     break;
                                                 case "MICNOISECANCELLATION":
+                                                    writelog("MICNOISECANCELLATION entry");
+                                                    writelog("_devMgr.GetIsMicNoiseCancellationSupportedAsync entry");
                                                     if (_devMgr.GetIsMicNoiseCancellationSupportedAsync(device.ID.ToString()).Result)
                                                     {
                                                         if (property.Value.ToString() == "ON")
                                                         {
                                                             if (device.ModelNumber == "WL7024")
                                                             {
+                                                                writelog("_devMgr.SetMicNoiseCancellationForMito entry");
                                                                 _devMgr.SetMicNoiseCancellationForMito(true, device.ID);
+                                                                writelog("_devMgr.SetMicNoiseCancellationForMito exit");
                                                             }
                                                             else
                                                             {
+                                                                writelog("_devMgr.SetMicNoiseCancellation entry");
                                                                 _devMgr.SetMicNoiseCancellation(true, device.ID);
+                                                                writelog("_devMgr.SetMicNoiseCancellation exit");
                                                             }
                                                         }
                                                         else if (property.Value.ToString() == "OFF")
                                                         {
                                                             if (device.ModelNumber == "WL7024")
                                                             {
+                                                                writelog("_devMgr.SetMicNoiseCancellationForMito entry");
                                                                 _devMgr.SetMicNoiseCancellationForMito(false, device.ID);
+                                                                writelog("_devMgr.SetMicNoiseCancellationForMito exit");
                                                             }
                                                             else
                                                             {
+                                                                writelog("_devMgr.SetMicNoiseCancellation entry");
                                                                 _devMgr.SetMicNoiseCancellation(false, device.ID);
+                                                                writelog("_devMgr.SetMicNoiseCancellation exit");
                                                             }
                                                         }
                                                         else
@@ -11921,15 +11989,21 @@ namespace DDPM.CLI.Plugins.Display
                                                     }
                                                     break;
                                                 case "WEARDETECTION":
+                                                    writelog("WEARDETECTION entry");
+                                                    writelog("_devMgr.GetIsWearDetectionSupportedAsync entry");
                                                     if (_devMgr.GetIsWearDetectionSupportedAsync(device.ID.ToString()).Result)
                                                     {
                                                         if (property.Value.ToString() == "ON")
                                                         {
+                                                            writelog("_devMgr.SetWearDetectionForCLI entry");
                                                             _devMgr.SetWearDetectionForCLI(1, device.ID);
+                                                            writelog("_devMgr.SetWearDetectionForCLI exit");
                                                         }
                                                         else if (property.Value.ToString() == "OFF")
                                                         {
+                                                            writelog("_devMgr.SetWearDetectionForCLI entry");
                                                             _devMgr.SetWearDetectionForCLI(0, device.ID);
+                                                            writelog("_devMgr.SetWearDetectionForCLI exit");
                                                         }
                                                         else
                                                         {
