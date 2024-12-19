@@ -1,7 +1,7 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.Interfaces;
+using Dell.Client.Framework.Interfaces;retFWUpdateInfos
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Newtonsoft.Json;
@@ -2777,9 +2777,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                 {
                     _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
                     _devMgr.ProgressUpdate_Notify += _FWUpdatePlugin_ProgressUpdate;
-                    List<FWUpdateInfo> retFWUpdateInfos = _devMgr.DownloadAndInstall(fwUpdateInfo).Result;
+                    List<FWUpdateInfo> retFWUpdateInfosList = _devMgr.DownloadAndInstall(fwUpdateInfo).Result;
                     bool b = true;
-                    foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
+                    foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfosList)
                     {
                         if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
                         {
