@@ -22,6 +22,26 @@ namespace DDPM.SA.Common
 {
     public interface IDTPProxyPlugin : IFrameworkPlugin
     {
+        bool GetDTPProxyPluginReady();
+
+        #region globalperipheral
+        Task<bool> GetIsLockKeyNotificationsEnabledValue();
+
+        Task<bool> GetIsBatteryNotificationsEnabledValue();
+        Task<bool> GetIsPresenceDetectionSensnorStateNotificationsEnabledValue();
+        Task<bool> GetIsAnalyticsEnabledValue();
+        Task<bool> GetIsQuickAccessMenuEnabledValue();
+        
+        Task<bool> GetIsMuteStatusNotificationsEnabledValue();
+        Task<bool> GetIsQuickAccessMenuOSDEnabledValue();
+        Task<bool> SetIsLockKeyNotificationsEnabledValue(bool newValue);
+        Task<bool> SetIsBatteryNotificationsEnabledValue(bool newValue);
+        Task<bool> SetIsPresenceDetectionSensnorStateNotificationsEnabledValue(bool newValue);
+        Task<bool> SetIsAnalyticsEnabledValue(bool newValue);
+        Task<bool> SetIsQuickAccessMenuEnabledValue(bool newValue);
+        Task<bool> SetIsMuteStatusNotificationsEnabledValue(bool newValue);
+        Task<bool> SetIsQuickAccessMenuOSDEnabledValue(bool newValue);
+        #endregion globalperipheral
 
         #region Mouse
 
@@ -162,12 +182,12 @@ namespace DDPM.SA.Common
         Task<bool> SetAutoFramingSensitivity(string Guid, int newValue);
         Task<bool> SetAutoFramingFrameSize(string Guid, int newValue);
         Task<bool> SetFieldOfView(string Guid, int newValue);
-        Task SetIsFocusOn(string Guid, bool newValue);
-        Task SetFocus(string Guid, int newValue);
-        Task SetPriority(string Guid, int newValue);
+        Task<bool> SetIsFocusOn(string Guid, bool newValue);
+        Task<bool> SetFocus(string Guid, int newValue);
+        Task<bool> SetPriority(string Guid, int newValue);
         Task<bool> SetIsHDROn(string Guid, bool newValue);
-        Task SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
-        Task SetAutoWhiteBalance(string Guid, int newValue);
+        Task<bool> SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
+        Task<bool> SetAutoWhiteBalance(string Guid, int newValue);
         Task SetBrightness(string Guid, int newValue);
         Task SetSharpness(string Guid, int newValue);
         Task SetContrast(string Guid, int newValue);

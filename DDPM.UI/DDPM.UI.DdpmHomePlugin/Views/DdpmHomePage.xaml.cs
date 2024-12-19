@@ -54,6 +54,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 UIDebugPanel.Visibility = Visibility.Visible;
             }
+            this.MinWidth = System.Windows.Application.Current.MainWindow.MinWidth;
         }
 
         private void ImportNotifyEventHandler(object sender, MonitorInfo mo)
@@ -99,7 +100,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 if (modalDialog.DialogResult != null && modalDialog.DialogResult == true)
                                 {
                                     //For jason to do import
-                                    if (DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result)
+                                    if((int)DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result > 0)
                                     {
                                         //ignore next check for this model
                                         if (modalDialog.isChecked)
@@ -197,9 +198,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 dispTimer.Start();
             }
             #endregion
-
-            if (_ddpmHomePageViewModel?.MinWidth != null)
-                System.Windows.Application.Current.MainWindow.MinWidth = _ddpmHomePageViewModel?.MinWidth ?? 0;
 
             var primaryScreenScalingRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
 
@@ -547,6 +545,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //
             if (selectedHomeDevice?.DeviceCategory == eDeviceCategory.Display)
             {
+                _ddpmHomePageViewModel?.Log.Info("Calling to ShowPluginById(DisplayPluginId)");
                 IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
                 console?.ShowPluginById(DDPM.UI.Common.Constants.DisplayPluginId);
                 return;
@@ -867,6 +866,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private void RenderingDone()
         {
+            if (_ddpmHomePageViewModel != null)
+            {
+                _ddpmHomePageViewModel.Log.Info("DdpmHomePage.RenderingDown() is called.");
+            }
             //RefreshListViewItemWidth();
 
             //System.Windows.Threading.DispatcherTimer dispTimer = new System.Windows.Threading.DispatcherTimer();

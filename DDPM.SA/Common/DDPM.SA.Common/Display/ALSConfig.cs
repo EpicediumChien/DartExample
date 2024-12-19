@@ -16,6 +16,11 @@ namespace DDPM.SA.Common
         AutoColorTemperature = 5,
         All = 6,
         no_SerialNumber = 7,
+        BrightnessValue = 8,
+        ContrastValue = 9,
+        ColorPresetString = 10,
+        no_PrimaryMonitorSyncCheck = 11,
+        ALSValueSyncCheck = 12,
     }
 
     public class AutoBrightnessRangeLevel
@@ -41,6 +46,10 @@ namespace DDPM.SA.Common
         public bool isAutoBrightness { get; set; } = false;
         public bool isAutoColorTemp { get; set; } = false;
         public int LiftTone { get; set; } = 0;
+        public int BrightnessValue { get; set; } = 0;
+        public int ContrastValue { get; set; } = 0;
+        public string ColorPresetString { get; set; } = string.Empty;
+        public bool isSupportLum { get; set; } = false;
         public List<AutoBrightnessRangeLevel> AutoBrightnessRangeLevel { get; set; } = new List<AutoBrightnessRangeLevel>();
 
         public uint AllValue { get; set; } = 0;
@@ -91,6 +100,67 @@ namespace DDPM.SA.Common
                     }
             }
             return true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="source"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public bool checkValue(ALSFeatureQueryType type, ALSConfig source, ALSConfig target)
+        {
+            bool result = false;
+            switch (type)
+            {
+                case ALSFeatureQueryType.AutoBrightness:
+                    if(source.isAutoBrightness == target.isAutoBrightness)
+                        result = true;
+                    break;
+                case ALSFeatureQueryType.AutoColorTemperature:
+                    if (source.isAutoColorTemp == target.isAutoColorTemp)
+                        result = true;
+                    break;
+                case ALSFeatureQueryType.PrimaryMonitorSync:
+                    if (source.isPrimaryMonitorSync == target.isPrimaryMonitorSync)
+                        result = true;
+                    break;
+                case ALSFeatureQueryType.AutoBrightnessRangeLevel:
+                    if (source.AutoBrightnessRangeLevel == target.AutoBrightnessRangeLevel)
+                        result = true;
+                    break;
+                case ALSFeatureQueryType.BrightnessValue:
+                    if (source.BrightnessValue == target.BrightnessValue)
+                        result = true;
+                    break;
+                case ALSFeatureQueryType.ContrastValue:
+                    if (source.ContrastValue == target.ContrastValue)
+                        result = true;
+                    break;
+                case ALSFeatureQueryType.ColorPresetString:
+                    if (source.ColorPresetString == target.ColorPresetString)
+                        result = true;
+                    break;
+                case ALSFeatureQueryType.no_PrimaryMonitorSyncCheck:
+                    if (source.isAutoBrightness == target.isAutoBrightness &&
+                        source.isAutoColorTemp == target.isAutoColorTemp &&
+                        source.AutoBrightnessRangeLevel == target.AutoBrightnessRangeLevel &&
+                        source.BrightnessValue == target.BrightnessValue &&
+                        source.ContrastValue == target.ContrastValue &&
+                        source.ColorPresetString == target.ColorPresetString)
+                        result = true;
+                    break;
+                case ALSFeatureQueryType.ALSValueSyncCheck:
+                    {
+                        if (source.isAutoBrightness == target.isAutoBrightness &&
+                            source.isAutoColorTemp == target.isAutoColorTemp &&
+                            source.AutoBrightnessRangeLevel == target.AutoBrightnessRangeLevel)
+                            result = true;
+                        break;
+                    }
+            }
+            return result;
         }
     }
 }

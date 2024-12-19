@@ -325,7 +325,7 @@
     <value>Select 'Yes' to confirm pairing on the prompt box</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
-    <value>For USB wireless receiver free and on-the-go connectivity</value>
+    <value>For on-the-go connectivity</value>
   </data>
   <data name="AddDevice.Headset.1" xml:space="preserve">
     <value>Power ON headset</value>
@@ -496,7 +496,7 @@
     <value>AM</value>
   </data>
   <data name="Brightness.16" xml:space="preserve">
-    <value>Transison Length</value>
+    <value>Transition Length</value>
   </data>
   <data name="Brightness.17" xml:space="preserve">
     <value>This feature enables our eyes to adapt to a desired setting</value>
@@ -895,7 +895,7 @@
     <value>Download Dell Audio now to optimize and personalize your headset settings from the convenience of your iPhone or Android device.</value>
   </data>
   <data name="HeadsetDeviceSettings.6" xml:space="preserve">
-    <value>Learnmore</value>
+    <value>Learn more</value>
   </data>
   <data name="Illumination.0" xml:space="preserve">
     <value>Illumination Control</value>
@@ -2128,7 +2128,10 @@
     <value>Application settings exported successfully</value>
   </data>
   <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
-    <value>Application settings applied to %1 successfully. Enjoy using your monitor.</value>
+    <value>Application settings applied to %1 successfully. Dell Display and Peripheral Manager will restart.</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.2" xml:space="preserve">
+    <value>Application settings applied to %1 successfully. The Easy Memory setting will be cleaned. Please setup Easy Memory again. Dell Display and Peripheral Manager will restart.</value>
   </data>
   <data name="ImpExp_WarningMsg.0" xml:space="preserve">
     <value>This not your primary monitor. Do you want to continue and set this as your Primary Monitor for Sync?</value>
@@ -2302,16 +2305,19 @@
     <value>Do you want to import the application settings for ease of use?</value>
   </data>
   <data name="ImpExp_Title.0" xml:space="preserve">
-    <value>An new monitor %1 is detected.</value>
+    <value>A new monitor %1 is detected.</value>
   </data>
   <data name="Wait_DevMgr" xml:space="preserve">
-    <value>DDPM.Subagent.DeviceManager is not ready</value>
+    <value>Connecting to DDPM Subagent...</value>
+    <comment>Robert_1218 Changed</comment>
   </data>
   <data name="Wait_DTH" xml:space="preserve">
-    <value>DellTechHub service is not running</value>
+    <value>Connecting to Dell.TechHub...</value>
+    <comment>Robert_1218 Changed</comment>
   </data>
   <data name="Wait_NoDevice" xml:space="preserve">
-    <value>No device detected</value>
+    <value>Detecting device...</value>
+    <comment>Robert_1218 Changed</comment>
   </data>
   <data name="InvalidURL" xml:space="preserve">
     <value>Invalid URL</value>
@@ -3245,5 +3251,17 @@
   </data>
   <data name="EazyMemory.42" xml:space="preserve">
     <value>The corresponding Easy Memory profile will be deleted too. Do you want to continue?</value>
+  </data>
+  <data name="DiagnosticReport_SaveFail" xml:space="preserve">
+    <value>Diagnostic report save fail</value>
+  </data>
+  <data name="MonitorAssetReport_SaveFail" xml:space="preserve">
+    <value>Monitor asset report save fail</value>
+  </data>
+  <data name="USBKVM.Tips" xml:space="preserve">
+    <value>Example: “Alt + P”; “Shift + F”; “Ctrl + Shift + F”\nNote: For multiple monitors, the mouse cursor should be on the targeted monitor screen to trigger the hotkey function.</value>
+  </data>
+  <data name="BrightnessLevel" xml:space="preserve">
+    <value>Brightness level</value>
   </data>
 </root>

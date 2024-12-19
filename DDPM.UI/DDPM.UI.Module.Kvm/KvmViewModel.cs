@@ -578,7 +578,7 @@ namespace DDPM.UI.Module.Kvm
                                     }
                                     else
                                     {
-                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}";
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}";
                                     }
                                 }
                             }
@@ -589,7 +589,7 @@ namespace DDPM.UI.Module.Kvm
                         }
                         else
                         {
-                            _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}";
+                            _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}";
                         }
                     }
                     else
@@ -609,7 +609,7 @@ namespace DDPM.UI.Module.Kvm
                                     }
                                     else
                                     {
-                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}";
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}";
                                     }
                                 }
                             }
@@ -621,7 +621,7 @@ namespace DDPM.UI.Module.Kvm
                         }
                         else
                         {
-                            _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}";
+                            _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}";
                         }
                     }
                     if (curHotkey.HotkeyOptions.Count > 0 && curHotkey.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
@@ -1572,41 +1572,39 @@ namespace DDPM.UI.Module.Kvm
         private void NKVMOpenUI_Dowork(object sender, DoWorkEventArgs e)
         {
             DdpmCommonHelper.DeviceManagerSA.NKVM_State(true).Wait();
-            if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
+            DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
+            //#if DEBUG
+            //                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+            //#else
+            //                OpenNKVMUI(0, 100, 100);
+            //#endif
+            int i = 0;
+            while (i < 120)
             {
-                //#if DEBUG
-                isOnNKVM(true);
-                _log.Debug("NKVMOpenUI...");
-                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
-                //#else
-                //                OpenNKVMUI(0, 100, 100);
-                //#endif
-            }
-            else
-            {
-                DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
-                //#if DEBUG
-                //                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
-                //#else
-                //                OpenNKVMUI(0, 100, 100);
-                //#endif
-                int i = 0;
-                while (!DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result && i < 20)
-                {
-                    i++;
-                    Thread.Sleep(500);
-                }
                 if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
                 {
                     isOnNKVM(true);
-                    _log.Debug("NKVMOpenUI...");
+                    _log.Debug("NKVMOpenUI i = " + i);
                     DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+                    break;
                 }
-                else
-                {
-                    _log.Debug("Named pipe is not Connected or time out");
-                }
+                i++;
+                Thread.Sleep(500);
             }
+            if (i == 120)
+            {
+                _log.Debug("Named pipe is not Connected or time out");
+            }
+            //if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
+            //{
+            //    isOnNKVM(true);
+            //    _log.Debug("NKVMOpenUI...");
+            //    DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+            //}
+            //else
+            //{
+            //    _log.Debug("Named pipe is not Connected or time out");
+            //}
         }
         private void NKVMOpenUI_Done(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -1712,12 +1710,12 @@ namespace DDPM.UI.Module.Kvm
                             }
                         }
 
-                        if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
-                        {
+                        //if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
+                        //{
                             CurrentInputChange();
-                        }
+                        //}
                         bool bin = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo, inputList).Result;
-                        //bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
+                        bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
                         //isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
                     }
                     else
@@ -1755,7 +1753,7 @@ namespace DDPM.UI.Module.Kvm
         /// <param name="e">changed event</param>
         private void OnVCPChangedEvent(object? sender, VCPchangedEventArgs e)
         {
-            if (e.vcpcode.Equals("E7"))
+            if (e.vcpcode.Equals("E7") && DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(KvmModule.SelectedHomeDevice.MonitorInfo).Result)
             {
                 pcsList = new Dictionary<string, PCsInfo>();
                 usbsList = new List<string>();

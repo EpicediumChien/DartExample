@@ -62,7 +62,7 @@
                                                     <Border x:Name="DefaultButtonBorder"  BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="13,13,13,13">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="{Binding [Default], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock x:Name="DefaultButtonBorderTxt" Text="{Binding [Default], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -70,6 +70,7 @@
                                                         <Trigger Property="IsChecked" Value="True">
                                                             <Setter TargetName="DefaultButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="DefaultButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                            <Setter TargetName="DefaultButtonBorderTxt" Property="Foreground" Value="White" />
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
@@ -84,7 +85,7 @@
                                                     <Border x:Name="SpeechButtonBorder" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="13,13,13,13">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="{Binding [SpeakerAudioPreset.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock x:Name="SpeechButtonBorderTxt" Text="{Binding [SpeakerAudioPreset.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -92,6 +93,7 @@
                                                         <Trigger Property="IsChecked" Value="True">
                                                             <Setter TargetName="SpeechButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="SpeechButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                            <Setter TargetName="SpeechButtonBorderTxt" Property="Foreground" Value="White" />
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
@@ -105,7 +107,7 @@
                                                     <Border x:Name="BassBoostButtonBorder" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="13,13,13,13">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock x:Name="BassBoostButtonBorderTxt" Text="{Binding [HeadsetAudioSettings.7], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -113,6 +115,7 @@
                                                         <Trigger Property="IsChecked" Value="True">
                                                             <Setter TargetName="BassBoostButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="BassBoostButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                            <Setter TargetName="BassBoostButtonBorderTxt" Property="Foreground" Value="White" />
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
@@ -126,7 +129,7 @@
                                                     <Border x:Name="TrebleBoostButtonBorder" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="13,13,13,13">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.9], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                                                <UXControls:UXTextBlock x:Name="TrebleBoostButtonBorderTxt" Text="{Binding [HeadsetAudioSettings.9], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
@@ -134,6 +137,7 @@
                                                         <Trigger Property="IsChecked" Value="True">
                                                             <Setter TargetName="TrebleBoostButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="TrebleBoostButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                            <Setter TargetName="TrebleBoostButtonBorderTxt" Property="Foreground" Value="White" />
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>

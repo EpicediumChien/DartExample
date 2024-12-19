@@ -18,6 +18,7 @@ using DDPM.Win32Lib;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common;
 using VcpCore.Common;
+using DDPM.SA.Common.Settings;
 
 
 namespace DDPM.EABroker
@@ -259,7 +260,20 @@ namespace DDPM.EABroker
             //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
             if (_vm.IsWithoutGap)
             {
-                rcArrange.Inflate(6, 6);
+                
+                double extendedFrameBoundsHorz = 3;
+                rcArrange.Inflate(6+ extendedFrameBoundsHorz, 6);
+                if (_vm.WorkScreen != null)
+                {
+                    int scrLeft = _vm.WorkScreen.Bounds.Left;
+                    if (rcArrange.Left < scrLeft)
+                    {
+                        double dx = scrLeft - rcArrange.Left;
+                        rcArrange.X = scrLeft;
+                        rcArrange.Width -= dx;
+
+                    }
+                }
             }
             if (!rcArrange.IsEmpty)
             {
@@ -317,25 +331,79 @@ namespace DDPM.EABroker
         #endregion Window Event Handlers
 
         #region Layouts
-        private void InitLayoutList()
+        private void refreshMonitorsButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (ISplitCtrl isp in ISplitCtrl.Splits_EA)
+            List<MonitorInfo>? monitors = _vm.GetMonitors();
+            if (monitors == null) return;
+            cbMonitors.ItemsSource = monitors;
+        }
+
+        private void SetSelectedLayoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (cbMonitors.SelectedItem == null) return;
+            MonitorInfo monitorInfo = cbMonitors.SelectedItem as MonitorInfo;
+
+            string eaIdText = tbEAId.Text;
+            if (String.IsNullOrEmpty(eaIdText)) return;
+            int eaId = 0;
+            if (int.TryParse(eaIdText, out eaId))
             {
-                lbLayouts.Items.Add($"({isp.EAID}) {isp.CtrlClass}");
+                _vm.SetEASelectedLayout(monitorInfo, eaId);
             }
         }
+
+        private void refreshRecentListButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (cbMonitors.SelectedItem == null) return;
+            MonitorInfo monitorInfo = cbMonitors.SelectedItem as MonitorInfo;
+            EAMonitorSettings eaSettings = _vm.ReadEAMonitorSettings(monitorInfo);
+            if (eaSettings == null) return;
+
+            SplitJson spjSelected = eaSettings.SelectedSplit;
+            StringBuilder sb = new StringBuilder();
+
+            string mark = "*";
+            foreach (SplitJson spjRecent in eaSettings.RecentList)
+            {
+                if (spjRecent.IsEquals(spjSelected))
+                {
+                    sb.Append(mark);
+                }
+                sb.Append($"[{spjRecent.EAID}]{spjRecent.CellCount}{spjRecent.SplitKey}");
+                sb.Append("   ");
+            }
+            string strOut = sb.ToString();
+            strOut = strOut.Trim();
+            txtRecentList.Text = strOut;
+        }
+
+        private void refreshCustoListButton_Click(object sender, RoutedEventArgs e)
+        {
+            SplitJson[] customList = _vm.ReadCustomList();
+            StringBuilder sb = new StringBuilder();
+
+            foreach (SplitJson spjCustom in customList)
+            {
+                sb.Append($"[{spjCustom.EAID}]{spjCustom.CellCount}{spjCustom.SplitKey}");
+                sb.Append("   ");
+            }
+            string strOut = sb.ToString();
+            strOut = strOut.Trim();
+            txtCustomList.Text = strOut;
+        }
+
         private void reloadCustomLayoutsButton_Click(object sender, RoutedEventArgs e)
         {
 
         }
         private void sekectLayoutButton_Click(object sender, RoutedEventArgs e)
         {
-            object selItem = lbLayouts.SelectedItem;
-            if (selItem != null)
-            {
-                System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
-                Screen scr = Screen.FromHandle(wndHelper.Handle);
-            }
+            //object selItem = lbLayouts.SelectedItem;
+            //if (selItem != null)
+            //{
+            //    System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
+            //    Screen scr = Screen.FromHandle(wndHelper.Handle);
+            //}
         }
         #endregion
 
@@ -366,5 +434,6 @@ namespace DDPM.EABroker
             };
             _vm.Invoke_EditCommand(mi, eaArgs);
         }
+
     }
 }

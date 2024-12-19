@@ -22,9 +22,9 @@ namespace DDPM.SA.Common
 
         Task<SWUpdateInfoPackage> GetSWUpdateInfo(bool isShowNotify, bool isForce, bool isDefer, string currentVersion, bool reScan, bool isUItrigger);
 
-        Task<List<SWUpdateInfo>> DownloadAndInstall(List<SWUpdateInfo> fwUpdateInfos, bool isUITrigger, string installPath);
+        Task<List<SWUpdateInfo>> DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUITrigger, string installPath);
 
-        void SetDelaySWUpdateInfoPackage(SWUpdateInfoPackage DelayFWUpdateInfoPackage);
+        void SetDelaySWUpdateInfoPackage(SWUpdateInfoPackage DelaySWUpdateInfoPackage);
 
         void DelayEvent();
 

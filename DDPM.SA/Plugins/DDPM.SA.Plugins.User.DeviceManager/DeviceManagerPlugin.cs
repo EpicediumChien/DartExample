@@ -33,6 +33,7 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
+using IndiLogic.DPeM.Broker;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
@@ -58,10 +59,10 @@ using VcpCore.Common;
 using Windows.System;
 using static DDPM.SA.Common.Telementry_GeneralFunction;
 using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
+using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
-
-//using MonitorProfile = DDPM.SA.Utility.MonitorProfile;
 using Point = System.Windows.Point;
+//using MonitorProfile = DDPM.SA.Utility.MonitorProfile;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
 {
@@ -219,7 +220,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool isDDPMLaunchedByQAM = false;
         private bool isWidgetSettingPageLoadedByQAM = false;
 
-        private static CancellationTokenSource _ReGetcancellationTokenSource;
+        private static CancellationTokenSource _ReGetcancellationTokenSource = null;
 
         private static bool _isSubagentActive = true;
         private bool userClosedPopup = false;
@@ -232,8 +233,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
 
         private List<NKVMVCPValue> _nKVMVCPValues = new List<NKVMVCPValue>();
-
-        private Debouncer DisplayChangedDebouncer;
 
         #endregion
 
@@ -260,8 +259,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Robert_Lin, 2024-12-1 added, to let TextBox highlight text color can be changed with TextBox.SelectionTextBrush
             //Reference: https://github.com/dotnet/wpf/issues/4571
             AppContext.SetSwitch("Switch.System.Windows.Controls.Text.UseAdornerForTextboxSelectionRendering", false);
-
-            DisplayChangedDebouncer = new Debouncer(5000, _SystemEvents_DisplaySettingsChanged);
         }
 
         private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
@@ -699,6 +696,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public event EventHandler<DisplaychangedEventArgs> Displaychanged;
 
+        public event EventHandler<MonitorinfoUpdateEventArgs> MonitorinfoUpdated;
+
         public event EventHandler<DeviceChangedEventArgs> DeviceChanged;
 
         public event EventHandler<DeviceChangedEventArgs> Peripherals_Notify;
@@ -1023,7 +1022,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (string.Equals(ColorPreset_Name, "Game3", StringComparison.OrdinalIgnoreCase))
                         r = SetVCPCapability(m, VcpCodeList.VCPctr["HDR Modes Specific"], VcpCodeList.VCPF0["Game3"]).Result;
                     else if (string.Equals(ColorPreset_Name, "Game1", StringComparison.OrdinalIgnoreCase))
-                        r = SetVCPCapability(m, VcpCodeList.VCPctr["Display Application"],VcpCodeList.VCPDC["Game1"]).Result;
+                        r = SetVCPCapability(m, VcpCodeList.VCPctr["Display Application"], VcpCodeList.VCPDC["Game1"]).Result;
                     else
                         r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
                 }
@@ -1033,7 +1032,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         r = SetVCPCapability(m, VcpCodeList.VCPctr["Display Application"], Convert.ToUInt32(VcpCodeList.VCPDC["Game1"])).Result;
                     else
                         r = await Task.Run(() => SetVCPCapability(m, "colorpreset", ColorPreset_Name).Result).ConfigureAwait(false);
-                } 
+                }
                 else if (string.Equals(m.modelName, "G2724D", StringComparison.OrdinalIgnoreCase) || string.Equals(m.modelName, "G3223D", StringComparison.OrdinalIgnoreCase))
                 {
                     if (string.Equals(ColorPreset_Name, "sRGB", StringComparison.OrdinalIgnoreCase))
@@ -1912,127 +1911,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<List<MonitorInfo>> Re_GetMonitors()
         {
             writelog("DeviceMangerPlugin received Re_GetMonitors requested ...");
-
-            try
-            {
-                if (_AllInfoMonitors != null)
-                    _AllInfoMonitors.Clear();
-
-                if (_DisplayManagerPlugin == null)
-                {
-                    writelog("null _DisplayManagerPlugin in [Re_GetMonitors], retrun empty monitor list");
-                    return Task.FromResult(new List<MonitorInfo>());
-                }
-
-                if (isLetDisplayServiceIdle == true)
-                {
-                    writelog("The idle state is true to drop display settings change event, need caller to unblock this param");
-                    return Task.FromResult(new List<MonitorInfo>());
-                }
-
-                try
-                {
-                    if (_ReGetcancellationTokenSource != null)
-                        _ReGetcancellationTokenSource.Cancel();
-
-                    return Task.FromResult(_AllInfoMonitors);
-                }
-                catch (TaskCanceledException)
-                {
-                    if (_ReGetcancellationTokenSource != null)
-                        _ReGetcancellationTokenSource.Dispose();
-                    writelog("[DeviceMangerPlugin] Re_GetMonitors cancellation happened...");
-
-                    return Task.FromResult(_AllInfoMonitors);
-                }
-                catch (OperationCanceledException)
-                {
-                    if (_ReGetcancellationTokenSource != null)
-                        _ReGetcancellationTokenSource.Dispose();
-                    writelog("[DeviceMangerPlugin] Re_GetMonitors cancellation happened...");
-
-                    return Task.FromResult(_AllInfoMonitors);
-                }
-                catch (Exception ex)
-                {
-                    if (_ReGetcancellationTokenSource != null)
-                        _ReGetcancellationTokenSource.Dispose();
-                    // Failed to complete due to e exception
-                    writelog($"[DeviceMangerPlugin] --Task.Run(Re_GetMonitors) ...there is an exceptionI-- ({ex.Message})");
-
-                    return Task.FromResult(_AllInfoMonitors);
-                    //Done: let's be nice and don't swallow the exception
-                    //throw new InvalidOperationException("some exception happened but not about InitializeMonitorsList cancellation");
-                }
-                finally
-                {
-                    using (_ReGetcancellationTokenSource = new CancellationTokenSource())
-                    {
-                        try
-                        {
-                            var _cancellationTokenSource_tmp = CancellationTokenSource.CreateLinkedTokenSource(_ReGetcancellationTokenSource.Token);
-
-                            var token = _cancellationTokenSource_tmp.Token;
-
-                            writelog("[DeviceMangerPlugin] DeviceMangerPlugin into (Re_GetMonitors) ...");
-
-                            //TODO: May be you'll want to add .ConfigureAwait(false);
-                            Task.Run(() =>
-                            {
-                                try
-                                {
-                                    _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
-                                    ReviewAllMonitorToAvoidDuplicatedInfo();
-
-                                    InitMonitorSettings();
-
-                                    Task.Run(() =>
-                                    {
-                                        //Telementry Collection
-                                        var rt = false;
-                                        var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
-                                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
-                                        rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, _AllInfoMonitors);
-                                        if (rt)
-                                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
-                                        else
-                                            writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
-                                    }).ConfigureAwait(false);
-                                }
-                                catch (Exception ex)
-                                {
-                                    writelog("(Re_GetMonitors) happened Exception ... " + ex.Message);
-                                }
-                            }, token).ConfigureAwait(false);
-
-                            writelog("[DeviceMangerPlugin] DeviceMangerPlugin (Re_GetMonitors) finish ...");
-                        }
-                        catch (TaskCanceledException)
-                        {
-                            writelog("[DeviceMangerPlugin] DeviceMangerPlugin (Re_GetMonitors) cancellation happened ...");
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            writelog("[DeviceMangerPlugin] DeviceMangerPlugin (Re_GetMonitors) cancellation happened ...");
-                        }
-                        catch (Exception ex)
-                        {
-                            // Failed to complete due to e exception
-                            writelog($"[DeviceMangerPlugin] --Task.Run(Re_GetMonitors) ...there is an exceptionII-- ({ex.Message})");
-                        }
-                        finally
-                        {
-                            if (_ReGetcancellationTokenSource != null)
-                                _ReGetcancellationTokenSource.Dispose();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                writelog("[DeviceMangerPlugin] Initialize Monitors List Exception : " + ex.Message);
-                return Task.FromResult(_AllInfoMonitors);
-            }
+            _SystemEvents_DisplaySettingsChanged(null);
+            return Task.FromResult(_AllInfoMonitors.ToList());
         }
 
         public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo)
@@ -2929,7 +2809,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetIsMicEnumerationOn requested ...");
             writelog($"Target DeviceID is {deviceId}");
             _PeripheralsPlugin.SetIsMicEnumerationOn(newValue, deviceId);
-            return Task.FromResult(true);
+            return Task.CompletedTask;
         }
 
         public Task SetWALTime(int newValue, Guid deviceId)
@@ -3004,347 +2884,416 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //////////////////////////////////Set///////////////////////////////////
 
-        public async Task<bool> SetMicNoiseCancellationAsync(string guid, bool newValue)
+        public async Task<bool> SetMicNoiseCancellationAsync(string Guid, bool newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetMicNoiseCancellationAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetMicNoiseCancellationAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetMicNoiseCancellationAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetMicNoiseCancellationAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetMicNoiseCancellationAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetMicNoiseCancellationAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetMicNoiseCancellationAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetSidetoneAsync(string guid, bool newValue)
+        public async Task<bool> SetSidetoneAsync(string Guid, bool newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetSidetoneAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetSidetoneAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBusyLightAsync(string guid, bool newValue)
+        public async Task<bool> SetBusyLightAsync(string Guid, bool newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetBusyLightAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetBusyLightAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetBusyLightAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBusyLightAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBusyLightAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBusyLightAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBusyLightAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetVoiceGuidanceAsync(string guid, bool newValue)
+        public async Task<bool> SetVoiceGuidanceAsync(string Guid, bool newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetVoiceGuidanceAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetVoiceGuidanceAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetVoiceGuidanceAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetVoiceGuidanceAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetVoiceGuidanceAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetVoiceGuidanceAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetVoiceGuidanceAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetSelectedPresetAsync(string guid, int newValue)
+        public async Task<bool> SetSelectedPresetAsync(string Guid, int newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetSelectedPresetAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetSelectedPresetAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetSelectedPresetAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetSelectedPresetAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetSelectedPresetAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetSelectedPresetAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetSelectedPresetAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetSidetoneLevelAsync(string guid, int newValue)
+        public async Task<bool> SetSidetoneLevelAsync(string Guid, int newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetSidetoneLevelAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneLevelAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetSidetoneLevelAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneLevelAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneLevelAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneLevelAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetSidetoneLevelAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBandsGainAsync(string guid, byte[] newValue)
+        public async Task<bool> SetBandsGainAsync(string Guid, byte[] newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetBandsGainAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetBandsGainAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetBandsGainAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBandsGainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBandsGainAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBandsGainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBandsGainAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBand1GainAsync(string guid, int newValue)
+        public async Task<bool> SetBand1GainAsync(string Guid, int newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetBand1GainAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetBand1GainAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetBand1GainAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBand1GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBand1GainAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBand1GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand1GainAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBand2GainAsync(string guid, int newValue)
+        public async Task<bool> SetBand2GainAsync(string Guid, int newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetBand2GainAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetBand2GainAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetBand2GainAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBand2GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBand2GainAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBand2GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand2GainAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBand3GainAsync(string guid, int newValue)
+        public async Task<bool> SetBand3GainAsync(string Guid, int newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetBand3GainAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetBand3GainAsync success, value is {newValue.ToString()}");
+                bool result = await _DTPProxyPlugin.SetBand3GainAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBand3GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBand3GainAsync Fail");
                 return true;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBand3GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand3GainAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBand4GainAsync(string guid, int newValue)
+        public async Task<bool> SetBand4GainAsync(string Guid, int newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetBand4GainAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetBand4GainAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetBand4GainAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBand4GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBand4GainAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBand4GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand4GainAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBand5GainAsync(string guid, int newValue)
+        public async Task<bool> SetBand5GainAsync(string Guid, int newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetBand5GainAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetBand5GainAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetBand5GainAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBand5GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBand5GainAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBand5GainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBand5GainAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetAncModeAsync(string guid, int newValue)
+        public async Task<bool> SetAncModeAsync(string Guid, int newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetAncModeAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetAncModeAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetAncModeAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetAncModeAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetAncModeAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetAncModeAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetAncModeAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetAncGainAsync(string guid, int newValue)
+        public async Task<bool> SetAncGainAsync(string Guid, int newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetAncGainAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetAncGainAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetAncGainAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetAncGainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetAncGainAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetAncGainAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetAncGainAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetWearDetectionAsync(string guid, bool newValue)
+        public async Task<bool> SetWearDetectionAsync(string Guid, bool newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetWearDetectionAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetWearDetectionAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetIsWearDetectionMuteMicEnabledAsync(string guid, bool newValue)
+        public async Task<bool> SetIsWearDetectionMuteMicEnabledAsync(string Guid, bool newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetIsWearDetectionMuteMicEnabledAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionMuteMicEnabledAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetIsWearDetectionMuteMicEnabledAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionMuteMicEnabledAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionMuteMicEnabledAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionMuteMicEnabledAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionMuteMicEnabledAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetIsWearDetectionPauseMusicEnabledAsync(string guid, bool newValue)
+        public async Task<bool> SetIsWearDetectionPauseMusicEnabledAsync(string Guid, bool newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetIsWearDetectionPauseMusicEnabledAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionPauseMusicEnabledAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetIsWearDetectionPauseMusicEnabledAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionPauseMusicEnabledAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionPauseMusicEnabledAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionPauseMusicEnabledAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetIsWearDetectionPauseMusicEnabledAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetWearDetectionQuickPauseAsync(string guid, int newValue)
+        public async Task<bool> SetWearDetectionQuickPauseAsync(string Guid, int newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetWearDetectionQuickPauseAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionQuickPauseAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetWearDetectionQuickPauseAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionQuickPauseAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionQuickPauseAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionQuickPauseAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionQuickPauseAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetWearDetectionSensitivityAsync(string guid, int newValue)
+        public async Task<bool> SetWearDetectionSensitivityAsync(string Guid, int newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetWearDetectionSensitivityAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionSensitivityAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetWearDetectionSensitivityAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionSensitivityAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionSensitivityAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionSensitivityAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionSensitivityAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetMicNCIncomingAsync(string guid, bool newValue)
+        public async Task<bool> SetMicNCIncomingAsync(string Guid, bool newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetMicNCIncomingAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetMicNCIncomingAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetMicNCIncomingAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetMicNCIncomingAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetMicNCIncomingAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetMicNCIncomingAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetMicNCIncomingAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetUnPairAsync(string guid, bool newValue)
+        public async Task<bool> SetUnPairAsync(string Guid, bool newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetUnPairAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetUnPairAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetUnPairAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetUnPairAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetUnPairAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetUnPairAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetUnPairAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetFactoryResetAsyncValueForHeadset(string guid, bool newValue)
+        public async Task<bool> SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetFactoryResetAsyncValueForHeadset(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetFactoryResetAsyncValueForHeadset(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsyncValueForHeadset Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsyncValueForHeadset Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetBoomMicAsync(string guid, bool newValue)
+        public async Task<bool> SetBoomMicAsync(string Guid, bool newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetBoomMicAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Headset] SetBoomMicAsync success, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetBoomMicAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBoomMicAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetBoomMicAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] SetBoomMicAsync failed for GUID: {guid}, Error: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] SetBoomMicAsync failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
@@ -3356,8 +3305,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 var result = await _DTPProxyPlugin.GetHeadsetDeviceItemsExAsync();
-                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceItemsExAsync Success, value is {result.ToString()}");
-                return result;
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetDeviceItemsExAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetDeviceItemsExAsync value is null");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
@@ -3366,924 +3323,1196 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<DeviceInterfaceType> GetHeadsetInterfaceTypeAsync(string guid)
+        public async Task<DeviceInterfaceType> GetHeadsetInterfaceTypeAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetInterfaceTypeAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetInterfaceTypeAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetHeadsetInterfaceTypeAsync(Guid);
+                writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetInterfaceTypeAsync succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetInterfaceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetInterfaceTypeAsync failed for {Guid} - Exception: {ex.Message}");
                 return default(DeviceInterfaceType);
             }
         }
 
-        public async Task<string> GetHeadsetDeviceNameAsync(string guid)
+        public async Task<string> GetHeadsetDeviceNameAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetDeviceNameAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceNameAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceNameAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetDeviceNameAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetDeviceNameAsync value is null");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceNameAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceNameAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetDeviceIdAsync(string guid)
+        public async Task<string> GetHeadsetDeviceIdAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetDeviceIdAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceIdAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceIdAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetDeviceIdAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetDeviceIdAsync value is null");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceIdAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceIdAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetPluginIdAsync(string guid)
+        public async Task<string> GetHeadsetPluginIdAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetPluginIdAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetPluginIdAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetPluginIdAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPluginIdAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPluginIdAsync value is null");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetPluginIdAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetPluginIdAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<int> GetHeadsetODMIdAsync(string guid)
+        public async Task<int> GetHeadsetODMIdAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetODMIdAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetODMIdAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetODMIdAsync(Guid);
+                if (result != -1)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetODMIdAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetODMIdAsync value is -1");
+                    return -1;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetODMIdAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetODMIdAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<string> GetHeadsetModelNumberAsync(string guid)
+        public async Task<string> GetHeadsetModelNumberAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetModelNumberAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetModelNumberAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetModelNumberAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetModelNumberAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetModelNumberAsync value is null");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetModelNumberAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetModelNumberAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<int> GetHeadsetInstanceNumberAsync(string guid)
+        public async Task<int> GetHeadsetInstanceNumberAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetInstanceNumberAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetInstanceNumberAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetInstanceNumberAsync(Guid);
+                if (result != -1)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetInstanceNumberAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetInstanceNumberAsync value is -1");
+                    return -1;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetInstanceNumberAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetInstanceNumberAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetHeadsetInstanceIdAsync(string guid)
+        public async Task<int> GetHeadsetInstanceIdAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetInstanceIdAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetInstanceIdAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetInstanceIdAsync(Guid);
+                if (result != -1)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetInstanceIdAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetInstanceIdAsync value is -1");
+                    return -1;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetInstanceIdAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetInstanceIdAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<string> GetHeadsetFirmwareVersionAsync(string guid)
+        public async Task<string> GetHeadsetFirmwareVersionAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetFirmwareVersionAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetFirmwareVersionAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetFirmwareVersionAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetFirmwareVersionAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetFirmwareVersionAsync value is null");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetFirmwareVersionAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetFirmwareVersionAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetDeviceTypeAsync(string guid)
+        public async Task<string> GetHeadsetDeviceTypeAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetDeviceTypeAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceTypeAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceTypeAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetDeviceTypeAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetDeviceTypeAsync value is null");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceTypeAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetParentDeviceTypeAsync(string guid)
+        public async Task<string> GetHeadsetParentDeviceTypeAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetParentDeviceTypeAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetParentDeviceTypeAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetParentDeviceTypeAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetParentDeviceTypeAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetParentDeviceTypeAsync value is null");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetParentDeviceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetParentDeviceTypeAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<bool> GetHeadsetIsBatteryLevelSupportedAsync(string guid)
+        public async Task<bool> GetHeadsetIsBatteryLevelSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetIsBatteryLevelSupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsBatteryLevelSupportedAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetHeadsetIsBatteryLevelSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetIsBatteryLevelSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetIsBatteryLevelSupportedAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsBatteryLevelSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsBatteryLevelSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<int> GetHeadsetBatteryLevelAsync(string guid)
+        public async Task<int> GetHeadsetBatteryLevelAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetBatteryLevelAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetBatteryLevelAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetBatteryLevelAsync(Guid);
+                if (result != -1)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetBatteryLevelAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetBatteryLevelAsync value is -1");
+                    return -1;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBatteryLevelAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBatteryLevelAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<string> GetHeadsetDeviceBatteryStatusAsync(string guid)
+        public async Task<string> GetHeadsetDeviceBatteryStatusAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetDeviceBatteryStatusAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceBatteryStatusAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetDeviceBatteryStatusAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetDeviceBatteryStatusAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetDeviceBatteryStatusAsync value is null");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceBatteryStatusAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetDeviceBatteryStatusAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetPairingStatusAsync(string guid)
+        public async Task<string> GetHeadsetPairingStatusAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetPairingStatusAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetPairingStatusAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetPairingStatusAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPairingStatusAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPairingStatusAsync value is null");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetPairingStatusAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairingStatusAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetPairedHostName1Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName1Async(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName1Async(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName1Async succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName1Async(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPairedHostName1Async Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPairedHostName1Async value is null");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName1Async failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName1Async failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetPairedHostName2Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName2Async(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName2Async(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName2Async succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName2Async(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPairedHostName2Async Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPairedHostName2Async value is null");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName2Async failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName2Async failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetHeadsetPairedHostName3Async(string guid)
+        public async Task<string> GetHeadsetPairedHostName3Async(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName3Async(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName3Async succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetPairedHostName3Async(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPairedHostName3Async Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPairedHostName3Async value is null");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName3Async failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedHostName3Async failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<int> GetHeadsetMaxPairingSlotsAsync(string guid)
+        public async Task<int> GetHeadsetMaxPairingSlotsAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetMaxPairingSlotsAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetMaxPairingSlotsAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetMaxPairingSlotsAsync(Guid);
+                if (result != -1)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetMaxPairingSlotsAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetMaxPairingSlotsAsync value is -1");
+                    return -1;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetMaxPairingSlotsAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetMaxPairingSlotsAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetHeadsetPairedDeviceCountAsync(string guid)
+        public async Task<int> GetHeadsetPairedDeviceCountAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetPairedDeviceCountAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetPairedDeviceCountAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetPairedDeviceCountAsync(Guid);
+                if (result != -1)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPairedDeviceCountAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetPairedDeviceCountAsync value is -1");
+                    return -1;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetPairedDeviceCountAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetPairedDeviceCountAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetHeadsetTotalNumberOfPairedHostNameAsync(string guid)
+        public async Task<int> GetHeadsetTotalNumberOfPairedHostNameAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetTotalNumberOfPairedHostNameAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetTotalNumberOfPairedHostNameAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetTotalNumberOfPairedHostNameAsync(Guid);
+                if (result != -1)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetTotalNumberOfPairedHostNameAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetTotalNumberOfPairedHostNameAsync value is -1");
+                    return -1;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetTotalNumberOfPairedHostNameAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetTotalNumberOfPairedHostNameAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<string> GetHeadsetSerialNumberAsync(string guid)
+        public async Task<string> GetHeadsetSerialNumberAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetHeadsetSerialNumberAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetSerialNumberAsync succeeded, value is {result.ToString()}");
-                return result;
+                var result = await _DTPProxyPlugin.GetHeadsetSerialNumberAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetSerialNumberAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [Headset] GetHeadsetSerialNumberAsync value is null");
+                    return null;
+                }
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetSerialNumberAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetSerialNumberAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<bool> GetIsReadyAsync(string guid)
+        public async Task<bool> GetIsReadyAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsReadyAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsReadyAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetIsReadyAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsReadyAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsReadyAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsReadyAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsReadyAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsDirtyAsync(string guid)
+        public async Task<bool> GetIsDirtyAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsDirtyAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsDirtyAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetIsDirtyAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsDirtyAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsDirtyAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsDirtyAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsDirtyAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsMicNoiseCancellationSupportedAsync(string guid)
+        public async Task<bool> GetIsMicNoiseCancellationSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsMicNoiseCancellationSupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNoiseCancellationSupportedAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetIsMicNoiseCancellationSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNoiseCancellationSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNoiseCancellationSupportedAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNoiseCancellationSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNoiseCancellationSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsSidetoneSupportedAsync(string guid)
+        public async Task<bool> GetIsSidetoneSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsSidetoneSupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsSidetoneSupportedAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetIsSidetoneSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsSidetoneSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsSidetoneSupportedAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsSidetoneSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsSidetoneSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsBusyLightSupportedAsync(string guid)
+        public async Task<bool> GetIsBusyLightSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsBusyLightSupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsBusyLightSupportedAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetIsBusyLightSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsBusyLightSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsBusyLightSupportedAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsBusyLightSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsBusyLightSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsVoiceGuidanceSupportedAsync(string guid)
+        public async Task<bool> GetIsVoiceGuidanceSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsVoiceGuidanceSupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsVoiceGuidanceSupportedAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetIsVoiceGuidanceSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsVoiceGuidanceSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsVoiceGuidanceSupportedAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsVoiceGuidanceSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsVoiceGuidanceSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsPresetsSupportedAsync(string guid)
+        public async Task<bool> GetIsPresetsSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsPresetsSupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsPresetsSupportedAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetIsPresetsSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsPresetsSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsPresetsSupportedAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsPresetsSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsPresetsSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsEqualizerSupportedAsync(string guid)
+        public async Task<bool> GetIsEqualizerSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsEqualizerSupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsEqualizerSupportedAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetIsEqualizerSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsEqualizerSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsEqualizerSupportedAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsEqualizerSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<HeadsetConnectionType> GetConnectionTypeAsync(string guid)
+        public async Task<HeadsetConnectionType> GetConnectionTypeAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetConnectionTypeAsync(guid);
+                //It's enum HeadsetConnectionType
+                var result = await _DTPProxyPlugin.GetConnectionTypeAsync(Guid);
                 writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetConnectionTypeAsync failed for {Guid} - Exception: {ex.Message}");
                 return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
             }
         }
 
-        public async Task<bool> GetIsANCSupportedAsync(string guid)
+        public async Task<bool> GetIsANCSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsANCSupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsANCSupportedAsync succeeded, value is {result.ToString()}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsANCSupportedAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
-
-        public async Task<bool> GetIsWearDetectionSupportedAsync(string guid)
-        {
-            try
-            {
-                var result = await _DTPProxyPlugin.GetIsWearDetectionSupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSupportedAsync succeeded, value is {result.ToString()}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSupportedAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
-
-        public async Task<bool> GetIsWearDetectionSensitivitySupportedAsync(string guid)
-        {
-            try
-            {
-                var result = await _DTPProxyPlugin.GetIsWearDetectionSensitivitySupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSensitivitySupportedAsync succeeded, value is {result.ToString()}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSensitivitySupportedAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
-
-        public async Task<bool> GetIsWearDetectionPauseMusicSupportedAsync(string guid)
-        {
-            try
-            {
-                var result = await _DTPProxyPlugin.GetIsWearDetectionPauseMusicSupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicSupportedAsync succeeded, value is {result.ToString()}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicSupportedAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
-
-        public async Task<bool> GetIsWearDetectionMuteMicSupportedAsync(string guid)
-        {
-            try
-            {
-                var result = await _DTPProxyPlugin.GetIsWearDetectionMuteMicSupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicSupportedAsync succeeded, value is {result.ToString()}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicSupportedAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
-
-        public async Task<bool> GetIsWearDetectionQuickPauseSupportedAsync(string guid)
-        {
-            try
-            {
-                var result = await _DTPProxyPlugin.GetIsWearDetectionQuickPauseSupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionQuickPauseSupportedAsync succeeded, value is {result.ToString()}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionQuickPauseSupportedAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
-
-        public async Task<bool> GetMicNoiseCancellationAsync(string guid)
-        {
-            try
-            {
-                var result = await _DTPProxyPlugin.GetMicNoiseCancellationAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetMicNoiseCancellationAsync succeeded, value is {result.ToString()}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DeviceManagerPlugin] [Headset] GetMicNoiseCancellationAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
-
-        public async Task<bool> GetMicNCIncomingAsync(string guid)
-        {
-            try
-            {
-                var result = await _DTPProxyPlugin.GetMicNCIncomingAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetMicNCIncomingAsync succeeded, value is {result.ToString()}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DeviceManagerPlugin] [Headset] GetMicNCIncomingAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
-
-        public async Task<bool> GetSidetoneAsync(string guid)
-        {
-            try
-            {
-                var result = await _DTPProxyPlugin.GetSidetoneAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneAsync succeeded for {result.ToString()}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
-
-        public async Task<bool> GetBusyLightAsync(string guid)
-        {
-            try
-            {
-                var result = await _DTPProxyPlugin.GetBusyLightAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetBusyLightAsync succeeded for {result.ToString()}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBusyLightAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
-
-        public async Task<bool> GetVoiceGuidanceAsync(string guid)
-        {
-            try
-            {
-                var result = await _DTPProxyPlugin.GetVoiceGuidanceAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetVoiceGuidanceAsync succeeded for {result.ToString()}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DeviceManagerPlugin] [Headset] GetVoiceGuidanceAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
-
-        public async Task<int> GetSelectedPresetAsync(string guid)
-        {
-            try
-            {
-                var result = await _DTPProxyPlugin.GetSelectedPresetAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetSelectedPresetAsync succeeded for {result.ToString()}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DeviceManagerPlugin] [Headset] GetSelectedPresetAsync failed for {guid} - Exception: {ex.Message}");
-                return -1;
-            }
-        }
-
-        public async Task<int> GetSidetoneLevelAsync(string guid)
-        {
-            try
-            {
-                var result = await _DTPProxyPlugin.GetSidetoneLevelAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneLevelAsync succeeded for {result.ToString()}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneLevelAsync failed for {guid} - Exception: {ex.Message}");
-                return -1;
-            }
-        }
-
-        public async Task<bool> GetMuteStatusAsync(string guid)
-        {
-            try
-            {
-                var result = await _DTPProxyPlugin.GetMuteStatusAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetMuteStatusAsync succeeded for {result.ToString()}");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DeviceManagerPlugin] [Headset] GetMuteStatusAsync failed for {guid} - Exception: {ex.Message}");
-                return false;
-            }
-        }
-
-        public async Task<byte[]> GetBandsGainAsync(string guid)
-        {
-            try
-            {
-                var result = await _DTPProxyPlugin.GetBandsGainAsync(guid);
-                if (result != null)
-                {
-                    writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync succeeded, result length is {result.Length}");
-                }
+                var result = await _DTPProxyPlugin.GetIsANCSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsANCSupportedAsync Success");
                 else
-                {
-                    writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync succeeded, but result is null");
-                }
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsANCSupportedAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsANCSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWearDetectionSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionSensitivitySupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWearDetectionSensitivitySupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSensitivitySupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSensitivitySupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionSensitivitySupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionPauseMusicSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWearDetectionPauseMusicSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionMuteMicSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWearDetectionMuteMicSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsWearDetectionQuickPauseSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsWearDetectionQuickPauseSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionQuickPauseSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionQuickPauseSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionQuickPauseSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetMicNoiseCancellationAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetMicNoiseCancellationAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetMicNoiseCancellationAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetMicNoiseCancellationAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetMicNoiseCancellationAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetMicNCIncomingAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetMicNCIncomingAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetMicNCIncomingAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetMicNCIncomingAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetMicNCIncomingAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetSidetoneAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetSidetoneAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetBusyLightAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBusyLightAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBusyLightAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBusyLightAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBusyLightAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetVoiceGuidanceAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetVoiceGuidanceAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetVoiceGuidanceAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetVoiceGuidanceAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetVoiceGuidanceAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<int> GetSelectedPresetAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetSelectedPresetAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetVoiceGuidanceAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetVoiceGuidanceAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetSelectedPresetAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetSidetoneLevelAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetSidetoneLevelAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneLevelAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneLevelAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetSidetoneLevelAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<bool> GetMuteStatusAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetMuteStatusAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetMuteStatusAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetMuteStatusAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetMuteStatusAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<byte[]> GetBandsGainAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetBandsGainAsync(Guid);
+                if (result != null)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync succeeded, result length is {result.Length}");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync succeeded, but result is null");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] GetBandsGainAsync failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<int> GetBand1GainAsync(string guid)
+        public async Task<int> GetBand1GainAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBand1GainAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetBand1GainAsync succeeded for {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetBand1GainAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBand1GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBand1GainAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBand1GainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand1GainAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetBand2GainAsync(string guid)
+        public async Task<int> GetBand2GainAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBand2GainAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetBand2GainAsync succeeded for {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetBand2GainAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBand2GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBand2GainAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBand2GainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand2GainAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetBand3GainAsync(string guid)
+        public async Task<int> GetBand3GainAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBand3GainAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetBand3GainAsync succeeded for {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetBand3GainAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBand3GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBand3GainAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBand3GainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand3GainAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetBand4GainAsync(string guid)
+        public async Task<int> GetBand4GainAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBand4GainAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetBand4GainAsync succeeded for {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetBand4GainAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBand4GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBand4GainAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBand4GainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand4GainAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetBand5GainAsync(string guid)
+        public async Task<int> GetBand5GainAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBand5GainAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetBand5GainAsync succeeded for {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetBand5GainAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBand5GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBand5GainAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBand5GainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBand5GainAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetAncModeAsync(string guid)
+        public async Task<int> GetAncModeAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetAncModeAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetAncModeAsync succeeded for {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetAncModeAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetAncModeAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetAncModeAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetAncModeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetAncModeAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetAncGainAsync(string guid)
+        public async Task<int> GetAncGainAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetAncGainAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetAncGainAsync succeeded for {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetAncGainAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetAncGainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetAncGainAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetAncGainAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetAncGainAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<bool> GetWearDetectionAsync(string guid)
+        public async Task<bool> GetWearDetectionAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetWearDetectionAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionAsync succeeded for {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetWearDetectionAsync(Guid);
+
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsWearDetectionPauseMusicEnabledAsync(string guid)
+        public async Task<bool> GetIsWearDetectionPauseMusicEnabledAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsWearDetectionPauseMusicEnabledAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicEnabledAsync succeeded for {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetIsWearDetectionPauseMusicEnabledAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicEnabledAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicEnabledAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicEnabledAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionPauseMusicEnabledAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsWearDetectionMuteMicEnabledAsync(string guid)
+        public async Task<bool> GetIsWearDetectionMuteMicEnabledAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsWearDetectionMuteMicEnabledAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicEnabledAsync succeeded for {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetIsWearDetectionMuteMicEnabledAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicEnabledAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicEnabledAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicEnabledAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsWearDetectionMuteMicEnabledAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<int> GetWearDetectionSensitivityAsync(string guid)
+        public async Task<int> GetWearDetectionSensitivityAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetWearDetectionSensitivityAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionSensitivityAsync succeeded for {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetWearDetectionSensitivityAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionSensitivityAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionSensitivityAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionSensitivityAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionSensitivityAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetWearDetectionQuickPauseAsync(string guid)
+        public async Task<int> GetWearDetectionQuickPauseAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetWearDetectionQuickPauseAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionQuickPauseAsync succeeded for {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetWearDetectionQuickPauseAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionQuickPauseAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionQuickPauseAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionQuickPauseAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetWearDetectionQuickPauseAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<bool> GetIsMicNCIncomingSupportedAsync(string guid)
+        public async Task<bool> GetIsMicNCIncomingSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsMicNCIncomingSupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNCIncomingSupportedAsync succeeded for {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetIsMicNCIncomingSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNCIncomingSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNCIncomingSupportedAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNCIncomingSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsMicNCIncomingSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsBoomMicSupportedAsync(string guid)
+        public async Task<bool> GetIsBoomMicSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsBoomMicSupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsBoomMicSupportedAsync succeeded for {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetIsBoomMicSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsBoomMicSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsBoomMicSupportedAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetIsBoomMicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetIsBoomMicSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetBoomMicAsync(string guid)
+        public async Task<bool> GetBoomMicAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBoomMicAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Headset] GetBoomMicAsync succeeded for {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetBoomMicAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBoomMicAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBoomMicAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Headset] GetBoomMicAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Headset] GetBoomMicAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -4294,244 +4523,292 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //////////////////////////////////Set///////////////////////////////////
 
-        public async Task<bool> SetBassAsync(string guid, int newValue)
+        public async Task<bool> SetBassAsync(string Guid, int newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetBassAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Speaker] SetBassAsync succeeded, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetBassAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetBassAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetBassAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetBassAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetBassAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetMidRangeAsync(string guid, int newValue)
+        public async Task<bool> SetMidRangeAsync(string Guid, int newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetMidRangeAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Speaker] SetMidRangeAsync succeeded, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetMidRangeAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetMidRangeAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetMidRangeAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetMidRangeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetMidRangeAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetTrebleAsync(string guid, int newValue)
+        public async Task<bool> SetTrebleAsync(string Guid, int newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetTrebleAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Speaker] SetTrebleAsync succeeded, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetTrebleAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetTrebleAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetTrebleAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetTrebleAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetTrebleAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetProfileForSpeaker(string guid, string newValue)
+        public async Task<bool> SetProfileForSpeaker(string Guid, string newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetProfileForSpeaker(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Speaker] SetProfileForSpeaker succeeded, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetProfileForSpeaker(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetProfileForSpeaker Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetProfileForSpeaker Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetProfileForSpeaker failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetProfileForSpeaker failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetIsWiredAudioMicMuteSoundEnableAsync(string guid, bool newValue)
+        public async Task<bool> SetIsWiredAudioMicMuteSoundEnableAsync(string Guid, bool newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetIsWiredAudioMicMuteSoundEnableAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioMicMuteSoundEnableAsync succeeded, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetIsWiredAudioMicMuteSoundEnableAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioMicMuteSoundEnableAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioMicMuteSoundEnableAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioMicMuteSoundEnableAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioMicMuteSoundEnableAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetWiredAudioVolumeAdjustmentToneAsync(string guid, int newValue)
+        public async Task<bool> SetWiredAudioVolumeAdjustmentToneAsync(string Guid, int newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetWiredAudioVolumeAdjustmentToneAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Speaker] SetWiredAudioVolumeAdjustmentToneAsync succeeded, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetWiredAudioVolumeAdjustmentToneAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetWiredAudioVolumeAdjustmentToneAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetWiredAudioVolumeAdjustmentToneAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetWiredAudioVolumeAdjustmentToneAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetWiredAudioVolumeAdjustmentToneAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetIsWiredAudioIMicNSEnableAsync(string guid, bool newValue)
+        public async Task<bool> SetIsWiredAudioIMicNSEnableAsync(string Guid, bool newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetIsWiredAudioIMicNSEnableAsync(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioIMicNSEnableAsync succeeded, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetIsWiredAudioIMicNSEnableAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioIMicNSEnableAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioIMicNSEnableAsync Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioIMicNSEnableAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetIsWiredAudioIMicNSEnableAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> SetResetToDefaultAsyncForSoundbar(string guid, bool newValue)
+        public async Task<bool> SetResetToDefaultAsyncForSoundbar(string Guid, bool newValue)
         {
             try
             {
-                await _DTPProxyPlugin.SetResetToDefaultAsyncForSoundbar(guid, newValue);
-                writelog($"[DeviceManagerPlugin] [Speaker] SetResetToDefaultAsyncForSoundbar succeeded, value is {newValue.ToString()}");
-                return true;
+                bool result = await _DTPProxyPlugin.SetResetToDefaultAsyncForSoundbar(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetResetToDefaultAsyncForSoundbar Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] SetResetToDefaultAsyncForSoundbar Fail");
+                return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] SetResetToDefaultAsyncForSoundbar failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] SetResetToDefaultAsyncForSoundbar failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
         //////////////////////////////////Get///////////////////////////////////
 
-        public async Task<string> GetProfileAsync(string guid)
+        public async Task<string> GetProfileAsync(string item)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetProfileAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Speaker] GetProfileAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetProfileAsync(item);
+                if (result != null)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetProfileAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetProfileAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetProfileAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetProfileAsync failed for {item} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<int> GetBassAsync(string guid)
+        public async Task<int> GetBassAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetBassAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Speaker] GetBassAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetBassAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBassAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetBassAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetBassAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetBassAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetMidRangeAsync(string guid)
+        public async Task<int> GetMidRangeAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetMidRangeAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Speaker] GetMidRangeAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetMidRangeAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetMidRangeAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetMidRangeAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetMidRangeAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetMidRangeAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<int> GetTrebleAsync(string guid)
+        public async Task<int> GetTrebleAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetTrebleAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Speaker] GetTrebleAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetTrebleAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetTrebleAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetTrebleAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetTrebleAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetTrebleAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string guid)
+        public async Task<bool> GetIsWiredAudioMicMuteSoundEnableAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioMicMuteSoundEnableAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWiredAudioMicMuteSoundEnableAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWiredAudioMicMuteSoundEnableAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioMicMuteSoundEnableAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioMicMuteSoundEnableAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string guid)
+        public async Task<int> GetWiredAudioVolumeAdjustmentToneAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioVolumeAdjustmentToneAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetWiredAudioVolumeAdjustmentToneAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetWiredAudioVolumeAdjustmentToneAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioVolumeAdjustmentToneAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioVolumeAdjustmentToneAsync failed for {Guid} - Exception: {ex.Message}");
                 return -1;
             }
         }
 
-        public async Task<bool> GetIsWiredAudioIMicNSEnableAsync(string guid)
+        public async Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioIMicNSEnableAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWiredAudioIMicNSEnableAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWiredAudioIMicNSEnableAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioIMicNSEnableAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioIMicNSEnableAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsAudioEqualizerSupportedAsync(string guid)
+        public async Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsAudioEqualizerSupportedAsync(guid);
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsAudioEqualizerSupportedAsync succeeded, value is {result.ToString()}");
+                var result = await _DTPProxyPlugin.GetIsAudioEqualizerSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsAudioEqualizerSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetIsAudioEqualizerSupportedAsync Fail");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsAudioEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsAudioEqualizerSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -4541,7 +4818,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 var result = await _DTPProxyPlugin.GetMuteStatusAsyncForSpeaker(guid);
-                writelog($"[DeviceManagerPlugin] [Speaker] GetMuteStatusAsyncForSpeaker succeeded, value is {result.ToString()}");
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] GetMuteStatusAsyncForSpeaker Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] GetMuteStatusAsyncForSpeaker Fail");
                 return result;
             }
             catch (Exception ex)
@@ -4555,77 +4835,77 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region Dongle
 
-        public async Task<string> GetFirmwareVersionAsyncForDongle(string guid)
+        public async Task<string> GetFirmwareVersionAsyncForDongle(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetFirmwareVersionAsyncForDongle(guid);
+                var result = await _DTPProxyPlugin.GetFirmwareVersionAsyncForDongle(Guid);
                 writelog($"[DeviceManagerPlugin] [Dongle] GetFirmwareVersionAsyncForDongle succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Dongle] GetFirmwareVersionAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Dongle] GetFirmwareVersionAsyncForDongle failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetConnectedDeviceInfoAsyncForDongle(string guid)
+        public async Task<string> GetConnectedDeviceInfoAsyncForDongle(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetConnectedDeviceInfoAsyncForDongle(guid);
+                var result = await _DTPProxyPlugin.GetConnectedDeviceInfoAsyncForDongle(Guid);
                 writelog($"[DeviceManagerPlugin] [Dongle] GetConnectedDeviceInfoAsyncForDongle succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Dongle] GetConnectedDeviceInfoAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Dongle] GetConnectedDeviceInfoAsyncForDongle failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetDeviceIdAsyncForDongle(string guid)
+        public async Task<string> GetDeviceIdAsyncForDongle(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetDeviceIdAsyncForDongle(guid);
+                var result = await _DTPProxyPlugin.GetDeviceIdAsyncForDongle(Guid);
                 writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceIdAsyncForDongle succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceIdAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceIdAsyncForDongle failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<string> GetPluginIdAsyncForDongle(string guid)
+        public async Task<string> GetPluginIdAsyncForDongle(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetPluginIdAsyncForDongle(guid);
+                var result = await _DTPProxyPlugin.GetPluginIdAsyncForDongle(Guid);
                 writelog($"[DeviceManagerPlugin] [Dongle] GetPluginIdAsyncForDongle succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Dongle] GetPluginIdAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Dongle] GetPluginIdAsyncForDongle failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
 
-        public async Task<JArray> GetDeviceItemsExAsyncForDongle(string guid)
+        public async Task<JArray> GetDeviceItemsExAsyncForDongle(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetDeviceItemsExAsyncForDongle(guid);
+                var result = await _DTPProxyPlugin.GetDeviceItemsExAsyncForDongle(Guid);
                 writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceItemsExAsyncForDongle succeeded, value is {result.ToString()}");
                 return result;
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceItemsExAsyncForDongle failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Dongle] GetDeviceItemsExAsyncForDongle failed for {Guid} - Exception: {ex.Message}");
                 return null;
             }
         }
@@ -5958,97 +6238,97 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<Dictionary<string, PCsInfo>> GetUSBKVMPCsList(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputList, List<InputSourceObj> subInputList)
         {
             Dictionary<string, PCsInfo> USBKVMPCsList = new Dictionary<string, PCsInfo>();
-            if (monitorInfo != null && inputList != null && subInputList != null)
-            {
-                if (inputList.Count != 0 && subInputList.Count != 0)
-                {
-                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                }
-                else
-                {
-                    writelog("[GetUSBKVMPCsList]inputList or subInputList count is 0");
-                }
-            }
-            else
-            {
-                writelog("[GetUSBKVMPCsList]monitorInfo or inputList or subInputList is null");
-            }
-            //if (inputList != null && subInputList != null)
+            //if (monitorInfo != null && inputList != null && subInputList != null)
             //{
-            //    if (GetOnUSBKVM(monitorInfo).Result)
+            //    if (inputList.Count != 0 && subInputList.Count != 0)
             //    {
-            //        //get monitor settings
-            //        List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-            //        if (settings != null)
-            //        {
-            //            //get monitor setting
-            //            DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
-            //            if (monitorSetting == null)
-            //            {
-            //                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-            //                //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
-            //            }
-            //            else
-            //            {
-            //                try
-            //                {
-            //                    if (!string.IsNullOrEmpty(monitorSetting.KVM.strUSBKVMPCsList))
-            //                    {
-            //                        USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
-            //                        if (USBKVMPCsList != null)
-            //                        {
-            //                            if (USBKVMPCsList.Count > 1)
-            //                            {
-            //                                foreach (var pc in USBKVMPCsList)
-            //                                {
-            //                                    if (string.IsNullOrEmpty(pc.Key) || pc.Value == null)
-            //                                    {
-            //                                        USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-            //                                        break;
-            //                                    }
-            //                                    else
-            //                                    {
-            //                                        string usbUpstream = GetUSBUpstream(monitorInfo, pc.Value.InputType).Result;
-            //                                        if (string.IsNullOrEmpty(usbUpstream))
-            //                                        {
-            //                                            writelog("[GetUSBKVMPCsList]usbUpstream is null or empty.");
-            //                                        }
-            //                                        else
-            //                                        {
-            //                                            pc.Value.USBUpstream = usbUpstream;
-            //                                        }
-            //                                    }
-            //                                }
-            //                            }
-            //                            else
-            //                            {
-            //                                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-            //                            }
-            //                        }
-            //                    }
-            //                    else
-            //                    {
-            //                        USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-            //                        //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
-            //                    }
-            //                }
-            //                catch (Exception e)
-            //                {
-            //                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-            //                    //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
-            //                }
-            //            }
-            //        }
+            //        USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
             //    }
             //    else
             //    {
-            //        USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+            //        writelog("[GetUSBKVMPCsList]inputList or subInputList count is 0");
             //    }
             //}
             //else
             //{
-            //    writelog("[GetUSBKVMPCsList]inputList or subInputList is null");
+            //    writelog("[GetUSBKVMPCsList]monitorInfo or inputList or subInputList is null");
             //}
+            if (inputList != null && subInputList != null)
+            {
+                if (GetOnUSBKVM(monitorInfo).Result)
+                {
+                    //get monitor settings
+                    List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+                    if (settings != null)
+                    {
+                        //get monitor setting
+                        DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
+                        if (monitorSetting == null)
+                        {
+                            USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                            //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
+                        }
+                        else
+                        {
+                            try
+                            {
+                                if (!string.IsNullOrEmpty(monitorSetting.KVM.strUSBKVMPCsList))
+                                {
+                                    USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
+                                    if (USBKVMPCsList != null)
+                                    {
+                                        if (USBKVMPCsList.Count > 1)
+                                        {
+                                            foreach (var pc in USBKVMPCsList)
+                                            {
+                                                if (string.IsNullOrEmpty(pc.Key) || pc.Value == null)
+                                                {
+                                                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                                                    break;
+                                                }
+                                                else
+                                                {
+                                                    string usbUpstream = GetUSBUpstream(monitorInfo, pc.Value.InputType).Result;
+                                                    if (string.IsNullOrEmpty(usbUpstream))
+                                                    {
+                                                        writelog("[GetUSBKVMPCsList]usbUpstream is null or empty.");
+                                                    }
+                                                    else
+                                                    {
+                                                        pc.Value.USBUpstream = usbUpstream;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                                    //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                                //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                }
+            }
+            else
+            {
+                writelog("[GetUSBKVMPCsList]inputList or subInputList is null");
+            }
 
             return Task.FromResult(USBKVMPCsList);
         }
@@ -6408,7 +6688,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region EasyArrage
 
+        #region Properties - EasyArrange
+
         /// <summary>
+        /// The last error string after a EAPlugin method return error.
+        /// </summary>
+        public string EALastError
+        {
+            get
+            {
+                if (_DisplayManagerPlugin != null)
+                    return "DisplayManagerPlugin is not constructed.";
+                return _DisplayManagerPlugin.EALastError;
+            }
+        }
+
+        #endregion Properties - EasyArrange
+
+        #region EAFunctionEanbled - EasyArrange
+
+        /// <summary>
+        /// Robert_Lin, 2024-12-12, To be removed. Use
         /// Enable/Disable EasyArrange function for all monitors.
         /// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
         /// but user can edit/setup in DDPM.UI and save their settings.
@@ -6424,6 +6724,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
+        /// <summary>
+        /// Robert_Lin, 2024-12-12, To be removed.
+        /// Old method for CLI
+        /// </summary>
+        /// <returns></returns>
         public Task<ObjGetVCP> GetEAFunctionEnabled()
         {
             if (_DisplayManagerPlugin != null)
@@ -6433,141 +6738,206 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult<ObjGetVCP>(new ObjGetVCP() { result = false, value = false });
         }
 
-        /// <summary>
-        /// Set current WorkSplit (selected layout).
-        /// EAPlugin will show the new WorkSpit layout on the target "Screen" and autofade-out.
-        /// This method will not save to settings file, please use WriteEAMonitorSettings() to
-        /// save new per-monitor settings.
-        /// </summary>
-        /// <param name="monitorInfo">The target monitor, EAPlugin will use this to find the target "Screen"</param>
-        /// <param name="cellCount"></param>
-        /// <param name="splitKey"></param>
-        /// <param name="settings"></param>
-        /// <returns>Always true unless DisplayManager is not ready</returns>
-        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings)
+        #endregion EAFunctionEanbled - EasyArrange
+
+        #region EzSettings - EasyArrange
+
+        public Task<EzSettings> ReadEzSettings()
         {
-            if (_DisplayManagerPlugin != null)
+            //Read DDPMSettings
+            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (ddpmSettings != null)
             {
-                _DisplayManagerPlugin.SetEAWrokSplit(monitorInfo, cellCount, splitKey, settings);
-                //Telemetry
-                //Robert_Lin, 2024-11-15, add monitorInfo for PIMS-321601
-                SendEasyArrangeTelemetry("Change_layout", monitorInfo);
+                return Task.FromResult(ddpmSettings.UserSettings.EzSettings);
             }
+            //Fail to read, will return the default settings
+            return Task.FromResult(new EzSettings());
+        }
+
+        public Task<bool> WriteEzSettings_IsWidthoutGap(bool newValue)
+        {
+            if (_SettingsPlugin != null)
+            {
+                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (ddpmSettings != null)
+                {
+                    //Check if value is changed
+                    if (ddpmSettings.UserSettings.EzSettings.IsWidthoutGap == newValue)
+                        return Task.FromResult(true);
+
+                    //Apply new setting value
+                    ddpmSettings.UserSettings.EzSettings.IsWidthoutGap = newValue;
+                    //Save the DDPMSettings back to Settings file
+                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
+                    {
+                        if (_DisplayManagerPlugin != null)
+                        {
+                            _DisplayManagerPlugin.ReloadEzSettings();
+                        }
+
+                        SendEasyArrangeTelemetry("OverlapBorder");
+                        return Task.FromResult(true);
+                    }
+                }
+            }
+            //Read DDPMSettings
+            //Fail to read, will return false
             return Task.FromResult(false);
         }
 
-        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        public Task<bool> WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed(bool newValue)
         {
-            if (_DisplayManagerPlugin != null)
+            if (_SettingsPlugin != null)
             {
-                _DisplayManagerPlugin.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
-                //Telemetry
-                //Robert_Lin, 2024-11-15, add monitorInfo for PIMS-321601
-                SendEasyArrangeTelemetry("Change_layout", monitorInfo);
-            }
-            return Task.FromResult(false);
-        }
+                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (ddpmSettings != null)
+                {
+                    //Check if value is changed
+                    if (ddpmSettings.UserSettings.EzSettings.IsOnlyAllowWhenShiftKeyPressed == newValue)
+                    {
+                        writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Value is not changed");
+                        return Task.FromResult(true);
+                    }
 
-        //Robert_Lin, 2024-9-13 Remove unused interfaces
-        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
-        //{
-        //    if (_DisplayManagerPlugin != null)
-        //    {
-        //        return _DisplayManagerPlugin.RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
-        //    }
-        //    return Task.FromResult(false);
-        //}
+                    //Apply new setting value
+                    ddpmSettings.UserSettings.EzSettings.IsOnlyAllowWhenShiftKeyPressed = newValue;
+                    writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Value is changed");
+                    //Save the DDPMSettings back to Settings file
+                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
+                    {
+                        writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Update to settings file");
+                        if (_DisplayManagerPlugin != null)
+                        {
+                            writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Notify EAPlugin to refresh itself");
+                            _DisplayManagerPlugin.ReloadEzSettings();
+                        }
 
-        //public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings)
-        //{
-        //    if (_SettingsPlugin == null)
-        //    {
-        //        string err = "SettingsPlugin is null.";
-        //        writelog($"WriteEasyArrangeSettings(), {err}");
-        //        return Task.FromResult(err);
-        //    }
-        //    return _SettingsPlugin.WriteEasyArrangeSettings(eaMonitorSettings);
-        //}
-
-        //public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber)
-        //{
-        //    if (_SettingsPlugin == null)
-        //    {
-        //        string err = "SettingsPlugin is null.";
-        //        writelog($"WriteEasyArrangeSettings(), {err}");
-        //        return Task.FromResult<EAMonitorSettings>(null);
-        //    }
-        //    return _SettingsPlugin.ReadEasyArrangeSettings(monitorModel, serialNumber);
-        //}
-
-        //Robert_Lin, 2024-9-13 Remove unused interfaces
-        //private void _DisplayManagerPlugin_EAEditCompleted(object sender, string e)
-        //{
-        //    if (EAEditCompleted != null)
-        //    {
-        //        Task.Run(() => EAEditCompleted.Invoke(this, e));
-        //    }
-        //}
-
-        /// <summary>
-        /// Notify to UI: The EAPlugin is enter the Edit stage. The Layout you specified in EAEditCommand()
-        /// is under editing. By design, UI should minimized itself.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void _DisplayManagerPlugin_EAEditStarted(object sender, string e)
-        {
-            if (EAEditStarted != null)
-            {
-                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), Call to next handler.");
-                Task.Run(() => EAEditStarted.Invoke(this, e));
+                        SendEasyArrangeTelemetry("Hold-Shift");
+                        return Task.FromResult(true);
+                    }
+                }
             }
             else
             {
-                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), EAEditStarted is null.");
+                writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): _SettingsPlugin is null");
             }
-        }
-
-        //Robert_Lin, 2024-8-4 added
-        /// <summary>
-        /// Request from UI, to initiate a layout edit process.
-        /// </summary>
-        /// <param name="monitorInfo"></param>
-        /// <param name="args">The arguments for the Edit command.</param>
-        /// <returns></returns>
-        public Task<bool> EAEditCommand(MonitorInfo monitorInfo, EAArgs args)
-        {
-            if (_DisplayManagerPlugin != null)
-            {
-                return _DisplayManagerPlugin.EAEditCommand(monitorInfo, args);
-            }
-            writelog("@ DeviceManaerPlugin.EAEditCommand(), _DisplayManagerPlugin is null.");
+            //Read DDPMSettings
+            //Fail to read, will return false
             return Task.FromResult(false);
         }
 
-        /// <summary>
-        /// Notify to UI, the EditCommand has been finished and return to UI.
-        /// UI can get the return from EAArgs.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e">The result of the edit command.
-        /// UI can check if user finish the edit process by clicking "Save", or "Cancel"</param>
-        private void _DisplayManagerPlugin_EAEditReturn(object sender, EAArgs e)
+        public Task<bool> WriteEzSettings_IsSpanAcrossMultiMonitors(bool newValue)
         {
-            if (EAEditReturn != null)
+            if (_SettingsPlugin != null)
             {
-                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), Call to next handler.");
-                Task.Run(() => EAEditReturn.Invoke(this, e));
+                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (ddpmSettings != null)
+                {
+                    //Check if value is changed
+                    if (ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors == newValue)
+                        return Task.FromResult(true);
 
-                //Only if Result==true will send Telemetry
-                if (e.Result)
-                    SendEasyArrangeTelemetry("Custom_Layout");
+                    //Apply new setting value
+                    ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors = newValue;
+                    //Save the DDPMSettings back to Settings file
+                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
+                    {
+                        if (_DisplayManagerPlugin != null)
+                        {
+                            _DisplayManagerPlugin.ReloadEzSettings();
+                        }
+
+                        SendEasyArrangeTelemetry("span_monitors");
+                        return Task.FromResult(true);
+                    }
+                }
             }
-            else
-            {
-                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), EAEditReturn is null.");
-            }
+            //Read DDPMSettings
+            //Fail to read, will return false
+            return Task.FromResult(false);
         }
+
+        public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue)
+        {
+            if (_SettingsPlugin != null)
+            {
+                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (ddpmSettings != null)
+                {
+                    //Check if value is changed
+                    if (ddpmSettings.UserSettings.EzSettings.IsAwsEnabled == newValue)
+                        return Task.FromResult(true);
+                    //Apply new setting value
+                    ddpmSettings.UserSettings.EzSettings.IsAwsEnabled = newValue;
+                    //Save the DDPMSettings back to Settings file
+                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
+                    {
+                        if (_DisplayManagerPlugin != null)
+                        {
+                            _DisplayManagerPlugin.ReloadEzSettings();
+                        }
+
+                        //Telemetry
+                        SendEasyArrangeTelemetry("App-Snap");
+
+                        return Task.FromResult(true);
+                    }
+                }
+            }
+            //Read DDPMSettings
+            //Fail to read, will return false
+            return Task.FromResult(false);
+        }
+
+        #endregion EzSettings - EasyArrange
+
+        #region EA Custom List - EasyArrange
+
+        //Robert_Ln, 2024-10-12, Added after move CustomList to UserSettings from MonitorSettings
+        public Task<SplitJson[]> ReadEACustomList()
+        {
+            if (_SettingsPlugin != null)
+            {
+                //Read App Settings
+                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                //Don't return null, return empty array instead
+                if (appSettings != null)
+                {
+                    if (appSettings.UserSettings != null)
+                    {
+                        if (appSettings.UserSettings.EACustomList != null)
+                            return Task.FromResult(appSettings.UserSettings.EACustomList);
+                    }
+                }
+            }
+            //Failed, return an empty array instead of null
+            return Task.FromResult(Array.Empty<SplitJson>());
+        }
+
+        //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
+        public Task<bool> WriteEACustomList(SplitJson[] customList)
+        {
+            if (_SettingsPlugin != null)
+            {
+                //Read App Settings
+                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
+                if (appSettings != null)
+                {
+                    if (appSettings.UserSettings != null)
+                    {
+                        appSettings.UserSettings.EACustomList = (SplitJson[])customList.Clone();
+                        //Writeback to app settings
+                        _SettingsPlugin.SetAppConfigData(appSettings);
+                    }
+                }
+            }
+            //Failed, return an empty array instead of null
+            return Task.FromResult(false);
+        }
+
+        #endregion EA Custom List - EasyArrange
+
+        #region EAMonitorSettings - EasyArrange
 
         public Task<bool> WriteEAMonitorSettings(MonitorInfo monitorInfo, EAMonitorSettings eaSettings)
         {
@@ -6717,6 +7087,177 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(monitorSetting.EA);
         }
 
+        #endregion EAMonitorSettings - EasyArrange
+
+        #region SelectedLayout - EasyArrange
+
+        public Task<int> GetEASelectedLayout(MonitorInfo monitorInfo)
+        {
+            //Read the EAMonitorSettings from MonitorSettins.
+            //If faile to read will return default settings. never return null.
+            EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
+            //Return the RAID of EAMonitorSettings.SelectedLayout
+            return Task.FromResult(eaSettings.SelectedSplit.EAID);
+        }
+
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                writelog($"@ DeviceManager.SetEASelectedLayout({eaId})");
+                return _DisplayManagerPlugin.SetEASelectedLayout(monitorInfo, eaId);
+            }
+            writelog($"@ DeviceManager.SetEASelectedLayout({eaId}): _DisplayManagerPlugin is null");
+            return Task.FromResult(false);
+        }
+
+        // [OLD, Use NotifyEASelectedLayoutChanged() instead]
+        public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                _DisplayManagerPlugin.SetEAWrokSplit(monitorInfo, cellCount, splitKey, settings);
+                //Telemetry
+                //Robert_Lin, 2024-11-15, add monitorInfo for PIMS-321601
+                SendEasyArrangeTelemetry("Change_layout", monitorInfo);
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                _DisplayManagerPlugin.NotifyEASelectedLayoutChanged(monitorInfo, spJson);
+                //Telemetry
+                //Robert_Lin, 2024-11-15, add monitorInfo for PIMS-321601
+                SendEasyArrangeTelemetry("Change_layout", monitorInfo);
+            }
+            return Task.FromResult(false);
+        }
+
+        /// <summary>
+        /// [Unused Method]
+        /// [OLD, Use SetEASelectedLayout(MonitorInfo monitorInfo, int eaId) instead]
+        /// This method is reserved for CLI command usage. Howevent CLI does not define a command
+        /// to set SelectedLayout (only select Off)
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="spJson"></param>
+        /// <returns></returns>
+        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.SetEASelectedLayout(monitorInfo, spJson);
+            }
+            writelog("@ DeviceManager.SetEASelectedLayout(): _DisplayManagerPlugin is null");
+            return Task.FromResult(false);
+        }
+
+        #endregion SelectedLayout - EasyArrange
+
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
+        //{
+        //    if (_DisplayManagerPlugin != null)
+        //    {
+        //        return _DisplayManagerPlugin.RequestEditSplit(monitorInfo, cellCount, splitKey, customName, settings);
+        //    }
+        //    return Task.FromResult(false);
+        //}
+
+        //public Task<string> WriteEasyArrangeSettings(EAMonitorSettings eaMonitorSettings)
+        //{
+        //    if (_SettingsPlugin == null)
+        //    {
+        //        string err = "SettingsPlugin is null.";
+        //        writelog($"WriteEasyArrangeSettings(), {err}");
+        //        return Task.FromResult(err);
+        //    }
+        //    return _SettingsPlugin.WriteEasyArrangeSettings(eaMonitorSettings);
+        //}
+
+        //public Task<EAMonitorSettings> ReadEasyArrangeSettings(string monitorModel, string serialNumber)
+        //{
+        //    if (_SettingsPlugin == null)
+        //    {
+        //        string err = "SettingsPlugin is null.";
+        //        writelog($"WriteEasyArrangeSettings(), {err}");
+        //        return Task.FromResult<EAMonitorSettings>(null);
+        //    }
+        //    return _SettingsPlugin.ReadEasyArrangeSettings(monitorModel, serialNumber);
+        //}
+
+        //Robert_Lin, 2024-9-13 Remove unused interfaces
+        //private void _DisplayManagerPlugin_EAEditCompleted(object sender, string e)
+        //{
+        //    if (EAEditCompleted != null)
+        //    {
+        //        Task.Run(() => EAEditCompleted.Invoke(this, e));
+        //    }
+        //}
+
+        /// <summary>
+        /// Notify to UI: The EAPlugin is enter the Edit stage. The Layout you specified in EAEditCommand()
+        /// is under editing. By design, UI should minimized itself.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _DisplayManagerPlugin_EAEditStarted(object sender, string e)
+        {
+            if (EAEditStarted != null)
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), Call to next handler.");
+                Task.Run(() => EAEditStarted.Invoke(this, e));
+            }
+            else
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditStarted(), EAEditStarted is null.");
+            }
+        }
+
+        //Robert_Lin, 2024-8-4 added
+        /// <summary>
+        /// Request from UI, to initiate a layout edit process.
+        /// </summary>
+        /// <param name="monitorInfo"></param>
+        /// <param name="args">The arguments for the Edit command.</param>
+        /// <returns></returns>
+        public Task<bool> EAEditCommand(MonitorInfo monitorInfo, EAArgs args)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.EAEditCommand(monitorInfo, args);
+            }
+            writelog("@ DeviceManaerPlugin.EAEditCommand(), _DisplayManagerPlugin is null.");
+            return Task.FromResult(false);
+        }
+
+        /// <summary>
+        /// Notify to UI, the EditCommand has been finished and return to UI.
+        /// UI can get the return from EAArgs.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">The result of the edit command.
+        /// UI can check if user finish the edit process by clicking "Save", or "Cancel"</param>
+        private void _DisplayManagerPlugin_EAEditReturn(object sender, EAArgs e)
+        {
+            if (EAEditReturn != null)
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), Call to next handler.");
+                Task.Run(() => EAEditReturn.Invoke(this, e));
+
+                //Only if Result==true will send Telemetry
+                if (e.Result)
+                    SendEasyArrangeTelemetry("Custom_Layout");
+            }
+            else
+            {
+                writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EAEditReturn(), EAEditReturn is null.");
+            }
+        }
+
         private void _dump_SplitJsonList(MonitorInfo mi, List<SplitJson> splitJsonList)
         {
             Trace.WriteLine($"Monitor: {mi.AliasDeviceName}");
@@ -6784,163 +7325,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //     return Task.FromResult(false);
         //}
 
-        public Task<EzSettings> ReadEzSettings()
-        {
-            //Read DDPMSettings
-            DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-            if (ddpmSettings != null)
-            {
-                return Task.FromResult(ddpmSettings.UserSettings.EzSettings);
-            }
-            //Fail to read, will return the default settings
-            return Task.FromResult(new EzSettings());
-        }
-
-        public Task<bool> WriteEzSettings_IsWidthoutGap(bool newValue)
-        {
-            if (_SettingsPlugin != null)
-            {
-                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (ddpmSettings != null)
-                {
-                    //Check if value is changed
-                    if (ddpmSettings.UserSettings.EzSettings.IsWidthoutGap == newValue)
-                        return Task.FromResult(true);
-
-                    //Apply new setting value
-                    ddpmSettings.UserSettings.EzSettings.IsWidthoutGap = newValue;
-                    //Save the DDPMSettings back to Settings file
-                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
-                    {
-                        if (_DisplayManagerPlugin != null)
-                        {
-                            _DisplayManagerPlugin.ReloadEzSettings();
-                        }
-
-                        SendEasyArrangeTelemetry("OverlapBorder");
-                        return Task.FromResult(true);
-                    }
-                }
-            }
-            //Read DDPMSettings
-            //Fail to read, will return false
-            return Task.FromResult(false);
-        }
-
-        public Task<bool> WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed(bool newValue)
-        {
-            if (_SettingsPlugin != null)
-            {
-                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (ddpmSettings != null)
-                {
-                    //Check if value is changed
-                    if (ddpmSettings.UserSettings.EzSettings.IsOnlyAllowWhenShiftKeyPressed == newValue)
-                    {
-                        writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Value is not changed");
-                        return Task.FromResult(true);
-                    }
-
-                    //Apply new setting value
-                    ddpmSettings.UserSettings.EzSettings.IsOnlyAllowWhenShiftKeyPressed = newValue;
-                    writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Value is changed");
-                    //Save the DDPMSettings back to Settings file
-                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
-                    {
-                        writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Update to settings file");
-                        if (_DisplayManagerPlugin != null)
-                        {
-                            writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): Notify EAPlugin to refresh itself");
-                            _DisplayManagerPlugin.ReloadEzSettings();
-                        }
-
-                        SendEasyArrangeTelemetry("Hold-Shift");
-                        return Task.FromResult(true);
-                    }
-                }
-            }
-            else
-            {
-                writelog($"@ DeviceManager.WriteEzSettings_IsOnlyAllowWhenShiftKeyPressed({newValue}): _SettingsPlugin is null");
-            }
-            //Read DDPMSettings
-            //Fail to read, will return false
-            return Task.FromResult(false);
-        }
-
-        public Task<bool> WriteEzSettings_IsSpanAcrossMultiMonitors(bool newValue)
-        {
-            if (_SettingsPlugin != null)
-            {
-                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (ddpmSettings != null)
-                {
-                    //Check if value is changed
-                    if (ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors == newValue)
-                        return Task.FromResult(true);
-
-                    //Apply new setting value
-                    ddpmSettings.UserSettings.EzSettings.IsSpanAcrossMultiMonitors = newValue;
-                    //Save the DDPMSettings back to Settings file
-                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
-                    {
-                        if (_DisplayManagerPlugin != null)
-                        {
-                            _DisplayManagerPlugin.ReloadEzSettings();
-                        }
-
-                        SendEasyArrangeTelemetry("span_monitors");
-                        return Task.FromResult(true);
-                    }
-                }
-            }
-            //Read DDPMSettings
-            //Fail to read, will return false
-            return Task.FromResult(false);
-        }
-
-        public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue)
-        {
-            if (_SettingsPlugin != null)
-            {
-                DDPMSettings ddpmSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (ddpmSettings != null)
-                {
-                    //Check if value is changed
-                    if (ddpmSettings.UserSettings.EzSettings.IsAwsEnabled == newValue)
-                        return Task.FromResult(true);
-                    //Apply new setting value
-                    ddpmSettings.UserSettings.EzSettings.IsAwsEnabled = newValue;
-                    //Save the DDPMSettings back to Settings file
-                    if (_SettingsPlugin.SetAppConfigData(ddpmSettings).Result)
-                    {
-                        if (_DisplayManagerPlugin != null)
-                        {
-                            _DisplayManagerPlugin.ReloadEzSettings();
-                        }
-
-                        //Telemetry
-                        SendEasyArrangeTelemetry("App-Snap");
-
-                        return Task.FromResult(true);
-                    }
-                }
-            }
-            //Read DDPMSettings
-            //Fail to read, will return false
-            return Task.FromResult(false);
-        }
-
-        public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson)
-        {
-            if (_DisplayManagerPlugin != null)
-            {
-                return _DisplayManagerPlugin.SetEASelectedLayout(monitorInfo, spJson);
-            }
-            writelog("@ DeviceManager.SetEASelectedLayout(): _DisplayManagerPlugin is null");
-            return Task.FromResult(false);
-        }
-
         //Robert_Lin, 2024-10-8, bridge of EASettingsChanged
         //DisplayManagerPlugin will call to here, and DeviceManagerPlugin call to its handler
         private void _DisplayManagerPlugin_EASettingsChanged(object sender, EAArgs e)
@@ -6954,56 +7338,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EASettingsChanged(), EASettingsChanged is null.");
             }
-        }
-
-        //Robert_Ln, 2024-10-12, Added after move CustomList to UserSettings from MonitorSettings
-        /// <summary>
-        /// Read the EACustomList for current user
-        /// </summary>
-        /// <returns></returns>
-        public Task<SplitJson[]> ReadEACustomList()
-        {
-            if (_SettingsPlugin != null)
-            {
-                //Read App Settings
-                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                //Don't return null, return empty array instead
-                if (appSettings != null)
-                {
-                    if (appSettings.UserSettings != null)
-                    {
-                        if (appSettings.UserSettings.EACustomList != null)
-                            return Task.FromResult(appSettings.UserSettings.EACustomList);
-                    }
-                }
-            }
-            //Failed, return an empty array instead of null
-            return Task.FromResult(new SplitJson[] { });
-        }
-
-        /// <summary>
-        /// Write the EACustomList to current user's settings file
-        /// </summary>
-        /// <param name="customList"></param>
-        /// <returns></returns>
-        public Task<bool> WriteEACustomList(SplitJson[] customList)
-        {
-            if (_SettingsPlugin != null)
-            {
-                //Read App Settings
-                DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (appSettings != null)
-                {
-                    if (appSettings.UserSettings != null)
-                    {
-                        appSettings.UserSettings.EACustomList = (SplitJson[])customList.Clone();
-                        //Writeback to app settings
-                        _SettingsPlugin.SetAppConfigData(appSettings);
-                    }
-                }
-            }
-            //Failed, return an empty array instead of null
-            return Task.FromResult(false);
         }
 
         //Robert_Lin, 2024-11-18, a general method for Subagent to send event to UI
@@ -7652,8 +7986,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
                 {
                     writelog($"[DeleteDdpmSwUpdaterFolder], o_String={o.ToString()}.");
-                    DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
-                    string AppDataPath = DDPMFileSecurity.GetActiveUserLocalAppDataPath();
+                    string AppDataPath = WTSFunction.GetActiveUserLocalAppDataPath(Log);
                     if (!string.IsNullOrEmpty(AppDataPath))
                     {
                         string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
@@ -7966,7 +8299,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(false);
         }
 
-        public Task<bool> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path)
+        public Task<DisplayImportResultCode> DisplayImportSettings(MonitorInfo monitorInfo, bool isSameModel, string path)
         {
             writelog("[DisplayImportSettings] Import Settings");
             ImportVCP importVCP = new ImportVCP();
@@ -7974,7 +8307,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_SettingsPlugin != null)
             {
                 List<VCPCode> vcps = new List<VCPCode>();
-                if (_SettingsPlugin.DisplayImportSettings(path, isSameModel, monitorInfo.edid.ServiceTag, out DDPMImpExpSettings ImpExpSettings).Result)
+                DisplayImportResultCode backendImportResult = _SettingsPlugin.DisplayImportSettings(path, isSameModel, monitorInfo.edid.ServiceTag, out DDPMImpExpSettings ImpExpSettings).Result;
+                if ((int)backendImportResult > 0)
                 {
                     if (ImpExpSettings != null)
                     {
@@ -8088,7 +8422,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         {
                                             writelog("[SentSettingstoTelementry] _TelementryScheduler is null");
                                         }
-                                        return Task.FromResult(true);
+                                        return Task.FromResult(backendImportResult);
                                     }
                                     else
                                     {
@@ -8103,7 +8437,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             catch
                             {
                                 writelog("[DisplayImportSettings] Import Fail");
-                                return Task.FromResult(false);
+                                return Task.FromResult(DisplayImportResultCode.Error);
                             }
                         }
                         else
@@ -8198,7 +8532,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         {
                                             writelog("[SentSettingstoTelementry] _TelementryScheduler is null");
                                         }
-                                        return Task.FromResult(true);
+                                        if (monitorSettingsList.Find(ms => ms.easyArrangementDDPM.Desktops != null && ms.easyArrangementDDPM.Desktops.Count() > 0) != null) return Task.FromResult(DisplayImportResultCode.DoneWithEzMemoryCleared);
+                                        return Task.FromResult(DisplayImportResultCode.Done);
                                     }
                                     else
                                     {
@@ -8213,7 +8548,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             catch
                             {
                                 writelog("[DisplayImportSettings]import is Fail");
-                                return Task.FromResult(false);
+                                return Task.FromResult(DisplayImportResultCode.Error);
                             }
                         }
                     }
@@ -8223,7 +8558,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 }
             }
-            return Task.FromResult(false);
+            return Task.FromResult(DisplayImportResultCode.Error);
         }
 
         public Task SetSameModel(MonitorInfo monitorInfo, bool isSameModel)
@@ -9003,337 +9338,336 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return await Task.Run(() => _DTPProxyPlugin.GetAutoFramingSensitivity(Guid));
         }
 
-        public Task SetIsMicEnumerationOn(string guid, bool newValue)
+        public Task SetIsMicEnumerationOn(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsMicEnumerationOn requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsMicEnumerationOn(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetIsMicEnumerationOn(Guid, newValue);
+            return Task.CompletedTask;// Task.FromResult(true);
         }
 
-        public Task SetProfile(string guid, string newValue)
+        public Task SetProfile(string Guid, string newValue)
         {
             writelog("DeviceMangerPlugin received SetProfile requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetProfile(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetProfile(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task SetProfileName(string guid, string newValue)
+        public Task SetProfileName(string Guid, string newValue)
         {
             writelog("DeviceMangerPlugin received SetProfileName requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetProfileName(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetProfileName(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task CreateCustomProfile(string guid, string newValue)
+        public Task CreateCustomProfile(string Guid, string newValue)
         {
             writelog("DeviceMangerPlugin received CreateCustomProfile requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.CreateCustomProfile(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.CreateCustomProfile(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task DeleteProfile(string guid, string newValue)
+        public Task DeleteProfile(string Guid, string newValue)
         {
             writelog("DeviceMangerPlugin received DeleteProfile requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.DeleteProfile(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.DeleteProfile(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task<bool> SetZoom(string guid, int newValue)
+        public Task<bool> SetZoom(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetZoom requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            //_DTPProxyPlugin.SetZoom(guid, newValue);
+            //_DTPProxyPlugin.SetZoom(Guid, newValue);
             //return Task.FromResult(true);
-            return _DTPProxyPlugin.SetZoom(guid, newValue);
+            return _DTPProxyPlugin.SetZoom(Guid, newValue);
         }
 
-        public Task<bool> SetAutoFramingSensitivity(string guid, int newValue)
+        public Task<bool> SetAutoFramingSensitivity(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAutoFramingSensitivity requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetAutoFramingSensitivity(guid, newValue);
+            return _DTPProxyPlugin.SetAutoFramingSensitivity(Guid, newValue);
         }
 
-        public Task<bool> SetAutoFramingFrameSize(string guid, int newValue)
+        public Task<bool> SetAutoFramingFrameSize(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAutoFramingFrameSize requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetAutoFramingFrameSize(guid, newValue);
+            return _DTPProxyPlugin.SetAutoFramingFrameSize(Guid, newValue);
         }
 
-        public Task<bool> SetIsAutoFramingOn(string guid, bool newValue)
+        public Task<bool> SetIsAutoFramingOn(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsAutoFramingOn requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetIsAutoFramingOn(guid, newValue);
+            return _DTPProxyPlugin.SetIsAutoFramingOn(Guid, newValue);
         }
 
-        public Task<bool> SetIsAutoFramingTransitionOn(string guid, bool newValue)
+        public Task<bool> SetIsAutoFramingTransitionOn(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsAutoFramingTransitionOn requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetIsAutoFramingTransitionOn(guid, newValue);
+            return _DTPProxyPlugin.SetIsAutoFramingTransitionOn(Guid, newValue);
         }
 
-        public Task<bool> SetFieldOfView(string guid, int newValue)
+        public Task<bool> SetFieldOfView(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetFieldOfView requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetFieldOfView(guid, newValue);
+            return _DTPProxyPlugin.SetFieldOfView(Guid, newValue);
         }
 
-        public Task SetIsFocusOn(string guid, bool newValue)
+        public Task<bool> SetIsFocusOn(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsFocusOn requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsFocusOn(guid, newValue);
-            return Task.FromResult(true);
+
+            return _DTPProxyPlugin.SetIsFocusOn(Guid, newValue);
         }
 
-        public Task SetFocus(string guid, int newValue)
+        public Task<bool> SetFocus(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetFocus requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetFocus(guid, newValue);
-            return Task.FromResult(true);
+
+            return _DTPProxyPlugin.SetFocus(Guid, newValue);
         }
 
-        public Task SetPriority(string guid, int newValue)
+        public Task<bool> SetPriority(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetPriority requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetPriority(guid, newValue);
-            return Task.FromResult(true);
+
+            return _DTPProxyPlugin.SetPriority(Guid, newValue);
         }
 
-        public Task<bool> SetIsHDROn(string guid, bool newValue)
+        public Task<bool> SetIsHDROn(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsHDROn requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetIsHDROn(guid, newValue);
+            return _DTPProxyPlugin.SetIsHDROn(Guid, newValue);
         }
 
-        public Task SetIsAutoWhiteBalanceOn(string guid, bool newValue)
+        public Task<bool> SetIsAutoWhiteBalanceOn(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsAutoWhiteBalanceOn requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsAutoWhiteBalanceOn(guid, newValue);
-            return Task.FromResult(true);
+
+            return _DTPProxyPlugin.SetIsAutoWhiteBalanceOn(Guid, newValue);
         }
 
-        public Task SetAutoWhiteBalance(string guid, int newValue)
+        public Task<bool> SetAutoWhiteBalance(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAutoWhiteBalance requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetAutoWhiteBalance(guid, newValue);
-            return Task.FromResult(true);
+            return _DTPProxyPlugin.SetAutoWhiteBalance(Guid, newValue);
         }
 
-        public Task SetWALTime(string guid, int newValue)
+        public Task SetWALTime(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetWALTime requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetWALTime(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetWALTime(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task SetSnooze(string guid, int newValue)
+        public Task SetSnooze(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetSnooze requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetSnooze(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetSnooze(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task SetSnoozeLength(string guid, int newValue)
+        public Task SetSnoozeLength(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetSnoozeLength requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetSnoozeLength(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetSnoozeLength(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task SetIsProximitySensorEnable(string guid, bool newValue)
+        public Task SetIsProximitySensorEnable(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsProximitySensorEnable requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsProximitySensorEnable(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetIsProximitySensorEnable(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task SetIsWakeonApproachEnable(string guid, bool newValue)
+        public Task SetIsWakeonApproachEnable(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsWakeonApproachEnable requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsWakeonApproachEnable(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetIsWakeonApproachEnable(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task SetIsWalkAwayLockEnable(string guid, bool newValue)
+        public Task SetIsWalkAwayLockEnable(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsWalkAwayLockEnable requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsWalkAwayLockEnable(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetIsWalkAwayLockEnable(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task SetIsPrioritizeExternalWebcam(string guid, bool newValue)
+        public Task SetIsPrioritizeExternalWebcam(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received SetIsPrioritizeExternalWebcam requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetIsPrioritizeExternalWebcam(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetIsPrioritizeExternalWebcam(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task ResetToDefault_webcam(string guid, bool newValue)
+        public Task ResetToDefault_webcam(string Guid, bool newValue)
         {
             writelog("DeviceMangerPlugin received ResetToDefault_webcam requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.ResetToDefault_webcam(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.ResetToDefault_webcam(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task SetBrightness(string guid, int newValue)
+        public Task SetBrightness(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetBrightness requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetBrightness(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetBrightness(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task SetSharpness(string guid, int newValue)
+        public Task SetSharpness(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetSharpness requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetSharpness(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetSharpness(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task SetContrast(string guid, int newValue)
+        public Task SetContrast(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetContrast requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetContrast(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetContrast(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task SetSaturation(string guid, int newValue)
+        public Task SetSaturation(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetSaturation requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetSaturation(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetSaturation(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task SetAntiFlicker(string guid, int newValue)
+        public Task SetAntiFlicker(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetAntiFlicker requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetAntiFlicker(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetAntiFlicker(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task SetTilt(string guid, int newValue)
+        public Task SetTilt(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetTilt requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetTilt(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetTilt(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task SetPan(string guid, int newValue)
+        public Task SetPan(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetPan requested ...");
-            writelog($"Target Guid is {guid}");
+            writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetPan(guid, newValue);
-            return Task.FromResult(true);
+            _DTPProxyPlugin.SetPan(Guid, newValue);
+            return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public async Task<int> GetWALTime(string guid)
+        public async Task<int> GetWALTime(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetWALTime(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetWALTime(Guid));
         }
 
-        public async Task<int> GetSnooze(string guid)
+        public async Task<int> GetSnooze(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetSnooze(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetSnooze(Guid));
         }
 
-        public async Task<int> GetSnoozeLength(string guid)
+        public async Task<int> GetSnoozeLength(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetSnoozeLength(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetSnoozeLength(Guid));
         }
 
-        public async Task<bool> GetIsProximitySensorEnable(string guid)
+        public async Task<bool> GetIsProximitySensorEnable(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsProximitySensorEnable(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsProximitySensorEnable(Guid));
         }
 
-        public async Task<bool> GetIsWakeonApproachEnable(string guid)
+        public async Task<bool> GetIsWakeonApproachEnable(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsWakeonApproachEnable(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsWakeonApproachEnable(Guid));
         }
 
-        public async Task<bool> GetIsWalkAwayLockEnable(string guid)
+        public async Task<bool> GetIsWalkAwayLockEnable(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsWalkAwayLockEnable(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsWalkAwayLockEnable(Guid));
         }
 
-        public async Task<bool?> GetIsPrioritizeExternalWebcam(string guid)
+        public async Task<bool?> GetIsPrioritizeExternalWebcam(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsPrioritizeExternalWebcam(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsPrioritizeExternalWebcam(Guid));
         }
 
-        public async Task<bool> GetIsZoomMeetingActive(string guid)
+        public async Task<bool> GetIsZoomMeetingActive(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsZoomMeetingActive(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsZoomMeetingActive(Guid));
         }
 
-        public async Task<int> GetZoomMeetingType(string guid)
+        public async Task<int> GetZoomMeetingType(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetZoomMeetingTypeAsync(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetZoomMeetingTypeAsync(Guid));
         }
 
-        public async Task<bool> GetIsZoomScreenShareActive(string guid)
+        public async Task<bool> GetIsZoomScreenShareActive(string Guid)
         {
-            return await Task.Run(() => _DTPProxyPlugin.GetIsZoomScreenShareActive(guid));
+            return await Task.Run(() => _DTPProxyPlugin.GetIsZoomScreenShareActive(Guid));
         }
 
         public Task<DockData> GetDockData(string guid)
@@ -9380,9 +9714,61 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region GlobalSetting
 
+        private Object obj = null;
+        private int count = 0;
+
         public Task<GlobalSettingParam> GetGlobalSettingParam()
         {
+            FirstGetDPeMSettings();
             return Task.FromResult(_GlobalSettingParam);
+        }
+
+        private void FirstGetDPeMSettings()
+        {
+            try
+            {
+                if (!_GlobalSettingParam.isSetTelemetryOverInstaller)
+                {
+                    DDPMSettings settings = _SettingsPlugin.ReloadAppConfigData().Result;
+                    if (!settings.UserSettings.isDisplayConsentPage)
+                    {
+                        writelog($"[DeviceMangerPlugin] GetFirstReadStatus");
+                        bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", true).Result;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Exception:{ex.Message}...");
+            }
+        }
+
+        public async Task<bool> CheckInstallFirstOpen()
+        {
+            var ReadReg = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen").Result;
+            writelog($"[DeviceMangerPlugin] ReadReg Status {ReadReg} And {ReadReg.GetType()}");
+            Boolean.TryParse(ReadReg.ToString(), out var getRegValue);
+            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady())
+            {
+                count++;
+                writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Count:{count}...");
+                GetDPeMGlobalSettings();
+                obj = new Object();
+                return true;
+            }
+            return false;
+        }
+
+        private void GetDPeMGlobalSettings()
+        {
+            _GlobalSettingParam.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State = GetIsPresenceDetectionSensnorStateNotificationsEnabledValue().Result;
+            _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level = GetIsBatteryNotificationsEnabledValue().Result;
+            _GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key = GetIsLockKeyNotificationsEnabledValue().Result;
+            _GlobalSettingParam.GlobalSetting_General.Display_MuteState = GetIsMuteStatusNotificationsEnabledValue().Result;
+            _GlobalSettingParam.isTelemetryConsentOn = GetIsAnalyticsEnabledValue().Result;
+            _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget = GetIsQuickAccessMenuEnabledValue().Result;
+            _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder = GetIsQuickAccessMenuOSDEnabledValue().Result;
+            bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", false).Result;
         }
 
         public Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay)
@@ -9706,218 +10092,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> SaveLogFile(string saveFolderPath = "")
+        public Task<bool> SaveLogFile(string saveFolderPath)
         {
             writelog($"{nameof(SaveLogFile)} start");
             bool ret = false;
-            if (string.IsNullOrEmpty(saveFolderPath))
+            writelog($"{nameof(SaveLogFile)} saveFolderPath is null : {string.IsNullOrEmpty(saveFolderPath)}");
+            if (_SettingsPlugin != null && !string.IsNullOrEmpty(saveFolderPath))
             {
-                saveFolderPath = @$"C:\temp\Log";
+                ret = _SettingsPlugin.SaveLog(saveFolderPath).Result;
             }
-            if (_DisplayManagerPlugin != null && !string.IsNullOrEmpty(saveFolderPath))
-            {
-                // 確保資料夾存在
-                if (!Directory.Exists(saveFolderPath))
-                {
-                    Directory.CreateDirectory(saveFolderPath);
-                }
-                //0913 Bruce Add Security
-                string FolderInfo;
-                string PathSymbolicLinInfo;
-                int count = 0;
-                bool folderValid = false;
-                do
-                {
-                    FolderInfo = string.Empty;
-                    PathSymbolicLinInfo = string.Empty;
-                    folderValid = false;
-                    /*folderValid = !DDPMFileSecurity.IsPathSymbolicLinked(saveFolderPath, out PathSymbolicLinInfo);
-                    if (!folderValid)
-                    {
-                        writelog(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + PathSymbolicLinInfo + " Retry:" + (count++));
-                        //Do remove Symbolic Link than delete folder
-                        //Directory.Delete(saveFolderPath, true);
-                        //Directory.CreateDirectory(saveFolderPath);
-                    }*/
-                    // The function call IsPathSymbolicLinked is merged to "IsFolderPathValid"
-                    folderValid = DDPMFileSecurity.IsFolderPathValid(saveFolderPath, out FolderInfo);// && folderValid;
-                    if (!folderValid)
-                    {
-                        writelog(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + FolderInfo + " Retry:" + (count++));
-                        /*//Do remove Symbolic Link than delete folder
-                        Directory.Delete(saveFolderPath, true);
-                        Directory.CreateDirectory(saveFolderPath);*/
-                        return Task.FromResult(false); //[Dean] don't remove folder to avoid callback attack
-                    }
-                } while (!folderValid && count < 2);
-
-                string programdataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
-                writelog("folderPath - programdataPath Line 9169: " + programdataPath);
-                string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                writelog("folderPath - appDataPath Line 9171: " + appDataPath);
-                string fail_info = string.Empty;
-                try
-                {
-                    if (!string.IsNullOrEmpty(appDataPath))
-                    {
-                        string LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
-                        writelog("folderPath - LogFolder Line 9175: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = GetFolderName(LogFolder);
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DDPM.Subagent.User]";
-                        }
-                        LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
-                        writelog("folderPath - LogFolder Line 9185: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = GetFolderName(LogFolder);
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DDPM.GUI]";
-                        }
-                        LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM-Setup-DdpmSwUpdater";
-                        writelog("folderPath - LogFolder Line 9195: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = GetFolderName(LogFolder);
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DDPM.SwUpdater]";
-                        }
-                        LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog";
-                        writelog("folderPath - LogFolder Line 9205: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = GetFolderName(LogFolder);
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DDPM.FwUpdate]";
-                        }
-                    }
-                    if (!string.IsNullOrEmpty(programdataPath))
-                    {
-                        string LogFolder = @$"{programdataPath}\Dell\DDPM.Subagent";
-                        writelog("folderPath - LogFolder Line 9218: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = GetFolderName(LogFolder);
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DDPM.Subagent]";
-                        }
-                        LogFolder = @$"{programdataPath}\Dell\Dell TechHub";
-                        writelog("folderPath - LogFolder Line 9228: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = GetFolderName(LogFolder);
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[Dell TechHub]";
-                        }
-                        LogFolder = @$"{programdataPath}\Dell\DTP\Logs";
-                        writelog("folderPath - LogFolder Line 9238: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = "DTP_Log";
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DTP_log]";
-                        }
-                        string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\DDPMW-NKVM";
-                        object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "GUID").Result;
-                        if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
-                        {
-                            LogFolder = @$"{programdataPath}\{o.ToString()}\DDPMW-NKVM";
-                            writelog("folderPath - LogFolder Line 9252: " + LogFolder);
-                            if (DirectoryContainsFiles(LogFolder))
-                            {
-                                // 取得資料夾名稱
-                                string folderName = GetFolderName(LogFolder);
-                                string savePath = Path.Combine(saveFolderPath, folderName);
-                                // 複製指定的 log 文件到選擇的資料夾
-                                if (!CopyLogFolder(LogFolder, savePath))
-                                    fail_info += "[DDPMW-NKVM]";
-                            }
-                        }
-                        LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPMService\Log";
-                        writelog("folderPath - LogFolder Line 9263: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = "DPMService_Log";
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DPMService_Log]";
-                        }
-                        LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPM\Log";
-                        writelog("folderPath - LogFolder Line 9273: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = "DPM_Log";
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DPM_Log]";
-                        }
-                        LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPeMSDK\Log";
-                        writelog("folderPath - LogFolder Line 9283: " + LogFolder);
-                        if (DirectoryContainsFiles(LogFolder))
-                        {
-                            // 取得資料夾名稱
-                            string folderName = "DPeMSDK_Log";
-                            string savePath = Path.Combine(saveFolderPath, folderName);
-                            // 複製指定的 log 文件到選擇的資料夾
-                            if (!CopyLogFolder(LogFolder, savePath))
-                                fail_info += "[DPeMSDK_Log]";
-                        }
-                    }
-                    string logFileName = "EventLog.evtx";
-                    string logFilePath = Path.Combine(saveFolderPath, logFileName);
-                    if (!ExecuteWevtutilCommand(logFilePath))
-                        fail_info += "[EventLog]";
-
-                    string zipFilePath = saveFolderPath + ".zip";
-                    FileInfo info = new FileInfo(zipFilePath);
-                    zipFilePath = Path.Combine(info.DirectoryName, $"Log_{DateTime.Now.ToString("yyyy_MM_dd_HH.mm.ss.ff")}.zip");//force to set zip file name as Log.zip
-                                                                                                                                 // 壓縮資料夾
-                    if (!CreateZipFile(saveFolderPath, zipFilePath))
-                        fail_info += "[Compression]";
-                    Directory.Delete(saveFolderPath, true);
-
-                    ret = true;
-                    if (fail_info.Length > 0)
-                    {
-                        ret = false;
-                        writelog($"SaveLog was failed at following step(s): {fail_info}");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    writelog($"{nameof(SaveLogFile)} got exception ({ex.Message})");
-                    ret = false;
-                }
-            }
-            writelog($"{nameof(SaveLogFile)} end");
-
             //Telemetry Collection
             var ApplicationSettings_Function = new ApplicationSettings_Function();
             writelog("[DeviceMangerPlugin] Send Telemetry for SaveDiagnosticReport...");
@@ -9928,28 +10111,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             else
                 writelog("[DeviceMangerPlugin] Send Telemetry for SaveDiagnosticReport Fail ...");
 
+            writelog($"{nameof(SaveLogFile)} end");
             return Task.FromResult(ret);
-        }
-
-        private bool CreateZipFile(string folderPath, string zipFilePath)
-        {
-            bool result = false;
-            writelog($"{nameof(CreateZipFile)} start");
-            try
-            {
-                if (File.Exists(zipFilePath))
-                {
-                    File.Delete(zipFilePath);
-                }
-                ZipFile.CreateFromDirectory(folderPath, zipFilePath, CompressionLevel.Fastest, includeBaseDirectory: true);
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                writelog($"{nameof(CreateZipFile)} Exception occurred while creating ZIP file: {ex.Message}");
-            }
-            writelog($"{nameof(CreateZipFile)} end");
-            return result;
         }
 
         private bool SaveMonitorAssetReport(List<MonitorAssetReport> monitorAssetReports, string savePath)
@@ -10001,161 +10164,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return ret;
         }
 
-        private bool ExecuteWevtutilCommand(string exportFilePath)
-        {
-            bool result = false;
-            try
-            {
-                // 設定要查詢的日誌名稱
-                string logName = "Application"; // 可選擇 "Application", "System", "Security"
-
-                // 獲取當前時間
-                DateTime now = DateTime.UtcNow;
-
-                // 設定開始和結束時間範圍（UTC）
-                DateTime endTime = now;
-                DateTime startTime = endTime.AddDays(-1);
-
-                // 生成查詢語句
-                string query = $"*[System[TimeCreated[@SystemTime>='{startTime:yyyy-MM-ddTHH:mm:ss.fffZ}' and @SystemTime<='{endTime:yyyy-MM-ddTHH:mm:ss.fffZ}']]]";
-                // 建立我們要執行的命令
-                string command = $"epl {logName} \"{exportFilePath}\" /ow:true /q:\"{query}\"";
-                // 設定 ProcessStartInfo
-                ProcessStartInfo startInfo = new ProcessStartInfo
-                {
-                    FileName = "wevtutil",
-                    Arguments = command,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-                // 開啟進程
-                using (Process process = Process.Start(startInfo))
-                {
-                    // 讀取標準輸出和錯誤輸出
-                    string output = process.StandardOutput.ReadToEnd();
-                    string error = process.StandardError.ReadToEnd();
-
-                    // 等待進程結束
-                    process.WaitForExit();
-
-                    // 輸出結果
-                    if (process.ExitCode == 0)
-                    {
-                        Console.WriteLine("Events have been exported successfully.");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Error exporting events: {error}");
-                    }
-                }
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception occurred: {ex.Message}");
-            }
-            return result;
-        }
-
-        private string GetFolderName(string path)
-        {
-            try
-            {
-                string folderName = System.IO.Path.GetFileName(path.TrimEnd(System.IO.Path.DirectorySeparatorChar));
-                return folderName;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception occurred: {ex.Message}");
-                return null;
-            }
-        }
-
-        private bool DirectoryContainsFiles(string folderPath)
-        {
-            bool ret = false;
-            try
-            {
-                if (Directory.Exists(folderPath))
-                {
-                    // 檢查資料夾是否包含檔案
-                    string[] files = Directory.GetFiles(folderPath);
-                    // 檢查資料夾是否包含子資料夾
-                    string[] directories = Directory.GetDirectories(folderPath);
-
-                    // 如果檔案或子資料夾數量大於0，則返回 true
-                    ret = files.Length > 0 || directories.Length > 0;
-                }
-            }
-            catch
-            {
-            }
-            return ret;
-        }
-
-        private bool CopyLogFolder(string sourceFolder, string destinationFolder)
-        {
-            bool result = false;
-            try
-            {
-                if (Directory.Exists(sourceFolder))
-                {
-                    // 複製資料夾及其內容
-                    if (!DirectoryCopy(sourceFolder, destinationFolder, true))
-                    {
-                        writelog("[DirectoryCopy] got some files copy failed");
-                    }
-                    else
-                        result = true;
-                    writelog("Log folder copy action finish.");
-                }
-                else
-                {
-                    writelog("Source folder does not exist.");
-                }
-            }
-            catch (Exception ex)
-            {
-                writelog($"Exception occurred while copying log folder: {ex.Message}");
-            }
-            return result;
-        }
-
-        private bool DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
-        {
-            bool all_pass = true;
-            // 確保目標資料夾存在
-            Directory.CreateDirectory(destDirName);
-            // 複製檔案
-            try
-            {
-                foreach (string file in Directory.GetFiles(sourceDirName))
-                {
-                    string destFile = Path.Combine(destDirName, Path.GetFileName(file));
-                    File.Copy(file, destFile, true);
-                }
-            }
-            catch (Exception ex)
-            {
-                writelog($"[DirectoryCopy] Get files in folder failed, message: {ex.Message}");
-                all_pass = false;
-            }
-
-            // 複製子資料夾
-            if (copySubDirs)
-            {
-                foreach (string subDir in Directory.GetDirectories(sourceDirName))
-                {
-                    string destSubDir = Path.Combine(destDirName, Path.GetFileName(subDir));
-                    if (!DirectoryCopy(subDir, destSubDir, true))
-                        all_pass = false;
-                }
-            }
-            return all_pass;
-        }
-
         #endregion
 
         #endregion
@@ -10176,6 +10184,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private ZoomMeetingType _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
         private bool isWindowsScreenNotLocked = true;
         private string QAMWebcamDeviceGuid = string.Empty;
+        private bool isOpenOSDWhenQAMClosed = true; //Derek 1215 for PIMS 332040
 
         //private bool isHiddenConditionsMet = false;
         private int currentZoomValue = -1;
@@ -10251,7 +10260,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     )
                 {
                     ResetQAMCondition();
-                    QAMClose();
+                    QAMClose(false);
                     CloseQAMOSD();
 
                     writelog($"Abnormal condition occur, close QAM/OSD if it's opened.");
@@ -10301,14 +10310,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"HandleQAM receive QAMClose event");
 
-                        QAMClose();
+                        QAMClose(true);
                     }
+
+                    isOpenOSDWhenQAMClosed = true;
                 }
                 else
                 {
-                    QAMClose();
+                    //Derek 1216
+                    //PIMS 332041 OSD should not be seen on set Widget setting- Activae Quick Access widget
+                    //during Zoom conference calls" = Off (uncheck)
+                    CloseQAMOSD();
 
-                    writelog($"Close QAM due to global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
+                    QAMClose(false);
+
+                    writelog($"Close QAM/OSD due to global setting change to {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
                 }
             }
             catch (Exception e)
@@ -10370,7 +10386,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"HandleQAM receive QAMClose event");
 
-                QAMClose();
+                QAMClose(false);
             }
 
             //if (_ZoomMeetingType == ZoomMeetingType.CONF_3RD_EVENT_MEETING)
@@ -10535,7 +10551,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _QAM = null;
 
                 if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null
-                    && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder)
+                    && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder &&
+                    isOpenOSDWhenQAMClosed)
                 {
                     ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
                 }
@@ -10580,7 +10597,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //    writelog($"QAMShow done");
         //}
-        private Task QAMClose()
+        private Task QAMClose(bool openQAMOSD)
         {
             if (null == _QAM)
                 return Task.CompletedTask;
@@ -10591,6 +10608,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"Try to run QAMClose");
                 _QAM?.Dispatcher.BeginInvoke(DispatcherPriority.Normal, () => _QAM?.Close());
+                isOpenOSDWhenQAMClosed = openQAMOSD;
             }
             catch (Exception e)
             {
@@ -10626,64 +10644,71 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog($"CallQAM_UI: Start");
 
-            if (_QAM == null)
+            try
             {
-                //writelog($"CallQAM_UI: Go");
-                //List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
-                //writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
-                //if (deviceInfos.Count == 1)
+                if (_QAM == null)
                 {
-                    writelog($"CallQAM_UI: have Webcam show QAM");
-
-                    Thread threadQAM = new Thread(() =>
+                    //writelog($"CallQAM_UI: Go");
+                    //List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
+                    //writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
+                    //if (deviceInfos.Count == 1)
                     {
-                        _QAM = new QAMPage(deviceMangerPlugin, Log);
-                        _QAM.Closed += QAMCloseEvent;
+                        writelog($"CallQAM_UI: have Webcam show QAM");
 
-                        //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
-                        if (QAM_Position.X != 0 && QAM_Position.Y != 0)
+                        Thread threadQAM = new Thread(() =>
                         {
-                            _QAM.Top = QAM_Position.Y;
-                            _QAM.Left = QAM_Position.X;
-                        }
-                        else
-                        {
-                            float scaleFactorX = 1;
-                            float scaleFactorY = 1;
+                            _QAM = new QAMPage(deviceMangerPlugin, Log);
+                            _QAM.Closed += QAMCloseEvent;
 
-                            using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
+                            //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
+                            if (QAM_Position.X != 0 && QAM_Position.Y != 0)
                             {
-                                float dpiX = graphics.DpiX;
-                                float dpiY = graphics.DpiY;
-                                float logicalDpi = 96.0f;
-                                scaleFactorX = dpiX / logicalDpi;
-                                scaleFactorY = dpiY / logicalDpi;
+                                _QAM.Top = QAM_Position.Y;
+                                _QAM.Left = QAM_Position.X;
+                            }
+                            else
+                            {
+                                float scaleFactorX = 1;
+                                float scaleFactorY = 1;
+
+                                using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
+                                {
+                                    float dpiX = graphics.DpiX;
+                                    float dpiY = graphics.DpiY;
+                                    float logicalDpi = 96.0f;
+                                    scaleFactorX = dpiX / logicalDpi;
+                                    scaleFactorY = dpiY / logicalDpi;
+                                }
+
+                                _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
+                                _QAM.Left = 0;
                             }
 
-                            _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
-                            _QAM.Left = 0;
-                        }
+                            _QAM.Dispatcher.Invoke(() => _QAM.Show());
+                            Dispatcher.Run();
+                        });
 
-                        _QAM.Dispatcher.Invoke(() => _QAM.Show());
-                        Dispatcher.Run();
-                    });
-
-                    threadQAM.SetApartmentState(ApartmentState.STA);
-                    threadQAM.Start();
+                        threadQAM.SetApartmentState(ApartmentState.STA);
+                        threadQAM.Start();
+                    }
                 }
+                else
+                {
+                    //_QAM.Show();
+                    _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
+                    //Dispatcher.Run(); //may block the process Derek 1219
+                }
+
+                //close DDPM UI
+                //CloseDDPM();  //Derek 1209
+
+                //close OSD
+                CloseQAMOSD();
             }
-            else
+            catch (Exception e)
             {
-                //_QAM.Show();
-                _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
-                Dispatcher.Run();
+                writelog($"CallQAM_UI catch exception {e.Message}");
             }
-
-            //close DDPM UI
-            //CloseDDPM();  //Derek 1209
-
-            //close OSD
-            CloseQAMOSD();
 
             writelog($"CallQAM_UI: done");
 
@@ -10779,6 +10804,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Derek 1209
             //QAMClose();
 
+            //Derek 1216 info homepage navigate to widget setting page
+            if (isDDPMLaunchedByQAM && isDDPMHomepageReady)
+            {
+                isDDPMHomepageReady = false;
+                isDDPMLaunchedByQAM = false;
+                SetIsWidgetSettingPageLoadedByQAMAsync(true);
+            }
+
             return Task.CompletedTask;
         }
 
@@ -10786,7 +10819,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog($"UI send command CloseQAMByDDPM");
 
-            QAMClose();
+            QAMClose(true);
 
             return Task.CompletedTask;
         }
@@ -10814,26 +10847,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("[DeviceMangerPlugin] YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
 
-            var arg = new DebouncerArg()
+            _SystemEvents_DisplaySettingsChanged(new DebouncerArg()
             {
                 sender = sender,
                 eventArgs = e,
-            };
-
-            DisplayChangedDebouncer.Debounce(arg);
+            });
         }
 
         private void _SystemEvents_DisplaySettingsChanged(object _arg)
         {
-            var arg = (DebouncerArg)_arg;
-            writelog($"Receive DisplaySettingsChanged: {arg.sender}, e:{arg.eventArgs}, rescan monitor");
-            if (displayInOut)
+            try
             {
-                if (_AllInfoMonitors != null)
-                    _AllInfoMonitors.Clear();
+                DebouncerArg arg = null;
 
-                try
+                if (_arg != null)
                 {
+                    arg = (DebouncerArg)_arg;
+                    writelog($"Receive DisplaySettingsChanged: {arg.sender}, e:{arg.eventArgs}, rescan monitor");
+                }
+                else
+                    writelog($"Receive Re-GetMonitor, rescan monitor");
+
+                if (displayInOut)
+                {
+                    if (_AllInfoMonitors != null)
+                        _AllInfoMonitors.Clear();
+
                     if (_UpdateProgress != null && _FWUpdatePlugin != null)
                     {
                         writelog($"DisplaySettingsChanged: Rrconnect FWU eventv go");
@@ -10851,8 +10890,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         return;
                     }
 
-                    writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Bruce count Screen Length ...");
-
+                    //writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Bruce count Screen Length ...");
                     //Bruce 08-09 Added judgment that if the number of screens does not change, the screen orientation adjustment function will not be performed. (For example: PxP change will trigger this event, but the screen is not actually plugged in or out)
                     //bool displayDeviceNumChange = false;
                     //int AllScreens = Screen.AllScreens.Length;
@@ -10861,10 +10899,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //    displayDeviceNumChange = true;
                     //    _lastScreenCount = AllScreens;
                     //}
-
                     //writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Bruce count Screen Length finish ...");
-
-                    ///=================================================================================================================================
 
                     try
                     {
@@ -10873,127 +10908,128 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         if (_ReGetcancellationTokenSource != null)
                         {
-                            if (_ReGetcancellationTokenSource.Token.CanBeCanceled)
-                            {
-                                writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _ReGetcancellationTokenSource trigger cancel ...");
-                                _ReGetcancellationTokenSource.Cancel();
-                                _ReGetcancellationTokenSource.Dispose();
-                            }
+                            writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _ReGetcancellationTokenSource trigger cancel ...");
+                            _ReGetcancellationTokenSource.Cancel();
                         }
-
-                        if (_ReGetcancellationTokenSource != null)
-                            _ReGetcancellationTokenSource.Dispose();
-
-                        _ReGetcancellationTokenSource = new CancellationTokenSource();
-                        var token = _ReGetcancellationTokenSource.Token;
-
-                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() into Re-GetDevices ...");
-                        //Call VCP to catch updated monitor info
-                        _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
-
-                        token.ThrowIfCancellationRequested();
-                        //review monitor list to check duplicated data
-                        ReviewAllMonitorToAvoidDuplicatedInfo();
-
-                        //List<MonitorInfo> new_mo = new List<MonitorInfo>();
-                        //if (_AllInfoMonitors.Count > 0)
-                        //    new_mo.AddRange(_AllInfoMonitors);
-
-                        writelog($"[DeviceManager] SystemEvents_DisplaySettingsChanged() Got event, monitor count {_AllInfoMonitors.Count}");
-
-                        token.ThrowIfCancellationRequested();
-                        if (_AllInfoMonitors.Count > 0)
-                            OnDeviceChanged(_AllInfoMonitors[0], null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");//DeviceChangedType.Display_PlugIn);
-                        else
-                            OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");
-
-                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() OnDeviceChanged finish ...");
-
-                        //Robert_Lin, 2024-9-9 Signal a DisplaySettingsChanged event through Agent
-                        //Anyone who would like to receive this event, you can add below code: (refer to EAPlugin.cs)
-                        // _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
-                        //
-                        // private void DisplaySettingsChangedHandler(object sender, EventManagerArgs e)
-                        // {
-                        //    your handler code
-                        // }
-                        //
-
-                        if (_agent != null && !token.IsCancellationRequested)
-                            _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
-
-                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() _agent.RaiseEvent finish ...");
-
-                        if (_AllInfoMonitors.Count > 0 && !token.IsCancellationRequested)
-                        {
-                            Task.Run(() =>
-                            {
-                                //Telementry Collection
-                                var rt = false;
-                                var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
-                                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
-                                rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, _AllInfoMonitors);
-                                if (rt)
-                                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
-                                else
-                                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
-                            }, token).ConfigureAwait(false);
-                        }
-
-                        ////1117 Bruce 不用自動旋轉把下兩行註解
-                        //if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
-                        //_DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
-                        //writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
-
-                        token.ThrowIfCancellationRequested();
-                        _DisplayManagerPlugin.UpdateExistAlsConfig(_AllInfoMonitors.ToList());
-                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() UpdateExistAlsConfig finish ...");
-                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
-
-                        if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0 && !token.IsCancellationRequested)
-                            Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, _AllInfoMonitors.ToList(), _SettingsPlugin));
                     }
                     catch (TaskCanceledException)
                     {
-                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
-
-                        if (_ReGetcancellationTokenSource != null)
-                            _ReGetcancellationTokenSource.Dispose();
-
-                        OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
+                        writelog("[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
+                        _ReGetcancellationTokenSource.Dispose();
                     }
                     catch (OperationCanceledException)
                     {
-                        writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
-
-                        if (_ReGetcancellationTokenSource != null)
-                            _ReGetcancellationTokenSource.Dispose();
-
-                        OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
+                        writelog("[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
+                        _ReGetcancellationTokenSource.Dispose();
                     }
                     catch (Exception ex)
                     {
-                        // Failed to complete due to e exception
-                        writelog($"[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() --Task.Run ...there is an exceptionI-- ({ex.Message})");
+                        writelog($"[DeviceMangerPlugin] I_SystemEvents_DisplaySettingsChanged() ...there is an exception-- ({ex.Message})");
+                        _ReGetcancellationTokenSource.Dispose();
+                    }
+                    finally
+                    {
+                        try
+                        {
+                            _ReGetcancellationTokenSource = new CancellationTokenSource();
+                            var token = _ReGetcancellationTokenSource.Token;
 
-                        if (_ReGetcancellationTokenSource != null)
-                            _ReGetcancellationTokenSource.Dispose();
+                            writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() into Re-GetDevices ...");
+                            //Call VCP to catch updated monitor info
+                            _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
 
-                        OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
+                            token.ThrowIfCancellationRequested();
+                            //review monitor list to check duplicated data
+                            ReviewAllMonitorToAvoidDuplicatedInfo();
 
-                        //Done: let's be nice and don't swallow the exception
-                        //throw new InvalidOperationException("some exception happened but not about InitializeMonitorsList cancellation");
+                            //List<MonitorInfo> new_mo = new List<MonitorInfo>();
+                            //if (_AllInfoMonitors.Count > 0)
+                            //    new_mo.AddRange(_AllInfoMonitors);
+
+                            writelog($"[DeviceManager] _SystemEvents_DisplaySettingsChanged() Got event, monitor count {_AllInfoMonitors.Count}");
+
+                            token.ThrowIfCancellationRequested();
+                            if (_AllInfoMonitors.Count > 0)
+                                OnDeviceChanged(_AllInfoMonitors[0], null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");//DeviceChangedType.Display_PlugIn);
+                            else
+                                OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, token, "DisplayChanged");
+
+                            writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() OnDeviceChanged finish ...");
+
+                            //Robert_Lin, 2024-9-9 Signal a DisplaySettingsChanged event through Agent
+                            //Anyone who would like to receive this event, you can add below code: (refer to EAPlugin.cs)
+                            // _agent.RegisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
+                            //
+                            // private void DisplaySettingsChangedHandler(object sender, EventManagerArgs e)
+                            // {
+                            //    your handler code
+                            // }
+                            //
+
+                            if (_agent != null && !token.IsCancellationRequested)
+                                _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
+                            writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() _agent.RaiseEvent finish ...");
+
+                            if (_AllInfoMonitors.Count > 0 && !token.IsCancellationRequested)
+                            {
+                                Task.Run(() =>
+                                {
+                                    //Telementry Collection
+                                    var rt = false;
+                                    var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
+                                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
+                                    rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, _AllInfoMonitors);
+                                    if (rt)
+                                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
+                                    else
+                                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
+                                }, token).ConfigureAwait(false);
+                            }
+
+                            ////1117 Bruce 不用自動旋轉把下兩行註解
+                            //if (displayDeviceNumChange && _AllInfoMonitors.Count > 0)
+                            //_DisplayManagerPlugin.SetDisplayOrientation(_AllInfoMonitors).Wait();
+                            //writelog("[DeviceMangerPlugin] SystemEvents_DisplaySettingsChanged() SetDisplayOrientation finish ...");
+
+                            token.ThrowIfCancellationRequested();
+                            _DisplayManagerPlugin.UpdateExistAlsConfig(_AllInfoMonitors.ToList());
+                            writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() UpdateExistAlsConfig finish ...");
+                            writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
+
+                            if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0 && !token.IsCancellationRequested)
+                                Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, _AllInfoMonitors.ToList(), _SettingsPlugin));
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            writelog("[DeviceMangerPlugin] II_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
+                            OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            writelog("[DeviceMangerPlugin] II_SystemEvents_DisplaySettingsChanged() trigger cancel cancellation happened ...");
+                            OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
+                        }
+                        catch (Exception ex)
+                        {
+                            // Failed to complete due to e exception
+                            writelog($"[DeviceMangerPlugin] II_SystemEvents_DisplaySettingsChanged() ...there is an exception-- ({ex.Message})");
+                            OnDeviceChanged(null, null, DeviceChangedType.NotifyOnly, CancellationToken.None, "DisplayChanged");
+                        }
                     }
                 }
-                catch (Exception ex)
+                else//Add by Bruce
                 {
-                    writelog("[DeviceMangerPlugin] Initialize Monitors List Exception : " + ex.Message);
+                    if (_arg != null)
+                        writelog($"DisplaySettingsChanged: {arg.sender}, e:{arg.eventArgs}, By pass.");
+                    else
+                        writelog($"GetMonitor, By pass.");
+
+                    displayInOut = true;
                 }
             }
-            else//Add by Bruce
+            catch (Exception x)
             {
-                writelog($"DisplaySettingsChanged: {arg.sender}, e:{arg.eventArgs}, By pass.");
-                displayInOut = true;
+                writelog($"[DeviceMangerPlugin] III_SystemEvents_DisplaySettingsChanged()...there is an exception-- ({x.Message})");
             }
         }
 
@@ -11004,11 +11040,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EventHandler<VCPchangedEventArgs> handler = VCPchanged;
             if (handler != null)
                 Task.Run(() => handler.Invoke(this, e));
-
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
         }
 
         protected virtual void OnDDCCIStatuschanged(DDCCIchangedEventArgs e)
@@ -11024,11 +11055,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _NKVMPlugin.NKVM_ChangeLimitedSW(e.monitors, e.DDCisON).Wait();
             }
+        }
 
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
+        protected virtual void OnMonitorinfoUpdatechanged(MonitorinfoUpdateEventArgs e)
+        {
+            writelog("DeviceMangerPlugin brocast MonitorinfoUpdatechanged ...");
+
+            //MonitorUpdatechanged?.Invoke(this, e);
+            EventHandler<MonitorinfoUpdateEventArgs> handler = MonitorinfoUpdated;
+            if (handler != null)
+                Task.Run(() => handler.Invoke(this, e)).ConfigureAwait(false);
         }
 
         protected virtual void OnDisplaychanged(DisplaychangedEventArgs e)
@@ -11437,6 +11473,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             OnDDCCIStatuschanged(_DDCCIchangedEventArgs);
         }
 
+        private void show_MonitorinfoUpdatechangedEventArgs(object sender, MonitorinfoUpdateEventArgs e)
+        {
+            writelog("Receive MonitorinfoUpdatechanged Event Notify from DisplayManagerPlugin");
+            writelog("Send out MonitorinfoUpdatechanged Event Notify from DeviceMangerPlugin");
+
+            MonitorinfoUpdateEventArgs _EventArgss = new MonitorinfoUpdateEventArgs()
+            {
+                edid = e.edid,
+                monitor = e.monitor,
+            };
+            OnMonitorinfoUpdatechanged(_EventArgss);
+        }
+
         private void show_displays_changed(object sender, DisplaychangedEventArgs e)
         {
             writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin");
@@ -11449,18 +11498,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _displaychangedEventArgs.monitors = e.monitors.ToList();
             OnDisplaychanged(_displaychangedEventArgs);
 
-            Task.Run(() =>
+            if (e.monitors.Count > 0)
             {
-                //Telementry Collection
-                var rt = false;
-                var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
-                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
-                rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, e.monitors);
-                if (rt)
-                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
-                else
-                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
-            }).ConfigureAwait(false);
+                Task.Run(() =>
+                {
+                    //Telementry Collection
+                    var rt = false;
+                    var DeviceTypeConnected_Function = new DeviceTypeConnected_Function();
+                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function...");
+                    rt = DeviceTypeConnected_Function.DeviceTypeConnected_Telementry(_TelementryScheduler, e.monitors);
+                    if (rt)
+                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Success ...");
+                    else
+                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for DeviceTypeConnected_Function Fail ...");
+                }).ConfigureAwait(false);
+            }
         }
 
         private void show_colorpreset(object sender, VCPchangedEventArgs e)
@@ -11815,6 +11867,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.VCPchanged += show_displays;
                         _DisplayManagerPlugin.DDCCIStatuschanged += show_DDCCIchangedEventArgs;
                         _DisplayManagerPlugin.Displaychanged += show_displays_changed;
+                        _DisplayManagerPlugin.MonitorinfoUpdated += show_MonitorinfoUpdatechangedEventArgs;
                         //Robert_Lin, 2024-7-16 added to handle EasyArrange EAPlugin events
                         _DisplayManagerPlugin.EAEditStarted += _DisplayManagerPlugin_EAEditStarted;
                         //Robert_Lin, 2024-9-13 Remove unused interfaces
@@ -11840,6 +11893,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.VCPchanged += show_displays;
                         _DisplayManagerPlugin.DDCCIStatuschanged += show_DDCCIchangedEventArgs;
                         _DisplayManagerPlugin.Displaychanged += show_displays_changed;
+                        _DisplayManagerPlugin.MonitorinfoUpdated += show_MonitorinfoUpdatechangedEventArgs;
                         //Robert_Lin, 2024-7-16 added to handle EasyArrange EAPlugin events
                         _DisplayManagerPlugin.EAEditStarted += _DisplayManagerPlugin_EAEditStarted;
                         //Robert_Lin, 2024-9-13 Remove unused interfaces
@@ -12671,7 +12725,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
 
                 //overwrite conflict key
-                HotkeyInfo conflictKeyinfo = curHotkey.HotkeyInfo.SingleOrDefault(x => KeysTostr(x.Hotkey).Equals(KeysTostr(hotkeys)));
+                Debug.WriteLine($"overwrite conflict key: {KeysTostr(hotkeys)}");
+                HotkeyInfo conflictKeyinfo = curHotkey.HotkeyInfo.SingleOrDefault(x => !string.IsNullOrEmpty(KeysTostr(hotkeys)) && KeysTostr(x.Hotkey).Equals(KeysTostr(hotkeys)));
                 if (conflictKeyinfo != null)
                 {
                     conflictKeyinfo.Hotkey = new List<VirtualKey>();
@@ -12868,6 +12923,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     }
                 }
+                /* since all monitor use same hotkeys,no need this anymore
                 //diff monitor
                 List<string> monitorSnList = new List<string>();
                 foreach (HotkeySettings hotkeySetting in hotkeySettingList)
@@ -12884,11 +12940,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (distCount != 0 && (allCount == distCount))
                 {
                     return Task.FromResult(HotkeyWarning.ConflictInbox);
-                }
+                }*/
                 return Task.FromResult(HotkeyWarning.None);
             }
             else
             {
+                writelog($"[GetHotkeyConflicts] _SettingsPlugin is null.");
                 return Task.FromResult(HotkeyWarning.ConflictInbox);
             }
         }
@@ -13012,7 +13069,72 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             HandleQAMV2();
         }
 
+        //Derek 1217 add Debounce for Keyboard_KeyUpProc
+        private System.Timers.Timer _timerDebounce;
+
+        //即刻执行，执行之后，在timeMs内再次调用无效
+        public void KeyboardHook_Debounce<T>(int timeMs, ISynchronizeInvoke invoker,
+                        Action<T> action, T parameter)
+        {
+            System.Threading.Monitor.Enter(this);
+            bool needExit = true;
+
+            try
+            {
+                if (_timerDebounce == null)
+                {
+                    _timerDebounce = new System.Timers.Timer(timeMs);
+                    _timerDebounce.AutoReset = false;
+                    _timerDebounce.Elapsed += (o, e) =>
+                    {
+                        _timerDebounce.Stop();
+                        _timerDebounce.Close();
+                        _timerDebounce = null;
+                    };
+                    _timerDebounce.Start();
+
+                    System.Threading.Monitor.Exit(this);
+                    needExit = false;
+
+                    InvokeAction(action, parameter, invoker);//can't lock this
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch exception[{e.Message}] when run KeyboardHook_Debounce");
+            }
+            finally
+            {
+                if (needExit)
+                    System.Threading.Monitor.Exit(this);
+            }
+        }
+
+        private void InvokeAction<T>(Action<T> action, T parameter, ISynchronizeInvoke invoker)
+        {
+            if (invoker == null)
+            {
+                action(parameter);
+            }
+            else
+            {
+                if (invoker.InvokeRequired)
+                {
+                    _ = invoker.Invoke(action, new object[] { parameter });
+                }
+                else
+                {
+                    action(parameter);
+                }
+            }
+        }
+
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
+        {
+            KeyboardHook_Debounce(3000, null, KeyboardHook_KeyUpProc, e);
+        }
+
+        private void KeyboardHook_KeyUpProc(KeyEventArgs e)
         {
             string strKey = e.KeyCode.ToString().ToUpper();
             Debug.WriteLine($"Keyboard_KeyUpProc ---{strKey}");
@@ -13028,7 +13150,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"ALT+Z conditons: devcnt = {devCnt}, " +
                     $"global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
 
-                //Derek PIMS PIMS-329759 Problem 1
+                //Derek PIMS-329759 Problem 1
                 if (1 == devCnt && _GlobalSettingParam != null &&
                     _GlobalSettingParam.GlobalSetting_WidgetSettings != null &&
                     _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
@@ -13076,6 +13198,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             showBatteryLowCombineOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
                             // ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CapsLock, true);
+                            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, "Collaboration controls are not available during multiple conference calls");
                         }
                         else
                         {
@@ -13316,27 +13439,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case HotkeyType.ContrastReduce:
-                    if (IsALSautobrightness(monitorInfo))
-                    {
-                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                        HotkeyPopup(hotkeyPopWrap);
-                    }
-                    else
-                    {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
-                    }
+                    //DDPMW-764
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Reduce_Contrast_Value));
                     break;
 
                 case HotkeyType.ContrastIncrease:
-                    if (IsALSautobrightness(monitorInfo))
-                    {
-                        HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
-                        HotkeyPopup(hotkeyPopWrap);
-                    }
-                    else
-                    {
-                        _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
-                    }
+                    //DDPMW-764
+                    _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Increase_Contrast_Value));
                     break;
 
                 case HotkeyType.LuminanceReduce:
@@ -13421,9 +13530,37 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
         {
+            //Robert_Lin, 2024-12-19, add log to trace if HokeyKey has been handover to this method.
+            string moInfo = "";
+            if (monitorInfo == null)
+            {
+                moInfo = "(null)";
+            }
+            else
+            {
+                moInfo = monitorInfo.modelName;
+                if (monitorInfo.edid != null)
+                {
+                    if (String.IsNullOrEmpty(monitorInfo.edid.ServiceTag))
+                    {
+                        moInfo += ",(EMPTY)";
+                    }
+                    else
+                    {
+                        moInfo += $",{monitorInfo.edid.ServiceTag}";
+                    }
+                }
+                else
+                {
+                    moInfo += ",(null)";
+                }
+
+            }
+            writelog($"Toggle_EzRecentSetting({moInfo}) is called.");
+
             //Validation
             //todo Toggle_EzRecentSetting
-            //Read the EAMonitorSettings
+            //Read the EAMonitorSettings for EARecentList
             EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
             //Change selected layout to the latest item of RecentList
             if (eaSettings != null)
@@ -13432,16 +13569,59 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 if (recentList == null)
                 {
-                    writelog("@ Toggle_EzRecentSetting(), EA RecentList is null");
+                    writelog("@ Toggle_EzRecentSetting() failed, EA RecentList is null");
                     return;
                 }
                 if (recentList.Length == 0)
                 {
-                    writelog("@ Toggle_EzRecentSetting(), EA RecentList is empty");
+                    writelog("@ Toggle_EzRecentSetting() failed, EA RecentList is empty");
                     return;
+                }
+                else if (recentList.Length < EAEMConstants.MaxRecentItems)
+                {
+                    writelog($"@ Toggle_EzRecentSetting() failed, EA RecentList count={recentList.Length}");
                 }
                 else
                 {
+                    //Robert_Lin, 2024-12-19, Due to new interface
+                    //  IDevciceManagerSA.SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
+                    //is released for CLI and Hotkey, will change code logic to use new interface.
+                    //NEW:
+                    //1 Read the EARecentList, count should be == 5 (already checked)
+                    try
+                    {
+                        //2 Get the tail item of EZRecentList, that is EARecentList[4]
+                        SplitJson newSelectedLayout = recentList[EAEMConstants.MaxRecentItems - 1];
+                        int newEAID = newSelectedLayout.EAID;
+                        writelog($"@ Toggle_EzRecentSetting(): New selected layout EAID={newEAID}");
+
+                        //3 Call SetEASelectedLayout()
+                        bool res = SetEASelectedLayout(monitorInfo, newEAID).Result;
+                        //If res == false, possible reason:
+                        // Any of IDeviceManagerSA, IDisplayService, IEasyArrsangeService is not ready
+                        // EABroker is not started
+                        // Invalid EAID
+                        // Cannot read MonitorSettings from the MonitorInfo
+                        if (!res)
+                        {
+                            writelog($"@ Toggle_EzRecentSetting() faile, SetEASelectedLayout() return false.");
+                        }
+                        else
+                        {
+                            writelog($"@ Toggle_EzRecentSetting() handover to SetEASelectedLayout().");
+                        }
+                    }
+                    catch (Exception e1)
+                    {
+                        if (Log != null)
+                        {
+                            Log.Error(e1, "Toggle_EzRecentSetting()");
+                        }
+                    }
+                    return;
+
+                    //OLD:
+                    /*
                     List<SplitJson> splitJsonsList = recentList.ToList();
                     List<SplitJson> splitJsonsTmp = new List<SplitJson>();
                     splitJsonsTmp.AddRange(splitJsonsList);
@@ -13468,9 +13648,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"Toggle_EzRecentSetting(),monitor:{monitorInfo.AliasDeviceName}={monitorInfo.edid.ServiceTag}, EA RecentList.Count={eaSettings.RecentList.Length}, toggle to [{splitJsonsList.ElementAt(0).CellCount},{splitJsonsList.ElementAt(0).SplitKey}],save eaSettings.RecentList fail, do nothing");
                     }
+                    */
                 }
             }
-
+            else
+            {
+                writelog("Toggle_EzRecentSetting() failed due to ReadEAMonitorSettings() return null.");
+            }
             //Force await to avoid reenter this method (it will update to MonitorSettings file)
             //bool isOKSetSelected = SetEASelectedLayout(monitorInfo, eaSettings.RecentList[idxRecent]).Result;
 
@@ -14005,8 +14189,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 string crtInput = monitorInfo.inputSource;
                 List<KeyValuePair<string, InputInfo>> list = result.OrderBy(x => x.Key).ToList();
                 List<InputInfo> inputInfos = result.Select(x => x.Value).ToList();
-                Debug.WriteLine($"Toggle_InputSource,all inputsourc:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
-                writelog($"Toggle_InputSource,all inputsourc:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
+                Debug.WriteLine($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] all inputsourc: {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
+                writelog($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] all inputsourc: {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
                 for (int i = 0; i < list.Count; i++)
                 {
                     if (list[i].Key.Equals(crtInput))
@@ -14021,6 +14205,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     }
                 }
+                Debug.WriteLine($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}],next inputsource: {nextInput}");
+                writelog($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}],next inputsource: {nextInput}");
                 bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
                 writelog($"Toggle_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}]" + (setNextInput ? "success" : "fail"));
             }
@@ -15412,6 +15598,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private bool CopyFile(string copyPath, string savePath)
         {
             writelog($"{nameof(CopyFile)} start");
+            Method method = new Method(Log);//Bruce 1213 Move the method to the common code
             bool ret = false;
             if (_DisplayManagerPlugin != null)
             {
@@ -15421,15 +15608,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     Directory.CreateDirectory(savePath);
                 }
 
-                if (DirectoryContainsFiles(copyPath))
+                if (method.DirectoryContainsFiles(copyPath))//Bruce 1213 Move the method to the common code
                 {
                     // 取得資料夾名稱
-                    string folderName = GetFolderName(copyPath);
+                    string folderName = method.GetFolderName(copyPath);//Bruce 1213 Move the method to the common code
                     // 複製指定的 log 文件到選擇的資料夾
-                    CopyLogFolder(copyPath, savePath);
+                    method.CopyLogFolder(copyPath, savePath);//Bruce 1213 Move the method to the common code
                     writelog($"{nameof(CopyFile)} end");
                     return true;
                 }
+            }
+            if (method != null)//Bruce 1213 Move the method to the common code
+            {
+                method.Dispose();
+                method = null;
             }
             writelog($"{nameof(CopyFile)} end");
             return false;
@@ -15524,7 +15716,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     int activeLayout = ddmMonitorSettings.EasyArrangement.Desktops[0].ActiveLayout;
                     SplitJson? selJson = null;
                     //activaLayout: [0~49]=preset layout, [1000~1004]=custom layout
-                    if (activeLayout >= 1000)
+                    if (activeLayout >= 1000) //or EAEMConstants.EAID_FirstCustom
                     {
                         //Find the CustomLayout by EAID
                         selJson = ddpmCustomList.Find(x => x.EAID == activeLayout);
@@ -16587,5 +16779,275 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #endregion
+
+        #region globalperipheral
+
+        public async Task<bool> GetIsLockKeyNotificationsEnabledValue()
+        {
+            writelog($"Get IsLockKeyNotificationsEnabled Fun");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsLockKeyNotificationsEnabledValue();
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsLockKeyNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsLockKeyNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsLockKeyNotificationsEnabledValue failed - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsBatteryNotificationsEnabledValue()
+        {
+            writelog($"Get IsBatteryNotificationsEnabled Fun");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsBatteryNotificationsEnabledValue();
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsBatteryNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsBatteryNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsBatteryNotificationsEnabledValue failed - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsPresenceDetectionSensnorStateNotificationsEnabledValue()
+        {
+            writelog($"Get GetIsPresenceDetectionSensnorStateNotificationsEnabledValue Fun");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsPresenceDetectionSensnorStateNotificationsEnabledValue();
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsPresenceDetectionSensnorStateNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsPresenceDetectionSensnorStateNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsPresenceDetectionSensnorStateNotificationsEnabledValue failed - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsAnalyticsEnabledValue()
+        {
+            writelog($"Get GetIsAnalyticsEnabledValue Fun");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsAnalyticsEnabledValue();
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsAnalyticsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsAnalyticsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsAnalyticsEnabledValue failed - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsQuickAccessMenuEnabledValue()
+        {
+            writelog($"Get GetIsQuickAccessMenuEnabledValue Fun");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsQuickAccessMenuEnabledValue();
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuEnabledValue failed - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsMuteStatusNotificationsEnabledValue()
+        {
+            writelog($"Get GetIsMuteStatusNotificationsEnabledValue Fun");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsMuteStatusNotificationsEnabledValue();
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsMuteStatusNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsMuteStatusNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsMuteStatusNotificationsEnabledValue failed - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsQuickAccessMenuOSDEnabledValue()
+        {
+            writelog($"Get GetIsQuickAccessMenuOSDEnabledValue Fun");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsQuickAccessMenuOSDEnabledValue();
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuOSDEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuOSDEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuOSDEnabledValue failed - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsLockKeyNotificationsEnabledValue(bool newValue)
+        {
+            writelog($"Set SetIsLockKeyNotificationsEnabledValue Fun");
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetIsLockKeyNotificationsEnabledValue(newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsLockKeyNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsLockKeyNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsLockKeyNotificationsEnabledValue failed, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsBatteryNotificationsEnabledValue(bool newValue)
+        {
+            writelog($"Set SetIsBatteryNotificationsEnabledValue Fun");
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetIsBatteryNotificationsEnabledValue(newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsBatteryNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsBatteryNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsBatteryNotificationsEnabledValue failed, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsPresenceDetectionSensnorStateNotificationsEnabledValue(bool newValue)
+        {
+            writelog($"Set SetIsPresenceDetectionSensnorStateNotificationsEnabledValue Fun");
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetIsPresenceDetectionSensnorStateNotificationsEnabledValue(newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsPresenceDetectionSensnorStateNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsPresenceDetectionSensnorStateNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsPresenceDetectionSensnorStateNotificationsEnabledValue failed, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsAnalyticsEnabledValue(bool newValue)
+        {
+            writelog($"Set SetIsAnalyticsEnabledValue Fun");
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetIsAnalyticsEnabledValue(newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsAnalyticsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsAnalyticsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsAnalyticsEnabledValue failed , Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsQuickAccessMenuEnabledValue(bool newValue)
+        {
+            writelog($"Set SetIsQuickAccessMenuEnabledValue Fun");
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetIsQuickAccessMenuEnabledValue(newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsQuickAccessMenuEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsQuickAccessMenuEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsQuickAccessMenuEnabledValue failed , Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsMuteStatusNotificationsEnabledValue(bool newValue)
+        {
+            writelog($"Set SetIsMuteStatusNotificationsEnabledValue Fun");
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetIsMuteStatusNotificationsEnabledValue(newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsMuteStatusNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsMuteStatusNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsMuteStatusNotificationsEnabledValue failed , Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsQuickAccessMenuOSDEnabledValue(bool newValue)
+        {
+            writelog($"Set SetIsQuickAccessMenuOSDEnabledValue Fun");
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetIsQuickAccessMenuOSDEnabledValue(newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsQuickAccessMenuOSDEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsQuickAccessMenuOSDEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsQuickAccessMenuOSDEnabledValue failed , Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        #endregion globalperipheral
     }
 }

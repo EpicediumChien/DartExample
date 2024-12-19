@@ -125,9 +125,9 @@ namespace DDPM.SA.Common
         public string ServiceTag { get; set; }
         //public string PPID { get; set; }
         public string SerialNumber { get; set; }
+        public string FirmwareVersion { get; set; }
         public string Result { get; set; }
         public string Message { get; set; }
-        public string FWVer { get; set; }
 
         public ConnectedDevices()
         {
@@ -139,10 +139,9 @@ namespace DDPM.SA.Common
             //PPID = "N/A";
             SerialNumber = "N/A";
             ServiceTag = "N/A";
+            FirmwareVersion = "N/A";
             Result = "N/A";
             Message = "N/A";
-            FWVer = "N/A";
-
         }
 
         public string ToJson()
@@ -503,7 +502,7 @@ namespace DDPM.SA.Common
         public string SpeakerMicrophone { get; set; } = "N/A";
         public string SpeakerVolume { get; set; } = "N/A";
         public string MicrophoneControl { get; set; } = "N/A";
-        public string Uniformity { get; set; } = "N/A";
+        //public string Uniformity { get; set; } = "N/A";
         public string PowerNap { get; set; } = "N/A";
         public string OSD_language { get; set; } = "N/A";
         public string PID { get; set; } = "N/A";
@@ -553,16 +552,10 @@ namespace DDPM.SA.Common
             ID = deviceInfo.ID.ToString();
             Index = index.ToString();
             Model = deviceInfo.ModelNumber;
-            //Manufacturer = deviceInfo.Manufacturer;
-            //PID = deviceInfo.PID;
             ServiceTag = deviceInfo.DockServiceTag ?? "N/A";
-            //PPID = deviceInfo.PPID;
-            //SerialNumber = deviceInfo.SerialNumber;
-            //ManufacturingYear = deviceInfo.ManufacturingYear;
-            //ManufacturingWeek = deviceInfo.ManufacturingWeek;
             FirmwareVersion = deviceInfo.FirmwareVersion;
-            //Connectiontype = deviceInfo.ConnectionType;
             BatteryStatus = deviceInfo.BatteryStatus;
+            DeviceType = deviceInfo.LogicalDeviceType;
         }
 
         public string ID { get; set; } = "N/A";
@@ -578,6 +571,111 @@ namespace DDPM.SA.Common
         public string FirmwareVersion { get; set; } = "N/A";
         public string Connectiontype { get; set; } = "N/A";
         public string BatteryStatus { get; set; } = "N/A";
+        public string DeviceType { get; set; } = "N/A";
+
+        public string ToJson()
+        {
+            try
+            {
+                return JsonConvert.SerializeObject(this, Formatting.Indented);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[PeripheralResponse] ToJson exception, message: {ex.Message}");
+                return string.Empty;
+            }
+        }
+    }
+
+    public class DeviceDataWebcamResponse : PeripheralResponse
+    {
+        public DeviceDataWebcamResponse(int index, DeviceInfo deviceInfo) : base(index, deviceInfo)
+        {
+        }
+
+        public DeviceDataWebcamResponse() : base()
+        {
+        }
+
+        public string FieldOfView { get; set; } = "N/A";
+        public string HDR { get; set; } = "N/A";
+        public string AntiFlicker { get; set; } = "N/A";
+        public string MicSwitch { get; set; } = "N/A";
+        public string AIAutoFraming { get; set; } = "N/A";
+        public string PresenceDetection { get; set; } = "N/A";
+    }
+
+    public class DeviceDataAudioResponse : PeripheralResponse
+    {
+        public DeviceDataAudioResponse(int index, DeviceInfo deviceInfo) : base(index, deviceInfo)
+        {
+        }
+
+        public DeviceDataAudioResponse() : base()
+        {
+        }
+
+        public string ANCMode { get; set; } = "N/A";
+        public string MicNoiseCancellation { get; set; } = "N/A";
+        public string WearDetection { get; set; } = "N/A";
+    }
+
+    public class DeviceDataKeyboardResponse : PeripheralResponse
+    {
+        public DeviceDataKeyboardResponse(int index, DeviceInfo deviceInfo) : base(index, deviceInfo)
+        {
+            CollabCameraEnable = deviceInfo.IsCollaborationCameraEnable ? "ON" : "OFF";
+            CollabMicMute = deviceInfo.IsCollaborationMicEnable ? "ON" : "OFF";
+            CollabScreenShare = deviceInfo.IsCollaborationScreenShareEnable ? "ON" : "OFF";
+            CollabChatEnable = deviceInfo.IsCollaborationChatEnable ? "ON" : "OFF";
+        }
+
+        public DeviceDataKeyboardResponse() : base()
+        {
+        }
+
+        public string CollabCameraEnable { get; set; } = "N/A";
+        public string CollabMicMute { get; set; } = "N/A";
+        public string CollabScreenShare { get; set; } = "N/A";
+        public string CollabChatEnable { get; set; } = "N/A";
+    }
+
+    public class DeviceDataMouseResponse : PeripheralResponse
+    {
+        public DeviceDataMouseResponse(int index, DeviceInfo deviceInfo) : base(index, deviceInfo)
+        {
+        }
+
+        public DeviceDataMouseResponse() : base()
+        {
+        }
+    }
+
+    public class DeviceDataPenResponse : PeripheralResponse
+    {
+        public DeviceDataPenResponse(int index, DeviceInfo deviceInfo) : base(index, deviceInfo)
+        {
+        }
+
+        public DeviceDataPenResponse() : base()
+        {
+        }
+    }
+
+    public class DeviceDataDockResponse : PeripheralResponse
+    {
+        public DeviceDataDockResponse(int index, DeviceInfo deviceInfo) : base(index, deviceInfo)
+        {
+        }
+
+        public DeviceDataDockResponse() : base()
+        {
+        }
+    }
+
+    public class SetDeviceConfigResponse : CLI_RESPONSE3
+    {
+        public new List<string> Message { get; set; } = new List<string>();
     }
 
     public class CLI_RESPONSE2
@@ -648,7 +746,15 @@ namespace DDPM.SA.Common
 
         public string ToJson()
         {
-            return JsonConvert.SerializeObject(this, Formatting.Indented);
+            try
+            {
+                return JsonConvert.SerializeObject(this, Formatting.Indented);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[CLI_RESPONSE3] ToJson exception, message: {ex.Message}");
+                return string.Empty;
+            }
         }
 
         public string OutputLog(object o, CommandLineInput commandLineInput)
@@ -701,7 +807,7 @@ namespace DDPM.SA.Common
         {
         }
 
-        public string OptimalResolution { get; set; } = "N/A";
+        //public string OptimalResolution { get; set; } = "N/A";
         public string Resolution { get; set; } = "N/A";
         public string ActiveInputSource { get; set; } = "N/A";
         public string ColorPreset { get; set; } = "N/A";
@@ -719,7 +825,7 @@ namespace DDPM.SA.Common
         public string SpeakerMicrophone { get; set; } = "N/A";
         public string SpeakerVolume { get; set; } = "N/A";
         public string MicrophoneControl { get; set; } = "N/A";
-        public string Uniformity { get; set; } = "N/A";
+        //public string Uniformity { get; set; } = "N/A";
         public string PowerNap { get; set; } = "N/A";
         public string OSD_language { get; set; } = "N/A";
     }

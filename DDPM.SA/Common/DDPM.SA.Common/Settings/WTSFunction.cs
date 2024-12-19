@@ -24,7 +24,7 @@ namespace DDPM.SA.Common.Settings
         [DllImport("Kernel32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int WTSGetActiveConsoleSessionId();
-        private static int _WTSGetActiveConsoleSessionId()
+        public static int _WTSGetActiveConsoleSessionId()
         {
             return WTSGetActiveConsoleSessionId();
         }
@@ -209,7 +209,7 @@ namespace DDPM.SA.Common.Settings
         //
         //At system session (0) to query user's local app data path from active session
         //
-        private string GetActiveUserLocalAppDataPath(ILog log)
+        public static string GetActiveUserLocalAppDataPath(ILog log)
         {
             IntPtr buffer;
             int bytesReturned = 0;

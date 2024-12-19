@@ -78,7 +78,7 @@ namespace SA.Plugins.User.DeviceManager.Test
         public void TestDownloadICCData()
         {
             //_ColorPresetPlugin == null
-            var result = deviceMangerPlugin.DownloadICCData(monitorInfo,true,"");
+            var result = deviceMangerPlugin.DownloadICCData(monitorInfo, true, "");
             Assert.That(result, Is.Not.Null);
 
             //_ColorPresetPlugin != null
@@ -892,7 +892,20 @@ namespace SA.Plugins.User.DeviceManager.Test
             // Setup
             var _PeripheralsPluginMock = new Mock<IDPeMPlugin>();
             privateObject.SetFieldOrProperty("_PeripheralsPlugin", _PeripheralsPluginMock.Object);
-            await deviceMangerPlugin.GetDevices();
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>
+                {
+                new DeviceInfo {LogicalDeviceType = "LogicalHeadset",DeviceName = "LogicalHeadset",Name="SB725",PhysicalDeviceType=DeviceType.LogicalDock,ID=Guid.NewGuid() },
+                }
+            };
+            _PeripheralsPluginMock.Setup(x => x.GetDevices(It.IsAny<bool>())).Returns(Task.FromResult(deviceHelper));
+
+            Mock<IDTPProxyPlugin> DTPProxyPluginMock = new Mock<IDTPProxyPlugin>();
+            privateObject.SetFieldOrProperty("_DTPProxyPlugin", DTPProxyPluginMock.Object);
+            DTPProxyPluginMock.Setup(x => x.GetFirmwareVersionForDock(It.IsAny<string>())).Returns(Task.FromResult("TestV1.0"));
+            DTPProxyPluginMock.Setup(x => x.GetDockServiceTagForDock(It.IsAny<string>())).Returns(Task.FromResult("TestSevriceTag123456"));
+            var result = await deviceMangerPlugin.GetDevices();
 
             // Execute and Verify
             Assert.ThrowsAsync<InvalidOperationException>(async () => await deviceMangerPlugin.GetDevices());

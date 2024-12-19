@@ -41,6 +41,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         private List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
         private List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
 
+        //Robert_Lin, 2024-12-16 added in order to let view model can get devices in PleaseWait thread
+        //It need DdpmHomePlugin set value to it.
+        private IDeviceManagerSA? _deviceManagerSA = null;
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -92,22 +96,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         }
 
 
-        public double MinWidth
-        {
-            get
-            {
-                switch (HomeDevices.Count)
-                {
-                    case 1:
-                        return _pictureMinWidth + _gapMinWidth * 2;
-                    case 2:
-                    case 4:
-                        return _pictureMinWidth * 2 + _gapMinWidth * 3;
-                    case 3:
-                    default:
-                        return _pictureMinWidth * 3 + _gapMinWidth * 4;
-                }
 
+        //Robert_Lin, 2024-12-16 for PleaseWait thread to get devices
+        public IDeviceManagerSA? DeviceManagerPlugin
+        {
+            get => _deviceManagerSA;
+            set
+            {
+                SetProperty(ref _deviceManagerSA, value);
             }
         }
 
@@ -674,6 +670,43 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     break;
             }
             sw.Stop();
+
+            //Robert_Lin, 2024-12-16, The final action, when no device detected and Please wait time-out
+            //
+            if (HomeDeviceCount == 0)
+            {
+                _log.Info("PleaseWait-Final try to refresh device list manually:");
+                if (DeviceManagerPlugin != null) //Should be always true
+                {
+                    List<MonitorInfo> monitors = DeviceManagerPlugin.GetMonitors().Result;
+                    if (monitors.Count > 0) 
+                    {
+                        _log.Info($"PleaseWait-Monitor count={monitors.Count}");
+                        PrepareMonitorInfos(monitors);
+                    }
+                    else
+                    {
+                        _log.Info($"PleaseWait-Monitor count=0");
+                    }
+
+                    DeviceHelper deviceHelper = DeviceManagerPlugin.GetDevices().Result;
+                    if (deviceHelper == null || deviceHelper.deviceInfo.Count <= 0)
+                    {
+                        deviceHelper = DeviceManagerPlugin.GetDevices(true).Result;
+                    }
+                    List<DeviceInfo> _deviceInfos = new List<DeviceInfo>();
+                    if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
+                    {
+                        _deviceInfos = deviceHelper.deviceInfo;
+                        _log.Info($"PleaseWait-Peripheral count={_deviceInfos.Count}");
+                        PrepareDeviceInfos(_deviceInfos);
+                    }
+                    else
+                    {
+                        _log.Info("PleaseWait-Peripheral count=(null)");
+                    }
+                }
+            }
         }
 
         private void RunWorkerCompleted_PleaseWait(object sender, RunWorkerCompletedEventArgs e)

@@ -948,7 +948,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
                             {
                                 fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                                _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} Unzip Faile");
+                                _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} Unzip Fail");
                                 _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                                 continue;
@@ -1564,8 +1564,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                 }
                 string arguments;
-                DDPMFileSecurity ddpmFileSecurity = new DDPMFileSecurity();
-                string AppDataPath = ddpmFileSecurity.GetActiveUserLocalAppDataPath();
+                string AppDataPath = WTSFunction.GetActiveUserLocalAppDataPath(Log);
                 string logPath = "";
                 _ProgressLogPath = string.Empty;
                 _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " create log path start");
@@ -1594,14 +1593,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _ProgressLogPath = $"{logPath}\\PrgoressResult";
                     _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " create log path done");
                 }
+                // 生成唯一的管道名稱
+                string _namedPipeName = Guid.NewGuid().ToString("D");
                 if (!fwUpdateInfo.IsDisplay)
                 {
                     _timeOutCount = _fwTimeOutCount;
                     _timerTimeOut = new Timer();
                     _timerTimeOut.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
                     _timerTimeOut.Elapsed += new ElapsedEventHandler(_timerTimeOut_Tick);
-                    //foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
-                    string _namedPipeName = Guid.NewGuid().ToString("D"); // 生成唯一的管道名稱
                     _namedPipeServer = new NamedPipeStreamServer(_namedPipeName, fwUpdateInfo.Thumbprint, _IsSkipSHA); // 創建命名管道伺服器
                     _namedPipeServer.MessageReceived += _namedPipeServer_MessageReceived;
                     _namedPipeServer.ClientConnectedEvent += _namedPipeServer_ClientConnectedEvent;
@@ -1615,28 +1614,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         NotificationFWupdate(LangHelper.Instance["FW_info"], fwUpdateInfo.DeviceName + " " + LangHelper.Instance["FW_is_being_Installing"]);
                     }
-                    // 要運行的安裝程式路徑和命令行參數
-                    arguments = (fwUpdateInfo.IsUOD ? "/uod " : "") + "/silent" + " /pipename:" + _namedPipeName;
+                }
+                arguments = BuildArgs(fwUpdateInfo, _namedPipeName, logPath);
+                _logs.DebugMsg_1($"arguments : {arguments}");
+                if (_timerTimeOut != null)
+                {
                     _timerTimeOut.Enabled = true;
-                }
-                else
-                {
-                    arguments = $"-q --force --skip-app-retry -f";
-                }
-                if (fwUpdateInfo.DeviceType == DeviceType.LogicalDock || fwUpdateInfo.DeviceType == DeviceType.PhysicalWiredDock)
-                {
-                    arguments += $" /f";
-                    if (!string.IsNullOrEmpty(logPath))
-                    {
-                        arguments += $" /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"";
-                    }
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(logPath))
-                    {
-                        arguments += $" \"{logPath}\"";
-                    }
                 }
                 var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
                 if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
@@ -1702,6 +1685,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
 
                     _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " StartProcessAndBypassUACWithAdmin done b : " + b);
+                    if (_updateErrorCode == FWUErrorCode.Unknow)
+                    {
+                        _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
+                    }
+                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " _updateErrorCode : " + _updateErrorCode);
                     //UserImpersonator.RunAsUser(token, () =>
                     //{
                     //    using (_clientProcess = new Process())
@@ -1854,7 +1842,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 ManagementObjectCollection queryCollection = searcher.Get();
 
                 // 列舉查詢結果
-                foreach (ManagementObject m in queryCollection)
+                foreach (ManagementObject m in queryCollection.Cast<ManagementObject>())
                 {
                     // 取得裝置識別碼 (Device ID)
                     string deviceId = m["DeviceID"] as string;
@@ -2455,6 +2443,85 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _logs.DebugMsg_1($"GetConnected ConnectionType : {ConnectionType}");
             _logs.DebugMsg_1($"GetConnected done");
             return ConnectionType;
+        }
+        string BuildArgs(FWUpdateInfo fwUpdateInfo, string namedPipeName, string logPath)
+        {
+            _logs.DebugMsg_1($"BuildArgs start");
+            string arguments = "";
+            if (!fwUpdateInfo.IsDisplay)
+            {
+                // 要運行的安裝程式路徑和命令行參數
+                arguments = (fwUpdateInfo.IsUOD ? "/uod " : "") + "/silent" + " /pipename:" + namedPipeName;
+                if (fwUpdateInfo.DeviceType == DeviceType.LogicalMouse ||
+                    fwUpdateInfo.DeviceType == DeviceType.LogicalKeyboard)
+                {
+                    //updatepath commandLine
+                    _logs.DebugMsg_1($"BuildArgs updatepath go");
+                    switch (fwUpdateInfo.Connectivity)
+                    {
+                        case "Wired":
+                            arguments += $" /updatepath:Wired";
+                            _logs.DebugMsg_1($"BuildArgs Add : /updatepath:Wired");
+                            break;
+                        case "RF":
+                            arguments += $" /updatepath:RF";
+                            _logs.DebugMsg_1($"BuildArgs Add : /updatepath:RF");
+                            break;
+                        case "Bluetooth":
+                            arguments += $" /updatepath:BLE";
+                            _logs.DebugMsg_1($"BuildArgs Add : /updatepath:BLE");
+                            break;
+                    }
+                    _logs.DebugMsg_1($"BuildArgs updatepath done");
+                    _logs.DebugMsg_1($"BuildArgs DeviceType go");
+                    //DeviceType commandLine
+                    switch (fwUpdateInfo.DeviceType)
+                    {
+                        case DeviceType.LogicalMouse:
+                            arguments += $" /DeviceType:Mouse";
+                            _logs.DebugMsg_1($"BuildArgs Add : /DeviceType:Mouse");
+                            break;
+                        case DeviceType.LogicalKeyboard:
+                            arguments += $" /DeviceType:Keyboard";
+                            _logs.DebugMsg_1($"BuildArgs Add : /DeviceType:Keyboard");
+                            break;
+                    }
+                    _logs.DebugMsg_1($"BuildArgs DeviceType done");
+                }
+                _logs.DebugMsg_1($"BuildArgs devicePath go");
+                arguments += $" /devicePath:" + fwUpdateInfo.DevicePath;
+                _logs.DebugMsg_1($"BuildArgs devicePath done");
+                _logs.DebugMsg_1($"BuildArgs Log go");
+                //Log commandLine
+                switch (fwUpdateInfo.DeviceType)
+                {
+                    case DeviceType.LogicalDock:
+                    case DeviceType.PhysicalWiredDock:
+                        arguments += $" /f";
+                        if (!string.IsNullOrEmpty(logPath))
+                        {
+                            arguments += $" /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"";
+                            _logs.DebugMsg_1($"BuildArgs Add : /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"");
+                        }
+                        break;
+                }
+                _logs.DebugMsg_1($"BuildArgs Log done");
+            }
+            else
+            {
+                _logs.DebugMsg_1($"BuildArgs display go");
+                arguments = $"-q --force --skip-app-retry -f";
+                if (!string.IsNullOrEmpty(logPath))
+                {
+                    _logs.DebugMsg_1($"BuildArgs Log go");
+                    arguments += $" \"{logPath}\"";
+                    _logs.DebugMsg_1($"BuildArgs Add : \"{logPath}\"");
+                    _logs.DebugMsg_1($"BuildArgs Log done");
+                }
+                _logs.DebugMsg_1($"BuildArgs display done");
+            }
+            _logs.DebugMsg_1($"BuildArgs done");
+            return arguments;
         }
 
         // add @ 20241202 stephen

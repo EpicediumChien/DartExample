@@ -22,6 +22,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
@@ -699,7 +700,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (autoFramingFrameSize == -1)
                 {
                     _log.Error("DTP GetAutoFramingFrameSize fail!");
-                    _autoFramingFrameSize = 0;
+                    _autoFramingFrameSize = 1;
                 }
                 else
                     _autoFramingFrameSize = autoFramingFrameSize;
@@ -726,7 +727,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 var result = task.Result;
                 if (result == null)
                 {
-                    _log.Error("DTP GetAutoFramingFrameSize fail!");
+                    _log.Error("DTP GetIsPrioritizeExternalWebcam fail!");
                     _isPrioritizeExternalWebcam = CurrentDeviceInfo.IsPrioritizeExternalWebcam;
                     //IsDTPReady = false;
                 }
@@ -915,6 +916,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(hdr_enable));
             }
         }
+
+        public bool IsNotAutoFramingOn { get => !IsAutoFramingOn; }
         public bool IsNotRecording { get => !IsRecording; }
 
         public int btnRes0_width { get; set; }
@@ -1012,6 +1015,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => WebcamSettings.WebcamGrid;
             set
             {
+                if (value == WebcamSettings.WebcamGrid)
+                    return;
+
                 WebcamSettings.WebcamGrid = value;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
                 OnPropertyChanged();
@@ -1029,8 +1035,17 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentDeviceInfo!.IsMicEnumerationOn;
             set
             {
+                DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 2 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                if (value == IsMicEnumerationOn)
+                    return;
+                DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 3 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
                 if (!isIsMicEnumerationOnChanged_event)
+                {
+                    DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 4 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                     DdpmCommonHelper.DeviceManagerSA!.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
+                }
+                DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 5 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsMicEnumerationOnText));
             }
@@ -1047,6 +1062,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsAutoFramingOn;
             set
             {
+
+                OnPropertyChanged(nameof(IsNotAutoFramingOn));
+
                 if (value == CurrentProfile.IsAutoFramingOn)
                     return;
 
@@ -1257,6 +1275,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsHDROn;
             set
             {
+                if (value == CurrentProfile.IsHDROn)
+                    return;
+
                 AlertType = WebcamAlert.Alert1;
                 AlertVisibility = Visibility.Visible;
                 hdr_change = true;
@@ -1293,6 +1314,9 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsAutoWhiteBalanceOn;
             set
             {
+                if (value == IsAutoWhiteBalanceOn)
+                    return;
+
                 DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), value);
                 SetProfileProperty(nameof(IsAutoWhiteBalanceOn), value, OperationModule.ColorAndImage);
                 OnPropertyChanged();
@@ -1327,7 +1351,9 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(AutoWhiteBalance), _autoWhiteBalance, OperationModule.ColorAndImage);
         }
 
-        private int _brightness = 0;
+        public string BrightnessText { get; set; } = "";
+        public double[] BrightnessMargin { get; set; } = { 0 };
+        private int _brightness = -1;
         public int Brightness
         {
             get => _brightness;
@@ -1340,8 +1366,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetBrightness();
                     }
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.BrightnessMin) / (CurrentDeviceInfo.BrightnessMax - CurrentDeviceInfo!.BrightnessMin);
+                    BrightnessMargin = GetTextmargin(value, CurrentDeviceInfo?.BrightnessMax, CurrentDeviceInfo?.BrightnessMin, out string text);
+                    BrightnessText = text;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(BrightnessText));
+                    OnPropertyChanged(nameof(BrightnessMargin));
                 }
-                OnPropertyChanged();
             }
         }
         public void SetBrightness()
@@ -1350,7 +1381,9 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(Brightness), _brightness, OperationModule.ColorAndImage);
         }
 
-        private int _sharpness = 0;
+        public string SharpnessText { get; set; } = "";
+        public double[] SharpnessMargin { get; set; } = { 0 };
+        private int _sharpness = -1;
         public int Sharpness
         {
             get => _sharpness;
@@ -1363,8 +1396,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetSharpness();
                     }
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.SharpnessMin) / (CurrentDeviceInfo.SharpnessMax - CurrentDeviceInfo!.SharpnessMin);
+                    SharpnessMargin = GetTextmargin(value, CurrentDeviceInfo?.SharpnessMax, CurrentDeviceInfo?.SharpnessMin, out string text);
+                    SharpnessText = text;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SharpnessText));
+                    OnPropertyChanged(nameof(SharpnessMargin));
                 }
-                OnPropertyChanged();
             }
         }
         public void SetSharpness()
@@ -1373,7 +1411,9 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(Sharpness), _sharpness, OperationModule.ColorAndImage);
         }
 
-        private int _contrast = 0;
+        public string ContrastText { get; set; } = "";
+        public double[] ContrastMargin { get; set; } = { 0 };
+        private int _contrast = -1;
         public int Contrast
         {
             get => _contrast;
@@ -1386,8 +1426,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetContrast();
                     }
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.ContrastMin) / (CurrentDeviceInfo.ContrastMax - CurrentDeviceInfo!.ContrastMin);
+                    ContrastMargin = GetTextmargin(value, CurrentDeviceInfo?.ContrastMax, CurrentDeviceInfo?.ContrastMin, out string text);
+                    ContrastText = text;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ContrastText));
+                    OnPropertyChanged(nameof(ContrastMargin));
                 }
-                OnPropertyChanged();
             }
         }
         public void SetContrast()
@@ -1396,13 +1441,12 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(Contrast), _contrast, OperationModule.ColorAndImage);
         }
 
-        private int _saturation = 0;
+        private int _saturation = -1;
         public int Saturation
         {
             get => _saturation;
             set
             {
-                _saturation = value;
                 if (value != _saturation)
                 {
                     _saturation = value;
@@ -1410,10 +1454,33 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetSaturation();
                     }
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.SaturationMin) / (CurrentDeviceInfo.SaturationMax - CurrentDeviceInfo!.SaturationMin);
+                    SaturationMargin = GetTextmargin(value, CurrentDeviceInfo?.SaturationMax, CurrentDeviceInfo?.SaturationMin, out string text);
+                    SaturationText = text;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SaturationText));
+                    OnPropertyChanged(nameof(SaturationMargin));
                 }
-                OnPropertyChanged();
             }
         }
+
+        private static double[] GetTextmargin(double value, double? max, double? min, out string text)
+        {
+            if (max == null || min == null || max.Value == min.Value)
+            {
+                text = "0%";
+                return new double[] { 0, 2, 0, 0 };
+            }
+
+            var v = (value - min.Value) / (max.Value - min.Value);
+            text = v.ToString("##0%");
+            var width = Utility.GetTextWidth(text, 14);
+            var m = 380 * v - width / 2 + 10;
+            return new double[] { m, 2, 0, 0 };
+        }
+
+        public string SaturationText { get; set; } = "";
+        public double[] SaturationMargin { get; set; } = { 0 };
         public void SetSaturation()
         {
             DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), _saturation);

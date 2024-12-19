@@ -54,9 +54,10 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <!--Close-->
-                    <Canvas Grid.Row="0" Width="16" Height="16" Margin="0,10,10,0" 
+                    <Canvas Grid.Row="0" Width="20" Height="20" Margin="0,10,10,0" 
                             HorizontalAlignment="Right" VerticalAlignment="Top" 
-                            MouseLeftButtonDown="close_Click" 
+                            MouseLeftButtonDown="close_Click"
+                            Background="Transparent"
                             Tag="{DynamicResource Default_SA_OSD_PathColor}">
                         <Path Data="M16,0.82 L15.18,0 L8,7.2 L0.82,0.05 L0,0.87 L7.15,8 L0.05,15.13 L0.87,16 L8,8.85 L15.13,16 L15.95,15.18 L8.8,8 L16,0.82 Z" 
                             Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
@@ -76,7 +77,7 @@
                                    TextWrapping="WrapWithOverflow"
                                    FontSize="14"
                                    FontWeight="Medium"
-                                   Foreground="#FFFFFF"
+                                   Foreground="{DynamicResource Default_SA_QAM_Path_BkColor}"
                                    Text="{Binding [QAM_OSD_Msg], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                         <Button Grid.Row="1"
                                 HorizontalAlignment="Center"
@@ -86,7 +87,7 @@
                                 Height="40"
                                 FontSize="14"
                                 FontWeight="Medium"
-                                Foreground="#FFFFFF" IsEnabled="True"
+                                Foreground="{DynamicResource Default_SA_QAM_Path_BkColor}"
                                 Background="#0672CB" Click="Button_Click"
                                 Content="{Binding [Go_to_Widget_Settings], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                     </Grid>

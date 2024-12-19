@@ -27,6 +27,7 @@
     <SolidColorBrush x:Key="Transparent" Color="{StaticResource Color_FakeTransparent}" />
     <!-- #endregion FakeTransparent: When you need a transparent color and need can response mouse click -->
     <SolidColorBrush x:Key="DefaultTheme_TxtColor" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="DefaultTheme_ProcessBarTxtColor" Color="#A4B8CD" />
     <SolidColorBrush x:Key="DefaultTheme_BdBkColor" Color="#99194784" />
     <SolidColorBrush x:Key="DefaultTheme_BdSolidBkColor" Color="#FF132F54" />
     <SolidColorBrush x:Key="DefaultTheme_BdBdColor" Color="#132F54" />
@@ -55,6 +56,8 @@
     <SolidColorBrush x:Key="DefaultTheme_ListBoxBkColor" Color="#80141D27" />
     <SolidColorBrush x:Key="DefaultTheme_DialogBoxBkColor" Color="#132F54"/>
     <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
+    <SolidColorBrush x:Key="DefaultThemeRightViewAlertBkColor" Color="#364861" />
+    <SolidColorBrush x:Key="DefaultThemeToggleButtonBdColor" Color="#FFFFFF"/>
     <Style TargetType="UXControls:UXTextBlock"
            BasedOn="{StaticResource {x:Type UXControls:UXTextBlock}}">
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -85,7 +88,6 @@
         <Grid Width="16" Height="16">
             <Path Fill="{TemplateBinding Foreground}"
                   Data="M7.5 15.95V9.40005L4.7 12L4 11.3L7.5 8.05005V7.95005L4 4.70005L4.7 4.00005L7.5 6.60005V0.0500488L12.35 4.90005L9 8.00005L12.35 11.1L7.5 15.95ZM8.5 8.90005V13.55L10.9 11.15L8.5 8.90005ZM8.5 2.45005V7.10005L10.9 4.85005L8.5 2.45005Z"/>
-
         </Grid>
     </ControlTemplate>
     <!-- Dongle -->
@@ -266,7 +268,7 @@
         </Canvas>
     </ControlTemplate>
 
-    <!-- Icon Camera Preset -->
+    <!-- Icon Pause -->
     <ControlTemplate x:Key="icon_Pause" TargetType="ContentControl">
         <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
             <Path Data="M5.30957 0.00012207H6.49957V16.0001H5.30957V0.00012207Z"
@@ -292,6 +294,39 @@
         </Canvas>
     </ControlTemplate>
 
+    <!-- Icon Video -->
+    <ControlTemplate x:Key="icon_Video" TargetType="ContentControl">
+        <Canvas Width="20" Height="14">
+            <Path Data="M30.4885 14H16.732824C16.335878 14 16 13.6794 16 13.2672V0.732824C16 0.320611 16.335878 0 16.732824 0H30.4885C30.9008 0 31.2214 0.335878 31.2214 0.732824V4.80916L34.7634 2.44275C34.9924 2.29008 35.2824 2.27481 35.5114 2.41221C35.7557 2.53435 35.8931 2.79389 35.9084 3.05344L35.9389 10.9466C35.9389 11.2214 35.7863 11.4656 35.5573 11.5878C35.313 11.7099 35.0229 11.6947 34.8092 11.5573L31.2214 9.22137V13.2672C31.2214 13.6794 30.9008 14 30.4885 14ZM17.46565 12.5344H29.7557V1.46565H17.46565V12.5344ZM31.2214 7.46565L34.458 9.58779L34.4427 4.42748L31.2366 6.58015V7.46565H31.2214Z"
+                  Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
+        </Canvas>
+    </ControlTemplate>
+
+    <!-- Icon Share -->
+    <ControlTemplate x:Key="icon_Share" TargetType="ContentControl">
+        <Canvas Width="19" Height="20">
+            <Path Data="M25.61374 18.2528C25.23148 18.2528 24.91571 17.9371 24.91571 17.5548L24.91571 10.1091L23.50302 11.5218C23.37006 11.6548 23.18724 11.7212 23.00443 11.7212C22.82161 11.7212 22.63879 11.6548 22.50583 11.5218C22.23992 11.2559 22.23992 10.8072 22.50583 10.5246L25.11514 7.91531C25.14838 7.88207 25.23148 7.81559 25.23148 7.81559C25.34782 7.74911 25.46416 7.66602 25.59712 7.66602C25.76332 7.66602 25.87965 7.74911 25.99599 7.83221C25.99599 7.83221 26.0791 7.89869 26.0957 7.93193L28.705 10.5412C28.9709 10.8072 28.9709 11.2559 28.705 11.5384C28.5721 11.6714 28.3892 11.7379 28.2064 11.7379C28.0236 11.7379 27.8408 11.6714 27.7078 11.5384L26.2951 10.1257L26.2951 17.5714C26.3118 17.9371 25.99599 18.2528 25.61374 18.2528Z"
+                  Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
+            <Path Data="M33.3585 15.892H17.86887C16.904924 15.892 16.107178 15.1109 16.107178 14.1303V2.99508C16.107178 2.03113 16.888307 1.25 17.85226 1.25H33.3419C34.3059 1.25 35.1036 2.03113 35.1036 3.0117V14.147C35.1036 15.1109 34.3225 15.892 33.3585 15.892ZM17.86887 2.8455C17.78577 2.8455 17.70268 2.91198 17.70268 3.0117V14.1303C17.70268 14.2134 17.76916 14.2799 17.85226 14.2799H33.3253C33.4084 14.2799 33.4915 14.2134 33.4915 14.1137V3.0117C33.4915 2.9286 33.425 2.86212 33.3419 2.86212H17.86887V2.8455Z"
+                  Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
+        </Canvas>
+    </ControlTemplate>
+    <!-- Icon Chat -->
+    <ControlTemplate x:Key="icon_Chat" TargetType="ContentControl">
+        <Canvas Width="18" Height="16">
+            <Path Data="M9.95655 15.9168C9.95655 15.9168 9.94035 15.9168 9.92416 15.9168C9.56799 15.9168 9.22802 15.7711 8.96899 15.4959L6.75102 13.197L1.71608 13.2456C0.777092 13.2456 0 12.4847 0 11.5295V1.79958C0 0.860592 0.777092 0.0834961 1.71608 0.0834961H15.3315C16.2705 0.0834961 17.0314 0.844403 17.0314 1.78339V11.5457C17.0314 12.4847 16.2704 13.2618 15.3153 13.2618H13.1621L10.8793 15.5445C10.6527 15.7873 10.3127 15.9168 9.95655 15.9168ZM1.74847 1.63769C1.66752 1.63769 1.58656 1.70245 1.58656 1.79958V11.5457C1.58656 11.6266 1.65133 11.6914 1.73228 11.6914H6.89673C7.26909 11.6914 7.62526 11.8371 7.8681 12.1123L9.95655 14.2817L12.1421 12.0961C12.4012 11.8371 12.7411 11.6914 13.1135 11.6914H15.3476C15.4286 11.6914 15.5095 11.6266 15.5095 11.5295V1.78339C15.5095 1.70245 15.4448 1.63769 15.3638 1.63769H1.74847Z"
+                  Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
+        </Canvas>
+    </ControlTemplate>
+    <!-- Icon Mic -->
+    <ControlTemplate x:Key="icon_Mic" TargetType="ContentControl">
+        <Canvas Width="20" Height="14">
+            <Path Data="M11.03702 12.3645C9.14865 12.3645 7.62793 10.8271 7.62793 8.95542V3.90861C7.62793 2.02024 9.16536 0.499512 11.03702 0.499512C12.92539 0.499512 14.44614 2.03695 14.44614 3.90861V8.95542C14.44614 10.8438 12.90868 12.3645 11.03702 12.3645ZM11.03702 2.10379C10.05105 2.10379 9.2322 2.90594 9.2322 3.90861V8.95542C9.2322 9.94139 10.03434 10.7602 11.03702 10.7602C12.0397 10.7602 12.84184 9.9581 12.84184 8.95542V3.90861C12.84184 2.92265 12.02298 2.10379 11.03702 2.10379Z"
+          Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
+            <Path Data="M6.82572 19.4833C6.45807 19.4499 6.19068 19.1491 6.19068 18.7982C6.19068 18.4472 6.45806 18.1464 6.80899 18.113H10.3685V15.105C7.2435 14.754 4.88719 12.0301 5.00417 8.87166L5.0209 8.80482C5.13788 8.4873 5.42196 8.30348 5.73947 8.3369C6.05699 8.37033 6.30766 8.58757 6.37451 8.90509C6.34109 10.2253 6.82572 11.4452 7.71142 12.3643C8.59711 13.2834 9.80032 13.7848 11.07038 13.7848C12.35714 13.7848 13.54365 13.2834 14.44606 12.3643C15.3318 11.4452 15.7997 10.242 15.7662 8.95522C15.8331 8.58757 16.0671 8.35361 16.4013 8.3369C16.7188 8.32019 17.0029 8.4873 17.1199 8.78811L17.1366 8.85495C17.2536 12.0301 14.91397 14.754 11.77225 15.1217V18.1297H15.315C15.6827 18.1631 15.9501 18.4639 15.9501 18.8149C15.9501 19.1658 15.6827 19.4666 15.3318 19.5H6.82572V19.4833Z"
+          Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
+        </Canvas>
+    </ControlTemplate>
     <!-- endregion -->
 
     <!-- endregion -->
@@ -1143,6 +1178,7 @@
         <Setter Property="Padding" Value="8,8"/>
         <Setter Property="FontFamily" Value="Roboto"/>
         <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Tag" Value="2"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -1151,7 +1187,7 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             SnapsToDevicePixels="true"
-                            CornerRadius="2">
+                            CornerRadius="{TemplateBinding Tag}">
                         <ContentPresenter x:Name="contentPresenter"
                                           Focusable="False"
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -1561,8 +1597,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ToolTip">
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="#293B4D"
+                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}"
                             BorderThickness="1"
                             CornerRadius="4">
                         <!--<TextBlock Text="{TemplateBinding Content}"
@@ -1578,16 +1613,15 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style x:Key="TabInfoToolTipTextStyle" TargetType="TextBlock">
+    <Style x:Key="InfoToolTipTextStyle" TargetType="TextBlock">
         <Setter Property="ToolTipService.InitialShowDelay" Value="1" />
-        <Setter Property="Background" Value="#1D2C3B" />
+        <Setter Property="Background" Value="#F2193475" />
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="12" />
         <Setter Property="Foreground" Value="#F5F6F7" />
         <Setter Property="Padding" Value="8" />
-        <Setter Property="LineHeight" Value="20" />
-        <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
+    <Style x:Key="TabInfoToolTipTextStyle" TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}"/>
     <Style x:Key="ModuleItemStyle" TargetType="UXControls:UXTextBlock">
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
         <Setter Property="FontFamily" Value="Roboto" />
@@ -2014,13 +2048,13 @@
     </Style>
 
     <Style x:Key="EditActionButtonStyle" TargetType="local:ActionButton">
-        <Setter Property="Foreground" Value="#F5F6F7" />
+        <Setter Property="Foreground" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
         <Setter Property="Background" Value="#00000000" />
         <Setter Property="CornerRadius" Value="2" />
         <Setter Property="Width" Value="102.5" />
         <Setter Property="Height" Value="40" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="#F5F6F7" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Medium" />
@@ -2029,6 +2063,10 @@
     </Style>
     <!-- #endregion BitmapImage -->
 
+    <!-- #region Easy Arrange -->
+    <DropShadowEffect x:Key="EzArrange_ShadowEffect" Color="#7F000000" ShadowDepth="0" BlurRadius="12" Opacity="1" Direction="0" />
+    <!-- #endregion -->
+    
     <!-- #region Easy Memory-->
     <Style TargetType="Border" x:Key="RightBorderPageStyle">
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdSolidBkColor}" />

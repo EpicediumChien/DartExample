@@ -1,5 +1,6 @@
 ﻿using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 
@@ -27,6 +28,7 @@ namespace DDPM.UI.Common
 
                 #region Default Text Color
                 UpdateFreezable("DefaultTheme_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0E0E0E"));
+                UpdateFreezable("DefaultTheme_ProcessBarTxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0E0E0E"));
                 UpdateFreezable("DefaultTheme_BdBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99FFFFFF"));
                 UpdateFreezable("DefaultTheme_BdSolidBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFF8FBFE"));
                 UpdateFreezable("DefaultTheme_BdBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E5ECF9"));
@@ -44,6 +46,8 @@ namespace DDPM.UI.Common
                 UpdateFreezable("DefaultTheme_TbBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0063B8"));
                 UpdateFreezable("DefaultTheme_ListBoxBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99E7EAEE"));
                 UpdateFreezable("DefaultTheme_DialogBoxBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
+                UpdateFreezable("DefaultThemeRightViewAlertBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#141D28"));
+                UpdateFreezable("DefaultThemeToggleButtonBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0672CB"));
                 #endregion
 
                 #region Add Device
@@ -89,9 +93,9 @@ namespace DDPM.UI.Common
                 UpdateFreezable("RightView_Header_Text_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0A2343"));
                 UpdateFreezable("RightView_Header_Text_HighlightColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0A2343"));
 
-                UpdateFreezable("bdrAlert_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
+                UpdateFreezable("bdrAlert_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#141D28"));
 
-                UpdateFreezable("bdrAlert_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#364861"));
+                UpdateFreezable("bdrAlert_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
 
 
                 UpdateFreezable("ModuleCaption_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
@@ -371,6 +375,7 @@ namespace DDPM.UI.Common
 
                 #region Headset
                 UpdateFreezable("ToggleSwitch_NormalBackground", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FBFCFE"));
+                UpdateFreezable("ToggleSwitch_BorderBrush", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E5ECF9"));
                 #endregion
 
                 #region Consent page
@@ -387,6 +392,16 @@ namespace DDPM.UI.Common
                 UpdateFreezable("Webcam_TextBox_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
                 UpdateFreezable("Webcam_TextBox_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0D121A"));
                 UpdateFreezable("Webcam_UndoRedo_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99F8FBFE"));
+                #endregion
+
+                #region EzArrange
+                UpdateFreezable("EzArrange_ShadowEffect", (ref DropShadowEffect shadow) => {
+                    shadow.Color = (Color)ColorConverter.ConvertFromString("#0A000000");
+                    shadow.ShadowDepth = 4;
+                    shadow.BlurRadius = 10;
+                    shadow.Opacity = 0.1;
+                    shadow.Direction = 270;
+                });
                 #endregion
 
                 BitmapImageUpdated?.Invoke(OSThemeEnum.Light);

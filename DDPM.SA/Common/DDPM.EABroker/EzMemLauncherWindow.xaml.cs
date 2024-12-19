@@ -30,6 +30,10 @@ namespace DDPM.EABroker
     /// </summary>
     public partial class EzMemLauncherWindow : Window
     {
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId);
+
         #region Private members
         private const string myName = "EzMemLauncherWin";
         private double _screenScale = 1.000;
@@ -179,57 +183,87 @@ namespace DDPM.EABroker
         public int AlreadyArrangedCount => _alreadyArrangedCount;
         public bool AreAllAppsArranged => (AlreadyArrangedCount >= ToBeArrangedCount);
 
-        public void LaunchAndArrange(Bind_AddFullPage_AppCollectionData app, int cellIndex)
+        public void LaunchAndArrange(Dictionary<string, Bind_AddFullPage_AppCollectionData> apps, int cellIndex, ArrangeVM VM)
         {
-            _log?.Info($"[{myName}] @ LaunchAndArrange({app.AppName}, idx={cellIndex})");
+            if (apps.Count == 0)
+                return;
 
-            //Phase I. Launch App (if it's not running), and get its window handle
-            //
-            IntPtr handle = IntPtr.Zero;
-            Process[] processes = GetProcessesByName(app, _log);
-            //If the App is running now
-            if (processes.Length > 0)
+            Task.Run(async () =>
             {
-                //Get the hWnd of the MainWindow
-                handle = processes[0].MainWindowHandle;
-                _log.Info($"[{myName}] App {app.AppName} is already running, handle: {handle}");
-                //Bring the window to foreground
-                Win32Lib.Win32._SetForegroundWindow(handle);
-            }
-            else
-            {
-                _log.Info($"[{myName}] App {app.AppName} is not running, will launch it.");
+                List<(IntPtr handle, int idxCell)> appHandles = new List<(IntPtr, int)>();
 
-                //App is not runing, will launch it
-                Process process = LaunchApp(app, _log);
-                if (process == null)
-                {
-                    _log.Error($"[{myName}] Fail to launchApp {app.AppName}");
-                    return;
-                }
+                HashSet<IntPtr> existingHandles = new HashSet<IntPtr>();
 
-                // Wait app window initialize
-                for (int attempt = 0; attempt < 10; attempt++)
+                int idx = 0;
+                foreach (var app in apps.Values)
                 {
-                    handle = app.AppType == "True" ? process.MainWindowHandle : GetWindowHandle(app);
+                    IntPtr handle = IntPtr.Zero;
+
+                    Process process = LaunchApp(app, _log);
+
+                    for (int attempt = 0; attempt < 5; attempt++)
+                    {
+
+                        handle = app.AppType == "True" ? process.MainWindowHandle : GetWindowHandle(app);
+                        Trace.WriteLine($"************************ handle {app.AppType} || " + handle.ToString());
+                        _log?.Error($"app.AppName = {app.AppName}, AppType = {app.AppType}, handle = {handle.ToString()}");
+                        if (app.AppType == "False")// UWP need to check handle again
+                        {
+                            if (handle != IntPtr.Zero && !existingHandles.Contains(handle))
+                            {
+                                if (IsHandleBelongsToApp(handle, app.AppName))
+                                {
+                                    existingHandles.Add(handle);
+                                    break;
+                                }
+                            }
+                            await Task.Delay(1000);
+                        }
+                        else
+                            await Task.Delay(1500);// win32 need to wait long
+                    }
+
                     if (handle != IntPtr.Zero)
-                        break;
-
-                    Task.Delay(500);
+                    {
+                        appHandles.Add((handle, idx));
+                        idx++;
+                    }
+                    else
+                    {
+                        _log?.Error($"Failed to get handle for app: {app.AppName}");
+                    }
                 }
 
-                if (handle == IntPtr.Zero)
-                {
-                    _log?.Error($"[{myName}] LaunchAndArrangeApps, App {app.AppName} failed to get window handle after launch.");
+                if (appHandles.Count == 0)
                     return;
-                }
-            }
 
-            _log?.Info($"[{myName}] App {app.AppName} hWnd={handle}=0x{handle:X}");
-            //Phase II. Arrange its window to layout's cell
-            ArrangeWindow(handle, cellIndex);
+                foreach (var (handle, idxCell) in appHandles)
+                {
+                    ArrangeWindow(handle, idxCell, VM);
+                }
+            });
         }
 
+        public static IntPtr _GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId)
+        {
+            return GetWindowThreadProcessId(hWnd, out nProcessId);
+        }
+        private bool IsHandleBelongsToApp(IntPtr handle, string expectedAppName)
+        {
+            try
+            {
+                uint processId;
+                _GetWindowThreadProcessId(handle, out processId);
+
+                Process process = Process.GetProcessById((int)processId);
+
+                return process.ProcessName.Contains(expectedAppName, StringComparison.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         private static Process[] GetProcessesByName(Bind_AddFullPage_AppCollectionData appData, ILog? log = null)
         {
@@ -288,18 +322,18 @@ namespace DDPM.EABroker
                     process = Process.Start(startInfo);
                 }
 
-                if (process != null)
-                {
-                    if (!appData.AppPath.EndsWith(".png") && !appData.AppPath.EndsWith(".jpg") && !appData.AppPath.EndsWith(".txt"))
-                    {
-                        process.WaitForInputIdle();
-                        log?.Info($"[{myName}] LaunchApp, App {appData.AppName} is now idle.");
-                    }
-                }
-                else
-                {
-                    log?.Error($"[{myName}] LaunchApp, Failed to launch app or file: {appData.AppName}");
-                }
+                //if (process != null)
+                //{
+                //    if (!appData.AppPath.EndsWith(".png") && !appData.AppPath.EndsWith(".jpg") && !appData.AppPath.EndsWith(".txt"))
+                //    {
+                //        process.WaitForInputIdle();
+                //        log?.Info($"[{myName}] LaunchApp, App {appData.AppName} is now idle.");
+                //    }
+                //}
+                //else
+                //{
+                //    log?.Error($"[{myName}] LaunchApp, Failed to launch app or file: {appData.AppName}");
+                //}
             }
             catch (Exception ex)
             {
@@ -423,42 +457,49 @@ namespace DDPM.EABroker
         }
 
 
-        public void ArrangeWindow(IntPtr hWnd, int idxCell)
+        public void ArrangeWindow(IntPtr hWnd, int idxCell, ArrangeVM VM)
         {
-            //Dispatcher.BeginInvoke(new Action(() =>
-            //{
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
                 if (_inputSplitCtrl == null)
-                    return;
+                return;
 
-                int cellBoderCount = _inputSplitCtrl.CellList.Count;
-                if ((idxCell < 0) || (idxCell >= cellBoderCount))
+            int cellBoderCount = _inputSplitCtrl.CellList.Count;
+            if ((idxCell < 0) || (idxCell >= cellBoderCount))
+            {
+                return;
+            }
+            CellObj celObj = _inputSplitCtrl.CellList[idxCell];
+            Rect rcArrange = celObj.rc;
+            Task.Delay(500);
+            if (rcArrange.IsEmpty || (rcArrange.Width <= 0))
+            {
+                rcArrange = GetFrameworkElementRect(celObj.CellBd);
+                if (rcArrange.IsEmpty)
                 {
                     return;
                 }
-                CellObj celObj = _inputSplitCtrl.CellList[idxCell];
-                Rect rcArrange = celObj.rc;
-                if (rcArrange.IsEmpty || (rcArrange.Width <= 0))
-                {
-                    rcArrange = GetFrameworkElementRect(celObj.CellBd);
-                    if (rcArrange.IsEmpty)
-                    {
-                        return;
-                    }
-                }
-                _log?.Info($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Rect(({rcArrange.Left},{rcArrange.Top}){rcArrange.Width}x{rcArrange.Height})");
+            }
+            _log?.Info($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Rect(({rcArrange.Left},{rcArrange.Top}){rcArrange.Width}x{rcArrange.Height})");
 
+                //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
+                if (VM.IsWithoutGap)
+                {
+                    rcArrange.Inflate(6, 6);
+                }
+                Task.Delay(500);
                 WinEventHook.SetWindowPosition(hWnd, rcArrange);
 
-                _alreadyArrangedCount++;
-                if (AreAllAppsArranged)
+            _alreadyArrangedCount++;
+            if (AreAllAppsArranged)
+            {
+                if (ArrangeDone != null)
                 {
-                    if (ArrangeDone != null)
-                    {
-                        _log?.Info($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Send ArrangeDone event.");
-                        ArrangeDone(this, EventArgs.Empty);
-                    }
+                    _log?.Info($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Send ArrangeDone event.");
+                    ArrangeDone(this, EventArgs.Empty);
                 }
-            //}));
+            }
+            }));
 
         }
         public void Dispatcher_Close()

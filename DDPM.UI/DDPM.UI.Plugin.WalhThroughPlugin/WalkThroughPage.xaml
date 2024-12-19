@@ -225,7 +225,6 @@
                     <!-- 第二張圖片，位於第一張圖片之上 -->
                     <Image x:Name="img2" Width="683" Height="343" Source="{Binding Img2Source}" Stretch="UniformToFill" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="561,317,0,0" />
                 </Grid>
-
             </Grid>
         </StackPanel>
         <StackPanel>
@@ -234,6 +233,26 @@
                     <Image x:Name="img3" Width="1378" Height="671" Source="{Binding Img3Source}" Stretch="UniformToFill" VerticalAlignment="Top"  />
                 </Grid>
             </Grid>
+            <!-- Keep Consent XAML, it will move to here
+            <Grid Margin="0" Visibility="{Binding ConsentVisibility}">
+                <Border CornerRadius="4" Height="320" Width="801" VerticalAlignment="Center" HorizontalAlignment="Center" Background="Transparent">
+                    <Grid>
+                        <Image Source="/DDPM.UI.Resources;component/Resources/Images/ConsentBg.png" Stretch="Fill" Opacity="0.2" />
+                        <StackPanel Orientation="Vertical" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <UXControls:UXTextBlock Name="txtCaption" VerticalAlignment="Center" FontWeight="Light" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="40" Margin="0" />
+                            <UXControls:UXTextBlock Name="txtCaption2" VerticalAlignment="Center" FontWeight="Light" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="40" Margin="0,0,0,10" />
+                            <UXControls:UXTextBlock Name="txtMessage" VerticalAlignment="Center" FontWeight="Normal" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="16" LineHeight="24" Width="660" >
+                                <Run Name="txt1" FontFamily="Roboto" FontWeight="Normal"/>
+                                <Run Name="txt2" FontFamily="Roboto" FontWeight="Normal" Cursor="Hand" TextDecorations="Underline" MouseLeftButtonDown="OpenPrivacy" />
+                            </UXControls:UXTextBlock>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
+                                <UXControls:UXButton Name="txtNo" MinWidth="136.5" MinHeight="40" HorizontalAlignment="Center" ButtonType="Secondary" Click="No_MouseLeftButtonDown" Content="N/A" FontFamily="Roboto" FontSize="14" FontWeight="Medium" CornerRadius="2"/>
+                                <UXControls:UXButton Name="txtYes" MinWidth="136.5" MinHeight="40" Margin="12,0,0,0" ButtonType="Primary" HorizontalAlignment="Center" Click="Yes_MouseLeftButtonDown" Content="N/A" FontFamily="Roboto" FontSize="14" FontWeight="Medium" CornerRadius="2" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>-->
         </StackPanel>
     </Grid>
 </UserControl>

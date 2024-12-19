@@ -40,24 +40,6 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Style x:Key="InfoToolTipTextStyle" TargetType="TextBlock">
-        <Setter Property="ToolTipService.InitialShowDelay" Value="1" />
-        <Setter Property="Background" Value="#F2193475" />
-        <Setter Property="FontFamily" Value="Roboto" />
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="Foreground" Value="#F5F6F7" />
-        <Setter Property="Padding" Value="8" />
-    </Style>
-    <Style x:Key="TabInfoToolTipTextStyle" TargetType="TextBlock">
-        <Setter Property="ToolTipService.InitialShowDelay" Value="1" />
-        <Setter Property="Background" Value="#1D2C3B" />
-        <Setter Property="FontFamily" Value="Roboto" />
-        <Setter Property="FontSize" Value="12" />
-        <Setter Property="Foreground" Value="#F5F6F7" />
-        <Setter Property="Padding" Value="8" />
-        <Setter Property="LineHeight" Value="20" />
-        <Setter Property="TextWrapping" Value="Wrap" />
-    </Style>
     <Style x:Key="MouseToolTipTextStyle" TargetType="TextBlock">
         <Setter Property="ToolTipService.InitialShowDelay" Value="1" />
         <Setter Property="Background" Value="#1D2C3B" />

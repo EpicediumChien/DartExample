@@ -322,7 +322,7 @@
     <value>디바이스를 페어링될 때까지 기다리거나, Windows 설정을 시작하고 해당 디바이스가 검색되면 선택합니다.</value>
   </data>
   <data name="AddDevice.Pen.4" xml:space="preserve">
-    <value>프롬프트 상자에서 &apos;예&apos;를 선택하여 페어링을 확인합니다.</value>
+    <value>프롬프트 상자에서 '예'를 선택하여 페어링을 확인합니다.</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
     <value>USB 무선 수신기 없이 이동 중에 연결하는 경우</value>
@@ -535,7 +535,7 @@
     <value>휘도 +</value>
   </data>
   <data name="Hotkey.6" xml:space="preserve">
-    <value>예: &quot;Alt+P&quot;, &quot;Shift+F&quot;, &quot;Ctrl+Shift+F&quot; 키\n다중 모니터의 경우 마우스 커서가 대상 모니터 화면에 있어야 핫키 기능을 실행할 수 있습니다.</value>
+    <value>예: "Alt+P", "Shift+F", "Ctrl+Shift+F" 키\n다중 모니터의 경우 마우스 커서가 대상 모니터 화면에 있어야 핫키 기능을 실행할 수 있습니다.</value>
   </data>
   <data name="ButtonSettings.0" xml:space="preserve">
     <value>스크롤 휠 클릭</value>
@@ -1399,7 +1399,7 @@
     <value>페어링하려는 이 디바이스는 현재 연결된 USB 무선 수신기에서 지원되지 않습니다. 디바이스와 함께 제공된 수신기를 사용하십시오.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>이 USB 무선 수신기의 사용 가능한 슬롯이 가득 찼습니다. 사용하려면 디바이스 설정 페이지에서 \&quot;페어링 해제\&quot; 버튼을 클릭하여 디바이스의 페어링을 해제하십시오.</value>
+    <value>이 USB 무선 수신기의 사용 가능한 슬롯이 가득 찼습니다. 사용하려면 디바이스 설정 페이지에서 \"페어링 해제\" 버튼을 클릭하여 디바이스의 페어링을 해제하십시오.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>작업을 할당하려면 클릭합니다.</value>
@@ -2122,6 +2122,9 @@
     <value>애플리케이션 설정을 성공적으로 내보냈습니다.</value>
   </data>
   <data name="ImpExp_SuccessMsg.1" xml:space="preserve">
+    <value>애플리케이션 설정이 %1에 성공적으로 적용되었습니다. 이제 모니터를 사용할 수 있습니다.</value>
+  </data>
+  <data name="ImpExp_SuccessMsg.2" xml:space="preserve">
     <value>애플리케이션 설정이 %1에 성공적으로 적용되었습니다. 이제 모니터를 사용할 수 있습니다.</value>
   </data>
   <data name="ImpExp_WarningMsg.0" xml:space="preserve">

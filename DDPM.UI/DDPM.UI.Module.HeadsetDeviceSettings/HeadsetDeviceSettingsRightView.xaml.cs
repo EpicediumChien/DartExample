@@ -16,12 +16,11 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings
     public partial class HeadsetDeviceSettingsRightView : UserControl
     {
         private readonly HeadsetViewModel _vm;
-             
+        private LearnMorePage modalDialog;
         public HeadsetDeviceSettingsRightView(HeadsetViewModel vm)
         {
             InitializeComponent();
             _vm = vm;
-
         }
 
         private void CloseDescription(object sender, MouseButtonEventArgs e)
@@ -67,7 +66,7 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings
             //Window parentWindow = Window.GetWindow(this);
             //double windowLeft = 0;
             //double windowTop = 0;
-            LearnMorePage modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, parameter);
+            modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, parameter, _vm.Model, _vm.FirmwareVersion2);
             if (parentWindow != null)
             {
                 modalDialog.Owner = parentWindow;
@@ -86,6 +85,11 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings
                 //Initialize();
                 return;
             }
+        }
+        private void Leave(object sender, RoutedEventArgs e)
+        {
+            if(modalDialog != null)
+                modalDialog.Close();
         }
     }
 }

@@ -28,6 +28,7 @@ namespace DDPM.EABroker
 
         #region Public Properties
         public ArrangeVM VM { get { return _vm; } }
+        public eEARunningStates RunningState { get; set; } = eEARunningStates.NotAvailable;
         #endregion  Public Properties
 
         #region ctor
@@ -55,7 +56,7 @@ namespace DDPM.EABroker
             //Init AwsWindow
             _vm.InitAwsWindow();
             _isEaBrokerStarted = true;
-
+            RunningState = eEARunningStates.Waiting;
         }
         private void InitAllWindows()
         {
@@ -137,7 +138,7 @@ namespace DDPM.EABroker
         #region Exiting
         public void Stop()
         {
-
+            RunningState = eEARunningStates.NotAvailable;
         }
         #endregion
 
@@ -202,6 +203,12 @@ namespace DDPM.EABroker
             if (_vm != null)
             {
                 _vm.WriteLog("@EABroker.Handle_DisplaySettingsChanged()");
+
+                //Cancel EditProcess 
+                if (RunningState == eEARunningStates.Edit)
+                {
+                }
+
                 //Check for Span across multiple monitors
                 //
                 //1 Save original settings
@@ -297,7 +304,7 @@ namespace DDPM.EABroker
                 }
                 workingArea = scr.WorkingArea;
             }
-
+            bool _isVertical = workingArea.Width < workingArea.Height;
             //Phase B. Create EA Layout and determine the cellBorderCount
             ISplitCtrl? ispLayout = null;
             int cellBorderCount = 0;
@@ -354,6 +361,7 @@ namespace DDPM.EABroker
                     return false;
                 }
             }
+            ispLayout.IsVertical = _isVertical;
             cellBorderCount = ispLayout.CellList.Count;
             int appCount = sortApps.Count;
             int arrangeCount = Math.Min(cellBorderCount, appCount);
@@ -364,13 +372,19 @@ namespace DDPM.EABroker
             emWin.LayoutReady += delegate
             {
                 //Phase D. 
-                var sortedApps = sortApps.OrderBy(x => x.Key).Select(x => x.Value).ToList();
+                //var sortedApps = sortApps.OrderBy(x => x.Key).Select(x => x.Value).ToList();
+                //int idxCell = 0;
+                //for (int i=0; i< arrangeCount; i++)
+                //{
+                //    var sortedApps = sortApps.OrderBy(x => i).Select(x => x.Value).ToList();
+                //    var app = sortedApps[i];
+                //    Task.Delay(500);
+                //    emWin.LaunchAndArrange(app, i);
+
+                //}
+
                 int idxCell = 0;
-                for (int i=0; i< arrangeCount; i++)
-                {
-                    var app = sortedApps[i];
-                    emWin.LaunchAndArrange(app, i);
-                }
+                emWin.LaunchAndArrange(sortApps, idxCell++, VM);
             };
 
             emWin.ArrangeDone += delegate
