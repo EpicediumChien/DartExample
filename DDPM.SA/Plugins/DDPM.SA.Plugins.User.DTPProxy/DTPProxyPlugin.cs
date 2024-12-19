@@ -34,6 +34,7 @@ using System.IO;
 using Type = System.Type;
 using DDPM.SA.Common.UI;
 using System.Collections.Generic;
+using static DDPM.RemoteManagement.Common.Interfaces.Params;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -126,6 +127,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             InitializeDTPProxy();
             writelog($"Initialized successfully");
+        }
+
+        //Derek 1219
+        ~DTPProxyPlugin()
+        {
+            _ = UnsubscribeDTPGlobalEventsAsync();
         }
 
         #endregion
@@ -6890,9 +6897,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
             //Derek 1119 for Webcam event
-            writelog($"Register Webcam Commodity event...");
+            writelog($"Register Webcam Commodity event by DellPeripheral.Webcam...");
             _comdityWebcam = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId("DellPeripheral.Webcam"), CancellationToken.None);
-            if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _WebcamComConnectEvent)
+            if (_comdityWebcam is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _WebcamComConnectEvent)
             {
                 try
                 {
@@ -6901,17 +6908,60 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _WebcamComConnectEvent.Connected += Webcam_Connected;
                     _WebcamComConnectEvent.Disconnected += Webcam_Disconnected;
 
-                    writelog($"Webcam Commodity event(connected/disconnected) registered");
+                    writelog($"Webcam Commodity event(connected/disconnected) registered successfully");
                 }
                 catch (Exception e)
                 {
-                    writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                    writelog($"Webcam Commodity event(connected/disconnected) registered exception: {e.Message}");
                 }
             }
+            else
+                writelog($"IWebcamCommodity not find");
 
             await RegisterEventsForAllWebcamsAsync();
 
             await RegisterEventsForAllHeadsetAsync();
+
+            //for test
+            //await UnsubscribeDTPGlobalEventsAsync();
+        }
+
+
+        private async Task<bool> UnsubscribeDTPGlobalEventsAsync()
+        {
+            try
+            {
+                if (null == _comdityWebcam)
+                {
+                    writelog($"UnsubscribeDTPGlobalEvents _comdityWebcam is null");
+
+                    return false;
+                }
+
+                //test result: Derek 1219
+                //2024.12.19 15:02:57.444 [30756] (00027) I ------DTPProxy: [DTPProxyPlugin]
+                //UnsubscribeDTPGlobalEvents webcam global events successfully,
+                //Caller Name:UnsubscribeDTPGlobalEventsAsync, Source Line 6939
+                if (_comdityWebcam is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _WebcamGlobalEvent)
+                {
+                    _WebcamGlobalEvent.Connected -= Webcam_Connected;
+                    _WebcamGlobalEvent.Disconnected -= Webcam_Disconnected;
+
+                    writelog($"UnsubscribeDTPGlobalEvents webcam global events successfully");
+
+                    return true;
+                }
+                else
+                    writelog($"UnsubscribeDTPGlobalEvents _comdityWebcam is not a IWebcamCommodity object");
+
+                return false;
+            }
+            catch (Exception e)
+            {
+                writelog($"UnsubscribeDTPGlobalEvents catch exception: {e.Message}");
+
+                return false;
+            }
         }
 
         private async Task<int> GetHeadsetDevsCountAsync()
@@ -6981,8 +7031,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             else
             {
                 writelog($"No any webcam instance to register.");
-                //try to force release current --> will catch exception  1123
-                //await UnregisterEventsForWebcamAsync(0);
             }
         }
 
