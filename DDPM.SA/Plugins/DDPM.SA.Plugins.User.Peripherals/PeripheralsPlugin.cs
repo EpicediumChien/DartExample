@@ -110,7 +110,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             _logs ??= new Logs(Log, PluginLogId);
             IndiLogic.DPeM.Broker.Client.StatusEvent += Client_StatusEvent;
             IndiLogic.DPeM.Broker.Client.StartImpersonator();
-        }                
+        }
 
         #endregion
 
@@ -531,9 +531,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _deviceInfo.IsWiredAudioIMicNSEnable = newValue;
                             writelog($"DTP:{nameof(SetWiredAudioIMicNSEnable)} device({device.Name}) IsWiredAudioIMicNSEnable:{newValue}");
                             break;
-                        }                        
+                        }
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         writelog($"DTP:{nameof(SetWiredAudioIMicNSEnable)} device({device.Name}) exception with ({e.Message})");
                     }
@@ -779,7 +779,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     {
                         bool result = true;
                         try
-                        {                            
+                        {
                             switch (bandGainNumber)
                             {
                                 case "band1gain":
@@ -931,7 +931,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             break;
                         }
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
                         writelog($"DTP:{nameof(SetSidetone)} device({device.Name}) exception with ({e.Message})");
                     }
@@ -2386,7 +2386,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     osd_device = OSDType_Device.Keyboard,
                     Message = LangHelper.Instance["CollabMultipleCalls"]
                 };
-                OnOSDNotify(args);                
+                OnOSDNotify(args);
             }
         }
 
@@ -2672,53 +2672,127 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                //Debug.WriteLine(arg2.ToString());
-                writelog(arg2.ToString());
                 if (deviceInfo != null)
                 {
                     deviceInfo.BatteryStatus = arg2.ToString();
+
                     DeviceChangedEventArgs _EventArgs = new();
                     _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = "BatteryStatusChanged";
                     OnNotify(_EventArgs);
-                    Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
-                    writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
 
-
-                    var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
-                    if (!settings.GlobalSetting_General.Low_Battery_Level)
-                        return;
-
-                    if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9)
+                    try
                     {
-                        OSDType_Device type = OSDType_Device.Unknown;
-                        var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
-                        if (deviceType.Contains("PEN"))
+                        //var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
+                        //if (!settings.GlobalSetting_General.Low_Battery_Level)
+                        //    return;
+                        var settings = _UserSettingsPlugin.ReadGlobalSettings().Result;
+                        if (settings == null || settings.GlobalSetting_General == null)
                         {
-                            if (deviceInfo.ModelNumber == "PN5122W" && deviceInfo.BatteryLevel > 6)
-                            { return; }
-                            type = OSDType_Device.Pen;
+                            writelog("Retrieve global setting [Low_Battery_Level] got null data");
+                            return;
                         }
-                        else if (deviceType.Contains("KEYBOARD"))
+                        if (!settings.GlobalSetting_General.Low_Battery_Level)
                         {
-                            type = OSDType_Device.Keyboard;
+                            writelog("Retrieve global setting [Low_Battery_Level] got disable result");
+                            return;
                         }
-                        else if (deviceType.Contains("MOUSE"))
+
+                        if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9)
                         {
-                            type = OSDType_Device.Mouse;
+                            OSDType_Device type = OSDType_Device.Unknown;
+                            var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
+                            if (deviceType.Contains("PEN"))
+                            {
+                                if (deviceInfo.ModelNumber == "PN5122W" && deviceInfo.BatteryLevel > 6)
+                                { return; }
+                                type = OSDType_Device.Pen;
+                            }
+                            else if (deviceType.Contains("KEYBOARD"))
+                            {
+                                type = OSDType_Device.Keyboard;
+                            }
+                            else if (deviceType.Contains("MOUSE"))
+                            {
+                                type = OSDType_Device.Mouse;
+                            }
+                            else if (deviceType.Contains("HEADSET"))
+                            {
+                                type = OSDType_Device.Headset;
+                            }
+                            //_ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
+                            OSDEventArgs args = new OSDEventArgs()
+                            {
+                                Requester = "BatteryLow",
+                                DeviceName = Screen.PrimaryScreen.DeviceName,
+                                osd_type = OSDType.BatteryLow,
+                                osd_device = type,
+                                Message = deviceInfo.Name
+                            };
+                            OnOSDNotify(args);
                         }
-                        else if (deviceType.Contains("HEADSET"))
-                        {
-                            type = OSDType_Device.Headset;
-                        }
-                        _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
-                        Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
-                        writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
+                    }
+                    catch (Exception e)
+                    {
+                        writelog($"Retrieve global setting [Low_Battery_Level] to show osd with exception:{e.Message}");
                     }
                 }
             }
         }
+
+        //private void ILogicalDevice_BatteryStatusChanged(ILogicalDevice arg1, BatteryStatus arg2)
+        //{
+        //    if (_deviceHelper is { deviceInfo: not null })
+        //    {
+        //        var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
+        //        //Debug.WriteLine(arg2.ToString());
+        //        writelog(arg2.ToString());
+        //        if (deviceInfo != null)
+        //        {
+        //            deviceInfo.BatteryStatus = arg2.ToString();
+        //            DeviceChangedEventArgs _EventArgs = new();
+        //            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+        //            _EventArgs.device_peripherals = deviceInfo;
+        //            _EventArgs.changedProperty = "BatteryStatusChanged";
+        //            OnNotify(_EventArgs);
+        //            Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
+        //            writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
+
+
+        //            var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
+        //            if (!settings.GlobalSetting_General.Low_Battery_Level)
+        //                return;
+
+        //            if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9)
+        //            {
+        //                OSDType_Device type = OSDType_Device.Unknown;
+        //                var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
+        //                if (deviceType.Contains("PEN"))
+        //                {
+        //                    if (deviceInfo.ModelNumber == "PN5122W" && deviceInfo.BatteryLevel > 6)
+        //                    { return; }
+        //                    type = OSDType_Device.Pen;
+        //                }
+        //                else if (deviceType.Contains("KEYBOARD"))
+        //                {
+        //                    type = OSDType_Device.Keyboard;
+        //                }
+        //                else if (deviceType.Contains("MOUSE"))
+        //                {
+        //                    type = OSDType_Device.Mouse;
+        //                }
+        //                else if (deviceType.Contains("HEADSET"))
+        //                {
+        //                    type = OSDType_Device.Headset;
+        //                }
+        //                _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
+        //                Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
+        //                writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
+        //            }
+        //        }
+        //    }
+        //}
 
         private void ILogicalDevice_BatteryLevelChanged(ILogicalDevice arg1, int arg2)
         {
@@ -3014,7 +3088,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     OnOSDNotify(args);
                     _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_MuteStatusChanged OSD ... out ");
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     writelog($"Retrieve global setting [Display_MuteState] to show osd with exception:{e.Message}");
                 }
@@ -3464,7 +3538,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         public void UpdateDTPInstance(IDTPProxyPlugin DTPInstance)
         {
-            if(_DTPProxyPlugin == null)
+            if (_DTPProxyPlugin == null)
             {
                 _DTPProxyPlugin = DTPInstance;
                 writelog($"Assign instance {nameof(DTPInstance)} to DTH peripheral plugin");
@@ -3473,7 +3547,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         public void UpdateSettingsInstance(ISettingsManagerDev SettingsInstance)
         {
-            if(_UserSettingsPlugin == null)
+            if (_UserSettingsPlugin == null)
             {
                 _UserSettingsPlugin = SettingsInstance;
                 writelog($"Assign instance {nameof(SettingsInstance)} to DTH peripheral plugin");
@@ -3485,7 +3559,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private void OnOSDNotify(OSDEventArgs args)
         {
             EventHandler<OSDEventArgs> handler = Peripheral_OSD_Notify;
-            Task.Run( () => handler?.Invoke(this, args));
+            Task.Run(() => handler?.Invoke(this, args));
             writelog($"Invoke Peripheral_OSD_Notify: {args.DeviceName}:{args.osd_type}:{args.osd_device}:{args.Message}");
         }
     }
