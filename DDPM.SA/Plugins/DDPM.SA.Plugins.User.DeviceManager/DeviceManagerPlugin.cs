@@ -1586,7 +1586,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             bool SmartHDR_ON = GetHDRStatus(mo).Result;
 
-            var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(mo, on_off, _SettingsPlugin, this, Is_Game_DeviceName, SmartHDR_ON).Result;
+            var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(_AllInfoMonitors , mo, on_off, _SettingsPlugin, this, Is_Game_DeviceName, SmartHDR_ON).Result;
 
             return Task.FromResult(temp);
         }
