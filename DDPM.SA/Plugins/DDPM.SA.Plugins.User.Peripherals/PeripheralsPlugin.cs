@@ -2437,8 +2437,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                Debug.WriteLine(arg2.ToString());
-                writelog(arg2.ToString());
                 if (deviceInfo != null)
                 {
                     deviceInfo.BatteryStatus = arg2.ToString();
@@ -2447,6 +2445,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = "BatteryStatusChanged";
                     OnNotify(_EventArgs);
+                    Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
+                    writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
+
 
                     var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
                     if (!settings.GlobalSetting_General.Low_Battery_Level)
@@ -2475,6 +2476,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             type = OSDType_Device.Headset;
                         }
                         _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
+                        Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
+                        writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
                     }
                 }
             }
