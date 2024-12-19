@@ -5,6 +5,7 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using System.ComponentModel;
 using Windows.System;
@@ -150,7 +151,7 @@ namespace DDPM.UI.Module.EzSettings
         {
             get
             {
-                return IsWithoutGap ? "ON" : "OFF";
+                return IsWithoutGap ? LangHelper.Instance["On"] : LangHelper.Instance["Off"];
             }
         }
         #endregion
@@ -192,7 +193,7 @@ namespace DDPM.UI.Module.EzSettings
         {
             get
             {
-                return IsOnlyAllowWhenShiftKeyPressed ? "ON" : "OFF";
+                return IsOnlyAllowWhenShiftKeyPressed ? LangHelper.Instance["On"] : LangHelper.Instance["Off"];
             }
         }
         #endregion
@@ -233,7 +234,7 @@ namespace DDPM.UI.Module.EzSettings
         {
             get
             {
-                return IsSpanAcrossMultiMonitors ? "ON" : "OFF";
+                return IsSpanAcrossMultiMonitors ? LangHelper.Instance["On"] : LangHelper.Instance["Off"];
             }
         }
 
@@ -295,7 +296,7 @@ namespace DDPM.UI.Module.EzSettings
         {
             get
             {
-                return IsAwsEnabled ? "ON" : "OFF";
+                return IsAwsEnabled ? LangHelper.Instance["On"] : LangHelper.Instance["Off"];
             }
         }
         #endregion
