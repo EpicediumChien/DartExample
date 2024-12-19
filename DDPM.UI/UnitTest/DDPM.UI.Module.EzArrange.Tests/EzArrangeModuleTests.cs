@@ -95,11 +95,10 @@ namespace DDPM.UI.Module.EzArrange.Tests
         [Test]
         public void TestGetRightView()
         {
-
-
             // Act
+            var _vmDisplay = new DisplayViewModel(console, log, deviceManagerSA, easyArrange) { SelectedHomeDevice = new HomeDevice() {MonitorInfo=new MonitorInfo() { DisplayName="displayName"}, vmEzArrange = new EzArrangeViewModel(new HomeDevice()) { SelectedSplitItem =new Common.UserControls.SplitItem()} } };
+            privateObject.SetFieldOrProperty("_vmDisplay", _vmDisplay);
             var result = ezArrangeModule!.GetRightView();
-
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.InstanceOf<UserControl>());
