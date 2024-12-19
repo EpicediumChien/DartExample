@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using static DDPM.UI.Plugin.SettingsPlugin.GlobalSettingsParam;
 
 [assembly: InternalsVisibleTo("DDPM.UI.Plugin.SettingsPlugin.Tests")]
 
@@ -127,7 +128,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             try
             {
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
-                GlobalSettingParam param = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                //GlobalSettingParam param = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                GlobalSettingParam param=Global.SettingParam;
                 if (data == null)
                     return;
                 if (data.UserSettings == null)
@@ -167,7 +169,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             if (e.UI_Field_Name.ToUpper().Trim().Equals("TELEMETRYCONSENT"))
             {
                 //DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings(true);//DeviceManagerSA.ReloadAppConfigData().Result;
-                GlobalSettingParam param = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                //GlobalSettingParam param = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                GlobalSettingParam param = Global.SettingParam;
                 Dispatcher.Invoke(new Action(() =>
                 {
                     AnalyticsViewModel vm = (AnalyticsViewModel)this.DataContext;
