@@ -1608,7 +1608,7 @@ namespace VcpCore.Plugins
 
                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck " + monitor.Item1.AliasDeviceName);
 
-                        object_0x02 = Get_VCPCapability(monitor.Item1, 0x02, 0, false);
+                        object_0x02 = Get_VCPCapability(monitor.Item1, 0x02, 0, IsOutInitialize);
 
                         if (object_0x02 != null)
                         {
@@ -1661,9 +1661,9 @@ namespace VcpCore.Plugins
 
                             monitor.Item1.DDCCIFail++;
 
-                            if (monitor.Item1.DDCCIFail >= 2)
+                            if (monitor.Item1.DDCCIFail >= 3)
                             {
-                                monitor.Item1.DDCCIFail = 2;
+                                monitor.Item1.DDCCIFail = 3;
 
                                 if (monitor.Item1.DDCisON)
                                 {
@@ -1716,7 +1716,7 @@ namespace VcpCore.Plugins
                         {
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin DDC/CI is connected");
 
-                            object_0x02 = Get_VCPCapability(monitor.Item1, 0x02, 0, false);
+                            object_0x02 = Get_VCPCapability(monitor.Item1, 0x02, 0, IsOutInitialize);
 
                             if (object_0x02 != null)
                             {
@@ -1858,9 +1858,9 @@ namespace VcpCore.Plugins
 
                                 monitor.Item1.DDCCIFail++;
 
-                                if (monitor.Item1.DDCCIFail >= 2)
+                                if (monitor.Item1.DDCCIFail >= 3)
                                 {
-                                    monitor.Item1.DDCCIFail = 2;
+                                    monitor.Item1.DDCCIFail = 3;
 
                                     if (monitor.Item1.DDCisON)
                                     {
