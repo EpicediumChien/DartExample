@@ -125,9 +125,9 @@ namespace DDPM.SA.Common
         public string ServiceTag { get; set; }
         //public string PPID { get; set; }
         public string SerialNumber { get; set; }
+        public string FirmwareVersion { get; set; }
         public string Result { get; set; }
         public string Message { get; set; }
-        public string FWVer { get; set; }
 
         public ConnectedDevices()
         {
@@ -139,10 +139,9 @@ namespace DDPM.SA.Common
             //PPID = "N/A";
             SerialNumber = "N/A";
             ServiceTag = "N/A";
+            FirmwareVersion = "N/A";
             Result = "N/A";
             Message = "N/A";
-            FWVer = "N/A";
-
         }
 
         public string ToJson()

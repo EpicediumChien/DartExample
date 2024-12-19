@@ -1074,7 +1074,7 @@ namespace DDPM.CLI.Plugins.Display
                                     G_ConnectedDevices_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                                     G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                                     G_ConnectedDevices_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                                    G_ConnectedDevices_RESPONSE.FWVer = monitor.FwVersion;
+                                    G_ConnectedDevices_RESPONSE.FirmwareVersion = monitor.FwVersion;
                                     
                                     if (string.IsNullOrWhiteSpace(monitor.FwVersion))
                                     {
@@ -1112,7 +1112,7 @@ namespace DDPM.CLI.Plugins.Display
                                         G_ConnectedDevices_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
                                         G_ConnectedDevices_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ModelName;
                                         G_ConnectedDevices_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
-                                        G_ConnectedDevices_RESPONSE.FWVer = _AllInfoMonitors[Convert.ToInt32(idx)].FwVersion;
+                                        G_ConnectedDevices_RESPONSE.FirmwareVersion = _AllInfoMonitors[Convert.ToInt32(idx)].FwVersion;
 
                                         if (string.IsNullOrWhiteSpace(_AllInfoMonitors[Convert.ToInt32(idx)].FwVersion))
                                         {
@@ -1160,7 +1160,7 @@ namespace DDPM.CLI.Plugins.Display
                                         G_ConnectedDevices_RESPONSE.ServiceTag = mo.edid.ServiceTag;
                                         G_ConnectedDevices_RESPONSE.Model = mo.edid.ModelName;
                                         G_ConnectedDevices_RESPONSE.SerialNumber = mo.edid.SerialNumber;
-                                        G_ConnectedDevices_RESPONSE.FWVer = mo.FwVersion;
+                                        G_ConnectedDevices_RESPONSE.FirmwareVersion = mo.FwVersion;
 
                                         if (string.IsNullOrWhiteSpace(mo.FwVersion))
                                         {
@@ -1200,7 +1200,7 @@ namespace DDPM.CLI.Plugins.Display
                                         G_ConnectedDevices_RESPONSE.ServiceTag = mo.edid.ServiceTag;
                                         G_ConnectedDevices_RESPONSE.Model = mo.edid.ModelName;
                                         G_ConnectedDevices_RESPONSE.SerialNumber = mo.edid.SerialNumber;
-                                        G_ConnectedDevices_RESPONSE.FWVer = mo.FwVersion;
+                                        G_ConnectedDevices_RESPONSE.FirmwareVersion = mo.FwVersion;
 
                                         if (string.IsNullOrWhiteSpace(mo.FwVersion))
                                         {
@@ -1262,7 +1262,7 @@ namespace DDPM.CLI.Plugins.Display
                             G_ConnectedDevices_RESPONSE.SerialNumber = monitor.edid.SerialNumber;
                             G_ConnectedDevices_RESPONSE.Index = change_0base_to_1base((monitor.Index).ToString());
                             G_ConnectedDevices_RESPONSE.ServiceTag = monitor.edid.ServiceTag;
-                            G_ConnectedDevices_RESPONSE.FWVer = monitor.FwVersion;
+                            G_ConnectedDevices_RESPONSE.FirmwareVersion = monitor.FwVersion;
 
                             if (string.IsNullOrWhiteSpace(monitor.FwVersion))
                             {
@@ -1299,7 +1299,7 @@ namespace DDPM.CLI.Plugins.Display
                                 G_ConnectedDevices_RESPONSE.ServiceTag = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ServiceTag;
                                 G_ConnectedDevices_RESPONSE.Model = _AllInfoMonitors[Convert.ToInt32(idx)].edid.ModelName;
                                 G_ConnectedDevices_RESPONSE.SerialNumber = _AllInfoMonitors[Convert.ToInt32(idx)].edid.SerialNumber;
-                                G_ConnectedDevices_RESPONSE.FWVer = _AllInfoMonitors[Convert.ToInt32(idx)].FwVersion;
+                                G_ConnectedDevices_RESPONSE.FirmwareVersion = _AllInfoMonitors[Convert.ToInt32(idx)].FwVersion;
 
                                 if (string.IsNullOrWhiteSpace(_AllInfoMonitors[Convert.ToInt32(idx)].FwVersion))
                                 {
@@ -1345,7 +1345,7 @@ namespace DDPM.CLI.Plugins.Display
                                 G_ConnectedDevices_RESPONSE.ServiceTag = mo.edid.ServiceTag;
                                 G_ConnectedDevices_RESPONSE.Model = mo.edid.ModelName;
                                 G_ConnectedDevices_RESPONSE.SerialNumber = mo.edid.SerialNumber;
-                                G_ConnectedDevices_RESPONSE.FWVer = mo.FwVersion;
+                                G_ConnectedDevices_RESPONSE.FirmwareVersion = mo.FwVersion;
 
                                 if (string.IsNullOrWhiteSpace(mo.FwVersion))
                                 {
