@@ -9740,7 +9740,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var ReadReg = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen").Result;
             writelog($"[DeviceMangerPlugin] ReadReg Status {ReadReg} And {ReadReg.GetType()}");
             Boolean.TryParse(ReadReg.ToString(), out var getRegValue);
-            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady())
+            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady().Result)
             {
                 count++;
                 writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Count:{count}...");
@@ -9997,6 +9997,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void SettingsReady(object o, EventArgs eventArgs)
         {
+            UpdateInstancesToPeripheralPlugin(_SettingsPlugin, null);
             LoadGlobalSettingParam();
             //Migration
             DDMMigration();
@@ -11968,17 +11969,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (pluginCondition is PluginErrorCondition)
                     {
                         writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in an error condition");
-                        //_PeripheralsPluginCondition = pluginCondition;
                     }
                     else if (pluginCondition is PluginRunningCondition)
                     {
                         writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in a running condition");
                         //LoadGlobalSettingParam();
+                        UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
+                        _PeripheralsPlugin.Peripheral_OSD_Notify += OnPeripheralOSDNotify;
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
                         writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in a started condition");
                         //LoadGlobalSettingParam(); //here is too early, please refer to function "SettingsReady"
+                        UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
+                        _PeripheralsPlugin.Peripheral_OSD_Notify += OnPeripheralOSDNotify;
                     }
                 }
             });
@@ -12177,7 +12181,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
 
                         //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
-                        //CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
+                        //CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);                        
                     }
                     else
                     {
@@ -12398,6 +12402,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         //Derek 1119
                         _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
+                        UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
@@ -12415,6 +12420,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         //Derek 1119
                         _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
+                        UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
                     }
                 }
             });
@@ -16942,5 +16948,40 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #endregion globalperipheral
+
+        private void UpdateInstancesToPeripheralPlugin(ISettingsManagerDev SettingsInstance, IDTPProxyPlugin DTPInstance)
+        {
+            if(_PeripheralsPlugin != null && SettingsInstance != null)
+            {
+                _PeripheralsPlugin.UpdateSettingsInstance(SettingsInstance);
+            }
+            if (_PeripheralsPlugin != null && DTPInstance != null)
+            {
+                _PeripheralsPlugin.UpdateDTPInstance(DTPInstance);
+            }
+        }
+
+        private void OnPeripheralOSDNotify(object sender, OSDEventArgs e)
+        {
+            if (e == null)
+                return;
+            if (string.IsNullOrEmpty(e.Requester))
+                return;
+
+            switch(e.Requester)
+            {
+                case "CollaborationNotAvailable.Keyboard":
+                    ShowOSD(e.DeviceName, e.osd_type, e.osd_device, e.Message);
+                    break;
+                case "BatteryLow":
+                    ShowOSD(e.DeviceName, e.osd_type, e.osd_device, e.Message);
+                    break;
+                case "Mute.Status":
+                    ShowOSD(e.DeviceName, e.osd_type, e.Message, e.Status);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

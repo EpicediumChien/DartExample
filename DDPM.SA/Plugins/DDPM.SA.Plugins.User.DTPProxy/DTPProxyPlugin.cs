@@ -6987,9 +6987,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         bool DTPProxyPluginReady = false;
 
-        public bool GetDTPProxyPluginReady() 
+        public Task<bool> GetDTPProxyPluginReady() 
         {
-            return DTPProxyPluginReady;
+            return Task.FromResult(DTPProxyPluginReady);
         }
 
         private void InitializeDTPProxy()
