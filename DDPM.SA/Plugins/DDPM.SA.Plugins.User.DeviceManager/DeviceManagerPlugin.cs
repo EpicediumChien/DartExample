@@ -10636,64 +10636,71 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog($"CallQAM_UI: Start");
 
-            if (_QAM == null)
+            try
             {
-                //writelog($"CallQAM_UI: Go");
-                //List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
-                //writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
-                //if (deviceInfos.Count == 1)
+                if (_QAM == null)
                 {
-                    writelog($"CallQAM_UI: have Webcam show QAM");
-
-                    Thread threadQAM = new Thread(() =>
+                    //writelog($"CallQAM_UI: Go");
+                    //List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
+                    //writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
+                    //if (deviceInfos.Count == 1)
                     {
-                        _QAM = new QAMPage(deviceMangerPlugin, Log);
-                        _QAM.Closed += QAMCloseEvent;
+                        writelog($"CallQAM_UI: have Webcam show QAM");
 
-                        //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
-                        if (QAM_Position.X != 0 && QAM_Position.Y != 0)
+                        Thread threadQAM = new Thread(() =>
                         {
-                            _QAM.Top = QAM_Position.Y;
-                            _QAM.Left = QAM_Position.X;
-                        }
-                        else
-                        {
-                            float scaleFactorX = 1;
-                            float scaleFactorY = 1;
+                            _QAM = new QAMPage(deviceMangerPlugin, Log);
+                            _QAM.Closed += QAMCloseEvent;
 
-                            using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
+                            //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
+                            if (QAM_Position.X != 0 && QAM_Position.Y != 0)
                             {
-                                float dpiX = graphics.DpiX;
-                                float dpiY = graphics.DpiY;
-                                float logicalDpi = 96.0f;
-                                scaleFactorX = dpiX / logicalDpi;
-                                scaleFactorY = dpiY / logicalDpi;
+                                _QAM.Top = QAM_Position.Y;
+                                _QAM.Left = QAM_Position.X;
+                            }
+                            else
+                            {
+                                float scaleFactorX = 1;
+                                float scaleFactorY = 1;
+
+                                using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
+                                {
+                                    float dpiX = graphics.DpiX;
+                                    float dpiY = graphics.DpiY;
+                                    float logicalDpi = 96.0f;
+                                    scaleFactorX = dpiX / logicalDpi;
+                                    scaleFactorY = dpiY / logicalDpi;
+                                }
+
+                                _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
+                                _QAM.Left = 0;
                             }
 
-                            _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
-                            _QAM.Left = 0;
-                        }
+                            _QAM.Dispatcher.Invoke(() => _QAM.Show());
+                            Dispatcher.Run();
+                        });
 
-                        _QAM.Dispatcher.Invoke(() => _QAM.Show());
-                        Dispatcher.Run();
-                    });
-
-                    threadQAM.SetApartmentState(ApartmentState.STA);
-                    threadQAM.Start();
+                        threadQAM.SetApartmentState(ApartmentState.STA);
+                        threadQAM.Start();
+                    }
                 }
+                else
+                {
+                    //_QAM.Show();
+                    _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
+                    //Dispatcher.Run(); //may block the process Derek 1219
+                }
+
+                //close DDPM UI
+                //CloseDDPM();  //Derek 1209
+
+                //close OSD
+                CloseQAMOSD();
             }
-            else
+            catch (Exception e)
             {
-                //_QAM.Show();
-                _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
-                Dispatcher.Run();
+                writelog($"CallQAM_UI catch exception {e.Message}");
             }
-
-            //close DDPM UI
-            //CloseDDPM();  //Derek 1209
-
-            //close OSD
-            CloseQAMOSD();
 
             writelog($"CallQAM_UI: done");
 
