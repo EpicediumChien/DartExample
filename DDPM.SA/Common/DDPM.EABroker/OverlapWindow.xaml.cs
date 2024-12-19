@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -257,6 +258,31 @@ namespace DDPM.EABroker
                 addCount++;
                 //Convert screen coordinate to EditWindow
                 System.Windows.Point ptWindow = PointFromScreen(new System.Windows.Point(rcWnd.Left, rcWnd.Top));
+
+
+                Win32.RECT lpRect = new Win32.RECT();
+                Win32.RECT rect2 = rcWnd;
+                Win32.RECT pvAttribute = new Win32.RECT();
+
+                Win32._GetWindowRect(hWnd, out lpRect);
+
+                if (Win32._DwmGetWindowAttribute(hWnd, Win32.eDwmWindowAttribute.ExtendedFrameBounds, ref pvAttribute,
+                    Marshal.SizeOf(typeof(Win32.RECT))) == 0)
+                {
+                    double num = pvAttribute.Left - lpRect.Left;
+                    double num2 = pvAttribute.Right - lpRect.Right;
+                    double num3 = pvAttribute.Bottom - lpRect.Bottom;
+                    rect2.Left -= (int)num;
+                    rect2.Right -= (int)num2;
+                    rect2.Bottom -= (int)num3;
+                }
+
+                nint wndLong = Win32._GetWindowLong(hWnd, (int)Win32.WindowLongFlags.GWL_STYLE);
+                if ((wndLong & 0x40000L) == 0)
+                {
+                    rect2.Right = rect2.Left + (lpRect.Right - lpRect.Left);
+                    rect2.Bottom = rect2.Top + (lpRect.Bottom - lpRect.Top);
+                }
 
                 double left = ptWindow.X;
                 double top = ptWindow.Y;
