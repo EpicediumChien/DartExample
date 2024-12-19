@@ -417,7 +417,7 @@ namespace DDPM.UI.Module.Kvm
 
         #region Hotkey
 
-        private string _kvmHotkeyTooltip = "None";
+        private string _kvmHotkeyTooltip = LangHelper.Instance["None"];
 
         public string KvmHotkeyTooltip
         {
@@ -429,7 +429,7 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
-        private string _switchPCsKey = "None";
+        private string _switchPCsKey = LangHelper.Instance["None"];
 
         public string SwitchPCsKey
         {
@@ -441,7 +441,7 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
-        private string _changePipKey = "None";
+        private string _changePipKey = LangHelper.Instance["None"];
 
         public string ChangePipKey
         {
@@ -453,7 +453,7 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
-        private string _switchKbMsKey = "None";
+        private string _switchKbMsKey = LangHelper.Instance["None"];
 
         public string SwitchKbMsKey
         {
@@ -1712,7 +1712,7 @@ namespace DDPM.UI.Module.Kvm
 
                         //if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
                         //{
-                            CurrentInputChange();
+                        CurrentInputChange();
                         //}
                         bool bin = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo, inputList).Result;
                         bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;

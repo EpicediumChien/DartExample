@@ -26,6 +26,7 @@ using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using DDPM.SA.Common.Popup;
 using System.Windows.Interop;
+using DDPM.UI.Resources.Helper;
 
 namespace DDPM.UI.Module.EzArrange
 {
@@ -45,15 +46,15 @@ namespace DDPM.UI.Module.EzArrange
 
         #region Strings
         //[EazyMemory.10]
-        private const string CustomListTooltipText = "You can arrange the windows on your screen and click + icon.\r\nAlternatively, select an existing layout below and click the pencil icon to edit the layout.";
+        private string CustomListTooltipText = LangHelper.Instance["EazyMemory.10"];// "You can arrange the windows on your screen and click + icon.\r\nAlternatively, select an existing layout below and click the pencil icon to edit the layout.";
         //[Warning]
-        private const string msgBox_Warning = "Warning";
+        private string msgBox_Warning = LangHelper.Instance["Warning"];//"Warning";
         //[EazyMemory.42]
-        private const string msgBox_EAProfileWillBeDeleted = "The corresponding Easy Memory profile will be deleted too. Do you want to continue?";
+        private string msgBox_EAProfileWillBeDeleted = LangHelper.Instance["EazyMemory.42"];// "The corresponding Easy Memory profile will be deleted too. Do you want to continue?";
         //[Yes]
-        private const string msgBox_Yes = "Yes";
+        private string msgBox_Yes = LangHelper.Instance["Yes"];// "Yes";
         //[No]
-        private const string msgBox_No = "No";
+        private string msgBox_No = LangHelper.Instance["No"];// "No";
         #endregion
 
         #region ctor
@@ -167,7 +168,7 @@ namespace DDPM.UI.Module.EzArrange
             float monitorSize = _homeDevice.MonitorInfo.edid.Size;
             bool isSmallSizeMonitor = monitorSize < 19.0000;
             _vm.LogInfo($"DDPMW-866(MDDM-3039): Easy arrange window arrangement preset limited to 4 windows for all displays   below 19 inches in size. EDID.MonitorSize={monitorSize}");
- 
+
 
             foreach (ISplitCtrl spCtrl in ISplitCtrl.Splits_EA)
             {
@@ -372,7 +373,7 @@ namespace DDPM.UI.Module.EzArrange
 
                                 if (itemBuddy.Settings != null)
                                 {
-                                    spj.Settings = new List<double>( itemBuddy.Settings);
+                                    spj.Settings = new List<double>(itemBuddy.Settings);
                                 }
 
                                 isRecentListChangedByCustomSettingsFile = true;
@@ -457,7 +458,7 @@ namespace DDPM.UI.Module.EzArrange
             //Return the item count has been added into RecentList
             int addCount = ComplementRecentListItem();
 
-           
+
 
             //D Add all custom items which has no Buddy into Recent list
             //
@@ -559,7 +560,7 @@ namespace DDPM.UI.Module.EzArrange
             if (eaSettings != null)
             {
                 SplitItem? itemSelected = splitListView_Recent.FindItemBySplitJson(eaSettings.SelectedSplit);
-                if (itemSelected != null) 
+                if (itemSelected != null)
                 {
                     _vm.SelectedSplitItem = itemSelected;
                 }
@@ -659,7 +660,7 @@ namespace DDPM.UI.Module.EzArrange
             _vm.NotifySelectedLayoutChangedToSA();
 
             //Need to set it's buddy as IsSelected
-            
+
             //If the selected item is in RecentList, then it should be has Buddy
             if (spItem.SplitOwner == Common.EAEM.eSplitOwner.EaRecent)
             {
@@ -694,7 +695,7 @@ namespace DDPM.UI.Module.EzArrange
                         itemRecent.IsSelected = true;
                     }
                 }
-                
+
             }
 
             splitListView_Recent.MoveSelectedItemToSecondPosition();
@@ -749,7 +750,7 @@ namespace DDPM.UI.Module.EzArrange
                     //  selectedIndex <- idxFirstUnused
                     //Case_2: edit a custom layout
                     //  selectedIndex <- the name of clicking
-                    int selectedIndex = idxFirstUnused; 
+                    int selectedIndex = idxFirstUnused;
                     //If Case_2, edit a custom layout
                     if (spItem.SplitOwner == Common.EAEM.eSplitOwner.EaCustom)
                     {
@@ -1039,7 +1040,7 @@ namespace DDPM.UI.Module.EzArrange
                         List<CellBorder> cellBorders = new List<CellBorder>();
                         if (e.SplitJson.Cells != null)
                         {
-                            foreach(CellJson cellJson in e.SplitJson.Cells)
+                            foreach (CellJson cellJson in e.SplitJson.Cells)
                             {
                                 CellBorder cellBorder = new CellBorder();
                                 cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
@@ -1051,7 +1052,7 @@ namespace DDPM.UI.Module.EzArrange
                         sp0B.CellBorders.AddRange(cellBorders);
                     }
                 }
-                
+
                 splitListView_Recent.MoveSelectedItemToSecondPosition();
                 _vm.NotifySelectedLayoutChangedToSA();
                 SaveEaSettings(true);
@@ -1060,26 +1061,26 @@ namespace DDPM.UI.Module.EzArrange
         }
 #endif
 
-//        private void _deviceManagerSA_EAEditCompleted(object? sender, string e)
-//        {
-//#if ENABLE_CALL_SA
+        //        private void _deviceManagerSA_EAEditCompleted(object? sender, string e)
+        //        {
+        //#if ENABLE_CALL_SA
 
-//            if (_deviceManagerSA != null)
-//            {
-//                _deviceManagerSA.EAEditCompleted -= _deviceManagerSA_EAEditCompleted;
-//                if (_console != null)
-//                {
-//                    Dispatcher.Invoke(new Action(() =>
-//                    {
-//                        _console.RaiseEvent("MainWindow.Activate", this, new EventManagerArgs());
-//                        //_console.RaiseEvent("MainWindow.Normal", this, new EventManagerArgs());
-//                        //_console.RaiseEvent("MainWindow.Show", this, new EventManagerArgs());
-//                    }
-//                    ));
-//                }
-//            }
-//#endif
-//        }
+        //            if (_deviceManagerSA != null)
+        //            {
+        //                _deviceManagerSA.EAEditCompleted -= _deviceManagerSA_EAEditCompleted;
+        //                if (_console != null)
+        //                {
+        //                    Dispatcher.Invoke(new Action(() =>
+        //                    {
+        //                        _console.RaiseEvent("MainWindow.Activate", this, new EventManagerArgs());
+        //                        //_console.RaiseEvent("MainWindow.Normal", this, new EventManagerArgs());
+        //                        //_console.RaiseEvent("MainWindow.Show", this, new EventManagerArgs());
+        //                    }
+        //                    ));
+        //                }
+        //            }
+        //#endif
+        //        }
 
         #endregion Edit Layout
 
@@ -1117,7 +1118,7 @@ namespace DDPM.UI.Module.EzArrange
             {
                 //Try to get hWnd of MainWindow
                 Window mainWindow = System.Windows.Application.Current.MainWindow;
-               //Show a message box to get comfirm from user
+                //Show a message box to get comfirm from user
                 string headerText = msgBox_Warning;
                 string subHeaderText = msgBox_EAProfileWillBeDeleted;
                 string leftButtonContent = msgBox_No;
@@ -1170,7 +1171,7 @@ namespace DDPM.UI.Module.EzArrange
         #endregion Delete Custom Layout item
 
         #region Settings File
-        private bool SaveEaSettings(bool includeCustomList=false)
+        private bool SaveEaSettings(bool includeCustomList = false)
         {
             //Save MonitorSettings: Selected, RecentList
             EAMonitorSettings eaSettings = new EAMonitorSettings();
@@ -1228,7 +1229,7 @@ namespace DDPM.UI.Module.EzArrange
         #endregion SplitListView Operations
 
         #region Custom Layout Manager
-        private const int MaxCustomItems  = 5;
+        private const int MaxCustomItems = 5;
 
         /// <summary>
         /// Generate the CustomNames as the ItemSource of ComboBox in SaveCustomWindow.
@@ -1264,7 +1265,7 @@ namespace DDPM.UI.Module.EzArrange
             for (int i = idxFirstUnused; i < MaxCustomItems; i++)
             {
                 //C3. Get the next available custom name
-                for (int j=1; j<=MaxCustomItems; j++)
+                for (int j = 1; j <= MaxCustomItems; j++)
                 {
                     //C3.1. Generate a customName
                     string customName = $"Custom Layout ({j})";
@@ -1293,7 +1294,7 @@ namespace DDPM.UI.Module.EzArrange
         private int GetUnusedCustomEAID()
         {
             int eaid = EAEMConstants.EAID_FirstCustom;
-            for (int i=0; i<EAEMConstants.MaxCustomItems; i++)
+            for (int i = 0; i < EAEMConstants.MaxCustomItems; i++)
             {
                 SplitItem? spItem = splitListView_Custom.FindItemByEAID(eaid);
                 if (spItem == null)
@@ -1348,7 +1349,7 @@ namespace DDPM.UI.Module.EzArrange
             return Screen.AllScreens.FirstOrDefault(x => x.DeviceName.Equals(deviceName));
         }
 
-        private static DisplayOrientation GetDisplayOrientation(string deviceName) 
+        private static DisplayOrientation GetDisplayOrientation(string deviceName)
         {
             int ENUM_CURRENT_SETTINGS = -1;
             DEVMODE devMode = new DEVMODE();
