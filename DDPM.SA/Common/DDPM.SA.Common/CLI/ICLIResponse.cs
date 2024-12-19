@@ -807,7 +807,7 @@ namespace DDPM.SA.Common
         {
         }
 
-        public string OptimalResolution { get; set; } = "N/A";
+        //public string OptimalResolution { get; set; } = "N/A";
         public string Resolution { get; set; } = "N/A";
         public string ActiveInputSource { get; set; } = "N/A";
         public string ColorPreset { get; set; } = "N/A";

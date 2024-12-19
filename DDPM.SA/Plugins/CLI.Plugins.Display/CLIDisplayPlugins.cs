@@ -11397,22 +11397,21 @@ namespace DDPM.CLI.Plugins.Display
                                                 }
                                                 break;
 
-                                            case "OPTIMALRESOLUTION":
-                                                writelog($"OptimalResolution entry");
+                                            case "RESOLUTION":
+                                                writelog($"RESOLUTION entry");
                                                 //if (monitor.CapabilityDic.ContainsKey("AA") && monitor.CapabilityDic["AA"] != null && monitor.CapabilityDic["AA"].Contains("00"))
                                                 //{
                                                 string[] ss = property.Value.ToString().Split(" ");
                                                 displayProperties = new Properties() { Resolutions_Width = int.Parse(ss[0]), Resolutions_High = int.Parse(ss[2]), Frequency = int.Parse(ss[4].Split(".00HZ")[0]) };
                                                 retcode = devMgr.SetDisplayPropertiest(monitor, displayProperties, displayPropertiesInfo.CurrentOrientation).Result;
                                                 if (!retcode) ispass = false;
-                                                else ApplyConfiguration.OptimalResolution = property.Value.ToString();
-                                                ApplyConfiguration.Resolution = ApplyConfiguration.OptimalResolution;
-                                                writelog($"OptimalResolution={ApplyConfiguration.OptimalResolution}");
+                                                else ApplyConfiguration.Resolution = property.Value.ToString();
+                                                writelog($"RESOLUTION={ApplyConfiguration.Resolution}");
                                                 //}
                                                 //else
                                                 //{
-                                                //    writelog($"OptimalResolution VCP not support");
-                                                //    output += $"\n  \"Result: \": \"OptimalResolution VCP not support\"";
+                                                //    writelog($"RESOLUTION VCP not support");
+                                                //    output += $"\n  \"Result: \": \"RESOLUTION VCP not support\"";
                                                 //}
                                                 break;
 
