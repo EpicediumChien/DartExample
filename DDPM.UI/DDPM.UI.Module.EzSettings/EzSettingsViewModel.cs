@@ -16,7 +16,7 @@ namespace DDPM.UI.Module.EzSettings
     {
         #region Private members
         //Recent Hotkey TextBox
-        private string _recentHotkey = "None";
+        private string _recentHotkey = LangHelper.Instance["None"];
         //ToggleSwitch IsChecked
         private bool _isWithoutGap = true;
         private bool _isOnlyAllowWhenShiftKeyPressed, _isSpanAcrossMultiMonitors, _isAwsEnabled = false;
