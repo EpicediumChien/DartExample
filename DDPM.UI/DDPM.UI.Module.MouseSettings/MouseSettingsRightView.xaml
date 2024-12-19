@@ -112,18 +112,18 @@
                             <StackPanel Margin="0,0,0,0">
                                 <UXControls:UXTextBlock Text="{Binding DPIValueText}" FontFamily="Roboto" FontSize="14" FontWeight="Bold"
                                                         Foreground="#A4B8CD" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="{Binding DPITextMargin, Converter={StaticResource MarginConverter}}" />
-                            </StackPanel>
-                            <Grid VerticalAlignment="top" Grid.Row="2" Margin="0,8,0,18">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="62" />
-                                    <ColumnDefinition Width="365" />
-                                    <ColumnDefinition Width="61" />
-                                </Grid.ColumnDefinitions>
-                                <Grid Grid.Column="0" HorizontalAlignment="Right">
-                                    <UXControls:UXTextBlock Text="{Binding DPIMinText}" FontSize="14" Foreground="#A4B8CD" Margin="22,2,8,0" FontFamily="Roboto" />
-                                </Grid>
-                                <Grid Grid.Column="1">
-                                    <UXControls:UXSlider x:Name="DPISlider" TickFrequency="{Binding DpiDelta}"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding DPIValue}" HorizontalAlignment="Left" 
+              </StackPanel>
+              <Grid VerticalAlignment="top" Grid.Row="2" Margin="0,8,0,18">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="62" />
+                  <ColumnDefinition Width="365" />
+                  <ColumnDefinition Width="61" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0" HorizontalAlignment="Right">
+                  <UXControls:UXTextBlock Text="{Binding DPIMinText}" FontSize="14" Foreground="#A4B8CD" Margin="22,2,8,0" FontFamily="Roboto" />
+                </Grid>
+                <Grid Grid.Column="1">
+                  <UXControls:UXSlider x:Name="DPISlider" TickFrequency="{Binding DpiDelta}"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding DPIValue}" HorizontalAlignment="Left" KeyUp="DPISlider_KeyUp" PreviewKeyDown="DPISlider_PreviewKeyDown"
                                                          Minimum="{Binding DPIMin}" Maximum="{Binding DPIMax}" Width="365" Thumb.DragStarted="DPISlider_DragStarted" Thumb.DragCompleted="DPISlider_DragCompleted" />
                                 </Grid>
                                 <Grid Grid.Column="2">

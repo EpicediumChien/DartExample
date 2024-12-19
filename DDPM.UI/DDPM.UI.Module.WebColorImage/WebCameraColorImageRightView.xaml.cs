@@ -15,7 +15,7 @@ namespace DDPM.UI.Module.WebCameraColorImage
     /// </summary>
     public partial class WebCameraColorImageRightView : UserControl
     {
-        private  WebCameraViewModel _vm;
+        private WebCameraViewModel _vm;
 
         public WebCameraColorImageRightView(WebCameraViewModel vm)
         {
@@ -198,6 +198,41 @@ namespace DDPM.UI.Module.WebCameraColorImage
                 else
                     _vm.Redo();
             }
+        }
+
+        private void Slider_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            _vm.IsSliderDragging = true;
+        }
+
+        private void BrightnessSlider_KeyUp(object sender, KeyEventArgs e)
+        {
+            _vm.IsSliderDragging = false;
+            _vm.SetBrightness();
+        }
+
+        private void SharpnessSlider_KeyUp(object sender, KeyEventArgs e)
+        {
+            _vm.IsSliderDragging = false;
+            _vm.SetSharpness();
+        }
+
+        private void ContrastSlider_KeyUp(object sender, KeyEventArgs e)
+        {
+            _vm.IsSliderDragging = false;
+            _vm.SetContrast();
+        }
+
+        private void SaturationSlider_KeyUp(object sender, KeyEventArgs e)
+        {
+            _vm.IsSliderDragging = false;
+            _vm.SetSaturation();
+        }
+
+        private void AWBSlider_KeyUp(object sender, KeyEventArgs e)
+        {
+            _vm.IsSliderDragging = false;
+            _vm.SetAutoWhiteBalance();
         }
     }
 }
