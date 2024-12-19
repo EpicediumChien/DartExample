@@ -1,7 +1,7 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common.Annotations;
-using Dell.Client.Framework.Interfaces;retFWUpdateInfos
+using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
 using Microsoft;
 using Newtonsoft.Json;
@@ -866,22 +866,22 @@ namespace DDPM.CLI.Plugins.Peripherals
                     //op.Option_Value.Replace(".", ",");
                     List<string> op_value = op.Option_Value.Replace(".", ",").Split(",").ToList();
                     //value = op_value[0];
-                    foreach (var value in op_value)
+                    foreach (string stringValue in op_value)
                     {
-                        Debug.WriteLine($"{value}, {_commandLineInput.Options[0].Option_Value}");
-                        if (value == null) // if there is no option value
+                        Debug.WriteLine($"{stringValue}, {_commandLineInput.Options[0].Option_Value}");
+                        if (stringValue == null) // if there is no option value
                         {
                             SetFailResults("no setting value");
                             writelog("SetPeripheralProperty: no setting value");
                             return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                         }
-                        else if (int.TryParse(value, out int tmp)) // for the function argument is number
+                        else if (int.TryParse(stringValue, out int tmp)) // for the function argument is number
                         {
                             val = tmp;
                         }
                         else //for the function argument is int(0/1) or bool
                         {
-                            switch (value)
+                            switch (stringValue)
                             {
                                 //case "ENABLE": //spec is only defined enable/disable, on/off
                                 case "ON":
@@ -895,7 +895,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     break;
                                 case "LOCK":
                                 case "UNLOCK":
-                                    if (value.ToUpper().Equals("LOCK"))
+                                    if (stringValue.ToUpper().Equals("LOCK"))
                                     {
                                         switch (_commandLineInput.TargetFeature.ToUpper())
                                         {
@@ -916,7 +916,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 break;
                                         }
                                     }
-                                    if (value.ToUpper().Equals("UNLOCK"))
+                                    if (stringValue.ToUpper().Equals("UNLOCK"))
                                     {
                                         switch (_commandLineInput.TargetFeature.ToUpper())
                                         {
@@ -940,7 +940,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     _devMgr.SetAppConfigData(data);
                                     break;
                                 default: // currently, CLI peripheral didn't accept others setting type
-                                    if (int.TryParse(value, out val))
+                                    if (int.TryParse(stringValue, out val))
                                         break;
                                     else
                                     {
