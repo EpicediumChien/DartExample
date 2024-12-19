@@ -40,6 +40,8 @@ namespace DDPM.EABroker
         private double _screenScale = 1.00;
 
         private ISplitCtrl _ezMemLauncherSplit;
+        //Robert_Lin, 2024-12-19 added to know whether we are in editing process
+        private bool _isShown = false;
         #endregion Private members
 
         #region ctor & Init
