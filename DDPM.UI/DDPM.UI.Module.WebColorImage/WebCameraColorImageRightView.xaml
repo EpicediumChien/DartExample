@@ -138,9 +138,11 @@
                       <UXControls:UXSlider Name="ContrastSlider" Margin="0,15,0,9" Thumb.DragStarted="ContrastSlider_DragStarted" Thumb.DragCompleted="ContrastSlider_DragCompleted"
                                            IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Contrast}"/>
                     </StackPanel>
-                    <StackPanel x:Name="spSaturation" Orientation="Vertical" Margin="0,18,0,0" Visibility="Collapsed">
+                    <StackPanel x:Name="spSaturation" Orientation="Vertical" Margin="0,18,-15,0" Visibility="Collapsed">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.6], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                      <UXControls:UXSlider Name="SaturationSlider" Margin="0,15,0,0" Thumb.DragStarted="SaturationSlider_DragStarted" Thumb.DragCompleted="SaturationSlider_DragCompleted"
+                      <UXControls:UXTextBlock Text="{Binding SaturationText}" FontFamily="Roboto" FontSize="14" FontWeight="Normal" 
+                                              Foreground="#A4B8CD" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="{Binding SaturationMargin, Converter={StaticResource MarginConverter}}" />
+                      <UXControls:UXSlider Name="SaturationSlider" Margin="0,0,15,0" Thumb.DragStarted="SaturationSlider_DragStarted" Thumb.DragCompleted="SaturationSlider_DragCompleted"
                                            IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Saturation}" />
                     </StackPanel>
                   </StackPanel>

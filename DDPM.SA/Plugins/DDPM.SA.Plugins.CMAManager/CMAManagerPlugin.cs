@@ -783,10 +783,12 @@ namespace DDPM.SA.Plugins.CMAManager
                 jarray = JArray.Parse(src);
 
                 // check command result is success or not
-                foreach (JObject jobj in jarray)
+                foreach (JToken item in jarray)
                 {
+                    
                     try
                     {
+                        JObject jobj = item as JObject;
                         strResult = ((string)jobj["Result"]).ToLower() ?? string.Empty;
 
                         if (strResult.Equals("success"))

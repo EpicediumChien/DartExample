@@ -59,7 +59,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Hotkey\" />
     <Folder Include="UI\" />
   </ItemGroup>
 
