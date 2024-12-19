@@ -34,5 +34,7 @@ namespace VcpCore.Interfaces
         event EventHandler<DDCCIchangedEventArgs> DDCCIStatuschanged;
 
         event EventHandler<DisplaychangedEventArgs> Displaychanged;
+
+        event EventHandler<MonitorinfoUpdateEventArgs> MonitorinfoUpdated;
     }
 }

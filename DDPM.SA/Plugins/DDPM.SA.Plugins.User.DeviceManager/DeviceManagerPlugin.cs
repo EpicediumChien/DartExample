@@ -696,6 +696,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public event EventHandler<DisplaychangedEventArgs> Displaychanged;
 
+        public event EventHandler<MonitorinfoUpdateEventArgs> MonitorinfoUpdated;
+
         public event EventHandler<DeviceChangedEventArgs> DeviceChanged;
 
         public event EventHandler<DeviceChangedEventArgs> Peripherals_Notify;
@@ -3139,7 +3141,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 bool result = await _DTPProxyPlugin.SetWearDetectionAsync(Guid, newValue);
-                if(result)
+                if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync Success");
                 else
                     writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync Fail");
@@ -6687,6 +6689,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #region EasyArrage
 
         #region Properties - EasyArrange
+
         /// <summary>
         /// The last error string after a EAPlugin method return error.
         /// </summary>
@@ -6699,12 +6702,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return _DisplayManagerPlugin.EALastError;
             }
         }
+
         #endregion Properties - EasyArrange
 
         #region EAFunctionEanbled - EasyArrange
 
         /// <summary>
-        /// Robert_Lin, 2024-12-12, To be removed. Use 
+        /// Robert_Lin, 2024-12-12, To be removed. Use
         /// Enable/Disable EasyArrange function for all monitors.
         /// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
         /// but user can edit/setup in DDPM.UI and save their settings.
@@ -6733,9 +6737,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult<ObjGetVCP>(new ObjGetVCP() { result = false, value = false });
         }
+
         #endregion EAFunctionEanbled - EasyArrange
 
         #region EzSettings - EasyArrange
+
         public Task<EzSettings> ReadEzSettings()
         {
             //Read DDPMSettings
@@ -6882,9 +6888,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Fail to read, will return false
             return Task.FromResult(false);
         }
+
         #endregion EzSettings - EasyArrange
 
         #region EA Custom List - EasyArrange
+
         //Robert_Ln, 2024-10-12, Added after move CustomList to UserSettings from MonitorSettings
         public Task<SplitJson[]> ReadEACustomList()
         {
@@ -6926,9 +6934,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Failed, return an empty array instead of null
             return Task.FromResult(false);
         }
+
         #endregion EA Custom List - EasyArrange
 
         #region EAMonitorSettings - EasyArrange
+
         public Task<bool> WriteEAMonitorSettings(MonitorInfo monitorInfo, EAMonitorSettings eaSettings)
         {
             if (_SettingsPlugin == null)
@@ -7076,9 +7086,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Return the EA settings from the settings file
             return Task.FromResult(monitorSetting.EA);
         }
+
         #endregion EAMonitorSettings - EasyArrange
 
         #region SelectedLayout - EasyArrange
+
         public Task<int> GetEASelectedLayout(MonitorInfo monitorInfo)
         {
             //Read the EAMonitorSettings from MonitorSettins.
@@ -7144,7 +7156,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #endregion SelectedLayout - EasyArrange
-
 
         //Robert_Lin, 2024-9-13 Remove unused interfaces
         //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
@@ -7247,7 +7258,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-
         private void _dump_SplitJsonList(MonitorInfo mi, List<SplitJson> splitJsonList)
         {
             Trace.WriteLine($"Monitor: {mi.AliasDeviceName}");
@@ -7315,9 +7325,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //     return Task.FromResult(false);
         //}
 
-
-
-
         //Robert_Lin, 2024-10-8, bridge of EASettingsChanged
         //DisplayManagerPlugin will call to here, and DeviceManagerPlugin call to its handler
         private void _DisplayManagerPlugin_EASettingsChanged(object sender, EAArgs e)
@@ -7332,7 +7339,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EASettingsChanged(), EASettingsChanged is null.");
             }
         }
-
 
         //Robert_Lin, 2024-11-18, a general method for Subagent to send event to UI
         /// <summary>
@@ -9707,8 +9713,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region GlobalSetting
-        Object obj = null;
-        int count = 0;
+
+        private Object obj = null;
+        private int count = 0;
+
         public Task<GlobalSettingParam> GetGlobalSettingParam()
         {
             FirstGetDPeMSettings();
@@ -9729,7 +9737,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Exception:{ex.Message}...");
             }
@@ -9760,7 +9768,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _GlobalSettingParam.isTelemetryConsentOn = GetIsAnalyticsEnabledValue().Result;
             _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget = GetIsQuickAccessMenuEnabledValue().Result;
             _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder = GetIsQuickAccessMenuOSDEnabledValue().Result;
-            bool regOK=WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", false).Result;
+            bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", false).Result;
         }
 
         public Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay)
@@ -11032,11 +11040,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EventHandler<VCPchangedEventArgs> handler = VCPchanged;
             if (handler != null)
                 Task.Run(() => handler.Invoke(this, e));
-
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
         }
 
         protected virtual void OnDDCCIStatuschanged(DDCCIchangedEventArgs e)
@@ -11052,11 +11055,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _NKVMPlugin.NKVM_ChangeLimitedSW(e.monitors, e.DDCisON).Wait();
             }
+        }
 
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
+        protected virtual void OnMonitorinfoUpdatechanged(MonitorinfoUpdateEventArgs e)
+        {
+            writelog("DeviceMangerPlugin brocast MonitorinfoUpdatechanged ...");
+
+            //MonitorUpdatechanged?.Invoke(this, e);
+            EventHandler<MonitorinfoUpdateEventArgs> handler = MonitorinfoUpdated;
+            if (handler != null)
+                Task.Run(() => handler.Invoke(this, e)).ConfigureAwait(false);
         }
 
         protected virtual void OnDisplaychanged(DisplaychangedEventArgs e)
@@ -11465,6 +11473,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             OnDDCCIStatuschanged(_DDCCIchangedEventArgs);
         }
 
+        private void show_MonitorinfoUpdatechangedEventArgs(object sender, MonitorinfoUpdateEventArgs e)
+        {
+            writelog("Receive MonitorinfoUpdatechanged Event Notify from DisplayManagerPlugin");
+            writelog("Send out MonitorinfoUpdatechanged Event Notify from DeviceMangerPlugin");
+
+            MonitorinfoUpdateEventArgs _EventArgss = new MonitorinfoUpdateEventArgs()
+            {
+                edid = e.edid,
+                monitor = e.monitor,
+            };
+            OnMonitorinfoUpdatechanged(_EventArgss);
+        }
+
         private void show_displays_changed(object sender, DisplaychangedEventArgs e)
         {
             writelog("Receive Displaychanged Event Notify from DisplayManagerPlugin");
@@ -11846,6 +11867,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.VCPchanged += show_displays;
                         _DisplayManagerPlugin.DDCCIStatuschanged += show_DDCCIchangedEventArgs;
                         _DisplayManagerPlugin.Displaychanged += show_displays_changed;
+                        _DisplayManagerPlugin.MonitorinfoUpdated += show_MonitorinfoUpdatechangedEventArgs;
                         //Robert_Lin, 2024-7-16 added to handle EasyArrange EAPlugin events
                         _DisplayManagerPlugin.EAEditStarted += _DisplayManagerPlugin_EAEditStarted;
                         //Robert_Lin, 2024-9-13 Remove unused interfaces
@@ -11871,6 +11893,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.VCPchanged += show_displays;
                         _DisplayManagerPlugin.DDCCIStatuschanged += show_DDCCIchangedEventArgs;
                         _DisplayManagerPlugin.Displaychanged += show_displays_changed;
+                        _DisplayManagerPlugin.MonitorinfoUpdated += show_MonitorinfoUpdatechangedEventArgs;
                         //Robert_Lin, 2024-7-16 added to handle EasyArrange EAPlugin events
                         _DisplayManagerPlugin.EAEditStarted += _DisplayManagerPlugin_EAEditStarted;
                         //Robert_Lin, 2024-9-13 Remove unused interfaces
@@ -13048,6 +13071,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //Derek 1217 add Debounce for Keyboard_KeyUpProc
         private System.Timers.Timer _timerDebounce;
+
         //即刻执行，执行之后，在timeMs内再次调用无效
         public void KeyboardHook_Debounce<T>(int timeMs, ISynchronizeInvoke invoker,
                         Action<T> action, T parameter)
@@ -16682,6 +16706,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region globalperipheral
+
         public async Task<bool> GetIsLockKeyNotificationsEnabledValue()
         {
             writelog($"Get IsLockKeyNotificationsEnabled Fun");
@@ -16756,7 +16781,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsAnalyticsEnabledValue failed - Exception: {ex.Message}");
                 return false;
             }
-
         }
 
         public async Task<bool> GetIsQuickAccessMenuEnabledValue()
@@ -16776,7 +16800,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuEnabledValue failed - Exception: {ex.Message}");
                 return false;
             }
-
         }
 
         public async Task<bool> GetIsMuteStatusNotificationsEnabledValue()
@@ -16796,7 +16819,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsMuteStatusNotificationsEnabledValue failed - Exception: {ex.Message}");
                 return false;
             }
-
         }
 
         public async Task<bool> GetIsQuickAccessMenuOSDEnabledValue()
@@ -16816,7 +16838,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuOSDEnabledValue failed - Exception: {ex.Message}");
                 return false;
             }
-
         }
 
         public async Task<bool> SetIsLockKeyNotificationsEnabledValue(bool newValue)
