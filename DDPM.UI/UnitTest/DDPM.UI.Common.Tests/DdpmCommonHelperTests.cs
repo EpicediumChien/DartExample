@@ -32,6 +32,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Menu;
 namespace DDPM.UI.Common.Tests
 {
     [Apartment(ApartmentState.STA)]
+    [Parallelizable(ParallelScope.All)]
     public class DdpmCommonHelperTests
     {
         private PrivateObject? privateObject;
@@ -124,7 +125,8 @@ namespace DDPM.UI.Common.Tests
             return FindWindow(className, windowName);
         }
         public const int WM_CLOSE = 0x10;
-        [Test]
+
+        [Test, NonParallelizable]
         public void TestDDPMMesssageBox()
         {
             IntPtr hwnd_win;
@@ -134,27 +136,12 @@ namespace DDPM.UI.Common.Tests
             t.Start();
             while (hwnd_win == 0)
             {
-                Thread.Sleep(1000);
+                //Thread.Sleep(1000);
                 hwnd_win = _FindWindow(null, "DDPMMsgBox");
             }
         }
 
-        [Test]
-        public void TestDDPMMesssageBoxa()
-        {
-            IntPtr hwnd_win;
-            hwnd_win = _FindWindow(null, "title");
-            Thread t = new Thread(() => DdpmCommonHelper.DDPMMesssageBox("title", "text", new DependencyObject()));
-            t.ApartmentState = ApartmentState.STA;
-            t.Start();
-            while (hwnd_win == 0)
-            {
-                Thread.Sleep(1000);
-                hwnd_win = _FindWindow(null, "DDPMMsgBox");
-            }
-        }
-
-        [Test]
+        [Test, NonParallelizable]
         public void TestDDPMPureMesssageBox()
         {
             IntPtr hwnd_win;
@@ -164,12 +151,12 @@ namespace DDPM.UI.Common.Tests
             t.Start();
             while (hwnd_win == 0)
             {
-                Thread.Sleep(1000);
+                //Thread.Sleep(1000);
                 hwnd_win = _FindWindow(null, "DDPMMsgBox");
             }
         }
 
-        [Test]
+        [Test, NonParallelizable]
         public void TestDDPMEzMesssageBox()
         {
             IntPtr hwnd_win;

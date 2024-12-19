@@ -59,7 +59,11 @@ namespace DDPM.UI.Module.DisplayHotkeys
                         }
                     }
 
-                }).ContinueWith((t) => { dataContext.IsBusy = false; });
+                }).ContinueWith((t) =>
+                {
+                    dataContext.IsBusy = false;
+                    dataContext.Invoke_RefreshData();
+                });
             }
 
         }

@@ -22,6 +22,26 @@ namespace DDPM.SA.Common
 {
     public interface IDTPProxyPlugin : IFrameworkPlugin
     {
+        bool GetDTPProxyPluginReady();
+
+        #region globalperipheral
+        Task<bool> GetIsLockKeyNotificationsEnabledValue();
+
+        Task<bool> GetIsBatteryNotificationsEnabledValue();
+        Task<bool> GetIsPresenceDetectionSensnorStateNotificationsEnabledValue();
+        Task<bool> GetIsAnalyticsEnabledValue();
+        Task<bool> GetIsQuickAccessMenuEnabledValue();
+        
+        Task<bool> GetIsMuteStatusNotificationsEnabledValue();
+        Task<bool> GetIsQuickAccessMenuOSDEnabledValue();
+        Task<bool> SetIsLockKeyNotificationsEnabledValue(bool newValue);
+        Task<bool> SetIsBatteryNotificationsEnabledValue(bool newValue);
+        Task<bool> SetIsPresenceDetectionSensnorStateNotificationsEnabledValue(bool newValue);
+        Task<bool> SetIsAnalyticsEnabledValue(bool newValue);
+        Task<bool> SetIsQuickAccessMenuEnabledValue(bool newValue);
+        Task<bool> SetIsMuteStatusNotificationsEnabledValue(bool newValue);
+        Task<bool> SetIsQuickAccessMenuOSDEnabledValue(bool newValue);
+        #endregion globalperipheral
 
         #region Mouse
 

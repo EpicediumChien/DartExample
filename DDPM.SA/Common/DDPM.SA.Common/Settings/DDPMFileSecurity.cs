@@ -1213,14 +1213,25 @@ namespace DDPM.SA.Common.Settings
 #endif
                     return false;
                 }*/
-
-                foreach(var hash in DDPM.SA.Obfuscation.ThumbprintHash.certificateHash)
+                foreach (var hash in DDPM.SA.Obfuscation.ThumbprintHash_NKVM.certificateHash)
                 {
                     string thumbprintString = BitConverter.ToString(hash).Replace("-", string.Empty);
-                    if(SignedFileThumbprintVerifier(null, filePath, thumbprintString, out info))
+                    if (SignedFileThumbprintVerifier(null, filePath, thumbprintString, out info))
                     {
                         gotMatched = true;
                         break;
+                    }
+                }
+                if (!gotMatched)
+                {
+                    foreach (var hash in DDPM.SA.Obfuscation.ThumbprintHash.certificateHash)
+                    {
+                        string thumbprintString = BitConverter.ToString(hash).Replace("-", string.Empty);
+                        if (SignedFileThumbprintVerifier(null, filePath, thumbprintString, out info))
+                        {
+                            gotMatched = true;
+                            break;
+                        }
                     }
                 }
             }
