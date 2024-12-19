@@ -263,7 +263,7 @@ namespace DDPM.EABroker
             {
                 if (_isReadyToArrange)
                 {
-                    _emLauncherWindow.ArrangeWindow(hWnd, idxCell);
+                    //_emLauncherWindow.ArrangeWindow(hWnd, idxCell);
 
                 }
             }

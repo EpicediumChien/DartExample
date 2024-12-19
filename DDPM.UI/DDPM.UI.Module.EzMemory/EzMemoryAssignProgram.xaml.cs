@@ -255,6 +255,7 @@ namespace DDPM.UI.Module.EzMemory
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             _vm.ProgressValue = 1;
+            _vm.IsAddPageBack = false;
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
             return;
         }
