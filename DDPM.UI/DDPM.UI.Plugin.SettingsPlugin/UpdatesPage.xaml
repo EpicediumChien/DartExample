@@ -105,7 +105,7 @@
                                 </StackPanel>
                                 <StackPanel Grid.Row="1" Margin="0,0,0,24" Visibility="{Binding Critical_UpdateList}">
                                     <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" Margin="20,16,0,0" FontSize="16" Grid.Row="0" Text="{Binding [Critical], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Header1" HorizontalAlignment="Left" />
-                                    <ListBox ItemsSource="{Binding Critical_UpdateList_UI}" Name="listTopics" Background="Transparent" BorderThickness="0" Margin="20,0,0,0">
+                                    <ListBox PreviewMouseWheel="HandlePreviewMouseWheel" Height="auto" ItemsSource="{Binding Critical_UpdateList_UI}" Name="listTopics" Background="Transparent" BorderThickness="0" Margin="20,0,0,0">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>
@@ -130,36 +130,36 @@
                                             </ListBox.ItemTemplate>
                                         </ListBox>
                                     </StackPanel>
-                                <StackPanel Grid.Row="2" Margin="0,0,0,24" Visibility="{Binding Recommended_UpdateList}">
-                                        <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" FontSize="16" Grid.Row="0" Text="Recommended" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,16,0,0" />
-                                        <ListBox ItemsSource="{Binding Recommended_UpdateList_UI}" Background="Transparent" BorderThickness="0" Margin="20,0,0,0">
-                                            <ListBox.ItemTemplate>
-                                                <DataTemplate>
-                                                    <StackPanel>
-                                                        <UXControls:UXCheckBox FontSize="14"
+                                <StackPanel  Grid.Row="2" Margin="0,0,0,24" Visibility="{Binding Recommended_UpdateList}">
+                                    <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" FontSize="16" Grid.Row="0" Text="Recommended" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,16,0,0" />
+                                    <ListBox PreviewMouseWheel="HandlePreviewMouseWheel" Height="auto" ItemsSource="{Binding Recommended_UpdateList_UI}" Background="Transparent" BorderThickness="0" Margin="20,0,0,0">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <UXControls:UXCheckBox FontSize="14"
                                                                            IsEnabled="{Binding IsEnableCheckBox}"
                                                                            Content="{Binding UpdateInfo}"
                                                                            IsChecked="{Binding IsCheckUpdate}"
                                                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                                            Margin="0,20,0,20" />
-                                                        <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility}" Margin="0,17,16,17" HorizontalAlignment="Stretch">
-                                                            <UXControls:UXAlertItem Background="#364861" AlertItemType="Info"  Message="{Binding UXAlertItemMessage}" Opacity="0.6" />
-                                                        </UXControls:UXAlert>
-                                                        <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility_2}"
+                                                    <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility}" Margin="0,17,16,17" HorizontalAlignment="Stretch">
+                                                        <UXControls:UXAlertItem Background="#364861" AlertItemType="Info"  Message="{Binding UXAlertItemMessage}" Opacity="0.6" />
+                                                    </UXControls:UXAlert>
+                                                    <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility_2}"
                                                                         Margin="0,17,16,17" HorizontalAlignment="Stretch">
-                                                            <UXControls:UXAlertItem Background="#364861"
+                                                        <UXControls:UXAlertItem Background="#364861"
                                                                                 AlertItemType="Info"
                                                                                 Message="{Binding UXAlertItemMessage_2}"
                                                                                 Opacity="0.6" />
-                                                        </UXControls:UXAlert>
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
-                                        </ListBox>
-                                    </StackPanel>
+                                                    </UXControls:UXAlert>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </StackPanel>
                                 <StackPanel Grid.Row="3" Visibility="{Binding Optional_UpdateList}">
                                     <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" FontSize="16" Grid.Row="0" Text="{Binding [Optional], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,4,4,4" />
-                                    <ListBox ItemsSource="{Binding Optional_UpdateList_UI}" Background="Transparent" BorderThickness="0" Margin="20,0,0,0">
+                                    <ListBox PreviewMouseWheel="HandlePreviewMouseWheel" Height="auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" ItemsSource="{Binding Optional_UpdateList_UI}" Background="Transparent" BorderThickness="0" Margin="20,0,0,0">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
                                                 <StackPanel>

@@ -28,6 +28,12 @@ namespace VcpCore.Common
         public List<MonitorInfo> monitors { get; set; } = new List<MonitorInfo>();
     }
 
+    public class MonitorinfoUpdateEventArgs : EventArgs
+    {
+        public EDID edid { get; set; } = new EDID();
+        public MonitorInfo monitor { get; set; } = new MonitorInfo();
+    }
+
     public class DDCCIchangedEventArgs : EventArgs
     {
         public bool DDCisON { get; set; } = false;
