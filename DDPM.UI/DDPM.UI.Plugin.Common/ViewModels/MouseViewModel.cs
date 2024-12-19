@@ -192,10 +192,31 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
+
+        private void RemoveCopilotAction()
+        {
+            foreach (var ba in MouseAction.ButtonActions)
+            {
+                if (ba.Value.AssignedAction.ID == 1)
+                {
+                    SelectedButton = ba.Key.ToString();
+                    UpdateAction(ba.Value.DefaultActionID);
+                }
+            }
+            SelectedButton = "";
+        }
+
+
         public override bool SetCurrentDevice(string deviceID)
         {
             if (!base.SetCurrentDevice(deviceID))
                 return false;
+
+            if (SelectedApp != "AllApp")
+                SelectedApp = "AllApp";
+
+            if (!IsCopilotEnabled)
+                RemoveCopilotAction();
 
             IsTouchScrollSensitivitySupported = CurrentDeviceInfo!.IsTouchScrollSensitivitySupported;
             //IsTouchScrollSensitivitySupported = true;
@@ -282,9 +303,6 @@ namespace DDPM.UI.Plugin.ViewModels
             //ButtonCollection = _buttonCollection;
             PrimaryButtonIndex = CurrentDeviceInfo.MousePrimaryButton == MouseButton.Left ? 0 : 1;
             OnPropertyChanged(nameof(ButtonCollection));
-
-            if (SelectedApp != "AllApp")
-                SelectedApp = "AllApp";
 
             InitializeButton();
             return true;
