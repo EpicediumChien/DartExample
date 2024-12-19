@@ -123,19 +123,25 @@
               <Grid Name="BSCS" Grid.Row="2" Margin="0,0,0,10" Visibility="Collapsed">
                 <Border CornerRadius="6">
                   <StackPanel Orientation="Vertical" Margin="18,8,16,14">
-                    <StackPanel x:Name="spBrightness" Orientation="Vertical" Margin="0,18,0,0" Visibility="Collapsed">
+                    <StackPanel x:Name="spBrightness" Orientation="Vertical" Margin="0,18,-15,0" Visibility="Collapsed">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                      <UXControls:UXSlider Name="BrightnessSlider" Margin="0,15,0,9" Thumb.DragStarted="BrightnessSlider_DragStarted" Thumb.DragCompleted="BrightnessSlider_DragCompleted"
+                      <UXControls:UXTextBlock Text="{Binding BrightnessText}" FontFamily="Roboto" FontSize="14" FontWeight="Normal" 
+                                              Foreground="#A4B8CD" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="{Binding BrightnessMargin, Converter={StaticResource MarginConverter}}" />
+                      <UXControls:UXSlider Name="BrightnessSlider" Margin="0,0,15,9" Thumb.DragStarted="BrightnessSlider_DragStarted" Thumb.DragCompleted="BrightnessSlider_DragCompleted"
                                            IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Brightness}"/>
                     </StackPanel>
-                    <StackPanel x:Name="spSharpness" Orientation="Vertical" Margin="0,18,0,0" Visibility="Collapsed">
+                    <StackPanel x:Name="spSharpness" Orientation="Vertical" Margin="0,18,-15,0" Visibility="Collapsed">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                      <UXControls:UXSlider Name="SharpnessSlider" Margin="0,15,0,9" Thumb.DragStarted="SharpnessSlider_DragStarted" Thumb.DragCompleted="SharpnessSlider_DragCompleted"
+                      <UXControls:UXTextBlock Text="{Binding SharpnessText}" FontFamily="Roboto" FontSize="14" FontWeight="Normal" 
+                                              Foreground="#A4B8CD" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="{Binding SharpnessMargin, Converter={StaticResource MarginConverter}}" />
+                      <UXControls:UXSlider Name="SharpnessSlider" Margin="0,0,15,9" Thumb.DragStarted="SharpnessSlider_DragStarted" Thumb.DragCompleted="SharpnessSlider_DragCompleted"
                                            IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Sharpness}" />
                     </StackPanel>
-                    <StackPanel x:Name="spContrast" Orientation="Vertical" Margin="0,18,0,0" Visibility="Collapsed">
+                    <StackPanel x:Name="spContrast" Orientation="Vertical" Margin="0,18,-15,0" Visibility="Collapsed">
                       <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                      <UXControls:UXSlider Name="ContrastSlider" Margin="0,15,0,9" Thumb.DragStarted="ContrastSlider_DragStarted" Thumb.DragCompleted="ContrastSlider_DragCompleted"
+                      <UXControls:UXTextBlock Text="{Binding ContrastText}" FontFamily="Roboto" FontSize="14" FontWeight="Normal" 
+                                              Foreground="#A4B8CD" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="{Binding ContrastMargin, Converter={StaticResource MarginConverter}}" />
+                      <UXControls:UXSlider Name="ContrastSlider" Margin="0,0,15,9" Thumb.DragStarted="ContrastSlider_DragStarted" Thumb.DragCompleted="ContrastSlider_DragCompleted"
                                            IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Value="{Binding Contrast}"/>
                     </StackPanel>
                     <StackPanel x:Name="spSaturation" Orientation="Vertical" Margin="0,18,-15,0" Visibility="Collapsed">
