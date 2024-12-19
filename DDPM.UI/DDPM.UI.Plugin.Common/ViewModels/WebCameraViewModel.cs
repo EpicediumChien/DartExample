@@ -1367,7 +1367,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         SetBrightness();
                     }
                     //var v = (value * 1.0 - CurrentDeviceInfo!.BrightnessMin) / (CurrentDeviceInfo.BrightnessMax - CurrentDeviceInfo!.BrightnessMin);
-                    BrightnessMargin = GetTextmargin(value, CurrentDeviceInfo?.BrightnessMax ?? null, CurrentDeviceInfo?.BrightnessMin ?? null, out string text);
+                    BrightnessMargin = GetTextmargin(value, CurrentDeviceInfo?.BrightnessMax, CurrentDeviceInfo?.BrightnessMin, out string text);
                     BrightnessText = text;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(BrightnessText));
@@ -1397,7 +1397,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         SetSharpness();
                     }
                     //var v = (value * 1.0 - CurrentDeviceInfo!.SharpnessMin) / (CurrentDeviceInfo.SharpnessMax - CurrentDeviceInfo!.SharpnessMin);
-                    SharpnessMargin = GetTextmargin(value, CurrentDeviceInfo?.SharpnessMax ?? null, CurrentDeviceInfo?.SharpnessMin ?? null, out string text);
+                    SharpnessMargin = GetTextmargin(value, CurrentDeviceInfo?.SharpnessMax, CurrentDeviceInfo?.SharpnessMin, out string text);
                     SharpnessText = text;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(SharpnessText));
@@ -1427,7 +1427,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         SetContrast();
                     }
                     //var v = (value * 1.0 - CurrentDeviceInfo!.ContrastMin) / (CurrentDeviceInfo.ContrastMax - CurrentDeviceInfo!.ContrastMin);
-                    ContrastMargin = GetTextmargin(value, CurrentDeviceInfo?.ContrastMax ?? null, CurrentDeviceInfo?.ContrastMin ?? null, out string text);
+                    ContrastMargin = GetTextmargin(value, CurrentDeviceInfo?.ContrastMax, CurrentDeviceInfo?.ContrastMin, out string text);
                     ContrastText = text;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(ContrastText));
@@ -1455,7 +1455,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         SetSaturation();
                     }
                     //var v = (value * 1.0 - CurrentDeviceInfo!.SaturationMin) / (CurrentDeviceInfo.SaturationMax - CurrentDeviceInfo!.SaturationMin);
-                    SaturationMargin = GetTextmargin(value, CurrentDeviceInfo?.SaturationMax ?? null, CurrentDeviceInfo?.SaturationMin ?? null, out string text);
+                    SaturationMargin = GetTextmargin(value, CurrentDeviceInfo?.SaturationMax, CurrentDeviceInfo?.SaturationMin, out string text);
                     SaturationText = text;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(SaturationText));

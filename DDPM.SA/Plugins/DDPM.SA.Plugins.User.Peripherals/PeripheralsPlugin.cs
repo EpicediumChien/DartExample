@@ -2440,13 +2440,43 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 Debug.WriteLine(arg2.ToString());
                 writelog(arg2.ToString());
                 if (deviceInfo != null)
+                {
                     deviceInfo.BatteryStatus = arg2.ToString();
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                    _EventArgs.device_peripherals = deviceInfo;
+                    _EventArgs.changedProperty = "BatteryStatusChanged";
+                    OnNotify(_EventArgs);
 
-                DeviceChangedEventArgs _EventArgs = new();
-                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                _EventArgs.device_peripherals = deviceInfo;
-                _EventArgs.changedProperty = "BatteryStatusChanged";
-                OnNotify(_EventArgs);
+                    var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
+                    if (!settings.GlobalSetting_General.Low_Battery_Level)
+                        return;
+
+                    if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9)
+                    {
+                        OSDType_Device type = OSDType_Device.Unknown;
+                        var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
+                        if (deviceType.Contains("PEN"))
+                        {
+                            if (deviceInfo.ModelNumber == "PN5122W" && deviceInfo.BatteryLevel > 6)
+                            { return; }
+                            type = OSDType_Device.Pen;
+                        }
+                        else if (deviceType.Contains("KEYBOARD"))
+                        {
+                            type = OSDType_Device.Keyboard;
+                        }
+                        else if (deviceType.Contains("MOUSE"))
+                        {
+                            type = OSDType_Device.Mouse;
+                        }
+                        else if (deviceType.Contains("HEADSET"))
+                        {
+                            type = OSDType_Device.Headset;
+                        }
+                        _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
+                    }
+                }
             }
         }
 
