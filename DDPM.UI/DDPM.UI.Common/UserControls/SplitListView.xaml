@@ -196,6 +196,7 @@
                         </Trigger>
                         <DataTrigger Binding="{Binding IsPrevButtonEnabled}" Value="False">
                             <Setter Property="Background" Value="{DynamicResource EzBtn_BkColor_Disabled}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource EzBtn_BdColor_Disabled}" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -232,10 +233,10 @@
                             <Setter Property="Background" Value="{StaticResource EzBtn_BkColor_Hover}" />
                             -->
                             <Setter Property="Background" Value="{DynamicResource Brush_GradientButtonCyan}" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource Brush_GradientButtonCyan}" />
                         </Trigger>
                         <DataTrigger Binding="{Binding IsNextButtonEnabled}" Value="False">
                             <Setter Property="Background" Value="{DynamicResource EzBtn_BkColor_Disabled}" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource EzBtn_BdColor_Disabled}" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
