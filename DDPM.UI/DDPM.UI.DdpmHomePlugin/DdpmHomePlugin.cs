@@ -42,6 +42,7 @@ using System.Windows.Threading;
 using DDPM.SA.Common.UpdateProgressPage;
 using Windows.ApplicationModel.VoiceCommands;
 using Microsoft.Toolkit.Uwp.Notifications;
+using System.Linq;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -61,6 +62,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private const string PluginName = "DDPM Home plugin";
         private const string PluginVersion = "1.0";
         private const string Description = "Display DDPM.Homepage";
+
+        private List<MonitorInfo> _monitorCache = new List<MonitorInfo>();
 
         //internal static readonly Ioc PluginIoc = new();
         public static readonly Ioc PluginIoc = new();
@@ -364,7 +367,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                         //Elapsed= 1 msec
                         _log.Info($"Calling to CheckIfNeedImportSetting_Display()");
-                        CheckIfNeedImportSetting_Display();
+                        _monitorCache.Clear();
+                        _monitorCache = _monitorInfos;
+                        CheckIfNeedImportSetting_Display(_monitorInfos);
                         _log.Info($"Return from CheckIfNeedImportSetting_Display()");
 
                         //await DDPMInfoSAHomepageIsReady();
@@ -488,7 +493,21 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         }
                     }
 
-                    if(e.device_display != null) CheckIfNeedImportSetting_Display();
+                    MonitorInfo newPlugIn = null;
+                    // If is a plugin event
+                    if(_monitorInfos.Count() >= _monitorCache.Count())
+                    {
+                        foreach (MonitorInfo monitor in _monitorInfos)
+                        {
+                            if (!_monitorCache.Contains(monitor))
+                            {
+                                newPlugIn = monitor;
+                                _monitorCache = _monitorInfos;
+                                break;
+                            }
+                        }
+                    }
+                    if (newPlugIn != null) CheckIfNeedImportSetting_Display(new List<MonitorInfo>() { newPlugIn });
                 }
                 else
                 {
@@ -511,14 +530,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
         }
 
-        private void CheckIfNeedImportSetting_Display()
+        private void CheckIfNeedImportSetting_Display(List<MonitorInfo> monitorInfos)
         {
             //For existing monitor to check if need to pop-up message to import setting
             Task.Run(() =>
             {
-                if (_monitorInfos == null && _monitorInfos.Count == 0)
+                if (monitorInfos == null && monitorInfos.Count == 0)
                     return;
-                List<MonitorInfo> temp_mos = _monitorInfos;
                 //make sure no walkthrough page displaying
                 while (WalkThroughQueue != null && WalkThroughQueue.Count > 0)
                 {
@@ -527,7 +545,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
                 string path = localAppDataPath + "\\Dell Display and Peripheral Manager\\Export";
 
-                foreach (MonitorInfo info in temp_mos)
+                foreach (MonitorInfo info in monitorInfos)
                 {
                     string model = info.modelName;//"U2724DE";
                     string serviceTag = info.edid.ServiceTag;
@@ -536,10 +554,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //if(can popup messagebox && not yet to import / already click no need import)
                     if (File.Exists(exportpath))
                     {
-                        //avoid timing issue to cause monitor updated
-                        if (temp_mos.Count != _monitorInfos.Count)
-                            return;
-
                         //force return here to avoid page trigger, need Jason handle it
                         //return;
                         if (_viewModel != null)
