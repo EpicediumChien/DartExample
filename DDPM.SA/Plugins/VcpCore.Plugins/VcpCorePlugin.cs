@@ -100,6 +100,8 @@ namespace VcpCore.Plugins
 
         public event EventHandler<DisplaychangedEventArgs> Displaychanged;
 
+        public event EventHandler<MonitorinfoUpdateEventArgs> MonitorinfoUpdated;
+
         public event EventHandler<DDCCIchangedEventArgs> DDCCIStatuschanged;
 
         #endregion
@@ -1625,6 +1627,15 @@ namespace VcpCore.Plugins
                             else
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck UpdateMyself Fail");
 
+                            if (rt.Item2)
+                            {
+                                OnMonitorinfoUpdatechanged(new MonitorinfoUpdateEventArgs()
+                                {
+                                    edid = monitor.Item1.edid,
+                                    monitor = monitor.Item2.Clone(),
+                                });
+                            }
+
                             monitor.Item1.DDCCIFail = 0;
 
                             if (!ori_DDCCIStatus)
@@ -1890,6 +1901,16 @@ namespace VcpCore.Plugins
 
             //VCPchanged?.Invoke(this, e);
             EventHandler<VCPchangedEventArgs> handler = VCPchanged;
+            if (handler != null)
+                Task.Run(() => handler.Invoke(this, e)).ConfigureAwait(false);
+        }
+
+        protected virtual void OnMonitorinfoUpdatechanged(MonitorinfoUpdateEventArgs e)
+        {
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin Broadcast MonitorinfoUpdatechanged ...");
+
+            //MonitorUpdatechanged?.Invoke(this, e);
+            EventHandler<MonitorinfoUpdateEventArgs> handler = MonitorinfoUpdated;
             if (handler != null)
                 Task.Run(() => handler.Invoke(this, e)).ConfigureAwait(false);
         }
@@ -4253,8 +4274,6 @@ namespace VcpCore.Plugins
 
                 if (string.IsNullOrWhiteSpace(_TargetMonitorx.CapabilityString))
                 {
-                    IsUpdate = true;
-
                     int nRetryCount = 0;
                     do
                     {
@@ -4290,6 +4309,7 @@ namespace VcpCore.Plugins
 
                     if (!string.IsNullOrWhiteSpace(_TargetMonitorx.CapabilityString))
                     {
+                        IsUpdate = true;
                         IsConnectAllCorrect &= true;
 
                         nRetryCount = 0;
@@ -4387,8 +4407,6 @@ namespace VcpCore.Plugins
 
                 if (IsConnectAllCorrect && ((string.IsNullOrWhiteSpace(_TargetMonitorx.FwVersion)) || (string.IsNullOrWhiteSpace(_TargetMonitorx.D_Ctrl)) || (string.IsNullOrWhiteSpace(_TargetMonitorx.SupplierID))))
                 {
-                    IsUpdate = true;
-
                     var FwTmp = FwVersion(in _TargetMonitorx, _TargetMonitorx.modelName, CancellationToken.None);
                     _TargetMonitorx.FwVersion = FwTmp.Item1;
                     _TargetMonitorx.D_Ctrl = FwTmp.Item2;
@@ -4400,7 +4418,10 @@ namespace VcpCore.Plugins
                         _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} UpdateMyself FwVersion or D_Ctrl or SupplierID is null ...");
                     }
                     else
+                    {
                         IsConnectAllCorrect &= true;
+                        IsUpdate = true;
+                    }
                 }
                 else
                 {
@@ -4410,8 +4431,6 @@ namespace VcpCore.Plugins
 
                 if (IsConnectAllCorrect && ((string.IsNullOrWhiteSpace(_TargetMonitor.inputCable)) || (string.IsNullOrWhiteSpace(_TargetMonitor.inputSource))))
                 {
-                    IsUpdate = true;
-
                     _ = GetVCPCapability_(_TargetMonitorx, "inputsourcelist", 0);
 
                     var tmp = GetInputSource(_TargetMonitorx);
@@ -4424,7 +4443,10 @@ namespace VcpCore.Plugins
                         _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} UpdateMyself inputSource or inputCable is null ...");
                     }
                     else
+                    {
+                        IsUpdate = true;
                         IsConnectAllCorrect &= true;
+                    }
                 }
                 else
                 {
@@ -4451,7 +4473,7 @@ namespace VcpCore.Plugins
                 _TargetMonitor.D_Ctrl = _TargetMonitorx.D_Ctrl;
                 _TargetMonitor.scalingFactor = _TargetMonitorx.scalingFactor;
 
-                if (IsConnectAllCorrect && IsUpdate)
+                if (IsUpdate)
                 {
                     _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} UpdateMyself go to Initialize2TypesMonitorInfo ...");
 
