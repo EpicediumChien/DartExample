@@ -108,6 +108,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
 
         public void OnActivated()
         {
+            _log?.Info("OnActivated()");
             Mouse.OverrideCursor = null;
             //IDeviceInfo deviceInfo =
             //(IDeviceInfo)DdpmHomePlugin.DdpmHomePlugin.PluginIoc.GetServices<IDeviceInfo>();//
@@ -115,6 +116,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
 
         public void OnDeactivated()
         {
+            _log?.Info("OnDeactivated()");
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
         }
         private void ConfigureServices()
@@ -173,6 +175,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
 
         public void OnShown()
         {
+            _log?.Info("OnShown()");
             ConfigureServices();
             PrepareHomeDevices();
         }
@@ -427,6 +430,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin
         {
             List<HomeDevice> homeDevices = DdpmHomePlugin.DdpmHomePlugin.GetHomeDevices();
             MonitorInfo miChanged = e.monitors;
+
+            _log?.Info($"_deviceManagerSA_DDCCIStatuschanged(mo: {miChanged.modelName}, {miChanged.edid.ServiceTag}), DDC/CI is ON? {e.DDCisON}");
 
             foreach (HomeDevice homeDev in homeDevices)
             {

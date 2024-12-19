@@ -13530,9 +13530,37 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
         {
+            //Robert_Lin, 2024-12-19, add log to trace if HokeyKey has been handover to this method.
+            string moInfo = "";
+            if (monitorInfo == null)
+            {
+                moInfo = "(null)";
+            }
+            else
+            {
+                moInfo = monitorInfo.modelName;
+                if (monitorInfo.edid != null)
+                {
+                    if (String.IsNullOrEmpty(monitorInfo.edid.ServiceTag))
+                    {
+                        moInfo += ",(EMPTY)";
+                    }
+                    else
+                    {
+                        moInfo += $",{monitorInfo.edid.ServiceTag}";
+                    }
+                }
+                else
+                {
+                    moInfo += ",(null)";
+                }
+
+            }
+            writelog($"Toggle_EzRecentSetting({moInfo}) is called.");
+
             //Validation
             //todo Toggle_EzRecentSetting
-            //Read the EAMonitorSettings
+            //Read the EAMonitorSettings for EARecentList
             EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
             //Change selected layout to the latest item of RecentList
             if (eaSettings != null)
@@ -13541,16 +13569,59 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 if (recentList == null)
                 {
-                    writelog("@ Toggle_EzRecentSetting(), EA RecentList is null");
+                    writelog("@ Toggle_EzRecentSetting() failed, EA RecentList is null");
                     return;
                 }
                 if (recentList.Length == 0)
                 {
-                    writelog("@ Toggle_EzRecentSetting(), EA RecentList is empty");
+                    writelog("@ Toggle_EzRecentSetting() failed, EA RecentList is empty");
                     return;
+                }
+                else if (recentList.Length < EAEMConstants.MaxRecentItems)
+                {
+                    writelog($"@ Toggle_EzRecentSetting() failed, EA RecentList count={recentList.Length}");
                 }
                 else
                 {
+                    //Robert_Lin, 2024-12-19, Due to new interface
+                    //  IDevciceManagerSA.SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
+                    //is released for CLI and Hotkey, will change code logic to use new interface.
+                    //NEW:
+                    //1 Read the EARecentList, count should be == 5 (already checked)
+                    try
+                    {
+                        //2 Get the tail item of EZRecentList, that is EARecentList[4]
+                        SplitJson newSelectedLayout = recentList[EAEMConstants.MaxRecentItems - 1];
+                        int newEAID = newSelectedLayout.EAID;
+                        writelog($"@ Toggle_EzRecentSetting(): New selected layout EAID={newEAID}");
+
+                        //3 Call SetEASelectedLayout()
+                        bool res = SetEASelectedLayout(monitorInfo, newEAID).Result;
+                        //If res == false, possible reason:
+                        // Any of IDeviceManagerSA, IDisplayService, IEasyArrsangeService is not ready
+                        // EABroker is not started
+                        // Invalid EAID
+                        // Cannot read MonitorSettings from the MonitorInfo
+                        if (!res)
+                        {
+                            writelog($"@ Toggle_EzRecentSetting() faile, SetEASelectedLayout() return false.");
+                        }
+                        else
+                        {
+                            writelog($"@ Toggle_EzRecentSetting() handover to SetEASelectedLayout().");
+                        }
+                    }
+                    catch (Exception e1)
+                    {
+                        if (Log != null)
+                        {
+                            Log.Error(e1, "Toggle_EzRecentSetting()");
+                        }
+                    }
+                    return;
+
+                    //OLD:
+                    /*
                     List<SplitJson> splitJsonsList = recentList.ToList();
                     List<SplitJson> splitJsonsTmp = new List<SplitJson>();
                     splitJsonsTmp.AddRange(splitJsonsList);
@@ -13577,9 +13648,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"Toggle_EzRecentSetting(),monitor:{monitorInfo.AliasDeviceName}={monitorInfo.edid.ServiceTag}, EA RecentList.Count={eaSettings.RecentList.Length}, toggle to [{splitJsonsList.ElementAt(0).CellCount},{splitJsonsList.ElementAt(0).SplitKey}],save eaSettings.RecentList fail, do nothing");
                     }
+                    */
                 }
             }
-
+            else
+            {
+                writelog("Toggle_EzRecentSetting() failed due to ReadEAMonitorSettings() return null.");
+            }
             //Force await to avoid reenter this method (it will update to MonitorSettings file)
             //bool isOKSetSelected = SetEASelectedLayout(monitorInfo, eaSettings.RecentList[idxRecent]).Result;
 

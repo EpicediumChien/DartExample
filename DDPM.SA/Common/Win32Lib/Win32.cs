@@ -541,9 +541,18 @@ namespace DDPM.Win32Lib
         [DllImport("dwmapi.dll")]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int DwmGetWindowAttribute(IntPtr hwnd, eDwmWindowAttribute dwAttribute, out uint pvAttribute, int cbAttribute);
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmGetWindowAttribute(IntPtr hWnd, eDwmWindowAttribute dwAttribute, ref RECT pvAttribute, int cbAttribute);
+
+
         public static int _DwmGetWindowAttribute(IntPtr hwnd, eDwmWindowAttribute dwAttribute, out uint pvAttribute, int cbAttribute)
         {
             return DwmGetWindowAttribute(hwnd, dwAttribute, out pvAttribute, cbAttribute);
+        }
+        public static int _DwmGetWindowAttribute(IntPtr hwnd, eDwmWindowAttribute dwAttribute, ref RECT pvAttribute, int cbAttribute)
+        {
+            return DwmGetWindowAttribute(hwnd, dwAttribute, ref pvAttribute, cbAttribute);
         }
 
         //GetParent()
