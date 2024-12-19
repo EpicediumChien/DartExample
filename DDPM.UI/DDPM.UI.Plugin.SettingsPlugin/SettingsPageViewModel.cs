@@ -21,6 +21,7 @@ using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Threading;
 using VcpCore.Common;
+using static DDPM.UI.Plugin.SettingsPlugin.GlobalSettingsParam;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 using Application = System.Windows.Application;
 
@@ -163,7 +164,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             try
             {
                 Log?.Info($"Invoke_RefreshData go");
-                GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                bool GetPdemFile=DdpmCommonHelper.DeviceManagerSA.CheckInstallFirstOpen().Result;
+                Global.SettingParam= DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                GlobalSettingParam = Global.SettingParam;
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 Lock_AnalyticsPage = data.LockSettings.Lock_Settings_TelemetryConsent;
                 Trace.WriteLine($"[SettingsPage] Apply TelemetryConsent(check) : {data.LockSettings.Lock_Settings_TelemetryConsent}");

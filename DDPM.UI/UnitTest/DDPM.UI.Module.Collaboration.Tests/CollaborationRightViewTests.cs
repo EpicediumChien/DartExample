@@ -8,7 +8,7 @@ using NGA.UnitTest.PrivateObject;
 using NUnit.Framework;
 using System.Windows;
 using System.Windows.Input;
-
+using Dell.Client.Framework.UX.WPF.ResourceManager;
 namespace DDPM.UI.Module.Collaboration.Test
 {
     [TestFixture, Apartment(ApartmentState.STA)]
@@ -24,6 +24,14 @@ namespace DDPM.UI.Module.Collaboration.Test
         [SetUp]
         public void SetUp()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            ResourceManager res = new ResourceManager();
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             consoleMock = new Mock<IConsole>();
             logMock = new Mock<ILog>();
             deviceManagerMock = new Mock<IDeviceManagerSA>();

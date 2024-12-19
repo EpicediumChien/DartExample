@@ -1353,7 +1353,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public string BrightnessText { get; set; } = "";
         public double[] BrightnessMargin { get; set; } = { 0 };
-        private int _brightness = 0;
+        private int _brightness = -1;
         public int Brightness
         {
             get => _brightness;
@@ -1366,8 +1366,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetBrightness();
                     }
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.BrightnessMin) / (CurrentDeviceInfo.BrightnessMax - CurrentDeviceInfo!.BrightnessMin);
+                    BrightnessMargin = GetTextmargin(value, CurrentDeviceInfo?.BrightnessMax, CurrentDeviceInfo?.BrightnessMin, out string text);
+                    BrightnessText = text;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(BrightnessText));
+                    OnPropertyChanged(nameof(BrightnessMargin));
                 }
-                OnPropertyChanged();
             }
         }
         public void SetBrightness()
@@ -1378,7 +1383,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public string SharpnessText { get; set; } = "";
         public double[] SharpnessMargin { get; set; } = { 0 };
-        private int _sharpness = 0;
+        private int _sharpness = -1;
         public int Sharpness
         {
             get => _sharpness;
@@ -1391,8 +1396,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetSharpness();
                     }
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.SharpnessMin) / (CurrentDeviceInfo.SharpnessMax - CurrentDeviceInfo!.SharpnessMin);
+                    SharpnessMargin = GetTextmargin(value, CurrentDeviceInfo?.SharpnessMax, CurrentDeviceInfo?.SharpnessMin, out string text);
+                    SharpnessText = text;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SharpnessText));
+                    OnPropertyChanged(nameof(SharpnessMargin));
                 }
-                OnPropertyChanged();
             }
         }
         public void SetSharpness()
@@ -1403,7 +1413,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public string ContrastText { get; set; } = "";
         public double[] ContrastMargin { get; set; } = { 0 };
-        private int _contrast = 0;
+        private int _contrast = -1;
         public int Contrast
         {
             get => _contrast;
@@ -1416,8 +1426,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetContrast();
                     }
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.ContrastMin) / (CurrentDeviceInfo.ContrastMax - CurrentDeviceInfo!.ContrastMin);
+                    ContrastMargin = GetTextmargin(value, CurrentDeviceInfo?.ContrastMax, CurrentDeviceInfo?.ContrastMin, out string text);
+                    ContrastText = text;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ContrastText));
+                    OnPropertyChanged(nameof(ContrastMargin));
                 }
-                OnPropertyChanged();
             }
         }
         public void SetContrast()
@@ -1426,7 +1441,7 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(Contrast), _contrast, OperationModule.ColorAndImage);
         }
 
-        private int _saturation = 0;
+        private int _saturation = -1;
         public int Saturation
         {
             get => _saturation;
@@ -1439,19 +1454,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetSaturation();
                     }
-                    var v = (value * 1.0 - CurrentDeviceInfo!.SaturationMin) / (CurrentDeviceInfo.SaturationMax - CurrentDeviceInfo!.SaturationMin);
-                    int i = (int)(v * 100);
-                    double m = i switch
-                    {
-                        _ when i < 10 => 375 * v,
-                        _ when i >= 10 && i < 20 => 375 * v - 5,
-                        _ when i >= 20 && i < 50 => 375 * v,
-                        _ when i > 90 && i < 100 => 380 * v - 2,
-                        100 => 375,
-                        _ => 380 * v
-                    };
-                    SaturationMargin = new double[] { m, 2, 0, 0 };
-                    SaturationText = $"{i}%";
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.SaturationMin) / (CurrentDeviceInfo.SaturationMax - CurrentDeviceInfo!.SaturationMin);
+                    SaturationMargin = GetTextmargin(value, CurrentDeviceInfo?.SaturationMax, CurrentDeviceInfo?.SaturationMin, out string text);
+                    SaturationText = text;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(SaturationText));
                     OnPropertyChanged(nameof(SaturationMargin));
@@ -1459,6 +1464,20 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
+        private static double[] GetTextmargin(double value, double? max, double? min, out string text)
+        {
+            if (max == null || min == null || max.Value == min.Value)
+            {
+                text = "0%";
+                return new double[] { 0, 2, 0, 0 };
+            }
+
+            var v = (value - min.Value) / (max.Value - min.Value);
+            text = v.ToString("##0%");
+            var width = Utility.GetTextWidth(text, 14);
+            var m = 380 * v - width / 2 + 10;
+            return new double[] { m, 2, 0, 0 };
+        }
 
         public string SaturationText { get; set; } = "";
         public double[] SaturationMargin { get; set; } = { 0 };
