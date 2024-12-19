@@ -35,6 +35,9 @@ using Type = System.Type;
 using DDPM.SA.Common.UI;
 using System.Collections.Generic;
 using static DDPM.RemoteManagement.Common.Interfaces.Params;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+using Newtonsoft.Json;
+using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -98,9 +101,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private List<WebcamEventHandleObject> webcamList = new List<WebcamEventHandleObject>();
         internal class WebcamEventHandleObject
         {
-            ICommodity webcamCommodity = null;
-            int webcamIndexId = -1;
-            string webcamDeviceId = string.Empty;
+            public ICommodity webcamCommodity = null;
+            public string webcamIndex = string.Empty; //DellPeripheral.Webcam.0
+            public string DeviceName = string.Empty;  //Dell Pro 24 Plus Video Conferencing Monitor
+            public string DeviceId = string.Empty;     //36ce653b-7a0f-4c85-97f7-aad029cceeb2
+            public string ModelNumber = string.Empty;  //P2424HEB
         };
         
 
@@ -764,6 +769,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                     writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    
                     return new JArray();
                 }
             }
@@ -771,6 +777,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                
                 return new JArray();
             }
         }
@@ -6903,10 +6910,36 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
+                    webcamList.Clear();
                     //PrintWebcamObjectInfo(_WebcamComConnectEvent);
 
                     _WebcamComConnectEvent.Connected += Webcam_Connected;
                     _WebcamComConnectEvent.Disconnected += Webcam_Disconnected;
+
+
+                    writelog($"connected _WebcamComConnectEvent.DeviceItems = {_WebcamComConnectEvent.DeviceItems.Length}");
+                    int i = 0;
+                    foreach (var item in _WebcamComConnectEvent.DeviceItems)
+                    {
+                        //output:
+                        //DellPeripheral.Webcam.0
+                        writelog($"connected _WebcamComConnectEvent.DeviceItems = {item}");
+
+                        //output:
+                        //"{
+                        //DeviceName": "Dell Pro 24 Plus Video Conferencing Monitor",
+                        //"DeviceId": "36ce653b-7a0f-4c85-97f7-aad029cceeb2",
+                        //"ModelNumber": "P2424HEB"
+                        //}
+                        writelog($"connected _WebcamComConnectEvent.DeviceItems = {_WebcamComConnectEvent.DeviceItemsEx[i++].ToString()}");
+
+                        WebcamEventHandleObject jsonObject = JsonSerializer.Deserialize<WebcamEventHandleObject>(_WebcamComConnectEvent.DeviceItemsEx[i++].ToString())!;
+                        jsonObject.webcamCommodity = null;
+                        jsonObject.webcamIndex = item;
+                        webcamList.Add(jsonObject);
+                    }
+                    
+                    writelog($"connected _WebcamComConnectEvent.DeviceItemsEx.Count = {_WebcamComConnectEvent.DeviceItemsEx.Count}");
 
                     writelog($"Webcam Commodity event(connected/disconnected) registered successfully");
                 }
@@ -6918,7 +6951,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             else
                 writelog($"IWebcamCommodity not find");
 
-            await RegisterEventsForAllWebcamsAsync();
+            await RegisterEventsForAllConnectedWebcamsAsync();
 
             await RegisterEventsForAllHeadsetAsync();
 
@@ -7005,7 +7038,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        private async Task RegisterEventsForAllWebcamsAsync()
+        private async Task RegisterEventsForAllConnectedWebcamsAsync()
         {
             var webcams = await GetWebcamDevsCountAsync();
 
@@ -7030,7 +7063,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                writelog($"No any webcam instance to register.");
+                writelog($"No any connected webcam device need to register.");
             }
         }
 
@@ -7051,15 +7084,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"No any webcam instance to unregister.");
         }
 
-        ICommodity _comdityWebcam0;
         private async Task<bool> RegisterEventsForWebcamAsync(int index)
         {
-            if (null == _commSdk || null == _comdity || index < 0)
+            if (null == _commSdk || index < 0)
+            {
+                writelog($"RegisterEventsForWebcamAsync --> null == _commSdk || index < 0");
+
                 return false;
+            }
 
             try
             {
-                _comdityWebcam0 = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
+                ICommodity _comdityWebcam0 = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
                 //_comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
 
                 if (_comdityWebcam0 is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
@@ -7124,7 +7160,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 //_comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
 
-                if (_comdityWebcam0 is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
                 {
                     _Webcamcom.ProfileManagerAdded -= Webcam_ProfileManagerAdded;
                     _Webcamcom.IsMicEnumerationOnChanged -= Webcam_IsMicEnumerationOnChanged;
@@ -7672,7 +7708,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             //_ = UnregisterEventsForAllWebcamsAsync();
             _ = UnregisterEventsForWebcamAsync(0);
-            _ = RegisterEventsForAllWebcamsAsync();
+            _ = RegisterEventsForAllConnectedWebcamsAsync();
 
             //SendDTPEventToUI($"3;Device:Webcam;Event:Disconnected;DeviceId:{e.DeviceId}");
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Disconnected", e.DeviceId));
