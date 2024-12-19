@@ -5,6 +5,7 @@ using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using System.ComponentModel;
 using Windows.System;
@@ -15,7 +16,7 @@ namespace DDPM.UI.Module.EzSettings
     {
         #region Private members
         //Recent Hotkey TextBox
-        private string _recentHotkey = "None";
+        private string _recentHotkey = LangHelper.Instance["None"];
         //ToggleSwitch IsChecked
         private bool _isWithoutGap = true;
         private bool _isOnlyAllowWhenShiftKeyPressed, _isSpanAcrossMultiMonitors, _isAwsEnabled = false;

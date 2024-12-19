@@ -114,6 +114,16 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                         }
                     }
                     DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+                    _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
+                    _vm.DetectPageShow(_vm.Model);
+                    if (!_vm.IsRestoreEnable)
+                    {
+                        btnRestore.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        btnRestore.Visibility = Visibility.Collapsed;
+                    }
                 }
             }
         }
@@ -167,7 +177,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             moduleGroup.AddHeader(AudioSettings, new HeadsetAudioSettingsModule(_vm!));
             groups.Add(moduleGroup);
 
-            if (_vm.Model != "WH5024" && _vm.Model != "WH3024")
+            if (_vm!.Model != "WH5024" && _vm.Model != "WH3024")
             {
                 moduleGroup = new ModuleGroup()
                 {
@@ -178,8 +188,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
                 groups.Add(moduleGroup);
             }
-            //if (!_vm.IsIlluminationSupported)
-            //{
+
             moduleGroup = new ModuleGroup()
             {
                 GroupName = DeviceSettings,
@@ -188,7 +197,6 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             };
             moduleGroup.AddHeader(DeviceSettings, new HeadsetDeviceSettingsModule(_vm!));
             groups.Add(moduleGroup);
-            //}
 
             _vm.ModuleGroups = groups;
         }

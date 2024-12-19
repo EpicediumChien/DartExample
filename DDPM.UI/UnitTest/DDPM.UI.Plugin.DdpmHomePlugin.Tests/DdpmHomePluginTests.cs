@@ -53,7 +53,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Tests
         [Test]
         public void TestHeaderText()
         {
-            Assert.That(ddpmHomePlugin.HeaderText, Is.EqualTo("DDPM Homepage"));
+            Assert.That(ddpmHomePlugin.HeaderText, Is.EqualTo("Homepage"));
         }
 
         [Test]

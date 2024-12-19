@@ -490,7 +490,12 @@ namespace NGA.ThickClient
                 //SetCursorPos(x, y);
                 //DoMouseClick();
             }
+            else if (WindowState == WindowState.Normal)
+            {
+
+            }
         }
+
 
         #region Workaround solution - Robert_Lin 2024-12-03, can be removed
         private void RefreshWindowTaskbar()

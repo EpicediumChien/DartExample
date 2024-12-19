@@ -8,21 +8,29 @@
              d:DesignHeight="60"
              d:DesignWidth="200">
     <Grid>
-    <Border x:Name="Border" CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+        <Border x:Name="Border" CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
                 Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" BorderBrush="#0DFFFFFF"
+                Background="{DynamicResource RightView_Header_BkColor}"
                 Margin="0" MouseLeftButtonDown="OnClick">
-      <UXControls:UXTextBlock x:Name="TabCaption" Text="{Binding Caption, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" FontSize="{Binding CaptionSize, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" FontFamily="Roboto" FontWeight="Light"
+            <UXControls:UXTextBlock x:Name="TabCaption" Text="{Binding Caption, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" FontSize="{Binding CaptionSize, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" FontFamily="Roboto" FontWeight="Light"
                                     Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center" />
-    </Border>
-    <Image x:Name="InfoIcon" Margin="0,8,8,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Fill" Visibility="Hidden"
+        </Border>
+        <Image x:Name="InfoIcon" Margin="0,8,8,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Fill" Visibility="Hidden"
                VerticalAlignment="Top" HorizontalAlignment="Right" Cursor="Hand" Width="16" Height="16">
-      <Image.ToolTip>
-        <ToolTip x:Name="toolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-          <TextBlock x:Name="txtToolTip" Style="{StaticResource TabInfoToolTipTextStyle}" Padding="12,12,12,6" MaxWidth="350" TextWrapping="Wrap" />
-        </ToolTip>
-      </Image.ToolTip>
-    </Image>
-  </Grid>
+            <Image.ToolTip>
+                <ToolTip x:Name="toolTip" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                        <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                        </Border.Resources>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Name="txtToolTip" Padding="12,12,12,6" MaxWidth="350" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+                </ToolTip>
+            </Image.ToolTip>
+        </Image>
+    </Grid>
 </UserControl>

@@ -63,7 +63,7 @@ namespace DDPM.UI.Module.WebCameraSettings
 
             if (!_vm.CurrentDeviceInfo.IsWindowsHelloSupported)
             {
-                
+
                 //bdrPrioritize.Visibility = Visibility.Collapsed;
                 _vm.bdrPrioritize_show = Visibility.Collapsed;
                 brdHello.Visibility = Visibility.Collapsed;
@@ -165,7 +165,7 @@ namespace DDPM.UI.Module.WebCameraSettings
         //  Jim add 20240628
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-           if (_vm != null && _vm.MediaCapture != null)
+            if (_vm != null && _vm.MediaCapture != null)
             {
                 if (_vm.MediaCapture.VideoDeviceController.Zoom.Capabilities.Supported)
                 {
@@ -226,26 +226,26 @@ namespace DDPM.UI.Module.WebCameraSettings
         }
 
         //  Jim add 20240702
-        private void AutofocusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            SetAutofocusLevel((float)AutofocusSlider.Value);
-        }
+        //private void AutofocusSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        //{
+        //    SetAutofocusLevel((float)AutofocusSlider.Value);
+        //}
 
-        private void SetAutofocusLevel(float level)
-        {
-            if (_vm != null && _vm.MediaCapture != null)
-            {
-                var autofocusControl = _vm.MediaCapture.VideoDeviceController.Focus;
+        //private void SetAutofocusLevel(float level)
+        //{
+        //    if (_vm != null && _vm.MediaCapture != null)
+        //    {
+        //        var autofocusControl = _vm.MediaCapture.VideoDeviceController.Focus;
 
-                // Make sure zoomFactor is within the valid range
-                level = Math.Max(Math.Min(level, (float)_vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Max), (float)_vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Min);
+        //        // Make sure zoomFactor is within the valid range
+        //        level = Math.Max(Math.Min(level, (float)_vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Max), (float)_vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Min);
 
-                // Make sure zoomFactor is a multiple of Step, snap to the next lower step
-                level -= (level % (float)_vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Step);
+        //        // Make sure zoomFactor is a multiple of Step, snap to the next lower step
+        //        level -= (level % (float)_vm.MediaCapture.VideoDeviceController.Focus.Capabilities.Step);
 
-                autofocusControl.TrySetValue(level);
-            }
-        }
+        //        autofocusControl.TrySetValue(level);
+        //    }
+        //}
 
         private void FOV_Click(object sender, MouseButtonEventArgs e)
         {
@@ -360,6 +360,23 @@ namespace DDPM.UI.Module.WebCameraSettings
         {
             _vm.MessageBoxVisibility = Visibility.Collapsed;
             _vm.OnPropertyChanged(nameof(_vm.MessageBoxVisibility));
+        }
+
+        private void Slider_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            _vm.IsSliderDragging = true;
+        }
+
+        private void ZoomSlider_KeyUp(object sender, KeyEventArgs e)
+        {
+            _vm.IsSliderDragging = false;
+            _vm.SetZoom();
+        }
+
+        private void AutofocusSlider_KeyUp(object sender, KeyEventArgs e)
+        {
+            _vm.IsSliderDragging = false;
+            _vm.SetFocus();
         }
     }
 }
