@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             d:Background="Black"
              d:DesignHeight="306" d:DesignWidth="544">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -20,10 +19,10 @@
         <Border Style="{StaticResource SplitCtrl_OutterBorder}" />
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="1*" />
                 <RowDefinition Height="2*" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
@@ -33,7 +32,7 @@
                     <TextBlock Grid.Row="1" Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}1}" Padding="4" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="12" HorizontalAlignment="Center" />
                 </Grid>
             </Grid>
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="3*" />
@@ -41,7 +40,7 @@
                 <Border Name="bdPip" Grid.Column="1"
                         Background="#204A82" BorderBrush="#E6AC28" BorderThickness="3"
                         CornerRadius="{StaticResource SplitItem_CornerRadius}" />
-                <Path Fill="#E6AC28" Grid.Column="1" Data="M8.56814 8.56986L8.39844 19.7139L19.7121 8.40016L8.56814 8.56986Z" MouseLeftButtonDown="PIP_PCSWAP" />
+                <Path Margin="0,8" HorizontalAlignment="Left" VerticalAlignment="Bottom" Fill="#E6AC28" Grid.Column="1" Data="M8.57084 14.0569L19.7148 14.2266L8.40114 2.91285L8.57084 14.0569Z" MouseLeftButtonDown="PIP_PCSWAP" />
                 <Grid Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />

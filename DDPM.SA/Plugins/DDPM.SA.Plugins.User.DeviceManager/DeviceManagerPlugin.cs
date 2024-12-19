@@ -33,6 +33,7 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UX.WPF.Controls;
 using DPeMPublic.Common.Enums;
+using IndiLogic.DPeM.Broker;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
@@ -6235,97 +6236,97 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<Dictionary<string, PCsInfo>> GetUSBKVMPCsList(MonitorInfo monitorInfo, Dictionary<string, InputInfo> inputList, List<InputSourceObj> subInputList)
         {
             Dictionary<string, PCsInfo> USBKVMPCsList = new Dictionary<string, PCsInfo>();
-            if (monitorInfo != null && inputList != null && subInputList != null)
-            {
-                if (inputList.Count != 0 && subInputList.Count != 0)
-                {
-                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                }
-                else
-                {
-                    writelog("[GetUSBKVMPCsList]inputList or subInputList count is 0");
-                }
-            }
-            else
-            {
-                writelog("[GetUSBKVMPCsList]monitorInfo or inputList or subInputList is null");
-            }
-            //if (inputList != null && subInputList != null)
+            //if (monitorInfo != null && inputList != null && subInputList != null)
             //{
-            //    if (GetOnUSBKVM(monitorInfo).Result)
+            //    if (inputList.Count != 0 && subInputList.Count != 0)
             //    {
-            //        //get monitor settings
-            //        List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-            //        if (settings != null)
-            //        {
-            //            //get monitor setting
-            //            DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
-            //            if (monitorSetting == null)
-            //            {
-            //                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-            //                //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
-            //            }
-            //            else
-            //            {
-            //                try
-            //                {
-            //                    if (!string.IsNullOrEmpty(monitorSetting.KVM.strUSBKVMPCsList))
-            //                    {
-            //                        USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
-            //                        if (USBKVMPCsList != null)
-            //                        {
-            //                            if (USBKVMPCsList.Count > 1)
-            //                            {
-            //                                foreach (var pc in USBKVMPCsList)
-            //                                {
-            //                                    if (string.IsNullOrEmpty(pc.Key) || pc.Value == null)
-            //                                    {
-            //                                        USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-            //                                        break;
-            //                                    }
-            //                                    else
-            //                                    {
-            //                                        string usbUpstream = GetUSBUpstream(monitorInfo, pc.Value.InputType).Result;
-            //                                        if (string.IsNullOrEmpty(usbUpstream))
-            //                                        {
-            //                                            writelog("[GetUSBKVMPCsList]usbUpstream is null or empty.");
-            //                                        }
-            //                                        else
-            //                                        {
-            //                                            pc.Value.USBUpstream = usbUpstream;
-            //                                        }
-            //                                    }
-            //                                }
-            //                            }
-            //                            else
-            //                            {
-            //                                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-            //                            }
-            //                        }
-            //                    }
-            //                    else
-            //                    {
-            //                        USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-            //                        //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
-            //                    }
-            //                }
-            //                catch (Exception e)
-            //                {
-            //                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-            //                    //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
-            //                }
-            //            }
-            //        }
+            //        USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
             //    }
             //    else
             //    {
-            //        USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+            //        writelog("[GetUSBKVMPCsList]inputList or subInputList count is 0");
             //    }
             //}
             //else
             //{
-            //    writelog("[GetUSBKVMPCsList]inputList or subInputList is null");
+            //    writelog("[GetUSBKVMPCsList]monitorInfo or inputList or subInputList is null");
             //}
+            if (inputList != null && subInputList != null)
+            {
+                if (GetOnUSBKVM(monitorInfo).Result)
+                {
+                    //get monitor settings
+                    List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+                    if (settings != null)
+                    {
+                        //get monitor setting
+                        DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
+                        if (monitorSetting == null)
+                        {
+                            USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                            //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
+                        }
+                        else
+                        {
+                            try
+                            {
+                                if (!string.IsNullOrEmpty(monitorSetting.KVM.strUSBKVMPCsList))
+                                {
+                                    USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
+                                    if (USBKVMPCsList != null)
+                                    {
+                                        if (USBKVMPCsList.Count > 1)
+                                        {
+                                            foreach (var pc in USBKVMPCsList)
+                                            {
+                                                if (string.IsNullOrEmpty(pc.Key) || pc.Value == null)
+                                                {
+                                                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                                                    break;
+                                                }
+                                                else
+                                                {
+                                                    string usbUpstream = GetUSBUpstream(monitorInfo, pc.Value.InputType).Result;
+                                                    if (string.IsNullOrEmpty(usbUpstream))
+                                                    {
+                                                        writelog("[GetUSBKVMPCsList]usbUpstream is null or empty.");
+                                                    }
+                                                    else
+                                                    {
+                                                        pc.Value.USBUpstream = usbUpstream;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                                    //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                                //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                }
+            }
+            else
+            {
+                writelog("[GetUSBKVMPCsList]inputList or subInputList is null");
+            }
 
             return Task.FromResult(USBKVMPCsList);
         }
@@ -9706,10 +9707,60 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region GlobalSetting
-
+        Object obj = null;
+        int count = 0;
         public Task<GlobalSettingParam> GetGlobalSettingParam()
         {
+            FirstGetDPeMSettings();
             return Task.FromResult(_GlobalSettingParam);
+        }
+
+        private void FirstGetDPeMSettings()
+        {
+            try
+            {
+                if (!_GlobalSettingParam.isSetTelemetryOverInstaller)
+                {
+                    DDPMSettings settings = _SettingsPlugin.ReloadAppConfigData().Result;
+                    if (!settings.UserSettings.isDisplayConsentPage)
+                    {
+                        writelog($"[DeviceMangerPlugin] GetFirstReadStatus");
+                        bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", true).Result;
+                    }
+                }
+            }
+            catch (Exception ex) 
+            {
+                writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Exception:{ex.Message}...");
+            }
+        }
+
+        public async Task<bool> CheckInstallFirstOpen()
+        {
+            var ReadReg = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen").Result;
+            writelog($"[DeviceMangerPlugin] ReadReg Status {ReadReg} And {ReadReg.GetType()}");
+            Boolean.TryParse(ReadReg.ToString(), out var getRegValue);
+            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady())
+            {
+                count++;
+                writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Count:{count}...");
+                GetDPeMGlobalSettings();
+                obj = new Object();
+                return true;
+            }
+            return false;
+        }
+
+        private void GetDPeMGlobalSettings()
+        {
+            _GlobalSettingParam.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State = GetIsPresenceDetectionSensnorStateNotificationsEnabledValue().Result;
+            _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level = GetIsBatteryNotificationsEnabledValue().Result;
+            _GlobalSettingParam.GlobalSetting_General.Keyboard_Lock_Key = GetIsLockKeyNotificationsEnabledValue().Result;
+            _GlobalSettingParam.GlobalSetting_General.Display_MuteState = GetIsMuteStatusNotificationsEnabledValue().Result;
+            _GlobalSettingParam.isTelemetryConsentOn = GetIsAnalyticsEnabledValue().Result;
+            _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget = GetIsQuickAccessMenuEnabledValue().Result;
+            _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder = GetIsQuickAccessMenuOSDEnabledValue().Result;
+            bool regOK=WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", false).Result;
         }
 
         public Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay)
@@ -10585,64 +10636,71 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog($"CallQAM_UI: Start");
 
-            if (_QAM == null)
+            try
             {
-                //writelog($"CallQAM_UI: Go");
-                //List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
-                //writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
-                //if (deviceInfos.Count == 1)
+                if (_QAM == null)
                 {
-                    writelog($"CallQAM_UI: have Webcam show QAM");
-
-                    Thread threadQAM = new Thread(() =>
+                    //writelog($"CallQAM_UI: Go");
+                    //List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
+                    //writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
+                    //if (deviceInfos.Count == 1)
                     {
-                        _QAM = new QAMPage(deviceMangerPlugin, Log);
-                        _QAM.Closed += QAMCloseEvent;
+                        writelog($"CallQAM_UI: have Webcam show QAM");
 
-                        //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
-                        if (QAM_Position.X != 0 && QAM_Position.Y != 0)
+                        Thread threadQAM = new Thread(() =>
                         {
-                            _QAM.Top = QAM_Position.Y;
-                            _QAM.Left = QAM_Position.X;
-                        }
-                        else
-                        {
-                            float scaleFactorX = 1;
-                            float scaleFactorY = 1;
+                            _QAM = new QAMPage(deviceMangerPlugin, Log);
+                            _QAM.Closed += QAMCloseEvent;
 
-                            using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
+                            //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
+                            if (QAM_Position.X != 0 && QAM_Position.Y != 0)
                             {
-                                float dpiX = graphics.DpiX;
-                                float dpiY = graphics.DpiY;
-                                float logicalDpi = 96.0f;
-                                scaleFactorX = dpiX / logicalDpi;
-                                scaleFactorY = dpiY / logicalDpi;
+                                _QAM.Top = QAM_Position.Y;
+                                _QAM.Left = QAM_Position.X;
+                            }
+                            else
+                            {
+                                float scaleFactorX = 1;
+                                float scaleFactorY = 1;
+
+                                using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
+                                {
+                                    float dpiX = graphics.DpiX;
+                                    float dpiY = graphics.DpiY;
+                                    float logicalDpi = 96.0f;
+                                    scaleFactorX = dpiX / logicalDpi;
+                                    scaleFactorY = dpiY / logicalDpi;
+                                }
+
+                                _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
+                                _QAM.Left = 0;
                             }
 
-                            _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
-                            _QAM.Left = 0;
-                        }
+                            _QAM.Dispatcher.Invoke(() => _QAM.Show());
+                            Dispatcher.Run();
+                        });
 
-                        _QAM.Dispatcher.Invoke(() => _QAM.Show());
-                        Dispatcher.Run();
-                    });
-
-                    threadQAM.SetApartmentState(ApartmentState.STA);
-                    threadQAM.Start();
+                        threadQAM.SetApartmentState(ApartmentState.STA);
+                        threadQAM.Start();
+                    }
                 }
+                else
+                {
+                    //_QAM.Show();
+                    _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
+                    //Dispatcher.Run(); //may block the process Derek 1219
+                }
+
+                //close DDPM UI
+                //CloseDDPM();  //Derek 1209
+
+                //close OSD
+                CloseQAMOSD();
             }
-            else
+            catch (Exception e)
             {
-                //_QAM.Show();
-                _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
-                Dispatcher.Run();
+                writelog($"CallQAM_UI catch exception {e.Message}");
             }
-
-            //close DDPM UI
-            //CloseDDPM();  //Derek 1209
-
-            //close OSD
-            CloseQAMOSD();
 
             writelog($"CallQAM_UI: done");
 
@@ -16693,5 +16751,278 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #endregion
+
+        #region globalperipheral
+        public async Task<bool> GetIsLockKeyNotificationsEnabledValue()
+        {
+            writelog($"Get IsLockKeyNotificationsEnabled Fun");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsLockKeyNotificationsEnabledValue();
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsLockKeyNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsLockKeyNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsLockKeyNotificationsEnabledValue failed - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsBatteryNotificationsEnabledValue()
+        {
+            writelog($"Get IsBatteryNotificationsEnabled Fun");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsBatteryNotificationsEnabledValue();
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsBatteryNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsBatteryNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsBatteryNotificationsEnabledValue failed - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsPresenceDetectionSensnorStateNotificationsEnabledValue()
+        {
+            writelog($"Get GetIsPresenceDetectionSensnorStateNotificationsEnabledValue Fun");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsPresenceDetectionSensnorStateNotificationsEnabledValue();
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsPresenceDetectionSensnorStateNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsPresenceDetectionSensnorStateNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsPresenceDetectionSensnorStateNotificationsEnabledValue failed - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsAnalyticsEnabledValue()
+        {
+            writelog($"Get GetIsAnalyticsEnabledValue Fun");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsAnalyticsEnabledValue();
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsAnalyticsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsAnalyticsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsAnalyticsEnabledValue failed - Exception: {ex.Message}");
+                return false;
+            }
+
+        }
+
+        public async Task<bool> GetIsQuickAccessMenuEnabledValue()
+        {
+            writelog($"Get GetIsQuickAccessMenuEnabledValue Fun");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsQuickAccessMenuEnabledValue();
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuEnabledValue failed - Exception: {ex.Message}");
+                return false;
+            }
+
+        }
+
+        public async Task<bool> GetIsMuteStatusNotificationsEnabledValue()
+        {
+            writelog($"Get GetIsMuteStatusNotificationsEnabledValue Fun");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsMuteStatusNotificationsEnabledValue();
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsMuteStatusNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsMuteStatusNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsMuteStatusNotificationsEnabledValue failed - Exception: {ex.Message}");
+                return false;
+            }
+
+        }
+
+        public async Task<bool> GetIsQuickAccessMenuOSDEnabledValue()
+        {
+            writelog($"Get GetIsQuickAccessMenuOSDEnabledValue Fun");
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsQuickAccessMenuOSDEnabledValue();
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuOSDEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuOSDEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuOSDEnabledValue failed - Exception: {ex.Message}");
+                return false;
+            }
+
+        }
+
+        public async Task<bool> SetIsLockKeyNotificationsEnabledValue(bool newValue)
+        {
+            writelog($"Set SetIsLockKeyNotificationsEnabledValue Fun");
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetIsLockKeyNotificationsEnabledValue(newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsLockKeyNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsLockKeyNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsLockKeyNotificationsEnabledValue failed, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsBatteryNotificationsEnabledValue(bool newValue)
+        {
+            writelog($"Set SetIsBatteryNotificationsEnabledValue Fun");
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetIsBatteryNotificationsEnabledValue(newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsBatteryNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsBatteryNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsBatteryNotificationsEnabledValue failed, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsPresenceDetectionSensnorStateNotificationsEnabledValue(bool newValue)
+        {
+            writelog($"Set SetIsPresenceDetectionSensnorStateNotificationsEnabledValue Fun");
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetIsPresenceDetectionSensnorStateNotificationsEnabledValue(newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsPresenceDetectionSensnorStateNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsPresenceDetectionSensnorStateNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsPresenceDetectionSensnorStateNotificationsEnabledValue failed, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsAnalyticsEnabledValue(bool newValue)
+        {
+            writelog($"Set SetIsAnalyticsEnabledValue Fun");
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetIsAnalyticsEnabledValue(newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsAnalyticsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsAnalyticsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsAnalyticsEnabledValue failed , Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsQuickAccessMenuEnabledValue(bool newValue)
+        {
+            writelog($"Set SetIsQuickAccessMenuEnabledValue Fun");
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetIsQuickAccessMenuEnabledValue(newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsQuickAccessMenuEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsQuickAccessMenuEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsQuickAccessMenuEnabledValue failed , Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsMuteStatusNotificationsEnabledValue(bool newValue)
+        {
+            writelog($"Set SetIsMuteStatusNotificationsEnabledValue Fun");
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetIsMuteStatusNotificationsEnabledValue(newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsMuteStatusNotificationsEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsMuteStatusNotificationsEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsMuteStatusNotificationsEnabledValue failed , Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetIsQuickAccessMenuOSDEnabledValue(bool newValue)
+        {
+            writelog($"Set SetIsQuickAccessMenuOSDEnabledValue Fun");
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetIsQuickAccessMenuOSDEnabledValue(newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsQuickAccessMenuOSDEnabledValue Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsQuickAccessMenuOSDEnabledValue Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Globalperipheral] SetIsQuickAccessMenuOSDEnabledValue failed , Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        #endregion globalperipheral
     }
 }
