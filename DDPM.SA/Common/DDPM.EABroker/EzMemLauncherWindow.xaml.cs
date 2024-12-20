@@ -35,12 +35,21 @@ namespace DDPM.EABroker
     /// </summary>
     public partial class EzMemLauncherWindow : Window
     {
-        [DllImport("user32.dll", SetLastError = true)]
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId);
+        private static extern int GetWindowThreadProcessId(IntPtr hWnd, StringBuilder strText, int maxCount);
+        public static int _GetWindowThreadProcessId(IntPtr hWnd, StringBuilder strText, int maxCount)
+        {
+            return GetWindowThreadProcessId(hWnd, strText, maxCount);
+        }
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool IsWindowVisible(IntPtr hWnd);
+        public static bool _IsWindowVisible(IntPtr hWnd)
+        {
+            return IsWindowVisible(hWnd);
+        }
 
         #region Private members
         private const string myName = "EzMemLauncherWin";
@@ -346,59 +355,10 @@ namespace DDPM.EABroker
 
             return string.Empty;
         }
-        //public static string NormalizePath(string path)
-        //{
-        //    if (string.IsNullOrWhiteSpace(path))
-        //        throw new ArgumentException("Path cannot be null or empty.");
-        //    string tt = System.IO.Path.GetFullPath(path);
-        //    string normalizedPath = path.Remove(\);
-        //    return normalizedPath;
-        //}
-        public string CustomReplace(string input, string oldValue, string newValue)
-        {
-            if (input == null)
-                throw new ArgumentNullException(nameof(input), "Input string cannot be null.");
-            if (oldValue == null)
-                throw new ArgumentNullException(nameof(oldValue), "Old value cannot be null.");
-            if (oldValue == string.Empty)
-                throw new ArgumentException("Old value cannot be an empty string.", nameof(oldValue));
-
-            var result = new System.Text.StringBuilder();
-            int startIndex = 0;
-            int matchIndex;
-
-            while ((matchIndex = input.IndexOf(oldValue, startIndex, StringComparison.Ordinal)) != -1)
-            {
-
-                result.Append(input, startIndex, matchIndex - startIndex);
-
-                result.Append(newValue);
-
-                startIndex = matchIndex + oldValue.Length;
-            }
-
-            result.Append(input, startIndex, input.Length - startIndex);
-
-            return result.ToString();
-        }
-        /// <summary>
-        /// Get before space string
-        /// </summary>
-        /// <param name="input">string</param>
-        /// <returns></returns>
-        private static string GetFirstWord(string input)
-        {
-            if (string.IsNullOrWhiteSpace(input))
-                return string.Empty;
-
-            string[] words = input.Trim().Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
-
-            return words.Length > 0 ? words[0] : string.Empty;
-        }
 
         private static string GetFilePathFromHandle(IntPtr hWnd)
         {
-            GetWindowThreadProcessId(hWnd, out uint processId);
+            _GetWindowThreadProcessId(hWnd, out uint processId);
 
             if (processId == 0)
             {
@@ -423,10 +383,9 @@ namespace DDPM.EABroker
 
             EnumWindows((hWnd, lParam) =>
             {
-                if (IsWindowVisible(hWnd) && GetWindowTitle(hWnd).Length > 0)
+                if (_IsWindowVisible(hWnd) && GetWindowTitle(hWnd).Length > 0)
                 {
                     windowHandles.Add(hWnd);
-                    Console.WriteLine($"Handle: {hWnd}, Title: {GetWindowTitle(hWnd)}");
                 }
                 return true; // Continue enumeration
             }, IntPtr.Zero);
@@ -442,7 +401,7 @@ namespace DDPM.EABroker
         }
         public static IntPtr _GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId)
         {
-            return GetWindowThreadProcessId(hWnd, out nProcessId);
+            return _GetWindowThreadProcessId(hWnd, out nProcessId);
         }
         private bool IsHandleBelongsToApp(IntPtr handle, string expectedAppName, ILog? log = null)
         {
@@ -458,33 +417,6 @@ namespace DDPM.EABroker
                 log?.Info($"[{myName}] IsHandleBelongsToApp, Exception : {ex.Message}");
                 return false;
             }
-        }
-
-        private static Process[] GetProcessesByName(Bind_AddFullPage_AppCollectionData appData, ILog? log = null)
-        {
-            Process[] processes = Array.Empty<Process>();
-            try
-            {
-                if (appData.AppType == "False")
-                {
-                    // UWP 
-                    processes = Process.GetProcessesByName(appData.AppUserModelID);
-                    log?.Info($"[{myName}] GetProcessesByName, UWP app {appData.AppName} process count: {processes.Length}");
-                }
-                else
-                {
-                    // Desktop
-                    processes = Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(appData.AppPath));
-                    log?.Info($"[{myName}] GetProcessesByName, Desktop app {appData.AppName} process count: {processes.Length}");
-                }
-            }
-            catch (Exception ex)
-            {
-                log?.Error(ex,
-                    $"[{myName}] GetProcessesByName({appData.AppName}), UWP app exceptoin.");
-            }
-
-            return processes;
         }
 
         private static Process LaunchApp(Bind_AddFullPage_AppCollectionData appData, ILog? log = null)
@@ -516,19 +448,6 @@ namespace DDPM.EABroker
                     log?.Info($"[{myName}] LaunchApp, Launching desktop app or file: {appData.AppName}");
                     process = Process.Start(startInfo);
                 }
-
-                //if (process != null)
-                //{
-                //    if (!appData.AppPath.EndsWith(".png") && !appData.AppPath.EndsWith(".jpg") && !appData.AppPath.EndsWith(".txt"))
-                //    {
-                //        process.WaitForInputIdle();
-                //        log?.Info($"[{myName}] LaunchApp, App {appData.AppName} is now idle.");
-                //    }
-                //}
-                //else
-                //{
-                //    log?.Error($"[{myName}] LaunchApp, Failed to launch app or file: {appData.AppName}");
-                //}
             }
             catch (Exception ex)
             {
