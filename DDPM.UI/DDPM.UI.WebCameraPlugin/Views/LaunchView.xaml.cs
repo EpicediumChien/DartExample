@@ -217,7 +217,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //因為需要處理PresenceDetection分頁是否出現判斷,改變呼叫順序
             check_PresenceFunction();
             BuildModuleGroups();
-            initResolutionFPS();
+            //initResolutionFPS();
             //usb 2.0限制規則要放在最後做校正
             CheckUSBtype();
 
@@ -920,6 +920,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         if (!_vm.hdr_change)
                         {
                             _vm.AlertType = WebcamAlert.Alert2;
+                            _vm.IsResolutionSectionEnable = false;
+                            _vm.OnPropertyChanged(nameof(_vm.IsResolutionSectionEnable));
                             _vm.AlertVisibility = Visibility.Visible;
                         }
                     });
@@ -1095,6 +1097,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 before_height = (int)mediaFrameSource.CurrentFormat.VideoFormat.Height;
 
                 _vm.AlertVisibility = Visibility.Hidden;
+                _vm.IsResolutionSectionEnable = true;
+                _vm.OnPropertyChanged(nameof(_vm.IsResolutionSectionEnable));
+
             }
             catch (Exception Exc)
             {

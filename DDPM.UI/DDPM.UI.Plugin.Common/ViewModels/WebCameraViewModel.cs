@@ -521,8 +521,8 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             Resolution_IsSelected[index] = true;
             WebcamSettings.SelectedResolution = _resolutions[index];
-            if (!WebcamSettings.SelectedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
-            { WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][0]); }
+            //if (!WebcamSettings.SelectedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+            //    WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, "30");
             WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             OnPropertyChanged(nameof(Resolution_IsSelected));
         }
@@ -717,6 +717,12 @@ namespace DDPM.UI.Plugin.ViewModels
             SetResolution_Selected(i);
             var j = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution]);
             SetFPS_Selected(j);
+            foreach (var sf in WebcamSettings.SelectedFPSs)
+            {
+                if (sf.Key != WebcamSettings.SelectedResolution)
+                    WebcamSettings.SelectedFPSs[sf.Key] = "30";
+            }
+            IsResolutionSectionEnable = true;
 
             if (CurrentDeviceInfo.IsWindowsHelloSupported)
             {
@@ -920,6 +926,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool IsNotRecording { get => !IsRecording; }
         public bool IsFPS1Enable { get => !IsRecording && !(IsAutoFramingOn && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 1 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][1] == "60"); }
         public bool IsFPS2Enable { get => !IsRecording && !(IsAutoFramingOn && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 2 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][2] == "60"); }
+        public bool IsResolutionSectionEnable { get; set; } = true;
 
         public int btnRes0_width { get; set; }
         public int btnRes1_width { get; set; }

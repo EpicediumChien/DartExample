@@ -78,6 +78,7 @@ namespace DDPM.UI.Common
                         _ => "8K UHD"
                     };
                     SupportedFPSs.Add(resName, res.Value.FPS);
+                    SelectedFPSs.Add(resName, "30");
                     Resolutions.Add(resName, res.Value.Resolution);
                 }
                 task = DdpmCommonHelper.DeviceManagerSA!.GetSelectedResolution(di.ID.ToString());
@@ -88,11 +89,10 @@ namespace DDPM.UI.Common
                     str = di.SelectedResolution;
                 }
                 if (string.IsNullOrEmpty(str))
-                    str = "{\"Resolution\":\"1280x720\",\"FPS\":[\"24\"]}";
+                    str = "{\"Resolution\":\"1280x720\",\"FPS\":[\"30\"]}";
 
-                var currentRes = JsonConvert.DeserializeObject<ResolutionItem>(task.Result)!;
+                var currentRes = JsonConvert.DeserializeObject<ResolutionItem>(str)!;
                 SelectedResolution = Resolutions.FirstOrDefault(x => x.Value == currentRes.Resolution).Key;
-                SelectedFPSs.Add(SelectedResolution, currentRes.FPS[0]);
 
                 var customProfiles = di.CustomProfiles.ToObject<List<WebcamProfile>>()!.ToList();
                 //Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA!.GetCustomProfiles(di.ID.ToString());
