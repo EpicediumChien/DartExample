@@ -7627,6 +7627,75 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        private async Task<bool> RegisterEventsForWebcamAsync(string deviceID)
+        {
+            if (null == _comdityWebcam || deviceID == null || deviceID == string.Empty)
+            {
+                writelog($"null == _comdityWebcam || deviceID == null || deviceID == string.Empty");
+
+                return false;
+            }
+
+            try
+            {
+                if (_comdityWebcam is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _WebcamComObj)
+                {
+                    writelog($"connected _WebcamComObj.DeviceItems = {_WebcamComObj.DeviceItems.Length}");
+                        
+                    int i = 0;
+                    foreach (var item in _WebcamComObj.DeviceItems)
+                    {
+                        //output:
+                        //DellPeripheral.Webcam.0
+                        writelog($"connected _WebcamComObj.DeviceItems[{i}] = {item}");
+
+                        //output:
+                        //"{
+                        //DeviceName": "Dell Pro 24 Plus Video Conferencing Monitor",
+                        //"DeviceId": "36ce653b-7a0f-4c85-97f7-aad029cceeb2",
+                        //"ModelNumber": "P2424HEB"
+                        //}
+                        string jsonStr = _WebcamComObj.DeviceItemsEx[i].ToString();
+                        writelog($"connected _WebcamComObj.DeviceItems = {jsonStr}");
+
+                        WebcamEventHandleObject jsonObject = JsonSerializer.Deserialize<WebcamEventHandleObject>(jsonStr)!;
+
+                        if (jsonObject != null && jsonObject.DeviceId == deviceID)
+                        {
+                            writelog($"jsonObject values: {item}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+
+                            ICommodity _comdityWebcamTmp = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId(item), CancellationToken.None);
+
+                            if (RegisterEventsForWebcam(_comdityWebcamTmp))
+                            {
+                                jsonObject.webcamIndex = item;
+                                jsonObject.webcamCommodity = _comdityWebcamTmp;
+                                webcamList.Add(jsonObject);
+
+                                writelog($"Webcam{deviceID} Commodity events registered successfully");
+
+                                return true;
+                            }
+                            else
+                            {
+                                writelog($"Webcam{deviceID} Commodity events registered fail");
+
+                                return false;
+                            }
+                        }   
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Webcam{deviceID} RegisterEventsForWebcamAsync Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
         private bool UnregisterEventsForWebcam(WebcamEventHandleObject obj)
         {
             if (obj.webcamCommodity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
@@ -8233,12 +8302,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_Connected(object sender, ConnectedArgs e)
         {
-            Task<int> webcams = GetWebcamDevsCountAsync();
-            bool result = RegisterEventsForWebcamAsync(webcams.Result - 1).Result;
+            //Task<int> webcams = GetWebcamDevsCountAsync();
+            //bool result = RegisterEventsForWebcamAsync(webcams.Result - 1).Result;
+            bool result = RegisterEventsForWebcamAsync(e.DeviceId).Result;
 
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Connected", e.DeviceId));
 
-            writelog($"Catch event _Webcam_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcam_Connected, register events result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private string CreateEventMsg(string devType, string eventType, string devID, string eventContent = "NewValue:NoContent")
