@@ -8293,7 +8293,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             //_ = UnregisterEventsForAllWebcamsAsync();
             //_ = UnregisterEventsForWebcamAsync(0);
             //_ = RegisterEventsForAllConnectedWebcamsAsync();
-            bool result = UnregisterEventsForWebcamAsync(e.DeviceId).Result;
+            Task<bool> result = UnregisterEventsForWebcamAsync(e.DeviceId);
 
             //SendDTPEventToUI($"3;Device:Webcam;Event:Disconnected;DeviceId:{e.DeviceId}");
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Disconnected", e.DeviceId));
@@ -8305,7 +8305,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             //Task<int> webcams = GetWebcamDevsCountAsync();
             //bool result = RegisterEventsForWebcamAsync(webcams.Result - 1).Result;
-            bool result = RegisterEventsForWebcamAsync(e.DeviceId).Result;
+            Task<bool> result = RegisterEventsForWebcamAsync(e.DeviceId);
 
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Connected", e.DeviceId));
 
