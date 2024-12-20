@@ -264,13 +264,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
         }
 
-        public async Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken token)
+        public async Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken Token)
         {
             try
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Re_GetMonitors requested ...");
 
-                _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.Re_GetMonitors(token).Result);
+                _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.Re_GetMonitors(Token).Result);
 
                 InitializeAllALSInfo();
 
@@ -323,15 +323,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(result);
         }
 
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string funName, int opt = 0)
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, int opt = 0)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetVCPCapability requested ...");
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
-            _logs.DebugMsg("[DisplayMangerPlugin] VcpCode is " + funName);
+            _logs.DebugMsg("[DisplayMangerPlugin] VcpCode is " + FunctionName);
             _logs.DebugMsg("[DisplayMangerPlugin] opt is " + opt.ToString());
 
-            ObjGetVCP result = _VcpCorePlugin.GetVCPCapability(monitorInfo, funName, opt).Result;
+            ObjGetVCP result = _VcpCorePlugin.GetVCPCapability(monitorInfo, FunctionName, opt).Result;
 
             return Task.FromResult(result);
         }
@@ -349,17 +349,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(r);
         }
 
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, string FuntionName, string val)
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received SetVCPCapability requested ...");
-            _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
-            _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
-            _logs.DebugMsg("[DisplayMangerPlugin] FunctionName is " + FuntionName);
+            _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfoX.DisplayName);
+            _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfoX.AliasDeviceName);
+            _logs.DebugMsg("[DisplayMangerPlugin] FunctionName is " + FunctionName);
             _logs.DebugMsg("[DisplayMangerPlugin] val is " + val);
 
-            bool r = _VcpCorePlugin.SetVCPCapability(monitorInfo, FuntionName, val).Result;
+            bool r = _VcpCorePlugin.SetVCPCapability(monitorInfoX, FunctionName, val).Result;
 
-            if (r && FuntionName == "Input Select")
+            if (r && FunctionName == "Input Select")
             {
                 _AllInfoMonitors = GetMonitors().Result;
             }
@@ -626,6 +626,27 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                             }
                                         }
                                         usbUpstreamList = inputTypeString.SubInputType(usbUpstreamList);
+
+                                        USBUpstream.Clear();
+                                        foreach (var _usb in usbUpstreamList)
+                                        {
+                                            if (_usb == "USB-B1" || _usb == "USB-B")
+                                            {
+                                                USBUpstream.Add(_usb, "00");
+                                            }
+                                            else if (_usb == "USB-B2")
+                                            {
+                                                USBUpstream.Add(_usb, "01");
+                                            }
+                                            else if (_usb == "USB-C1" || _usb == "USB-C")
+                                            {
+                                                USBUpstream.Add(_usb, "10");
+                                            }
+                                            else if (_usb == "USB-C2")
+                                            {
+                                                USBUpstream.Add(_usb, "11");
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -659,48 +680,56 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             ObjGetVCP objGetVCP = new ObjGetVCP();
             if (monitorInfo.CapabilityDic.ContainsKey("E7"))
             {
-                if (monitorInfo.CapabilityDic.ContainsKey("EE"))
+                usbUpstreamList = GetUSBUpstreamList(monitorInfo).Result;
+                if (usbUpstreamList != null && usbUpstreamList.Count > 0)
                 {
-                    usbUpstreamList = GetUSBUpstreamList(monitorInfo).Result;
-                    if (usbUpstreamList != null && usbUpstreamList.Count > 0)
+                    objGetVCP = GetVCPCapability(monitorInfo, 0xE7).Result;
+                    if (objGetVCP.result)
                     {
-                        objGetVCP = GetVCPCapability(monitorInfo, 0xE7).Result;
-                        if (objGetVCP.result)
+                        if (_getVCPCapabilities == string.Empty)
                         {
-                            if (_getVCPCapabilities == string.Empty)
+                            _getVCPCapabilities = GetVCPCapabilities(monitorInfo).Result;
+                        }
+                        if (!string.IsNullOrEmpty(_getVCPCapabilities))
+                        {
+                            JObject VCPjson = JObject.Parse(_getVCPCapabilities);
+
+                            JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
+                            JArray input = (JArray)capsDataMap["Input Select"];
+                            foreach (var tmp in input)
                             {
-                                _getVCPCapabilities = GetVCPCapabilities(monitorInfo).Result;
+                                if (tmp.ToString() == inputsource)
+                                {
+                                    break;
+                                }
+                                input_num = input_num + 1;
                             }
-                            if (!string.IsNullOrEmpty(_getVCPCapabilities))
+
+                            string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
+                            string newstrUpstream = getUpstream;
+                            if (getUpstream.Length < 16)
                             {
-                                JObject VCPjson = JObject.Parse(_getVCPCapabilities);
-
-                                JObject capsDataMap = (JObject)VCPjson["CapsDataMap"];
-                                JArray input = (JArray)capsDataMap["Input Select"];
-                                foreach (var tmp in input)
+                                for (int i = 0; i < (16 - getUpstream.Length); i++)
                                 {
-                                    if (tmp.ToString() == inputsource)
-                                    {
-                                        break;
-                                    }
-                                    input_num = input_num + 1;
+                                    newstrUpstream = "0" + newstrUpstream;
                                 }
-
-                                string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
-                                string newstrUpstream = getUpstream;
-                                if (getUpstream.Length < 16)
+                            }
+                            Trace.WriteLine(newstrUpstream);
+                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream : " + newstrUpstream);
+                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] input_num : " + input_num);
+                            if (newstrUpstream.Length == 16)
+                            {
+                                string subUpstream = string.Empty;
+                                if (monitorInfo.CapabilityDic.ContainsKey("EE"))
                                 {
-                                    for (int i = 0; i < (16 - getUpstream.Length); i++)
-                                    {
-                                        newstrUpstream = "0" + newstrUpstream;
-                                    }
+                                    subUpstream = newstrUpstream.Substring(input_num * 2, 2);
                                 }
-                                Trace.WriteLine(newstrUpstream);
-                                _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream : " + newstrUpstream);
-                                _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] input_num : " + input_num);
-                                if (newstrUpstream.Length == 16)
+                                else
                                 {
-                                    string subUpstream = newstrUpstream.Substring(input_num * 2, 2);
+                                    subUpstream = newstrUpstream.Substring(14 - (input_num * 2), 2);
+                                }
+                                if (!string.IsNullOrEmpty(subUpstream))
+                                {
                                     if (USBUpstream != null && USBUpstream.Count != 0)
                                     {
                                         foreach (var tmp in USBUpstream)
@@ -716,25 +745,25 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] USBUpstream is null or Count = 0");
                                     }
                                 }
-                                else
-                                {
-                                    _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream length is not 16");
-                                }
                             }
                             else
                             {
-                                _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] _getVCPCapabilities is null or empty.");
+                                _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] newstrUpstream length is not 16");
                             }
                         }
                         else
                         {
-                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] GetVCPCapability 0xE7 fail.");
+                            _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] _getVCPCapabilities is null or empty.");
                         }
                     }
                     else
                     {
-                        _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] usbUpstreamList is null or count = 0.");
+                        _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] GetVCPCapability 0xE7 fail.");
                     }
+                }
+                else
+                {
+                    _logs.DebugMsg("[DisplayMangerPlugin][GetUSBUpstream] usbUpstreamList is null or count = 0.");
                 }
             }
             return Task.FromResult("");
@@ -745,7 +774,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //inputSourcelist[input].USBUpstream = upstream;
             int input_num = 0;
             ObjGetVCP objGetVCP = new ObjGetVCP();
-            if (monitorInfo.CapabilityDic.ContainsKey("EE"))
+            if (monitorInfo.CapabilityDic.ContainsKey("E7"))
             {
                 objGetVCP = GetVCPCapability(monitorInfo, 0xE7).Result;
 
@@ -783,11 +812,24 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             }
                             if (USBUpstream != null && USBUpstream.Count != 0)
                             {
-                                string strsetUpstream = newstrUpstream.Substring(0, input_num * 2) + USBUpstream[upstream] + newstrUpstream.Substring((input_num + 1) * 2, newstrUpstream.Length - ((input_num + 1) * 2));
-                                uint code = Convert.ToUInt16(strsetUpstream, 2);
-                                Trace.WriteLine("strsetUpstream:" + code.ToString());
-                                bool b = SetVCPCapability(monitorInfo, 0xE7, code).Result;
-                                return Task.FromResult(b);
+                                string strsetUpstream = string.Empty;
+                                if (monitorInfo.CapabilityDic.ContainsKey("EE"))
+                                {
+                                    _logs.DebugMsg("[DisplayMangerPlugin][SetUSBUpstream] 0xEE.");
+                                    strsetUpstream = newstrUpstream.Substring(0, input_num * 2) + USBUpstream[upstream] + newstrUpstream.Substring((input_num + 1) * 2, newstrUpstream.Length - ((input_num + 1) * 2));
+                                }
+                                else
+                                {
+                                    Trace.WriteLine("input_num:" + input_num.ToString());
+                                    strsetUpstream = newstrUpstream.Substring(0, newstrUpstream.Length - ((input_num + 1) * 2)) + USBUpstream[upstream] + newstrUpstream.Substring(newstrUpstream.Length - (input_num * 2));
+                                }
+                                if (!string.IsNullOrEmpty(strsetUpstream))
+                                {
+                                    uint code = Convert.ToUInt16(strsetUpstream, 2);
+                                    Trace.WriteLine("strsetUpstream:" + code.ToString());
+                                    bool b = SetVCPCapability(monitorInfo, 0xE7, code).Result;
+                                    return Task.FromResult(b);
+                                }
                             }
                             else
                             {
@@ -993,7 +1035,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// <param name="type">ALSFeatureQueryType</param>
         /// <param name="val">value</param>
         /// <returns></returns>
-        public Task<ALSConfig> GetALSFeatureValue(MonitorInfo monitorInfos, ALSFeatureQueryType type, int val)
+        public Task<ALSConfig> GetALSFeatureValue(MonitorInfo monitorInfos, ALSFeatureQueryType type, int value)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] GetALSFeatureValue ... in");
             if (type != ALSFeatureQueryType.MMS)
@@ -1381,15 +1423,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// Update Connected ALS Config
         /// </summary>
         /// <returns>Return List<ALSConfig> type</returns>
-        public Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfoMain)
+        public Task<List<ALSConfig>> UpdateExistAlsConfig(List<MonitorInfo> monitorInfos)
         {
             try
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] UpdateExistAlsConfig ... in");
                 List<ALSConfig> als_connecte = new List<ALSConfig>();
-                for (int i = 0; i < monitorInfoMain.Count; i++)
+                for (int i = 0; i < monitorInfos.Count; i++)
                 {
-                    ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(monitorInfoMain[i].edid));// && x.serialNumber.ToUpper().Equals(monitorInfoMain[i].edid.SerialNumber.ToUpper()));
+                    ALSConfig aconfig = AllALSConfig.Find(x => x.Edid.Equals(monitorInfos[i].edid));// && x.serialNumber.ToUpper().Equals(monitorInfos[i].edid.SerialNumber.ToUpper()));
                     if (aconfig != null)
                     {
                         _logs.DebugMsg($"[DisplayMangerPlugin]UpdateExistAlsConfig aconfig " + aconfig.DisplayName.ToString() + " || " + aconfig.serialNumber.ToString());
@@ -2926,7 +2968,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(bools.ToList());
         }
 
-        public Task<string> GetOSDOrientation(MonitorInfo monitorInfo)
+        public Task<string> GetOSDOrientation(MonitorInfo monitorInfos)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] GetOSDOrientation start");
             int count = 0;
@@ -2934,7 +2976,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg($"[DisplayMangerPlugin] GetOSDOrientation GetVCPCapability go");
             do
             {
-                ObjGetVCP = GetVCPCapability(monitorInfo, 0xAA).Result;
+                ObjGetVCP = GetVCPCapability(monitorInfos, 0xAA).Result;
                 count++;
             } while (ObjGetVCP.result != true && count < 3);
             _logs.DebugMsg($"[DisplayMangerPlugin] GetOSDOrientation ObjGetVCP.result :{ObjGetVCP.result}");
@@ -2952,24 +2994,24 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult("");
         }
 
-        public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string orientation)
+        public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfos, string Orientation)
         {
             bool? ret = null;
             _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation start");
-            _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation orientation : {orientation}");
-            if (monitorInfo != null && !string.IsNullOrEmpty(orientation))
+            _logs.DebugMsg($"[DisplayMangerPlugin] SetOSDOrientation orientation : {Orientation}");
+            if (monitorInfos != null && !string.IsNullOrEmpty(Orientation))
             {
                 _logs.DebugMsg($"[DisplayMangerPlugin] IsSupportWriteOSDOrientation go");
-                if (IsSupportWriteOSDOrientation(monitorInfo.CapabilityString) == true)
+                if (IsSupportWriteOSDOrientation(monitorInfos.CapabilityString) == true)
                 {
                     ret = false;
                     for (int i = 1; i < OrientationString.Length; i++)
                     {
-                        if (orientation.ToUpper().Equals(OrientationString[i].ToUpper()))
+                        if (Orientation.ToUpper().Equals(OrientationString[i].ToUpper()))
                         {
                             _logs.DebugMsg($"[DisplayMangerPlugin] SetVCPCapability go");
                             _logs.DebugMsg($"[DisplayMangerPlugin] SetVCPCapability(monitorInfo, 0xAA, {(uint)(i & 0xFFFF)})");
-                            ret = SetVCPCapability(monitorInfo, 0xAA, (uint)(i & 0xFFFF)).Result;
+                            ret = SetVCPCapability(monitorInfos, 0xAA, (uint)(i & 0xFFFF)).Result;
                         }
                     }
                 }

@@ -1138,7 +1138,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             bool blRet = true;
 
-            var rt = false;
+            var rt = false; 
             var Displaysettings_Function = new Displaysettings_Function();
 
             if (!string.IsNullOrEmpty(NightLightStatus))
@@ -1154,7 +1154,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(blRet);
         }
 
-        public Task<bool> Send_NightLightschedulerStatus_Telementry_SA(MonitorInfo m, string NightLightschedulerStatus)
+        public Task<bool> Send_NightLightschedulerStatus_Telementry_SA(MonitorInfo m, string NightLightStatus)
         {
             writelog("DeviceManagerPlugin received Send_NightLightschedulerStatus_Telementry_SA requested ...");
 
@@ -1163,10 +1163,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var rt = false;
             var Displaysettings_Function = new Displaysettings_Function();
 
-            if (!string.IsNullOrEmpty(NightLightschedulerStatus))
+            if (!string.IsNullOrEmpty(NightLightStatus))
             {
                 writelog("[DeviceMangerPlugin] Send Telementry for NightLightschedulerStatus...");
-                rt = Displaysettings_Function.Send_NightLightschedulerStatus_Telementry(_TelementryScheduler, m, NightLightschedulerStatus, GetMonitorCurrentResolution(m), GetMonitorMaxResolution(m));
+                rt = Displaysettings_Function.Send_NightLightschedulerStatus_Telementry(_TelementryScheduler, m, NightLightStatus, GetMonitorCurrentResolution(m), GetMonitorMaxResolution(m));
                 if (rt)
                     writelog("[DeviceMangerPlugin] Send Telementry for NightLightschedulerStatus Success ...");
                 else
@@ -5155,17 +5155,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> SetResolutions(MonitorInfo monitorInfo, Properties properties)
+        public Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties)
         {
             bool ret = false;
             if (_DisplayManagerPlugin != null)
             {
                 displayInOut = false;
-                ret = _DisplayManagerPlugin.SetResolutions(monitorInfo, properties).Result;
+                ret = _DisplayManagerPlugin.SetResolutions(monitorInfos, properties).Result;
                 //Telementry Collection
                 var rt = false;
                 var Displaysettings_Function = new Displaysettings_Function();
-                rt = Displaysettings_Function.Send_GamingRefreshRate_Telementry(_TelementryScheduler, monitorInfo, properties.Frequency.ToString(), GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                rt = Displaysettings_Function.Send_GamingRefreshRate_Telementry(_TelementryScheduler, monitorInfos, properties.Frequency.ToString(), GetMonitorCurrentResolution(monitorInfos), GetMonitorMaxResolution(monitorInfos));
                 if (rt)
                     writelog("[DeviceMangerPlugin] Send Telementry for GamingRefreshRate Success ...");
                 else
@@ -5174,13 +5174,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> SetOrientation(MonitorInfo monitorInfo, DisplayOrientation orientation)
+        public Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation)
         {
             bool ret = false;
             if (_DisplayManagerPlugin != null)
             {
                 displayInOut = false;
-                ret = _DisplayManagerPlugin.SetOrientation(monitorInfo, orientation).Result;
+                ret = _DisplayManagerPlugin.SetOrientation(monitorInfos, orientation).Result;
             }
             return Task.FromResult(ret);
         }
@@ -5195,22 +5195,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> GetHDRStatus(MonitorInfo monitorInfo)
+        public Task<bool> GetHDRStatus(MonitorInfo monitorInfos)
         {
             bool ret = false;
-            return Task.FromResult(_DisplayManagerPlugin.GetHDRStatus(monitorInfo).Result);
+            return Task.FromResult(_DisplayManagerPlugin.GetHDRStatus(monitorInfos).Result);
         }
 
-        public Task<bool> SetHDRStatus(MonitorInfo monitorInfo, bool onoff)
+        public Task<bool> SetHDRStatus(MonitorInfo monitorInfos, bool onoff)
         {
             bool ret = false;
-            return Task.FromResult(_DisplayManagerPlugin.SetHDRStatus(monitorInfo, onoff).Result);
+            return Task.FromResult(_DisplayManagerPlugin.SetHDRStatus(monitorInfos, onoff).Result);
         }
 
-        public Task<bool> SetUSBCPrioritizationType(MonitorInfo monitorInfo, USBCPrioritizationType type)
+        public Task<bool> SetUSBCPrioritizationType(MonitorInfo monitorInfos, USBCPrioritizationType type)
         {
             bool ret = false;
-            return Task.FromResult(_DisplayManagerPlugin.SetUSBCPrioritizationType(monitorInfo, type).Result);
+            return Task.FromResult(_DisplayManagerPlugin.SetUSBCPrioritizationType(monitorInfos, type).Result);
         }
 
         //0606 Bruce 新增鎖定自動旋轉方向
@@ -5285,12 +5285,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string orientation)
+        public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string Orientation)
         {
             bool? ret = null;
             if (_DisplayManagerPlugin != null)
             {
-                ret = _DisplayManagerPlugin.SetOSDOrientation(monitorInfo, orientation).Result;
+                ret = _DisplayManagerPlugin.SetOSDOrientation(monitorInfo, Orientation).Result;
             }
             return Task.FromResult(ret);
         }
@@ -7830,11 +7830,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region SW Update implementation
 
-        public Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isDefer = false, bool isForce = false, bool reScan = true, bool isUITrigger = false)
+        public Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, bool reScan = true, bool isUITrigger = false)
         {
             if (_SWUpdatePlugin != null)
             {
-                return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, isDefer, isForce, _GlobalSettingParam.GlobalSetting_About.SWVersion, reScan, isUITrigger).Result);
+                return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, isForce, isDefer, _GlobalSettingParam.GlobalSetting_About.SWVersion, reScan, isUITrigger).Result);
             }
             return Task.FromResult(new SWUpdateInfoPackage());
         }
@@ -14528,8 +14528,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public Task<bool> SavePowerNapSetting(PowerNapSetting powerNapSetting)
+        public Task<bool> SavePowerNapSetting(PowerNapSetting powerNapSettings)
         {
+            PowerNapSetting powerNapSetting = powerNapSettings;
+
             Debug.WriteLine($"{powerNapSetting.ModelName}:{powerNapSetting.SerialNumber}:{powerNapSetting.ServiceTag}:{powerNapSetting.Status}:{powerNapSetting.RunType}");
             List<PowerNapSetting> saveList = new List<PowerNapSetting>();
             bool ret = false;
