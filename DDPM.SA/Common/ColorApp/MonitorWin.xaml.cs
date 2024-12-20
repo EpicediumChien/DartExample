@@ -254,6 +254,12 @@ namespace DDPM.ColorApp
 
                     screen = Screen.FromHandle(data.ActiveWindowHandle);
 
+                    if (screen == null)
+                    {
+                        writelog($"[EventAppStatus_SendValue] Active window handle is null");
+                        return;
+                    }
+
                     System.Windows.Forms.Screen? s = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(x => x.DeviceName == Mi.DisplayName);
 
                     Trace.WriteLine("Mi.DisplayName = " + Mi.DisplayName);
@@ -315,10 +321,13 @@ namespace DDPM.ColorApp
 
                     //MonitorInfo actived_mi = Mi;
 
-                    if (!actived_mi.IsDellMonitor)
+                    if (actived_mi != null)
                     {
-                        writelog("actived_mi.IsDellMonitor is False");
-                        return;
+                        if (!actived_mi.IsDellMonitor)
+                        {
+                            writelog("actived_mi.IsDellMonitor is False");
+                            return;
+                        }
                     }
 
                     //////get active process's modeul info
@@ -332,11 +341,15 @@ namespace DDPM.ColorApp
                     }
                     //convert module name to app name, ex: 7zFM.exe -> 7-Zip File Manager
                     string reqAppName = string.Empty;
-                    int index = _apps.FindIndex(x =>
+                    int index = -1;
+                    if (forgroundProcess != null && forgroundProcess.MainModule != null) {
+                    index = _apps.FindIndex(x =>
                                      forgroundProcess.MainModule.FileName.ToLower().Trim().IndexOf(x.AppPath.ToLower().Trim()) >= 0 ||
                                     //forgroundProcess.MainModule.FileName.ToLower().Trim().IndexOf(x.AppName.ToLower().Trim()) >= 0 ||
                                     forgroundProcess.MainModule.ModuleName.ToLower().Trim().Replace(".exe", "") == x.AppName.ToLower().Trim().Replace(".exe", "")
                                     );
+                    }
+
                     if (index < 0)
                     {
                         //check with filepath (UWP like app would be this condition)
