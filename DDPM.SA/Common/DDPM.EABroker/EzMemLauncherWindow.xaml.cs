@@ -1,12 +1,16 @@
 ﻿using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
+using Microsoft.VisualBasic.Logging;
 using nsWinEventHook;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +24,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using VcpCore.Common;
 using Windows.ApplicationModel.Contacts;
+using static DDPM.RemoteManagement.Common.Interfaces.Params;
 using static DDPM.Win32Lib.Win32;
 using Rectangle = System.Drawing.Rectangle;
 
@@ -33,6 +38,9 @@ namespace DDPM.EABroker
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId);
+
+        [DllImport("user32.dll")]
+        private static extern bool IsWindowVisible(IntPtr hWnd);
 
         #region Private members
         private const string myName = "EzMemLauncherWin";
@@ -195,24 +203,27 @@ namespace DDPM.EABroker
                 HashSet<IntPtr> existingHandles = new HashSet<IntPtr>();
 
                 int idx = 0;
+                IntPtr handleTemp = IntPtr.Zero;
                 foreach (var app in apps.Values)
                 {
                     IntPtr handle = IntPtr.Zero;
 
                     Process process = LaunchApp(app, _log);
 
-                    for (int attempt = 0; attempt < 5; attempt++)
+                    for (int attempt = 0; attempt < 6; attempt++)
                     {
-
                         handle = app.AppType == "True" ? process.MainWindowHandle : GetWindowHandle(app);
-                        Trace.WriteLine($"************************ handle {app.AppType} || " + handle.ToString());
-                        _log?.Error($"app.AppName = {app.AppName}, AppType = {app.AppType}, handle = {handle.ToString()}");
+
+                        Trace.WriteLine($"app.AppName = {app.AppName}, AppType = {app.AppType}, handle = {handle.ToString()}");
+                        _log?.Info($"app.AppName = {app.AppName}, AppType = {app.AppType}, handle = {handle.ToString()}");
                         if (app.AppType == "False")// UWP need to check handle again
                         {
                             if (handle != IntPtr.Zero && !existingHandles.Contains(handle))
                             {
                                 if (IsHandleBelongsToApp(handle, app.AppName))
                                 {
+                                    Trace.WriteLine($"IsHandleBelongsToApp True");
+                                    _log?.Info($"IsHandleBelongsToApp True");
                                     existingHandles.Add(handle);
                                     break;
                                 }
@@ -220,17 +231,43 @@ namespace DDPM.EABroker
                             await Task.Delay(1000);
                         }
                         else
-                            await Task.Delay(1500);// win32 need to wait long
+                            await Task.Delay(1000);// win32 need to wait long
                     }
 
-                    if (handle != IntPtr.Zero)
+                    handleTemp = IntPtr.Zero;
+                    if (handle != IntPtr.Zero && GetWindowTitle(handle).Contains(app.AppName))
                     {
+                        Trace.WriteLine($" LaunchAndArrange normal = {handle.ToString()}, handleTemp = {handleTemp.ToString()}, GetFilePathFromHandle = {GetFilePathFromHandle(handle)}, GetWindowTitle = {GetWindowTitle(handle)}");
+                        _log?.Info($" LaunchAndArrange normal = {handle.ToString()}, handleTemp = {handleTemp.ToString()}, GetFilePathFromHandle = {GetFilePathFromHandle(handle)}, GetWindowTitle = {GetWindowTitle(handle)}");
+                        handleTemp = handle;
                         appHandles.Add((handle, idx));
                         idx++;
                     }
                     else
                     {
-                        _log?.Error($"Failed to get handle for app: {app.AppName}");
+                        Trace.WriteLine($"LaunchAndArrange Special = {handle.ToString()}, handleTemp = {handleTemp.ToString()}, GetFilePathFromHandle = {GetFilePathFromHandle(handle)}, GetWindowTitle = {GetWindowTitle(handle)}");
+                        _log?.Info($"LaunchAndArrange Special = {handle.ToString()}, handleTemp = {handleTemp.ToString()}, GetFilePathFromHandle = {GetFilePathFromHandle(handle)}, GetWindowTitle = {GetWindowTitle(handle)}");
+                        for (int attempt = 0; attempt < 3; attempt++)
+                        {
+                            Trace.WriteLine($"SpecialGetHandle Check ... ");
+                            _log?.Info($"SpecialGetHandle Check ... ");
+                            handle = SpecialGetHandle(app);
+                            if (handle != IntPtr.Zero)
+                                break;
+                            await Task.Delay(500);
+                        }
+                        if (handle != IntPtr.Zero)
+                        {
+                            Trace.WriteLine($"LaunchAndArrange SpecialGetHandle handle != IntPtr.Zero => {handle.ToString()}, handleTemp = {handleTemp.ToString()}, GetFilePathFromHandle = {GetFilePathFromHandle(handle)}, GetWindowTitle = {GetWindowTitle(handle)}");
+                            _log?.Info($"LaunchAndArrange SpecialGetHandle handle != IntPtr.Zero => {handle.ToString()}, handleTemp = {handleTemp.ToString()}, GetFilePathFromHandle = {GetFilePathFromHandle(handle)}, GetWindowTitle = {GetWindowTitle(handle)}");
+                            handleTemp = handle;
+                            appHandles.Add((handle, idx));
+                            idx++;
+                        }
+                        else
+                        {
+                            _log?.Error($"Failed to get handle for app.AppName: {app.AppName}, app.AppPath: {app.AppPath}, app.AppUserModelID: {app.AppUserModelID}");
+                        }
                     }
                 }
 
@@ -239,28 +276,186 @@ namespace DDPM.EABroker
 
                 foreach (var (handle, idxCell) in appHandles)
                 {
+                    Trace.WriteLine($"handle = {handle.ToString()}, GetWindowTitle = {GetWindowTitle(handle)} || GetFilePathFromHandle = {GetFilePathFromHandle(handle)}");
                     ArrangeWindow(handle, idxCell, VM);
                 }
             });
         }
 
+        private IntPtr SpecialGetHandle(Bind_AddFullPage_AppCollectionData app)
+        {
+            _log?.Info($"SpecialGetHandle ... in");
+            IntPtr appHandle = IntPtr.Zero;
+            string uniCode = string.Empty;
+            if (app.AppType != "True")
+            {               
+                uniCode = ExtractSubstring(app.AppUserModelID);// Profile的AppUserModelID找UWP識別碼
+                _log?.Info($"SpecialGetHandle ... UWP uniCode = {uniCode}");
+            }            
+            List<IntPtr> exitsApp = GetVisibleWindowHandles();// list出現在桌面的handle
+            foreach (var vapp in exitsApp)
+            {
+                string handlePath = GetFilePathFromHandle(vapp);// 從Handle找路徑                
+                if (app.AppType != "True")
+                {
+                    _log?.Info($"SpecialGetHandle ... UWP {uniCode} compare {handlePath}");
+                    if (handlePath.Contains(uniCode))// 從路徑比對UWP識別碼
+                    {
+                        Trace.WriteLine($" SpecialGetHandle GetFilePathFromHandle Contains PATH = {handlePath} and {uniCode}");
+                        _log?.Info($"SpecialGetHandle ... UWP uniCode = {uniCode}");
+                        appHandle = vapp;
+                        break;
+                    }
+                }
+                else
+                {
+                    _log?.Info($"SpecialGetHandle ... win32 {app.AppPath.ToUpper()} compare {handlePath.ToUpper()}");
+                    if (app.AppPath.ToUpper() == handlePath.ToUpper())
+                    {
+                        Trace.WriteLine($" SpecialGetHandle GetFilePathFromHandle Contains PATH = {handlePath} and {uniCode}");
+                        _log?.Info($"SpecialGetHandle ... win32 uniCode = {uniCode}");
+                        appHandle = vapp;
+                        break;
+                    }
+                }
+            }
+            Trace.WriteLine($" GetFilePathFromHandle Return Handle = {appHandle.ToString()}");
+            _log?.Info($"SpecialGetHandle GetFilePathFromHandle Return Handle = {appHandle.ToString()} ... out");
+            return appHandle;
+        }
+
+        /// <summary>
+        /// Get before "!" and after "_" string
+        /// </summary>
+        /// <param name="input">string</param>
+        /// <returns></returns>
+        private string ExtractSubstring(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return string.Empty;
+            }
+
+            int underscoreIndex = input.IndexOf('_');
+            int exclamationIndex = input.IndexOf('!');
+
+            if (underscoreIndex != -1 && exclamationIndex != -1 && underscoreIndex < exclamationIndex)
+            {
+                return input.Substring(underscoreIndex + 1, exclamationIndex - underscoreIndex - 1);
+            }
+
+            return string.Empty;
+        }
+        //public static string NormalizePath(string path)
+        //{
+        //    if (string.IsNullOrWhiteSpace(path))
+        //        throw new ArgumentException("Path cannot be null or empty.");
+        //    string tt = System.IO.Path.GetFullPath(path);
+        //    string normalizedPath = path.Remove(\);
+        //    return normalizedPath;
+        //}
+        public string CustomReplace(string input, string oldValue, string newValue)
+        {
+            if (input == null)
+                throw new ArgumentNullException(nameof(input), "Input string cannot be null.");
+            if (oldValue == null)
+                throw new ArgumentNullException(nameof(oldValue), "Old value cannot be null.");
+            if (oldValue == string.Empty)
+                throw new ArgumentException("Old value cannot be an empty string.", nameof(oldValue));
+
+            var result = new System.Text.StringBuilder();
+            int startIndex = 0;
+            int matchIndex;
+
+            while ((matchIndex = input.IndexOf(oldValue, startIndex, StringComparison.Ordinal)) != -1)
+            {
+
+                result.Append(input, startIndex, matchIndex - startIndex);
+
+                result.Append(newValue);
+
+                startIndex = matchIndex + oldValue.Length;
+            }
+
+            result.Append(input, startIndex, input.Length - startIndex);
+
+            return result.ToString();
+        }
+        /// <summary>
+        /// Get before space string
+        /// </summary>
+        /// <param name="input">string</param>
+        /// <returns></returns>
+        private static string GetFirstWord(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return string.Empty;
+
+            string[] words = input.Trim().Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+
+            return words.Length > 0 ? words[0] : string.Empty;
+        }
+
+        private static string GetFilePathFromHandle(IntPtr hWnd)
+        {
+            GetWindowThreadProcessId(hWnd, out uint processId);
+
+            if (processId == 0)
+            {
+                return null;
+            }
+
+            try
+            {
+                Process process = Process.GetProcessById((int)processId);
+                return process.MainModule?.FileName;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return null;
+            }
+        }
+
+        private static List<IntPtr> GetVisibleWindowHandles()
+        {
+            List<IntPtr> windowHandles = new List<IntPtr>();
+
+            EnumWindows((hWnd, lParam) =>
+            {
+                if (IsWindowVisible(hWnd) && GetWindowTitle(hWnd).Length > 0)
+                {
+                    windowHandles.Add(hWnd);
+                    Console.WriteLine($"Handle: {hWnd}, Title: {GetWindowTitle(hWnd)}");
+                }
+                return true; // Continue enumeration
+            }, IntPtr.Zero);
+
+            return windowHandles;
+        }
+
+        private static string GetWindowTitle(IntPtr hWnd)
+        {
+            //StringBuilder title = new StringBuilder(256);
+            return Win32Lib.Win32._GetWindowText(hWnd);
+            //return title.ToString();
+        }
         public static IntPtr _GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId)
         {
             return GetWindowThreadProcessId(hWnd, out nProcessId);
         }
-        private bool IsHandleBelongsToApp(IntPtr handle, string expectedAppName)
+        private bool IsHandleBelongsToApp(IntPtr handle, string expectedAppName, ILog? log = null)
         {
             try
             {
                 uint processId;
                 _GetWindowThreadProcessId(handle, out processId);
-
                 Process process = Process.GetProcessById((int)processId);
-
                 return process.ProcessName.Contains(expectedAppName, StringComparison.OrdinalIgnoreCase);
             }
-            catch
+            catch (Exception ex)
             {
+                log?.Info($"[{myName}] IsHandleBelongsToApp, Exception : {ex.Message}");
                 return false;
             }
         }
@@ -462,25 +657,25 @@ namespace DDPM.EABroker
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 if (_inputSplitCtrl == null)
-                return;
+                    return;
 
-            int cellBoderCount = _inputSplitCtrl.CellList.Count;
-            if ((idxCell < 0) || (idxCell >= cellBoderCount))
-            {
-                return;
-            }
-            CellObj celObj = _inputSplitCtrl.CellList[idxCell];
-            Rect rcArrange = celObj.rc;
-            Task.Delay(500);
-            if (rcArrange.IsEmpty || (rcArrange.Width <= 0))
-            {
-                rcArrange = GetFrameworkElementRect(celObj.CellBd);
-                if (rcArrange.IsEmpty)
+                int cellBoderCount = _inputSplitCtrl.CellList.Count;
+                if ((idxCell < 0) || (idxCell >= cellBoderCount))
                 {
                     return;
                 }
-            }
-            _log?.Info($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Rect(({rcArrange.Left},{rcArrange.Top}){rcArrange.Width}x{rcArrange.Height})");
+                CellObj celObj = _inputSplitCtrl.CellList[idxCell];
+                Rect rcArrange = celObj.rc;
+                Task.Delay(500);
+                if (rcArrange.IsEmpty || (rcArrange.Width <= 0))
+                {
+                    rcArrange = GetFrameworkElementRect(celObj.CellBd);
+                    if (rcArrange.IsEmpty)
+                    {
+                        return;
+                    }
+                }
+                _log?.Info($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Rect(({rcArrange.Left},{rcArrange.Top}){rcArrange.Width}x{rcArrange.Height})");
 
                 //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
                 if (VM.IsWithoutGap)
@@ -490,15 +685,15 @@ namespace DDPM.EABroker
                 Task.Delay(500);
                 WinEventHook.SetWindowPosition(hWnd, rcArrange);
 
-            _alreadyArrangedCount++;
-            if (AreAllAppsArranged)
-            {
-                if (ArrangeDone != null)
+                _alreadyArrangedCount++;
+                if (AreAllAppsArranged)
                 {
-                    _log?.Info($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Send ArrangeDone event.");
-                    ArrangeDone(this, EventArgs.Empty);
+                    if (ArrangeDone != null)
+                    {
+                        _log?.Info($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Send ArrangeDone event.");
+                        ArrangeDone(this, EventArgs.Empty);
+                    }
                 }
-            }
             }));
 
         }
@@ -511,6 +706,6 @@ namespace DDPM.EABroker
         }
         #endregion
 
- 
+
     }
 }

@@ -2897,9 +2897,28 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
-        private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle Arg1, int nArg2, int nArg3, string strArg4)//(IPhysicalAudioDeviceDongle arg1, AudioDonglePairingStatus arg2)
+        private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle physicalAudioDeviceDongle, int newPairingStatus, int dongleDeviceType, string requestDeviceName)//(IPhysicalAudioDeviceDongle arg1, AudioDonglePairingStatus arg2)
         {
-            throw new NotImplementedException();
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.PhyscialDeviceID.ToString() == physicalAudioDeviceDongle.Id.ToString());
+                // << 240712 fix empty dongle issue by Hess
+                if (deviceInfo == null)
+                    deviceInfo = new DeviceInfo();
+                // >>
+                {
+                    deviceInfo.PairingStatusName = UpdateParingStausText((AudioDonglePairingStatus)newPairingStatus);
+
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                    _EventArgs.device_peripherals = deviceInfo;
+                    _EventArgs.changedProperty = $"AudioDonglePairingStatusChanged|{requestDeviceName}";
+                    Debug.WriteLine($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
+                    writelog($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
+                    OnNotify(_EventArgs);
+                }
+            }
+            //throw new NotImplementedException();
         }
 
         private void PhysicalAudioDeviceDongle_PairedDeviceCountChanged(IPhysicalAudioDeviceDongle arg1, int arg2)
