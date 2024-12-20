@@ -127,59 +127,65 @@ namespace DDPM.UI.Module.Kvm
         {
             try
             {
-                vm.FinishtoSetPCs();
+                if (vm != null)
+                {
+                    vm.FinishtoSetPCs();
 
-                //set pxp
-                SetPxP();
-                //if (vm.isPipSmall)
-                //{
-                //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeSmall(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
-                //    if (bpxp)
-                //    {
-                //        Thread.Sleep(500);
-                //    }
-                //}
-                //else if (vm.isPipLarge)
-                //{
-                //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeLarge(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
-                //    if (bpxp)
-                //    {
-                //        Thread.Sleep(500);
-                //    }
-                //}
-                //else if (vm.isPBP)
-                //{
-                //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPbpMode(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, vm.PxPCode).Result;
-                //    if (bpxp)
-                //    {
-                //        Thread.Sleep(500);
-                //    }
-                //}
-                //else
-                //{
-                //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeOff(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
-                //    if (bpxp)
-                //    {
-                //        Thread.Sleep(500);
-                //    }
-                //}
-                vm.isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
-                vm.isOnNKVM(false);
-                vm.USBKVMisON = true;
-                vm.NKVMisON = false;
+                    //set pxp
+                    SetPxP();
+                    //if (vm.isPipSmall)
+                    //{
+                    //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeSmall(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+                    //    if (bpxp)
+                    //    {
+                    //        Thread.Sleep(500);
+                    //    }
+                    //}
+                    //else if (vm.isPipLarge)
+                    //{
+                    //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeLarge(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+                    //    if (bpxp)
+                    //    {
+                    //        Thread.Sleep(500);
+                    //    }
+                    //}
+                    //else if (vm.isPBP)
+                    //{
+                    //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPbpMode(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, vm.PxPCode).Result;
+                    //    if (bpxp)
+                    //    {
+                    //        Thread.Sleep(500);
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeOff(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+                    //    if (bpxp)
+                    //    {
+                    //        Thread.Sleep(500);
+                    //    }
+                    //}
+                    vm.isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
+                    vm.isOnNKVM(false);
+                    vm.USBKVMisON = true;
+                    vm.NKVMisON = false;
+                    vm.FromProgressValue = 0;
+                    vm.ToProgressValue = 1;
+                }
                 //Return to DdpmHomePage              
                 IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
                 console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
-                vm.FromProgressValue = 0;
-                vm.ToProgressValue = 1;
             }
             catch (Exception ex)
             {
                 //Return to DdpmHomePage
                 IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
                 console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
-                vm.FromProgressValue = 0;
-                vm.ToProgressValue = 1;
+                if (vm != null)
+                {
+                    vm.FromProgressValue = 0;
+                    vm.ToProgressValue = 1;
+                }
             }
         }
 
@@ -196,130 +202,142 @@ namespace DDPM.UI.Module.Kvm
         private void OnFullScreenClicked(SplitItem? spItem)
         {
             //Update selectedSplitItem
-            vm.SelectedSplitItem = spItem;
-            if (spItem != null)
+            if (vm != null)
             {
-                vm.isPipSmall = false;
-                vm.isPipLarge = false;
-                vm.isPBP = false;
-                if (vm.pcsList.TryGetValue("PC1", out var pc1))
+                vm.SelectedSplitItem = spItem;
+                if (spItem != null)
                 {
-                    vm.PC1_Input = vm.pcsList["PC1"].InputType;
-                }
-                else
-                {
-                    vm._log.Debug("PC1 not found in pcsList.");
-                }
-                //Get the Content of the new selected SplitItem
-                //vm.PxPCode = 0x0;
-                //vm.VideoSwapContent = vm.PxPcodeDictionary[0x0];
-                //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[0x0];
-                if (vm.PxPcodeDictionary[0x0] != null)
-                {
-                    vm.VideoSwapContent = vm.PxPcodeDictionary[0x0];
-                }
-                else
-                {
-                    vm.PxpModeaddDic(0x0);
-                    vm.VideoSwapContent = vm.PxPcodeDictionary[0x0];
+                    vm.isPipSmall = false;
+                    vm.isPipLarge = false;
+                    vm.isPBP = false;
+                    if (vm.pcsList.TryGetValue("PC1", out var pc1))
+                    {
+                        vm.PC1_Input = vm.pcsList["PC1"].InputType;
+                    }
+                    else
+                    {
+                        vm._log.Debug("PC1 not found in pcsList.");
+                    }
+                    //Get the Content of the new selected SplitItem
+                    //vm.PxPCode = 0x0;
+                    //vm.VideoSwapContent = vm.PxPcodeDictionary[0x0];
+                    //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[0x0];
+                    if (vm.PxPcodeDictionary[0x0] != null)
+                    {
+                        vm.VideoSwapContent = vm.PxPcodeDictionary[0x0];
+                    }
+                    else
+                    {
+                        vm.PxpModeaddDic(0x0);
+                        vm.VideoSwapContent = vm.PxPcodeDictionary[0x0];
 
+                    }
                 }
             }
         }
 
         private void OnPipSmallClicked(SplitItem? spItem)
         {
-            vm.SelectedSplitItem = spItem;
-            if (spItem != null)
+            if (vm != null)
             {
-                vm.isPipSmall = true;
-                vm.isPipLarge = false;
-                vm.isPBP = false;
-                if (vm.pcsList.TryGetValue("PC1", out var pc1) && vm.pcsList.TryGetValue("PC2", out var pc2))
+                vm.SelectedSplitItem = spItem;
+                if (spItem != null)
                 {
-                    vm.PC1_Input = vm.pcsList["PC1"].InputType;
-                    vm.PC2_Input = vm.pcsList["PC2"].InputType;
-                }
-                else
-                {
-                    vm._log.Debug("PC1 or PC2 not found in pcsList.");
-                }
-                //Get the Content of the new selected SplitItem
-                //PIPSplitCtrl1A splitCtrl1A = new PIPSplitCtrl1A();
-                //splitCtrl1A.PC1_Input = vm.pcsList["PC1"].InputType;
-                //splitCtrl1A.PC1_Visibility = Visibility.Visible;
-                //vm.PxPCode = 0x11;
-                //vm.VideoSwapContent = vm.PxPcodeDictionary[0x11];
-                //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[0x11];
-                if (vm.PxPcodeDictionary[0x11] != null)
-                {
-                    vm.VideoSwapContent = vm.PxPcodeDictionary[0x11];
-                }
-                else
-                {
-                    vm.PxpModeaddDic(0x11);
-                    vm.VideoSwapContent = vm.PxPcodeDictionary[0x11];
+                    vm.isPipSmall = true;
+                    vm.isPipLarge = false;
+                    vm.isPBP = false;
+                    if (vm.pcsList.TryGetValue("PC1", out var pc1) && vm.pcsList.TryGetValue("PC2", out var pc2))
+                    {
+                        vm.PC1_Input = vm.pcsList["PC1"].InputType;
+                        vm.PC2_Input = vm.pcsList["PC2"].InputType;
+                    }
+                    else
+                    {
+                        vm._log.Debug("PC1 or PC2 not found in pcsList.");
+                    }
+                    //Get the Content of the new selected SplitItem
+                    //PIPSplitCtrl1A splitCtrl1A = new PIPSplitCtrl1A();
+                    //splitCtrl1A.PC1_Input = vm.pcsList["PC1"].InputType;
+                    //splitCtrl1A.PC1_Visibility = Visibility.Visible;
+                    //vm.PxPCode = 0x11;
+                    //vm.VideoSwapContent = vm.PxPcodeDictionary[0x11];
+                    //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[0x11];
+                    if (vm.PxPcodeDictionary[0x11] != null)
+                    {
+                        vm.VideoSwapContent = vm.PxPcodeDictionary[0x11];
+                    }
+                    else
+                    {
+                        vm.PxpModeaddDic(0x11);
+                        vm.VideoSwapContent = vm.PxPcodeDictionary[0x11];
 
+                    }
                 }
             }
         }
 
         private void OnPipLargeClicked(SplitItem? spItem)
         {
-            vm.SelectedSplitItem = spItem;
-            if (spItem != null)
+            if (vm != null)
             {
-                vm.isPipSmall = false;
-                vm.isPipLarge = true;
-                vm.isPBP = false;
-                if (vm.pcsList.TryGetValue("PC1", out var pc1) && vm.pcsList.TryGetValue("PC2", out var pc2))
+                vm.SelectedSplitItem = spItem;
+                if (spItem != null)
                 {
-                    vm.PC1_Input = vm.pcsList["PC1"].InputType;
-                    vm.PC2_Input = vm.pcsList["PC2"].InputType;
-                }
-                else
-                {
-                    vm._log.Debug("PC1 or PC2 not found in pcsList.");
-                }
-                //Get the Content of the new selected SplitItem
-                //vm.PxPCode = 0x12;
-                //vm.VideoSwapContent = vm.PxPcodeDictionary[0x12];
-                //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[0x12];
-                if (vm.PxPcodeDictionary[0x12] != null)
-                {
-                    vm.VideoSwapContent = vm.PxPcodeDictionary[0x12];
-                }
-                else
-                {
-                    vm.PxpModeaddDic(0x12);
-                    vm.VideoSwapContent = vm.PxPcodeDictionary[0x12];
+                    vm.isPipSmall = false;
+                    vm.isPipLarge = true;
+                    vm.isPBP = false;
+                    if (vm.pcsList.TryGetValue("PC1", out var pc1) && vm.pcsList.TryGetValue("PC2", out var pc2))
+                    {
+                        vm.PC1_Input = vm.pcsList["PC1"].InputType;
+                        vm.PC2_Input = vm.pcsList["PC2"].InputType;
+                    }
+                    else
+                    {
+                        vm._log.Debug("PC1 or PC2 not found in pcsList.");
+                    }
+                    //Get the Content of the new selected SplitItem
+                    //vm.PxPCode = 0x12;
+                    //vm.VideoSwapContent = vm.PxPcodeDictionary[0x12];
+                    //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[0x12];
+                    if (vm.PxPcodeDictionary[0x12] != null)
+                    {
+                        vm.VideoSwapContent = vm.PxPcodeDictionary[0x12];
+                    }
+                    else
+                    {
+                        vm.PxpModeaddDic(0x12);
+                        vm.VideoSwapContent = vm.PxPcodeDictionary[0x12];
 
+                    }
                 }
             }
         }
 
         private void OnPbpItemClicked(SplitItem? spItem)
         {
-            vm.SelectedSplitItem = spItem;
-            if (spItem != null)
+            if (vm != null)
             {
-                vm.isPipSmall = false;
-                vm.isPipLarge = false;
-                vm.isPBP = true;
-                _pbpcode = vm.SelectedSplitItem.ISplit.PbpCapabilityCode;
-                //Get the Content of the new selected SplitItem
-                //vm.PxPCode = _pbpcode;
-                //vm.VideoSwapContent = vm.PxPcodeDictionary[_pbpcode];
-                //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[_pbpcode];
-                if (vm.PxPcodeDictionary[_pbpcode] != null)
+                vm.SelectedSplitItem = spItem;
+                if (spItem != null)
                 {
-                    vm.VideoSwapContent = vm.PxPcodeDictionary[_pbpcode];
-                }
-                else
-                {
-                    vm.PxpModeaddDic(_pbpcode);
-                    vm.VideoSwapContent = vm.PxPcodeDictionary[_pbpcode];
+                    vm.isPipSmall = false;
+                    vm.isPipLarge = false;
+                    vm.isPBP = true;
+                    _pbpcode = vm.SelectedSplitItem.ISplit.PbpCapabilityCode;
+                    //Get the Content of the new selected SplitItem
+                    //vm.PxPCode = _pbpcode;
+                    //vm.VideoSwapContent = vm.PxPcodeDictionary[_pbpcode];
+                    //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[_pbpcode];
+                    if (vm.PxPcodeDictionary[_pbpcode] != null)
+                    {
+                        vm.VideoSwapContent = vm.PxPcodeDictionary[_pbpcode];
+                    }
+                    else
+                    {
+                        vm.PxpModeaddDic(_pbpcode);
+                        vm.VideoSwapContent = vm.PxPcodeDictionary[_pbpcode];
 
+                    }
                 }
             }
         }
@@ -328,60 +346,63 @@ namespace DDPM.UI.Module.Kvm
 
         private void SavePxP(object sender, RoutedEventArgs e)
         {
-            vm._log!.Info("[KVMPIPPBPFullView]SavePxP");
-            SetPxP();
-            //bool bt = false;
-            //if (vm.isPipSmall)
-            //{
-            //    vm._log!.Info("[KVMPIPPBPFullView]SetPipModeSmall");
-            //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeSmall(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
-            //    if (bpxp)
-            //    {
-            //        bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "PIP-Small").Result;
-            //        Thread.Sleep(500);
-            //    }
-            //}
-            //else if (vm.isPipLarge)
-            //{
-            //    vm._log!.Info("[KVMPIPPBPFullView]SetPipModeLarge");
-            //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeLarge(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
-            //    if (bpxp)
-            //    {
-            //        bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "PIP-Large").Result;
-            //        Thread.Sleep(500);
-            //    }
-            //}
-            //else if (vm.isPBP)
-            //{
-            //    vm._log!.Info("[KVMPIPPBPFullView]SetPbpMode");
-            //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPbpMode(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, vm.PxPCode).Result;
-            //    if (bpxp)
-            //    {
-            //        if (vm.PxPCode >= 0x23 && vm.PxPCode <= 0x2F)
-            //        {
-            //            bt = bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "2-PBP").Result;
-            //        }
-            //        else if (vm.PxPCode >= 0x31 && vm.PxPCode <= 0x35)
-            //        {
-            //            bt = bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "3-PBP").Result;
-            //        }
-            //        else if (vm.PxPCode >= 0x41 && vm.PxPCode <= 0x42)
-            //        {
-            //            bt = bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "4-PBP").Result;
-            //        }
-            //        Thread.Sleep(500);
-            //    }
-            //}
-            //else
-            //{
-            //    vm._log!.Info("[KVMPIPPBPFullView]SaveFull");
-            //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeOff(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
-            //    if (bpxp)
-            //    {
-            //        bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "Full").Result;
-            //        Thread.Sleep(500);
-            //    }
-            //}
+            if (vm != null)
+            {
+                vm._log!.Info("[KVMPIPPBPFullView]SavePxP");
+                SetPxP();
+                //bool bt = false;
+                //if (vm.isPipSmall)
+                //{
+                //    vm._log!.Info("[KVMPIPPBPFullView]SetPipModeSmall");
+                //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeSmall(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+                //    if (bpxp)
+                //    {
+                //        bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "PIP-Small").Result;
+                //        Thread.Sleep(500);
+                //    }
+                //}
+                //else if (vm.isPipLarge)
+                //{
+                //    vm._log!.Info("[KVMPIPPBPFullView]SetPipModeLarge");
+                //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeLarge(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+                //    if (bpxp)
+                //    {
+                //        bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "PIP-Large").Result;
+                //        Thread.Sleep(500);
+                //    }
+                //}
+                //else if (vm.isPBP)
+                //{
+                //    vm._log!.Info("[KVMPIPPBPFullView]SetPbpMode");
+                //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPbpMode(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, vm.PxPCode).Result;
+                //    if (bpxp)
+                //    {
+                //        if (vm.PxPCode >= 0x23 && vm.PxPCode <= 0x2F)
+                //        {
+                //            bt = bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "2-PBP").Result;
+                //        }
+                //        else if (vm.PxPCode >= 0x31 && vm.PxPCode <= 0x35)
+                //        {
+                //            bt = bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "3-PBP").Result;
+                //        }
+                //        else if (vm.PxPCode >= 0x41 && vm.PxPCode <= 0x42)
+                //        {
+                //            bt = bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "4-PBP").Result;
+                //        }
+                //        Thread.Sleep(500);
+                //    }
+                //}
+                //else
+                //{
+                //    vm._log!.Info("[KVMPIPPBPFullView]SaveFull");
+                //    bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPipModeOff(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+                //    if (bpxp)
+                //    {
+                //        bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "Full").Result;
+                //        Thread.Sleep(500);
+                //    }
+                //}
+            }
             //Return to DdpmHomePage
             IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
             console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
