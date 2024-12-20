@@ -2824,11 +2824,11 @@ namespace VcpCore.Plugins
                             _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors() collection REG monitor count exception: " + ex.Message);
                             return (new List<MonitorInfo_complex>(), false);
                         }
-                        finally
-                        {
-                            regCount.Close();
-                            regCount.Dispose();
-                        }
+                        //finally
+                        //{
+                        //    regCount.Close();
+                        //    regCount.Dispose();
+                        //}
                     }
                 }
                 catch (Exception ex)
