@@ -43,9 +43,13 @@ namespace DDPM.UI.Module.Kvm
 
         private void CloseUSBKVM(object sender, RoutedEventArgs e)
         {
+            if (vm != null)
+            {
+                vm.VideoSwapContent_Left = vm.PxPcodeDictionary[vm.PxPCode];
+                vm.FromProgressValue = 0;
+                vm.ToProgressValue = 1;
+            }
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
-            vm.FromProgressValue = 0;
-            vm.ToProgressValue = 1;
         }
 
         private void SaveInput(object sender, RoutedEventArgs e)
