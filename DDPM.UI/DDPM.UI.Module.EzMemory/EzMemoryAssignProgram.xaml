@@ -202,7 +202,7 @@
 
                         <!-- Second Button Group -->
                         <Grid Grid.Column="1" Margin="0,170,0,0">
-                            <UXControls:UXButton x:Name="CancelBtn" Visibility="{Binding SkipButtonVisibility}" ButtonType="Tertiary" Width="90" Height="40" ButtonSize="Medium" Margin="10, 0" Content="Cancel" IconAnimation="Move" Click="CancelBtn_Click"/>
+                            <UXControls:UXButton x:Name="CancelBtn" Visibility="{Binding SkipButtonVisibility}" ButtonType="Tertiary" Width="90" Height="40" ButtonSize="Medium" Margin="10, 0" Content="{Binding [Cancel], Source={x:Static lang:LangHelper.Instance}}" IconAnimation="Move" Click="CancelBtn_Click"/>
                         </Grid>
                     </Grid>
                 </Grid>

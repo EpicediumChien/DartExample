@@ -54,9 +54,13 @@ namespace DDPM.SA.Common
         #region EaM
 
         Task<Dictionary<string, InstalledAppInfo>> GetAllAppList();
+
         Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps);
+
         Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid);
+
         Task<bool> CheckEAIDExit(MonitorInfo moinfo, int eAID);
+
         Task<bool> DeleteEAID(MonitorInfo moinfo, int eAID);
 
         #endregion EaM
@@ -132,15 +136,21 @@ namespace DDPM.SA.Common
         Task<string> Sync_ColorPresetName(MonitorInfo monitorInfo, string ColorPreset_Name);
 
         Task<bool> SyncNightlightStatus();
+
         Task<bool> CheckNightLightStatus();
+
         Task<bool> CheckNightLightScheduler();
+
         Task<bool> CheckColorICCStatus();
 
         Task<bool> StopRegistryMonitor_NightLight();
+
         Task<bool> StopRegistryMonitor_NightLightScheduler();
+
         Task<bool> StopRegistryMonitor_ICC();
 
         Task<bool> Send_NightLightStatus_Telementry_SA(MonitorInfo m, string NightLightStatus);
+
         Task<bool> Send_NightLightschedulerStatus_Telementry_SA(MonitorInfo m, string NightLightStatus);
 
         #endregion public for ColorPreset
@@ -158,6 +168,8 @@ namespace DDPM.SA.Common
         event EventHandler<DDCCIchangedEventArgs> DDCCIStatuschanged;
 
         event EventHandler<DisplaychangedEventArgs> Displaychanged;
+
+        event EventHandler<MonitorinfoUpdateEventArgs> MonitorinfoUpdated;
 
         Task<string> GetCapabilitiesString(MonitorInfo monitorInfo);
 
@@ -251,14 +263,17 @@ namespace DDPM.SA.Common
         #endregion public for USBKVM
 
         #region EasyArrange
+
         //Robert_Lin, 2024-12-15 rearrange order of interfaces and grouping in sub-Regions
-        
+
         #region Properties - EasyArrange
+
         //Robert_Lin, 2024-12-15, comment-out temporary
         /// <summary>
         /// The last error string after a EAPlugin method return error.
         /// </summary>
         //public string EALastError { get; }
+
         #endregion Properties - EasyArrange
 
         #region Events - EasyArrange
@@ -270,10 +285,10 @@ namespace DDPM.SA.Common
         /// <para>
         /// EAArgs.Command=<b>EACommand_LastSelectedMonitorChanged</b>:<br/>
         /// * Notify EAPlugin when SelectedMonitor is changed.<br/>
-        /// * New SelectedMonitor should has been updated to UserSettings.lastUISelectedMonitor.  
+        /// * New SelectedMonitor should has been updated to UserSettings.lastUISelectedMonitor.
         /// </para>
         /// </remarks>
-        /// 
+        ///
         public event EventHandler<EAArgs> EASettingsChanged;
 
         /// <summary>
@@ -281,11 +296,11 @@ namespace DDPM.SA.Common
         /// Callers in DDPM.SA can call <c>IDeviceManagerSA.SendEANotify()</c> to invoke this event.
         /// </summary>
         /// <remarks>
-        /// Use <c>EAArgs.Command</c> to pass the Commands/Messages, which are defined in 
+        /// Use <c>EAArgs.Command</c> to pass the Commands/Messages, which are defined in
         /// <c>DDPM.SA.Common.Display.EAEMCostants</c> class.
         /// <para>
         /// <c>EA_Command_SetIsSplanEnabled</c>:<br/>
-        /// When EAPlugin detects current monitor configuration should enable or disable the 
+        /// When EAPlugin detects current monitor configuration should enable or disable the
         /// "Span across multiple monitors" options in EzSettings.
         /// </para>
         /// </remarks>
@@ -317,9 +332,11 @@ namespace DDPM.SA.Common
         /// </para>
         /// </summary>
         public event EventHandler<EAArgs> EAEditReturn;
+
         #endregion Events - EasyArrange
 
         #region EAFunctionEnabled - EasyArrange
+
         /// <summary>
         /// Enable/Disable EasyArrange function for all monitors.
         /// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
@@ -328,11 +345,13 @@ namespace DDPM.SA.Common
         /// <param name="isEnabled"></param>
         /// <returns></returns>
         public Task<bool> SetEAFunctionEnabled(bool isEnabled);
+
         public Task<ObjGetVCP> GetEAFunctionEnabled();
 
         #endregion EAFunctionEnabled - EasyArrange
 
         #region EzSettings - EasyArrange
+
         //Robert_Lin, 2024-9-18 added for EzSettings
         /// <summary>
         /// Read the settings in DDPM.UI Easy Arrange / Settings page. Inlcude
@@ -381,9 +400,11 @@ namespace DDPM.SA.Common
         /// <param name="newValue"></param>
         /// <returns></returns>
         public Task<bool> WriteEzSettings_IsAwsEnabled(bool newValue);
+
         #endregion EzSettings - EasyArrange
 
         #region EA Custom List - EasyArrange
+
         //Robert_Lin, 2024-10-12 added, move EACustomList to UserSettings from MonitorSettings
         /// <summary>
         /// Read EasyArrange Custom layout list from UserSettings file.
@@ -400,9 +421,11 @@ namespace DDPM.SA.Common
         /// </summary>
         /// <returns></returns>
         public Task<bool> WriteEACustomList(SplitJson[] customList);
+
         #endregion EA Custom List - EasyArrange
 
         #region EAMonitorSettings - EasyArrange
+
         /// <summary>
         /// Write new values to EA MonitorSettings file. A basic write file function, no any notification support.
         /// </summary>
@@ -418,16 +441,18 @@ namespace DDPM.SA.Common
         /// <param name="eaSettings"></param>
         /// <returns></returns>
         public Task<EAMonitorSettings> ReadEAMonitorSettings(MonitorInfo monitorInfo);
+
         #endregion EAMonitorSettings - EasyArrange
 
         #region SelectedLayout - EasyArrange
+
         /// <summary>
         /// Return the EAID of current selected layout. Called by CLI.
         /// UI/SA should call ReadEAMonitorSettings() to get the full properties of SelectedLayout.
         /// </summary>
         /// <param name="monitorInfo">Specified the monitor</param>
         /// <returns>
-        /// <b>0</b>=Off (Empty Layout), <b>[1~49]</b>=Preset layout, 
+        /// <b>0</b>=Off (Empty Layout), <b>[1~49]</b>=Preset layout,
         /// <b>[1000~1004]</b>=Custom layout, <b>others</b>(shold be a negavtive value)=error
         /// </returns>
         public Task<int> GetEASelectedLayout(MonitorInfo monitorInfo);
@@ -438,7 +463,7 @@ namespace DDPM.SA.Common
         /// 1. Set the specified layout (by EAID) as selected layout.<br/>
         /// 2. (if not exist then) Add to Recent list.<br/>
         /// 3. Save the changed to EAMonitorSettings.<br/>
-        /// 4. Notify SA.EAPlugin (EABroker) to update/refresh.<br/> 
+        /// 4. Notify SA.EAPlugin (EABroker) to update/refresh.<br/>
         /// 5. User will see the selected layout shown and auto fade-out animation.<br/>
         /// 6. Notify UI to reload settings.<br/>
         /// </summary>
@@ -476,9 +501,11 @@ namespace DDPM.SA.Common
         /// <param name="spJson"></param>
         /// <returns></returns>
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
+
         #endregion SelectedLayout - EasyArrange
 
         #region EditCommand - EasyArrange
+
         //Robert_Lin, 2024-8-4 new added
         /// <summary>
         /// Initiate a EditCommand to EAPlugin from DDPM.UI.
@@ -494,31 +521,35 @@ namespace DDPM.SA.Common
         /// <returns>
         /// <c>true</c>: EAPlugin has accept the EditCommand, and initiate an internal Edit Procedure.
         /// The caller (DDPM.UI) should wait for a EditStarted event.<br/>
-        /// <c>false</c>: The EditCommand is rejected by EAPlugin. 
+        /// <c>false</c>: The EditCommand is rejected by EAPlugin.
         /// </returns>
         public Task<bool> EAEditCommand(MonitorInfo monitorInfo, EAArgs args);
 
         #endregion EditCommand - EasyArrange
 
         #region SendEANotify -EasyArrange
+
         /// <summary>
         /// General notification  to EAPlugin from other Plugins inside DDPM.SA.User
         /// </summary>
         /// <param name="args">
         /// eaArgs.Command=EAEMConstants.EACommand_LastSelectedMonitorChanged:
-        ///     Notify EAPlugin when SelectedMonitor is changed, 
+        ///     Notify EAPlugin when SelectedMonitor is changed,
         /// </param>
         /// <returns></returns>
         public Task SendEANotify(EAArgs args);
-        #endregion  SendEANotify -EasyArrange
+
+        #endregion SendEANotify -EasyArrange
 
         #region Span across multiple monitors - EasyArrange
+
         /// <summary>
         /// Return current Span across multiple monitor option is Enabled/Disabled;
         /// Note that it's different with EzSettings.IsSpanAcrossMultiMonitors (=ON|OFF)
         /// </summary>
         /// <returns>True=Enabled; False=Disabled</returns>
         public Task<bool> GetIsSpanEnabled();
+
         #endregion Span across multiple monitors - EasyArrange
 
         #endregion EasyArrange
@@ -704,6 +735,8 @@ namespace DDPM.SA.Common
 
         Task<bool> WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value);
 
+        Task<bool> CheckInstallFirstOpen();
+
         #endregion public for settings
 
         #region public for hotkey
@@ -756,7 +789,7 @@ namespace DDPM.SA.Common
 
         //Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
 
-        Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUItrigger = false, List<string> giuds = null, List<string> serviceTags = null, List<string> models = null, string minVersion = "");
+        Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUITrigger = false, List<string> giuds = null, List<string> serviceTags = null, List<string> models = null, string minVersion = "");
         Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false, DeviceType deviceType = DeviceType.Unknown);
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
@@ -773,6 +806,7 @@ namespace DDPM.SA.Common
         Task<bool> SetServerURL(string url);
 
         Task<string> GetServerURL();
+
         Task<bool> CallDDPMUI(string DDPMPath);
 
         #endregion public for FW Update by Bruce
@@ -839,9 +873,10 @@ namespace DDPM.SA.Common
 
         #region public for SW Update
 
-        Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, bool reScan = true, bool isUItrigger = false);
+        Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, bool reScan = true, bool isUITrigger = false);
 
         Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUItrigger = false, string installPath = "");
+
         Task<InterruptScreenRoot> InterruptScreen_Metadata();
 
         #endregion public for SW Update
@@ -909,22 +944,35 @@ namespace DDPM.SA.Common
         #region Mouse
 
         Task<int> GetDpiValue(string Guid);
+
         Task<JArray> GetMouseProgrammableKeys(string Guid);
+
         Task<JArray> GetAppSpecificProfiles(string Guid);
+
         Task<bool> DeleteMouseAllAssignedActions(string Guid);
 
         Task<JArray> GetMouseAssignableActions(string Guid);
+
         Task<string> GetMouseKeystrokeDisplayData(string Guid);
+
         Task<bool> StartMouseKeystrokeRecording(string Guid);
+
         Task<bool> StopMouseKeystrokeRecording(string Guid);
 
         Task SetDPIValue(string Guid, int newValue);
+
         Task SetMouseAction(string Guid, byte[] newValue);
+
         Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue);
+
         Task DeleteMouseAssignedAction(string Guid, int newValue);
+
         Task SetMouseAssignDialogAction(string Guid, byte[] newValue);
+
         Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue);
+
         Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true);
+
         Task<bool> SetReportRate(string Guid, int newValue);
 
         #endregion Mouse
@@ -934,18 +982,25 @@ namespace DDPM.SA.Common
         Task<JArray> GetKeyboardDeviceItemsEx();
 
         Task<JArray> GetKbProgrammableKeys(string Guid);
+
         Task<bool> DeleteKeyboardAllAssignedActions(string Guid);
+
         Task<JArray> GetKbAssignableActions(string Guid);
+
         Task<string> GetKeyboardKeystrokeDisplayData(string Guid);
+
         Task<bool> StartKeyboardKeystrokeRecording(string Guid);
+
         Task<bool> StopKeyboardKeystrokeRecording(string Guid);
 
         Task DeleteKeyboardAssignedAction(string Guid, int newValue);
+
         Task SetKbAssignedAction(string Guid, byte[] newValue);
 
         Task SetKbAssignDialogAction(string Guid, byte[] newValue);
 
         Task SetKbAssignKeystrokeAction(string Guid, byte[] newValue);
+
         Task<bool> RestoreToDefaultKB(string Guid);
 
         #endregion Keyboard
@@ -953,39 +1008,71 @@ namespace DDPM.SA.Common
         #region Pen
 
         Task<string> GetEraserDoublePressValues();
+
         Task<string> GetEraserSinglePressValues();
+
         Task<string> GetEraserLongPressValues();
+
         Task<string> GetSideSwitchSinglePressValues();
+
         Task<string> GetMenuSinglePressValues();
+
         Task<string> GetLaunchableAppValues();
+
         Task<string> GetEraserDoublePressSetting();
+
         Task<string> GetEraserSinglePressSetting();
+
         Task<string> GetEraserLongPressSetting();
+
         Task<string> GetSideTopSwitchSinglePressSetting();
+
         Task<string> GetSideBottomSwitchSinglePressSetting();
+
         Task<string> GetMenuSinglePressSetting();
+
         Task<bool> GetMenuCenterRightClickSetting();
+
         Task<bool> GetIsSideTopButtonHoverClick();
+
         Task<bool> GetIsSideBottomButtonHoverClick();
+
         Task<string> PairingPen();
+
         Task<JArray> GetPenDeviceItemsEx();
+
         Task<bool> StartKeyCapturePen();
+
         Task<bool> FinishKeyCapturePen();
+
         Task<string> KeyCaptureData();
 
         Task UnPairPen(string Guid);
+
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
+
         Task SetEraserLongPressSetting(string itemID, byte[] newValue);
+
         Task SetEraserSinglePressSetting(string itemID, byte[] newValue);
+
         Task SetIsSideBottomButtonHoverClick(string itemID, bool newValue);
+
         Task SetIsSideTopButtonHoverClick(string itemID, bool newValue);
+
         Task SetMenuSinglePressSetting(string itemID, byte[] newValue);
+
         Task SetMenuCenterRightClickSetting(string itemID, bool newValue);
+
         Task SetSideBottomSwitchSinglePressSetting(string itemID, byte[] newValue);
+
         Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue);
+
         Task SetTiltSensitivity(string itemID, int newValue);
+
         Task SetTipSensitivity(string itemID, int newValue);
+
         Task<bool> RestoreToDefaultPen();
+
         Task<bool> RestoreRadialMenuToDefault();
 
         #endregion Pen
@@ -998,72 +1085,134 @@ namespace DDPM.SA.Common
         //event EventHandler<int>? Esi_WALLockCountdownChanged_ChangeEvent;
 
         Task<JArray> GetPresetProfiles(string Guid);
+
         Task<JArray> GetCustomProfiles(string Guid);
+
         Task<string> GetProfile(string Guid);
+
         Task<string> GetProfileName(string Guid);
+
         Task<int> GetBrightness(string Guid);
+
         Task<string> GetCameraFirmwareVersionByDTP(string Guid);
+
         Task<bool> GetIsPropertyFOVSupportedByDTP(string Guid);
+
         Task<int> GetFieldOfView(string Guid);
+
         Task<bool> GetIsWindowsHelloCapabilityVerified(string Guid);
+
         Task<bool> GetIsAllSupportedResolutionsFound(string Guid);
+
         Task<bool> GetIsPropertyHDRSupported(string Guid);
+
         Task<bool> GetIsHDROn(string Guid);
+
         Task<bool> GetIsPropertyAntiFlickerSupported(string Guid);
+
         Task<int> GetAntiFlicker(string Guid);
+
         Task<bool> GetIsPropertyAutoFramingSupported(string Guid);
+
         Task<bool> GetIsAutoFramingOn(string Guid);
+
         Task<string> GetSupportedResolutions(string Guid);
+
         Task<string> GetSelectedResolution(string Guid);
+
         Task<int> GetZoom(string Guid);
+
         Task<int> GetFocus(string Guid);
+
         Task<bool?> GetIsFocusOn(string Guid);
+
         Task<int> GetPriority(string Guid);
+
         Task<bool?> GetIsAutoFramingTransitionOn(string Guid);
+
         Task<int> GetAutoFramingFrameSize(string Guid);
+
         Task<int> GetAutoFramingSensitivity(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
+
         Task SetProfile(string Guid, string newValue);
+
         Task SetProfileName(string Guid, string newValue);
+
         Task CreateCustomProfile(string Guid, string newValue);
+
         Task DeleteProfile(string Guid, string newValue);
+
         Task<bool> SetZoom(string Guid, int newValue);
+
         Task<bool> SetIsAutoFramingOn(string Guid, bool newValue);
+
         Task<bool> SetIsAutoFramingTransitionOn(string Guid, bool newValue);
+
         Task<bool> SetAutoFramingSensitivity(string Guid, int newValue);
+
         Task<bool> SetAutoFramingFrameSize(string Guid, int newValue);
+
         Task<bool> SetFieldOfView(string Guid, int newValue);
+
         Task<bool> SetIsFocusOn(string Guid, bool newValue);
+
         Task<bool> SetFocus(string Guid, int newValue);
+
         Task<bool> SetPriority(string Guid, int newValue);
+
         Task<bool> SetIsHDROn(string Guid, bool newValue);
+
         Task<bool> SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
+
         Task<bool> SetAutoWhiteBalance(string Guid, int newValue);
+
         Task SetBrightness(string Guid, int newValue);
+
         Task SetSharpness(string Guid, int newValue);
+
         Task SetContrast(string Guid, int newValue);
+
         Task SetSaturation(string Guid, int newValue);
+
         Task SetAntiFlicker(string Guid, int newValue);
+
         Task SetTilt(string Guid, int newValue);
+
         Task SetPan(string Guid, int newValue);
 
         // webcam presence detection
         Task SetWALTime(string Guid, int newValue);
+
         Task SetSnooze(string Guid, int newValue);
+
         Task SetSnoozeLength(string Guid, int newValue);
+
         Task SetIsProximitySensorEnable(string Guid, bool newValue);
+
         Task SetIsWakeonApproachEnable(string Guid, bool newValue);
+
         Task SetIsWalkAwayLockEnable(string Guid, bool newValue);
+
         Task SetIsPrioritizeExternalWebcam(string Guid, bool newValue);
+
         Task ResetToDefault_webcam(string Guid, bool newValue);
+
         Task<int> GetWALTime(string Guid);
+
         Task<int> GetSnooze(string Guid);
+
         Task<int> GetSnoozeLength(string Guid);
+
         Task<bool> GetIsProximitySensorEnable(string Guid);
+
         Task<bool> GetIsWakeonApproachEnable(string Guid);
+
         Task<bool> GetIsWalkAwayLockEnable(string Guid);
+
         Task<bool?> GetIsPrioritizeExternalWebcam(string Guid);
+
         Task<bool> GetIsESISupported(string Guid);
 
         #endregion Webcam
@@ -1307,7 +1456,9 @@ namespace DDPM.SA.Common
         #endregion Dongle
 
         #region Dock
+
         Task<DockData> GetDockData(string guid);
+
         #endregion Dock
 
         #endregion public for DTPProxy
@@ -1369,23 +1520,69 @@ namespace DDPM.SA.Common
         #endregion GlobalSetting
 
         #region QAM
+
         Task SetIsDDPMLaunchByQAMAsync(bool newValue);
+
         Task<bool> GetIsDDPMLaunchByQAM();
+
         Task SetIsDDPMHomepageReadyAsync(bool newValue);
+
         Task<int> GetCurrentPollingRate();
+
         Task CloseQAMByDDPM();
+
         Task<bool> GetIsWidgetSettingPageLoadedByQAMAsync();
+
         Task SetIsWidgetSettingPageLoadedByQAMAsync(bool newValue);
+
         Task SyncWebcamProfile(string profileName, bool isActionFromQAM = true); //Derek 1212
+
         Task WriteLog(string logMsg); //Derek 1210
+
         #endregion QAM
 
         #region System Suspend & Resume & SessionEnd
+
         event EventHandler SystemSuspend;
+
         event EventHandler SystemResume;
+
         event EventHandler SystemSessionEnd;
 
         Task FireSystemSessionEnd();
+
         #endregion System Suspend & Resume & SessionEnd
+
+        #region globalperipheral
+
+        Task<bool> GetIsLockKeyNotificationsEnabledValue();
+
+        Task<bool> GetIsBatteryNotificationsEnabledValue();
+
+        Task<bool> GetIsPresenceDetectionSensnorStateNotificationsEnabledValue();
+
+        Task<bool> GetIsAnalyticsEnabledValue();
+
+        Task<bool> GetIsQuickAccessMenuEnabledValue();
+
+        Task<bool> GetIsMuteStatusNotificationsEnabledValue();
+
+        Task<bool> GetIsQuickAccessMenuOSDEnabledValue();
+
+        Task<bool> SetIsLockKeyNotificationsEnabledValue(bool newValue);
+
+        Task<bool> SetIsBatteryNotificationsEnabledValue(bool newValue);
+
+        Task<bool> SetIsPresenceDetectionSensnorStateNotificationsEnabledValue(bool newValue);
+
+        Task<bool> SetIsAnalyticsEnabledValue(bool newValue);
+
+        Task<bool> SetIsQuickAccessMenuEnabledValue(bool newValue);
+
+        Task<bool> SetIsMuteStatusNotificationsEnabledValue(bool newValue);
+
+        Task<bool> SetIsQuickAccessMenuOSDEnabledValue(bool newValue);
+
+        #endregion globalperipheral
     }
 }

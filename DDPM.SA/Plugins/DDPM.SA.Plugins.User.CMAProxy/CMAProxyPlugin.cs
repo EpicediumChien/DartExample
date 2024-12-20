@@ -293,7 +293,7 @@ namespace DDPM.SA.Plugins.User.CMAProxy
                     (e.changedProperty.ToLower().Contains("add")) ||
                     (e.changedProperty.ToLower().Contains("batterystatuschanged")) ||
                     (e.changedProperty.ToLower().Contains("batterylevelchanged")) ||
-                    ((string.Compare(e.changedProperty, "DisplayChanged", true) == 0)))
+                    (string.Compare(e.changedProperty, "DisplayChanged", true) == 0))
                 {
                     GetDdpmDevices(e.changedProperty.ToLower());
                 }

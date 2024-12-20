@@ -25,7 +25,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -76,11 +75,9 @@ namespace VcpCore.Plugins
         private static Timer _CacheTimer = new Timer(8000);
         private static Timer _StatusTimer = new Timer(10500);
         private static readonly object TaskQueueExecutorLock = new object();
-
-        //private static readonly object GetVCPLock = new object();
-        //private static readonly object SetVCPLock = new object();
+        private static readonly object GetVCPLock = new object();
+        private static readonly object SetVCPLock = new object();
         private static CancellationTokenSource _cancellationTokenSource;
-
         private static string _SupportClassification = string.Empty;
         private static Dictionary<string, List<modelinfos>> _SupportDictionary;
         private static readonly string targetFile = "LSTDDPM";
@@ -102,6 +99,8 @@ namespace VcpCore.Plugins
         public event EventHandler<VCPchangedEventArgs> VCPchanged;
 
         public event EventHandler<DisplaychangedEventArgs> Displaychanged;
+
+        public event EventHandler<MonitorinfoUpdateEventArgs> MonitorinfoUpdated;
 
         public event EventHandler<DDCCIchangedEventArgs> DDCCIStatuschanged;
 
@@ -180,14 +179,12 @@ namespace VcpCore.Plugins
 
             var Orig = _CacheTimer.Enabled;
 
-            if (Orig)
-                _CacheTimer.Stop();
+            if (Orig) _CacheTimer.Stop();
 
             _CacheTimer.Interval = millisecond;
             _CacheTimer.AutoReset = true;
 
-            if (Orig)
-                _CacheTimer.Start();
+            if (Orig) _CacheTimer.Start();
 
             return Task.FromResult(Task.CompletedTask);
         }
@@ -195,9 +192,6 @@ namespace VcpCore.Plugins
         public Task<List<MonitorInfo>> GetMonitors()
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Monitors List requested ...");
-
-            //_pauseEvent.WaitOne(Timeout.Infinite);
-            //_logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Monitors List requested overgo WaitOne ...");
 
             List<MonitorInfo> _AllDisplays = new List<MonitorInfo>(_AllInfoMonitors_Mix.Select(M => M.Item2).ToList());
 
@@ -213,7 +207,7 @@ namespace VcpCore.Plugins
             try
             {
                 bool IsFinishedAlready = false;
-                var CancelStatusCheck = Task.Run(() => CancellationCheck(token, ref IsFinishedAlready));
+                var CancelStatusCheck = Task.Run(() => CancellationCheck(token, in IsFinishedAlready));
                 var ReGetTask = Task.Run(() => InitializeMonitorsList(true, token));
 
                 List<MonitorInfo> _AllDisplays = new List<MonitorInfo>();
@@ -574,7 +568,7 @@ namespace VcpCore.Plugins
 
         #region Private Methods
 
-        private void CancellationCheck(CancellationToken token, ref bool IsFinishedAlready)
+        private void CancellationCheck(CancellationToken token, in bool IsFinishedAlready)
         {
             var can_Time = new CancellationTokenSource(15000);
             var canI_All = CancellationTokenSource.CreateLinkedTokenSource(can_Time.Token, token);
@@ -682,33 +676,23 @@ namespace VcpCore.Plugins
                     try
                     {
                         var token = newGetResultCancellationTokenSource.Token;
-
-                        //TODO: May be you'll want to add .ConfigureAwait(false);
                         var r = await Task.Run(() => GetQueueResult_(guid, token), token).ConfigureAwait(false);
 
                         return r;
                     }
                     catch (TaskCanceledException)
                     {
-                        // Task was canceled before running.
-                        // Cancelled due to timeout
                         _logs.DebugMsg("[VcpCorePlugin] " + guid.ToString() + " GetResultObjectAsync requested  Timeout ...");
                         return null;
                     }
                     catch (OperationCanceledException)
                     {
-                        // Task was canceled while running.
-                        // Cancelled due to timeout
                         _logs.DebugMsg("[VcpCorePlugin] " + guid.ToString() + " GetResultObjectAsync requested  Timeout ...");
                         return null;
                     }
                     catch (Exception e)
                     {
-                        // Failed to complete due to e exception
                         _logs.DebugMsg($"[VcpCorePlugin] --Task.Run ...GetResultObjectAsync is an exception-- ({e.Message})");
-
-                        //Done: let's be nice and don't swallow the exception
-                        //throw;
                         return null;
                     }
                     finally
@@ -943,7 +927,7 @@ namespace VcpCore.Plugins
                     {
                         if (monitorInfoX.DDCisON)
                         {
-                            var r = GetCapabilities_String(monitorInfoX.hPhysicalMonitor, CancellationToken.None);
+                            var r = GetCapabilities_String(in monitorInfoX, CancellationToken.None);
 
                             if (!string.IsNullOrEmpty(r))
                             {
@@ -957,7 +941,7 @@ namespace VcpCore.Plugins
                             }
                         }
                         else
-                            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetCapabilitiesString_ Bcuz ddcci disconnect, CapStr is empty ...");
+                            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] GetCapabilitiesString_ Bcuz ddcci disconnect, So Capstr is empty ...");
                     }
 
                     return string.Empty;
@@ -982,6 +966,7 @@ namespace VcpCore.Plugins
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin started GetVCPCapabilities_ ...");
 
                 var rcCache = GetFromCacheTable(monitorInfoX, "Capabilities")?.ToString();
+
                 if (!string.IsNullOrWhiteSpace(rcCache))
                     return rcCache;
                 else
@@ -999,11 +984,11 @@ namespace VcpCore.Plugins
                             IParser parser = new CapabilitiesParser();
                             INodeFormatter formatter = new NodeFormatter();
 
-                            var capabilities = monitorInfoX.CapabilityString;
-                            var tokens = tokenizer.GetTokens(capabilities);
+                            var capabilitiestr = monitorInfoX.CapabilityString;
+                            var tokens = tokenizer.GetTokens(capabilitiestr);
                             var node = parser.Parse(tokens);
 
-                            if (!string.IsNullOrWhiteSpace(capabilities) && (node.Nodes.Count() > 0))
+                            if (!string.IsNullOrWhiteSpace(capabilitiestr) && (node.Nodes.Count() > 0))
                             {
                                 var vcpNode = node.Nodes.RecursiveSelect(n => n.Nodes).Single(n => n.Value == "vcp");
 
@@ -1364,20 +1349,10 @@ namespace VcpCore.Plugins
 
                         if (rc)
                         {
+                            SetToCacheTable(monitorInfoX, code, val);
+
                             switch (code)
                             {
-                                case 0xEC:
-                                    break;
-
-                                case 0x60:
-                                    break;
-
-                                case 0x10:
-                                    break;
-
-                                case 0x12:
-                                    break;
-
                                 case 0x04:
                                     InitializeCacheTable(CancellationToken.None);
                                     break;
@@ -1387,7 +1362,6 @@ namespace VcpCore.Plugins
                                     break;
 
                                 default:
-                                    SetToCacheTable(monitorInfoX, code, val);
                                     break;
                             }
                         }
@@ -1455,11 +1429,11 @@ namespace VcpCore.Plugins
                                     else val_ = val;
 
                                     byte fuc = TranslatorVCPctrCode(FunctionName);
-                                    if (fuc != default(byte))
+                                    if (fuc != default)
                                     {
                                         var value = TranslatorVCPcategory(FunctionName, val_);
 
-                                        if (value != default(uint?))
+                                        if (value != default)
                                         {
                                             rc = SetVCPCapability_(monitorInfoX, fuc, value.Value);
 
@@ -1525,11 +1499,11 @@ namespace VcpCore.Plugins
                                 {
                                     byte fuc = TranslatorVCPctrCode(FunctionName);
 
-                                    if (fuc != default(byte))
+                                    if (fuc != default)
                                     {
                                         var value = TranslatorVCPcategory(FunctionName, val);
 
-                                        if (value != default(uint?))
+                                        if (value != default)
                                         {
                                             rc = SetVCPCapability_(monitorInfoX, fuc, value.Value);
 
@@ -1598,10 +1572,8 @@ namespace VcpCore.Plugins
 
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin set VCP 0x02 to 1 : " + (rc ? "Success" : "Fail"));
 
-                                if (rc)
-                                    FailTimes = 0;
-                                else
-                                    FailTimes++;
+                                if (rc) FailTimes = 0;
+                                else FailTimes++;
 
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin FailTimes : " + FailTimes.ToString());
 
@@ -1622,27 +1594,6 @@ namespace VcpCore.Plugins
 
         private void Watcher0x02forStatusCheck_()
         {
-            bool UpdateData(ref (MonitorInfo_complex, MonitorInfo) monitor)
-            {
-                var rc = false;
-
-                monitor.Item1.DDCisON = true;
-                monitor.Item2.DDCisON = true;
-
-                if (UpdateMyself(ref monitor, CancellationToken.None))
-                {
-                    rc = true;
-                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck UpdateMyself Success");
-                }
-                else
-                {
-                    rc = false;
-                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck UpdateMyself Fail");
-                }
-
-                return rc;
-            }
-
             try
             {
                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watching 0x02 for Status Check Let's go ...");
@@ -1654,72 +1605,78 @@ namespace VcpCore.Plugins
                     for (int count = 0; ((count < _AllInfoMonitors_Mix.Count) && IsOutInitialize); count++)
                     {
                         var monitor = _AllInfoMonitors_Mix[count];
-                        var monitorInfoX = monitor.Item1;
-                        var monitorInfo = monitor.Item2;
 
-                        _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck " + monitorInfoX.AliasDeviceName);
+                        _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck " + monitor.Item1.AliasDeviceName);
 
-                        object_0x02 = Get_VCPCapability(monitorInfoX, 0x02, 0, false);
+                        object_0x02 = Get_VCPCapability(monitor.Item1, 0x02, 0, IsOutInitialize);
 
                         if (object_0x02 != null)
                         {
-                            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck DDC/CI is connected");                            
+                            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck 0x02 is " + ((uint)object_0x02).ToString("X"));
+                            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck DDC/CI is connected");
 
-                            var ori_DDCCIStatus = monitorInfoX.DDCisON;
-                            var rr = UpdateData(ref monitor);
+                            var ori_DDCCIStatus = monitor.Item1.DDCisON;
 
-                            if (rr)
-                            {
-                                monitorInfoX.DDCCIFail = 0;
+                            monitor.Item1.DDCisON = true;
+                            monitor.Item2.DDCisON = true;
 
-                                if (!ori_DDCCIStatus)
-                                {
-                                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck prepare DDC/CI broadcast off -> on");
+                            var rt = UpdateMyself(ref monitor, CancellationToken.None);
 
-                                    monitorInfoX.DDCisON = true;
-                                    monitorInfo.DDCisON = true;
-
-                                    //Initialize2TypesMonitorInfo(false, CancellationToken.None);
-
-                                    DDCCIchangedEventArgs _ddcceventArg = new DDCCIchangedEventArgs();
-                                    _ddcceventArg.DDCisON = true;
-                                    _ddcceventArg.monitors = monitorInfo.Clone();
-
-                                    OnDDCCIStatuschanged(_ddcceventArg);
-                                }
-                            }
+                            if (rt.Item1)
+                                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck UpdateMyself Sucess");
                             else
-                            {
-                                monitorInfoX.DDCCIFail++;
+                                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Watcher0x02forStatusCheck UpdateMyself Fail");
 
-                                monitorInfoX.DDCisON = false;
-                                monitorInfo.DDCisON = false;
+                            if (rt.Item2)
+                            {
+                                OnMonitorinfoUpdatechanged(new MonitorinfoUpdateEventArgs()
+                                {
+                                    edid = monitor.Item1.edid,
+                                    monitor = monitor.Item2.Clone(),
+                                });
+                            }
+
+                            monitor.Item1.DDCCIFail = 0;
+
+                            if (!ori_DDCCIStatus)
+                            {
+                                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck prepare DDC/CI broadcast off -> on");
+
+                                monitor.Item1.DDCisON = true;
+                                monitor.Item2.DDCisON = true;
 
                                 Initialize2TypesMonitorInfo(false, CancellationToken.None);
+
+                                DDCCIchangedEventArgs _ddcceventArg = new DDCCIchangedEventArgs();
+                                _ddcceventArg.DDCisON = true;
+                                _ddcceventArg.monitors = monitor.Item2.Clone();
+
+                                OnDDCCIStatuschanged(_ddcceventArg);
                             }
                         }
                         else
                         {
+                            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck 0x02 is null");
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin DDC/CI is disconnected");
 
-                            monitorInfoX.DDCCIFail++;
+                            monitor.Item1.DDCCIFail++;
 
-                            if (monitorInfoX.DDCCIFail >= 2)
+                            if (monitor.Item1.DDCCIFail >= 3)
                             {
-                                monitorInfoX.DDCCIFail = 2;
+                                monitor.Item1.DDCCIFail = 3;
 
-                                if (monitorInfoX.DDCisON)
+                                if (monitor.Item1.DDCisON)
                                 {
                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin prepare DDC/CI broadcast on -> off");
 
-                                    monitorInfoX.DDCisON = false;
-                                    monitorInfo.DDCisON = false;
+                                    monitor.Item1.DDCisON = false;
+                                    monitor.Item2.DDCisON = false;
 
                                     Initialize2TypesMonitorInfo(false, CancellationToken.None);
 
                                     DDCCIchangedEventArgs _ddcceventArg = new DDCCIchangedEventArgs();
                                     _ddcceventArg.DDCisON = false;
-                                    _ddcceventArg.monitors = monitorInfo.Clone();
+                                    _ddcceventArg.monitors = monitor.Item2.Clone();
 
                                     OnDDCCIStatuschanged(_ddcceventArg);
                                 }
@@ -1752,34 +1709,36 @@ namespace VcpCore.Plugins
                     for (int count = 0; ((count < _AllInfoMonitors_Mix.Count) && IsOutInitialize); count++)    //foreach (var monitor in _AllInfoMonitors_Mix)
                     {
                         var monitor = _AllInfoMonitors_Mix[count];
-                        var monitorInfoX = monitor.Item1;
-                        var monitorInfo = monitor.Item2;
 
-                        _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin " + monitorInfoX.AliasDeviceName + " Watching 0x52");
+                        _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin " + monitor.Item1.AliasDeviceName + " Watching 0x52");
 
-                        if (monitorInfoX.DDCisON)
+                        if (monitor.Item1.DDCisON)
                         {
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin DDC/CI is connected");
 
-                            object_0x02 = Get_VCPCapability(monitorInfoX, 0x02, 0, false);
+                            object_0x02 = Get_VCPCapability(monitor.Item1, 0x02, 0, IsOutInitialize);
 
                             if (object_0x02 != null)
                             {
-                                monitorInfoX.DDCCIFail = 0;
+                                monitor.Item1.DDCCIFail = 0;
 
                                 var FailTimes = 0;
                                 while ((object_0x02 != null) && (((uint)object_0x02) != 1) && (FailTimes < 5) && IsOutInitialize)
                                 {
                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin VCP 0x02 is " + ((uint)object_0x02).ToString("X"));
 
-                                    object_0x52 = Get_VCPCapability(monitorInfoX, 0x52, 0, IsOutInitialize);
+                                    object_0x52 = Get_VCPCapability(monitor.Item1, 0x52, 0, IsOutInitialize);
 
                                     if (object_0x52 != null)
                                     {
-                                        var tmp = Get_VCPCapability(monitorInfoX, Convert.ToByte(object_0x52), 0, IsOutInitialize);
+                                        _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin VCP 0x52 is " + ((uint)object_0x52).ToString("X"));
+
+                                        var tmp = Get_VCPCapability(monitor.Item1, Convert.ToByte(object_0x52), 0, IsOutInitialize);
 
                                         if (tmp != null)
                                         {
+                                            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin VCP " + Convert.ToUInt32(object_0x52).ToString("X") + " is " + Convert.ToUInt32(tmp).ToString());
+
                                             if (((uint)object_0x52).ToString("X").ToUpper().Equals("E2"))
                                             {
                                                 uint val = (Convert.ToUInt32(tmp) & 0XFFFF);
@@ -1789,7 +1748,7 @@ namespace VcpCore.Plugins
 
                                                 if (!string.IsNullOrWhiteSpace(rc_str))
                                                 {
-                                                    SetToCacheTable(monitorInfoX, Convert.ToByte(object_0x52), val);
+                                                    SetToCacheTable(monitor.Item1, Convert.ToByte(object_0x52), val);
 
                                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ 0x52 ctr code is " + ((uint)object_0x52).ToString("X"));
                                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ 0x52 ctr code value is " + NodeFormatter.FormatVCP_E2(rc_str.ToLower()));
@@ -1797,7 +1756,7 @@ namespace VcpCore.Plugins
                                                     VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                                     _VCPchangedEventArgs.vcpcode = ((uint)object_0x52).ToString("X");
                                                     _VCPchangedEventArgs.value = NodeFormatter.FormatVCP_E2(rc_str.ToLower());
-                                                    _VCPchangedEventArgs.monitor = monitorInfo.Clone();
+                                                    _VCPchangedEventArgs.monitor = monitor.Item2.Clone();
 
                                                     OnVCPchanged(_VCPchangedEventArgs);
                                                 }
@@ -1810,10 +1769,8 @@ namespace VcpCore.Plugins
 
                                                 if (!string.IsNullOrWhiteSpace(rc_str))
                                                 {
-                                                    SetToCacheTable(monitorInfoX, 0x60, val);
-
                                                     List<InputSourceObject> r = new List<InputSourceObject>();
-                                                    var R = GetFromCacheTable(monitorInfoX, "inputsourcelist");
+                                                    var R = GetFromCacheTable(monitor.Item1, "inputsourcelist");
                                                     if (R != null)
                                                         r.AddRange(R as List<InputSourceObject>);
 
@@ -1834,15 +1791,15 @@ namespace VcpCore.Plugins
 
                                                     if (rv)
                                                     {
-                                                        monitorInfoX.inputSource = n;
-                                                        monitorInfo.inputSource = n;
+                                                        monitor.Item1.inputSource = n;
+                                                        monitor.Item2.inputSource = n;
                                                         rstring = n;
                                                     }
                                                     else
                                                     {
                                                         string rs = System.Text.RegularExpressions.Regex.Replace(n, @"\d", string.Empty);
-                                                        monitorInfoX.inputSource = rs;
-                                                        monitorInfo.inputSource = rs;
+                                                        monitor.Item1.inputSource = rs;
+                                                        monitor.Item2.inputSource = rs;
                                                         rstring = rs;
                                                     }
 
@@ -1856,14 +1813,14 @@ namespace VcpCore.Plugins
                                                     VCPchangedEventArgs _VCPchangedEventArgsII = new VCPchangedEventArgs();
                                                     _VCPchangedEventArgsII.vcpcode = "input select";
                                                     _VCPchangedEventArgsII.value = rstring;
-                                                    _VCPchangedEventArgsII.monitor = monitorInfo.Clone();
+                                                    _VCPchangedEventArgsII.monitor = monitor.Item2.Clone();
 
                                                     OnVCPchanged(_VCPchangedEventArgsII);
                                                 }
                                             }
                                             else
                                             {
-                                                SetToCacheTable(monitorInfoX, Convert.ToByte(object_0x52), (Convert.ToUInt32(tmp)));
+                                                SetToCacheTable(monitor.Item1, Convert.ToByte(object_0x52), (Convert.ToUInt32(tmp)));
 
                                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ 0x52 ctr code is " + ((uint)object_0x52).ToString("X"));
                                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger]~~~ 0x52 ctr code value is " + ((uint)tmp).ToString());
@@ -1871,50 +1828,52 @@ namespace VcpCore.Plugins
                                                 VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                                 _VCPchangedEventArgs.vcpcode = ((uint)object_0x52).ToString("X");
                                                 _VCPchangedEventArgs.value = ((uint)tmp).ToString();
-                                                _VCPchangedEventArgs.monitor = monitorInfo.Clone();
+                                                _VCPchangedEventArgs.monitor = monitor.Item2.Clone();
 
                                                 OnVCPchanged(_VCPchangedEventArgs);
                                             }
                                         }
                                         else
-                                            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Get VCP ctr in 0x52 that value is null");
+                                            _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] Get VCP " + Convert.ToUInt32(object_0x52).ToString("X") + " is null");
                                     }
                                     else
                                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] 0x52 is null");
 
-                                    rc = Set_VCPCapability(monitorInfoX, 0x02, 0x01, IsOutInitialize);
-                                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin set VCP 0x02 to 1 : " + (rc ? "Success" : "Fail"));
+                                    rc = Set_VCPCapability(monitor.Item1, 0x02, 0x01, IsOutInitialize);
 
-                                    if (rc)
-                                        FailTimes = 0;
-                                    else
-                                        FailTimes++;
+                                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin set VCP 0x02 to 1 : " + (rc ? "Sucess" : "Fail"));
+
+                                    if (rc) FailTimes = 0;
+                                    else FailTimes++;
 
                                     _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin FailTimes : " + FailTimes.ToString());
 
-                                    object_0x02 = Get_VCPCapability(monitorInfoX, 0x02, 0, IsOutInitialize);
+                                    object_0x02 = Get_VCPCapability(monitor.Item1, 0x02, 0, IsOutInitialize);
                                 }
                             }
                             else
                             {
+                                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin VCP 0x02 is null");
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin DDC/CI is disconnected");
-                                monitorInfoX.DDCCIFail++;
-                                if (monitorInfoX.DDCCIFail >= 2)
-                                {
-                                    monitorInfoX.DDCCIFail = 2;
 
-                                    if (monitorInfoX.DDCisON)
+                                monitor.Item1.DDCCIFail++;
+
+                                if (monitor.Item1.DDCCIFail >= 3)
+                                {
+                                    monitor.Item1.DDCCIFail = 3;
+
+                                    if (monitor.Item1.DDCisON)
                                     {
                                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin prepare DDC/CI broadcast on -> off");
 
-                                        monitorInfoX.DDCisON = false;
-                                        monitorInfo.DDCisON = false;
+                                        monitor.Item1.DDCisON = false;
+                                        monitor.Item2.DDCisON = false;
 
                                         Initialize2TypesMonitorInfo(false, CancellationToken.None);
 
                                         DDCCIchangedEventArgs _ddcceventArg = new DDCCIchangedEventArgs();
                                         _ddcceventArg.DDCisON = false;
-                                        _ddcceventArg.monitors = monitorInfo.Clone();
+                                        _ddcceventArg.monitors = monitor.Item2.Clone();
 
                                         OnDDCCIStatuschanged(_ddcceventArg);
                                     }
@@ -1944,11 +1903,16 @@ namespace VcpCore.Plugins
             EventHandler<VCPchangedEventArgs> handler = VCPchanged;
             if (handler != null)
                 Task.Run(() => handler.Invoke(this, e)).ConfigureAwait(false);
+        }
 
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
+        protected virtual void OnMonitorinfoUpdatechanged(MonitorinfoUpdateEventArgs e)
+        {
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin Broadcast MonitorinfoUpdatechanged ...");
+
+            //MonitorUpdatechanged?.Invoke(this, e);
+            EventHandler<MonitorinfoUpdateEventArgs> handler = MonitorinfoUpdated;
+            if (handler != null)
+                Task.Run(() => handler.Invoke(this, e)).ConfigureAwait(false);
         }
 
         protected virtual void OnDisplaychanged(DisplaychangedEventArgs e)
@@ -1959,11 +1923,6 @@ namespace VcpCore.Plugins
             EventHandler<DisplaychangedEventArgs> handler = Displaychanged;
             if (handler != null)
                 Task.Run(() => handler.Invoke(this, e)).ConfigureAwait(false);
-
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
         }
 
         protected virtual void OnDDCCIStatuschanged(DDCCIchangedEventArgs e)
@@ -1974,11 +1933,6 @@ namespace VcpCore.Plugins
             EventHandler<DDCCIchangedEventArgs> handler = DDCCIStatuschanged;
             if (handler != null)
                 Task.Run(() => handler.Invoke(this, e)).ConfigureAwait(false);
-
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
         }
 
         private void InitializeMonitorsList(bool IsFromReGet, CancellationToken token)
@@ -2066,10 +2020,17 @@ namespace VcpCore.Plugins
 
                                 TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
 
-                                Interlocked.Add(ref _CoWorkSignal, 1);
-                                _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier set _CoWorkSignal 1 ...");
+                                if (_CoWorkSignal < 1)
+                                {
+                                    Interlocked.Add(ref _CoWorkSignal, 1);
+                                    _logs.DebugMsg($"[VcpCorePlugin] *** Monitor-Retrier set _CoWorkSignal +1 : {_CoWorkSignal}");
+                                }
+
+                                _logs.DebugMsg($"[VcpCorePlugin] *** Monitor-Retrier now _CoWorkSignal : {_CoWorkSignal}");
+
                                 Interlocked.Add(ref _InitialThreadCounter, 1);
                                 _logs.DebugMsg($"[VcpCorePlugin] _InitialThreadCounter count : ({_InitialThreadCounter}) when mos=0 and Task run");
+
                                 T = Task.Run(() =>
                                 {
                                     try
@@ -2154,8 +2115,14 @@ namespace VcpCore.Plugins
                                     }
                                     finally
                                     {
-                                        Interlocked.Add(ref _CoWorkSignal, -1);
-                                        _logs.DebugMsg("[VcpCorePlugin] *** Monitor-Retrier set _CoWorkSignal 0 ...");
+                                        if (_CoWorkSignal > 0)
+                                        {
+                                            Interlocked.Add(ref _CoWorkSignal, -1);
+                                            _logs.DebugMsg($"[VcpCorePlugin] *** Monitor-Retrier set _CoWorkSignal -1 : {_CoWorkSignal}");
+                                        }
+
+                                        _logs.DebugMsg($"[VcpCorePlugin] *** Monitor-Retrier finally now _CoWorkSignal : {_CoWorkSignal}");
+
                                         Interlocked.Add(ref _InitialThreadCounter, -1);
                                         _logs.DebugMsg($"[VcpCorePlugin] _InitialThreadCounter count : ({_InitialThreadCounter}) when mos=0 and Task run in finally");
 
@@ -2179,7 +2146,7 @@ namespace VcpCore.Plugins
                                             _LockerSemaphoreSlim.Release();
                                         }
                                     }
-                                }, TokenNew);
+                                });
                             }
                             else
                             {
@@ -2193,10 +2160,17 @@ namespace VcpCore.Plugins
 
                                     TokenNew.ThrowIfCancellationRequested();  //Extra Check IfCancellationRequested
 
-                                    Interlocked.Add(ref _CoWorkSignal, 1);
-                                    _logs.DebugMsg("[VcpCorePlugin] *** DoingExtentDetect set _CoWorkSignal 1 ...");
+                                    if (_CoWorkSignal < 1)
+                                    {
+                                        Interlocked.Add(ref _CoWorkSignal, 1);
+                                        _logs.DebugMsg($"[VcpCorePlugin] *** DoingExtentDetect set _CoWorkSignal +1 : {_CoWorkSignal}");
+                                    }
+
+                                    _logs.DebugMsg($"[VcpCorePlugin] *** DoingExtentDetect now _CoWorkSignal: {_CoWorkSignal}");
+
                                     Interlocked.Add(ref _InitialThreadCounter, 1);
                                     _logs.DebugMsg($"[VcpCorePlugin] _InitialThreadCounter count : ({_InitialThreadCounter}) when mos>0 and Task run");
+
                                     T = Task.Run(() =>
                                     {
                                         try
@@ -2290,8 +2264,14 @@ namespace VcpCore.Plugins
                                         }
                                         finally
                                         {
-                                            Interlocked.Add(ref _CoWorkSignal, -1);
-                                            _logs.DebugMsg("[VcpCorePlugin] *** DoingExtentDetect set _CoWorkSignal 0 ...");
+                                            if (_CoWorkSignal > 0)
+                                            {
+                                                Interlocked.Add(ref _CoWorkSignal, -1);
+                                                _logs.DebugMsg($"[VcpCorePlugin] *** DoingExtentDetect set _CoWorkSignal -1 : {_CoWorkSignal}");
+                                            }
+
+                                            _logs.DebugMsg($"[VcpCorePlugin] *** DoingExtentDetect finally now _CoWorkSignal: {_CoWorkSignal}");
+
                                             Interlocked.Add(ref _InitialThreadCounter, -1);
                                             _logs.DebugMsg($"[VcpCorePlugin] _InitialThreadCounter count : ({_InitialThreadCounter}) when mos>0 and Task run in finally");
 
@@ -2315,7 +2295,7 @@ namespace VcpCore.Plugins
                                                 _LockerSemaphoreSlim.Release();
                                             }
                                         }
-                                    }, TokenNew);
+                                    });
                                 }
 
                                 //-------------------------------------------
@@ -2379,6 +2359,8 @@ namespace VcpCore.Plugins
 
                             if (_CoWorkSignal < 1 && T == null)
                             {
+                                _logs.DebugMsg($"[VcpCorePlugin] InitializeMonitorsList finished and in finally _CoWorkSignal: {_CoWorkSignal}");
+
                                 if (_LockerSemaphoreSlim.CurrentCount < 1)
                                 {
                                     _logs.DebugMsg("[VcpCorePlugin] _LockerSemaphoreSlim.Release() when InitializeMonitorsList finished and in finally");
@@ -2405,7 +2387,7 @@ namespace VcpCore.Plugins
                 {
                     _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
 
-                    for (int i = 0; (i < _AllInfoMonitors.Count && (!token.IsCancellationRequested)); i++)  //foreach (var MonitorInfoX in _AllInfoMonitors)
+                    for (int i = 0; (i < _AllInfoMonitors.Count && (!token.IsCancellationRequested)); i++)
                     {
                         var MonitorInfoX = _AllInfoMonitors[i];
 
@@ -2518,7 +2500,7 @@ namespace VcpCore.Plugins
 
                 if (_AllInfoMonitors_Mix.Count > 0)
                 {
-                    for (int i = 0; (i < _AllInfoMonitors_Mix.Count && (!token.IsCancellationRequested)); i++)  // foreach (var MonitorInfo in _AllInfoMonitors)
+                    for (int i = 0; (i < _AllInfoMonitors_Mix.Count && (!token.IsCancellationRequested)); i++)
                     {
                         var MonitorInfo = _AllInfoMonitors_Mix[i].Item1;
 
@@ -2586,7 +2568,7 @@ namespace VcpCore.Plugins
             {
                 _logs.DebugMsg("[VcpCorePlugin] GetFromCacheTable Let's go ...");
                 _logs.DebugMsg("[VcpCorePlugin] GetFromCacheTable TargetMonitor AliasDeviceName is " + MonitorInfo.AliasDeviceName);
-                _logs.DebugMsg("[VcpCorePlugin] GetFromCacheTable Key is " + ((key is string) ? key.ToString() : Convert.ToUInt32(key).ToString("X")));
+                _logs.DebugMsg("[VcpCorePlugin] GetFromCacheTable Key is " + ((key is string) ? key.ToString() : Convert.ToByte(key).ToString("X")));
 
                 if (_CacheTable.Count > 0)
                 {
@@ -2625,13 +2607,31 @@ namespace VcpCore.Plugins
             {
                 _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable Let's go ...");
                 _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable TargetMonitor AliasDeviceName is " + MonitorInfo.AliasDeviceName);
-                _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable Key is " + ((key is string) ? key.ToString() : Convert.ToUInt32(key).ToString("X")));
+                _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable Key is " + ((key is string) ? key.ToString() : Convert.ToByte(key).ToString("X")));
 
-                bool rc = false;
-                if (_CacheTable.Count > 0)
+                var ignoreCodes = new List<byte> { 0x02, 0x04, 0x05, 0x10, 0x12, 0x52, 0x60, 0xEC };
+
+                if ((key != null) && (!(key is string)) && (ignoreCodes.Contains(Convert.ToByte(key))))
+                    _logs.DebugMsg("[VcpCorePlugin] ctr-code is in IgnoreCodes...Do not SetToCacheTable");
+                else
                 {
-                    rc = AddValue(_CacheTable.Keys.ToList());
-                    if (!rc)
+                    bool rc = false;
+                    if (_CacheTable.Count > 0)
+                    {
+                        rc = AddValue(_CacheTable.Keys.ToList());
+                        if (!rc)
+                        {
+                            if (!string.IsNullOrWhiteSpace(MonitorInfo.CapabilityString))
+                            {
+                                _CacheTable.Add(MonitorInfo.edid, new Dictionary<object, object>() { { "CapibilityString", MonitorInfo.CapabilityString }, { key, value } });
+                                rc = AddValue(_CacheTable.Keys.ToList());
+                                _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable " + (rc ? "Pass" : "Fail"));
+                            }
+                        }
+                        else
+                            _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable Pass");
+                    }
+                    else
                     {
                         if (!string.IsNullOrWhiteSpace(MonitorInfo.CapabilityString))
                         {
@@ -2640,19 +2640,7 @@ namespace VcpCore.Plugins
                             _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable " + (rc ? "Pass" : "Fail"));
                         }
                     }
-                    else
-                        _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable Pass");
                 }
-                else
-                {
-                    if (!string.IsNullOrWhiteSpace(MonitorInfo.CapabilityString))
-                    {
-                        _CacheTable.Add(MonitorInfo.edid, new Dictionary<object, object>() { { "CapibilityString", MonitorInfo.CapabilityString }, { key, value } });
-                        rc = AddValue(_CacheTable.Keys.ToList());
-                        _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable " + (rc ? "Pass" : "Fail"));
-                    }
-                }
-
                 _logs.DebugMsg("[VcpCorePlugin] SetToCacheTable finish");
             }
             catch (Exception ex)
@@ -2717,7 +2705,7 @@ namespace VcpCore.Plugins
         {
             try
             {
-                byte rc = default(byte);
+                byte rc = default;
 
                 if (VcpCodeList.VCPctr.ContainsKey(str))
                     VcpCodeList.VCPctr.TryGetValue(str, out rc);
@@ -2727,7 +2715,7 @@ namespace VcpCore.Plugins
             catch (Exception ex)
             {
                 _logs.DebugMsg("[VcpCorePlugin] TranslatorVCPctrCode into catch: " + ex.Message);
-                return default(byte);
+                return default;
             }
         }
 
@@ -2735,7 +2723,7 @@ namespace VcpCore.Plugins
         {
             try
             {
-                var rc = default(uint?);
+                uint? rc = default;
 
                 if (category.Equals(@"USB-C Prioritization", StringComparison.OrdinalIgnoreCase))
                 {
@@ -2758,7 +2746,7 @@ namespace VcpCore.Plugins
             catch (Exception ex)
             {
                 _logs.DebugMsg("[VcpCorePlugin] TranslatorVCPcategory into catch: " + ex.Message);
-                return default(byte);
+                return default;
             }
         }
 
@@ -3026,7 +3014,7 @@ namespace VcpCore.Plugins
                                     }
                                     else
                                     {
-                                        _TargetMonitor.CapabilityString = GetCapabilities_String(_TargetMonitor.hPhysicalMonitor, token);
+                                        _TargetMonitor.CapabilityString = GetCapabilities_String(in _TargetMonitor, token);
                                         if (!string.IsNullOrWhiteSpace(_TargetMonitor.CapabilityString))
                                             break;
                                     }
@@ -3108,7 +3096,7 @@ namespace VcpCore.Plugins
                                         {
                                             _TargetMonitor.CapabilityDic.Clear();
                                             nRetryCount++;
-                                            _TargetMonitor.CapabilityString = GetCapabilities_String(_TargetMonitor.hPhysicalMonitor, token);
+                                            _TargetMonitor.CapabilityString = GetCapabilities_String(in _TargetMonitor, token);
                                             if (nRetryCount >= 3)
                                                 break;
 
@@ -3118,7 +3106,7 @@ namespace VcpCore.Plugins
                                         if (!GetAllColorPreset(_TargetMonitor.CapabilityString, ref _TargetMonitor.ColorPresentDescription, ref _TargetMonitor.UnDefinedColorPreset, _TargetMonitor.IsDellMonitor))
                                         {
                                             nRetryCount2++;
-                                            _TargetMonitor.CapabilityString = GetCapabilities_String(_TargetMonitor.hPhysicalMonitor, token);
+                                            _TargetMonitor.CapabilityString = GetCapabilities_String(in _TargetMonitor, token);
 
                                             if (nRetryCount2 >= 3)
                                                 break;
@@ -3169,7 +3157,7 @@ namespace VcpCore.Plugins
 
                                     token.ThrowIfCancellationRequested();  //*****EXTRA CHECK*****//
 
-                                    var FwTmp = FwVersion(ref _TargetMonitor, _TargetMonitor.modelName, token);
+                                    var FwTmp = FwVersion(in _TargetMonitor, _TargetMonitor.modelName, token);
                                     _TargetMonitor.FwVersion = FwTmp.Item1;
                                     _TargetMonitor.D_Ctrl = FwTmp.Item2;
                                     _TargetMonitor.SupplierID = FwTmp.Item3;
@@ -3330,8 +3318,6 @@ namespace VcpCore.Plugins
 
                         if (!string.IsNullOrWhiteSpace(rc_H) && !string.IsNullOrWhiteSpace(rc_L))
                         {
-                            SetToCacheTable(monitorInfo_, 0x60, value);
-
                             List<InputSourceObject> r = new List<InputSourceObject>();
                             var R = GetFromCacheTable(monitorInfo_, "inputsourcelist");
                             if (R != null)
@@ -3387,7 +3373,7 @@ namespace VcpCore.Plugins
         {
             try
             {
-                //Monitor.Enter(SetVCPLock);
+                Monitor.Enter(SetVCPLock);
 
                 if (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid))))
                 {
@@ -3429,20 +3415,21 @@ namespace VcpCore.Plugins
                 _logs.DebugMsg("[VcpCorePlugin] Set_VCPCapability ex: " + ex.Message);
                 return false;
             }
-            //finally
-            //{
-            //    Monitor.Exit(SetVCPLock);
-            //}
+            finally
+            {
+                Monitor.Exit(SetVCPLock);
+            }
         }
 
         private object Get_VCPCapability(MonitorInfo_complex monitorInfoX, byte code, int opt, bool retry = true)
         {
             try
             {
-                //Monitor.Enter(GetVCPLock);
+                Monitor.Enter(GetVCPLock);
 
-                _logs.DebugMsg("[VcpCorePlugin] IsOutInitialize :" + IsOutInitialize.ToString());
-                _logs.DebugMsg("[VcpCorePlugin] (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid)))) :" + (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid)))).ToString());
+                _logs.DebugMsg("[VcpCorePlugin] Get_VCPCapability conditional expressions I : " + IsOutInitialize.ToString());
+                _logs.DebugMsg("[VcpCorePlugin] Get_VCPCapability conditional expressions II : " + (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid)))).ToString());
+
                 if ((!IsOutInitialize) || (_AllInfoMonitors_Mix.Count > 0 && (_AllInfoMonitors_Mix.Exists(M => M.Item1.edid.Equals(monitorInfoX.edid)))))
                 {
                     int count = 0;
@@ -3473,10 +3460,10 @@ namespace VcpCore.Plugins
                 _logs.DebugMsg("[VcpCorePlugin] Get_VCPCapability ex: " + ex.Message);
                 return null;
             }
-            //finally
-            //{
-            //    Monitor.Exit(GetVCPLock);
-            //}
+            finally
+            {
+                Monitor.Exit(GetVCPLock);
+            }
         }
 
         private static bool GetColorPresetVcpCode(Dictionary<string, Dictionary<string, string>> ColorPresetHash, string presetName, ref ColorPreset outColorPreset)
@@ -3495,8 +3482,6 @@ namespace VcpCore.Plugins
                     bool TF_Boolean = ColorPresetHash.TryGetValue(ResourceName, out myresources);
                     if (TF_Boolean)
                     {
-                        Trace.Write($" presetName = {presetName}");
-
                         /*
                         if (myresources.ContainsKey(presetName))
                         {
@@ -3518,8 +3503,6 @@ namespace VcpCore.Plugins
                         }
                     }
                 }
-
-                Trace.Write($" GetResult = {GetResult}");
 
                 if (GetResult)
                 {
@@ -3588,18 +3571,12 @@ namespace VcpCore.Plugins
         {
             try
             {
+                object value = null;
                 string rc = string.Empty;
                 int count = 0;
                 do
                 {
-                    object value = new object();
-
-                    // 20241014 jim add
-                    value = null;
-                    //value = GetFromCacheTable(monitor, Convert.ToByte(0xE2));
-
-                    if (value == null)
-                        value = Get_VCPCapability(monitor, 0xE2, 0, IsOutInitialize);
+                    value = Get_VCPCapability(monitor, 0xE2, 0, IsOutInitialize);
 
                     if (value != null)
                     {
@@ -3611,10 +3588,8 @@ namespace VcpCore.Plugins
                             int pos = valstring.Length - 2;
                             rc = valstring.Substring(pos);
                         }
-
-                        Trace.WriteLine("GetCurrentColorPreset()  valstring= " + valstring);
-                        Trace.WriteLine("GetCurrentColorPreset()  rc= " + rc);
                     }
+
                     if (!string.IsNullOrWhiteSpace(rc))
                         return NodeFormatter.FormatVCP_E2(rc.ToLower());
 
@@ -3646,7 +3621,6 @@ namespace VcpCore.Plugins
                     {
                         if (newpreset.vcpode != VcpCode.ColorSpaceE2)
                             SetResult = Set_VCPCapability(mi, Convert.ToByte(newpreset.vcpode), newpreset.codeValue, IsOutInitialize);
-                        //SetResult = SetVCPFeature(mi.hPhysicalMonitor, Convert.ToByte(newpreset.vcpode), newpreset.codeValue);
                         else
                             SetResult = false;
                     }
@@ -3655,7 +3629,6 @@ namespace VcpCore.Plugins
                 {
                     if (GetColorPresetVcpCodeForNonDell(mi.ColorPresentDescription, presetName, ref newpreset))
                         SetResult = Set_VCPCapability(mi, Convert.ToByte(newpreset.vcpode), newpreset.codeValue, IsOutInitialize);
-                    //SetResult = SetVCPFeature(mi.hPhysicalMonitor, Convert.ToByte(newpreset.vcpode), newpreset.codeValue);
                 }
                 return SetResult;
             }
@@ -3666,19 +3639,19 @@ namespace VcpCore.Plugins
             }
         }
 
-        private string GetCapabilities_String(IntPtr hPhysicalMonitor, CancellationToken token)
+        private string GetCapabilities_String(in MonitorInfo_complex monitorx, CancellationToken token)
         {
             bool CheckStatus()
             {
                 if (token.Equals(CancellationToken.None))
                 {
                     if (IsOutInitialize)
-                        return true;
+                        return true;   // Not In Initialize and No thread trigger Initialize
                     else
-                        return false;
+                        return false;  // Not In Initialize but exist thread trigger Initialize
                 }
                 else
-                    return true;
+                    return true;  // In Initialize and interrupt by ThrowIfCancellationRequested()
             }
 
             int count = 0;
@@ -3697,7 +3670,7 @@ namespace VcpCore.Plugins
                     {
                         token.ThrowIfCancellationRequested();
 
-                        capabilitiesStringLength = _GetCapabilitiesStringLength(hPhysicalMonitor, out length);
+                        capabilitiesStringLength = _GetCapabilitiesStringLength(monitorx.hPhysicalMonitor, out length);
                         if (capabilitiesStringLength) break;
                         else
                         {
@@ -3711,7 +3684,7 @@ namespace VcpCore.Plugins
                     {
                         num = 4;
                         var sb = new StringBuilder((int)length);
-                        while (!_CapabilitiesRequestAndCapabilitiesReply(hPhysicalMonitor, sb, (uint)sb.Capacity) && num > 0 && CheckStatus())
+                        while (!_CapabilitiesRequestAndCapabilitiesReply(monitorx.hPhysicalMonitor, sb, (uint)sb.Capacity) && num > 0 && CheckStatus())
                         {
                             token.ThrowIfCancellationRequested();
 
@@ -4286,12 +4259,12 @@ namespace VcpCore.Plugins
             }
         }
 
-        private bool UpdateMyself(ref (MonitorInfo_complex, MonitorInfo) _TargetMonitorX, CancellationToken token)
+        private (bool, bool) UpdateMyself(ref (MonitorInfo_complex, MonitorInfo) Monitor, CancellationToken token)
         {
             try
             {
-                var _TargetMonitorx = _TargetMonitorX.Item1;
-                var _TargetMonitor = _TargetMonitorX.Item2;
+                var _TargetMonitorx = Monitor.Item1;
+                var _TargetMonitor = Monitor.Item2;
 
                 _logs.DebugMsg("[VcpCorePlugin] UpdateMyself  Let's go ...");
                 _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} UpdateMyself ...");
@@ -4301,8 +4274,6 @@ namespace VcpCore.Plugins
 
                 if (string.IsNullOrWhiteSpace(_TargetMonitorx.CapabilityString))
                 {
-                    IsUpdate = true;
-
                     int nRetryCount = 0;
                     do
                     {
@@ -4315,7 +4286,7 @@ namespace VcpCore.Plugins
                         }
                         else
                         {
-                            _TargetMonitorx.CapabilityString = GetCapabilities_String(_TargetMonitorx.hPhysicalMonitor, token);
+                            _TargetMonitorx.CapabilityString = GetCapabilities_String(in _TargetMonitorx, token);
                             if (!string.IsNullOrWhiteSpace(_TargetMonitorx.CapabilityString))
                                 break;
                         }
@@ -4338,6 +4309,7 @@ namespace VcpCore.Plugins
 
                     if (!string.IsNullOrWhiteSpace(_TargetMonitorx.CapabilityString))
                     {
+                        IsUpdate = true;
                         IsConnectAllCorrect &= true;
 
                         nRetryCount = 0;
@@ -4370,7 +4342,7 @@ namespace VcpCore.Plugins
                             {
                                 _TargetMonitorx.CapabilityDic.Clear();
                                 nRetryCount++;
-                                _TargetMonitorx.CapabilityString = GetCapabilities_String(_TargetMonitorx.hPhysicalMonitor, token);
+                                _TargetMonitorx.CapabilityString = GetCapabilities_String(in _TargetMonitorx, token);
                                 if (nRetryCount >= 2)
                                     break;
 
@@ -4380,7 +4352,7 @@ namespace VcpCore.Plugins
                             if (!GetAllColorPreset(_TargetMonitorx.CapabilityString, ref _TargetMonitorx.ColorPresentDescription, ref _TargetMonitorx.UnDefinedColorPreset, _TargetMonitorx.IsDellMonitor))
                             {
                                 nRetryCount2++;
-                                _TargetMonitorx.CapabilityString = GetCapabilities_String(_TargetMonitorx.hPhysicalMonitor, token);
+                                _TargetMonitorx.CapabilityString = GetCapabilities_String(in _TargetMonitorx, token);
 
                                 if (nRetryCount2 >= 2)
                                     break;
@@ -4435,9 +4407,7 @@ namespace VcpCore.Plugins
 
                 if (IsConnectAllCorrect && ((string.IsNullOrWhiteSpace(_TargetMonitorx.FwVersion)) || (string.IsNullOrWhiteSpace(_TargetMonitorx.D_Ctrl)) || (string.IsNullOrWhiteSpace(_TargetMonitorx.SupplierID))))
                 {
-                    IsUpdate = true;
-
-                    var FwTmp = FwVersion(ref _TargetMonitorx, _TargetMonitorx.modelName, CancellationToken.None);
+                    var FwTmp = FwVersion(in _TargetMonitorx, _TargetMonitorx.modelName, CancellationToken.None);
                     _TargetMonitorx.FwVersion = FwTmp.Item1;
                     _TargetMonitorx.D_Ctrl = FwTmp.Item2;
                     _TargetMonitorx.SupplierID = FwTmp.Item3;
@@ -4448,7 +4418,10 @@ namespace VcpCore.Plugins
                         _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} UpdateMyself FwVersion or D_Ctrl or SupplierID is null ...");
                     }
                     else
+                    {
                         IsConnectAllCorrect &= true;
+                        IsUpdate = true;
+                    }
                 }
                 else
                 {
@@ -4458,8 +4431,6 @@ namespace VcpCore.Plugins
 
                 if (IsConnectAllCorrect && ((string.IsNullOrWhiteSpace(_TargetMonitor.inputCable)) || (string.IsNullOrWhiteSpace(_TargetMonitor.inputSource))))
                 {
-                    IsUpdate = true;
-
                     _ = GetVCPCapability_(_TargetMonitorx, "inputsourcelist", 0);
 
                     var tmp = GetInputSource(_TargetMonitorx);
@@ -4472,7 +4443,10 @@ namespace VcpCore.Plugins
                         _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} UpdateMyself inputSource or inputCable is null ...");
                     }
                     else
+                    {
+                        IsUpdate = true;
                         IsConnectAllCorrect &= true;
+                    }
                 }
                 else
                 {
@@ -4499,7 +4473,7 @@ namespace VcpCore.Plugins
                 _TargetMonitor.D_Ctrl = _TargetMonitorx.D_Ctrl;
                 _TargetMonitor.scalingFactor = _TargetMonitorx.scalingFactor;
 
-                if (IsConnectAllCorrect && IsUpdate)
+                if (IsUpdate)
                 {
                     _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} UpdateMyself go to Initialize2TypesMonitorInfo ...");
 
@@ -4508,12 +4482,12 @@ namespace VcpCore.Plugins
                     _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} Initialize2TypesMonitorInfo ok...");
                 }
 
-                return IsConnectAllCorrect;
+                return (IsConnectAllCorrect, IsUpdate);
             }
             catch (Exception ex)
             {
                 _logs.DebugMsg("[VcpCorePlugin] UpdateMyself into catch: " + ex.Message);
-                return false;
+                return (false, false);
             }
         }
 
@@ -4544,7 +4518,7 @@ namespace VcpCore.Plugins
 
                     if (string.IsNullOrWhiteSpace(_TargetMonitor.series))
                     {
-                        if (CheckIsSupportDisplayByBit(ref _TargetMonitor, _TargetMonitor.modelName))
+                        if (CheckIsSupportDisplayByBit(in _TargetMonitor, _TargetMonitor.modelName))
                         {
                             _TargetMonitor.series = ChekSeries(_TargetMonitor.modelName);
                             rc = true;
@@ -4566,7 +4540,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        private bool CheckIsSupportDisplayByBit(ref MonitorInfo_complex monitorx, string model)
+        private bool CheckIsSupportDisplayByBit(in MonitorInfo_complex monitorx, string model)
         {
             try
             {
@@ -4683,7 +4657,7 @@ namespace VcpCore.Plugins
             }
         }
 
-        private (string, string, string) FwVersion(ref MonitorInfo_complex monitorx, string modelName, CancellationToken token)
+        private (string, string, string) FwVersion(in MonitorInfo_complex monitorx, string modelName, CancellationToken token)
         {
             int count = 0;
             var Version = (string.Empty, string.Empty, string.Empty);
