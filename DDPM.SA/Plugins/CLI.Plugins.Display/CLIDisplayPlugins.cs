@@ -4410,7 +4410,7 @@ namespace DDPM.CLI.Plugins.Display
                         targetList = commandLineInput.Model;
                         outCount = commandLineInput.Model.Count;
                     }
-                    swapIsDone = new List<string>();
+                    //swapIsDone = new List<string>();
                     flag = true;
                     while (flag && count < 1000)
                     {
