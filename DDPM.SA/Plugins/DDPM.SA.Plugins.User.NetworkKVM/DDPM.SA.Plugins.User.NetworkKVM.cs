@@ -14,7 +14,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
+using System.IO;nKVMVCPValue
 using System.IO.Pipes;
 using System.Linq;
 using System.Text;
@@ -1164,11 +1164,11 @@ namespace NetworkKVM.Plugins
             _logs.DebugMsg("[NetworkKVM] SaveVCPcode....");
             if (nKVMVCPValues != null)
             {
-                NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
+                //NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
                 if (nKVMVCPValues.Exists(x => x.monitorInfo == value.monitorInfo))
                 {
-                    nKVMVCPValue = nKVMVCPValues.Find(x => x.monitorInfo == value.monitorInfo);
-                    nKVMVCPValue = value;
+                    //nKVMVCPValue = nKVMVCPValues.Find(x => x.monitorInfo == value.monitorInfo);
+                    //nKVMVCPValue = value;
                 }
                 else
                 {
