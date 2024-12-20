@@ -2053,7 +2053,7 @@ namespace DDPM.SA.Common.Settings
                 return string.Empty;
             }
 
-            path_org = null;
+            //path_org = null;
             return path;
         }
 
