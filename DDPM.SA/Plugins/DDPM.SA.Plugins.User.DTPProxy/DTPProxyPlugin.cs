@@ -7655,7 +7655,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                         //"DeviceId": "36ce653b-7a0f-4c85-97f7-aad029cceeb2",
                         //"ModelNumber": "P2424HEB"
                         //}
-                        string jsonStr = _WebcamComObj.DeviceItemsEx[i].ToString();
+                        string jsonStr = _WebcamComObj.DeviceItemsEx[i++].ToString();
                         writelog($"connected _WebcamComObj.DeviceItems = {jsonStr}");
 
                         WebcamEventHandleObject jsonObject = JsonSerializer.Deserialize<WebcamEventHandleObject>(jsonStr)!;
@@ -7786,9 +7786,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private async Task<bool> UnregisterEventsForWebcamAsync(string devcieID)
         {
-            if (null == _commSdk || devcieID == null || webcamList.Count == 0)
+            if (devcieID == null || devcieID == string.Empty || webcamList.Count == 0)
             {
-                writelog($"null == _commSdk || devcieID == null || webcamList.Count == 0");
+                writelog($"devcieID == string.Empty || devcieID == null || webcamList.Count == 0");
 
                 return false;
             }
@@ -8291,13 +8291,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private void Webcam_Disconnected(object sender, DisconnectedArgs e)
         {
             //_ = UnregisterEventsForAllWebcamsAsync();
-            _ = UnregisterEventsForWebcamAsync(0);
-            _ = RegisterEventsForAllConnectedWebcamsAsync();
+            //_ = UnregisterEventsForWebcamAsync(0);
+            //_ = RegisterEventsForAllConnectedWebcamsAsync();
+            bool result = UnregisterEventsForWebcamAsync(e.DeviceId).Result;
 
             //SendDTPEventToUI($"3;Device:Webcam;Event:Disconnected;DeviceId:{e.DeviceId}");
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Disconnected", e.DeviceId));
 
-            writelog($"Catch event _Webcam_Disconnected, current devCount is {GetWebcamDevsCountAsync().Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcam_Disconnected, unregister events result is {result}, current devCount is {webcamList.Count} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_Connected(object sender, ConnectedArgs e)
