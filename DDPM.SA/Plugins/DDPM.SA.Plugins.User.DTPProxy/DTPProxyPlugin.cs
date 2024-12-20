@@ -107,9 +107,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             public ICommodity webcamCommodity = null;
             public string webcamIndex = string.Empty; //DellPeripheral.Webcam.0
-            public string DeviceName = string.Empty;  //Dell Pro 24 Plus Video Conferencing Monitor
-            public string DeviceId = string.Empty;     //36ce653b-7a0f-4c85-97f7-aad029cceeb2
-            public string ModelNumber = string.Empty;  //P2424HEB
+            public string DeviceName { get; set; } = string.Empty; //Dell Pro 24 Plus Video Conferencing Monitor
+            public string DeviceId { get; set; } = string.Empty;     //36ce653b-7a0f-4c85-97f7-aad029cceeb2
+            public string ModelNumber { get; set; } = string.Empty;  //P2424HEB
         };
         
 
@@ -7310,7 +7310,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     {
                         //output:
                         //DellPeripheral.Webcam.0
-                        writelog($"connected _WebcamComConnectEvent.DeviceItems = {item}");
+                        writelog($"connected _WebcamComConnectEvent.DeviceItems[{i}] = {item}");
 
                         //output:
                         //"{
@@ -7318,11 +7318,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                         //"DeviceId": "36ce653b-7a0f-4c85-97f7-aad029cceeb2",
                         //"ModelNumber": "P2424HEB"
                         //}
-                        writelog($"connected _WebcamComConnectEvent.DeviceItems = {_WebcamComConnectEvent.DeviceItemsEx[i++].ToString()}");
+                        string jsonStr = _WebcamComConnectEvent.DeviceItemsEx[i].ToString();
+                        writelog($"connected _WebcamComConnectEvent.DeviceItems = {jsonStr}");
 
-                        WebcamEventHandleObject jsonObject = JsonSerializer.Deserialize<WebcamEventHandleObject>(_WebcamComConnectEvent.DeviceItemsEx[i++].ToString())!;
+                        WebcamEventHandleObject jsonObject = JsonSerializer.Deserialize<WebcamEventHandleObject>(jsonStr)!;
                         jsonObject.webcamCommodity = null;
                         jsonObject.webcamIndex = item;
+                        writelog($"jsonObject values: {jsonObject.webcamIndex}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
                         webcamList.Add(jsonObject);
                     }
                     
@@ -7430,7 +7432,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             if (webcams > 0)
             {
-                writelog($"Webcam instance count: {webcams} to register");
+                writelog($"Webcam instance count: {webcams} to register, count from save list is {webcamList.Count}");
 
                 for (int i = 0; i < webcams; i++)
                 {
@@ -7481,10 +7483,11 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             try
             {
-                ICommodity _comdityWebcam0 = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
+                string registerID = $"DellPeripheral.Webcam.{index}";
+                ICommodity _comdityWebcamTmp = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId(registerID), CancellationToken.None);
                 //_comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
 
-                if (_comdityWebcam0 is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                if (_comdityWebcamTmp is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
                 {
                     //PrintWebcamObjectInfo(_Webcamcom);
 
@@ -7524,6 +7527,20 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Webcamcom.Esi_WALLockCountdownChanged += Webcam_Esi_WALLockCountdownChanged;
 
                     writelog($"Webcam{index} Commodity events registered successfully");
+
+                    //Derek 1220 save this _comdityWebcamTmp to list
+                    foreach (var item in webcamList)
+                    {
+                        if (registerID == item.webcamIndex)
+                            item.webcamCommodity = _comdityWebcamTmp;
+                    }
+
+                    //output to double check
+                    foreach (var item in webcamList)
+                    {
+                        writelog($"item.webcamCommodity = {item.webcamCommodity}");
+                    }
+
                     return true;
                 }
             }
