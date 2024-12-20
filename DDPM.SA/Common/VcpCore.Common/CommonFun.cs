@@ -103,11 +103,11 @@ namespace VcpCore.Common
                                             if (_logs != null)
                                                 _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID registryKeyII exception : " + e.Message);
                                         }
-                                        finally
-                                        {
-                                            registryKeyII.Close();
-                                            registryKeyII.Dispose();
-                                        }
+                                        //finally
+                                        //{
+                                        //    registryKeyII.Close();
+                                        //    registryKeyII.Dispose();
+                                        //}
                                     }
                                 }
                                 else
@@ -121,11 +121,11 @@ namespace VcpCore.Common
                                 if (_logs != null)
                                     _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID registryKey exception : " + e.Message);
                             }
-                            finally
-                            {
-                                registryKey.Close();
-                                registryKey.Dispose();
-                            }
+                            //finally
+                            //{
+                            //    registryKey.Close();
+                            //    registryKey.Dispose();
+                            //}
                         }
                     }
                 }
