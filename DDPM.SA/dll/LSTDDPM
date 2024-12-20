@@ -405,7 +405,7 @@
         },
         {
             "ModelName": "P2425DE",
-            "MarketingName": "Dell Pro 24 Plus QHD USB-C® Hub Monitor",
+            "MarketingName": "Dell Pro 24 Plus QHD USB-CÂ® Hub Monitor",
             "ImageFileName": "P2425DE"
         },
         {
@@ -485,7 +485,7 @@
         },
         {
             "ModelName": "P2725DE",
-            "MarketingName": "Dell Pro 27 Plus QHD USB-C® Hub Monitor",
+            "MarketingName": "Dell Pro 27 Plus QHD USB-CÂ® Hub Monitor",
             "ImageFileName": "P2725DE"
         },
         {
@@ -500,7 +500,7 @@
         },
         {
             "ModelName": "P2725QE",
-            "MarketingName": "Dell Pro 27 Plus 4K USB-C® Hub monitor",
+            "MarketingName": "Dell Pro 27 Plus 4K USB-CÂ® Hub monitor",
             "ImageFileName": "P2725QE"
         },
         {
@@ -525,12 +525,12 @@
         },
         {
             "ModelName": "P3225DE",
-            "MarketingName": "Dell Pro 32 Plus QHD USB-C® Hub Monitor",
+            "MarketingName": "Dell Pro 32 Plus QHD USB-CÂ® Hub Monitor",
             "ImageFileName": "P3225DE"
         },
         {
             "ModelName": "P3225QE",
-            "MarketingName": "Dell Pro 32 Plus 4K USB-C® Hub Monitor",
+            "MarketingName": "Dell Pro 32 Plus 4K USB-CÂ® Hub Monitor",
             "ImageFileName": "P3225QE"
         },
         {
@@ -550,7 +550,7 @@
         },
         {
             "ModelName": "P3425WE",
-            "MarketingName": "Dell Pro 34 Plus USB-C® Hub Monitor",
+            "MarketingName": "Dell Pro 34 Plus USB-CÂ® Hub Monitor",
             "ImageFileName": "P3425WE"
         },
         {
@@ -852,7 +852,7 @@
         },
         {
             "ModelName": "S2725QC",
-            "MarketingName": "Dell 27 Plus 4K USB-C® Monitor",
+            "MarketingName": "Dell 27 Plus 4K USB-CÂ® Monitor",
             "ImageFileName": "S2725QC"
         },
         {
@@ -927,7 +927,7 @@
         },
         {
             "ModelName": "S3425DW",
-            "MarketingName": "Dell 34 Plus USB-C® Monitor",
+            "MarketingName": "Dell 34 Plus USB-CÂ® Monitor",
             "ImageFileName": "S3425DW"
         }
     ],
@@ -1266,7 +1266,7 @@
         },
         {
             "ModelName": "U2725QE",
-            "MarketingName": "Dell UltraSharp 27 4K Thunderbolt™ Hub Monitor",
+            "MarketingName": "Dell UltraSharp 27 4K Thunderboltâ„¢ Hub Monitor",
             "ImageFileName": "U2725QE"
         },
         {
@@ -1301,7 +1301,7 @@
         },
         {
             "ModelName": "U3225QE",
-            "MarketingName": "Dell UltraSharp 32 4K Thunderbolt™ Hub Monitor",
+            "MarketingName": "Dell UltraSharp 32 4K Thunderboltâ„¢ Hub Monitor",
             "ImageFileName": "U3225QE"
         },
         {
