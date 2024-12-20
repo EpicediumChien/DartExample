@@ -37,7 +37,6 @@ using System.Collections.Generic;
 using static DDPM.RemoteManagement.Common.Interfaces.Params;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Newtonsoft.Json;
-using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
