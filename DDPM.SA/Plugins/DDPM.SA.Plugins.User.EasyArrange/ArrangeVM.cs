@@ -584,8 +584,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         private EAWorkWindow workWin0;
         private EAWorkWindow workWin1;
         private EAWorkWindow workWin2;
-        private EAWorkWindow workWin3;
-        private EAWorkWindow workWin4;
+        // Unused
+        //private EAWorkWindow workWin3;
+        //private EAWorkWindow workWin4;
+
         /// <summary>
         /// Called from STA Thread
         /// </summary>

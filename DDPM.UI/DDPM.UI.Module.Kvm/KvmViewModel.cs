@@ -205,6 +205,13 @@ namespace DDPM.UI.Module.Kvm
         public string PC3_Input { get; set; }
         public string PC4_Input { get; set; }
 
+        public bool IsMoreThanPC2 { 
+            get 
+            {
+                return PC3_Visibility == Visibility.Visible;
+            } 
+        }
+
         public Dictionary<UInt16, System.Windows.Controls.UserControl> PxPcodeDictionary = new Dictionary<UInt16, System.Windows.Controls.UserControl>()
         {
             [0x0] = new PxPSplitCtrl0A(),
@@ -417,7 +424,7 @@ namespace DDPM.UI.Module.Kvm
 
         #region Hotkey
 
-        private string _kvmHotkeyTooltip = "None";
+        private string _kvmHotkeyTooltip = LangHelper.Instance["None"];
 
         public string KvmHotkeyTooltip
         {
@@ -429,7 +436,7 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
-        private string _switchPCsKey = "None";
+        private string _switchPCsKey = LangHelper.Instance["None"];
 
         public string SwitchPCsKey
         {
@@ -441,7 +448,7 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
-        private string _changePipKey = "None";
+        private string _changePipKey = LangHelper.Instance["None"];
 
         public string ChangePipKey
         {
@@ -453,7 +460,7 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
-        private string _switchKbMsKey = "None";
+        private string _switchKbMsKey = LangHelper.Instance["None"];
 
         public string SwitchKbMsKey
         {
@@ -718,7 +725,7 @@ namespace DDPM.UI.Module.Kvm
                     NKVMisON = false;
                 }
 
-                if (mi.CapabilityDic.ContainsKey("EE"))
+                if (mi.CapabilityDic.ContainsKey("E7"))
                 {
                     SupportUSBKVM = Visibility.Visible;
                     //inputList = new Dictionary<string, InputInfo>();
@@ -803,7 +810,7 @@ namespace DDPM.UI.Module.Kvm
                     return;
                 }
 
-                if (mi.CapabilityDic.ContainsKey("EE"))
+                if (mi.CapabilityDic.ContainsKey("E7"))
                 {
                     _log?.Debug("[KvmViewModel]Have 0xEE");
                     //If arg is specified, you can get it with below code
@@ -1586,6 +1593,7 @@ namespace DDPM.UI.Module.Kvm
                     isOnNKVM(true);
                     _log.Debug("NKVMOpenUI i = " + i);
                     DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+                    e.Result = true;
                     break;
                 }
                 i++;
@@ -1594,6 +1602,7 @@ namespace DDPM.UI.Module.Kvm
             if (i == 120)
             {
                 _log.Debug("Named pipe is not Connected or time out");
+                e.Result = false;
             }
             //if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
             //{
@@ -1608,7 +1617,14 @@ namespace DDPM.UI.Module.Kvm
         }
         private void NKVMOpenUI_Done(object sender, RunWorkerCompletedEventArgs e)
         {
-            Thread.Sleep(3000);
+            if (e.Error != null)
+            {
+                _log.Error("NKVMOpenUI error : " + e.Error.ToString());
+            }
+            if (e.Result != null)
+            {
+                Thread.Sleep(3000);
+            }
             IsBusy = false;
             OnPropertyChanged("IsBusy");
         }
@@ -1712,7 +1728,7 @@ namespace DDPM.UI.Module.Kvm
 
                         //if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
                         //{
-                            CurrentInputChange();
+                        CurrentInputChange();
                         //}
                         bool bin = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo, inputList).Result;
                         bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;

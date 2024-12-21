@@ -27,15 +27,15 @@ namespace DDPM.UI.Module.EzSettings
         #region Multilingual
         //UI Text
         //[EazyMemorySettings.0]
-        private string Hotkey_Recent = "Hotkey: Recent";
+        private string Hotkey_Recent = LangHelper.Instance["EazyMemorySettings.0"];//"Hotkey: Recent";
         //[EazyMemorySettings.3]
-        private string AllowWithoutGap = "Allow app to split side by side without gap";
+        private string AllowWithoutGap = LangHelper.Instance["EazyMemorySettings.3"];// "Allow app to split side by side without gap";
         //[EazyMemorySettings.4]
-        private string OnlyShiftPressed = "Only allow zone positioning when SHIFT is pressed";
+        private string OnlyShiftPressed = LangHelper.Instance["EazyMemorySettings.4"]; //"Only allow zone positioning when SHIFT is pressed";
         //[EazyMemorySettings.5]
-        private string SpanMultiMonitors = "Snap across multiple monitors";
+        private string SpanMultiMonitors = LangHelper.Instance["EazyMemorySettings.5"];//"Snap across multiple monitors";
         //[EazyMemorySettings.6]
-        private string AWS = "Application Window Snap";
+        private string AWS = LangHelper.Instance["EazyMemorySettings.6"];//"Application Window Snap";
 
         #endregion
 

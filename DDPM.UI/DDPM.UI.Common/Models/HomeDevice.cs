@@ -1428,7 +1428,7 @@ namespace DDPM.UI.Common.Models
                 return false;
 
             //VCP contains "EE" => has USB KVM capability
-            if (MonitorInfo.CapabilityDic.ContainsKey("EE"))
+            if (MonitorInfo.CapabilityDic.ContainsKey("E7"))
                 return true;
 
             //Determine if it has Network KVM capability
@@ -1454,7 +1454,7 @@ namespace DDPM.UI.Common.Models
                     return false;
 
                 //VCP contains "EE" => has USB KVM capability
-                if (MonitorInfo.CapabilityDic.ContainsKey("EE"))
+                if (MonitorInfo.CapabilityDic.ContainsKey("E7"))
                 {
                     return true;
                 }
