@@ -108,6 +108,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //leo 2024/12/09 因為多加條件判斷,改變呼叫位置
             //BuildModuleGroups();
 
+
+
             var pName = _vm.ProfileCaptions[_vm.CurrentProfileName];
             if (PresetNames.Contains(pName))
             {
@@ -184,6 +186,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 Interval = TimeSpan.FromSeconds(1)
             };
             _timer.Tick += Timer_Tick;
+
+            //2024/12/21 fixed
+            _vm.running_state = true;
 
             exit_status_thread = false;
             if (status_thread == null)
