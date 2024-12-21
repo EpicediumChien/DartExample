@@ -1029,13 +1029,28 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 try
                 {
+
+                    StreamingCaptureMode captureMode;
+                    if (_vm.MicList.Contains(_vm.Model))
+                    {
+                        captureMode = StreamingCaptureMode.AudioAndVideo;
+                        //check mic on
+                        if(!_vm.IsMicEnumerationOn)
+                            captureMode = StreamingCaptureMode.Video;
+                    }
+                    else
+                    {
+                        captureMode = StreamingCaptureMode.Video;
+                    }
+
+
                     await _vm.MediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
                     {
                         SourceGroup = selectedFrameSourceGroup,
                         SharingMode = MediaCaptureSharingMode.ExclusiveControl,
                         //SharingMode = MediaCaptureSharingMode.SharedReadOnly,
                         MemoryPreference = MediaCaptureMemoryPreference.Cpu,
-                        StreamingCaptureMode = StreamingCaptureMode.AudioAndVideo
+                        StreamingCaptureMode = captureMode
                     });
                 }
                 catch (Exception ex)
@@ -1688,6 +1703,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs StartRecordingAsync() : " + ex.Message);
                 // File I/O errors are reported as exceptions
                 Debug.WriteLine("Exception when starting video recording: " + ex.ToString());
             }
@@ -1704,8 +1720,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.IsMicEnumerationOnEnabled = true;
 
             if (_vm.MediaCapture != null)
-                await _vm.MediaCapture.StopRecordAsync();
-
+            {
+                try
+                {
+                    await _vm.MediaCapture.StopRecordAsync();
+                }
+                catch (Exception ex) 
+                {
+                    DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs StopRecordingAsync() : " + ex.Message );
+                }
+            }
             _vm!.IsRecording = false;
 
 
