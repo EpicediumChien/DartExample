@@ -456,7 +456,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsQuickAccessMenuOSDEnabled :{newValue}");
-                var result=SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsQuickAccessMenuOSDEnabled", newValue);
+                var result = SetPropertyValue(_globalperipheralInterfaceType, commodity, "IsQuickAccessMenuOSDEnabled", newValue);
                 return result;
             }
             else
@@ -1163,7 +1163,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return new JArray(); 
+                return new JArray();
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -1733,7 +1733,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -1752,7 +1752,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -1770,7 +1770,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -1789,7 +1789,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -1808,7 +1808,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return false; 
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -1828,7 +1828,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return false; 
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -1848,7 +1848,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return false; 
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -1867,7 +1867,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return false; 
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -1886,7 +1886,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return false; 
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -1905,7 +1905,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return false; 
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -1924,8 +1924,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                
-                return false; 
+
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -1946,7 +1946,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return false; 
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -1957,7 +1957,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-            
+
                 return false;
             }
         }
@@ -1966,8 +1966,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                
-                return false; 
+
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -1978,7 +1978,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-            
+
                 return false;
             }
         }
@@ -1988,7 +1988,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return false; 
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2007,8 +2007,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                
-                return false; 
+
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2019,7 +2019,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-            
+
                 return false;
             }
         }
@@ -2029,7 +2029,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return false; 
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2040,7 +2040,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-            
+
                 return false;
             }
         }
@@ -2049,7 +2049,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2068,7 +2068,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2086,7 +2086,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2105,7 +2105,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2123,7 +2123,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2141,7 +2141,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2159,7 +2159,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2178,8 +2178,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                
-                return; 
+
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2199,7 +2199,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2218,7 +2218,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2238,7 +2238,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2258,7 +2258,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2278,7 +2278,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2298,7 +2298,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2317,7 +2317,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2337,7 +2337,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return; 
+                return;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
@@ -2356,7 +2356,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return -1; 
+                return -1;
             }
 
             if (_webcamMethodInfo != null)
@@ -2400,7 +2400,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return -1; 
+                return -1;
             }
 
             if (_webcamMethodInfo != null)
@@ -2697,7 +2697,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             };
             Type interfaceType = type switch
             {
-                "GlobalPeripheral"=> _globalperipheralInterfaceType,
+                "GlobalPeripheral" => _globalperipheralInterfaceType,
                 "Mouse" => _mouseInterfaceType,
                 "Keyboard" => _keyboardInterfaceType,
                 "Pen" => _penInterfaceType,
@@ -7043,7 +7043,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
         bool DTPProxyPluginReady = false;
 
-        public Task<bool> GetDTPProxyPluginReady() 
+        public Task<bool> GetDTPProxyPluginReady()
         {
             return Task.FromResult(DTPProxyPluginReady);
         }
@@ -7558,6 +7558,19 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (null == _comdityWebcam)
                 return false;
 
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                {
+                    //PrintWebcamObjectInfo(_Webcamcom);
+                    // 2024-12-21, Elie R19 change that. (It seems to be removed from R19)
+                    //_Webcamcom.ProfileManagerAdded += Webcam_ProfileManagerAdded;
+                    _Webcamcom.IsMicEnumerationOnChanged += Webcam_IsMicEnumerationOnChanged;
+                    _Webcamcom.CurrentSelectedProfileChanged += Webcam_CurrentSelectedProfileChanged;
+                    _Webcamcom.CustomProfileAdded += Webcam_CustomProfileAdded;
+                    _Webcamcom.CustomProfileRemoved += Webcam_CustomProfileRemoved;
             if (_comdityWebcam is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
             {
                 _Webcamcom.ProfileManagerAdded += Webcam_ProfileManagerAdded;
@@ -7769,6 +7782,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             return false;
         }
 
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                {
+                    // 2024-12-21, Elie R19 change that. (It seems to be removed from R19)
+                    //_Webcamcom.ProfileManagerAdded -= Webcam_ProfileManagerAdded;
+                    _Webcamcom.IsMicEnumerationOnChanged -= Webcam_IsMicEnumerationOnChanged;
+                    _Webcamcom.CurrentSelectedProfileChanged -= Webcam_CurrentSelectedProfileChanged;
+                    _Webcamcom.CustomProfileAdded -= Webcam_CustomProfileAdded;
+                    _Webcamcom.CustomProfileRemoved -= Webcam_CustomProfileRemoved;
         private bool UnregisterEventsForWebcam(WebcamEventHandleObject obj)
         {
             if (obj.webcamCommodity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
@@ -7914,6 +7939,35 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     result = UnregisterEventsForWebcam(item);
                 }
+                    // 2024-12-21, Elie R19 change that. (It seems to be removed from R19)
+                    //_Webcamcom.ProfileManagerAdded -= Webcam_ProfileManagerAdded;
+                    _Webcamcom.IsMicEnumerationOnChanged -= Webcam_IsMicEnumerationOnChanged;
+                    _Webcamcom.CurrentSelectedProfileChanged -= Webcam_CurrentSelectedProfileChanged;
+                    _Webcamcom.CustomProfileAdded -= Webcam_CustomProfileAdded;
+                    _Webcamcom.CustomProfileRemoved -= Webcam_CustomProfileRemoved;
+
+                    _Webcamcom.PriorityChanged -= Webcam_PriorityChanged;
+                    _Webcamcom.IsFocusOnChanged -= Webcam_IsFocusOnChanged;
+                    _Webcamcom.FocusChanged -= Webcam_FocusChanged;
+                    _Webcamcom.PanChanged -= Webcam_PanChanged;
+                    _Webcamcom.TiltChanged -= Webcam_TiltChanged;
+                    _Webcamcom.ZoomChanged -= Webcam_ZoomChanged;
+                    _Webcamcom.BrightnessChanged -= Webcam_BrightnessChanged;
+                    _Webcamcom.ContrastChanged -= Webcam_ContrastChanged;
+                    _Webcamcom.AntiFlickerChanged -= Webcam_AntiFlickerChanged;
+                    _Webcamcom.SaturationChanged -= Webcam_SaturationChanged;
+                    _Webcamcom.SharpnessChanged -= Webcam_SharpnessChanged;
+                    _Webcamcom.IsAutoWhiteBalanceOnChanged -= Webcam_IsAutoWhiteBalanceOnChanged;
+                    _Webcamcom.AutoWhiteBalanceChanged -= Webcam_AutoWhiteBalanceChanged;
+                    _Webcamcom.IsAutoFramingTransitionOnChanged -= Webcam_IsAutoFramingTransitionOnChanged;
+                    _Webcamcom.IsAutoFramingOnChanged -= Webcam_IsAutoFramingOnChanged;
+                    _Webcamcom.AutoFramingSensitivityChanged -= Webcam_AutoFramingSensitivityChanged;
+                    _Webcamcom.AutoFramingFrameSizeChanged -= Webcam_AutoFramingFrameSizeChanged;
+                    _Webcamcom.FieldOfViewChanged -= Webcam_FieldOfViewChanged;
+                    _Webcamcom.IsHDROnChanged -= Webcam_IsHDROnChanged;
+                    _Webcamcom.SerialNumberChanged -= Webcam_SerialNumberChanged;
+                    _Webcamcom.IsZoomMeetingActiveChanged -= Webcam_IsZoomMeetingActiveChanged;
+                    _Webcamcom.IsZoomScreenShareActiveChanged -= Webcam_IsZoomScreenShareActiveChanged;
 
                 webcamList.Clear();
 
