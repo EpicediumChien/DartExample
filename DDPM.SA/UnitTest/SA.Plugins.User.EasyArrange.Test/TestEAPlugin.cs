@@ -193,50 +193,54 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
         }
 
         //Robert_Lin 2024-12-4 comment-out due to EABroker.EABroker add one argument
-        //[Test]
-        //public void TestSetEAWrokSplit()
-        //{
-        //    bool SetEAWrokSplit1 = false;
-        //    bool SetEAWrokSplit2 = true;
-        //    int cellCount = 1;
-        //    char splitKey = 'A';
+        [Test]
+        public void TestSetEAWrokSplit()
+        {
+            bool SetEAWrokSplit1 = false;
+            bool SetEAWrokSplit2 = true;
+            int cellCount = 1;
+            char splitKey = 'A';
+            List<double>? settings;
+            settings = new List<double>() { 1.0 };
+            PrivateObject privateEApluginObject = new PrivateObject(EAplugin);
+            privateEApluginObject.SetFieldOrProperty("_eaBroker", null);
+            var SetEAWrokSplit1_Result1 = EAplugin.SetEAWrokSplit(monitorInfo1, cellCount, splitKey, settings).Result;  //_eaBroker null
+            Assert.That(SetEAWrokSplit1, Is.EqualTo(SetEAWrokSplit1_Result1));
 
-        //    var EApluginAgentObj = EApluginAgent.Object;
-        //    var DeviceManagerServiceObj = DeviceManagerService.Object;
-        //    var DisplayManagerServiceObj = DisplayManagerService.Object;
-        //    var EasyArrangeServiceObj = EasyArrangeService.Object;
-        //    PrivateObject privateEApluginObject = new PrivateObject(EAplugin);
-        //    DDPM.EABroker.EABroker EaBroker = new EABroker.EABroker(EApluginAgentObj, DeviceManagerServiceObj, DisplayManagerServiceObj, EasyArrangeServiceObj);
-        //    privateEApluginObject.SetFieldOrProperty("_eaBroker", null);
+            DDPM.EABroker.EABroker? eaBroker;
+            Mock<IAgent> mockAgent = new Mock<IAgent>();
+            Mock<IDeviceManagerSA> mockDeviceManagerSA = new Mock<IDeviceManagerSA>();
+            Mock<IDisplayService> mockDisplayService = new Mock<IDisplayService>();
+            Mock<IEasyArrangeService> mockEasyArrangeService = new Mock<IEasyArrangeService>();
+            Mock<ISettingsManagerDev> mockSettingsManagerDev = new Mock<ISettingsManagerDev>();
+            eaBroker = new EABroker.EABroker(mockAgent.Object, mockDeviceManagerSA.Object, mockDisplayService.Object, mockEasyArrangeService.Object, mockSettingsManagerDev.Object);
+            privateEApluginObject.SetFieldOrProperty("_eaBroker", eaBroker);
 
-        //    var SetEAWrokSplit1_Result1 = EAplugin.SetEAWrokSplit(monitorInfo1, cellCount, splitKey).Result;  //_eaBroker null
-        //    Assert.That(SetEAWrokSplit1, Is.EqualTo(SetEAWrokSplit1_Result1));
+            List<MonitorInfo> _monitors = new List<MonitorInfo>();
+            Screen screen = Screen.PrimaryScreen;
+            string displayName = Screen.PrimaryScreen.DeviceName;
+            monitorInfo1.DisplayName = displayName;
+            _monitors.Add(monitorInfo1);
 
-        //    List<MonitorInfo> _monitors = new List<MonitorInfo>();
-        //    Screen screen = Screen.PrimaryScreen;
-        //    string displayName = Screen.PrimaryScreen.DeviceName;
-        //    monitorInfo1.DisplayName = displayName;
-        //    _monitors.Add(monitorInfo1);
+            ArrangeVM arrangeVM = new ArrangeVM();
+            //privateEApluginObject.SetFieldOrProperty("_vmArrange", arrangeVM);  //EAPlugin.cs
+            PrivateObject privateArrangeVMObject = new PrivateObject(arrangeVM);
+            var workWindow1 = new EAWorkWindow(arrangeVM, screen, _monitors);
+            workWindow1.IsUsed = true;
+            List<EAWorkWindow> _workWindows22 = new List<EAWorkWindow>() { workWindow1 };
+            // privateArrangeVMObject.SetFieldOrProperty("_workWindows2", _workWindows22); // ArrangeVM.cs
 
-        //    ArrangeVM arrangeVM = new ArrangeVM();
-        //    //privateEApluginObject.SetFieldOrProperty("_vmArrange", arrangeVM);  //EAPlugin.cs
-        //    PrivateObject privateArrangeVMObject = new PrivateObject(arrangeVM);
-        //    var workWindow1 = new EAWorkWindow(arrangeVM, screen, _monitors);
-        //    workWindow1.IsUsed = true;
-        //    List<EAWorkWindow> _workWindows22 = new List<EAWorkWindow>() { workWindow1 };
-        //    // privateArrangeVMObject.SetFieldOrProperty("_workWindows2", _workWindows22); // ArrangeVM.cs
+            DDPM.EABroker.ArrangeVM arrangeVM1 = new EABroker.ArrangeVM();
+            DDPM.EABroker.EAWorkWindow eAWorkWindow = new EABroker.EAWorkWindow(arrangeVM1, false);
+            List<DDPM.EABroker.EAWorkWindow> workWindows = new List<DDPM.EABroker.EAWorkWindow>() { eAWorkWindow };
 
-        //    DDPM.EABroker.ArrangeVM arrangeVM1 = new EABroker.ArrangeVM();
-        //    DDPM.EABroker.EAWorkWindow eAWorkWindow = new EABroker.EAWorkWindow(arrangeVM1, false);
-        //    List<DDPM.EABroker.EAWorkWindow> workWindows = new List<DDPM.EABroker.EAWorkWindow>() { eAWorkWindow };
-
-        //    DDPM.EABroker.ArrangeVM arrangeVM2 = new EABroker.ArrangeVM();  //DDPM.EABroker.ArrangeVM.cs
-        //    PrivateObject privateArrangeVMObject2 = new PrivateObject(arrangeVM2);
-        //    privateArrangeVMObject2.SetFieldOrProperty("_workWindows", null);
-        //    privateEApluginObject.SetFieldOrProperty("_eaBroker", EaBroker);
-        //    var SetEAWrokSplit1_Result3 = EAplugin.SetEAWrokSplit(monitorInfo1, cellCount, splitKey).Result;  //_eaBroker not null
-        //    Assert.That(SetEAWrokSplit2, Is.EqualTo(SetEAWrokSplit1_Result3));
-        //}
+            DDPM.EABroker.ArrangeVM arrangeVM2 = new EABroker.ArrangeVM();  //DDPM.EABroker.ArrangeVM.cs
+            PrivateObject privateArrangeVMObject2 = new PrivateObject(arrangeVM2);
+            privateArrangeVMObject2.SetFieldOrProperty("_workWindows", null);
+            //privateEApluginObject.SetFieldOrProperty("_eaBroker", EaBroker);
+            var SetEAWrokSplit1_Result2 = EAplugin.SetEAWrokSplit(monitorInfo1, cellCount, splitKey, settings).Result;  //_eaBroker not null
+            Assert.That(SetEAWrokSplit2, Is.EqualTo(SetEAWrokSplit1_Result2));
+        }
 
         [Test]
         public void TestEditCommand()
@@ -260,12 +264,28 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             var EditCommand_Result1 = EAplugin.EditCommand(monitorInfo1, Args).Result;   //_isEaBrokerStarted false,
             Assert.That(EditCommand_Result1, Is.False);
 
-            DDPM.EABroker.EAEditWindow? editWindow;
-            editWindow = null;
             privateEApluginObject.SetFieldOrProperty("_isEaBrokerStarted", true);
-            //privateEApluginObject.SetFieldOrProperty("_editWindow", editWindow);
-            var EditCommand_Result2 = EAplugin.EditCommand(monitorInfo1, Args).Result;   //_isEaBrokerStarted true, remove _editWindow  
-            Assert.That(EditCommand_Result2, Is.True);
+            privateEApluginObject.SetFieldOrProperty("_eaBroker", null);
+            var EditCommand_Result2 = EAplugin.EditCommand(monitorInfo1, Args).Result;   //_isEaBrokerStarted true, _eaBroker null
+            Assert.That(EditCommand_Result2, Is.False);
+
+            DDPM.EABroker.EABroker? eaBroker;
+            Mock<IAgent> mockAgent = new Mock<IAgent>();
+            Mock<IDeviceManagerSA> mockDeviceManagerSA = new Mock<IDeviceManagerSA>();
+            Mock<IDisplayService> mockDisplayService = new Mock<IDisplayService>();
+            Mock<IEasyArrangeService> mockEasyArrangeService = new Mock<IEasyArrangeService>();
+            Mock<ISettingsManagerDev> mockSettingsManagerDev = new Mock<ISettingsManagerDev>();
+            eaBroker = new EABroker.EABroker(mockAgent.Object, mockDeviceManagerSA.Object, mockDisplayService.Object, mockEasyArrangeService.Object, mockSettingsManagerDev.Object);
+            privateEApluginObject.SetFieldOrProperty("_isEaBrokerStarted", true);
+            privateEApluginObject.SetFieldOrProperty("_eaBroker", eaBroker);
+            var EditCommand_Result3 = EAplugin.EditCommand(monitorInfo1, Args).Result;   //_isEaBrokerStarted true, _eaBroker not null,RunningState != eEARunningStates.Waiting
+            Assert.That(EditCommand_Result3, Is.False);
+
+            eaBroker = new EABroker.EABroker(mockAgent.Object, mockDeviceManagerSA.Object, mockDisplayService.Object, mockEasyArrangeService.Object, mockSettingsManagerDev.Object) { RunningState = eEARunningStates.Waiting };
+            privateEApluginObject.SetFieldOrProperty("_isEaBrokerStarted", true);
+            privateEApluginObject.SetFieldOrProperty("_eaBroker", eaBroker);
+            var EditCommand_Result4 = EAplugin.EditCommand(monitorInfo1, Args).Result;   //_isEaBrokerStarted true, _eaBroker not null,RunningState = eEARunningStates.Waiting
+            Assert.That(EditCommand_Result4, Is.True);
         }
 
         //Robert_Lin 2024-12-4 comment-out due to EABroker.EABroker add one argument

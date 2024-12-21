@@ -815,21 +815,21 @@ namespace VcpCore.Common
             public static int Vertical_Blanking(byte[] EDID)
             {
                 if (EDID == null || EDID.Length < 128) return 0;
-                int val = ((((int)EDID[61] << 8) & 0x0F00) | (int)EDID[60]);
+                int val = (((int)EDID[61] << 8) & 0x0F00) | (int)EDID[60];
                 return val;
             }
 
             public static string Vertical_Sync_Offset(byte[] EDID)
             {
                 if (EDID == null || EDID.Length < 128) return "";
-                int val = ((((int)EDID[65] << 2) & 0x0030) | ((((int)EDID[64] >> 4) & 0x000F)));
+                int val = ((EDID[65] << 2) & 0x0030) | ((((int)EDID[64] >> 4) & 0x000F));
                 return val.ToString() + " lines";
             }
 
             public static string Vertical_Sync_Pulse_Width(byte[] EDID)
             {
                 if (EDID == null || EDID.Length < 128) return "";
-                int val = ((((int)EDID[65] << 4) & 0x0030) | ((((int)EDID[64]) & 0x000F)));
+                int val = (((int)EDID[65] << 4) & 0x0030) | (((int)EDID[64]) & 0x000F);
                 return val.ToString() + " lines";
             }
 

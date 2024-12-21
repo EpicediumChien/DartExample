@@ -286,56 +286,59 @@ namespace NetworkKVM.Plugins
         public Task MonitorPlug()
         {
             _logs.DebugMsg("[NetworkKVM] MonitorPlug....");
-            if (pipeServer.IsConnected)
+            if (pipeServer != null)
             {
-                MONITOR_PLUG_DETECTION _COMMAND = new MONITOR_PLUG_DETECTION();
-                _COMMAND.UpdateChecksum();
-                WriteAsync(_COMMAND.ToJson()).Wait();
-                NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
-                if (_AllInfoMonitors != null)
+                if (pipeServer.IsConnected)
                 {
-                    _logs.DebugMsg("[NetworkKVM] MonitorPlug _AllInfoMonitors count : " + _AllInfoMonitors.Count);
-                    foreach (MonitorInfo monitorInfo in _AllInfoMonitors)
+                    MONITOR_PLUG_DETECTION _COMMAND = new MONITOR_PLUG_DETECTION();
+                    _COMMAND.UpdateChecksum();
+                    WriteAsync(_COMMAND.ToJson()).Wait();
+                    NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
+                    if (_AllInfoMonitors != null)
                     {
-                        if (nKVMVCPValues != null)
+                        _logs.DebugMsg("[NetworkKVM] MonitorPlug _AllInfoMonitors count : " + _AllInfoMonitors.Count);
+                        foreach (MonitorInfo monitorInfo in _AllInfoMonitors)
                         {
-                            if (nKVMVCPValues.Count == 0)
+                            if (nKVMVCPValues != null)
                             {
-                                ObjGetVCP objGetVCP = _VcpCorePlugin.GetVCPCapability(monitorInfo, 0xE9).Result;
-                                if (objGetVCP != null && objGetVCP.result)
-                                {
-                                    _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP.value);
-                                    nKVMVCPValue.monitorInfo = monitorInfo;
-                                    nKVMVCPValue.value = (int)(uint)objGetVCP.value;
-                                    nKVMVCPValues.Add(nKVMVCPValue);
-                                }
-                            }
-                            else
-                            {
-                                nKVMVCPValue = nKVMVCPValues.Find(x => x.monitorInfo == monitorInfo);
-                                if (nKVMVCPValue != null)
+                                if (nKVMVCPValues.Count == 0)
                                 {
                                     ObjGetVCP objGetVCP = _VcpCorePlugin.GetVCPCapability(monitorInfo, 0xE9).Result;
                                     if (objGetVCP != null && objGetVCP.result)
                                     {
                                         _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP.value);
-                                        _logs.DebugMsg("[NetworkKVM] MonitorPlug nKVMVCPValue : " + nKVMVCPValue.value);
-                                        if (nKVMVCPValue.value != (int)(uint)objGetVCP.value)
-                                        {
-                                            nKVMVCPValue.value = (int)(uint)objGetVCP.value;
-                                            SetVCPNotify(monitorInfo, 0xE9, (int)(uint)objGetVCP.value);
-                                        }
+                                        nKVMVCPValue.monitorInfo = monitorInfo;
+                                        nKVMVCPValue.value = (int)(uint)objGetVCP.value;
+                                        nKVMVCPValues.Add(nKVMVCPValue);
                                     }
                                 }
                                 else
                                 {
-                                    _logs.DebugMsg("[NetworkKVM] nKVMVCPValue is null");
+                                    nKVMVCPValue = nKVMVCPValues.Find(x => x.monitorInfo == monitorInfo);
+                                    if (nKVMVCPValue != null)
+                                    {
+                                        ObjGetVCP objGetVCP = _VcpCorePlugin.GetVCPCapability(monitorInfo, 0xE9).Result;
+                                        if (objGetVCP != null && objGetVCP.result)
+                                        {
+                                            _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP.value);
+                                            _logs.DebugMsg("[NetworkKVM] MonitorPlug nKVMVCPValue : " + nKVMVCPValue.value);
+                                            if (nKVMVCPValue.value != (int)(uint)objGetVCP.value)
+                                            {
+                                                nKVMVCPValue.value = (int)(uint)objGetVCP.value;
+                                                SetVCPNotify(monitorInfo, 0xE9, (int)(uint)objGetVCP.value);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _logs.DebugMsg("[NetworkKVM] nKVMVCPValue is null");
+                                    }
                                 }
                             }
-                        }
-                        else
-                        {
-                            _logs.DebugMsg("[NetworkKVM] nKVMVCPValues is null or count is 0");
+                            else
+                            {
+                                _logs.DebugMsg("[NetworkKVM] nKVMVCPValues is null or count is 0");
+                            }
                         }
                     }
                 }
@@ -634,27 +637,30 @@ namespace NetworkKVM.Plugins
         {
             try
             {
-                if (pipeServer.IsConnected)
+                if (pipeServer != null)
                 {
-                    _logs.DebugMsg("[NetworkKVM] SetVCPNotify VcpCode : " + vcpcode.ToString());
-                    _logs.DebugMsg("[NetworkKVM] SetVCPNotify value : " + value.ToString());
-                    if (!isSetVCP || (isSetVCP && lockVCP != vcpcode))
+                    if (pipeServer.IsConnected)
                     {
-                        if (vcpcode == 0x60 && value == 0)
+                        _logs.DebugMsg("[NetworkKVM] SetVCPNotify VcpCode : " + vcpcode.ToString());
+                        _logs.DebugMsg("[NetworkKVM] SetVCPNotify value : " + value.ToString());
+                        if (!isSetVCP || (isSetVCP && lockVCP != vcpcode))
                         {
-                            return Task.CompletedTask;
-                        }
-                        SET_VCP_NOTIFY set_VCP_NOTIFY = new SET_VCP_NOTIFY();
-                        set_VCP_NOTIFY.MonitorIndex = monitorInfo.Index;
-                        set_VCP_NOTIFY.VcpCode = vcpcode;
-                        set_VCP_NOTIFY.Value = value;
-                        set_VCP_NOTIFY.UpdateChecksum();
+                            if (vcpcode == 0x60 && value == 0)
+                            {
+                                return Task.CompletedTask;
+                            }
+                            SET_VCP_NOTIFY set_VCP_NOTIFY = new SET_VCP_NOTIFY();
+                            set_VCP_NOTIFY.MonitorIndex = monitorInfo.Index;
+                            set_VCP_NOTIFY.VcpCode = vcpcode;
+                            set_VCP_NOTIFY.Value = value;
+                            set_VCP_NOTIFY.UpdateChecksum();
 
-                        WriteAsync(set_VCP_NOTIFY.ToJson()).Wait();
-                    }
-                    else
-                    {
-                        _logs.DebugMsg("[NetworkKVM] isSetVCP : " + isSetVCP.ToString());
+                            WriteAsync(set_VCP_NOTIFY.ToJson()).Wait();
+                        }
+                        else
+                        {
+                            _logs.DebugMsg("[NetworkKVM] isSetVCP : " + isSetVCP.ToString());
+                        }
                     }
                 }
                 if (vcpcode == 0x60)

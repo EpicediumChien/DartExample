@@ -138,7 +138,7 @@ namespace DDPM.UI.Module.InputSource
                 NameHColumn = "1";
                 InputTitle = Strings.InputTitle1;
 
-                if (InputSourceModule.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("EE"))
+                if (InputSourceModule.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E7"))
                 {
                     InputTitle = Strings.InputTitle0;
                     IsUSBH = Visibility.Visible;
