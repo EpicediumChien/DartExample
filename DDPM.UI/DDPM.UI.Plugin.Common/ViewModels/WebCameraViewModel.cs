@@ -956,6 +956,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public int btnRes1_width { get; set; }
         public int btnRes2_width { get; set; }
         public int btnRes3_width { get; set; }
+        public bool IsResolutionSectionEnable { get; set; } = true;
 
 
         public CornerRadius btnRes1_radius { get => btnRes1_radius_v; }
