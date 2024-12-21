@@ -189,6 +189,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             //2024/12/21 fixed
             _vm.running_state = true;
+            in_CameraPlugin = true;
 
             exit_status_thread = false;
             if (status_thread == null)
@@ -217,7 +218,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 status_thread.Start();
             }
 
-            in_CameraPlugin = true;
+            
 
             //因為需要處理PresenceDetection分頁是否出現判斷,改變呼叫順序
             check_PresenceFunction();
