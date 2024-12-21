@@ -409,13 +409,10 @@ namespace DDPM.UI.Plugin.MousePlugin
 
             //var hostIndex = _vm!.PairedHostName1.ToUpper() == hostName.ToUpper() ? 1 : (_vm.PairedHostName2.ToUpper() == hostName.ToUpper() ? 2 : 3);
             txt1.Style = ConnectionStyle2;
-            imgBL1.Source = img2;
             txtBLHost1.Style = ConnectionStyle2;
             txt2.Style = ConnectionStyle2;
-            imgBL2.Source = img2;
             txtBLHost2.Style = ConnectionStyle2;
             txt3.Style = ConnectionStyle2;
-            imgBL3.Source = img2;
             txtBLHost3.Style = ConnectionStyle2;
 
             switch (_vm!.Model)
@@ -429,19 +426,16 @@ namespace DDPM.UI.Plugin.MousePlugin
                     if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         txt1.Style = ConnectionStyle1;
-                        imgBL1.Source = img1;
                         txtBLHost1.Style = ConnectionStyle1;
                     }
                     else if (txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         txt2.Style = ConnectionStyle1;
-                        imgBL2.Source = img1;
                         txtBLHost2.Style = ConnectionStyle1;
                     }
                     else
                     {
                         txt3.Style = ConnectionStyle1;
-                        imgBL3.Source = img1;
                         txtBLHost3.Style = ConnectionStyle1;
                     }
                     break;
@@ -454,13 +448,11 @@ namespace DDPM.UI.Plugin.MousePlugin
                     if (txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         txt2.Style = ConnectionStyle1;
-                        imgBL2.Source = img1;
                         txtBLHost2.Style = ConnectionStyle1;
                     }
                     else
                     {
                         txt3.Style = ConnectionStyle1;
-                        imgBL3.Source = img1;
                         txtBLHost3.Style = ConnectionStyle1;
                     }
                     break;
@@ -472,13 +464,11 @@ namespace DDPM.UI.Plugin.MousePlugin
                     if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
                         txt1.Style = ConnectionStyle1;
-                        imgBL1.Source = img1;
                         txtBLHost1.Style = ConnectionStyle1;
                     }
                     else
                     {
                         txt2.Style = ConnectionStyle1;
-                        imgBL2.Source = img1;
                         txtBLHost2.Style = ConnectionStyle1;
                     }
                     break;
@@ -487,7 +477,6 @@ namespace DDPM.UI.Plugin.MousePlugin
                     Host1.Visibility = Visibility.Collapsed;
                     Host3.Visibility = Visibility.Collapsed;
                     txt2.Style = ConnectionStyle1;
-                    imgBL2.Source = img1;
                     txtBLHost2.Text = hostName;
                     txtBLHost2.Style = ConnectionStyle1;
                     break;

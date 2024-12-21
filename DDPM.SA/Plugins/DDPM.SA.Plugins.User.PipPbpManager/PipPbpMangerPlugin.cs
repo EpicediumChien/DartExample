@@ -311,7 +311,7 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
                 }
                 //Write value: 0xF0xy, x and y is 0=main, 1=sub1, 2=sub2, 3=sub3
                 UInt16 wX = (UInt16)((x & 3) << 4);
-                UInt16 wY = (UInt16)((y & 3));
+                UInt16 wY = (UInt16)(y & 3);
                 UInt16 wValue = (UInt16)(0xF000 | wX | wY);
                 return _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE5, wValue);
             }

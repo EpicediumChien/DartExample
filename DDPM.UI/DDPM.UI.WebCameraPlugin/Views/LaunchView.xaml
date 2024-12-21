@@ -11,7 +11,6 @@
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
              d:DataContext="{d:DesignInstance Type=plugin:WebCameraViewModel}"
-             d:DesignHeight="735" d:DesignWidth="1378"
              Cursor="{Binding CurrentCursor}"
                      SizeChanged="UserControl_SizeChanged"
   Unloaded="LaunchView_Unloaded" Loaded="UserControl_Loaded">
@@ -133,7 +132,7 @@
         <Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
         <!--Image-->
         <Grid>
-          <Viewbox Name="largeImage" Margin="20,0,85,35" MaxWidth="700" >
+          <Viewbox Name="largeImage" Margin="20,0,85,35"  >
             <Grid>
               <Grid>
                 <Image Name="imgDevice" Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="500" />

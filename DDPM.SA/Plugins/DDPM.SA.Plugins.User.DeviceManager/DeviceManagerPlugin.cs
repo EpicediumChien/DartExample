@@ -194,6 +194,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //FW update progress bar
         private UpdateProgress _UpdateProgress;
+        private PopupBase _PopupBase = null;
 
         //Bruce 07-30 Added total screens
         private int _lastScreenCount;
@@ -696,6 +697,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public event EventHandler<DisplaychangedEventArgs> Displaychanged;
 
+        public event EventHandler<MonitorinfoUpdateEventArgs> MonitorinfoUpdated;
+
         public event EventHandler<DeviceChangedEventArgs> DeviceChanged;
 
         public event EventHandler<DeviceChangedEventArgs> Peripherals_Notify;
@@ -1152,7 +1155,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(blRet);
         }
 
-        public Task<bool> Send_NightLightschedulerStatus_Telementry_SA(MonitorInfo m, string NightLightschedulerStatus)
+        public Task<bool> Send_NightLightschedulerStatus_Telementry_SA(MonitorInfo m, string NightLightStatus)
         {
             writelog("DeviceManagerPlugin received Send_NightLightschedulerStatus_Telementry_SA requested ...");
 
@@ -1161,10 +1164,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var rt = false;
             var Displaysettings_Function = new Displaysettings_Function();
 
-            if (!string.IsNullOrEmpty(NightLightschedulerStatus))
+            if (!string.IsNullOrEmpty(NightLightStatus))
             {
                 writelog("[DeviceMangerPlugin] Send Telementry for NightLightschedulerStatus...");
-                rt = Displaysettings_Function.Send_NightLightschedulerStatus_Telementry(_TelementryScheduler, m, NightLightschedulerStatus, GetMonitorCurrentResolution(m), GetMonitorMaxResolution(m));
+                rt = Displaysettings_Function.Send_NightLightschedulerStatus_Telementry(_TelementryScheduler, m, NightLightStatus, GetMonitorCurrentResolution(m), GetMonitorMaxResolution(m));
                 if (rt)
                     writelog("[DeviceMangerPlugin] Send Telementry for NightLightschedulerStatus Success ...");
                 else
@@ -3139,7 +3142,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 bool result = await _DTPProxyPlugin.SetWearDetectionAsync(Guid, newValue);
-                if(result)
+                if (result)
                     writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync Success");
                 else
                     writelog($"[DeviceManagerPlugin] [Headset] SetWearDetectionAsync Fail");
@@ -5153,17 +5156,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> SetResolutions(MonitorInfo monitorInfo, Properties properties)
+        public Task<bool> SetResolutions(MonitorInfo monitorInfos, Properties properties)
         {
             bool ret = false;
             if (_DisplayManagerPlugin != null)
             {
                 displayInOut = false;
-                ret = _DisplayManagerPlugin.SetResolutions(monitorInfo, properties).Result;
+                ret = _DisplayManagerPlugin.SetResolutions(monitorInfos, properties).Result;
                 //Telementry Collection
                 var rt = false;
                 var Displaysettings_Function = new Displaysettings_Function();
-                rt = Displaysettings_Function.Send_GamingRefreshRate_Telementry(_TelementryScheduler, monitorInfo, properties.Frequency.ToString(), GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                rt = Displaysettings_Function.Send_GamingRefreshRate_Telementry(_TelementryScheduler, monitorInfos, properties.Frequency.ToString(), GetMonitorCurrentResolution(monitorInfos), GetMonitorMaxResolution(monitorInfos));
                 if (rt)
                     writelog("[DeviceMangerPlugin] Send Telementry for GamingRefreshRate Success ...");
                 else
@@ -5172,13 +5175,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> SetOrientation(MonitorInfo monitorInfo, DisplayOrientation orientation)
+        public Task<bool> SetOrientation(MonitorInfo monitorInfos, DisplayOrientation orientation)
         {
             bool ret = false;
             if (_DisplayManagerPlugin != null)
             {
                 displayInOut = false;
-                ret = _DisplayManagerPlugin.SetOrientation(monitorInfo, orientation).Result;
+                ret = _DisplayManagerPlugin.SetOrientation(monitorInfos, orientation).Result;
             }
             return Task.FromResult(ret);
         }
@@ -5193,22 +5196,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool> GetHDRStatus(MonitorInfo monitorInfo)
+        public Task<bool> GetHDRStatus(MonitorInfo monitorInfos)
         {
             bool ret = false;
-            return Task.FromResult(_DisplayManagerPlugin.GetHDRStatus(monitorInfo).Result);
+            return Task.FromResult(_DisplayManagerPlugin.GetHDRStatus(monitorInfos).Result);
         }
 
-        public Task<bool> SetHDRStatus(MonitorInfo monitorInfo, bool onoff)
+        public Task<bool> SetHDRStatus(MonitorInfo monitorInfos, bool onoff)
         {
             bool ret = false;
-            return Task.FromResult(_DisplayManagerPlugin.SetHDRStatus(monitorInfo, onoff).Result);
+            return Task.FromResult(_DisplayManagerPlugin.SetHDRStatus(monitorInfos, onoff).Result);
         }
 
-        public Task<bool> SetUSBCPrioritizationType(MonitorInfo monitorInfo, USBCPrioritizationType type)
+        public Task<bool> SetUSBCPrioritizationType(MonitorInfo monitorInfos, USBCPrioritizationType type)
         {
             bool ret = false;
-            return Task.FromResult(_DisplayManagerPlugin.SetUSBCPrioritizationType(monitorInfo, type).Result);
+            return Task.FromResult(_DisplayManagerPlugin.SetUSBCPrioritizationType(monitorInfos, type).Result);
         }
 
         //0606 Bruce 新增鎖定自動旋轉方向
@@ -5283,12 +5286,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string orientation)
+        public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string Orientation)
         {
             bool? ret = null;
             if (_DisplayManagerPlugin != null)
             {
-                ret = _DisplayManagerPlugin.SetOSDOrientation(monitorInfo, orientation).Result;
+                ret = _DisplayManagerPlugin.SetOSDOrientation(monitorInfo, Orientation).Result;
             }
             return Task.FromResult(ret);
         }
@@ -6081,6 +6084,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         toastContentBuilder.AddText(title);
                         toastContentBuilder.AddText(info);
                     }
+                    if (_PopupBase != null && _PopupBase.Activate())
+                    {
+                        _PopupBase.CloseWindow();
+                        _PopupBase = null;
+                    }
                     toastContentBuilder.Show(); // 顯示Toast通知
                     writelog("[CallPopup], popup Show.");
                     Thread.Sleep(5000);
@@ -6687,6 +6695,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #region EasyArrage
 
         #region Properties - EasyArrange
+
         /// <summary>
         /// The last error string after a EAPlugin method return error.
         /// </summary>
@@ -6699,12 +6708,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return _DisplayManagerPlugin.EALastError;
             }
         }
+
         #endregion Properties - EasyArrange
 
         #region EAFunctionEanbled - EasyArrange
 
         /// <summary>
-        /// Robert_Lin, 2024-12-12, To be removed. Use 
+        /// Robert_Lin, 2024-12-12, To be removed. Use
         /// Enable/Disable EasyArrange function for all monitors.
         /// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
         /// but user can edit/setup in DDPM.UI and save their settings.
@@ -6733,9 +6743,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return Task.FromResult<ObjGetVCP>(new ObjGetVCP() { result = false, value = false });
         }
+
         #endregion EAFunctionEanbled - EasyArrange
 
         #region EzSettings - EasyArrange
+
         public Task<EzSettings> ReadEzSettings()
         {
             //Read DDPMSettings
@@ -6882,9 +6894,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Fail to read, will return false
             return Task.FromResult(false);
         }
+
         #endregion EzSettings - EasyArrange
 
         #region EA Custom List - EasyArrange
+
         //Robert_Ln, 2024-10-12, Added after move CustomList to UserSettings from MonitorSettings
         public Task<SplitJson[]> ReadEACustomList()
         {
@@ -6926,9 +6940,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Failed, return an empty array instead of null
             return Task.FromResult(false);
         }
+
         #endregion EA Custom List - EasyArrange
 
         #region EAMonitorSettings - EasyArrange
+
         public Task<bool> WriteEAMonitorSettings(MonitorInfo monitorInfo, EAMonitorSettings eaSettings)
         {
             if (_SettingsPlugin == null)
@@ -7076,9 +7092,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Return the EA settings from the settings file
             return Task.FromResult(monitorSetting.EA);
         }
+
         #endregion EAMonitorSettings - EasyArrange
 
         #region SelectedLayout - EasyArrange
+
         public Task<int> GetEASelectedLayout(MonitorInfo monitorInfo)
         {
             //Read the EAMonitorSettings from MonitorSettins.
@@ -7144,7 +7162,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #endregion SelectedLayout - EasyArrange
-
 
         //Robert_Lin, 2024-9-13 Remove unused interfaces
         //public Task<bool> RequestEditSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, string customName, List<double>? settings = null)
@@ -7247,7 +7264,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-
         private void _dump_SplitJsonList(MonitorInfo mi, List<SplitJson> splitJsonList)
         {
             Trace.WriteLine($"Monitor: {mi.AliasDeviceName}");
@@ -7315,9 +7331,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //     return Task.FromResult(false);
         //}
 
-
-
-
         //Robert_Lin, 2024-10-8, bridge of EASettingsChanged
         //DisplayManagerPlugin will call to here, and DeviceManagerPlugin call to its handler
         private void _DisplayManagerPlugin_EASettingsChanged(object sender, EAArgs e)
@@ -7332,7 +7345,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("@ DeviceManaerPlugin._DisplayManagerPlugin_EASettingsChanged(), EASettingsChanged is null.");
             }
         }
-
 
         //Robert_Lin, 2024-11-18, a general method for Subagent to send event to UI
         /// <summary>
@@ -7824,11 +7836,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         #region SW Update implementation
 
-        public Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isDefer = false, bool isForce = false, bool reScan = true, bool isUITrigger = false)
+        public Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, bool reScan = true, bool isUITrigger = false)
         {
             if (_SWUpdatePlugin != null)
             {
-                return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, isDefer, isForce, _GlobalSettingParam.GlobalSetting_About.SWVersion, reScan, isUITrigger).Result);
+                return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, isForce, isDefer, _GlobalSettingParam.GlobalSetting_About.SWVersion, reScan, isUITrigger).Result);
             }
             return Task.FromResult(new SWUpdateInfoPackage());
         }
@@ -9707,8 +9719,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region GlobalSetting
-        Object obj = null;
-        int count = 0;
+
+        private Object obj = null;
+        private int count = 0;
+
         public Task<GlobalSettingParam> GetGlobalSettingParam()
         {
             FirstGetDPeMSettings();
@@ -9729,7 +9743,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Exception:{ex.Message}...");
             }
@@ -9740,7 +9754,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var ReadReg = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen").Result;
             writelog($"[DeviceMangerPlugin] ReadReg Status {ReadReg} And {ReadReg.GetType()}");
             Boolean.TryParse(ReadReg.ToString(), out var getRegValue);
-            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady())
+            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady().Result)
             {
                 count++;
                 writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Count:{count}...");
@@ -9760,7 +9774,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _GlobalSettingParam.isTelemetryConsentOn = GetIsAnalyticsEnabledValue().Result;
             _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget = GetIsQuickAccessMenuEnabledValue().Result;
             _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder = GetIsQuickAccessMenuOSDEnabledValue().Result;
-            bool regOK=WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", false).Result;
+            bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", false).Result;
         }
 
         public Task<bool> Set_GlobalSetting_DisplayLowBatteryLevel(bool isDisplay)
@@ -9997,6 +10011,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void SettingsReady(object o, EventArgs eventArgs)
         {
+            UpdateInstancesToPeripheralPlugin(_SettingsPlugin, null);
             LoadGlobalSettingParam();
             //Migration
             DDMMigration();
@@ -11032,11 +11047,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             EventHandler<VCPchangedEventArgs> handler = VCPchanged;
             if (handler != null)
                 Task.Run(() => handler.Invoke(this, e));
-
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
         }
 
         protected virtual void OnDDCCIStatuschanged(DDCCIchangedEventArgs e)
@@ -11052,11 +11062,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 _NKVMPlugin.NKVM_ChangeLimitedSW(e.monitors, e.DDCisON).Wait();
             }
+        }
 
-            //The Asynchronous Programming Model (APM) (using IAsyncResult and BeginInvoke) is no longer the preferred method of making asynchronous calls.
-            //The Task-based Asynchronous Pattern (TAP) is the recommended async model as of .NET Framework 4.5.
-            //Because of this, and because the implementation of async delegates depends on remoting features not present in .NET Core, BeginInvoke and EndInvoke delegate calls are not supported in .NET Core.
-            //This is discussed in GitHub issue dotnet/corefx #5940.
+        protected virtual void OnMonitorinfoUpdatechanged(MonitorinfoUpdateEventArgs e)
+        {
+            writelog("DeviceMangerPlugin brocast MonitorinfoUpdatechanged ...");
+
+            //MonitorUpdatechanged?.Invoke(this, e);
+            EventHandler<MonitorinfoUpdateEventArgs> handler = MonitorinfoUpdated;
+            if (handler != null)
+                Task.Run(() => handler.Invoke(this, e)).ConfigureAwait(false);
         }
 
         protected virtual void OnDisplaychanged(DisplaychangedEventArgs e)
@@ -11108,7 +11123,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #region FW Update
-
         private void OnProgressUpdateEvent(UpdateProgressInfo fWUpdateInfo)
         {
             writelog($"{nameof(OnProgressUpdateEvent)} start");
@@ -11119,6 +11133,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"{nameof(OnProgressUpdateEvent)} {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
                 handler.Invoke(this, fWUpdateInfo);
+                if (_UpdateProgress == null)
+                {
+                    if (_PopupBase != null && _PopupBase.Activate())
+                    {
+                        _PopupBase.UpdateContent(LangHelper.Instance["FW_info"], fWUpdateInfo.ProcessName);
+                    }
+                    else
+                    {
+                        _PopupBase = new PopupBase(LangHelper.Instance["FW_info"], fWUpdateInfo.ProcessName, "", "", null, true, 0);
+                        _PopupBase.ShowWindow();
+                        const double NotificationHeight = 252;
+                        const double NotificationWidth = 417;
+                        const double NotificationSpacing = 10;
+                        _PopupBase.Height = NotificationHeight;
+                        _PopupBase.Width = NotificationWidth;
+                        double screenHeight = SystemParameters.PrimaryScreenHeight;
+                        double screenWidth = SystemParameters.PrimaryScreenWidth;
+                        _PopupBase.Left = screenWidth - NotificationWidth - NotificationSpacing;
+                        _PopupBase.Top = screenHeight - NotificationHeight - NotificationSpacing;
+                    }
+                }
             }
             writelog($"{nameof(OnProgressUpdateEvent)} done");
         }
@@ -11463,6 +11498,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _DDCCIchangedEventArgs.DDCisON = e.DDCisON;
             _DDCCIchangedEventArgs.monitors = e.monitors.Clone();
             OnDDCCIStatuschanged(_DDCCIchangedEventArgs);
+        }
+
+        private void show_MonitorinfoUpdatechangedEventArgs(object sender, MonitorinfoUpdateEventArgs e)
+        {
+            writelog("Receive MonitorinfoUpdatechanged Event Notify from DisplayManagerPlugin");
+            writelog("Send out MonitorinfoUpdatechanged Event Notify from DeviceMangerPlugin");
+
+            MonitorinfoUpdateEventArgs _EventArgss = new MonitorinfoUpdateEventArgs()
+            {
+                edid = e.edid,
+                monitor = e.monitor,
+            };
+            OnMonitorinfoUpdatechanged(_EventArgss);
         }
 
         private void show_displays_changed(object sender, DisplaychangedEventArgs e)
@@ -11846,6 +11894,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.VCPchanged += show_displays;
                         _DisplayManagerPlugin.DDCCIStatuschanged += show_DDCCIchangedEventArgs;
                         _DisplayManagerPlugin.Displaychanged += show_displays_changed;
+                        _DisplayManagerPlugin.MonitorinfoUpdated += show_MonitorinfoUpdatechangedEventArgs;
                         //Robert_Lin, 2024-7-16 added to handle EasyArrange EAPlugin events
                         _DisplayManagerPlugin.EAEditStarted += _DisplayManagerPlugin_EAEditStarted;
                         //Robert_Lin, 2024-9-13 Remove unused interfaces
@@ -11871,6 +11920,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _DisplayManagerPlugin.VCPchanged += show_displays;
                         _DisplayManagerPlugin.DDCCIStatuschanged += show_DDCCIchangedEventArgs;
                         _DisplayManagerPlugin.Displaychanged += show_displays_changed;
+                        _DisplayManagerPlugin.MonitorinfoUpdated += show_MonitorinfoUpdatechangedEventArgs;
                         //Robert_Lin, 2024-7-16 added to handle EasyArrange EAPlugin events
                         _DisplayManagerPlugin.EAEditStarted += _DisplayManagerPlugin_EAEditStarted;
                         //Robert_Lin, 2024-9-13 Remove unused interfaces
@@ -11975,17 +12025,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (pluginCondition is PluginErrorCondition)
                     {
                         writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in an error condition");
-                        //_PeripheralsPluginCondition = pluginCondition;
                     }
                     else if (pluginCondition is PluginRunningCondition)
                     {
                         writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in a running condition");
                         //LoadGlobalSettingParam();
+                        UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
+                        _PeripheralsPlugin.Peripheral_OSD_Notify += OnPeripheralOSDNotify;
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
                         writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in a started condition");
                         //LoadGlobalSettingParam(); //here is too early, please refer to function "SettingsReady"
+                        UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
+                        _PeripheralsPlugin.Peripheral_OSD_Notify += OnPeripheralOSDNotify;
                     }
                 }
             });
@@ -12184,7 +12237,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
 
                         //CheckAutoColorPresetEnableOnStartedCondition(_AllInfoMonitors);
-                        //CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);
+                        //CheckAutoColorManagementEnableOnStartedCondition(_AllInfoMonitors);                        
                     }
                     else
                     {
@@ -12405,6 +12458,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         //Derek 1119
                         _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
+                        UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
@@ -12422,6 +12476,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         //Derek 1119
                         _DTPProxyPlugin.DTPEventHandler += _DTPProxyPlugin_DTPEventHandler;
+                        UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
                     }
                 }
             });
@@ -12900,6 +12955,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     }
                 }
+                /* since all monitor use same hotkeys,no need this anymore
                 //diff monitor
                 List<string> monitorSnList = new List<string>();
                 foreach (HotkeySettings hotkeySetting in hotkeySettingList)
@@ -12916,11 +12972,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (distCount != 0 && (allCount == distCount))
                 {
                     return Task.FromResult(HotkeyWarning.ConflictInbox);
-                }
+                }*/
                 return Task.FromResult(HotkeyWarning.None);
             }
             else
             {
+                writelog($"[GetHotkeyConflicts] _SettingsPlugin is null.");
                 return Task.FromResult(HotkeyWarning.ConflictInbox);
             }
         }
@@ -13046,8 +13103,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //Derek 1217 add Debounce for Keyboard_KeyUpProc
         private System.Timers.Timer _timerDebounce;
+
         //即刻执行，执行之后，在timeMs内再次调用无效
-        public void KeyboardHook_Debounce<T>(int timeMs, ISynchronizeInvoke invoker, 
+        public void KeyboardHook_Debounce<T>(int timeMs, ISynchronizeInvoke invoker,
                         Action<T> action, T parameter)
         {
             System.Threading.Monitor.Enter(this);
@@ -14163,8 +14221,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 string crtInput = monitorInfo.inputSource;
                 List<KeyValuePair<string, InputInfo>> list = result.OrderBy(x => x.Key).ToList();
                 List<InputInfo> inputInfos = result.Select(x => x.Value).ToList();
-                Debug.WriteLine($"Toggle_InputSource,all inputsourc:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
-                writelog($"Toggle_InputSource,all inputsourc:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
+                Debug.WriteLine($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] all inputsourc: {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
+                writelog($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] all inputsourc: {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
                 for (int i = 0; i < list.Count; i++)
                 {
                     if (list[i].Key.Equals(crtInput))
@@ -14179,6 +14237,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     }
                 }
+                Debug.WriteLine($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}],next inputsource: {nextInput}");
+                writelog($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}],next inputsource: {nextInput}");
                 bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
                 writelog($"Toggle_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}]" + (setNextInput ? "success" : "fail"));
             }
@@ -14494,8 +14554,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public Task<bool> SavePowerNapSetting(PowerNapSetting powerNapSetting)
+        public Task<bool> SavePowerNapSetting(PowerNapSetting powerNapSettings)
         {
+            PowerNapSetting powerNapSetting = powerNapSettings;
+
             Debug.WriteLine($"{powerNapSetting.ModelName}:{powerNapSetting.SerialNumber}:{powerNapSetting.ServiceTag}:{powerNapSetting.Status}:{powerNapSetting.RunType}");
             List<PowerNapSetting> saveList = new List<PowerNapSetting>();
             bool ret = false;
@@ -16753,6 +16815,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #endregion
 
         #region globalperipheral
+
         public async Task<bool> GetIsLockKeyNotificationsEnabledValue()
         {
             writelog($"Get IsLockKeyNotificationsEnabled Fun");
@@ -16827,7 +16890,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsAnalyticsEnabledValue failed - Exception: {ex.Message}");
                 return false;
             }
-
         }
 
         public async Task<bool> GetIsQuickAccessMenuEnabledValue()
@@ -16847,7 +16909,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuEnabledValue failed - Exception: {ex.Message}");
                 return false;
             }
-
         }
 
         public async Task<bool> GetIsMuteStatusNotificationsEnabledValue()
@@ -16867,7 +16928,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsMuteStatusNotificationsEnabledValue failed - Exception: {ex.Message}");
                 return false;
             }
-
         }
 
         public async Task<bool> GetIsQuickAccessMenuOSDEnabledValue()
@@ -16887,7 +16947,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"[DeviceManagerPlugin] [Globalperipheral] GetIsQuickAccessMenuOSDEnabledValue failed - Exception: {ex.Message}");
                 return false;
             }
-
         }
 
         public async Task<bool> SetIsLockKeyNotificationsEnabledValue(bool newValue)
@@ -17024,5 +17083,40 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #endregion globalperipheral
+
+        private void UpdateInstancesToPeripheralPlugin(ISettingsManagerDev SettingsInstance, IDTPProxyPlugin DTPInstance)
+        {
+            if (_PeripheralsPlugin != null && SettingsInstance != null)
+            {
+                _PeripheralsPlugin.UpdateSettingsInstance(SettingsInstance);
+            }
+            if (_PeripheralsPlugin != null && DTPInstance != null)
+            {
+                _PeripheralsPlugin.UpdateDTPInstance(DTPInstance);
+            }
+        }
+
+        private void OnPeripheralOSDNotify(object sender, OSDEventArgs e)
+        {
+            if (e == null)
+                return;
+            if (string.IsNullOrEmpty(e.Requester))
+                return;
+
+            switch (e.Requester)
+            {
+                case "CollaborationNotAvailable.Keyboard":
+                    ShowOSD(e.DeviceName, e.osd_type, e.osd_device, e.Message);
+                    break;
+                case "BatteryLow":
+                    ShowOSD(e.DeviceName, e.osd_type, e.osd_device, e.Message);
+                    break;
+                case "Mute.Status":
+                    ShowOSD(e.DeviceName, e.osd_type, e.Message, e.Status);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

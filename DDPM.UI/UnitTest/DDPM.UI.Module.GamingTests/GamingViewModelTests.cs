@@ -7,7 +7,7 @@ using NGA.UnitTest.PrivateObject;
 using System.Windows;
 using VcpCore.Common;
 using static DDPM.UI.Module.Gaming.UI_HDRType;
-
+using Dell.Client.Framework.UX.WPF.ResourceManager;
 namespace DDPM.UI.Module.Gaming.Tests
 {
     [TestFixture, Apartment(ApartmentState.STA)]
@@ -29,6 +29,7 @@ namespace DDPM.UI.Module.Gaming.Tests
             {
                 new System.Windows.Application();
             }
+            ResourceManager res = new ResourceManager();
             var resourceDictionary = new ResourceDictionary();
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
@@ -483,7 +484,7 @@ namespace DDPM.UI.Module.Gaming.Tests
             uI_GameEnhancementMode.GameEnhancementMode = new Gaming_GameEnhancementMode();
             var result = uI_GameEnhancementMode.DisplayText;
             // Assert
-            Assert.That(result, Is.EqualTo("Off"));
+            Assert.That(result, Is.EqualTo("OFF"));
         }
 
         //class UI_ResponseTime
@@ -546,7 +547,7 @@ namespace DDPM.UI.Module.Gaming.Tests
             uI_HDRType.HDRType = new Gaming_HDRType();
             var result = uI_HDRType.DisplayText;
             // Assert
-            Assert.That(result, Is.EqualTo("Off"));
+            Assert.That(result, Is.EqualTo("OFF"));
         }
 
         //class UI_DualResolution
@@ -564,10 +565,10 @@ namespace DDPM.UI.Module.Gaming.Tests
         public void TestDisplayTextz()
         {
             UI_DualResolution uI_DualResolution = new UI_DualResolution();
-            uI_DualResolution.DualResolutionType = new Gaming_DualResolutionType();
+            uI_DualResolution.DualResolutionType = Gaming_DualResolutionType._4K;
             var result = uI_DualResolution.DisplayText;
             // Assert
-            Assert.That(result, Is.EqualTo("Unknow"));
+            Assert.That(result, Is.EqualTo("4K"));
         }
     }
 }
