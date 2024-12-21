@@ -924,10 +924,34 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public bool IsNotAutoFramingOn { get => !IsAutoFramingOn; }
         public bool IsNotRecording { get => !IsRecording; }
-        public bool IsFPS1Enable { get => !IsRecording && !(IsAutoFramingOn && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 1 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][1] == "60"); }
-        public bool IsFPS2Enable { get => !IsRecording && !(IsAutoFramingOn && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 2 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][2] == "60"); }
-        public bool IsResolutionSectionEnable { get; set; } = true;
+        //public bool IsFPS1Enable { get => !IsRecording && !(IsAutoFramingOn && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 1 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][1] == "60"); }
+        public bool IsFPS1Enable
+        {
+            get
+            {
+                if (WebcamSettings?.SupportedFPSs == null || !WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+                {
+                    return false;
+                }
 
+                var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution];
+                return !IsRecording && !(IsAutoFramingOn && supportedFPS.Count > 1 && supportedFPS[1] == "60");
+            }
+        }
+        //public bool IsFPS2Enable { get => !IsRecording && !(IsAutoFramingOn && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 2 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][2] == "60"); }
+        public bool IsFPS2Enable
+        {
+            get
+            {
+                if (WebcamSettings?.SupportedFPSs == null || !WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+                {
+                    return false;
+                }
+
+                var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution];
+                return !IsRecording && !(IsAutoFramingOn && supportedFPS.Count > 2 && supportedFPS[2] == "60");
+            }
+        }
         public int btnRes0_width { get; set; }
         public int btnRes1_width { get; set; }
         public int btnRes2_width { get; set; }
@@ -1072,11 +1096,19 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsAutoFramingOn;
             set
             {
-                if (value && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 1)
+                //if (value && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 1)
+                //{
+                //    if (WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][1] == "60")
+                //        SetFPS_Selected(0);
+                //    else if (WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 2 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][2] == "60")
+                //        SetFPS_Selected(1);
+                //}
+                if (value && WebcamSettings?.SupportedFPSs != null && WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
                 {
-                    if (WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][1] == "60")
+                    var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution];
+                    if (supportedFPS.Count > 1 && supportedFPS[1] == "60")
                         SetFPS_Selected(0);
-                    else if (WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 2 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][2] == "60")
+                    else if (supportedFPS.Count > 2 && supportedFPS[2] == "60")
                         SetFPS_Selected(1);
                 }
                 OnPropertyChanged(nameof(IsNotAutoFramingOn));
