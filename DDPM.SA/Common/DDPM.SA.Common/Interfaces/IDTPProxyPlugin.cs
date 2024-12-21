@@ -226,6 +226,9 @@ namespace DDPM.SA.Common
 
         Task<bool> GetIsESISupported(string Guid);
 
+        //Derek 1221 for QAM
+        Task<string> GetWebcamDeviceID();
+
         #endregion
 
         #region Headset

@@ -80,6 +80,12 @@ namespace DDPM.QAM
             LoadCurrentStatus();
         }
 
+        ~QAMPageViewModel()
+        {
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= QAMPageViewModel_UIUpdateNotify;
+            LogMsg($"Remove event QAMPageViewModel_UIUpdateNotify");
+        }
+
         private void LoadCurrentStatus()
         {
             try

@@ -1125,6 +1125,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return new JArray();
             }
         }
+
+        //Derek 1221 from QAM
+        public Task<string> GetWebcamDeviceID()
+        {
+            if (1 == webcamList.Count)
+                return Task.FromResult(webcamList[0].DeviceId);
+            else
+                return Task.FromResult(string.Empty);
+        }
+
         public async Task<JArray> GetPresetProfiles(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -7672,13 +7682,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                                 jsonObject.webcamCommodity = _comdityWebcamTmp;
                                 webcamList.Add(jsonObject);
 
-                                writelog($"Webcam{deviceID} Commodity events registered successfully");
+                                writelog($"Webcam {deviceID} Commodity events registered successfully");
 
                                 return true;
                             }
                             else
                             {
-                                writelog($"Webcam{deviceID} Commodity events registered fail");
+                                writelog($"Webcam {deviceID} Commodity events registered fail");
 
                                 return false;
                             }
@@ -7728,6 +7738,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 _Webcamcom.SerialNumberChanged -= Webcam_SerialNumberChanged;
                 _Webcamcom.IsZoomMeetingActiveChanged -= Webcam_IsZoomMeetingActiveChanged;
                 _Webcamcom.IsZoomScreenShareActiveChanged -= Webcam_IsZoomScreenShareActiveChanged;
+                _Webcamcom.ZoomMeetingTypeChanged -= Webcam_ZoomMeetingTypeChanged; //for QAM
 
                 _Webcamcom.WALSnoozeTimeLeftInSecondsChanged -= Webcam_WALSnoozeTimeLeftInSecondsChanged;
                 _Webcamcom.Esi_IsWALLockCountdownStartedChanged -= Webcam_Esi_IsWALLockCountdownStartedChanged;
@@ -7765,7 +7776,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     if (item.webcamIndex == webcamID)
                     {
                         result = true;
-                        writelog($"Found object{item.DeviceName} from webcamList for Unregister Events");
+                        writelog($"Found object {item.DeviceName} from webcamList for Unregister Events");
                         result = UnregisterEventsForWebcam(item);
                         writelog($"UnregisterEventsForWebcam result is {result}");
                         result = webcamList.Remove(item);
@@ -7804,7 +7815,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     if (item.DeviceId == devcieID)
                     {
                         result = true;
-                        writelog($"Found object{item.DeviceName} from webcamList for Unregister Events");
+                        writelog($"Found object {item.DeviceName} from webcamList for Unregister Events");
                         result = UnregisterEventsForWebcam(item);
                         writelog($"UnregisterEventsForWebcam result is {result}");
                         result = webcamList.Remove(item);
@@ -8298,7 +8309,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             //SendDTPEventToUI($"3;Device:Webcam;Event:Disconnected;DeviceId:{e.DeviceId}");
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Disconnected", e.DeviceId));
 
-            writelog($"Catch event _Webcam_Disconnected, unregister events result is {result}, current devCount is {webcamList.Count} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcam_Disconnected, unregister events result is {result.Result}, current devCount is {webcamList.Count} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_Connected(object sender, ConnectedArgs e)
@@ -8309,7 +8320,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Connected", e.DeviceId));
 
-            writelog($"Catch event _Webcam_Connected, register events result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcam_Connected, register events result is {result.Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private string CreateEventMsg(string devType, string eventType, string devID, string eventContent = "NewValue:NoContent")
