@@ -87,6 +87,9 @@
                                 <DataTrigger Binding="{Binding IsSelected}"  Value="True">
                                     <Setter Property="Foreground"  Value="#FFFFFF" />
                                 </DataTrigger>
+                                <Trigger Property="IsEnabled"  Value="False">
+                                    <Setter Property="Foreground"  Value="{DynamicResource Vbar_FgBrush_Disabled}" />
+                                </Trigger>
                             </Style.Triggers>
                         </Style>
                     </ContentControl.Style>
@@ -101,6 +104,9 @@
                                 <DataTrigger Binding="{Binding IsSelected}"  Value="True">
                                     <Setter Property="Foreground"  Value="#FFFFFF" />
                                 </DataTrigger>
+                                <Trigger Property="IsEnabled"  Value="False">
+                                    <Setter Property="Foreground"  Value="{DynamicResource Vbar_FgBrush_Disabled}" />
+                                </Trigger>
                             </Style.Triggers>
                         </Style>
                     </UXControls:UXTextBlock.Style>

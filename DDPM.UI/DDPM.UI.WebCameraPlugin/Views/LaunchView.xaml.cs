@@ -124,8 +124,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             Mouse.OverrideCursor = null;
             txtName.Text = Strings.Name;
             txtMsg.Text = Strings.NameIsTaken;
-            btnCancel.Caption = Strings.Cancel;
-            btnSave.Caption = Strings.Save;
+            btnCancel.Content = Strings.Cancel;
+            btnSave.Content = Strings.Save;
 
             //lock/unlock, no ui element currently
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -1909,7 +1909,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void EditPreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var profileName = ((Image)sender).Tag.ToString()!;
+            var profileName = ((FrameworkElement)sender).Tag.ToString()!;
             EditMode = "EDIT";
             EditingProfileName = profileName;
             if (profileName != _vm!.CurrentProfileName)
@@ -2092,7 +2092,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
         }
 
-        private void CancelClick(object sender, MouseButtonEventArgs e)
+        private void CancelClick(object sender, RoutedEventArgs e)
         {
             gdBattery.Visibility = Visibility.Visible;
             gdAddProfile.Visibility = Visibility.Collapsed;
@@ -2109,7 +2109,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.TooltipVisibility = Visibility.Collapsed;
         }
 
-        private void SaveClick(object sender, MouseButtonEventArgs e)
+        private void SaveClick(object sender, RoutedEventArgs e)
         {
             var txt = txbName.Text.Trim();
             //DdpmCommonHelper.DeviceManagerSA!.CreateCustomProfile(_vm!.CurrentDeviceInfo!.ID.ToString(), $"Test {_vm.WebcamSettings.CustomProfiles.Count + 1}");
