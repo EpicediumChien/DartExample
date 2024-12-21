@@ -809,7 +809,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 }
                 else
                 {
-                    _logs.DebugMsg_1($"{nameof(Install)} workingDirectory is null");
+                    _logs.DebugMsg_1($"{nameof(Install)} workingDirectory is null, info : {info}");
                 }
                     
                 //var sessionId = Kernel32.WTSGetActiveConsoleSessionId();

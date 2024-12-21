@@ -1704,7 +1704,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     else
                     {
-                        _logs.DebugMsg_1($"fileFullPath_sanitized is null");
+                        _logs.DebugMsg_1($"{nameof(Install)} workingDirectory is null, info : {info}");
                     }
                     //UserImpersonator.RunAsUser(token, () =>
                     //{
