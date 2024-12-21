@@ -1689,6 +1689,12 @@ namespace VcpCore.Plugins
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck 0x02 is null");
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin DDC/CI is disconnected");
 
+                            if (monitor.Item1.DDCCIFail == 0)
+                            {
+                                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin VCP 0x02 First Fail Try Renew hPhysicalMonitor if possible");
+                                RenewPhysicalMonitor(ref monitor.Item1);
+                            }
+
                             monitor.Item1.DDCCIFail++;
 
                             if (monitor.Item1.DDCCIFail >= 3)
@@ -1885,6 +1891,12 @@ namespace VcpCore.Plugins
                             {
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin VCP 0x02 is null");
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin DDC/CI is disconnected");
+
+                                if (monitor.Item1.DDCCIFail == 0)
+                                {
+                                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin VCP 0x02 First Fail Try Renew hPhysicalMonitor if possible");
+                                    RenewPhysicalMonitor(ref monitor.Item1);
+                                }
 
                                 monitor.Item1.DDCCIFail++;
 
@@ -2800,6 +2812,20 @@ namespace VcpCore.Plugins
                 _logs.DebugMsg("[VcpCorePlugin] [OnStatusTimedRaise] No monitors to service or in Initialize");
         }
 
+        private void RenewPhysicalMonitor(ref MonitorInfo_complex monitor)
+        {
+            uint cPhysicalMonitors = 0;
+            bool bSuccess = _GetNumberOfPhysicalMonitorsFromHMONITOR(monitor.hMonitor, ref cPhysicalMonitors);
+            PHYSICAL_MONITOR[] pPhysicalMonitors = new PHYSICAL_MONITOR[cPhysicalMonitors];
+            bSuccess = _GetPhysicalMonitorsFromHMONITOR(monitor.hMonitor, cPhysicalMonitors, pPhysicalMonitors);
+
+            if (bSuccess)
+            {
+                if (pPhysicalMonitors.Length >= monitor.cPhysicalMonitors_index)
+                    monitor.hPhysicalMonitor = pPhysicalMonitors[monitor.cPhysicalMonitors_index].hPhysicalMonitor;
+            }
+        }
+
         private (List<MonitorInfo_complex>, bool) _GetMonitors(CancellationToken token)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin into _GetMonitors() ...");
@@ -2915,6 +2941,7 @@ namespace VcpCore.Plugins
                             _TargetMonitor.Handle = hdcMonitor;
                             _TargetMonitor.pDevmode = devmode;
                             _TargetMonitor.displaydevice = dd;
+                            _TargetMonitor.cPhysicalMonitors_index = Convert.ToUInt32(realindex);
                             _TargetMonitor.hPhysicalMonitor = pPhysicalMonitors[realindex].hPhysicalMonitor;
                             _TargetMonitor.szPhysicalMonitorDescription = pPhysicalMonitors[realindex].szPhysicalMonitorDescription;
                             _TargetMonitor.ColorPresentDescription = new Dictionary<string, Dictionary<string, string>>();
