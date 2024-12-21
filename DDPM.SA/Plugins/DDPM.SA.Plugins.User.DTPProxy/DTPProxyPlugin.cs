@@ -7460,11 +7460,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     }
                 }
 
+                //see duplicate data
+                /*
+                 *  2024.12.21 11:06:52.121 [9044] (00025) I ------DTPProxy: [DTPProxyPlugin] connected _WebcamComConnectEvent.DeviceItems = 2, Caller Name:RegisterEventAsync, Source Line 7318
+                    2024.12.21 11:06:52.123 [9044] (00025) I ------DTPProxy: [DTPProxyPlugin] connected _WebcamComConnectEvent.DeviceItems[0] = DellPeripheral.Webcam.0, Caller Name:RegisterEventAsync, Source Line 7324
+                    2024.12.21 11:06:52.134 [9044] (00025) I ------DTPProxy: [DTPProxyPlugin] connected _WebcamComConnectEvent.DeviceItems = {
+                      "DeviceName": "Dell UltraSharp Webcam",
+                      "DeviceId": "f4f903d7-9bf3-43dc-a555-6e351cf40aaa",
+                      "ModelNumber": "WB7022"
+                    }, Caller Name:RegisterEventAsync, Source Line 7333
+                    2024.12.21 11:06:52.136 [9044] (00025) I ------DTPProxy: [DTPProxyPlugin] jsonObject values: DellPeripheral.Webcam.0, Dell UltraSharp Webcam, f4f903d7-9bf3-43dc-a555-6e351cf40aaa, WB7022, Caller Name:RegisterEventAsync, Source Line 7338
+                    2024.12.21 11:06:52.136 [9044] (00025) I ------DTPProxy: [DTPProxyPlugin] connected _WebcamComConnectEvent.DeviceItems[0] = DellPeripheral.Webcam.1, Caller Name:RegisterEventAsync, Source Line 7324
+                    2024.12.21 11:06:52.138 [9044] (00025) I ------DTPProxy: [DTPProxyPlugin] connected _WebcamComConnectEvent.DeviceItems = {
+                      "DeviceName": "Dell UltraSharp Webcam",
+                      "DeviceId": "f4f903d7-9bf3-43dc-a555-6e351cf40aaa",
+                      "ModelNumber": "WB7022"
+                    }, Caller Name:RegisterEventAsync, Source Line 7333
+                 */
                 //output for double check Derek 1220
                 foreach (var item in webcamList)
                 {
-                    writelog($"item.webcamCommodity = {item.webcamCommodity}");
+                    writelog($"ConnectedWebcamObject = {item.webcamCommodity},{item.webcamIndex},{item.DeviceName},{item.DeviceId},{item.ModelNumber}");
                 }
+
             }
             else
             {
@@ -7532,7 +7550,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 _Webcamcom.Esi_IsCameraSensorCoveredChanged += Webcam_Esi_IsCameraSensorCoveredChanged;
                 _Webcamcom.Esi_WALLockCountdownChanged += Webcam_Esi_WALLockCountdownChanged;
 
-                writelog($"Webcam Commodity events registered successfully");
+                writelog($"Webcam Commodity {_Webcamcom.DeviceName}/{_Webcamcom.DeviceId}/{_Webcamcom.ModelNumber} events registered successfully");
 
                 return true;
             }
@@ -7560,7 +7578,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 if (RegisterEventsForWebcam(_comdityWebcamTmp))
                 {
-                    writelog($"Webcam{index} Commodity events registered successfully");
+                    writelog($"Webcam {index} Commodity events registered successfully");
 
                     //Derek 1220 save this _comdityWebcamTmp to list
                     foreach (var item in webcamList)
