@@ -86,6 +86,8 @@ namespace VcpCore.Plugins
         private static SemaphoreSlim _LockerSemaphoreSlim = new SemaphoreSlim(1, 1);
         private int _CoWorkSignal = 0;
         private int _InitialThreadCounter = 0;
+        private int _AddSignalfor0X52 = 0;
+        private int _AddSignalforStatusCheck = 0;
 
         private bool IsOutInitialize
         {
@@ -608,13 +610,22 @@ namespace VcpCore.Plugins
 
             if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
-                Guid _guid = Guid.NewGuid();
-                _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
+                if (_AddSignalfor0X52 < 1)
+                {
+                    _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin add Watcher0x52 Task to TaskQueue ...");
+                    Interlocked.Add(ref _AddSignalfor0X52, 1);
+                    _logs.DebugMsg($"[VcpCorePlugin] After add Watcher0x52 Task _AddSignalfor0X52: {_AddSignalfor0X52}");
 
-                ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x52, new Type_Watcher0x52(_guid));
-                _TaskQueue.Enqueue(parameterType);
+                    Guid _guid = Guid.NewGuid();
+                    _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                Launch_TaskQueueExecutor();
+                    ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x52, new Type_Watcher0x52(_guid));
+                    _TaskQueue.Enqueue(parameterType);
+
+                    Launch_TaskQueueExecutor();
+                }
+                else
+                    _logs.DebugMsg("[VcpCorePlugin] TaskQueue exist the same as Watcher0x52 Task alredy, so ...Ignore");
             }
             else
                 _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is in Initialize. So, ignore requested");
@@ -626,13 +637,22 @@ namespace VcpCore.Plugins
 
             if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
-                Guid _guid = Guid.NewGuid();
-                _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
+                if (_AddSignalforStatusCheck < 1)
+                {
+                    _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin add Watcher0x02forStatusCheck Task to TaskQueue ...");
+                    Interlocked.Add(ref _AddSignalforStatusCheck, 1);
+                    _logs.DebugMsg($"[VcpCorePlugin] After add Watcher0x02forStatusCheck Task _AddSignalforStatusCheck: {_AddSignalforStatusCheck}");
 
-                ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x02forStatusCheck, new Type_Watcher0x02forStatusCheck(_guid));
-                _TaskQueue.Enqueue(parameterType);
+                    Guid _guid = Guid.NewGuid();
+                    _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                Launch_TaskQueueExecutor();
+                    ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x02forStatusCheck, new Type_Watcher0x02forStatusCheck(_guid));
+                    _TaskQueue.Enqueue(parameterType);
+
+                    Launch_TaskQueueExecutor();
+                }
+                else
+                    _logs.DebugMsg("[VcpCorePlugin] TaskQueue exist the same as Watcher0x02forStatusCheck Task alredy, so ...Ignore");
             }
             else
                 _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is in Initialize. So, ignore requested");
@@ -867,6 +887,11 @@ namespace VcpCore.Plugins
 
                             case Queue_CommandType.Watcher0x52:
                                 {
+                                    _logs.DebugMsg($"[VcpCorePlugin] Before Dequeue Watcher0x52 Task _AddSignalfor0X52: {_AddSignalfor0X52}");
+                                    if (_AddSignalfor0X52 > 0)
+                                        Interlocked.Add(ref _AddSignalfor0X52, -1);
+                                    _logs.DebugMsg($"[VcpCorePlugin] After Dequeue Watcher0x52 Task _AddSignalfor0X52: {_AddSignalfor0X52}");
+
                                     Type_Watcher0x52 parameter = (Type_Watcher0x52)p.Parameter;
                                     _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Watcher0x52 GUID => " + parameter.guid);
                                     Watcher0x52_();
@@ -875,6 +900,11 @@ namespace VcpCore.Plugins
 
                             case Queue_CommandType.Watcher0x02forStatusCheck:
                                 {
+                                    _logs.DebugMsg($"[VcpCorePlugin] Before Dequeue Watcher0x02forStatusCheck Task _AddSignalforStatusCheck: {_AddSignalforStatusCheck}");
+                                    if (_AddSignalforStatusCheck > 0)
+                                        Interlocked.Add(ref _AddSignalforStatusCheck, -1);
+                                    _logs.DebugMsg($"[VcpCorePlugin] After Dequeue Watcher0x02forStatusCheck Task _AddSignalforStatusCheck: {_AddSignalforStatusCheck}");
+
                                     Type_Watcher0x02forStatusCheck parameter = (Type_Watcher0x02forStatusCheck)p.Parameter;
                                     _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Watcher0x02forStatusCheck GUID => " + parameter.guid);
                                     Watcher0x02forStatusCheck_();
