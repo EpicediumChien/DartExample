@@ -1651,13 +1651,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     PInvoke.PROCESS_INFORMATION procInfo;
                     string arguments_Final = fwUpdateInfo.InstallPaths + " " + arguments;
                     _logs.DebugMsg_1($"arguments_Final : {arguments_Final}");
-                    string fileFullPath_sanitized = DDPMFileSecurity.SanitizePath(fwUpdateInfo.InstallPaths, out string info);
-                    if (!string.IsNullOrEmpty(fileFullPath_sanitized))
+                    string workingDirectory = DDPMFileSecurity.SanitizePath(Path.GetDirectoryName(fwUpdateInfo.InstallPaths), out string info);
+                    if (!string.IsNullOrEmpty(workingDirectory))
                     {
-                        _logs.DebugMsg_1($"fileFullPath_sanitized is not null");
-                        if (DDPMFileSecurity.ValidateFilePath(fileFullPath_sanitized, out info))
+                        _logs.DebugMsg_1($"workingDirectory is not null");
+                        if (DDPMFileSecurity.ValidateFilePath(workingDirectory, out info))
                         {
-                            bool b = WTSFunction.StartProcessAndBypassUACWithAdmin(arguments_Final, Path.GetDirectoryName(fwUpdateInfo.InstallPaths), out procInfo);
+                            bool b = WTSFunction.StartProcessAndBypassUACWithAdmin(arguments_Final, workingDirectory, out procInfo);
                             _logs.DebugMsg_1($"procInfo.Process : {procInfo.Process}");
                             _logs.DebugMsg_1($"procInfo.ProcessId : {procInfo.ProcessId}");
                             _logs.DebugMsg_1($"procInfo.Thread : {procInfo.Thread}");
