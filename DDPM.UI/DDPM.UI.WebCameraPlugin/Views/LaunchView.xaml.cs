@@ -1058,6 +1058,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     print_debug("ex1:" + ex.Message);
                     Debug.WriteLine("MediaCapture initiate fail: " + ex.Message);
+                    _vm.mre.Set();
                     return;
                 }
 
