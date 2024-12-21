@@ -417,7 +417,7 @@ namespace DDPM.UI.Module.Kvm
 
         #region Hotkey
 
-        private string _kvmHotkeyTooltip = "None";
+        private string _kvmHotkeyTooltip = LangHelper.Instance["None"];
 
         public string KvmHotkeyTooltip
         {
@@ -429,7 +429,7 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
-        private string _switchPCsKey = "None";
+        private string _switchPCsKey = LangHelper.Instance["None"];
 
         public string SwitchPCsKey
         {
@@ -441,7 +441,7 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
-        private string _changePipKey = "None";
+        private string _changePipKey = LangHelper.Instance["None"];
 
         public string ChangePipKey
         {
@@ -453,7 +453,7 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
-        private string _switchKbMsKey = "None";
+        private string _switchKbMsKey = LangHelper.Instance["None"];
 
         public string SwitchKbMsKey
         {
@@ -718,7 +718,7 @@ namespace DDPM.UI.Module.Kvm
                     NKVMisON = false;
                 }
 
-                if (mi.CapabilityDic.ContainsKey("EE"))
+                if (mi.CapabilityDic.ContainsKey("E7"))
                 {
                     SupportUSBKVM = Visibility.Visible;
                     //inputList = new Dictionary<string, InputInfo>();
@@ -803,7 +803,7 @@ namespace DDPM.UI.Module.Kvm
                     return;
                 }
 
-                if (mi.CapabilityDic.ContainsKey("EE"))
+                if (mi.CapabilityDic.ContainsKey("E7"))
                 {
                     _log?.Debug("[KvmViewModel]Have 0xEE");
                     //If arg is specified, you can get it with below code
@@ -1572,56 +1572,52 @@ namespace DDPM.UI.Module.Kvm
         private void NKVMOpenUI_Dowork(object sender, DoWorkEventArgs e)
         {
             DdpmCommonHelper.DeviceManagerSA.NKVM_State(true).Wait();
-            if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
+            DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
+            //#if DEBUG
+            //                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+            //#else
+            //                OpenNKVMUI(0, 100, 100);
+            //#endif
+            int i = 0;
+            while (i < 120)
             {
-                //#if DEBUG
-                isOnNKVM(true);
-                _log.Debug("NKVMOpenUI...");
-                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
-                //#else
-                //                OpenNKVMUI(0, 100, 100);
-                //#endif
+                if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
+                {
+                    isOnNKVM(true);
+                    _log.Debug("NKVMOpenUI i = " + i);
+                    DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+                    e.Result = true;
+                    break;
+                }
+                i++;
+                Thread.Sleep(500);
             }
-            else
+            if (i == 120)
             {
-                DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
-                //#if DEBUG
-                //                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
-                //#else
-                //                OpenNKVMUI(0, 100, 100);
-                //#endif
-                int i = 0;
-                while (i < 120)
-                {
-                    if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
-                    {
-                        isOnNKVM(true);
-                        _log.Debug("NKVMOpenUI...");
-                        DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
-                        break;
-                    }
-                    i++;
-                    Thread.Sleep(500);
-                }
-                if (i == 120)
-                {
-                    _log.Debug("Named pipe is not Connected or time out");
-                }
-                //if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
-                //{
-                //    isOnNKVM(true);
-                //    _log.Debug("NKVMOpenUI...");
-                //    DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
-                //}
-                //else
-                //{
-                //    _log.Debug("Named pipe is not Connected or time out");
-                //}
+                _log.Debug("Named pipe is not Connected or time out");
+                e.Result = false;
             }
+            //if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
+            //{
+            //    isOnNKVM(true);
+            //    _log.Debug("NKVMOpenUI...");
+            //    DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+            //}
+            //else
+            //{
+            //    _log.Debug("Named pipe is not Connected or time out");
+            //}
         }
         private void NKVMOpenUI_Done(object sender, RunWorkerCompletedEventArgs e)
         {
-            Thread.Sleep(3000);
+            if (e.Error != null)
+            {
+                _log.Error("NKVMOpenUI error : " + e.Error.ToString());
+            }
+            if (e.Result != null)
+            {
+                Thread.Sleep(3000);
+            }
             IsBusy = false;
             OnPropertyChanged("IsBusy");
         }
@@ -1723,12 +1719,12 @@ namespace DDPM.UI.Module.Kvm
                             }
                         }
 
-                        if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
-                        {
-                            CurrentInputChange();
-                        }
+                        //if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
+                        //{
+                        CurrentInputChange();
+                        //}
                         bool bin = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo, inputList).Result;
-                        //bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
+                        bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
                         //isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
                     }
                     else
@@ -1766,7 +1762,7 @@ namespace DDPM.UI.Module.Kvm
         /// <param name="e">changed event</param>
         private void OnVCPChangedEvent(object? sender, VCPchangedEventArgs e)
         {
-            if (e.vcpcode.Equals("E7"))
+            if (e.vcpcode.Equals("E7") && DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(KvmModule.SelectedHomeDevice.MonitorInfo).Result)
             {
                 pcsList = new Dictionary<string, PCsInfo>();
                 usbsList = new List<string>();

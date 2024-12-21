@@ -28,6 +28,7 @@ namespace DDPM.EABroker
 
         #region Public Properties
         public ArrangeVM VM { get { return _vm; } }
+        public eEARunningStates RunningState { get; set; } = eEARunningStates.NotAvailable;
         #endregion  Public Properties
 
         #region ctor
@@ -55,7 +56,7 @@ namespace DDPM.EABroker
             //Init AwsWindow
             _vm.InitAwsWindow();
             _isEaBrokerStarted = true;
-
+            RunningState = eEARunningStates.Waiting;
         }
         private void InitAllWindows()
         {
@@ -137,7 +138,7 @@ namespace DDPM.EABroker
         #region Exiting
         public void Stop()
         {
-
+            RunningState = eEARunningStates.NotAvailable;
         }
         #endregion
 
@@ -202,6 +203,12 @@ namespace DDPM.EABroker
             if (_vm != null)
             {
                 _vm.WriteLog("@EABroker.Handle_DisplaySettingsChanged()");
+
+                //Cancel EditProcess 
+                if (RunningState == eEARunningStates.Edit)
+                {
+                }
+
                 //Check for Span across multiple monitors
                 //
                 //1 Save original settings

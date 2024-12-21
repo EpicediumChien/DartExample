@@ -237,7 +237,9 @@ namespace DDPM.UI.Common.Models
                     //Other peripheals will display {Name} only, because Indilogical has combine {Model} inside {Name}
 
                     if ((DeviceCategory == eDeviceCategory.Mouse) ||
-                        (DeviceCategory == eDeviceCategory.KB))
+                        (DeviceCategory == eDeviceCategory.KB) || 
+                        (DeviceCategory == eDeviceCategory.Headset) ||
+                        (DeviceCategory == eDeviceCategory.Soundbar)) 
                     {
                         string model = DeviceInfo.ModelNumber;
                         //[#PeripheralModelMap] This mapping table has a duplicate code in
@@ -1426,7 +1428,7 @@ namespace DDPM.UI.Common.Models
                 return false;
 
             //VCP contains "EE" => has USB KVM capability
-            if (MonitorInfo.CapabilityDic.ContainsKey("EE"))
+            if (MonitorInfo.CapabilityDic.ContainsKey("E7"))
                 return true;
 
             //Determine if it has Network KVM capability
@@ -1452,7 +1454,7 @@ namespace DDPM.UI.Common.Models
                     return false;
 
                 //VCP contains "EE" => has USB KVM capability
-                if (MonitorInfo.CapabilityDic.ContainsKey("EE"))
+                if (MonitorInfo.CapabilityDic.ContainsKey("E7"))
                 {
                     return true;
                 }

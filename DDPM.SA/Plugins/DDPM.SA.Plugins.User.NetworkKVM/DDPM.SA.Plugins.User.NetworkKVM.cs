@@ -105,10 +105,30 @@ namespace NetworkKVM.Plugins
         #region INKVM implementation
         public Task CreatNewNamedpipe()
         {
-            Disconnect();
-            cts = new CancellationTokenSource();
-            CancellationToken token = cts.Token;
-            _ = Task.Run(async () => await NamedPipeServer_UI(token));
+            _logs.DebugMsg("[NetworkKVM] CreatNewNamedpipe...");
+            if (pipeServer != null)
+            {
+                if (pipeServer.IsConnected)
+                {
+                    _logs.DebugMsg("[NetworkKVM] Named pipe is Connected.");
+                }
+                else
+                {
+                    _logs.DebugMsg("[NetworkKVM] Named pipe is Disconnected.");
+                    Disconnect();
+                    Thread.Sleep(1000);
+                    cts = new CancellationTokenSource();
+                    CancellationToken token = cts.Token;
+                    _ = Task.Run(async () => await NamedPipeServer_UI(token));
+                }
+            }
+            else
+            {
+                _logs.DebugMsg("[NetworkKVM] Named pipe is null.");
+                cts = new CancellationTokenSource();
+                CancellationToken token = cts.Token;
+                _ = Task.Run(async () => await NamedPipeServer_UI(token));
+            }
 
             return Task.CompletedTask;
         }
@@ -151,6 +171,7 @@ namespace NetworkKVM.Plugins
                         MonitorPlug().Wait();
                     }
                     Disconnect();
+                    Thread.Sleep(1000);
                 }
                 _ = Task.Run(async () => await NamedPipeServer(token));
                 _AllInfoMonitors.Clear();
@@ -176,6 +197,7 @@ namespace NetworkKVM.Plugins
                         else
                         {
                             Disconnect();
+                            Thread.Sleep(1000);
                             isMonintorChange = true;
                             //_runloop = true;
                             _ = Task.Run(async () => await NamedPipeServer(token));
@@ -208,6 +230,7 @@ namespace NetworkKVM.Plugins
                             else
                             {
                                 Disconnect();
+                                Thread.Sleep(1000);
                                 isMonintorChange = true;
                                 //_runloop = true;
                                 _ = Task.Run(async () => await NamedPipeServer(token));
@@ -238,6 +261,7 @@ namespace NetworkKVM.Plugins
                             else
                             {
                                 Disconnect();
+                                Thread.Sleep(1000);
                                 isMonintorChange = true;
                                 //_runloop = true;
                                 _ = Task.Run(async () => await NamedPipeServer(token));
@@ -262,56 +286,59 @@ namespace NetworkKVM.Plugins
         public Task MonitorPlug()
         {
             _logs.DebugMsg("[NetworkKVM] MonitorPlug....");
-            if (pipeServer.IsConnected)
+            if (pipeServer != null)
             {
-                MONITOR_PLUG_DETECTION _COMMAND = new MONITOR_PLUG_DETECTION();
-                _COMMAND.UpdateChecksum();
-                WriteAsync(_COMMAND.ToJson()).Wait();
-                NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
-                if (_AllInfoMonitors != null)
+                if (pipeServer.IsConnected)
                 {
-                    _logs.DebugMsg("[NetworkKVM] MonitorPlug _AllInfoMonitors count : " + _AllInfoMonitors.Count);
-                    foreach (MonitorInfo monitorInfo in _AllInfoMonitors)
+                    MONITOR_PLUG_DETECTION _COMMAND = new MONITOR_PLUG_DETECTION();
+                    _COMMAND.UpdateChecksum();
+                    WriteAsync(_COMMAND.ToJson()).Wait();
+                    NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
+                    if (_AllInfoMonitors != null)
                     {
-                        if (nKVMVCPValues != null)
+                        _logs.DebugMsg("[NetworkKVM] MonitorPlug _AllInfoMonitors count : " + _AllInfoMonitors.Count);
+                        foreach (MonitorInfo monitorInfo in _AllInfoMonitors)
                         {
-                            if (nKVMVCPValues.Count == 0)
+                            if (nKVMVCPValues != null)
                             {
-                                ObjGetVCP objGetVCP = _VcpCorePlugin.GetVCPCapability(monitorInfo, 0xE9).Result;
-                                if (objGetVCP != null && objGetVCP.result)
-                                {
-                                    _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP.value);
-                                    nKVMVCPValue.monitorInfo = monitorInfo;
-                                    nKVMVCPValue.value = (int)(uint)objGetVCP.value;
-                                    nKVMVCPValues.Add(nKVMVCPValue);
-                                }
-                            }
-                            else
-                            {
-                                nKVMVCPValue = nKVMVCPValues.Find(x => x.monitorInfo == monitorInfo);
-                                if (nKVMVCPValue != null)
+                                if (nKVMVCPValues.Count == 0)
                                 {
                                     ObjGetVCP objGetVCP = _VcpCorePlugin.GetVCPCapability(monitorInfo, 0xE9).Result;
                                     if (objGetVCP != null && objGetVCP.result)
                                     {
                                         _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP.value);
-                                        _logs.DebugMsg("[NetworkKVM] MonitorPlug nKVMVCPValue : " + nKVMVCPValue.value);
-                                        if (nKVMVCPValue.value != (int)(uint)objGetVCP.value)
-                                        {
-                                            nKVMVCPValue.value = (int)(uint)objGetVCP.value;
-                                            SetVCPNotify(monitorInfo, 0xE9, (int)(uint)objGetVCP.value);
-                                        }
+                                        nKVMVCPValue.monitorInfo = monitorInfo;
+                                        nKVMVCPValue.value = (int)(uint)objGetVCP.value;
+                                        nKVMVCPValues.Add(nKVMVCPValue);
                                     }
                                 }
                                 else
                                 {
-                                    _logs.DebugMsg("[NetworkKVM] nKVMVCPValue is null");
+                                    nKVMVCPValue = nKVMVCPValues.Find(x => x.monitorInfo == monitorInfo);
+                                    if (nKVMVCPValue != null)
+                                    {
+                                        ObjGetVCP objGetVCP = _VcpCorePlugin.GetVCPCapability(monitorInfo, 0xE9).Result;
+                                        if (objGetVCP != null && objGetVCP.result)
+                                        {
+                                            _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP.value);
+                                            _logs.DebugMsg("[NetworkKVM] MonitorPlug nKVMVCPValue : " + nKVMVCPValue.value);
+                                            if (nKVMVCPValue.value != (int)(uint)objGetVCP.value)
+                                            {
+                                                nKVMVCPValue.value = (int)(uint)objGetVCP.value;
+                                                SetVCPNotify(monitorInfo, 0xE9, (int)(uint)objGetVCP.value);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _logs.DebugMsg("[NetworkKVM] nKVMVCPValue is null");
+                                    }
                                 }
                             }
-                        }
-                        else
-                        {
-                            _logs.DebugMsg("[NetworkKVM] nKVMVCPValues is null or count is 0");
+                            else
+                            {
+                                _logs.DebugMsg("[NetworkKVM] nKVMVCPValues is null or count is 0");
+                            }
                         }
                     }
                 }
@@ -610,27 +637,30 @@ namespace NetworkKVM.Plugins
         {
             try
             {
-                if (pipeServer.IsConnected)
+                if (pipeServer != null)
                 {
-                    _logs.DebugMsg("[NetworkKVM] SetVCPNotify VcpCode : " + vcpcode.ToString());
-                    _logs.DebugMsg("[NetworkKVM] SetVCPNotify value : " + value.ToString());
-                    if (!isSetVCP || (isSetVCP && lockVCP != vcpcode))
+                    if (pipeServer.IsConnected)
                     {
-                        if (vcpcode == 0x60 && value == 0)
+                        _logs.DebugMsg("[NetworkKVM] SetVCPNotify VcpCode : " + vcpcode.ToString());
+                        _logs.DebugMsg("[NetworkKVM] SetVCPNotify value : " + value.ToString());
+                        if (!isSetVCP || (isSetVCP && lockVCP != vcpcode))
                         {
-                            return Task.CompletedTask;
-                        }
-                        SET_VCP_NOTIFY set_VCP_NOTIFY = new SET_VCP_NOTIFY();
-                        set_VCP_NOTIFY.MonitorIndex = monitorInfo.Index;
-                        set_VCP_NOTIFY.VcpCode = vcpcode;
-                        set_VCP_NOTIFY.Value = value;
-                        set_VCP_NOTIFY.UpdateChecksum();
+                            if (vcpcode == 0x60 && value == 0)
+                            {
+                                return Task.CompletedTask;
+                            }
+                            SET_VCP_NOTIFY set_VCP_NOTIFY = new SET_VCP_NOTIFY();
+                            set_VCP_NOTIFY.MonitorIndex = monitorInfo.Index;
+                            set_VCP_NOTIFY.VcpCode = vcpcode;
+                            set_VCP_NOTIFY.Value = value;
+                            set_VCP_NOTIFY.UpdateChecksum();
 
-                        WriteAsync(set_VCP_NOTIFY.ToJson()).Wait();
-                    }
-                    else
-                    {
-                        _logs.DebugMsg("[NetworkKVM] isSetVCP : " + isSetVCP.ToString());
+                            WriteAsync(set_VCP_NOTIFY.ToJson()).Wait();
+                        }
+                        else
+                        {
+                            _logs.DebugMsg("[NetworkKVM] isSetVCP : " + isSetVCP.ToString());
+                        }
                     }
                 }
                 if (vcpcode == 0x60)
@@ -1315,9 +1345,9 @@ namespace NetworkKVM.Plugins
                     //    i = 0;
                     //    //break;
                     //}
-                    if (i > 2)
+                    if (i > 10)
                     {
-                        _logs.DebugMsg("[NetworkKVM] loop error times = 3");
+                        _logs.DebugMsg("[NetworkKVM] loop error times is 10");
                         Disconnect();
                         break;
                     }
@@ -1330,6 +1360,7 @@ namespace NetworkKVM.Plugins
                                 _logs.DebugMsg("[NetworkKVM]Token is cancel");
                                 Trace.WriteLine("[NetworkKVM]Token is cancel");
                                 Disconnect();
+                                Thread.Sleep(1000);
                                 _AllInfoMonitors = GetMonitors().Result;
                                 if (CreateNamedPipe_init())
                                 {
@@ -1338,6 +1369,7 @@ namespace NetworkKVM.Plugins
                                 else
                                 {
                                     i++;
+                                    Thread.Sleep(500);
                                 }
                             }
                             else
@@ -1402,6 +1434,7 @@ namespace NetworkKVM.Plugins
                                     {
                                         _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
                                         Disconnect();
+                                        Thread.Sleep(1000);
                                         _AllInfoMonitors = GetMonitors().Result;
                                         if (CreateNamedPipe_init())
                                         {
@@ -1410,6 +1443,7 @@ namespace NetworkKVM.Plugins
                                         else
                                         {
                                             i++;
+                                            Thread.Sleep(500);
                                         }
                                     }
                                 }
@@ -1418,12 +1452,14 @@ namespace NetworkKVM.Plugins
                         else
                         {
                             i++;
+                            Thread.Sleep(500);
                         }
                     }
                     else
                     {
                         _logs.DebugMsg("pipeServer is null");
                         Disconnect();
+                        Thread.Sleep(1000);
                         _AllInfoMonitors = GetMonitors().Result;
                         break; // 2024-12-13 Elie, break infinite loop when it doesn't support NKVM.
                     }
@@ -1461,6 +1497,7 @@ namespace NetworkKVM.Plugins
                                 _logs.DebugMsg("[NetworkKVM]Token is cancel");
                                 Trace.WriteLine("[NetworkKVM]Token is cancel");
                                 Disconnect();
+                                Thread.Sleep(1000);
                                 _AllInfoMonitors = GetMonitors().Result;
                                 if (CreateNamedPipe())
                                 {
@@ -1533,6 +1570,7 @@ namespace NetworkKVM.Plugins
                                     {
                                         _logs.DebugMsg($"[NetworkKVM] Failed to connect {ex}");
                                         Disconnect();
+                                        Thread.Sleep(1000);
                                         _AllInfoMonitors = GetMonitors().Result;
                                         CreateNamedPipe();
                                         i++;
@@ -1683,6 +1721,7 @@ namespace NetworkKVM.Plugins
             {
                 _logs.DebugMsg($"[NetworkKVM] Client Security Fail....({info})");
                 Disconnect();
+                Thread.Sleep(1000);
                 CreateNamedPipe_init();
             }
 #endif

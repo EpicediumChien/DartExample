@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-
+using Dell.Client.Framework.UX.WPF.ResourceManager;
 namespace DDPM.UI.Common.Tests
 {
     [Apartment(ApartmentState.STA)]
@@ -34,6 +34,7 @@ namespace DDPM.UI.Common.Tests
             {
                 new System.Windows.Application();
             }
+            ResourceManager res = new ResourceManager();
             var resourceDictionary = new ResourceDictionary();
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);

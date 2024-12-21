@@ -714,6 +714,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 LogInfo("@EAPlugin.EditCommand(), _isEaBrokerStarted is false.");
                 return Task.FromResult(false);
             }
+            if (_eaBroker == null)
+            {
+                LogInfo("@EAPlugin.EditCommand(), _eaBroker is null.");
+                return Task.FromResult(false);
+            }
+            if (_eaBroker?.RunningState != eEARunningStates.Waiting)
+            {
+                LogInfo($"@EAPlugin.EditCommand(), EABroker.RunningState is {_eaBroker?.RunningState}.");
+                return Task.FromResult(false);
+            }
 
             //If InitEditWindow() not been called or failed.
             //if (_editWindow == null)
@@ -815,6 +825,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                     //2 To notify EABroker, we are in Edit process, disable WorkWindow/AwsWindow
                     _eaBroker.VM.IsWorkUIEnabled = false;
+                    _eaBroker.RunningState = eEARunningStates.Edit;
 
                     //3 Show SaveCustomWindow, until user click Save or Cancel
                     //_saveCustomWindow = new EABroker.SaveCustomWindow(_deviceManagerPlugin);
@@ -839,7 +850,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         //}
                         SendEditReturn_Cancel("User cancel the editing.");
                         if (_eaBroker != null)
+                        {
                             _eaBroker.VM.IsWorkUIEnabled = true;
+                            _eaBroker.RunningState = eEARunningStates.Waiting;
+                        }
                         return true;
                     }
 
@@ -888,7 +902,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                             EditReturn(this, retArgs);
 
                         if (_eaBroker != null)
+                        {
                             _eaBroker.VM.IsWorkUIEnabled = true;
+                            _eaBroker.RunningState = eEARunningStates.Waiting;
+                        }
                     }; //_overlapWindow.CaptureDone += delegate
 
                    // _overlapWindow.Show();
@@ -923,7 +940,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 else //_editOverlapCutsomWay=1
                 {
                     //DO NOT set _editOverlapCutsomWay=1, issues not been fixed
-
+                    //Robert_Lin, 2024-12-19 comment-out the unused code
+                    /*
                     //1 Show EditWindow
                     _editWindow = new EABroker.EAEditWindow(_log);
                     //if (!_editWindow.ShowAndEdit_v1(args, workingArea))
@@ -950,7 +968,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                     //4 To notify EABroker, we are in Edit process, disable WorkWindow/AwsWindow
                     _eaBroker.VM.IsWorkUIEnabled = false;
-
+                    */
                 }
             }
             else //Non-Overlap layout
@@ -987,6 +1005,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         _saveCustomWindow.Close();
                         _saveCustomWindow = null;
                     }
+
+                    if (_eaBroker != null)
+                    {
+                        _eaBroker.VM.IsWorkUIEnabled = true;
+                        _eaBroker.RunningState = eEARunningStates.Waiting;
+                    }
                 };
                 _saveCustomWindow.SaveButtonClick += delegate
                 {
@@ -1015,7 +1039,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         EditReturn(this, retArgs);
 
                     if (_eaBroker != null)
+                    {
                         _eaBroker.VM.IsWorkUIEnabled = true;
+                        _eaBroker.RunningState = eEARunningStates.Waiting;
+                    }
 
                     if (_editWindow != null)
                     {
@@ -1038,6 +1065,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                 //4 To notify EABroker, we are in Edit process, disable WorkWindow/AwsWindow
                 _eaBroker.VM.IsWorkUIEnabled = false;
+                _eaBroker.RunningState = eEARunningStates.Edit;
 
                 //5 Wait for user click "Save" or "Cancel"
             }
@@ -1716,7 +1744,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             //Robert_Lin, 2024-12-10
             _agent.RegisterForEvent(AgentEventNames.AllInfoMonitorsChanged, AllInfoMonitorChangedHandler);
-            ConsoleWriteLine(" = = = = = = = = = =   EABroker Exit");
+            ConsoleWriteLine(" = = = = = = = = = =  END of EABroker Start");
         }
 
         //private void Debug_New3Windows()
@@ -1787,6 +1815,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //if (_displayManagerPlugin != null)
             //    _displayManagerPlugin.Displaychanged -= _displayManagerPlugin_Displaychanged;
             _agent.UnregisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
+            if (_eaBroker != null)
+            {
+                _eaBroker.Stop();
+            }
         }
 
         //It should be call once DeviceManagerSA & DisplayManager are loaded
@@ -1983,6 +2015,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
             */
         }
+
+        //Robert_Lin, 2024-12-19, used to detect if EABroker is under Edit Procedure
+        //private bool IsUnderEditProcedure()
+        //{
+        //}
         #endregion EA Broker
 
         #region Display Changed event
@@ -2008,6 +2045,14 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                             isInit = true;
                     }
                 }
+
+                //If we are in Edit state, then cancel the editing
+                if (_eaBroker.RunningState == eEARunningStates.Edit)
+                {
+                    //Fore to cancel the Edit Procedure
+                    
+                }
+
                 _eaBroker.Handle_DisplaySettingsChanged(isInit);
                 //Move blew statement into Handle_DisplaySettingsChanged()
                 //_eaBroker.VM.RefreshWorkWindows();

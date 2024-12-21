@@ -27,12 +27,14 @@ namespace VcpCore.Interfaces
 
         Task<bool> SetVCPCapability(MonitorInfo monitorInfo, byte code, uint val);
 
-        Task<bool> SetVCPCapability(MonitorInfo monitorInfoX, string FunctionName, string val);
+        Task<bool> SetVCPCapability(MonitorInfo monitorInfo, string FunctionName, string val);
 
         event EventHandler<VCPchangedEventArgs> VCPchanged;
 
         event EventHandler<DDCCIchangedEventArgs> DDCCIStatuschanged;
 
         event EventHandler<DisplaychangedEventArgs> Displaychanged;
+
+        event EventHandler<MonitorinfoUpdateEventArgs> MonitorinfoUpdated;
     }
 }

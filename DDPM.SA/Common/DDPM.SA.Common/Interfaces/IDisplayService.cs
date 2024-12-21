@@ -36,6 +36,8 @@ namespace DDPM.SA.Common
 
         event EventHandler<DisplaychangedEventArgs> Displaychanged;
 
+        event EventHandler<MonitorinfoUpdateEventArgs> MonitorinfoUpdated;
+
         #region Bruce display properties
 
         /// <summary>
@@ -140,10 +142,12 @@ namespace DDPM.SA.Common
         #region EasyArange
 
         #region Properties - EasyArange
+
         /// <summary>
         /// The last error string after a EAPlugin method return error.
         /// </summary>
         public string EALastError { get; }
+
         #endregion Properties - EasyArange
 
         public Task<bool> SetEAFunctionEnabled(bool isEnabled);
@@ -153,6 +157,7 @@ namespace DDPM.SA.Common
         public event EventHandler<EAArgs> EASettingsChanged;
 
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings);
+
         public Task<bool> NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson);
 
         //Robert_Lin, 2024-9-13 Remove unused interfaces
@@ -172,13 +177,14 @@ namespace DDPM.SA.Common
 
         /// <summary>
         /// Called by DeviceManagerSA only, when one of EzSettings is changed from DDPM.UI.
-        /// It will call to EAPlugin IEasyArrangeService.ReloadEzSettings() to notify 
+        /// It will call to EAPlugin IEasyArrangeService.ReloadEzSettings() to notify
         /// EAPlugin reload EzSettings and refresh to its ViewModel.
         /// </summary>
         /// <returns></returns>
         public Task<bool> ReloadEzSettings();
 
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, SplitJson spJson);
+
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, int eaId);
 
         /// <summary>
@@ -204,6 +210,7 @@ namespace DDPM.SA.Common
         /// <param name="eAid">EAID of a EasyArrange layout. [1~49] are preset layout, [1000~1004] are saved custom layout.</param>
         /// <returns></returns>
         public Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid);
+
         #endregion EasyArange
 
         #region Gaming

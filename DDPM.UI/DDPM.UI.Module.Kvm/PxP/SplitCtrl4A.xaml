@@ -33,9 +33,9 @@
                 <Border Name="cell_4a1" BorderBrush="{StaticResource  BorderColor_SplitNormal}" />
                 <Border Name="pbp4_1" BorderBrush="#E6AC28" BorderThickness="3"
                         CornerRadius="{StaticResource SplitItem_CornerRadius}" Visibility="{Binding Border1Visibility}" />
-                <Path Fill="#E6AC28" Data="M260.8811 75 L253.12109 67 L253.12109 83 L260.8811 75 Z" Visibility="{Binding Border1Visibility}" MouseLeftButtonDown="PBP_SwapClick1" />
-                <Path Fill="#E6AC28" Data="M135 141.8801 L143 134.12012 L127 134.12012 L135 141.8801Z" Visibility="{Binding Border1Visibility}" MouseLeftButtonDown="PBP_SwapClick4" />
-                <Path Fill="#E6AC28" Data="M264.0569 144.0571 L264.2266 132.91309 L252.91285 144.2268 L264.0569 144.0571Z" Visibility="{Binding Border1Visibility}" MouseLeftButtonDown="PBP_SwapClick3" />
+                <Path Margin="8,0" HorizontalAlignment="Right" VerticalAlignment="Center" Fill="#E6AC28" Data="M11.8811 8L4.12109 0L4.12109 16L11.8811 8Z" Visibility="{Binding Border1Visibility}" MouseLeftButtonDown="PBP_SwapClick1" />
+                <Path Margin="0,8" HorizontalAlignment="Center" VerticalAlignment="Bottom" Fill="#E6AC28" Data="M8 11.8801L16 4.12012L0 4.12012L8 11.8801Z" Visibility="{Binding Border1Visibility}" MouseLeftButtonDown="PBP_SwapClick4" />
+                <Path Margin="8,8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Fill="#E6AC28" Data="M14.0569 14.0571L14.2266 2.91309L2.91285 14.2268L14.0569 14.0571Z" Visibility="{Binding Border1Visibility}" MouseLeftButtonDown="PBP_SwapClick3" />
                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -50,9 +50,9 @@
                 <Border Name="pbp4_2"
                         BorderBrush="#E6AC28" BorderThickness="3"
                         CornerRadius="{StaticResource SplitItem_CornerRadius}" Visibility="{Binding Border2Visibility}" />
-                <Path Fill="#E6AC28" Data="M9.11891 75 L16.8789 67 L16.8789 83 L9.11891 75Z" Visibility="{Binding Border2Visibility}" MouseLeftButtonDown="PBP_SwapClick1" />
-                <Path Fill="#E6AC28" Data="M135 141.8801 L143 134.12012 L127 134.12012 L135 141.8801Z" Visibility="{Binding Border2Visibility}" MouseLeftButtonDown="PBP_SwapClick2" />
-                <Path Fill="#E6AC28" Data="M8.57084 144.0569 L19.7148 144.2266 L8.40114 132.91285 L8.57084 144.0569Z" Visibility="{Binding Border2Visibility}" MouseLeftButtonDown="PBP_SwapClick5" />
+                <Path Margin="4,0" HorizontalAlignment="Left" VerticalAlignment="Center" Fill="#E6AC28" Data="M4.11891 8L11.8789 16L11.8789 0L4.11891 8Z" Visibility="{Binding Border2Visibility}" MouseLeftButtonDown="PBP_SwapClick1" />
+                <Path Margin="0,8" HorizontalAlignment="Center" VerticalAlignment="Bottom" Fill="#E6AC28" Data="M8 11.8801L16 4.12012L0 4.12012L8 11.8801Z" Visibility="{Binding Border2Visibility}" MouseLeftButtonDown="PBP_SwapClick2" />
+                <Path Margin="0,8" HorizontalAlignment="Left" VerticalAlignment="Bottom" Fill="#E6AC28" Data="M8.57084 14.0569L19.7148 14.2266L8.40114 2.91285L8.57084 14.0569Z" Visibility="{Binding Border2Visibility}" MouseLeftButtonDown="PBP_SwapClick5" />
                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -66,9 +66,9 @@
                 <Border Name="cell_4a3"  BorderBrush="{StaticResource BorderColor_SplitNormal}" />
                 <Border Name="pbp4_4" BorderBrush="#E6AC28" BorderThickness="3"
                         CornerRadius="{StaticResource SplitItem_CornerRadius}" Visibility="{Binding Border4Visibility}" />
-                <Path Fill="#E6AC28" Data="M260.8811 75 L253.12109 67 L253.12109 83 L260.8811 75 Z" Visibility="{Binding Border4Visibility}" MouseLeftButtonDown="PBP_SwapClick6" />
-                <Path Fill="#E6AC28" Data="M135 19.11988 L143 26.8799 L127 26.8799 L135 19.11988Z" Visibility="{Binding Border4Visibility}" MouseLeftButtonDown="PBP_SwapClick4" />
-                <Path Fill="#E6AC28" Data="M264.0581 8.5701 L252.91406 8.40039 L264.2278 19.7141 L264.0581 8.5701Z" Visibility="{Binding Border4Visibility}" MouseLeftButtonDown="PBP_SwapClick5" />
+                <Path Margin="8,0" HorizontalAlignment="Right" VerticalAlignment="Center" Fill="#E6AC28" Data="M11.8811 8L4.12109 0L4.12109 16L11.8811 8Z" Visibility="{Binding Border4Visibility}" MouseLeftButtonDown="PBP_SwapClick6" />
+                <Path Margin="0,4" HorizontalAlignment="Center" VerticalAlignment="Top" Fill="#E6AC28" Data="M8 4.11988L0 11.8799L16 11.8799L8 4.11988Z" Visibility="{Binding Border4Visibility}" MouseLeftButtonDown="PBP_SwapClick4" />
+                <Path Margin="8,0" HorizontalAlignment="Right" VerticalAlignment="Top" Fill="#E6AC28" Data="M14.0581 8.5701L2.91406 8.40039L14.2278 19.7141L14.0581 8.5701Z" Visibility="{Binding Border4Visibility}" MouseLeftButtonDown="PBP_SwapClick5" />
                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -81,11 +81,11 @@
             <Grid Grid.Column="2" Grid.Row="2" Background="#00000000" MouseLeftButtonDown="PBP_MouseLeftDown3">
                 <Border Name="cell_4a4"  BorderBrush="{StaticResource BorderColor_SplitNormal}" />
                 <Border Name="pbp4_3" BorderBrush="#E6AC28" BorderThickness="3"
-                        CornerRadius="{StaticResource SplitItem_CornerRadius}" Visibility="{Binding Border3Visibility}" />
-                <Path Fill="#E6AC28" Data="M9.11891 75 L16.8789 67 L16.8789 83 L9.11891 75Z" Visibility="{Binding Border3Visibility}" MouseLeftButtonDown="PBP_SwapClick6" />
-                <Path Fill="#E6AC28" Data="M135 19.11988 L143 26.8799 L127 26.8799 L135 19.11988Z" Visibility="{Binding Border3Visibility}" MouseLeftButtonDown="PBP_SwapClick2" />
-                <Path Fill="#E6AC28" Data="M8.56814 8.56986L8.39844 19.7139L19.7121 8.40016L8.56814 8.56986Z" Visibility="{Binding Border3Visibility}" MouseLeftButtonDown="PBP_SwapClick3" />
-                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        CornerRadius="{StaticResource SplitItem_CornerRadius}" Visibility="{Binding Border3Visibility}" Grid.RowSpan="2" />
+                <Path Margin="4,0" HorizontalAlignment="Left" VerticalAlignment="Center" Fill="#E6AC28" Data="M4.11891 8L11.8789 16L11.8789 0L4.11891 8Z" Visibility="{Binding Border3Visibility}" MouseLeftButtonDown="PBP_SwapClick6" Grid.Row="1" />
+                <Path Margin="0,4" HorizontalAlignment="Center" VerticalAlignment="Top" Fill="#E6AC28" Data="M8 4.11988L0 11.8799L16 11.8799L8 4.11988Z" Visibility="{Binding Border3Visibility}" MouseLeftButtonDown="PBP_SwapClick2" Grid.RowSpan="2" />
+                <Path Margin="0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Fill="#E6AC28" Data="M8.56814 8.57084L8.39844 19.7148L19.7121 8.40114L8.56814 8.57084Z" Visibility="{Binding Border3Visibility}" MouseLeftButtonDown="PBP_SwapClick3" Grid.RowSpan="2" />
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />

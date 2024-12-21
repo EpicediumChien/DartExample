@@ -82,6 +82,8 @@ namespace DDPM.UI.Plugin.PenPlugin
                     }
                 }
             }
+            if (_vm.Model == "PN5122W")
+                imgInfo.Visibility = Visibility.Collapsed;
         }
 
         ~LaunchView()
