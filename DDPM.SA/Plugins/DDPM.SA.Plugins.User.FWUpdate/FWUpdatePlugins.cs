@@ -799,6 +799,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             try
             {
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " all start");
+                _logs.DebugMsg_1(nameof(DownloadAndInstall) + " fwUpdateInfos.Count : " + fwUpdateInfos.Count);
                 _IsUITrigger = isUITrigger;
                 List<FWUpdateInfo> temp_FWUpdateInfo = fwUpdateInfos.FindAll(o => o.IsDisplay);
                 //判斷是否有非Display更新，有的話停止DPM
@@ -1648,48 +1649,67 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " StartProcessAndBypassUACWithAdmin go");
                     PInvoke.PROCESS_INFORMATION procInfo;
-                    bool b = WTSFunction.StartProcessAndBypassUACWithAdmin(fwUpdateInfo.InstallPaths + " " + arguments, out procInfo);
-                    string processName = Path.GetFileNameWithoutExtension(fwUpdateInfo.InstallPaths);
-                    _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} Searching for process: {processName}");
-                    Process[] processes = Process.GetProcessesByName(processName);
-                    if (processes != null && processes.Length > 0)
+                    string arguments_Final = fwUpdateInfo.InstallPaths + " " + arguments;
+                    _logs.DebugMsg_1($"arguments_Final : {arguments_Final}");
+                    string fileFullPath_sanitized = DDPMFileSecurity.SanitizePath(fwUpdateInfo.InstallPaths, out string info);
+                    if (!string.IsNullOrEmpty(fileFullPath_sanitized))
                     {
-                        _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} {processName}.Length: {processes.Length}");
-                        _clientProcess = processes[0];
-                        if (fwUpdateInfo.IsDisplay)
+                        _logs.DebugMsg_1($"fileFullPath_sanitized is not null");
+                        if (DDPMFileSecurity.ValidateFilePath(fileFullPath_sanitized, out info))
                         {
-                            _clientProcess.EnableRaisingEvents = true;
-                            _clientProcess.Exited += (sender, e) =>
+                            bool b = WTSFunction.StartProcessAndBypassUACWithAdmin(arguments_Final, Path.GetDirectoryName(fwUpdateInfo.InstallPaths), out procInfo);
+                            _logs.DebugMsg_1($"procInfo.Process : {procInfo.Process}");
+                            _logs.DebugMsg_1($"procInfo.ProcessId : {procInfo.ProcessId}");
+                            _logs.DebugMsg_1($"procInfo.Thread : {procInfo.Thread}");
+                            _logs.DebugMsg_1($"procInfo.ThreadId : {procInfo.ThreadId}");
+                            string processName = Path.GetFileNameWithoutExtension(fwUpdateInfo.InstallPaths);
+                            _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} Searching for process: {processName}");
+                            Process[] processes = Process.GetProcessesByName(processName);
+                            if (processes != null && processes.Length > 0)
                             {
-                                Process p = (Process)sender;
-                                if (fwUpdateInfo.IsDisplay && p != null)
+                                _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} {processName}.Length: {processes.Length}");
+                                _clientProcess = processes[0];
+
                                 {
-                                    _logs.DebugMsg_1($"{processName} (Process)sender.ExitCode go");
-                                    exitCode = p.ExitCode;
-                                    _logs.DebugMsg_1($"{processName} (Process)sender.ExitCode done");
+                                    _clientProcess.EnableRaisingEvents = true;
+                                    _clientProcess.Exited += (sender, e) =>
+                                    {
+                                        Process p = (Process)sender;
+                                        if (fwUpdateInfo.IsDisplay && p != null)
+                                        {
+                                            _logs.DebugMsg_1($"{processName} (Process)sender.ExitCode go");
+                                            exitCode = p.ExitCode;
+                                            _logs.DebugMsg_1($"{processName} (Process)sender.ExitCode done");
+                                        }
+                                    };
                                 }
-                            };
+                                _clientProcess.WaitForExit();
+                                _logs.DebugMsg_1($"{processName} process is done.");
+                            }
+                            else
+                            {
+                                _logs.DebugMsg_1($"{processName} process not found.");
+                                resetState();
+                                _updateErrorCode = FWUErrorCode.Unknow;
+                                _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName} {nameof(Install)} {LangHelper.Instance["Service_not_running_Try_again"]}");
+                                _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
+                                return _updateErrorCode;
+                            }
+                            _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " StartProcessAndBypassUACWithAdmin done b : " + b);
                         }
-                        _clientProcess.WaitForExit();
-                        _logs.DebugMsg_1($"{processName} process is done.");
+                        else
+                        {
+                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} {fwUpdateInfo.DeviceName} FilePathIsNotSafe - result : {info}");
+                            _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            _updateErrorCode = FWUErrorCode.FileIsNoSafe;
+                            return _updateErrorCode;
+                        }
                     }
                     else
                     {
-                        _logs.DebugMsg_1($"{processName} process not found.");
-                        resetState();
-                        _updateErrorCode = FWUErrorCode.Unknow;
-                        _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName} {nameof(Install)} {LangHelper.Instance["Service_not_running_Try_again"]}");
-                        _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
-                        _namedPipeServer.Dispose();
-                        return _updateErrorCode;
+                        _logs.DebugMsg_1($"fileFullPath_sanitized is null");
                     }
-
-                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " StartProcessAndBypassUACWithAdmin done b : " + b);
-                    if (_updateErrorCode == FWUErrorCode.Unknow)
-                    {
-                        _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
-                    }
-                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " _updateErrorCode : " + _updateErrorCode);
                     //UserImpersonator.RunAsUser(token, () =>
                     //{
                     //    using (_clientProcess = new Process())
@@ -1706,10 +1726,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     //        }
                     //    }
                     //});
+
+                    if (_updateErrorCode == FWUErrorCode.Unknow)
+                    {
+                        _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
+                    }
+                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " _updateErrorCode : " + _updateErrorCode);
+
                 }
+                _logs.DebugMsg_1($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} exitCode : {exitCode}");
                 if (fwUpdateInfo.IsDisplay)
                 {
-                    WriteLog($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} exitCode : {exitCode}");
                     if (exitCode == 0)
                     {
                         _updateErrorCode = FWUErrorCode.NoError;
@@ -1799,7 +1826,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _updateErrorCode = FWUErrorCode.Unknow;
                 _logs.DebugMsg_1(fwUpdateInfo.DeviceName + nameof(Install) + " Error:" + ex.ToString());
                 _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
-                _namedPipeServer.Dispose();
                 return _updateErrorCode;
             }
         }
@@ -2172,6 +2198,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _namedPipeServer.MessageReceived -= _namedPipeServer_MessageReceived;
                 _namedPipeServer.ClientConnectedEvent -= _namedPipeServer_ClientConnectedEvent;
                 _namedPipeServer.ClientDisconnectedEvent -= _namedPipeServer_ClientDisconnectedEvent;
+                _namedPipeServer.Dispose();
                 _namedPipeServer = null;
                 _logs.DebugMsg_1($"{nameof(resetState)} _namedPipeServer remove event done");
             }
