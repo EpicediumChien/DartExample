@@ -10347,7 +10347,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"Catch exception[{e.Message}] when Handle QAM process!");
             }
 
-            ResetQAMCondition();
+            //ResetQAMCondition();  //Derek 1221
             writelog($"HandleQAMV2 done");
         }
 
@@ -10677,7 +10677,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
                     //if (deviceInfos.Count == 1)
                     {
-                        writelog($"CallQAM_UI: have Webcam show QAM");
+                        writelog($"CallQAM_UI: Create QAM UI due to _QAM == null");
 
                         Thread threadQAM = new Thread(() =>
                         {
