@@ -734,6 +734,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             print_debug("CheckUSBtype() s3 AllSupportedResolutions- " + AllSupportedResolutions);
 
+
             switch (model)
             {
                 case "WB7022":
@@ -777,6 +778,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
                         _vm!.SetResolution_Selected(1);
+
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+
                     }
                     break;
                 case "U3224KBA":
@@ -807,6 +812,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
                         _vm!.SetResolution_Selected(1);
+
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Collapsed;
                     }
                     break;
                 case "U3223QZ":
@@ -836,6 +844,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes2_width = 201;
                         _vm!.SetResolution_Selected(1);
 
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+
                     }
                     break;
 
@@ -858,6 +869,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
                         _vm!.SetResolution_Selected(1);
+
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Collapsed;
                     }
                     break;
             }
