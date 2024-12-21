@@ -324,28 +324,34 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _log.Info("Return from CollectAndCompareDevicesAsync()");
 
                             //Elapsed= 3692, 392 msec
+                            //Robert_Lin, 2024-12-18, PIMS-316225 DDPM take > 10sec to show Home Page on Launch after restart
+                            //  Move below code into a background task
                             //Robert_Lin 2024-8-2 DDPMW-579, If there is any FW/SW update available,
                             //then the Gear icon on masthead will show breathe & glow animation.
                             //Call once
-                            _log.Info("Calling to CheckIfSwFwUpdateAvailable()");
-                            if (CheckIfSwFwUpdateAvailable(_deviceManager)) 
+                            Task t1 = Task.Run(() =>
                             {
-                                _log.Info("Return from CheckIfSwFwUpdateAvailable(), return true");
-                                //Robert_Lin, 2024-12-9, Change GlowEffect_Start() to GlowEffect_Trigger()
-                                if (_iconGear != null)
+                                _log.Info("Calling to CheckIfSwFwUpdateAvailable()");
+                                if (CheckIfSwFwUpdateAvailable(_deviceManager))
                                 {
-                                    //Elapsed= 1, 1 msec
-                                    _log.Info("Calling to GlowEffect_Trigger()");
-                                    _iconGear.GlowEffect_Trigger();
-                                    //_iconGear.GlowEffect_Start();
+                                    _log.Info("Return from CheckIfSwFwUpdateAvailable(), return true");
+                                    //Robert_Lin, 2024-12-9, Change GlowEffect_Start() to GlowEffect_Trigger()
+                                    if (_iconGear != null)
+                                    {
+                                        //Elapsed= 1, 1 msec
+                                        _log.Info("Calling to GlowEffect_Trigger()");
+                                        _iconGear.GlowEffect_Trigger();
+                                        //_iconGear.GlowEffect_Start();
+                                    }
+                                    else
+                                    {
+                                        _log.Info("Not calling to GlowEffect_Trigger(), due to _iconGear is null.");
+                                    }
                                 }
                                 else
-                                {
-                                    _log.Info("Not calling to GlowEffect_Trigger(), due to _iconGear is null.");
-                                }
-                            }
-                            else
-                                _log.Info("Return from CheckIfSwFwUpdateAvailable(), return false");
+                                    _log.Info("Return from CheckIfSwFwUpdateAvailable(), return false");
+
+                            });
 
                             //Robert_Lin, 2024-12-9 install event handler for new update fw/sw info
                             _deviceManager.Peripherals_UpdateNotify += _deviceManager_Peripherals_UpdateNotify;

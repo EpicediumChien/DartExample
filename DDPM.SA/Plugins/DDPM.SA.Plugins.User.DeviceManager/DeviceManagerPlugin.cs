@@ -10644,64 +10644,71 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog($"CallQAM_UI: Start");
 
-            if (_QAM == null)
+            try
             {
-                //writelog($"CallQAM_UI: Go");
-                //List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
-                //writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
-                //if (deviceInfos.Count == 1)
+                if (_QAM == null)
                 {
-                    writelog($"CallQAM_UI: have Webcam show QAM");
-
-                    Thread threadQAM = new Thread(() =>
+                    //writelog($"CallQAM_UI: Go");
+                    //List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
+                    //writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
+                    //if (deviceInfos.Count == 1)
                     {
-                        _QAM = new QAMPage(deviceMangerPlugin, Log);
-                        _QAM.Closed += QAMCloseEvent;
+                        writelog($"CallQAM_UI: have Webcam show QAM");
 
-                        //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
-                        if (QAM_Position.X != 0 && QAM_Position.Y != 0)
+                        Thread threadQAM = new Thread(() =>
                         {
-                            _QAM.Top = QAM_Position.Y;
-                            _QAM.Left = QAM_Position.X;
-                        }
-                        else
-                        {
-                            float scaleFactorX = 1;
-                            float scaleFactorY = 1;
+                            _QAM = new QAMPage(deviceMangerPlugin, Log);
+                            _QAM.Closed += QAMCloseEvent;
 
-                            using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
+                            //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
+                            if (QAM_Position.X != 0 && QAM_Position.Y != 0)
                             {
-                                float dpiX = graphics.DpiX;
-                                float dpiY = graphics.DpiY;
-                                float logicalDpi = 96.0f;
-                                scaleFactorX = dpiX / logicalDpi;
-                                scaleFactorY = dpiY / logicalDpi;
+                                _QAM.Top = QAM_Position.Y;
+                                _QAM.Left = QAM_Position.X;
+                            }
+                            else
+                            {
+                                float scaleFactorX = 1;
+                                float scaleFactorY = 1;
+
+                                using (Graphics graphics = Graphics.FromHwnd(IntPtr.Zero))
+                                {
+                                    float dpiX = graphics.DpiX;
+                                    float dpiY = graphics.DpiY;
+                                    float logicalDpi = 96.0f;
+                                    scaleFactorX = dpiX / logicalDpi;
+                                    scaleFactorY = dpiY / logicalDpi;
+                                }
+
+                                _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
+                                _QAM.Left = 0;
                             }
 
-                            _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
-                            _QAM.Left = 0;
-                        }
+                            _QAM.Dispatcher.Invoke(() => _QAM.Show());
+                            Dispatcher.Run();
+                        });
 
-                        _QAM.Dispatcher.Invoke(() => _QAM.Show());
-                        Dispatcher.Run();
-                    });
-
-                    threadQAM.SetApartmentState(ApartmentState.STA);
-                    threadQAM.Start();
+                        threadQAM.SetApartmentState(ApartmentState.STA);
+                        threadQAM.Start();
+                    }
                 }
+                else
+                {
+                    //_QAM.Show();
+                    _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
+                    //Dispatcher.Run(); //may block the process Derek 1219
+                }
+
+                //close DDPM UI
+                //CloseDDPM();  //Derek 1209
+
+                //close OSD
+                CloseQAMOSD();
             }
-            else
+            catch (Exception e)
             {
-                //_QAM.Show();
-                _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
-                Dispatcher.Run();
+                writelog($"CallQAM_UI catch exception {e.Message}");
             }
-
-            //close DDPM UI
-            //CloseDDPM();  //Derek 1209
-
-            //close OSD
-            CloseQAMOSD();
 
             writelog($"CallQAM_UI: done");
 
@@ -12916,6 +12923,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     }
                 }
+                /* since all monitor use same hotkeys,no need this anymore
                 //diff monitor
                 List<string> monitorSnList = new List<string>();
                 foreach (HotkeySettings hotkeySetting in hotkeySettingList)
@@ -12932,11 +12940,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (distCount != 0 && (allCount == distCount))
                 {
                     return Task.FromResult(HotkeyWarning.ConflictInbox);
-                }
+                }*/
                 return Task.FromResult(HotkeyWarning.None);
             }
             else
             {
+                writelog($"[GetHotkeyConflicts] _SettingsPlugin is null.");
                 return Task.FromResult(HotkeyWarning.ConflictInbox);
             }
         }
@@ -13521,9 +13530,37 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Toggle_EzRecentSetting(MonitorInfo monitorInfo, Object[] param)
         {
+            //Robert_Lin, 2024-12-19, add log to trace if HokeyKey has been handover to this method.
+            string moInfo = "";
+            if (monitorInfo == null)
+            {
+                moInfo = "(null)";
+            }
+            else
+            {
+                moInfo = monitorInfo.modelName;
+                if (monitorInfo.edid != null)
+                {
+                    if (String.IsNullOrEmpty(monitorInfo.edid.ServiceTag))
+                    {
+                        moInfo += ",(EMPTY)";
+                    }
+                    else
+                    {
+                        moInfo += $",{monitorInfo.edid.ServiceTag}";
+                    }
+                }
+                else
+                {
+                    moInfo += ",(null)";
+                }
+
+            }
+            writelog($"Toggle_EzRecentSetting({moInfo}) is called.");
+
             //Validation
             //todo Toggle_EzRecentSetting
-            //Read the EAMonitorSettings
+            //Read the EAMonitorSettings for EARecentList
             EAMonitorSettings eaSettings = ReadEAMonitorSettings(monitorInfo).Result;
             //Change selected layout to the latest item of RecentList
             if (eaSettings != null)
@@ -13532,16 +13569,59 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 if (recentList == null)
                 {
-                    writelog("@ Toggle_EzRecentSetting(), EA RecentList is null");
+                    writelog("@ Toggle_EzRecentSetting() failed, EA RecentList is null");
                     return;
                 }
                 if (recentList.Length == 0)
                 {
-                    writelog("@ Toggle_EzRecentSetting(), EA RecentList is empty");
+                    writelog("@ Toggle_EzRecentSetting() failed, EA RecentList is empty");
                     return;
+                }
+                else if (recentList.Length < EAEMConstants.MaxRecentItems)
+                {
+                    writelog($"@ Toggle_EzRecentSetting() failed, EA RecentList count={recentList.Length}");
                 }
                 else
                 {
+                    //Robert_Lin, 2024-12-19, Due to new interface
+                    //  IDevciceManagerSA.SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
+                    //is released for CLI and Hotkey, will change code logic to use new interface.
+                    //NEW:
+                    //1 Read the EARecentList, count should be == 5 (already checked)
+                    try
+                    {
+                        //2 Get the tail item of EZRecentList, that is EARecentList[4]
+                        SplitJson newSelectedLayout = recentList[EAEMConstants.MaxRecentItems - 1];
+                        int newEAID = newSelectedLayout.EAID;
+                        writelog($"@ Toggle_EzRecentSetting(): New selected layout EAID={newEAID}");
+
+                        //3 Call SetEASelectedLayout()
+                        bool res = SetEASelectedLayout(monitorInfo, newEAID).Result;
+                        //If res == false, possible reason:
+                        // Any of IDeviceManagerSA, IDisplayService, IEasyArrsangeService is not ready
+                        // EABroker is not started
+                        // Invalid EAID
+                        // Cannot read MonitorSettings from the MonitorInfo
+                        if (!res)
+                        {
+                            writelog($"@ Toggle_EzRecentSetting() faile, SetEASelectedLayout() return false.");
+                        }
+                        else
+                        {
+                            writelog($"@ Toggle_EzRecentSetting() handover to SetEASelectedLayout().");
+                        }
+                    }
+                    catch (Exception e1)
+                    {
+                        if (Log != null)
+                        {
+                            Log.Error(e1, "Toggle_EzRecentSetting()");
+                        }
+                    }
+                    return;
+
+                    //OLD:
+                    /*
                     List<SplitJson> splitJsonsList = recentList.ToList();
                     List<SplitJson> splitJsonsTmp = new List<SplitJson>();
                     splitJsonsTmp.AddRange(splitJsonsList);
@@ -13568,9 +13648,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"Toggle_EzRecentSetting(),monitor:{monitorInfo.AliasDeviceName}={monitorInfo.edid.ServiceTag}, EA RecentList.Count={eaSettings.RecentList.Length}, toggle to [{splitJsonsList.ElementAt(0).CellCount},{splitJsonsList.ElementAt(0).SplitKey}],save eaSettings.RecentList fail, do nothing");
                     }
+                    */
                 }
             }
-
+            else
+            {
+                writelog("Toggle_EzRecentSetting() failed due to ReadEAMonitorSettings() return null.");
+            }
             //Force await to avoid reenter this method (it will update to MonitorSettings file)
             //bool isOKSetSelected = SetEASelectedLayout(monitorInfo, eaSettings.RecentList[idxRecent]).Result;
 
@@ -14105,8 +14189,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 string crtInput = monitorInfo.inputSource;
                 List<KeyValuePair<string, InputInfo>> list = result.OrderBy(x => x.Key).ToList();
                 List<InputInfo> inputInfos = result.Select(x => x.Value).ToList();
-                Debug.WriteLine($"Toggle_InputSource,all inputsourc:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
-                writelog($"Toggle_InputSource,all inputsourc:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
+                Debug.WriteLine($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] all inputsourc: {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
+                writelog($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] all inputsourc: {string.Join("+", inputInfos.Select(x => x.InputName + "(" + x.Code + ")").ToList())}");
                 for (int i = 0; i < list.Count; i++)
                 {
                     if (list[i].Key.Equals(crtInput))
@@ -14121,6 +14205,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     }
                 }
+                Debug.WriteLine($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}],next inputsource: {nextInput}");
+                writelog($"Toggle_InputSource,[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}],next inputsource: {nextInput}");
                 bool setNextInput = SetVCPCapability(monitorInfo, "Input Select", nextInput).Result;
                 writelog($"Toggle_InputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] from [{crtInput}] to [{nextInput}]" + (setNextInput ? "success" : "fail"));
             }

@@ -426,8 +426,8 @@
                         <Path Data="M2.89999 5.54956H9.24999V6.60956H2.89999V5.54956Z" />
                       </Canvas>
                       <UXControls:UXSlider Name="ZoomSlider" Grid.Column="1" Margin="0,0,0,0" Width="360" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center"  
-                                           IsMoveToPointEnabled="True" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}"
-                                           Value="{Binding Zoom}"  Thumb.DragStarted="ZoomSlider_DragStarted" Thumb.DragCompleted="ZoomSlider_DragCompleted"/>
+                                           IsMoveToPointEnabled="True" IsEnabled="{Binding IsAutoFramingOn, Converter={StaticResource BooleanToInverseConverter}}" IsSnapToTickEnabled="True"
+                                           Value="{Binding Zoom}"  Thumb.DragStarted="ZoomSlider_DragStarted" Thumb.DragCompleted="ZoomSlider_DragCompleted" PreviewKeyDown="Slider_PreviewKeyDown" KeyUp="ZoomSlider_KeyUp"/>
                       <Canvas Grid.Column="2" Width="16" Height="16">
                         <Path Data="M16.0002 15.25L10.7402 10C11.4842 9.11157 11.9593 8.02928 12.1097 6.88024C12.2601 5.73121 12.0795 4.56312 11.5891 3.51313C11.0988 2.46315 10.3191 1.57486 9.34147 0.952577C8.3639 0.33029 7.22906 -0.000164308 6.07023 1.70432e-05C5.08894 -0.00230429 4.12162 0.232535 3.25063 0.684541C2.37964 1.13655 1.63077 1.79233 1.06778 2.59606C0.5048 3.3998 0.144373 4.32767 0.017189 5.30069C-0.109995 6.2737 -0.000167906 7.26304 0.337319 8.18447C0.674805 9.10591 1.22996 9.93214 1.95551 10.5928C2.68106 11.2535 3.55552 11.7291 4.50444 11.9791C5.45335 12.2291 6.44863 12.246 7.40552 12.0286C8.36241 11.8111 9.25257 11.3656 10.0002 10.73L15.2502 16L16.0002 15.25ZM6.07023 11.11C5.08132 11.11 4.11462 10.8168 3.29238 10.2674C2.47013 9.71796 1.82927 8.93707 1.45083 8.02343C1.07239 7.1098 0.973375 6.10447 1.1663 5.13457C1.35923 4.16466 1.83543 3.27375 2.53469 2.57448C3.23396 1.87522 4.12487 1.39902 5.09478 1.20609C6.06468 1.01316 7.07001 1.11218 7.98365 1.49062C8.89728 1.86906 9.67817 2.50992 10.2276 3.33217C10.777 4.15441 11.0702 5.12111 11.0702 6.11002C11.0702 7.4361 10.5434 8.70787 9.60576 9.64555C8.66808 10.5832 7.39631 11.11 6.07023 11.11Z" />
                         <Path Data="M6.59023 2.93002H5.53023V5.58002H2.89023V6.64002H5.53023V9.29002H6.59023V6.64002H9.24023V5.58002H6.59023V2.93002Z" />
@@ -456,7 +456,7 @@
                   </Grid>
                   <StackPanel Orientation="Vertical" Margin="16,16,16,16">
                     <UXControls:UXSlider Name="AutofocusSlider" Width="402" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center" AutoToolTipPlacement="None" IsEnabled="{Binding IsFocusOn, Converter={StaticResource BooleanToInverseConverter}}"
-                                         Value="{Binding Focus}" IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Thumb.DragStarted="AutofocusSlider_DragStarted" Thumb.DragCompleted="AutofocusSlider_DragCompleted" />
+                                         Value="{Binding Focus}" IsMoveToPointEnabled="True" IsSnapToTickEnabled="True" Thumb.DragStarted="AutofocusSlider_DragStarted" Thumb.DragCompleted="AutofocusSlider_DragCompleted" PreviewKeyDown="Slider_PreviewKeyDown" KeyUp="AutofocusSlider_KeyUp"/>
                   </StackPanel>
                 </StackPanel>
               </Border>
