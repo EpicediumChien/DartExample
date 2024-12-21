@@ -49,6 +49,9 @@ namespace DDPM.QAM
             get => _fullView;
             set => _fullView = value;
         }
+
+        private bool isQAMPageViewModel_UIUpdateNotifyExist = false;
+
         public QAMPageViewModel()
         {
             List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA!.GetDevices().Result.deviceInfo;
@@ -76,13 +79,21 @@ namespace DDPM.QAM
             }
 
             //Derek 1210
-            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += QAMPageViewModel_UIUpdateNotify;
+            if (!isQAMPageViewModel_UIUpdateNotifyExist)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += QAMPageViewModel_UIUpdateNotify;
+                isQAMPageViewModel_UIUpdateNotifyExist = true;
+
+                LogMsg($"Add event QAMPageViewModel_UIUpdateNotify");                
+            }
             LoadCurrentStatus();
         }
 
         ~QAMPageViewModel()
         {
             DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= QAMPageViewModel_UIUpdateNotify;
+            isQAMPageViewModel_UIUpdateNotifyExist = false;
+
             LogMsg($"Remove event QAMPageViewModel_UIUpdateNotify");
         }
 

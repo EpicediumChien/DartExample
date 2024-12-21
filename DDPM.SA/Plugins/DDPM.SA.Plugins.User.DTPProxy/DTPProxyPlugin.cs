@@ -1130,7 +1130,29 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public Task<string> GetWebcamDeviceID()
         {
             if (1 == webcamList.Count)
-                return Task.FromResult(webcamList[0].DeviceId);
+            {
+                try
+                {
+                    //if (_comdityWebcam is IWebcamCommodity webcamCommodity)
+                    //{
+                    //    string jsonStr = webcamCommodity.DeviceItemsEx[0].ToString();
+                    //    WebcamEventHandleObject jsonObject = JsonSerializer.Deserialize<WebcamEventHandleObject>(jsonStr)!;
+
+                    //    writelog($"The only one webcam device's devcie id = {jsonObject.DeviceId}， and keey by SA's is {webcamList[0].DeviceId}");
+
+                    //    return Task.FromResult(jsonObject.DeviceId);
+                    //}
+                    //else
+                    //    return Task.FromResult(string.Empty);
+
+                    return Task.FromResult(webcamList[0].DeviceId);
+                }
+                catch (Exception e)
+                {
+                    writelog($"GetWebcamDeviceID get exception {e.Message}");
+                    return Task.FromResult(string.Empty);
+                }   
+            }
             else
                 return Task.FromResult(string.Empty);
         }
@@ -7329,14 +7351,17 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                         //"DeviceId": "36ce653b-7a0f-4c85-97f7-aad029cceeb2",
                         //"ModelNumber": "P2424HEB"
                         //}
-                        string jsonStr = _WebcamComConnectEvent.DeviceItemsEx[i].ToString();
-                        writelog($"connected _WebcamComConnectEvent.DeviceItems = {jsonStr}");
+                        string jsonStr = _WebcamComConnectEvent.DeviceItemsEx[i++].ToString();
+                        writelog($"connected _WebcamComConnectEvent.DeviceItems, jsonStr = {jsonStr}");
 
-                        WebcamEventHandleObject jsonObject = JsonSerializer.Deserialize<WebcamEventHandleObject>(jsonStr)!;
-                        jsonObject.webcamCommodity = null;
-                        jsonObject.webcamIndex = item;
-                        writelog($"jsonObject values: {jsonObject.webcamIndex}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
-                        webcamList.Add(jsonObject);
+                        if (jsonStr != null && jsonStr != string.Empty)
+                        {
+                            WebcamEventHandleObject jsonObject = JsonSerializer.Deserialize<WebcamEventHandleObject>(jsonStr)!;
+                            jsonObject.webcamCommodity = null;
+                            jsonObject.webcamIndex = item;
+                            writelog($"jsonObject values: {jsonObject.webcamIndex}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+                            webcamList.Add(jsonObject);
+                        }
                     }
                     
                     writelog($"connected _WebcamComConnectEvent.DeviceItemsEx.Count = {_WebcamComConnectEvent.DeviceItemsEx.Count}");
@@ -7359,6 +7384,43 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             //await UnsubscribeDTPGlobalEventsAsync();
         }
 
+        private List<WebcamEventHandleObject> CreateWebcamObjectListByCurrentConditon()
+        {
+            List < WebcamEventHandleObject > list = new List<WebcamEventHandleObject>();
+
+            if (_comdityWebcam is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity webcamObj)
+            {
+                int i = 0;
+                foreach (var item in webcamObj.DeviceItems)
+                {
+                    //output:
+                    //DellPeripheral.Webcam.0
+                    writelog($"connected _WebcamComConnectEvent.DeviceItems[{i}] = {item}");
+
+                    //output:
+                    //"{
+                    //DeviceName": "Dell Pro 24 Plus Video Conferencing Monitor",
+                    //"DeviceId": "36ce653b-7a0f-4c85-97f7-aad029cceeb2",
+                    //"ModelNumber": "P2424HEB"
+                    //}
+                    string jsonStr = webcamObj.DeviceItemsEx[i++].ToString();
+                    writelog($"connected _WebcamComConnectEvent.DeviceItems = {jsonStr}");
+
+                    if (null != jsonStr && jsonStr != string.Empty)
+                    {
+                        WebcamEventHandleObject jsonObject = JsonSerializer.Deserialize<WebcamEventHandleObject>(jsonStr)!;
+                        jsonObject.webcamCommodity = null;
+                        jsonObject.webcamIndex = item;
+
+                        list.Add(jsonObject);
+
+                        writelog($"jsonObject values: {jsonObject.webcamIndex}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+                    }
+                }
+            }
+            
+            return list;
+        }
 
         private async Task<bool> UnsubscribeDTPGlobalEventsAsync()
         {
@@ -7460,23 +7522,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     }
                 }
 
-                //see duplicate data
-                /*
-                 *  2024.12.21 11:06:52.121 [9044] (00025) I ------DTPProxy: [DTPProxyPlugin] connected _WebcamComConnectEvent.DeviceItems = 2, Caller Name:RegisterEventAsync, Source Line 7318
-                    2024.12.21 11:06:52.123 [9044] (00025) I ------DTPProxy: [DTPProxyPlugin] connected _WebcamComConnectEvent.DeviceItems[0] = DellPeripheral.Webcam.0, Caller Name:RegisterEventAsync, Source Line 7324
-                    2024.12.21 11:06:52.134 [9044] (00025) I ------DTPProxy: [DTPProxyPlugin] connected _WebcamComConnectEvent.DeviceItems = {
-                      "DeviceName": "Dell UltraSharp Webcam",
-                      "DeviceId": "f4f903d7-9bf3-43dc-a555-6e351cf40aaa",
-                      "ModelNumber": "WB7022"
-                    }, Caller Name:RegisterEventAsync, Source Line 7333
-                    2024.12.21 11:06:52.136 [9044] (00025) I ------DTPProxy: [DTPProxyPlugin] jsonObject values: DellPeripheral.Webcam.0, Dell UltraSharp Webcam, f4f903d7-9bf3-43dc-a555-6e351cf40aaa, WB7022, Caller Name:RegisterEventAsync, Source Line 7338
-                    2024.12.21 11:06:52.136 [9044] (00025) I ------DTPProxy: [DTPProxyPlugin] connected _WebcamComConnectEvent.DeviceItems[0] = DellPeripheral.Webcam.1, Caller Name:RegisterEventAsync, Source Line 7324
-                    2024.12.21 11:06:52.138 [9044] (00025) I ------DTPProxy: [DTPProxyPlugin] connected _WebcamComConnectEvent.DeviceItems = {
-                      "DeviceName": "Dell UltraSharp Webcam",
-                      "DeviceId": "f4f903d7-9bf3-43dc-a555-6e351cf40aaa",
-                      "ModelNumber": "WB7022"
-                    }, Caller Name:RegisterEventAsync, Source Line 7333
-                 */
                 //output for double check Derek 1220
                 foreach (var item in webcamList)
                 {
