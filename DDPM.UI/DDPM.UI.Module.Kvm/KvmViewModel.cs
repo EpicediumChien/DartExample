@@ -205,6 +205,13 @@ namespace DDPM.UI.Module.Kvm
         public string PC3_Input { get; set; }
         public string PC4_Input { get; set; }
 
+        public bool IsMoreThanPC2 { 
+            get 
+            {
+                return PC3_Visibility == Visibility.Visible;
+            } 
+        }
+
         public Dictionary<UInt16, System.Windows.Controls.UserControl> PxPcodeDictionary = new Dictionary<UInt16, System.Windows.Controls.UserControl>()
         {
             [0x0] = new PxPSplitCtrl0A(),
