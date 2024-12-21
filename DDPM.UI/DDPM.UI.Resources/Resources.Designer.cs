@@ -4021,6 +4021,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select a folder.
+        /// </summary>
+        internal static string EzArrange_10 {
+            get {
+                return ResourceManager.GetString("EzArrange.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Family.
         /// </summary>
         internal static string Family {
@@ -4116,6 +4125,15 @@ namespace DDPM.UI.Resources {
         internal static string Fullscreen {
             get {
                 return ResourceManager.GetString("Fullscreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full screen.
+        /// </summary>
+        internal static string Fullscreen_1 {
+            get {
+                return ResourceManager.GetString("Fullscreen.1", resourceCulture);
             }
         }
         
@@ -5119,6 +5137,24 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dell Premier Wireless Keyboard.
+        /// </summary>
+        internal static string Keyboard_20 {
+            get {
+                return ResourceManager.GetString("Keyboard.20", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dell {0} Wireless Mouse.
+        /// </summary>
+        internal static string Keyboard_21 {
+            get {
+                return ResourceManager.GetString("Keyboard.21", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Collaboration.
         /// </summary>
         internal static string Keyboard_3 {
@@ -6118,6 +6154,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (Noname).
+        /// </summary>
+        internal static string NoName {
+            get {
+                return ResourceManager.GetString("NoName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
         internal static string None {
@@ -6721,6 +6766,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PIP Large.
+        /// </summary>
+        internal static string PIPLarge {
+            get {
+                return ResourceManager.GetString("PIPLarge", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to PIP/PBP.
         /// </summary>
         internal static string PIPorPBP {
@@ -6798,6 +6852,15 @@ namespace DDPM.UI.Resources {
         internal static string PipPbp_7 {
             get {
                 return ResourceManager.GetString("PipPbp.7", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PIP Small.
+        /// </summary>
+        internal static string PIPSmall {
+            get {
+                return ResourceManager.GetString("PIPSmall", resourceCulture);
             }
         }
         

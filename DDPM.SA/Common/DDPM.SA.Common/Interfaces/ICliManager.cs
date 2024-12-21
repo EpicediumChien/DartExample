@@ -1,5 +1,4 @@
-﻿using DDPM.SA.Common.Defer;
-using Dell.Client.Framework.Common;
+﻿using Dell.Client.Framework.Common;
 using System;
 using System.Threading.Tasks;
 using static DDPM.SA.Common.ICLICommandTable;
@@ -89,15 +88,6 @@ namespace DDPM.SA.Common
         public DateTime ticket { get; set; } //use to check if it is garbage
     }
 
-    // add @ 20241210 stephen
-    public class CLIEventToastArgs : EventArgs
-    {
-        public string defer_id { get; set; }
-        public string toast_message { get; set; }
-        public bool is_defer { get; set; }
-    }
-
-
     /// <summary>
     /// Public interface for [CLIProxy] to get command line events and call function to set result of command line
     /// </summary>
@@ -105,10 +95,7 @@ namespace DDPM.SA.Common
     {
         Task WriteCommandResult(CLIEventResult result);
 
-        public void sendToastResult(string defer_id, bool isDefer); // add @ 20241210 stephen
-
         event EventHandler<CLIEventArgs> CLIActionEvent;
-        event EventHandler<CLIEventToastArgs> CLIToastEvent;    // add @ 20241210 stephen
     }
 
     /// <summary>
@@ -118,10 +105,6 @@ namespace DDPM.SA.Common
     {
         //Input is command line parsing object, and the return integer is ExitCode
         Task<CLIEventResult> PerformCommandLineRelay(CommandLineInput commandLineInput);
-
-        public bool checkDefer(int from, string guid, string commanddata); // add @ 20241210 stephen
-        public bool checkDeferSchedule(int from, string guid, DeferItem item); // add @ 20241210 stephen
-        public void showNotification(int from, string guid, DeferItem item); // add @ 20241219 stephen
 
         //For remote management to subscribe event with result
         public event EventHandler<CLIEventResult> CLIActionResult;
