@@ -10348,11 +10348,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception e)
             {
-                ResetQAMCondition();
+                //ResetQAMCondition();
                 writelog($"Catch exception[{e.Message}] when Handle QAM process!");
             }
 
-            //ResetQAMCondition();  //Derek 1221
+            ResetQAMCondition();
             writelog($"HandleQAMV2 done");
         }
 
