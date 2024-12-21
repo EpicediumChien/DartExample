@@ -1200,9 +1200,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
                 if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
                 {
-                    //Debug.WriteLine($"{newValue}");
-                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
-                    _iLogicalDeviceWebcam.WALTime = newValue;
+                    // 2024-12-21, Elie R19 change that.
+                    //_iLogicalDeviceWebcam.WALTime = newValue;
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
@@ -1221,9 +1220,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
                 if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
                 {
-                    //Debug.WriteLine($"{newValue}");
-                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
-                    _iLogicalDeviceWebcam.Snooze = newValue;
+                    // 2024-12-21, Elie R19 change that.
+                    //_iLogicalDeviceWebcam.Snooze = newValue;
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
@@ -1263,9 +1261,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
                 if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
                 {
-                    //Debug.WriteLine($"{newValue}");
-                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
-                    _iLogicalDeviceWebcam.IsProximitySensorEnable = newValue;
+                    // 2024-12-21, Elie R19 change that.
+                    //_iLogicalDeviceWebcam.IsProximitySensorEnable = newValue;
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
@@ -1284,9 +1281,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
                 if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
                 {
-                    //Debug.WriteLine($"{newValue}");
-                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
-                    _iLogicalDeviceWebcam.IsWakeonApproachEnable = newValue;
+                    // 2024-12-21, Elie R19 change that.
+                    //_iLogicalDeviceWebcam.IsWakeonApproachEnable = newValue;
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
@@ -1305,9 +1301,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
                 if (logicalDevice is ILogicalDeviceWebcam _iLogicalDeviceWebcam)
                 {
-                    //Debug.WriteLine($"{newValue}");
-                    //_iLogicalDeviceWebcam.SetIsMicEnumerationOn(newValue);
-                    _iLogicalDeviceWebcam.IsWalkAwayLockEnable = newValue;
+                    // 2024-12-21, Elie R19 change that.
+                    //_iLogicalDeviceWebcam.IsWalkAwayLockEnable = newValue;
                     DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
                     if (_deviceInfo != null)
                     {
@@ -1425,7 +1420,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         if (device.Type == DeviceType.PhysicalAudioDongle && device is IPhysicalAudioDeviceDongle physicalAudioDeviceDongle && !PhysicalDevices2.Contains(device.Id))
                         {
                             physicalAudioDeviceDongle.PairedDeviceCountChanged += PhysicalAudioDeviceDongle_PairedDeviceCountChanged;
-                            physicalAudioDeviceDongle.PairingStatusChanged += PhysicalAudioDeviceDongle_PairingStatusChanged;
+                            // 2024-12-21, Elie R19 change that. (parameter has changed)               
+                            //physicalAudioDeviceDongle.PairingStatusChanged += PhysicalAudioDeviceDongle_PairingStatusChanged;
                             PhysicalDevices2.Add(device.Id);
                         }
                         // >>
@@ -1545,13 +1541,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                             if (item is ILogicalDevice3 _logicalDevice3)
                             {
-                                info.IsCollaborationBlinkEffectEnable = _logicalDevice3.IsCollaborationBlinkEffectEnable();
-                                info.IsCollaborationCameraEnable = _logicalDevice3.IsCollaborationCameraEnable();
-                                info.IsCollaborationChatEnable = _logicalDevice3.IsCollaborationChatEnable();
-                                info.IsCollaborationDoubleTapEnable = _logicalDevice3.IsCollaborationDoubleTapEnable();
-                                info.IsCollaborationKeyEnable = _logicalDevice3.IsCollaborationKeyEnable();
-                                info.IsCollaborationMicEnable = _logicalDevice3.IsCollaborationMicEnable();
-                                info.IsCollaborationScreenShareEnable = _logicalDevice3.IsCollaborationScreenShareEnable();
+                                // 2024-12-21, Elie R19 change that. (Using function calll to do that)
+                                //info.IsCollaborationBlinkEffectEnable = _logicalDevice3.IsCollaborationBlinkEffectEnable();
+                                //info.IsCollaborationCameraEnable = _logicalDevice3.IsCollaborationCameraEnable();
+                                //info.IsCollaborationChatEnable = _logicalDevice3.IsCollaborationChatEnable();
+                                //info.IsCollaborationDoubleTapEnable = _logicalDevice3.IsCollaborationDoubleTapEnable();
+                                //info.IsCollaborationKeyEnable = _logicalDevice3.IsCollaborationKeyEnable();
+                                //info.IsCollaborationMicEnable = _logicalDevice3.IsCollaborationMicEnable();
+                                //info.IsCollaborationScreenShareEnable = _logicalDevice3.IsCollaborationScreenShareEnable();
                                 info.IsIlluminationSupported = _logicalDevice3.IsIlluminationSupported;
                                 info.BackLightingControls = _logicalDevice3.BackLightingControls;
                                 info.BackLightingLevel = _logicalDevice3.BackLightingLevel;
