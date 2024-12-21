@@ -80,6 +80,14 @@ namespace DDPM.UI.Common
         /// </summary>
         public static bool UIDebugModeFlag { get; set; } = false;
 
+        //Robert_Lin, 2024-12-21 added, DdpmHomePLugin must know whether DisplayPlugin is
+        // activated or not. When DisplayPlugin is activate, the MainWindow_MoveToNewPosition
+        // event will be handled by DisplayPugin, or DdpmHomePlugin shoud take over.
+        public static bool IsDisplayPluginActivated { get; set; } = false;
+
+        //The last DisplayName (DeviceName) of the screen which show the OSD.
+        public static string LastShowOsdScreenDeviceName = "";
+
         public enum log_type
         {
             info = 0,
