@@ -133,7 +133,7 @@ namespace DDPM.SA.Common.Display
             if (pxpMode == 0) { return 1; }
             if ((pxpMode >= 0x21) && (pxpMode <= 0x2F)) return 2;
             if ((pxpMode >= 0x31) && (pxpMode <= 0x3F)) return 3;
-            if ((pxpMode >= 0x41) && (pxpMode >= 0x4F)) return 4;
+            if ((pxpMode >= 0x41) && (pxpMode <= 0x4F)) return 4;
             return 0;
         }
         #endregion
