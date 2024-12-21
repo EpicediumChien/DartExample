@@ -1658,10 +1658,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         if (DDPMFileSecurity.ValidateFilePath(workingDirectory, out info))
                         {
                             bool b = WTSFunction.StartProcessAndBypassUACWithAdmin(arguments_Final, workingDirectory, out procInfo);
-                            _logs.DebugMsg_1($"procInfo.Process : {procInfo.Process}");
-                            _logs.DebugMsg_1($"procInfo.ProcessId : {procInfo.ProcessId}");
-                            _logs.DebugMsg_1($"procInfo.Thread : {procInfo.Thread}");
-                            _logs.DebugMsg_1($"procInfo.ThreadId : {procInfo.ThreadId}");
                             string processName = Path.GetFileNameWithoutExtension(fwUpdateInfo.InstallPaths);
                             _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} Searching for process: {processName}");
                             Process[] processes = Process.GetProcessesByName(processName);
