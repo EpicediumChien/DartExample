@@ -14011,15 +14011,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        //Robert_Lin, 2024-12-21 for PIMS-332780 [DDPM Win 2.0.0] - R18 : In PBP 3 window & 4 window mode,
+        //"Swapping 2 inputs of PIP/PBP windows" hotkeys can be switched.
+        /// <summary>
+        /// Return true if current PXP mode is PIP_Small or PIP_Large
+        /// </summary>
+        /// <param name="mo"></param>
+        /// <returns></returns>
         private bool IsPIPMode(MonitorInfo mo)
         {
+            //Check if this monitor has PIP/PBP capability
             if (!mo.CapabilityDic.ContainsKey("E9"))
                 return false;
+            //Get curent PxP mode
             ObjGetVCP pxpMode = GetPxpMode(mo).Result;
             Debug.WriteLine($"GetPxpMode result={pxpMode?.result}, value={(UInt32)pxpMode.value}");
             if (pxpMode != null && pxpMode.result == true)
             {
-                return (UInt32)pxpMode.value != 0;
+                //Robert_Lin, 2024-12-21 fix
+                //NEW:
+                UInt16 _pxpMode = (UInt16)pxpMode.value;
+                return (_pxpMode == PxpModeObj.PxpMode_PipSmall) || (_pxpMode == PxpModeObj.PxpMode_PipLarge);
+                //OLD:
+                //return (UInt32)pxpMode.value != 0;
             }
             return false;
         }
@@ -14036,13 +14050,57 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] Swap_IputPIPPBP >begin [keys:{log_keys}]");
             if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
-                if (!IsPIPMode(monitorInfo))
+                //Robert_Lin, 2024-12-21 fix, for  PIMS-332780 [DDPM Win 2.0.0] - R18 : In PBP 3 window & 4 window mode,
+                //"Swapping 2 inputs of PIP/PBP windows" hotkeys can be switched.
+                //NEW:
+                //Check if this monitor has PIP/PBP capability
+                if (!monitorInfo.CapabilityDic.ContainsKey("E9"))
                 {
-                    //pxp off
-                    Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Swap_IputPIPPBP not take effect due to PXP mode is off or not supported");
-                    writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] will not take effect due to PXP mode is off.[keys:{log_keys}]");
+                    writelog("@Swap_IputPIPPBP(), Monitor has no PIP/PBP capability (E9).");
                     return;
                 }
+                //Get current PxpMode
+                ObjGetVCP objVcp = GetPxpMode(monitorInfo).Result;
+                //It should never return null
+                if (objVcp == null)
+                {
+                    writelog("@Swap_IputPIPPBP(), GetPxpMode() return null.");
+                    return;
+                }
+                if (!objVcp.result)
+                {
+                    writelog("@Swap_IputPIPPBP(), GetPxpMode() return false.");
+                    return;
+                }
+                if (objVcp.value == null)
+                {
+                    writelog("@Swap_IputPIPPBP(), GetPxpMode() return value is null.");
+                    return;
+                }
+                 UInt16 pxpMode = 0;
+                if (!UInt16.TryParse(objVcp.value.ToString(), out pxpMode))
+                {
+                    writelog("@Swap_IputPIPPBP(), GetPxpMode() return value convert to UINT16 type failed.");
+                    return;
+                }
+                //Check if pxpMode is 2 splits
+                int splitCount = PxpModeObj.GetSplitCountOfPxpMode(pxpMode);
+                if (splitCount != 2)
+                {
+                    writelog($"@Swap_IputPIPPBP(), PxpMode=0x{pxpMode:X}, SplitCount={splitCount}, Not 2 splits.");
+                    return;
+                }
+                writelog($"@Swap_IputPIPPBP(), PxpMode=0x{pxpMode:X}, SplitCount={splitCount}.");
+
+                //OLD:
+                //if (!IsPIPMode(monitorInfo))
+                //{
+                //    //pxp off
+                //    Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Swap_IputPIPPBP not take effect due to PXP mode is off or not supported");
+                //    writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] will not take effect due to PXP mode is off.[keys:{log_keys}]");
+                //    return;
+                //}
+
                 //0 = main, 1 = sub1, 2 = sub2, 3 = sub3
                 Dictionary<string, InputInfo> inputList = GetInputSourcelist(monitorInfo).Result;
                 //pip/pbp subinput should only one

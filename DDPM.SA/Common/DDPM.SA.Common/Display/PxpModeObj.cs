@@ -43,6 +43,14 @@ namespace DDPM.SA.Common.Display
 
         #endregion ctor
 
+        #region Pxp Mode Constants
+        //Robert_Lin, 2024-12-21 added
+        public const UInt16 PxpMode_Off = 0x00;
+        public const UInt16 PxpMode_Pip = 0x21;
+        public const UInt16 PxpMode_PipSmall = 0x21;
+        public const UInt16 PxpMode_PipLarge = 0x22;
+        #endregion Pxp Mode Constants
+
         #region Table
 
         public static readonly PxpModeObj[] Table =
@@ -102,5 +110,32 @@ namespace DDPM.SA.Common.Display
         }
 
         #endregion Table
+
+        #region Static Helper Functions
+        //Robert_Lin, 2024-12-21 added, for PIMS-332780 In PBP 3 window & 4 window mode,
+        // "Swapping 2 inputs of PIP/PBP windows" hotkeys can be switched.
+        // When the hotkey pressed, the hotkey action need to check if current PxpMode 
+        // is 2 splits, if yes, then execute the action, otherwise abort the action.
+        //The function to get SplitCount from a PxpMode is a commen function, and implemet it.
+        /// <summary>
+        /// Return the split count of the specified pxpMode.
+        /// </summary>
+        /// <param name="pxpMode"></param>
+        /// <returns>[pxpMode]: return value<br/>
+        /// [0x00 (Off)] : 1<br/>
+        /// [0x21 ~ 0x2F]: 2<br/>
+        /// [0x31 ~ 0x3F]: 3<br/>
+        /// [0x41 ~ 0x4F]: 4<br/>
+        /// Others : 0
+        /// </returns>
+        public static int GetSplitCountOfPxpMode(UInt16 pxpMode)
+        {
+            if (pxpMode == 0) { return 1; }
+            if ((pxpMode >= 0x21) && (pxpMode <= 0x2F)) return 2;
+            if ((pxpMode >= 0x31) && (pxpMode <= 0x3F)) return 3;
+            if ((pxpMode >= 0x41) && (pxpMode >= 0x4F)) return 4;
+            return 0;
+        }
+        #endregion
     }
 }
