@@ -9,8 +9,8 @@ namespace DDPM.SA.Common
     public interface IEzMemoryPlugin : IFrameworkPlugin
     {
         Task <Dictionary<string, InstalledAppInfo>> GetAllAppList();
-        Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps);
-        Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid);
+        //Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps);
+        //Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid);
         Task<bool> CheckEAIDExit(MonitorInfo moinfo, int eAID);
         Task<bool> DeleteEAID(MonitorInfo moinfo, int eAID);
 
