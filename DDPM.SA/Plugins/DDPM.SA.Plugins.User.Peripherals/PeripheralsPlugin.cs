@@ -525,7 +525,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     try
                     {
                         _DTPProxyPlugin.SetIsWiredAudioIMicNSEnableAsync(deviceId.ToString(), newValue);
-                        DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.Where(x => x.ID == deviceId).FirstOrDefault();
+                        DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID == deviceId);
                         if (_deviceInfo != null)
                         {
                             _deviceInfo.IsWiredAudioIMicNSEnable = newValue;
