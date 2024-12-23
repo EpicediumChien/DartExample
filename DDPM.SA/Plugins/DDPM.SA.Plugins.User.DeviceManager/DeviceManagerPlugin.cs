@@ -14032,7 +14032,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void Swap_IputPIPPBP(MonitorInfo monitorInfo, Object[] param)
         {
             string log_keys = string.Empty;
-            if (param != null && param.Count() > 0)
+            if (param != null && param.Length > 0)
             {
                 HotkeyInfo hotkey = (HotkeyInfo)param[0];
                 log_keys = string.Join("+", hotkey.Hotkey.Select(x => x + "(" + (int)x + ")").ToList());
@@ -14126,7 +14126,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
                 string log_keys = string.Empty;
-                if (param != null && param.Count() > 0)
+                if (param != null && param.Length > 0)
                 {
                     HotkeyInfo hotkey = (HotkeyInfo)param[0];
                     log_keys = string.Join("+", hotkey.Hotkey.Select(x => x + "(" + (int)x + ")").ToList());
@@ -14153,7 +14153,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         Debug.WriteLine($"inputSourceObjs: {item.Name}={item.Code}");
                     }
-                    if (inputSourceObjs == null || inputSourceObjs.Count() == 0)
+                    if (inputSourceObjs == null || inputSourceObjs.Count == 0)
                     {
                         //hotkey.InputSource Count must not 0.
                         Debug.WriteLine($"Switch_InputSource convert InputSource count is 0");
@@ -14186,7 +14186,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
                 string log_keys = string.Empty;
-                if (param != null && param.Count() > 0)
+                if (param != null && param.Length > 0)
                 {
                     HotkeyInfo hotkey = (HotkeyInfo)param[0];
                     log_keys = string.Join("+", hotkey.Hotkey.Select(x => x + "(" + (int)x + ")").ToList());
