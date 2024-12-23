@@ -65,6 +65,12 @@ namespace DDPM.SA.Common.Method
                     ZipFile.ExtractToDirectory(zipFilePath, extractPath, true);
                     _logs?.DebugMsg_1(nameof(Unzip) + " done");
                     exeFilePath = GetExeFilePath(extractPath);
+                    //Dean 1223 check output
+                    if (string.IsNullOrEmpty(exeFilePath) || exeFilePath.Length == 0)
+                    {
+                        _logs?.DebugMsg_1(nameof(Unzip) + "Unzip: search exe file got null/empty return");
+                        return false;
+                    }
                 }
                 return true;
             }

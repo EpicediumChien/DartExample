@@ -2797,7 +2797,9 @@ namespace VcpCore.Plugins
                         return (new List<MonitorInfo_complex>(), false);
                     }
 
-                    using (var regCount = Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Services\\monitor\\Enum"))
+                    //using (var regCount = Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Services\\monitor\\Enum"))
+                    var regCount = Registry.LocalMachine.OpenSubKey("SYSTEM\\CurrentControlSet\\Services\\monitor\\Enum");
+                    if(regCount != null)
                     {
                         _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors() open regCount ...");
                         try
@@ -2817,10 +2819,15 @@ namespace VcpCore.Plugins
                                 _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors() collection regCount is null");
 
                             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin exit _GetMonitors() ...");
+
+                            regCount.Close();
+                            regCount.Dispose();
                             return (monitors, IsDoingExtentDetect);
                         }
                         catch (Exception ex)
                         {
+                            regCount.Close();
+                            regCount.Dispose();
                             _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors() collection REG monitor count exception: " + ex.Message);
                             return (new List<MonitorInfo_complex>(), false);
                         }
@@ -2829,6 +2836,11 @@ namespace VcpCore.Plugins
                         //    regCount.Close();
                         //    regCount.Dispose();
                         //}
+                    }
+                    else
+                    {
+                        _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors() OpenSubKey: got null return");
+                        return (new List<MonitorInfo_complex>(), false);
                     }
                 }
                 catch (Exception ex)

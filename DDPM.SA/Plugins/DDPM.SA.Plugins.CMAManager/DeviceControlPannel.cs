@@ -156,21 +156,21 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 //if (Index != null)
                 //{
+                //    if (hasData)
+                //    {
+                //      result = result + ",";
+                //    }
+                //
+                //    result = result + $"\"Index\":{Index}";
+                //    hasData = true;
+                //}
+
+                if (!String.IsNullOrEmpty(devicetype)) //as 1st item, hasData should be empty [Dean]
+                {
                     //if (hasData)
                     //{
                     //    result = result + ",";
                     //}
-
-                    result = result + $"\"Index\":{Index}";
-                    hasData = true;
-                //}
-
-                if (!String.IsNullOrEmpty(devicetype))
-                {
-                    if (hasData)
-                    {
-                        result = result + ",";
-                    }
 
                     result = result + $"\"DeviceType\":\"{devicetype}\"";
                     hasData = true;

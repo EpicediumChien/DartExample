@@ -91,6 +91,8 @@ namespace VcpCore.Common
 
                                                     result = true;
                                                 }
+                                                registryKeyII.Close();
+                                                registryKeyII.Dispose();
                                             }
                                             else
                                             {
@@ -109,6 +111,8 @@ namespace VcpCore.Common
                                         //    registryKeyII.Dispose();
                                         //}
                                     }
+                                    registryKey.Close();
+                                    registryKey.Dispose();
                                 }
                                 else
                                 {

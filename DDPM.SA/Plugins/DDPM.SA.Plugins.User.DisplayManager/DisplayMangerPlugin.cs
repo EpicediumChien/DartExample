@@ -1118,8 +1118,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             else
             {
-                _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue AllALSConfig is null.");
-                return Task.FromResult(false);
+                _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue AllALSConfig is null. New a empty object");
+                AllALSConfig = new List<ALSConfig>();
             }
             //Dean 0624, the comparison should with DisplayName and SerialNumber
             int idx = AllALSConfig.FindIndex(x => x.Edid.Equals(monitorInfos.edid));// || x.serialNumber.Equals(monitorInfos.edid.SerialNumber));//Find if it exists
