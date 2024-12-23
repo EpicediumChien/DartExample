@@ -360,7 +360,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 {
                     if (Guid.TryParse(x, out Guid guid))
                     {
-                        var di = _deviceinfo.Where(x => x.ID == guid && x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                        var di = _deviceinfo.FirstOrDefault(x => x.ID == guid && x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType));
                         if (di == null)
                         {
                             GetResults.Add(new CLI_PeripheralRESPONSE(x, "GET", _commandLineInput.TargetFeature, "Fail", "Device not found"));
