@@ -22,7 +22,7 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid>
-        <Border Background="{DynamicResource InterruptScreen_Backgroung}">
+        <Border Background="{DynamicResource InterruptScreen_Backgroung}" Opacity="0.95">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
