@@ -50,7 +50,7 @@ namespace DDPM.QAM
             set => _fullView = value;
         }
 
-        private bool isQAMPageViewModel_UIUpdateNotifyExist = false;
+        private static bool isQAMPageViewModel_UIUpdateNotifyExist = false;
 
         public QAMPageViewModel()
         {
@@ -84,7 +84,7 @@ namespace DDPM.QAM
                 DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += QAMPageViewModel_UIUpdateNotify;
                 isQAMPageViewModel_UIUpdateNotifyExist = true;
 
-                LogMsg($"Add event QAMPageViewModel_UIUpdateNotify");                
+                LogMsg($"Add event QAMPageViewModel_UIUpdateNotify, isQAMPageViewModel_UIUpdateNotifyExist={isQAMPageViewModel_UIUpdateNotifyExist}");                
             }
             LoadCurrentStatus();
         }

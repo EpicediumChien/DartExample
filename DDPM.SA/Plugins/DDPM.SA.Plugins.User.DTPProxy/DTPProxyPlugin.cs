@@ -2581,6 +2581,31 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return null;
             }
         }
+
+        public async Task<bool> GetIsZoomMeetingActive()
+        {
+            //_itemID = new ItemId("DellPeripheral.Webcam");
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsZoomMeetingActive");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog($"[GetIsZoomMeetingActive]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                writelog($"[GetIsZoomMeetingActive]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+        }
+
         public async Task<bool> GetIsZoomMeetingActive(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
