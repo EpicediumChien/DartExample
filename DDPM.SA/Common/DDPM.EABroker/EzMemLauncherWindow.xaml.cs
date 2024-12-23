@@ -59,11 +59,25 @@ namespace DDPM.EABroker
             return SetForegroundWindow(hWnd);
         }
 
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        [DllImport("user32.dll")]
+        private static extern bool IsIconic(IntPtr hWnd);
+
         [DllImport("kernel32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr CreateFile(string lpFileName, uint dwDesiredAccess, uint dwShareMode, IntPtr lpSecurityAttributes, uint dwCreationDisposition, uint dwFlagsAndAttributes, IntPtr hTemplateFile);
-        private const uint GENERIC_READ = 0x80000000;
-        private const uint OPEN_EXISTING = 3;
+        private const int SW_RESTORE = 9;
+        private const int SW_SHOWNA = 8;
+        private const int SW_MAXIMIZE = 3;
+        private const int SW_SHOWNORMAL = 1;
+        private const int SW_SHOWMAXIMIZED = 3;
+
+        [DllImport("user32.dll")]
+        private static extern bool GetWindowPlacement(IntPtr hWnd, out WINDOWPLACEMENT lpwndpl);
+        [DllImport("user32.dll")]
+        private static extern bool SetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -249,14 +263,21 @@ namespace DDPM.EABroker
                     _log?.Info($"[LaunchAndArrange] 1 => {winUWP} APP, No. = {idx.ToString()}, AppName = {app.AppName}, AppPath = {app.AppPath}, AppPath = {app.AppUserModelID}");
 
                     // 檢查應用程式是否已經存在
-                    IntPtr handle2 = SpecialGetHandle(app, processName);
-                    if (handle2 != IntPtr.Zero)
+                    handle = SpecialGetHandle(app, processName);
+                    if (handle != IntPtr.Zero)
                     {
-                        Trace.WriteLine($"[LaunchAndArrange] 2 => {winUWP} APP already exit, SpecialGetHandle Find Handle = {handle2}, GetWindowTitle(handle) = {GetWindowTitle(handle2)}");
-                        _log?.Info($"[LaunchAndArrange] 2 => {winUWP} APPalready exit, SpecialGetHandle Find Handle = {handle2}, GetWindowTitle(handle) = {GetWindowTitle(handle2)}");
-                        EzMemorySetForegroundWindow(handle2); // 把應用程式拉到前景
-                        ArrangeWindow(handle2, idx, VM);
-                        idx++;
+                        Trace.WriteLine($"[LaunchAndArrange] 2 => ArrangeWindow = {idx},{winUWP} APP already exit, SpecialGetHandle Find Handle = {handle}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, EzMemorySetForegroundWindow");
+                        _log?.Info($"[LaunchAndArrange] 2 => ArrangeWindow = {idx}, {winUWP} APPalready exit, SpecialGetHandle Find Handle = {handle}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, EzMemorySetForegroundWindow");
+                        if(app.AppType != "True")// 已經在而且為UWP
+                        {
+                            Process process = LaunchApp(app, _log);
+                            handle = GetWindowHandle(app, _log);
+                            Task.Delay(1500);
+                        }
+                        //else
+                        ShowWindow(handle, SW_RESTORE);
+                        EzMemorySetForegroundWindow(handle); // 把應用程式拉到前景
+                        appHandles.Add((handle, idx));
                     }
                     else // 不存在就啟動
                     {
@@ -276,70 +297,52 @@ namespace DDPM.EABroker
                     Trace.WriteLine($"[LaunchAndArrange] 3 => {winUWP} APP, handle = {handle.ToString()}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, app.AppName = {app.AppName}");
                     _log?.Info($"[LaunchAndArrange] 3 => {winUWP} APP,  handle = {handle.ToString()}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, app.AppName = {app.AppName}");
 
-                    // 取得 Handle 且 Title Match
-                    if (handle != IntPtr.Zero && GetWindowTitle(handle).Contains(app.AppName))
+                    if (!appHandles.Any(item => item.handle == handle))
                     {
-                        Trace.WriteLine($"[LaunchAndArrange] 3 => True");
-                        _log?.Info($"[LaunchAndArrange] 3 => True");
-                        //appHandles.Add((handle, idx));
-                        ArrangeWindow(handle, idx, VM);
-                        idx++;
-                    }
-                    else //  Handle = IntPtr.Zero 或 Title 不 Match
-                    {
-                        Trace.WriteLine($"[LaunchAndArrange] 3 => False");
-                        _log?.Info($"[LaunchAndArrange] 3 => False");
-                        for (int attempt = 0; attempt < 3; attempt++)
+                        // 取得 Handle 且 Title Match
+                        if (handle != IntPtr.Zero && GetWindowTitle(handle).Contains(app.AppName))
                         {
-                            Trace.WriteLine($"[LaunchAndArrange] 3 - 1 => SpecialGetHandle Check ... ");
-                            _log?.Info($"[LaunchAndArrange] 3 - 1 => SpecialGetHandle Check ... ");
+                            Trace.WriteLine($"[LaunchAndArrange] 3 => ArrangeWindow = {idx}, True");
+                            _log?.Info($"[LaunchAndArrange] 3 => ArrangeWindow = {idx}, True");
+                            appHandles.Add((handle, idx));
+                            //ArrangeWindow(handle, idx, VM);
+                            //idx++;
+                        }
+                        else //  Handle = IntPtr.Zero 或 Title 不 Match
+                        {
+                            Trace.WriteLine($"[LaunchAndArrange] 3 => False");
+                            _log?.Info($"[LaunchAndArrange] 3 => False");
+                            for (int attempt = 0; attempt < 3; attempt++)
+                            {
+                                Trace.WriteLine($"[LaunchAndArrange] 3 - 1 => SpecialGetHandle Check ... ");
+                                _log?.Info($"[LaunchAndArrange] 3 - 1 => SpecialGetHandle Check ... ");
 
-                            handle = SpecialGetHandle(app, processName);
+                                handle = SpecialGetHandle(app, processName);
 
-                            Trace.WriteLine($"[LaunchAndArrange] 3 - 2 => SpecialGetHandle Done ... handle = {handle.ToString()}");
-                            _log?.Info($"[LaunchAndArrange] 3 - 2 => SpecialGetHandle Done ... handle = {handle.ToString()}");
+                                Trace.WriteLine($"[LaunchAndArrange] 3 - 2 => SpecialGetHandle Done ... handle = {handle.ToString()}");
+                                _log?.Info($"[LaunchAndArrange] 3 - 2 => SpecialGetHandle Done ... handle = {handle.ToString()}");
+                                if (handle != IntPtr.Zero)
+                                    break;
+                                await Task.Delay(1500);
+                            }
                             if (handle != IntPtr.Zero)
-                                break;
-                            await Task.Delay(1500);
-                        }
-                        if (handle != IntPtr.Zero)
-                        {
-                            Trace.WriteLine($"[LaunchAndArrange] 3 => True SpecialGetHandle handle != IntPtr.Zero => {handle.ToString()}, GetFilePathFromHandle = {GetFilePathFromHandle(handle)}, GetWindowTitle = {GetWindowTitle(handle)}");
-                            _log?.Info($"[LaunchAndArrange] 3 => True SpecialGetHandle handle != IntPtr.Zero => {handle.ToString()}, GetFilePathFromHandle = {GetFilePathFromHandle(handle)}, GetWindowTitle = {GetWindowTitle(handle)}");
-                            //appHandles.Add((handle, idx));
-                            ArrangeWindow(handle, idx, VM);
-                            idx++;
-                        }
-                        else // Handle 還是 = 0
-                        {
-                            //if (process != null && handle == IntPtr.Zero)
-                            //{
-                            //    Trace.WriteLine($"[LaunchAndArrange] 3 - 3 => Process Name : {process.ProcessName}");
-                            //    _log?.Info($"[LaunchAndArrange] 3 - 3 => Process Name : {process.ProcessName}");
-                            //    if (process != null)
-                            //    {
-                            //        List<IntPtr> exitsApp = GetVisibleWindowHandles();
-                            //        foreach (var vapp in exitsApp)
-                            //        {
-                            //            string handlePath = GetFilePathFromHandle(vapp);// 從Handle找路徑
-                            //            if (handlePath.Contains(process.ProcessName))// 比對 process 啟動的程式名稱
-                            //            {
-                            //                Trace.WriteLine($"[LaunchAndArrange] 3 - 4 => True Compare ProcessName => GetFilePathFromHandle = {GetFilePathFromHandle(vapp)}, GetWindowTitle = {GetWindowTitle(vapp)}");
-                            //                _log?.Info($"[LaunchAndArrange] 3 - 4 => True Compare ProcessName => GetFilePathFromHandle = {GetFilePathFromHandle(vapp)}, GetWindowTitle = {GetWindowTitle(vapp)}");
-                            //                handle = vapp;
-                            //            }
-                            //        }
-                            //    }
-                            //    //appHandles.Add((handle, idx));
-                            //    ArrangeWindow(handle, idx, VM);
-                            //    idx++;
-                            //    Trace.WriteLine($"[LaunchAndArrange] 2 - 2 => Process CreateFile handle = {handle.ToString()}");
-                            //}
-                            Trace.WriteLine($"[LaunchAndArrange] Failed to get handle for app.AppName: {app.AppName}, app.AppPath: {app.AppPath}, app.AppUserModelID: {app.AppUserModelID}");
-                            _log?.Error($"[LaunchAndArrange] Failed to get handle for app.AppName: {app.AppName}, app.AppPath: {app.AppPath}, app.AppUserModelID: {app.AppUserModelID}");
+                            {
+                                Trace.WriteLine($"[LaunchAndArrange] 3 => ArrangeWindow = {idx}, True SpecialGetHandle handle != IntPtr.Zero => {handle.ToString()}, GetFilePathFromHandle = {GetFilePathFromHandle(handle)}, GetWindowTitle = {GetWindowTitle(handle)}");
+                                _log?.Info($"[LaunchAndArrange] 3 => ArrangeWindow = {idx}, True SpecialGetHandle handle != IntPtr.Zero => {handle.ToString()}, GetFilePathFromHandle = {GetFilePathFromHandle(handle)}, GetWindowTitle = {GetWindowTitle(handle)}");
+                                appHandles.Add((handle, idx));
+                                //ArrangeWindow(handle, idx, VM);
+                                //idx++;
+                            }
+                            else // Handle 還是 = 0
+                            {
+                                Trace.WriteLine($"[LaunchAndArrange] Failed to get handle for app.AppName: {app.AppName}, app.AppPath: {app.AppPath}, app.AppUserModelID: {app.AppUserModelID}");
+                                _log?.Error($"[LaunchAndArrange] Failed to get handle for app.AppName: {app.AppName}, app.AppPath: {app.AppPath}, app.AppUserModelID: {app.AppUserModelID}");
+                            }
                         }
                     }
-                    //ArrangeWindow(handle, idx, VM);
+                    ArrangeWindow(handle, idx, VM);
+                    idx++;
+                    //Task.Delay(2000);
                 }
 
                 //if (appHandles.Count == 0)
