@@ -58,9 +58,17 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Pen"))
+            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType != null)
             {
-                _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
+                if (e.device_peripherals.LogicalDeviceType.Contains("Pen"))
+                {
+                    _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
+                }
+                else
+                {
+                    if (e.type == DeviceChangedType.Peripherals_UnPlug || e.type == DeviceChangedType.Peripherals_PlugIn)
+                        _viewModel!.OnGoBackClicked();
+                }
             }
         }
 
@@ -120,7 +128,8 @@ namespace DDPM.UI.Plugin.PenPlugin
         {
             ConfigureServices();
             GetPeripheralsAsync();
-            if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter)) { }
+            if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter))
+            { }
         }
 
         #endregion Interface IConsolePluginSupportsActivations

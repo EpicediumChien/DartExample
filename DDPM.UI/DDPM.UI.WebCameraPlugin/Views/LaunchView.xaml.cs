@@ -133,7 +133,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
                 DdpmCommonHelper.DeviceManagerSA.SystemSuspend += DeviceManagerSA_OnSystemSuspend;
                 DdpmCommonHelper.DeviceManagerSA.SystemResume += DeviceManagerSA_OnSystemResume;
-                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+                //DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
                 DdpmCommonHelper.DeviceManagerSA.SystemSessionEnd += DeviceManagerSA_OnSystemSessionEnd;
                 //Derek 1212
                 DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify += DeviceManagerSA_UIUpdateNotify;
@@ -167,7 +167,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             RecordingTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(1)
+                Interval = TimeSpan.FromSeconds(0.5)
             };
             RecordingTimer.Tick += RecordingTimer_Tick;
 
@@ -287,16 +287,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             ArrowLeft.Source = (BitmapImage)System.Windows.Application.Current.Resources["Arrow_Left"];
         }
 
-        private void DeviceManagerSA_DeviceChanged(object? sender, DeviceChangedEventArgs e)
-        {
-            DdpmCommonHelper.WriteUILog($"catch event DeviceManagerSA_DeviceChanged");
+        //private void DeviceManagerSA_DeviceChanged(object? sender, DeviceChangedEventArgs e)
+        //{
+        //    DdpmCommonHelper.WriteUILog($"catch event DeviceManagerSA_DeviceChanged");
 
-            if (_vm!.IsRecording)
-                Dispatcher.Invoke(new Action(() =>
-                {
-                    UserStopRecord();
-                }));
-        }
+        //    if (_vm!.IsRecording)
+        //        Dispatcher.Invoke(new Action(() =>
+        //        {
+        //            UserStopRecord();
+        //        }));
+        //}
 
         //public void initResolutionFPS()
         //{
@@ -1209,7 +1209,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
                 DdpmCommonHelper.DeviceManagerSA.SystemSuspend -= DeviceManagerSA_OnSystemSuspend;
                 DdpmCommonHelper.DeviceManagerSA.SystemResume -= DeviceManagerSA_OnSystemResume;
-                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+                //DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
                 DdpmCommonHelper.DeviceManagerSA.SystemSessionEnd -= DeviceManagerSA_OnSystemSessionEnd;
             }
             try
