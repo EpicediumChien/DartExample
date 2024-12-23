@@ -75,40 +75,40 @@
             </Style>
             <Style x:Key="CancelButtonStyle" TargetType="common:ActionButton">
                 <Setter Property="Height" Value="40" />
-        <Setter Property="Background" Value="#0D121A" />
-        <Setter Property="Foreground" Value="#FFFFFF" />
-        <Setter Property="CornerRadius" Value="2" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="BorderBrush" Value="#F5F6F7" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="FontFamily" Value="Roboto" />
-        <Setter Property="FontWeight" Value="Medium" />
-        <Style.Triggers>
-          <Trigger Property="IsEnabled" Value="False">
-            <Setter Property="BorderBrush" Value="#A3A3A3" />
-            <Setter Property="Foreground" Value="#6E6E6E" />
-          </Trigger>
-        </Style.Triggers>
-      </Style>
-      <Style x:Key="SaveButtonStyle" TargetType="common:ActionButton">
-        <Setter Property="Height" Value="40" />
-        <Setter Property="Background" Value="#0672CB" />
-        <Setter Property="Foreground" Value="#F5F6F7" />
-        <Setter Property="CornerRadius" Value="2" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="FontFamily" Value="Roboto" />
-        <Setter Property="FontWeight" Value="Medium" />
-        <Style.Triggers>
-          <Trigger Property="IsEnabled" Value="False">
-            <Setter Property="Background" Value="#333941" />
-            <Setter Property="Foreground" Value="#818488" />
-          </Trigger>
-        </Style.Triggers>
-      </Style>
-    </ResourceDictionary>
-  </UserControl.Resources>
-  <Grid Name="start">
+                <Setter Property="Background" Value="#0D121A" />
+                <Setter Property="Foreground" Value="#FFFFFF" />
+                <Setter Property="CornerRadius" Value="2" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="BorderBrush" Value="#F5F6F7" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontFamily" Value="Roboto" />
+                <Setter Property="FontWeight" Value="Medium" />
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="BorderBrush" Value="#A3A3A3" />
+                        <Setter Property="Foreground" Value="#6E6E6E" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="SaveButtonStyle" TargetType="common:ActionButton">
+                <Setter Property="Height" Value="40" />
+                <Setter Property="Background" Value="#0672CB" />
+                <Setter Property="Foreground" Value="#F5F6F7" />
+                <Setter Property="CornerRadius" Value="2" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontFamily" Value="Roboto" />
+                <Setter Property="FontWeight" Value="Medium" />
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Background" Value="#333941" />
+                        <Setter Property="Foreground" Value="#818488" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Name="start">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -358,7 +358,10 @@
                                                                         </Border>
                                                                     </StackPanel>
                                                                     <StackPanel Margin="0,0,0,0" Orientation="Horizontal" Visibility="{Binding ButtonVisibility}" HorizontalAlignment="Right">
-                                                                        <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Pen.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="EditPreset" Tag="{Binding ID}"/>
+                                                                        <!-- <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Pen.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="EditPreset" Tag="{Binding ID}"/> -->
+                                                                        <Border Background="{StaticResource FakeTransparent}" Cursor="Hand" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="EditPreset" Tag="{Binding ID}">
+                                                                            <ContentControl Template="{StaticResource icon_Pen}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
+                                                                        </Border>
                                                                         <Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/TrashCan.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" Tag="{Binding ID}"/>
                                                                     </StackPanel>
                                                                 </Grid>
@@ -400,7 +403,7 @@
                             <StackPanel Orientation="Vertical">
                                 <Border x:Name="bdrName" BorderThickness="1" BorderBrush="#7E7E7E" CornerRadius="4" Margin="16,0,0,0">
                                     <UXControls:UXTextBox Name="txbName" Width="260" Height="40" Padding="8,12" FontWeight="Medium" FontFamily="Roboto" MaxLength="30" FontSize="14"
-                           HorizontalAlignment="Center" Margin="0,0,0,0" Background="#141D28" BorderThickness="0" Foreground="#F5F6F7" PreviewTextInput="txtSearchText_PreviewTextInput"
+                           HorizontalAlignment="Center" Margin="0,0,0,0" BorderThickness="0" Background="{DynamicResource Webcam_TextBox_BkColor}" PreviewTextInput="txtSearchText_PreviewTextInput"
                            TextChanged="NameTextChanged" TextWrapping="NoWrap" FocusVisualStyle="{StaticResource BorderFocused}"/>
 
                                 </Border>
