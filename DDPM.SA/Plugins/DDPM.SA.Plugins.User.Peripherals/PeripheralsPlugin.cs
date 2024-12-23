@@ -1542,13 +1542,15 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             if (item is ILogicalDevice3 _logicalDevice3)
                             {
                                 // 2024-12-21, Elie R19 change that. (Using function calll to do that)
-                                //info.IsCollaborationBlinkEffectEnable = _logicalDevice3.IsCollaborationBlinkEffectEnable();
-                                //info.IsCollaborationCameraEnable = _logicalDevice3.IsCollaborationCameraEnable();
-                                //info.IsCollaborationChatEnable = _logicalDevice3.IsCollaborationChatEnable();
-                                //info.IsCollaborationDoubleTapEnable = _logicalDevice3.IsCollaborationDoubleTapEnable();
-                                //info.IsCollaborationKeyEnable = _logicalDevice3.IsCollaborationKeyEnable();
-                                //info.IsCollaborationMicEnable = _logicalDevice3.IsCollaborationMicEnable();
-                                //info.IsCollaborationScreenShareEnable = _logicalDevice3.IsCollaborationScreenShareEnable();
+                                // << 2024-12-23 Updted by Hess
+                                info.IsCollaborationBlinkEffectEnable = _logicalDevice3.IsCollaborationBlinkEffectEnable;
+                                info.IsCollaborationCameraEnable = _logicalDevice3.IsCollaborationCameraEnable;
+                                info.IsCollaborationChatEnable = _logicalDevice3.IsCollaborationChatEnable;
+                                info.IsCollaborationDoubleTapEnable = _logicalDevice3.IsCollaborationDoubleTapEnable;
+                                info.IsCollaborationKeyEnable = _logicalDevice3.IsCollaborationKeyEnable;
+                                info.IsCollaborationMicEnable = _logicalDevice3.IsCollaborationMicEnable;
+                                info.IsCollaborationScreenShareEnable = _logicalDevice3.IsCollaborationScreenShareEnable;
+                                // >>
                                 info.IsIlluminationSupported = _logicalDevice3.IsIlluminationSupported;
                                 info.BackLightingControls = _logicalDevice3.BackLightingControls;
                                 info.BackLightingLevel = _logicalDevice3.BackLightingLevel;
