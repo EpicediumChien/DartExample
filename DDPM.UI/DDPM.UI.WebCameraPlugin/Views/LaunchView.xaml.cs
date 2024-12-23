@@ -124,8 +124,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             Mouse.OverrideCursor = null;
             txtName.Text = Strings.Name;
             txtMsg.Text = Strings.NameIsTaken;
-            btnCancel.Caption = Strings.Cancel;
-            btnSave.Caption = Strings.Save;
+            btnCancel.Content = Strings.Cancel;
+            btnSave.Content = Strings.Save;
 
             //lock/unlock, no ui element currently
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -403,16 +403,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     {
                         print_debug("check_PresenceFunction() s3");
 
-                        _vm.UPD_Visibility = Visibility.Collapsed;
-                        _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                        _vm.brdHello_show = Visibility.Collapsed;
 
-                        //顯示韌體升級提示
-                        _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                        //最完整的顯示
+                        _vm.UPD_Visibility = Visibility.Visible;
+                        _vm.brdHello_show = Visibility.Visible;
+                        _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                        _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
 
                         if (!is_DellPc)
                         {
-                            //此case 是否為PC電腦不影響結果差異
+                            //韌體升級
                             print_debug("check_PresenceFunction() s4");
                             _vm.UPD_Visibility = Visibility.Collapsed;
                             _vm.brdHello_show = Visibility.Collapsed;
@@ -422,23 +422,25 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //dell 7 韌體升級畫面需要在 usb 3.0下,如果在2.0模式整個分頁關閉
                         if (!AllSupportedResolutions)
+                        {
+                            print_debug("check_PresenceFunction() s5");
                             noPresenceFunction = true;
-
+                        }
                     }
                     else
                     {
-                        print_debug("check_PresenceFunction() s5");
+                        print_debug("check_PresenceFunction() s6");
 
-                        //最正常的頁面,顯示windows hello和人像偵測器設定
+                        //韌體升級2024/12/18
+                        _vm.UPD_Visibility = Visibility.Collapsed;
+                        _vm.brdHello_show = Visibility.Collapsed;
                         _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                        _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
-                        _vm.UPD_Visibility = Visibility.Visible;
-                        _vm.brdHello_show = Visibility.Visible;
+                        _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
 
                         if (!is_DellPc)
                         {
 
-                            print_debug("check_PresenceFunction() s6");
+                            print_debug("check_PresenceFunction() s7");
 
                             // PresenceFunction  整個分頁不用顯示
                             noPresenceFunction = true;
@@ -448,28 +450,30 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 }
                 else
                 {
-                    print_debug("check_PresenceFunction() s7");
+                    print_debug("check_PresenceFunction() s8");
 
                     //隱藏PRESENCE DETECTION SECTION
                     _vm.UPD_Visibility = Visibility.Collapsed;
 
                     if (is_WindwosHelloSupport && is_WindowsVer_OK)
                     {
-                        print_debug("check_PresenceFunction() s8");
+
+                        //2024/12/18 windows setting
+                        print_debug("check_PresenceFunction() s9");
 
                         _vm.brdHello_show = Visibility.Collapsed;
                         _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
 
                         if (AllSupportedResolutions)//如果是USB 3.0
                         {
-                            print_debug("check_PresenceFunction() s9");
+                            print_debug("check_PresenceFunction() s10");
 
-                            //顯示設定畫面
+                            //顯示windos setting設定畫面
                             _vm.MPS_Setting_Visibility = Visibility.Visible;
 
                             if (!is_DellPc)
                             {
-                                print_debug("check_PresenceFunction() s10");
+                                print_debug("check_PresenceFunction() s11");
 
                                 //顯示韌體升級
                                 _vm.brdHello_show = Visibility.Collapsed;
@@ -479,7 +483,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         }
                         else
                         {
-                            print_debug("check_PresenceFunction() s11");
+                            print_debug("check_PresenceFunction() s12");
                             // PresenceFunction  整個分頁不用顯示
                             noPresenceFunction = true;
                         }
@@ -487,7 +491,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     else
                     {
 
-                        print_debug("check_PresenceFunction() s12");
+                        print_debug("check_PresenceFunction() s13");
                         _vm.brdHello_show_control = Visibility.Collapsed;//隱藏攝影機控制區windows helllo設定
                         _vm.brdHello_show = Visibility.Collapsed;  //隱藏人物偵測區windows hello設定連結
 
@@ -496,12 +500,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         // 6.c note MPS features will work only when Acadia is connected via USB 3.0. 
                         if (AllSupportedResolutions)
                         {
-                            print_debug("check_PresenceFunction() s13");
+                            print_debug("check_PresenceFunction() s14");
                             _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
 
                             if (!is_DellPc)
                             {
-                                print_debug("check_PresenceFunction() s14");
+                                print_debug("check_PresenceFunction() s15");
                                 // PresenceFunction  整個分頁不用顯示
                                 noPresenceFunction = true;
 
@@ -513,7 +517,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         }
                         else
                         {
-                            print_debug("check_PresenceFunction() s15");
+                            print_debug("check_PresenceFunction() s16");
                             // PresenceFunction  整個分頁不用顯示
                             noPresenceFunction = true;
                         }
@@ -523,37 +527,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             else
             {
                 //不需要做 is_EsiSupport判斷,一律為 UPD
-                print_debug("check_PresenceFunction() s13");
+                print_debug("check_PresenceFunction() s17");
                 if (is_WindwosHelloSupport && is_WindowsVer_OK)
                 {
 
-                    _vm.UPD_Visibility = Visibility.Collapsed;
-                    _vm.brdHello_show_control = Visibility.Collapsed;//隱藏攝影機控制區windows helllo設定
-                    _vm.brdHello_show = Visibility.Collapsed;  //隱藏人物偵測區windows hello設定連結
 
-                    //甚麼都不要顯示
-
-                    // PresenceFunction  整個分頁不用顯示
-                    noPresenceFunction = true;
-
-                    if (!is_DellPc)
-                    {
-                        print_debug("s15");
-
-                        // PresenceFunction  整個分頁不用顯示
-                        noPresenceFunction = true;
-
-                        _vm.UPD_Visibility = Visibility.Collapsed;
-                        _vm.brdHello_show = Visibility.Collapsed;
-                        _vm.brdHello_show_control = Visibility.Collapsed;
-                        _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                        _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
-                    }
-
-                }
-                else
-                {
-                    print_debug("s16");
+                    print_debug("s18");
 
                     //最正常的頁面,顯示windows hello和人像偵測器設定
                     _vm.UPD_Visibility = Visibility.Visible;
@@ -562,7 +541,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                     if (!is_DellPc)
                     {
-                        print_debug("s17");
+                        print_debug("s19");
 
                         // PresenceFunction  整個分頁不用顯示
                         noPresenceFunction = true;
@@ -574,12 +553,43 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
                     }
 
+                    ////---------------------------------------------
+
+
+
+                }
+                else
+                {
+
+                    print_debug("s20");
+
+                    _vm.UPD_Visibility = Visibility.Collapsed;
+                    _vm.brdHello_show_control = Visibility.Collapsed;//隱藏攝影機控制區windows helllo設定
+                    _vm.brdHello_show = Visibility.Collapsed;  //隱藏人物偵測區windows hello設定連結
+
+                    //甚麼都不要顯示
+                    // PresenceFunction  整個分頁不用顯示
+                    noPresenceFunction = true;
+
+                    if (!is_DellPc)
+                    {
+                        print_debug("s21");
+
+                        // PresenceFunction  整個分頁不用顯示
+                        noPresenceFunction = true;
+
+                        _vm.UPD_Visibility = Visibility.Collapsed;
+                        _vm.brdHello_show = Visibility.Collapsed;
+                        _vm.brdHello_show_control = Visibility.Collapsed;
+                        _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                        _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
+                    }
                 }
 
                 //都不需要顯示韌體升級提示
             }
 
-            print_debug("check_PresenceFunction() s18");
+            print_debug("check_PresenceFunction() s22-20241219 17:11 update ver step");
 
             print_debug("check_PresenceFunction() end");
         }
@@ -1899,7 +1909,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void EditPreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var profileName = ((Image)sender).Tag.ToString()!;
+            var profileName = ((FrameworkElement)sender).Tag.ToString()!;
             EditMode = "EDIT";
             EditingProfileName = profileName;
             if (profileName != _vm!.CurrentProfileName)
@@ -2082,7 +2092,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
         }
 
-        private void CancelClick(object sender, MouseButtonEventArgs e)
+        private void CancelClick(object sender, RoutedEventArgs e)
         {
             gdBattery.Visibility = Visibility.Visible;
             gdAddProfile.Visibility = Visibility.Collapsed;
@@ -2099,7 +2109,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.TooltipVisibility = Visibility.Collapsed;
         }
 
-        private void SaveClick(object sender, MouseButtonEventArgs e)
+        private void SaveClick(object sender, RoutedEventArgs e)
         {
             var txt = txbName.Text.Trim();
             //DdpmCommonHelper.DeviceManagerSA!.CreateCustomProfile(_vm!.CurrentDeviceInfo!.ID.ToString(), $"Test {_vm.WebcamSettings.CustomProfiles.Count + 1}");

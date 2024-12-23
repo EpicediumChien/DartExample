@@ -1018,7 +1018,7 @@ namespace DDPM.EABroker
 
         private bool UI_RefreshAwsIconCellRects(ISplitCtrl awsIcon)
         {
-            bool _areCellRectsRefreshed = true;
+            bool isCellRectsRefreshed = true;
 
             if (awsIcon.IsOverlapCustomLayout)
             {
@@ -1028,7 +1028,7 @@ namespace DDPM.EABroker
                     objCell.rc = _vm.GetFrameworkElementRect(objCell.CellBd);
                     if (objCell.rc.IsEmpty)
                     {
-                        _areCellRectsRefreshed = false;
+                        isCellRectsRefreshed = false;
                     }
                 }
                 //foreach (CellBorder cb in splitCtrl0B.CellBorders)
@@ -1036,7 +1036,7 @@ namespace DDPM.EABroker
                 //    cb.rect = _vm.GetFrameworkElementRect(cb);
                 //    if (cb.rect.IsEmpty)
                 //    {
-                //        _areCellRectsRefreshed = false;
+                //        isCellRectsRefreshed = false;
                 //    }
                 //}
             }
@@ -1050,7 +1050,7 @@ namespace DDPM.EABroker
                     objCell.rc = _vm.GetFrameworkElementRect(objCell.CellBd);
                     if (objCell.rc.IsEmpty)
                     {
-                        _areCellRectsRefreshed = false;
+                        isCellRectsRefreshed = false;
                     }
                 }
             }
@@ -1064,11 +1064,11 @@ namespace DDPM.EABroker
             //        objCell.rc = _vm.GetFrameworkElementRect(objCell.bd);
             //        if (objCell.rc.IsEmpty)
             //        {
-            //            _areCellRectsRefreshed = false;
+            //            isCellRectsRefreshed = false;
             //        }
             //    }
             //}
-            return _areCellRectsRefreshed;
+            return isCellRectsRefreshed;
         }
 
 

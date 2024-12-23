@@ -1165,11 +1165,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     //    return Task.FromResult<bool>(false);
                     //}
 
-                    foreach (DDPMMonitorSettings _settings in monitorSettings)
+                    foreach (DDPMMonitorSettings singleMonitorSetting in monitorSettings)
                     {
-                        if (_settings.ServiceTag == seriveTag)
+                        if (singleMonitorSetting.ServiceTag == seriveTag)
                         {
-                            impexpSettings.MonitorSettings = _settings;
+                            impexpSettings.MonitorSettings = singleMonitorSetting;
                             // PIMS-328022 to renew EzMemory
                             impexpSettings.MonitorSettings.easyArrangementDDPM.Desktops = new List<DesktopDDPM>();
 

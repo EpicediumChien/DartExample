@@ -10,9 +10,6 @@
              d:DesignHeight="671" d:DesignWidth="1378">
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
-            </ResourceDictionary.MergedDictionaries>
             <Storyboard x:Key="StoryGotoTwoView">
                 <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
                                  Duration="0:0:0.4" From="0" To="{Binding LeftFrameWidth}" FillBehavior="HoldEnd" />
@@ -149,9 +146,6 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Grid Grid.Row="0" Margin="16, 16, 16, 0">
                                 <UXControls:UXTextBlock Text="{Binding [Kvm.0], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}1}"
@@ -165,45 +159,58 @@
                                                       PreviewTextInput="UXTextBox_PreviewTextInput"
                                                       TextChanged="UXTextBox_TextChanged1"/>
                             </Grid>
-                            <Grid Grid.Row="2" Margin="16, 8, 16, 0">
-                                <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
-                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
-                                                        FontSize="16" LineHeight="24"
-                                                        HorizontalAlignment="Center" />
-                            </Grid>
-                            <Grid Grid.Row="3" Margin="16, 2, 16, 8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="4*" />
-                                    <ColumnDefinition Width="11*" />
-                                </Grid.ColumnDefinitions>
-                                <ComboBox AutomationProperties.Name="SelectedCheck"
-                                          Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
-                                          HorizontalAlignment="Center" VerticalAlignment="Center"
-                                          ItemsSource="{Binding PCInputsList}"
-                                          SelectedItem="{Binding PC1Inputs_Selected, Mode=TwoWay}"
-                                          DisplayMemberPath="inputDisplayText" Grid.ColumnSpan="2"
-                                          Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
-                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
-                            </Grid>
-                            <Grid Grid.Row="4" Margin="16, 8, 16, 0">
-                                <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
-                                                        Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
-                                                        FontSize="16" LineHeight="24"
-                                                        HorizontalAlignment="Center" />
-                            </Grid>
-                            <Grid Grid.Row="5" Margin="16, 2, 16, 16">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="5*" />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition Width="4*" />
-                                </Grid.ColumnDefinitions>
-                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
-                                          HorizontalAlignment="Left" VerticalAlignment="Center"
-                                          ItemsSource="{Binding USBsList}"
-                                          SelectedItem="{Binding PC1USB_Selected, Mode=TwoWay}"
-                                          DisplayMemberPath="inputDisplayText" Grid.ColumnSpan="3" 
-                                          Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
-                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"/>
+                            <Grid Grid.Row="2" Margin="16, 8, 16, 16">
+                                <StackPanel x:Name="Ports_StackPanel_0">
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Setter Property="Orientation" Value="Horizontal" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
+                                                    <Setter Property="Orientation" Value="Vertical" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <StackPanel>
+                                        <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
+                                                                Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
+                                                                FontSize="16" LineHeight="24"
+                                                                HorizontalAlignment="Center"
+                                                                Margin="0, 0, 0, 2"/>
+                                        <ComboBox AutomationProperties.Name="SelectedCheck"
+                                                  Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                  ItemsSource="{Binding PCInputsList}"
+                                                  SelectedItem="{Binding PC1Inputs_Selected, Mode=TwoWay}"
+                                                  DisplayMemberPath="inputDisplayText"
+                                                  Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                                  BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
+                                    </StackPanel>
+                                    <StackPanel x:Name="SecondPort_StackPanel_0">
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Margin" Value="8, 0, 0, 0" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
+                                                        <Setter Property="Margin" Value="0, 16, 0, 0" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
+                                                                Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
+                                                                FontSize="16" LineHeight="24"
+                                                                HorizontalAlignment="Center" />
+                                        <ComboBox AutomationProperties.Name="SelectedCheck" 
+                                                  Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                  ItemsSource="{Binding USBsList}"
+                                                  SelectedItem="{Binding PC1USB_Selected, Mode=TwoWay}"
+                                                  DisplayMemberPath="inputDisplayText"
+                                                  Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                                  BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"/>
+                                    </StackPanel>
+                                </StackPanel>
                             </Grid>
                         </Grid>
                         <Grid Grid.Column="1" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" Margin="0, 0, 8, 0">
@@ -228,34 +235,54 @@
                                                       TextChanged="UXTextBox_TextChanged2"/>
                             </Grid>
                             <Grid Grid.Row="2"  Margin="16, 8, 16, 0">
-                                <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
+                                <StackPanel x:Name="Ports_StackPanel_1">
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Setter Property="Orientation" Value="Horizontal" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
+                                                    <Setter Property="Orientation" Value="Vertical" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <StackPanel>
+                                        <UXControls:UXTextBlock Text="{Binding [Video], Source={x:Static lang:LangHelper.Instance}}"
                                                         Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
-                            </Grid>
-                            <Grid Grid.Row="3" Margin="16, 2, 16, 8">
-                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                                        <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Center" VerticalAlignment="Top"
                                           ItemsSource="{Binding PCInputsList}" 
                                           SelectedItem="{Binding PC2Inputs_Selected, Mode=TwoWay}"
                                           DisplayMemberPath="inputDisplayText"
                                           Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                           BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
-                            </Grid>
-                            <Grid Grid.Row="4" Margin="16, 8, 16, 0">
-                                <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
+                                    </StackPanel>
+                                    <StackPanel x:Name="SecondPort_StackPanel_1">
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Margin" Value="8, 0, 0, 0" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsMoreThanPC2}" Value="True">
+                                                        <Setter Property="Margin" Value="0, 16, 0, 0" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+                                        <UXControls:UXTextBlock Text="{Binding [USB], Source={x:Static lang:LangHelper.Instance}}"
                                                         Foreground="{DynamicResource DefaultTheme_USBKVMPCColor}"
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
-                            </Grid>
-                            <Grid Grid.Row="5" Margin="16, 2, 16, 16">
-                                <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
+                                        <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Center" VerticalAlignment="Center"
                                           ItemsSource="{Binding USBsList}" 
                                           SelectedItem="{Binding PC2USB_Selected, Mode=TwoWay}"
                                           DisplayMemberPath="inputDisplayText"
                                           Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                           BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"/>
+                                    </StackPanel>
+                                </StackPanel>
                             </Grid>
                         </Grid>
                         <Grid Grid.Column="2" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" Margin="0, 0, 8, 0" Visibility="{Binding PC3_Visibility}">

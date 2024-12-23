@@ -866,22 +866,22 @@ namespace DDPM.CLI.Plugins.Peripherals
                     //op.Option_Value.Replace(".", ",");
                     List<string> op_value = op.Option_Value.Replace(".", ",").Split(",").ToList();
                     //value = op_value[0];
-                    foreach (var value in op_value)
+                    foreach (string stringValue in op_value)
                     {
-                        Debug.WriteLine($"{value}, {_commandLineInput.Options[0].Option_Value}");
-                        if (value == null) // if there is no option value
+                        Debug.WriteLine($"{stringValue}, {_commandLineInput.Options[0].Option_Value}");
+                        if (stringValue == null) // if there is no option value
                         {
                             SetFailResults("no setting value");
                             writelog("SetPeripheralProperty: no setting value");
                             return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                         }
-                        else if (int.TryParse(value, out int tmp)) // for the function argument is number
+                        else if (int.TryParse(stringValue, out int tmp)) // for the function argument is number
                         {
                             val = tmp;
                         }
                         else //for the function argument is int(0/1) or bool
                         {
-                            switch (value)
+                            switch (stringValue)
                             {
                                 //case "ENABLE": //spec is only defined enable/disable, on/off
                                 case "ON":
@@ -895,7 +895,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     break;
                                 case "LOCK":
                                 case "UNLOCK":
-                                    if (value.ToUpper().Equals("LOCK"))
+                                    if (stringValue.ToUpper().Equals("LOCK"))
                                     {
                                         switch (_commandLineInput.TargetFeature.ToUpper())
                                         {
@@ -916,7 +916,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 break;
                                         }
                                     }
-                                    if (value.ToUpper().Equals("UNLOCK"))
+                                    if (stringValue.ToUpper().Equals("UNLOCK"))
                                     {
                                         switch (_commandLineInput.TargetFeature.ToUpper())
                                         {
@@ -940,7 +940,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     _devMgr.SetAppConfigData(data);
                                     break;
                                 default: // currently, CLI peripheral didn't accept others setting type
-                                    if (int.TryParse(value, out val))
+                                    if (int.TryParse(stringValue, out val))
                                         break;
                                     else
                                     {
@@ -1958,8 +1958,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                 deviceInfo = new List<DeviceInfo>()
             };
 
-            List<DeviceInfo> _deviceinfo = null;
-            _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+            List<DeviceInfo> deviceInfoList = null;
+            deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
 
             if (!commandLineInput.isCliRunAdmin)
             {
@@ -2190,11 +2190,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             else if (!ss_1[0].ToUpper().Equals("DISPLAY"))
                             {
-                                _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+                                deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
 
-                                var fwUpdateDeviceInfos = _deviceinfo.Select(_ => _).ToList();
+                                var fwUpdateDeviceInfos = deviceInfoList.Select(_ => _).ToList();
 
-                                foreach (var g in _deviceinfo)
+                                foreach (var g in deviceInfoList)
                                 {
                                     if (g.LogicalDeviceType == "LogicalMouse" && ss_1[0].ToUpper().Equals("MOUSE"))
                                     {
@@ -2282,7 +2282,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     }
 
                                                     var findDevice = false;
-                                                    foreach (var g in _deviceinfo)
+                                                    foreach (var g in deviceInfoList)
                                                     {
                                                         if (g.ID.ToString().ToUpper() == ss_guid[0].ToUpper())
                                                         {
@@ -2307,7 +2307,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 if (!string.IsNullOrEmpty(ss_min[0]) && !string.IsNullOrEmpty(ss_min[1]))
                                                 {
                                                     var findDevice = false;
-                                                    foreach (var g in _deviceinfo)
+                                                    foreach (var g in deviceInfoList)
                                                     {
                                                         if (g.FirmwareVersion.ToUpper() == ss_min[0].ToUpper())
                                                         {
@@ -2332,7 +2332,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 if (!string.IsNullOrEmpty(ss_mod[0]) && !string.IsNullOrEmpty(ss_mod[1]))
                                                 {
                                                     var findDevice = false;
-                                                    foreach (var g in _deviceinfo)
+                                                    foreach (var g in deviceInfoList)
                                                     {
                                                         if (g.ModelNumber.ToUpper() == ss_mod[0].ToUpper())
                                                         {
@@ -2358,7 +2358,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 if (!string.IsNullOrEmpty(serviceTaInputValues[0]) && !string.IsNullOrEmpty(serviceTaInputValues[1]))
                                                 {
                                                     var findDevice = false;
-                                                    foreach (var g in _deviceinfo)
+                                                    foreach (var g in deviceInfoList)
                                                     {
                                                         if (!string.IsNullOrWhiteSpace(g.DockServiceTag) && g.DockServiceTag.ToUpper() == serviceTaInputValues[0].ToUpper())
                                                         {
@@ -2777,9 +2777,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                 {
                     _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
                     _devMgr.ProgressUpdate_Notify += _FWUpdatePlugin_ProgressUpdate;
-                    List<FWUpdateInfo> retFWUpdateInfos = _devMgr.DownloadAndInstall(fwUpdateInfo).Result;
+                    List<FWUpdateInfo> retFWUpdateInfosList = _devMgr.DownloadAndInstall(fwUpdateInfo).Result;
                     bool b = true;
-                    foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
+                    foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfosList)
                     {
                         if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
                         {
@@ -3122,8 +3122,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                 deviceInfo = new List<DeviceInfo>()
             };
 
-            List<DeviceInfo> _deviceinfo = null;
-            _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+            List<DeviceInfo> deviceInfoList = null;
+            deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
 
 
             if (!commandLineInput.isCliRunAdmin)
@@ -3338,8 +3338,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                 deviceInfo = new List<DeviceInfo>()
             };
 
-            List<DeviceInfo> _deviceinfo = null;
-            _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+            List<DeviceInfo> deviceInfoList = null;
+            deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
 
 
             if (!commandLineInput.isCliRunAdmin)
