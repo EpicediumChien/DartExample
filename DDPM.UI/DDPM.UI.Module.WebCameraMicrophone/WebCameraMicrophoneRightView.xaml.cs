@@ -53,7 +53,7 @@ namespace DDPM.UI.Module.WebCameraMicrophone
                     //}
                 }
             }
-            if (_vm != null && !_vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
+            if (_vm != null && _vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
                 imgWarn.Visibility = Visibility.Hidden;
         }
 
