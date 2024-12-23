@@ -25,9 +25,9 @@ namespace DDPM.UI.Module.SpeakerInteractions
             if (!isTeamsInstalled)
                 MicrosoftTeamsButton.Visibility = System.Windows.Visibility.Collapsed;
             if (!isZoomInstalled)
-                MicrosoftTeamsButton.Visibility = System.Windows.Visibility.Collapsed;
+                ZoomButton.Visibility = System.Windows.Visibility.Collapsed;
             if (!isMeetInstalled)
-                MicrosoftTeamsButton.Visibility = System.Windows.Visibility.Collapsed;
+                GoogleMeetButton.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         private void MicrosoftTeamsButton_MouseMove(object sender, MouseEventArgs e)

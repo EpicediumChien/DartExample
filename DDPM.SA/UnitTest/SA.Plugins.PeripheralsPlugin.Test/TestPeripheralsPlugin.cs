@@ -3359,11 +3359,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
         public void TestInitializeDeviceManagerPlugin()
         {
             Mock<IDeviceManagerSA> mockDeviceManagerSA = new Mock<IDeviceManagerSA>();
-            var mockDeviceManagerSAObject = mockDeviceManagerSA.Object;
-            privatetePeripheralsPlugin.SetFieldOrProperty("_DeviceManagerPlugin", mockDeviceManagerSAObject);  //_DeviceManagerPlugin not null
-            privatetePeripheralsPlugin.Invoke("InitializeDeviceManagerPlugin");
-            var InitializeDeviceManagerPlugin_result = privatetePeripheralsPlugin.GetFieldOrProperty("_DeviceManagerPlugin");
-            Assert.IsNotNull(InitializeDeviceManagerPlugin_result);
+            var mockDeviceManagerSAObject = mockDeviceManagerSA.Object;  //InitializeDeviceManagerPlugin method has remove
+            //privatetePeripheralsPlugin.SetFieldOrProperty("_DeviceManagerPlugin", mockDeviceManagerSAObject);  //_DeviceManagerPlugin not null
+            //privatetePeripheralsPlugin.Invoke("InitializeDeviceManagerPlugin");
+            //var InitializeDeviceManagerPlugin_result = privatetePeripheralsPlugin.GetFieldOrProperty("_DeviceManagerPlugin");
+            //Assert.IsNotNull(InitializeDeviceManagerPlugin_result);
         }
 
         [Test]
@@ -3422,6 +3422,24 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             string strArg4 = "Audio";
             Assert.Throws<NotImplementedException>(() =>
             privatetePeripheralsPlugin.Invoke("PhysicalAudioDeviceDongle_PairingStatusChanged", device, nArg2, nArg3, strArg4));
+        }
+
+        [Test]
+        public void TestUpdateDTPInstance()
+        {
+            Mock<IDTPProxyPlugin> mockDTPInstance = new Mock<IDTPProxyPlugin>();
+            var DTPInstanceObj = mockDTPInstance.Object;
+            peripheralsPlugin.UpdateDTPInstance(DTPInstanceObj);
+            Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void TestUpdateSettingsInstance()
+        {
+            Mock<ISettingsManagerDev> mockSettingsManagerDev = new Mock<ISettingsManagerDev>();
+            var mockSettingsManagerDevObj = mockSettingsManagerDev.Object;
+            peripheralsPlugin.UpdateSettingsInstance(mockSettingsManagerDevObj);
+            Assert.IsTrue(true);
         }
 
         [OneTimeTearDown]
