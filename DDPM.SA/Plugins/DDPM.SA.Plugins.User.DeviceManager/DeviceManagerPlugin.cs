@@ -13498,7 +13498,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case HotkeyType.FavoriteInputSource:
-                    HotkeyInfo hotkeyInfoIs = settings.HotkeyInfo.Where(x => x.Job.Equals(HotkeyType.FavoriteInputSource)).SingleOrDefault();
+                    HotkeyInfo hotkeyInfoIs = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.FavoriteInputSource));
                     List<HotkeyData> list = GetInputSourceHotKeyData(monitorInfo);
                     HotkeyData hotkeyData = list.SingleOrDefault(x => x.hotkeyType == HotkeyType.FavoriteInputSource);
                     Debug.WriteLine($"FavoriteInputSource: {hotkeyData?.inputSource.Count}");
@@ -13509,7 +13509,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case HotkeyType.SwitchInputSource:
-                    HotkeyInfo hotkeyInfo = settings.HotkeyInfo.Where(x => x.Job.Equals(HotkeyType.SwitchInputSource)).SingleOrDefault();
+                    HotkeyInfo hotkeyInfo = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.SwitchInputSource));
                     List<HotkeyData> list2 = GetInputSourceHotKeyData(monitorInfo);
                     HotkeyData hotkeyData2 = list2.SingleOrDefault(x => x.hotkeyType == HotkeyType.SwitchInputSource);
                     if (hotkeyInfo != null && hotkeyData2 != null)// hotkeyInfo.InputSource != null)
@@ -13519,7 +13519,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case HotkeyType.SwapIputPIPPBP:
-                    HotkeyInfo hotkeyInfo_SwapIputPIPPBP = settings.HotkeyInfo.Where(x => x.Job.Equals(HotkeyType.SwapIputPIPPBP)).SingleOrDefault();
+                    HotkeyInfo hotkeyInfo_SwapIputPIPPBP = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.SwapIputPIPPBP));
                     if (hotkeyInfo_SwapIputPIPPBP != null)
                         _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { hotkeyInfo_SwapIputPIPPBP }, Swap_IputPIPPBP));
                     break;
@@ -13529,7 +13529,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case HotkeyType.KvmSwitchInputSource:
-                    HotkeyInfo kvmhotkeyInfo = settings.HotkeyInfo.Where(x => x.Job.Equals(HotkeyType.KvmSwitchInputSource)).SingleOrDefault();
+                    HotkeyInfo kvmhotkeyInfo = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.KvmSwitchInputSource));
                     List<HotkeyData> list3 = GetInputSourceHotKeyData(monitorInfo);
                     HotkeyData hotkeyData3 = list3.SingleOrDefault(x => x.hotkeyType == HotkeyType.KvmSwitchInputSource);
                     if (kvmhotkeyInfo != null && hotkeyData3 != null)// kvmhotkeyInfo.InputSource != null)
@@ -14853,7 +14853,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             List<HotkeySettings> read = _SettingsPlugin.ReadHotkeySettings().Result;
             //HotkeySettings hotkeySettings = read.Where(x => x.ModelName.Equals(monitorEdid.ModelName) && x.SerialNumber.Equals(monitorEdid.SerialNumber)).SingleOrDefault();
-            HotkeySettings hotkeySettings = read.Where(x => x.ModelName.Equals("DDPM") && x.SerialNumber.Equals("DDPM")).SingleOrDefault();
+            HotkeySettings hotkeySettings = read.SingleOrDefault(x => x.ModelName.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
 
             //1006 read hotkey data per monitor
             List<HotkeyData> list = GetInputSourceHotKeyData(mo);
