@@ -952,6 +952,8 @@ namespace DDPM.UI.Plugin.ViewModels
         public int btnRes3_width { get; set; }
 
 
+        public CornerRadius btnRes0_radius { get => btnRes0_radius_v; }
+        public CornerRadius btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
         public CornerRadius btnRes1_radius { get => btnRes1_radius_v; }
         public CornerRadius btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
 
@@ -961,7 +963,20 @@ namespace DDPM.UI.Plugin.ViewModels
         public Visibility btnRes3_show { get; set; } = Visibility.Visible;
 
 
-        public Visibility bdrPrioritize_show { get; set; } = Visibility.Visible;
+        public Visibility bdrPrioritize_show_value = Visibility.Visible;
+        public Visibility bdrPrioritize_show { 
+            get => bdrPrioritize_show_value;
+            set
+            {
+                bdrPrioritize_show_value = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(bdrPrioritize_show));
+            }
+        } 
+
+        
+
+
         public Visibility brdHello_show { get; set; } = Visibility.Visible;
         public Visibility brdHello_show_control { get; set; } = Visibility.Visible;
 
