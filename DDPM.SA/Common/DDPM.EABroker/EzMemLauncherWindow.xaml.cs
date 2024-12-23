@@ -59,33 +59,15 @@ namespace DDPM.EABroker
             return SetForegroundWindow(hWnd);
         }
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-        [DllImport("user32.dll")]
-        private static extern bool IsIconic(IntPtr hWnd);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern IntPtr CreateFile(string lpFileName, uint dwDesiredAccess, uint dwShareMode, IntPtr lpSecurityAttributes, uint dwCreationDisposition, uint dwFlagsAndAttributes, IntPtr hTemplateFile);
         private const int SW_RESTORE = 9;
         private const int SW_SHOWNA = 8;
         private const int SW_MAXIMIZE = 3;
         private const int SW_SHOWNORMAL = 1;
         private const int SW_SHOWMAXIMIZED = 3;
-
-        [DllImport("user32.dll")]
-        private static extern bool GetWindowPlacement(IntPtr hWnd, out WINDOWPLACEMENT lpwndpl);
-        [DllImport("user32.dll")]
-        private static extern bool SetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         #region Private members
         private const string myName = "EzMemLauncherWin";
@@ -468,28 +450,6 @@ namespace DDPM.EABroker
             return string.Empty;
         }
 
-        static IntPtr GetFileHandleFromProcess(Process process)
-        {
-            IntPtr hWnd = IntPtr.Zero;
-            uint processId = (uint)process.Id;
-
-            Thread.Sleep(1000);
-
-            do
-            {
-                hWnd = FindWindowEx(IntPtr.Zero, hWnd, null, null);
-                if (hWnd != IntPtr.Zero)
-                {
-                    GetWindowThreadProcessId(hWnd, out uint windowProcessId);
-                    if (windowProcessId == processId)
-                    {
-                        return hWnd;
-                    }
-                }
-            } while (hWnd != IntPtr.Zero);
-
-            return IntPtr.Zero;
-        }
         private static string GetFilePathFromHandle(IntPtr hWnd)
         {
             _GetWindowThreadProcessId(hWnd, out uint processId);
