@@ -68,18 +68,23 @@
                                 <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
                                     <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                                     <Border.ToolTip>
-                                        <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                        <ToolTip Placement="Right" VerticalOffset="-40" HorizontalOffset="-15">
                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                <TextBlock Text="{Binding [WebCameraMicrophone.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" TextWrapping="Wrap" Width="345" />
+                                                <Border.Resources>
+                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                </Border.Resources>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding [WebCameraMicrophone.3], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="Wrap" Width="345" />
+                                                </StackPanel>
                                             </Border>
                                         </ToolTip>
                                     </Border.ToolTip>
                                 </Border>
-                                <Image  Visibility="{Binding LockMaskVisible}" 
-                    Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                    VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0,0,0" Width="16" Height="16">
-                                    <Image.ToolTip>
-                                        <ToolTip>
+                                <Border  Visibility="{Binding LockMaskVisible}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0,0,0" 
+                                         Width="16" Height="16">
+                                    <ContentControl Template="{StaticResource icon_Lock}" Foreground="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16"/>
+                                    <Border.ToolTip>
+                                        <ToolTip Placement="MousePoint" VerticalOffset="-50" HorizontalOffset="-5">
                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                 <Border.Resources>
                                                     <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
@@ -91,8 +96,8 @@
                                                 </StackPanel>
                                             </Border>
                                         </ToolTip>
-                                    </Image.ToolTip>
-                                </Image>
+                                    </Border.ToolTip>
+                                </Border>
 
                             </StackPanel>
                         </Grid>
@@ -100,8 +105,15 @@
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Center">
                                 <Image Name="imgWarn" Margin="0,0,10,0" Source="/DDPM.UI.Common;component/Resources/Warring.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16" VerticalAlignment="Top">
                                     <Image.ToolTip>
-                                        <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Left" VerticalOffset="0" HorizontalOffset="0">
-                                            <TextBlock Text="{Binding [WebCameraMicrophone.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" TextWrapping="Wrap" Width="345" />
+                                        <ToolTip Placement="Right" VerticalOffset="-85" HorizontalOffset="-15">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <Border.Resources>
+                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                </Border.Resources>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding [WebCameraMicrophone.2], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="Wrap" Width="345" />
+                                                </StackPanel>
+                                            </Border>
                                         </ToolTip>
                                     </Image.ToolTip>
                                 </Image>
