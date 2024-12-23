@@ -1446,6 +1446,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                         {
                             if(val == 50 || val == 60)
                             {
+                                if(val == 50)
+                                    val = 1;
+                                else if(val == 60)
+                                    val = 2;
+
                                 if (_devMgr.GetIsPropertyAntiFlickerSupported(x.Guid).Result)
                                 {
                                     var result = RunAsyncTimeout(_devMgr.SetAntiFlicker(x.Guid, val)).Result;

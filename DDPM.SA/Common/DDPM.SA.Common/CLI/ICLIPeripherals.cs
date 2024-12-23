@@ -105,7 +105,10 @@ namespace DDPM.SA.Common
                     if (_devMgr.GetIsPropertyAntiFlickerSupported(Guid).Result)
                     {
                         retvalue = _devMgr.GetAntiFlicker(Guid).Result;
-                        Value = retvalue.ToString();
+                        if (retvalue.ToString() == "1")
+                            Value = "50";
+                        if (retvalue.ToString() == "2")
+                            Value = "60";
                         //Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                         Result = "PASS";
                         Message = "N/A";
