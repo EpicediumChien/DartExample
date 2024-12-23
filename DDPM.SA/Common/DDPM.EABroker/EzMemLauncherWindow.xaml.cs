@@ -393,25 +393,13 @@ namespace DDPM.EABroker
                     {
                         Trace.WriteLine($"[LaunchAndArrange] 3 - 3 => Process Name : {processName}");
                         _log?.Info($"[LaunchAndArrange] 3 - 3 => Process Name : {processName}");
-                        //if (process != null)
-                        //{
-                            //List<IntPtr> exitsApp = GetVisibleWindowHandles();
-                            //foreach (var vapp in exitsApp)
-                            //{
-                                //string handlePath = GetFilePathFromHandle(vapp);// 從Handle找路徑
-                                if (handlePath.Contains(processName))// 比對 process 啟動的程式名稱
-                                {
-                                    Trace.WriteLine($"[LaunchAndArrange] 3 - 4 => True Compare ProcessName => GetFilePathFromHandle = {GetFilePathFromHandle(vapp)}, GetWindowTitle = {GetWindowTitle(vapp)}");
-                                    _log?.Info($"[LaunchAndArrange] 3 - 4 => True Compare ProcessName => GetFilePathFromHandle = {GetFilePathFromHandle(vapp)}, GetWindowTitle = {GetWindowTitle(vapp)}");
-                                appHandle = vapp;
+                        if (handlePath.Contains(processName))// 比對 process 啟動的程式名稱
+                        {
+                            Trace.WriteLine($"[LaunchAndArrange] 3 - 4 => True Compare ProcessName => GetFilePathFromHandle = {GetFilePathFromHandle(vapp)}, GetWindowTitle = {GetWindowTitle(vapp)}");
+                            _log?.Info($"[LaunchAndArrange] 3 - 4 => True Compare ProcessName => GetFilePathFromHandle = {GetFilePathFromHandle(vapp)}, GetWindowTitle = {GetWindowTitle(vapp)}");
+                            appHandle = vapp;
                             break;
                         }
-                            //}
-                        //}
-                        //appHandles.Add((handle, idx));
-                        //ArrangeWindow(handle, idx, VM);
-                        //idx++;
-                        //Trace.WriteLine($"[LaunchAndArrange] 2 - 2 => Process CreateFile handle = {handle.ToString()}");
                     }
 
                 }
