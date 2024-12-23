@@ -16566,13 +16566,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return null;
         }
 
-        public Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps)
-        {
-            if (_IEzMemoryPlugin != null)
-                return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeApps(sortApps).Result);
-            else
-                return null;
-        }
+        //public Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps)
+        //{
+        //    if (_IEzMemoryPlugin != null)
+        //        return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeApps(sortApps).Result);
+        //    else
+        //        return null;
+        //}
 
         public Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
         {
