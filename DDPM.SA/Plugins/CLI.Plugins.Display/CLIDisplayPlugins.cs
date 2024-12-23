@@ -792,6 +792,13 @@ namespace DDPM.CLI.Plugins.Display
                         result.serialize_Json_response = ret.result;
                     }
                     break;
+                case "SETEA":
+                    {
+                        var ret = GetSetEA(devMgr, commandLineInput).Result;
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.result;
+                    }
+                    break;
                 case "INAPPUSBKVM":
                     {
                         var ret = InAppUSBkvmx(devMgr, commandLineInput);
@@ -13425,6 +13432,100 @@ namespace DDPM.CLI.Plugins.Display
             writelog($"Output={output}");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
         }
+
+        // 提供給Robert debug使用
+        private async Task<(int code, string result)> GetSetEA(IDeviceManagerSA devMgr, CommandLineInput commandLineInput)
+        {
+            string output = string.Empty;
+            bool retcode = false;
+
+            if (_AllInfoMonitors == null)
+                _AllInfoMonitors = await devMgr.GetMonitors();
+
+            DDPMSettings ddpmSettings = devMgr.ReloadAppConfigData().Result;
+
+            if (ddpmSettings == null)
+            {
+                return DDPMSettingsNullResponse(commandLineInput.Command, commandLineInput.TargetFeature);
+            }
+
+            if (commandLineInput.Command == "GET")
+            {
+                writelog("Easyarrange get entry");
+                List<int> _monitorIndeies = new List<int>();
+
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    int rc = -1;
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE(monitor);
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+
+                    writelog("devMgr.GetEASelectedLayout get entry");
+                    rc = devMgr.GetEASelectedLayout(monitor).Result;
+                    writelog("devMgr.GetEASelectedLayout get exit");
+
+                    retcode = true;
+                    cli_Response.Result = "PASS";
+                    if (rc >= 0)
+                    {
+                        cli_Response.Value = rc.ToString();
+                    }
+                    else
+                    {
+                        retcode = false;
+                        cli_Response.Result = "FAIL";
+                    }
+
+                    Console.WriteLine(cli_Response.ToJson());
+                    output += "\n" + cli_Response.ToJson();
+                }
+            }
+            if (commandLineInput.Command == "SET")
+            {
+                writelog("Easyarrange set entry");
+                List<int> _monitorIndeies = new List<int>();
+
+                if (_AllInfoMonitors == null)
+                    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                _monitorIndeies = GetMonitorIndeies(commandLineInput, _AllInfoMonitors);
+
+                foreach (int idx in _monitorIndeies)
+                {
+                    MonitorInfo monitor = _AllInfoMonitors[idx];
+                    CLI_RESPONSE cli_Response = new CLI_RESPONSE(monitor);
+                    cli_Response.Command = commandLineInput.Command;
+                    cli_Response.TargetFeature = commandLineInput.TargetFeature;
+                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
+
+                    if (int.TryParse(commandLineInput.Options[0].Option_Value, out int value))
+                    {
+                        writelog("SetEAFunctionEnabled set entry");
+                        retcode = devMgr.SetEASelectedLayout(monitor, value).Result;
+                        writelog("SetEAFunctionEnabled set exit");
+                    }
+                    else
+                    {
+                        cli_Response.Result = "FAIL";
+                        cli_Response.Message = "Invalid command line syntax, missing -value=... or more than one -value=...";
+                        return ((int)CLI_ExitCode.invalide_cmdline_syntax, cli_Response.ToJson());
+                    }
+
+
+                    cli_Response.Result = retcode ? "PASS" : "FAIL";
+                    Console.WriteLine(cli_Response.ToJson());
+                    output += "\n" + cli_Response.ToJson();
+                }
+            }
+            writelog($"Output={output}");
+            return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+
         private static void LaunchNetworkkvmApp(ILog log)
         {
             string registryKey = @"SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\DDM.exe";
