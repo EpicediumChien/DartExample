@@ -382,7 +382,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 _commandLineInput.Model.ForEach(model =>
                 {
-                    var di = _deviceinfo.Where(_ => _.ModelNumber == model && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                    var di = _deviceinfo.FirstOrDefault(_ => _.ModelNumber == model && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType));
                     if (di == null)
                     {
                         GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", null, model));
@@ -398,7 +398,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 _commandLineInput.ServiceTag.ForEach(serviceTag =>
                 {
-                    var di = _deviceinfo.Where(_ => _.DockServiceTag == serviceTag && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                    var di = _deviceinfo.FirstOrDefault(_ => _.DockServiceTag == serviceTag && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType));
                     if (di == null)
                     {
                         GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", null, null, serviceTag));
