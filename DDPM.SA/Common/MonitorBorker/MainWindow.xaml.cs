@@ -1,5 +1,6 @@
 ﻿using DDPM.ColorApp;
 using DDPM.SA.Common;
+using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -27,12 +28,15 @@ namespace DDPM.MonitorBorker
 
         private List<string> _supported_preset = new List<string>();
 
-        public MainWindow(IDeviceManagerSA _ddmLib, MonitorInfo m)
+        private ILog Log { get; set; } // jim add 20241219
+
+        public MainWindow(IDeviceManagerSA _ddmLib, MonitorInfo m, ILog log)
         {
             InitializeComponent();
 
             ddmLib = _ddmLib;
             Mi = m;
+            Log = log;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -44,7 +48,7 @@ namespace DDPM.MonitorBorker
             // jim modify 20240605
             if (ColorPresetWin == null)
             {
-                ColorPresetWin = new MonitorWin(ddmLib, Mi);
+                ColorPresetWin = new MonitorWin(ddmLib, Mi, Log);
                 ColorPresetWin.Owner = this;
 
                 ColorPresetWin.Show();
@@ -56,7 +60,7 @@ namespace DDPM.MonitorBorker
             // jim modify 20240605
             if (ColorPresetWin == null)
             {
-                ColorPresetWin = new MonitorWin(ddmLib, Mi);
+                ColorPresetWin = new MonitorWin(ddmLib, Mi, Log);
                 ColorPresetWin.Owner = this;
 
                 ColorPresetWin.Show();
@@ -82,11 +86,14 @@ namespace DDPM.MonitorBorker
                 ColorPresetWin.Notify_refresh_app_list();
         }
 
-        // For PIMS-326072
-        public void Set_Active_Monitor(MonitorInfo m)
+        // jim 20241218 modify For PIMS-326072 , [DDPM Win 2.0][R17] Change color auto mode connected with 2 DUTs, DUT1 applied, but DUT2 does not work
+        public void Set_AllMonitors(List<MonitorInfo> allInfoMonitors)
         {
-            if (ColorPresetWin != null) 
-                ColorPresetWin.Set_Active_Monitor(m);
+            //if (ColorPresetWin != null) 
+            //    ColorPresetWin.Set_Active_Monitor(m);
+
+            if (ColorPresetWin != null)
+                ColorPresetWin.Set_AllMonitors(allInfoMonitors);
         }
     }
 }
