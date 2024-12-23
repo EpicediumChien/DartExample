@@ -50,7 +50,7 @@ namespace DDPM.QAM
             set => _fullView = value;
         }
 
-        private static bool isQAMPageViewModel_UIUpdateNotifyExist = false;
+        private bool isQAMPageViewModel_UIUpdateNotifyExist = false;
 
         public QAMPageViewModel()
         {
@@ -89,7 +89,12 @@ namespace DDPM.QAM
             LoadCurrentStatus();
         }
 
-        ~QAMPageViewModel()
+        //~QAMPageViewModel()
+        //{
+        //    RemoveQAMWebcamEvent();
+        //}
+
+        public void RemoveQAMWebcamEvent()
         {
             DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= QAMPageViewModel_UIUpdateNotify;
             isQAMPageViewModel_UIUpdateNotifyExist = false;

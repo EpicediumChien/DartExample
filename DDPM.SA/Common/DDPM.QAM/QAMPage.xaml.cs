@@ -319,12 +319,23 @@ namespace DDPM.QAM
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Dispatcher.Invoke(() =>
+            try
             {
-                CameraSetting?.Close();
-            });
+                Dispatcher.Invoke(() =>
+                {
+                    CameraSetting?.Close();
+                });
 
-            CameraSetting = null;
+                CameraSetting = null;
+
+                if (DataContext is QAMPageViewModel vm)
+                    vm.RemoveQAMWebcamEvent();
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"Catch exception {ex.Message} when QAM Window_Closing");
+            }
+            
         }
     }
 }
