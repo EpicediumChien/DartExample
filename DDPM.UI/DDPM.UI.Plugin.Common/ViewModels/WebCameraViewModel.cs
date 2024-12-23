@@ -952,6 +952,8 @@ namespace DDPM.UI.Plugin.ViewModels
         public int btnRes3_width { get; set; }
 
 
+        public CornerRadius btnRes0_radius { get => btnRes0_radius_v; }
+        public CornerRadius btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
         public CornerRadius btnRes1_radius { get => btnRes1_radius_v; }
         public CornerRadius btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
 

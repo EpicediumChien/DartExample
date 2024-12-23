@@ -784,6 +784,54 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
 
                     }
+                    else
+                    {
+                        //恢復usb 3.0預設
+                        print_debug("CheckUSBtype() s4-1");
+                        //hdr on按鈕diable & 功能關閉
+                        _vm.hdr_enable = true;
+                        _vm.usb_hdr_enable = true;
+                        _vm.IsHDROn = true;
+
+                        // ProximitySensor按鈕diable & 功能關閉
+                        _vm.is_ProximitySensor_enable = true;
+                        _vm.IsChecked_ProximitySensor = true;
+
+                        //autoframe功能關閉 & 區域隱藏
+                        _vm.is_AutoFramingVisibility = true;
+                        _vm.IsAutoFramingOn = true;
+
+                        //身分偵測整個功能區域隱藏 
+                        //at BuildModuleGroups() to do
+
+
+                        //攝影機控制區域內windows hello隱藏
+                        _vm.brdHello_show = Visibility.Visible; 
+                        //PRESENCE DETECTION區域內windows hello隱藏
+                        _vm.brdHello_show_control = Visibility.Visible ;
+
+                        //連接usb 3.0提示訊息 Camera.14
+                        //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
+                        _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed;
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
+
+                        //fps與解析度,排除4k
+                        //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
+
+                        _vm.btnRes0_show = Visibility.Visible;
+                        _vm.btnRes0_width = 133;
+                        _vm.btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
+
+
+                        _vm.btnRes1_width = 133;
+                        _vm.btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
+                        _vm.btnRes2_width = 133;
+                        _vm!.SetResolution_Selected(1);
+
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Visible ;
+
+                    }
                     break;
                 case "U3224KBA":
                 case "U3224KB":
@@ -812,6 +860,37 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
+                        _vm!.SetResolution_Selected(1);
+
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        print_debug("CheckUSBtype() s5-1");
+                        //hdr.ProximitySensor.autoframe功能保留
+                        //身分偵測整個功能區域隱藏保留
+
+
+                        //攝影機控制區域內windows hello隱藏
+                        _vm.brdHello_show = Visibility.Visible;
+                        //PRESENCE DETECTION區域內windows hello隱藏
+                        _vm.brdHello_show_control = Visibility.Visible;
+
+
+                        //連接usb 3.0提示訊息 Camera.14
+                        //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
+                        _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed ;
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
+
+                        //fps與解析度,排除4k Camera.14
+
+                        _vm.btnRes0_show = Visibility.Visible;
+                        _vm.btnRes0_width = 133;
+                        _vm.btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
+                        _vm.btnRes1_width = 133;
+                        _vm.btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
+                        _vm.btnRes2_width = 133;
                         _vm!.SetResolution_Selected(1);
 
                         //camera控制權
@@ -849,6 +928,36 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
 
                     }
+                    else
+                    {
+                        print_debug("CheckUSBtype() s6-1");
+                        //hdr.ProximitySensor.autoframe功能保留
+                        //身分偵測整個功能區域隱藏保留
+
+                        //攝影機控制區域內windows hello隱藏
+                        _vm.brdHello_show = Visibility.Visible ;
+                        //PRESENCE DETECTION區域內windows hello隱藏
+                        _vm.brdHello_show_control = Visibility.Visible ;
+
+
+                        //連接usb 3.0提示訊息 Camera.15
+                        //Connect your monitor via USB 3.0 and select 'High Data Speed' under USB-C Prioritization to enable 4K UHD resolution.
+                        _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed;
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
+
+                        //fps與解析度,排除4k 
+
+                        _vm.btnRes0_show = Visibility.Collapsed;
+                        _vm.btnRes0_width = 133;
+                        _vm.btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
+                        _vm.btnRes1_width = 133;
+                        _vm.btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
+                        _vm.btnRes2_width = 133;
+                        _vm!.SetResolution_Selected(1);
+
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+                    }
                     break;
 
                 case "P2424HEB":
@@ -873,6 +982,27 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        print_debug("CheckUSBtype() s7-1");
+                        //連接usb 3.0提示訊息 Camera.15
+                        //Connect your monitor via USB 3.0 and select 'High Data Speed' under USB-C Prioritization to enable 4K UHD resolution.
+                        _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed ;
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"].Replace("4K", "2K");
+
+                        //fps與解析度,排除2k 
+
+                        _vm.btnRes0_show = Visibility.Visible ;
+                        _vm.btnRes0_width = 133;
+                        _vm.btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
+                        _vm.btnRes1_width = 133;
+                        _vm.btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
+                        _vm.btnRes2_width = 133;
+                        _vm!.SetResolution_Selected(1);
+
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Visible ;
                     }
                     break;
             }
