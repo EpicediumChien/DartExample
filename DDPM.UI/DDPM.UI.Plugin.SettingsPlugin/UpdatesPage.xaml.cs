@@ -38,8 +38,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         private void CheckUpdate_Click(object sender, RoutedEventArgs e)
         {
+            _log?.Info("CheckUpdate_Click start");
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
             vm.CheckUpdate();
+            _log?.Info("CheckUpdate_Click finish");
         }
         private void DownloadAndInstall_Click(object sender, RoutedEventArgs e)
         {
@@ -61,29 +63,47 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         private void CallFWU(SettingsPageViewModel vm)
         {
-            List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true).Result;
-            bool b = true;
-            foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
+            _log?.Info("CallFWU start");
+            if (vm.SWUpdateInfoPackage.SWUpdateInfo.Count > 0)
             {
-                if (fwUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
+                _log?.Info("CallFWU SW_DownloadAndInstall go");
+                List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(vm.SWUpdateInfoPackage.SWUpdateInfo, true).Result;
+                _log?.Info("CallFWU SW_DownloadAndInstall finish");
+            }
+            else if (vm.FWUpdateInfoPackage.FWUpdateInfo.Count > 0)
+            {
+                _log?.Info("CallFWU DownloadAndInstall go");
+                List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true).Result;
+                _log?.Info("CallFWU DownloadAndInstall finish");
+                _log?.Info("CallFWU restart DDPM go");
+                string? exePath = Assembly.GetExecutingAssembly().Location;
+                if (!string.IsNullOrEmpty(exePath))
                 {
-                    //b = true;
+                    string? folderPath = Path.GetDirectoryName(exePath);
+                    if (!string.IsNullOrEmpty(folderPath))
+                    {
+                        if (DdpmCommonHelper.DeviceManagerSA != null)
+                        {
+                            Thread t1 = new Thread(() => DdpmCommonHelper.DeviceManagerSA.CallDDPMUI(folderPath));
+                            t1.Start();
+                            _log?.Info("CallFWU restart DDPM finish");
+                        }
+                        else
+                        {
+                            _log?.Info("CallFWU restart DDPM DeviceManagerSA is null");
+                        }
+                    }
+                    else
+                    {
+                        _log?.Info("CallFWU restart DDPM folderPath is null");
+                    }
+                }
+                else
+                {
+                    _log?.Info("CallFWU restart DDPM exePath is null");
                 }
             }
-            if (b || vm.SWUpdateInfoPackage.SWUpdateInfo.Count > 0)
-            {
-                if (vm.SWUpdateInfoPackage.SWUpdateInfo.Count > 0)
-                {
-                    List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(vm.SWUpdateInfoPackage.SWUpdateInfo, true).Result;
-                }
-                if (vm.SWUpdateInfoPackage.SWUpdateInfo.Count <= 0)
-                {
-                    string exePath = Assembly.GetExecutingAssembly().Location;
-                    string folderPath = Path.GetDirectoryName(exePath);
-                    Thread t1 = new Thread(() => DdpmCommonHelper.DeviceManagerSA.CallDDPMUI(folderPath));
-                    t1.Start();
-                }
-            }
+            _log?.Info("CallFWU finish");
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 UpdatesPageUI.IsEnabled = true;
