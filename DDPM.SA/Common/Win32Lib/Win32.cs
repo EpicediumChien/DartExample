@@ -918,5 +918,6 @@ namespace DDPM.Win32Lib
             return className.ToString();
         }
         #endregion
+
     }
 }
