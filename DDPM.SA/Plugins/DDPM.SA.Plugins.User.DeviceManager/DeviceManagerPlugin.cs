@@ -9744,7 +9744,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (!settings.UserSettings.isDisplayConsentPage)
                     {
                         writelog($"[DeviceMangerPlugin] GetFirstReadStatus");
-                        bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", true).Result;
+                        if (!CheckOnlyInstallDPeM().Result)
+                        {
+                            bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", true).Result;
+                        }
                     }
                 }
             }
@@ -9757,9 +9760,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<bool> CheckInstallFirstOpen()
         {
             var ReadReg = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen").Result;
+            if (ReadReg == null)
+            {
+                return false;
+            }
             writelog($"[DeviceMangerPlugin] ReadReg Status {ReadReg} And {ReadReg.GetType()}");
             Boolean.TryParse(ReadReg.ToString(), out var getRegValue);
-            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady().Result)
+            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady().Result&& CheckHasInstallDPeM().Result)
             {
                 count++;
                 writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Count:{count}...");
@@ -9768,6 +9775,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return true;
             }
             return false;
+        }
+
+        private async Task<bool> CheckOnlyInstallDPeM()
+        {
+            writelog($"[DeviceMangerPlugin] Check Has Installed DDPM");
+            var HasDDPM = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen").Result;
+            if (HasDDPM != null)
+            {
+                return true;
+            }
+            return false;
+        }
+        private async Task<bool> CheckHasInstallDPeM() 
+        {
+            writelog($"[DeviceMangerPlugin] Check Has Installed DPeM");
+            var isAnalyticsFirstLaunchDone = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Global", "isAnalyticsFirstLaunchDone").Result;
+            if (isAnalyticsFirstLaunchDone == null) 
+            {
+                return false;
+            }
+            return true;
         }
 
         private void GetDPeMGlobalSettings()
