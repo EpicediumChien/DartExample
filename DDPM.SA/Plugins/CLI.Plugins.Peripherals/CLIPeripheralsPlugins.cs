@@ -1446,6 +1446,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                         {
                             if(val == 50 || val == 60)
                             {
+                                if(val == 50)
+                                    val = 1;
+                                else if(val == 60)
+                                    val = 2;
+
                                 if (_devMgr.GetIsPropertyAntiFlickerSupported(x.Guid).Result)
                                 {
                                     var result = RunAsyncTimeout(_devMgr.SetAntiFlicker(x.Guid, val)).Result;
@@ -1453,7 +1458,25 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     {
                                         x.Result = "PASS";
                                         retvalue = _devMgr.GetAntiFlicker(x.Guid).Result;
-                                        x.Value = retvalue.ToString();
+                                        if(!string.IsNullOrEmpty(retvalue.ToString()))
+                                        {
+                                            switch (retvalue.ToString())
+                                            {
+                                                case "1":
+                                                    x.Value = "50";
+                                                    break;
+                                                case "2":
+                                                    x.Value = "60";
+                                                    break;
+                                                default:
+                                                    break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            x.Value ="Interface return null";
+                                        }
+                                        
                                         //x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                                         x.Message = "N/A";
                                     }
