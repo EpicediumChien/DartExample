@@ -16,7 +16,8 @@ namespace VcpCore.Common
         public static bool getEDID(string MontitorID, ref EDID edid, Logs _logs = null)
         {
             bool result = false;
-
+            RegistryKey registryKey = null;
+            RegistryKey registryKeyII = null;
             try
             {
                 ManagementObjectSearcher searcher = new ManagementObjectSearcher("Root\\WMI", "SELECT * FROM WmiMonitorDescriptorMethods");
@@ -24,19 +25,22 @@ namespace VcpCore.Common
                 {
                     string InstanceName = TempMonitor.GetPropertyValue("InstanceName").ToString();
                     string[] InstanceName_spilit = InstanceName.Split("\\");
+                    
                     if (InstanceName_spilit.Length == 3)
                     {
                         InstanceName_spilit[(InstanceName_spilit.Length - 1)] = Regex.Replace(InstanceName_spilit[(InstanceName_spilit.Length - 1)], @"_\d", string.Empty) ?? string.Empty;
                         string name = "SYSTEM\\CurrentControlSet\\Enum\\DISPLAY\\" + InstanceName_spilit[1] + "\\" + InstanceName_spilit[2];
-                        using (var registryKey = Registry.LocalMachine.OpenSubKey(name))
+                        //using (var registryKey = Registry.LocalMachine.OpenSubKey(name))
+                        registryKey = Registry.LocalMachine.OpenSubKey(name);
+                        if (registryKey != null)
                         {
                             if (_logs != null)
                                 _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID open registryKey");
 
                             try
                             {
-                                if (registryKey != null)
-                                {
+                                //if (registryKey != null)
+                                //{
                                     string Path_Instance_DeviceID = (string)registryKey.GetValue("Driver");
                                     if (string.IsNullOrEmpty(Path_Instance_DeviceID) || !(MontitorID.Contains(Path_Instance_DeviceID)))
                                         continue;
@@ -47,78 +51,81 @@ namespace VcpCore.Common
 
                                     //ManagementBaseObject methodParameters = TempMonitor.GetMethodParameters("WmiGetMonitorRawEEdidV1Block");
                                     //methodParameters["BlockId"] = 0;
-                                    using (var registryKeyII = Registry.LocalMachine.OpenSubKey(name))
+                                    //using (var registryKeyII = Registry.LocalMachine.OpenSubKey(name))
+                                    registryKeyII = Registry.LocalMachine.OpenSubKey(name);
+                                if (registryKeyII != null)
+                                {
+                                    if (_logs != null)
+                                        _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID open registryKeyII");
+
+                                    try
                                     {
-                                        if (_logs != null)
-                                            _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID open registryKeyII");
+                                        //ManagementBaseObject managementBaseObject = TempMonitor.InvokeMethod("WmiGetMonitorRawEEdidV1Block", methodParameters, null);
+                                        //byte[] blocks = (byte[])managementBaseObject["BlockContent"];
 
-                                        try
+                                        if (registryKeyII != null)
                                         {
-                                            //ManagementBaseObject managementBaseObject = TempMonitor.InvokeMethod("WmiGetMonitorRawEEdidV1Block", methodParameters, null);
-                                            //byte[] blocks = (byte[])managementBaseObject["BlockContent"];
-
-                                            if (registryKeyII != null)
+                                            byte[] blocks = (byte[])registryKeyII.GetValue("EDID");
+                                            if (blocks != null)
                                             {
-                                                byte[] blocks = (byte[])registryKeyII.GetValue("EDID");
-                                                if (blocks != null)
+                                                EdidParser classEdidParser = new EdidParser();
+                                                edid.VideoInputType = Display_Parameters.Video_Input_Definition(blocks);
+                                                edid.EdidVersion = Vendor_Product_Identification.EDIDVersion(blocks);
+                                                classEdidParser.Push(blocks);
+                                                edid.Edid = classEdidParser.HexString;
+                                                edid.ManufactureID = classEdidParser.GetManufacturerID();
+                                                edid.VendorID = classEdidParser.GetVendorID();
+                                                edid.PID = classEdidParser.GetPID(blocks);
+                                                //  string text2 = classEdidParser.GetManufacturerID() + classEdidParser.GetVendorID();
+                                                edid.SerialNumber = classEdidParser.GetSerialNum();
+                                                edid.Year = classEdidParser.GetManufactureYearAndMonth(ref edid);
+                                                edid.ServiceTag = classEdidParser.GetServiceTag();
+                                                edid.ModelName = classEdidParser.GetModelName();
+                                                edid.Size = classEdidParser.GetScreenSize();
+                                                try
                                                 {
-                                                    EdidParser classEdidParser = new EdidParser();
-                                                    edid.VideoInputType = Display_Parameters.Video_Input_Definition(blocks);
-                                                    edid.EdidVersion = Vendor_Product_Identification.EDIDVersion(blocks);
-                                                    classEdidParser.Push(blocks);
-                                                    edid.Edid = classEdidParser.HexString;
-                                                    edid.ManufactureID = classEdidParser.GetManufacturerID();
-                                                    edid.VendorID = classEdidParser.GetVendorID();
-                                                    edid.PID = classEdidParser.GetPID(blocks);
-                                                    //  string text2 = classEdidParser.GetManufacturerID() + classEdidParser.GetVendorID();
-                                                    edid.SerialNumber = classEdidParser.GetSerialNum();
-                                                    edid.Year = classEdidParser.GetManufactureYearAndMonth(ref edid);
-                                                    edid.ServiceTag = classEdidParser.GetServiceTag();
-                                                    edid.ModelName = classEdidParser.GetModelName();
-                                                    edid.Size = classEdidParser.GetScreenSize();
-                                                    try
-                                                    {
-                                                        var strEDID = BitConverter.ToString(StringToByteArray(edid.Edid));
+                                                    var strEDID = BitConverter.ToString(StringToByteArray(edid.Edid));
 
-                                                        if (_logs != null)
-                                                            _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID strEDID : " + strEDID);
-                                                    }
-                                                    catch (Exception)
-                                                    {
-                                                        if (_logs != null)
-                                                            _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID strEDID in BitConverter.ToString Exception");
-                                                    }
-
-                                                    result = true;
+                                                    if (_logs != null)
+                                                        _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID strEDID : " + strEDID);
                                                 }
-                                                registryKeyII.Close();
-                                                registryKeyII.Dispose();
-                                            }
-                                            else
-                                            {
-                                                if (_logs != null)
-                                                    _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID registryKeyII is null");
+                                                catch (Exception)
+                                                {
+                                                    if (_logs != null)
+                                                        _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID strEDID in BitConverter.ToString Exception");
+                                                }
+
+                                                result = true;
                                             }
                                         }
-                                        catch (Exception e)
+                                        else
                                         {
                                             if (_logs != null)
-                                                _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID registryKeyII exception : " + e.Message);
+                                                _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID registryKeyII is null");
                                         }
-                                        //finally
-                                        //{
-                                        //    registryKeyII.Close();
-                                        //    registryKeyII.Dispose();
-                                        //}
                                     }
-                                    registryKey.Close();
-                                    registryKey.Dispose();
+                                    catch (Exception e)
+                                    {
+                                        if (_logs != null)
+                                            _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID registryKeyII exception : " + e.Message);
+                                    }
+                                    //finally
+                                    //{
+                                    //    registryKeyII.Close();
+                                    //    registryKeyII.Dispose();
+                                    //}                                        
                                 }
                                 else
                                 {
                                     if (_logs != null)
-                                        _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID registryKey is null");
+                                        _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID registryKeyII is null");
                                 }
+                                //}
+                                //else
+                                //{
+                                //    if (_logs != null)
+                                //        _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID registryKey is null");
+                                //}
                             }
                             catch (Exception e)
                             {
@@ -131,6 +138,23 @@ namespace VcpCore.Common
                             //    registryKey.Dispose();
                             //}
                         }
+                        else
+                        {
+                            if (_logs != null)
+                                _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection EDID registryKey is null");
+                        }                        
+                    }
+                    if (registryKeyII != null)
+                    {
+                        registryKeyII.Close();
+                        registryKeyII.Dispose();
+                        registryKeyII = null;
+                    }
+                    if (registryKey != null)
+                    {
+                        registryKey.Close();
+                        registryKey.Dispose();
+                        registryKey = null;
                     }
                 }
             }
@@ -138,7 +162,18 @@ namespace VcpCore.Common
             {
                 if (_logs != null)
                     _logs.DebugMsg("[VcpCorePlugin] _Get_Monitors collection getEDID exception : " + ex.Message);
-
+                if (registryKeyII != null)
+                {
+                    registryKeyII.Close();
+                    registryKeyII.Dispose();
+                    registryKeyII = null;
+                }
+                if (registryKey != null)
+                {
+                    registryKey.Close();
+                    registryKey.Dispose();
+                    registryKey = null;
+                }
                 result = false;
             }
 
