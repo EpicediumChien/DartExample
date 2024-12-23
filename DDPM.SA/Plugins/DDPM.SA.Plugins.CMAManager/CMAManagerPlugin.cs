@@ -1,5 +1,6 @@
 ﻿using DDPM.RemoteManagement.Common.Interfaces;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Defer;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
@@ -66,6 +67,9 @@ namespace DDPM.SA.Plugins.CMAManager
         {
             _agent = agent;
             deviceControlPannel = new DeviceControlPannel();
+
+            // add @ 20241213 stephen: init DeferControlPanel
+            initDeferControlPanel();
 
             WriteLog($"CMA ManagerPlugin constructor ...(Admin:{_IsAdministrator})");
         }
@@ -871,9 +875,25 @@ namespace DDPM.SA.Plugins.CMAManager
 
         public Task<RemoteManagementResult> Info(RemoteRequestArgs request)
         {
-            // 
+            
             Guid uniqueAgentGuid = Guid.NewGuid();
 
+
+            // add @ 20241210 stephen: check is defer
+            //_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request);
+            if (request.remote_request.ToLower().Contains("defer"))
+            {
+                if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request).Result)
+                {
+                    WriteLog($"[CMA] _CliManagerPlugin.checkDefer = true, do not run command");
+                    RemoteManagementResult resultDefer = new RemoteManagementResult();
+                    resultDefer.cma_request_id = uniqueAgentGuid;
+
+                    sendDeferNotify(uniqueAgentGuid.ToString(), request.remote_request);
+
+                    return Task.FromResult(resultDefer);
+                }
+            }
 
             //Assign request ID per call
             RemoteManagementResult result = new RemoteManagementResult();
@@ -1119,5 +1139,164 @@ namespace DDPM.SA.Plugins.CMAManager
                 Handler.Invoke(this, e);
             }
         }
+
+        #region Defer implement
+        // add @ 20241213 stephen
+
+        /*private const long DAY_IN_SECONDS = 24 * 60 * 60;    // 24 hours
+        private const int INTERVAL_CHECK_SECONDS = 10 * 60 * 1000; // 10 mins*/
+
+        // test
+        private const long DAY_IN_SECONDS = 4 * 60;    // 4min
+        private const int INTERVAL_CHECK_SECONDS = 5 * 60 * 1000; // 5 mins
+        private System.Timers.Timer timerDefer;
+
+        private void initDeferControlPanel()
+        {
+            WriteLog($"[CMA] initDeferControlPanel()");
+            DeferControlPanel.init();
+            startDeferTimer();
+
+            int i = 0;
+            foreach (string str in (DeferControlPanel.getList()))
+            {
+                WriteLog($"[CMA] str[{i++}] = " + str);
+            }
+        }
+        private void startDeferTimer()
+        {
+            WriteLog($"[CMA] startDeferTimer()");
+            timerDefer = new System.Timers.Timer();
+            timerDefer.Interval = INTERVAL_CHECK_SECONDS;
+            timerDefer.Elapsed += Timer_Elapsed;
+
+            timerDefer.Start();
+        }
+
+        private void sendDeferNotify(string guid, string command)
+        {
+            CmaCommand cmd = new CmaCommand(guid, command);
+
+            NotifyArgs args = new NotifyArgs();
+            args.eventType = Params.EventType.DEFER.ToString();
+            args.notification = "{\"sid\": \"" + cmd.sid + "\",\"gid\": \"" + guid + "\",\"response\": [" + command + "]}";
+            OnEventNotify(args);
+        }
+
+        private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            WriteLog($"[CMA] Timer_Elapsed()");
+            checkDeferSchedule(DeferControlPanel.getList());
+        }
+
+        private void checkDeferSchedule(List<string> list)
+        {
+            WriteLog($"[CMA] checkDeferSchedule()");
+
+            int i = 0;
+            foreach (string str in list)
+            {
+                WriteLog($"[CMA] str[{i++}] = " + str);
+            }
+
+            long currentDateTimeSecond = DateTimeOffset.Now.ToUnixTimeSeconds();
+            int counter = 0;
+            //List<string> newItems = new List<string>();
+            bool isRuncommand = false;
+
+            WriteLog($"[CMA] currentDateTimeSecond = {currentDateTimeSecond}");
+
+            List<string> deferlist = new List<string>();
+
+            foreach (string str in list)
+            {
+                deferlist.Add(str);
+            }
+
+
+
+            foreach (string item in deferlist)
+            {
+                WriteLog($"[CMA] item[{counter}] in list = {item}");
+
+                DeferItem data = new DeferItem(item);
+                long newDeferId = ((long)Convert.ToDouble(data.deferid)) + DAY_IN_SECONDS;
+
+                if (currentDateTimeSecond < newDeferId)
+                {
+                    WriteLog($"[CMA] {currentDateTimeSecond} < {newDeferId}");
+                    break;
+                }
+
+                WriteLog($"[CMA] list.Count = {deferlist.Count}");
+                DeferControlPanel.removeItem(item);
+                WriteLog($"[CMA] list.Count2 = {deferlist.Count}");
+
+                counter = counter + 1;
+                data.deferid = newDeferId.ToString();
+                data.count = data.count - 1;
+
+                if (data.count < 0)
+                {
+                    isRuncommand = true;
+                    _CliManagerPlugin.showNotification(data.commandfrom, data.guid, data);
+                }
+                else
+                {
+                    isRuncommand = !(_CliManagerPlugin.checkDeferSchedule(data.commandfrom, data.guid, data).Result);
+                }
+
+                WriteLog($"[CMA] checkDeferSchedule::isRuncommand = {isRuncommand}");
+
+                if (isRuncommand)
+                {
+                    //removeItems.Add(item);
+
+
+                    switch (data.commandfrom)
+                    {
+                        case DeferControlPanel.SRC_FROM_CLI:
+
+                            WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CLI");
+                            ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
+                            CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(data.commanddata.Split(' '));
+                            CLIEventResult result = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
+
+                            break;
+
+                        case DeferControlPanel.SRC_FROM_CMA:
+                            WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CMA");
+                            try
+                            {
+                                initCommandTask(data.guid.ToString(), data.commanddata);
+
+                                TaskInfo taskInfo = taskInfoQueue.Peek();
+                                WriteLog($"[CMA] before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
+                                _ = Task.Run(async () => await runCommandTaskAsync(taskInfo.sid, taskInfo.gid));
+                            }
+                            catch (Exception e)
+                            {
+
+                                NotifyArgs args = new NotifyArgs();
+                                args.eventType = Params.EventType.UNKNOWN_ERROR.ToString();
+                                args.notification = e.ToString() + "; " + data.commanddata;
+                                OnEventNotify(args);
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    WriteLog($"[CMA] checkDeferSchedule::isRuncommand({isRuncommand}), sendDeferNotify({data.guid}, {data.commanddata})");
+                    sendDeferNotify(data.guid, data.commanddata);
+                    /*newItems.Add( item );
+                    //DeferControlPanel.addToSchedule(data);*/
+                }
+
+            }
+
+        }
+
+        #endregion
     }
 }

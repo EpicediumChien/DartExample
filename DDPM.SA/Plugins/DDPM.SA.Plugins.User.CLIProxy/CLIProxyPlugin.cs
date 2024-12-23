@@ -18,6 +18,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
 using static DDPM.SA.Common.ICLICommandTable;
 
@@ -86,6 +87,10 @@ namespace DDPM.SA.Plugin.User.CLIManager
             InitializeCLIPeripheralsPlugin();
 
             InitializeCliManagerPlugin();
+
+            // add @ 20241215 stephen
+            //initToastOnActivated();
+            initOnActivated();
         }
 
         #endregion
@@ -382,6 +387,10 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 return;
             }
             _CliManagerPlugin.CLIActionEvent += _CliManagerPlugin_CLIActionEvent;
+
+            // add @ 20241210 stephen
+            _CliManagerPlugin.CLIToastEvent += _CliManagerPlugin_CLIToastEvent;
+
             relay_registered = true;
         }
 
@@ -769,6 +778,107 @@ namespace DDPM.SA.Plugin.User.CLIManager
         #region ICLIProxy implementation
 
         //no action need in this plugin
+
+        #endregion
+
+        #region Defer implement
+
+        // add @ 20241210 stephen
+        //private void OnEventToast(object sender, EventArgs e) { }
+        private void _CliManagerPlugin_CLIToastEvent(object? sender, CLIEventToastArgs e)
+        {
+            //throw new NotImplementedException();
+            //Console.WriteLine($"value = {CLIEventToastArgs.toast_message}");
+            if (e.is_defer)
+            {
+                showToast(e.defer_id, e.toast_message);
+            }
+            else
+            {
+                showNotification(e.defer_id, e.toast_message);
+            }
+
+
+        }
+
+        private void initOnActivated()
+        {
+
+            ToastNotificationManagerCompat.OnActivated += toastArgs =>
+            {
+                ToastArguments args = ToastArguments.Parse(toastArgs.Argument);
+
+                bool isDefer = false;
+                string derferid = string.Empty;
+
+                if (args.Contains("deferid"))
+                {
+                    Console.WriteLine("@@@stephen args[\"deferid\"] = " + args["deferid"]);
+                    derferid = args["deferid"];
+                }
+
+                if (args.Contains("action"))
+                {
+                    if (args["action"] == "defer")
+                    {
+                        Console.WriteLine("@@@stephen isDefer = true");
+                        _CliManagerPlugin.sendToastResult(derferid, true);
+                    }
+                    else
+                    {
+                        Console.WriteLine("@@@stephen isDefer = false");
+                        _CliManagerPlugin.sendToastResult(derferid, false);
+                    }
+                }
+            };
+        }
+
+        private void initToastOnActivated()
+        {
+            ToastNotificationManagerCompat.OnActivated -= toastDeferArgs => { };
+            ToastNotificationManagerCompat.OnActivated += toastDeferArgs =>
+            {
+                // Obtain the arguments from the notification
+                ToastArguments args = ToastArguments.Parse(toastDeferArgs.Argument);
+                bool isDefer = false;
+                long derferid = -1;
+
+
+
+            };
+        }
+
+        public void showNotification(string id, string msg)
+        {
+
+            new ToastContentBuilder()
+                .AddArgument("deferid", id)
+                .AddText(msg)
+                .AddButton(new ToastButton()
+                    .SetContent("OK " + id)
+                //.AddArgument("action", "OK")
+                )
+                .Show();
+        }
+
+
+        public void showToast(string id, string msg)
+        {
+
+            new ToastContentBuilder()
+                .AddArgument("deferid", id)
+                .AddText(msg)
+                .AddButton(new ToastButton()
+                    .SetContent("Defer " + id)
+                    .AddArgument("action", "defer")
+                )
+                .AddButton(new ToastButton()
+                    .SetContent("Run Now")
+                    .AddArgument("action", "runnow")
+                )
+                .Show();
+
+        }
 
         #endregion
     }
