@@ -69,6 +69,11 @@ namespace DDPM.EABroker
         private const int SW_SHOWNORMAL = 1;
         private const int SW_SHOWMAXIMIZED = 3;
 
+
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+
+
         #region Private members
         private const string myName = "EzMemLauncherWin";
         private double _screenScale = 1.000;
@@ -240,6 +245,7 @@ namespace DDPM.EABroker
                     string processName = string.Empty;
 
                     IntPtr handle = IntPtr.Zero;
+                    int idxCell = idx;
 
                     Trace.WriteLine($"[LaunchAndArrange] 1 => {winUWP} APP, No. = {idx.ToString()}, AppName = {app.AppName}, AppPath = {app.AppPath}, AppPath = {app.AppUserModelID}");
                     _log?.Info($"[LaunchAndArrange] 1 => {winUWP} APP, No. = {idx.ToString()}, AppName = {app.AppName}, AppPath = {app.AppPath}, AppPath = {app.AppUserModelID}");
@@ -250,14 +256,18 @@ namespace DDPM.EABroker
                     {
                         Trace.WriteLine($"[LaunchAndArrange] 2 => ArrangeWindow = {idx},{winUWP} APP already exit, SpecialGetHandle Find Handle = {handle}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, EzMemorySetForegroundWindow");
                         _log?.Info($"[LaunchAndArrange] 2 => ArrangeWindow = {idx}, {winUWP} APPalready exit, SpecialGetHandle Find Handle = {handle}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, EzMemorySetForegroundWindow");
-                        if(app.AppType != "True")// 已經在而且為UWP
+                        if (app.AppType != "True")// 已經在而且為UWP
                         {
-                            Process process = LaunchApp(app, _log);
-                            handle = GetWindowHandle(app, _log);
-                            Task.Delay(1500);
+                        //    Process process = LaunchApp(app, _log);
+                        //    handle = GetWindowHandle(app, _log);
+                        //    Task.Delay(1500);
+                            //WinEventHook._SetWindowPos(handle, new IntPtr(-1))
                         }
                         //else
+                        ShowWindowAsync(handle, SW_MAXIMIZE);
+                        ShowWindowAsync(handle, SW_SHOWNORMAL);
                         ShowWindow(handle, SW_RESTORE);
+                        ShowWindow(handle, SW_SHOWNORMAL);
                         EzMemorySetForegroundWindow(handle); // 把應用程式拉到前景
                         appHandles.Add((handle, idx));
                     }
@@ -322,7 +332,8 @@ namespace DDPM.EABroker
                             }
                         }
                     }
-                    ArrangeWindow(handle, idx, VM);
+                    _log?.Info($"[LaunchAndArrange] Calling to ArrangeWindow(hWnd={handle}=0x{handle:X}, idxCell={idxCell})");
+                    ArrangeWindow(handle, idxCell, VM);
                     idx++;
                     //Task.Delay(2000);
                 }
@@ -672,12 +683,13 @@ namespace DDPM.EABroker
                 _log?.Info($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Rect(({rcArrange.Left},{rcArrange.Top}){rcArrange.Width}x{rcArrange.Height})");
 
                 //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
-                if (VM.IsWithoutGap)
-                {
-                    rcArrange.Inflate(6, 6);
-                }
-                Task.Delay(500);
-                WinEventHook.SetWindowPosition(hWnd, rcArrange);
+                //if (VM.IsWithoutGap)
+                //{
+                //    rcArrange.Inflate(6, 6);
+                //}
+                //Task.Delay(500);
+                //WinEventHook.SetWindowPosition(hWnd, rcArrange);
+                Rect rcActualArranged = VM.SetEAWindowPos(hWnd, rcArrange, _workingArea);
 
                 _alreadyArrangedCount++;
                 if (AreAllAppsArranged)
@@ -699,6 +711,7 @@ namespace DDPM.EABroker
             });
         }
         #endregion
+
 
 
     }
