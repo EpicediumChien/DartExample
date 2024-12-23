@@ -278,6 +278,14 @@
         </Canvas>
     </ControlTemplate>
 
+    <!-- Icon Pause -->
+    <ControlTemplate x:Key="icon_Resume" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+            <Path Data="M12 7L-6.52533e-07 13.9282L-4.68497e-08 0.0717964L12 7Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
+    
     <!-- Icon Undo -->
     <ControlTemplate x:Key="icon_Undo" TargetType="ContentControl">
         <Canvas Width="40" Height="40">
