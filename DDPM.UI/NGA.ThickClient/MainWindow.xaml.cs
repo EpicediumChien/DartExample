@@ -24,6 +24,7 @@ using System.Windows.Interop;
 using Screen = System.Windows.Forms.Screen;
 using ResourceManager = Dell.Client.Framework.UX.WPF.ResourceManager.ResourceManager;
 using System.Reflection.Metadata;
+using System.Windows.Forms;
 
 namespace NGA.ThickClient
 {
@@ -174,6 +175,7 @@ namespace NGA.ThickClient
                 (e.KeyboardDevice.Modifiers & ModifierKeys.Shift | ModifierKeys.Windows) > 0) && Screen.AllScreens.Length > 1)
             {
                 AdjustWindowSizeBasedOnMonitor();
+                RaiseEvent_MoveToNewPosition(true);
             }
         }
 
@@ -230,6 +232,7 @@ namespace NGA.ThickClient
                     MoveWindowToCenter(screenLeft, screenTop, screenWidth, screenHeight);
                 }
             }
+
         }
 
         /// <summary>
@@ -330,7 +333,10 @@ namespace NGA.ThickClient
                 case WM_EXITSIZEMOVE: // Occurs when Dragging of Window using mouse is completed
                                       //Robert_Lin, 2024-5-7 remark it for supporting resize Window
                     if (Screen.AllScreens.Length > 1)
+                    {
                         AdjustWindowSizeBasedOnMonitor();
+                        RaiseEvent_MoveToNewPosition();
+                    }
                     break;
 
                 case WM_QUERYENDSESSION: // Temporary fix: base class sets handled to true
@@ -496,6 +502,22 @@ namespace NGA.ThickClient
             }
         }
 
+        #region Move to new position event
+        private void RaiseEvent_MoveToNewPosition(bool isMovedByHotkey = false)
+        {
+            //Robert_Lin, 2024-12-20 To show ProductName OSD on the target screen
+            if (_Console != null)
+            {
+                EventManagerArgs args = new EventManagerArgs();
+                if (isMovedByHotkey)
+                {
+                    Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
+                    args.Tag = screen.DeviceName;
+                }
+                _Console.RaiseEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, this, args);
+            }
+        }
+        #endregion  Move to new position event
 
         #region Workaround solution - Robert_Lin 2024-12-03, can be removed
         private void RefreshWindowTaskbar()

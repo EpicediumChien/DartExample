@@ -423,7 +423,7 @@ namespace DDPM.SA.Common.Settings
         /// <param name="applicationName">The name of the application to launch</param>
         /// <param name="procInfo">Process information regarding the launched application that gets returned to the caller</param>
         /// <returns></returns>
-        public static bool StartProcessAndBypassUACWithAdmin(string applicationName, out PInvoke.PROCESS_INFORMATION procInfo)
+        public static bool StartProcessAndBypassUACWithAdmin(string applicationName,string workingDirectory, out PInvoke.PROCESS_INFORMATION procInfo)
         {
             uint winlogonPid = 0;
             IntPtr hUserTokenDup = IntPtr.Zero, hPToken = IntPtr.Zero, hProcess = IntPtr.Zero;
@@ -477,7 +477,7 @@ namespace DDPM.SA.Common.Settings
             // user input. To remedy this we set the lpDesktop parameter to indicate we want to enable user 
             // interaction with the new process.
             STARTUPINFO si = new STARTUPINFO();
-            //si.cb = (int)Marshal.SizeOf(si);
+            si.cb = (int)Marshal.SizeOf(si);
             //si.lpDesktop = @"winsta0\default"; // interactive window station parameter; basically this indicates that the process created can display a GUI on the desktop
 
             // flags that specify the priority and creation method of the process
@@ -492,7 +492,7 @@ namespace DDPM.SA.Common.Settings
                                             false,                  // handles are not inheritable
                                             (uint)dwCreationFlags,        // creation flags
                                             IntPtr.Zero,            // pointer to new environment block 
-                                            null,                   // name of current directory 
+                                            workingDirectory,                   // name of current directory 
                                             ref si,                 // pointer to STARTUPINFO structure
                                             out procInfo            // receives information about new process
                                             );
