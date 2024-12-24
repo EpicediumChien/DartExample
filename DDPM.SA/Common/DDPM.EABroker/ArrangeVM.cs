@@ -23,6 +23,7 @@ using System.Windows.Documents;
 using System.Windows.Media.Media3D;
 using static VcpCore.Common.User32;
 using Rect = System.Windows.Rect;
+using nsWinEventHook;
 
 namespace DDPM.EABroker
 {
@@ -1915,6 +1916,39 @@ namespace DDPM.EABroker
                 }
 
             }
+        }
+        #endregion
+
+        #region SetEAWindowPos
+        public Rect SetEAWindowPos(IntPtr hWnd, Rect rcArrange, Rectangle? workingArea=null)
+        {
+            if (workingArea == null)
+            {
+                if (WorkScreen != null)
+                    workingArea = WorkScreen.WorkingArea;
+            }
+            if (IsWithoutGap)
+            {
+
+                double extendedFrameBoundsHorz = 3;
+                rcArrange.Inflate(6 + extendedFrameBoundsHorz, 6);
+
+                if (workingArea != null)
+                {
+                    int scrLeft = (int)workingArea?.Left;
+                    if (rcArrange.Left < scrLeft)
+                    {
+                        double dx = scrLeft - rcArrange.Left;
+                        rcArrange.X = scrLeft;
+                        rcArrange.Width -= dx;
+                    }
+                }
+            }
+            if (!rcArrange.IsEmpty)
+            {
+                WinEventHook.SetWindowPosition(hWnd, rcArrange);
+            }
+            return rcArrange;
         }
         #endregion
     }

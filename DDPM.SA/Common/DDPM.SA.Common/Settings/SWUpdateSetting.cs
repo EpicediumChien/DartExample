@@ -170,6 +170,10 @@ namespace DDPM.SA.Common.Settings
                                         isNeedUpdate = true;
                                         break;
                                     }
+                                    else if (oldVersion_int > newVersion_int)
+                                    {
+                                        break;
+                                    }
                                 }
                                 else
                                 {

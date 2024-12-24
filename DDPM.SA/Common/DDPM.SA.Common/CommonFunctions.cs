@@ -41,5 +41,15 @@ namespace DDPM.SA.Common
             return 1.000;
         }
 
-     }
+        /// <summary>
+        /// Format a Rectangle to string, format: "(0,0)-(1920,1200)1920x1200"
+        /// </summary>
+        /// <param name="rc"></param>
+        /// <returns></returns>
+        public static string FormatRectangle(System.Drawing.Rectangle rc)
+        {
+            return $"({rc.Left},{rc.Top})-({rc.Right},{rc.Bottom}){rc.Width}x{rc.Height}";
+        }
+
+    }
 }

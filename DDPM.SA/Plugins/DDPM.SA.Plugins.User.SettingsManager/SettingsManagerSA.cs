@@ -2387,8 +2387,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         case "interrupt":
                             InterruptScreenRoot interrupt = ReadInterruptScreen().Result;
                             new_obj = interrupt;
-                            if (interrupt != null)
-                                need_new = true;
+                            //if (interrupt != null)
+                            //    need_new = true;
                             break;
                         default:
                             WriteLog($"[InitDDPMUserSettings_Common] config type {config_type} not support!!");
