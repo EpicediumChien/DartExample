@@ -12265,19 +12265,19 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             case "OFF":
                                 writelog($"PowerSetting E0 set off");
-                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x01").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x01").Result || SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
                                 cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 break;
 
                             case "ON":
                                 writelog($"PowerSetting E0 set on");
-                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result || SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
                                 cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 break;
 
                             case "STANDBY":
                                 writelog($"PowerSetting E0 set standby");
-                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x01").Result);
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result || SetVCPCode(devMgr, monitor, "0xE1", "0x01").Result);
                                 cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 break;
                         }
