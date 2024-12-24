@@ -10,6 +10,7 @@ using DDPM.UI.Common.UserControls;
 using DDPM.UI.Interfaces;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using System;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,6 +23,13 @@ namespace DDPM.UI.Common.ViewModels
         #region ctor
         public DeviceBasePageViewModel()
         {
+            IConsole _console = DdpmCommonHelper.MyConsole;
+            if (_console != null)
+            {
+                //Robert_Lin, 2024-12-21 Register a event handler to handle when mainwindow
+                // move to new position
+                _console.RegisterForEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, Handle_MainWindow_MoveToNewPosition);
+            }
 
         }
         #endregion ctor
@@ -1013,5 +1021,78 @@ namespace DDPM.UI.Common.ViewModels
             return true;
         }
         #endregion  Set Selected Group/Module 
+
+        #region MainWindow Move To new position
+        /// <summary>
+        /// Handle the IConsole Event, MainWindow_MoveToNewPosition, when DDPM main window
+        /// move to a new position.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">
+        /// e.Tag (bool): True if the window is moved by hotkey.
+        /// </param>
+        private void Handle_MainWindow_MoveToNewPosition(object sender, EventManagerArgs e)
+        {
+            //Conditions to handle this event
+            //1 DisplayPlugin is activate
+            if (!DdpmCommonHelper.IsDisplayPluginActivated)
+                return;
+            //2 DeviceManagerPlugin is ready
+            if (DdpmCommonHelper.DeviceManagerSA == null)
+                return;
+            //3 Has Monitor
+            if (HomeDeviceCount == 0) 
+                return;
+
+            //TO DO:
+            //Action_1: Determine the Monitor where DDPM is moved to
+            //Action_2: Show the model name OSD (if the monitor is supported monitor)
+            //Action_3: Change the SelectedItem of Monitors combobox (if DisplayPlugin is activated)
+            _log?.Info($"@Handle_MainWindow_MoveToNewPosition() is called.");
+
+            //Action_1: Determine the Monitor where DDPM is moved to
+            string screenDeviceName = "";
+
+            //If e.Tag contains a DeviceName, then move the specified screen
+            if (e.Tag != null)
+            {
+                if (e.Tag is string)
+                {
+                    screenDeviceName = e.Tag.ToString();
+                }
+            }
+            //Else the screen will be get from mouse cursor position
+            if (String.IsNullOrEmpty(screenDeviceName))
+            {
+                //Get mouse cursor position
+                System.Drawing.Point cursorPosition = System.Windows.Forms.Cursor.Position;
+                //Get the Screen of the cursor
+                System.Windows.Forms.Screen screenOfCursor = System.Windows.Forms.Screen.FromPoint(cursorPosition);
+                screenDeviceName = screenOfCursor.DeviceName;
+            }
+
+            //Check if screen is different with last show
+            if (!screenDeviceName.Equals(DdpmCommonHelper.LastShowOsdScreenDeviceName))
+            {
+                DdpmCommonHelper.LastShowOsdScreenDeviceName = screenDeviceName;
+
+                //Find the monitor of the screen
+                HomeDevice? newSelectedDevice = HomeDevices.Find(x => x.MonitorInfo.DisplayName == screenDeviceName);
+                if (newSelectedDevice == null)
+                {
+                    return;
+                }
+                //Check if newSelected is the same with current Selected
+                if (SelectedHomeDevice != null)
+                {
+                    if (SelectedHomeDevice.MonitorInfo.DisplayName.Equals(newSelectedDevice.MonitorInfo.DisplayName))
+                        return;
+                }
+
+                SelectedHomeDevice = newSelectedDevice;
+            }
+        }
+        #endregion  MainWindow Move To new position
+
     }
 }

@@ -34,14 +34,27 @@
             <StackPanel Orientation="Vertical" Margin="16,16,2,0" IsEnabled="{Binding IsNotAddingProfile}">
                 <Grid>
                     <UXControls:UXTextBlock Margin="0,10,0,6" Text="{Binding [WebCameraMicrophone.0], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleCaptionStyle}" />
-                    <Image Margin="0,0,67,0" Source="/DDPM.UI.Resources;component/Resources/Images/Undo2.png" Stretch="Fill"  
-                 HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Undo2Visibility}"/>
-                    <Image Margin="0,0,17,0" Source="/DDPM.UI.Resources;component/Resources/Images/Redo2.png" Stretch="Fill"  
-                 HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Redo2Visibility}"/>
-                    <Image Margin="0,0,67,0" Source="/DDPM.UI.Resources;component/Resources/Images/Undo.png" Stretch="Fill" MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="0"
-                 HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding UndoVisibility}" Cursor="Hand"/>
-                    <Image Margin="0,0,17,0" Source="/DDPM.UI.Resources;component/Resources/Images/Redo.png" Stretch="Fill" MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="1"
-                 HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding RedoVisibility}" Cursor="Hand"/>
+                    <Border Margin="0,0,67,0" Background="{StaticResource Webcam_UndoRedo_DisableBkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Undo2Visibility}">
+                        <ContentControl Template="{StaticResource icon_Undo}" Foreground="{DynamicResource Webcam_UndoRedo_DisableFgColor}"
+                                        HorizontalAlignment="Center" VerticalContentAlignment="Center"/>
+                    </Border>
+
+                    <Border Margin="0,0,17,0" Background="{StaticResource Webcam_UndoRedo_DisableBkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding Redo2Visibility}">
+                        <ContentControl Template="{StaticResource icon_Redo}" Foreground="{DynamicResource Webcam_UndoRedo_DisableFgColor}"
+                                        HorizontalAlignment="Center" VerticalContentAlignment="Center"/>
+                    </Border>
+
+                    <Border Margin="0,0,67,0" Background="{DynamicResource Webcam_UndoRedo_BkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding UndoVisibility}"
+                            MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="0" Cursor="Hand">
+                        <ContentControl Template="{StaticResource icon_Undo}" Foreground="{DynamicResource DefaultTheme_PathColor}"
+                                        HorizontalAlignment="Center" VerticalContentAlignment="Center"/>
+                    </Border>
+
+                    <Border Margin="0,0,17,0" Background="{DynamicResource Webcam_UndoRedo_BkColor}" HorizontalAlignment="Right" Width="40" Height="40" Visibility="{Binding RedoVisibility}"
+                            MouseLeftButtonDown="Image_MouseLeftButtonDown" Tag="1" Cursor="Hand">
+                        <ContentControl Template="{StaticResource icon_Redo}" Foreground="{DynamicResource DefaultTheme_PathColor}"
+                                        HorizontalAlignment="Center" VerticalContentAlignment="Center"/>
+                    </Border>
                 </Grid>
                 <Border  CornerRadius="6" Height="72" Margin="0,20,16,5000">
                     <Grid>
@@ -55,18 +68,23 @@
                                 <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
                                     <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                                     <Border.ToolTip>
-                                        <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                        <ToolTip Placement="Right" VerticalOffset="-40" HorizontalOffset="-15">
                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                <TextBlock Text="{Binding [WebCameraMicrophone.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" TextWrapping="Wrap" Width="345" />
+                                                <Border.Resources>
+                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                </Border.Resources>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding [WebCameraMicrophone.3], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="Wrap" Width="345" />
+                                                </StackPanel>
                                             </Border>
                                         </ToolTip>
                                     </Border.ToolTip>
                                 </Border>
-                                <Image  Visibility="{Binding LockMaskVisible}" 
-                    Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                    VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0,0,0" Width="16" Height="16">
-                                    <Image.ToolTip>
-                                        <ToolTip>
+                                <Border  Visibility="{Binding LockMaskVisible}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0,0,0" 
+                                         Width="16" Height="16">
+                                    <ContentControl Template="{StaticResource icon_Lock}" Foreground="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16"/>
+                                    <Border.ToolTip>
+                                        <ToolTip Placement="MousePoint" VerticalOffset="-50" HorizontalOffset="-5">
                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                 <Border.Resources>
                                                     <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
@@ -78,8 +96,8 @@
                                                 </StackPanel>
                                             </Border>
                                         </ToolTip>
-                                    </Image.ToolTip>
-                                </Image>
+                                    </Border.ToolTip>
+                                </Border>
 
                             </StackPanel>
                         </Grid>
@@ -87,8 +105,15 @@
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0" VerticalAlignment="Center">
                                 <Image Name="imgWarn" Margin="0,0,10,0" Source="/DDPM.UI.Common;component/Resources/Warring.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16" VerticalAlignment="Top">
                                     <Image.ToolTip>
-                                        <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Left" VerticalOffset="0" HorizontalOffset="0">
-                                            <TextBlock Text="{Binding [WebCameraMicrophone.2], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource TabInfoToolTipTextStyle}" TextWrapping="Wrap" Width="345" />
+                                        <ToolTip Placement="Right" VerticalOffset="-85" HorizontalOffset="-15">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <Border.Resources>
+                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                </Border.Resources>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding [WebCameraMicrophone.2], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="Wrap" Width="345" />
+                                                </StackPanel>
+                                            </Border>
                                         </ToolTip>
                                     </Image.ToolTip>
                                 </Image>

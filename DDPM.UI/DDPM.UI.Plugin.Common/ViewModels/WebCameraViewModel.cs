@@ -85,7 +85,6 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public WebcamSettings WebcamSettings = new();
         public WebcamProfile CurrentProfile = new();
-        public List<string> FPSs = new();
         public List<WebcamOperation> WCOperations = new();
         private int OPIndex = -1;
         const int MaxOPs = 30;
@@ -322,7 +321,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         if (_SelectedSnoozeLength.SnoozeLength == 30)
                         {
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
                             DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 1800;
@@ -330,7 +329,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         }
                         else if (_SelectedSnoozeLength.SnoozeLength == 60)
                         {
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
                             DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 3600;
@@ -338,7 +337,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         }
                         else if (_SelectedSnoozeLength.SnoozeLength == 90)
                         {
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
                             DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 2);
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(2, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 5400;
@@ -346,14 +345,12 @@ namespace DDPM.UI.Plugin.ViewModels
                         }
                         else if (_SelectedSnoozeLength.SnoozeLength == 120)
                         {
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
                             DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 3);
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(3, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 7200;
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
-                        }
-
-
+                        }   
 
                     }
                 }
@@ -589,8 +586,6 @@ namespace DDPM.UI.Plugin.ViewModels
 
             OnPropertyChanged(nameof(IsMicEnumerationOn));
             OnPropertyChanged(nameof(IsMicEnumerationOnText));
-
-            FPSs.Clear();
 
             WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
 
@@ -913,19 +908,50 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 _isRecording = value;
                 OnPropertyChanged(nameof(IsNotRecording));
+                OnPropertyChanged(nameof(IsFPS1Enable));
+                OnPropertyChanged(nameof(IsFPS2Enable));
                 OnPropertyChanged(nameof(hdr_enable));
             }
         }
 
         public bool IsNotAutoFramingOn { get => !IsAutoFramingOn; }
         public bool IsNotRecording { get => !IsRecording; }
+        //public bool IsFPS1Enable { get => !IsRecording && !(IsAutoFramingOn && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 1 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][1] == "60"); }
+        public bool IsFPS1Enable
+        {
+            get
+            {
+                if (WebcamSettings?.SupportedFPSs == null || !WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+                {
+                    return false;
+                }
 
+                var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution];
+                return !IsRecording && !(IsAutoFramingOn && supportedFPS.Count > 1 && supportedFPS[1] == "60");
+            }
+        }
+        //public bool IsFPS2Enable { get => !IsRecording && !(IsAutoFramingOn && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 2 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][2] == "60"); }
+        public bool IsFPS2Enable
+        {
+            get
+            {
+                if (WebcamSettings?.SupportedFPSs == null || !WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+                {
+                    return false;
+                }
+
+                var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution];
+                return !IsRecording && !(IsAutoFramingOn && supportedFPS.Count > 2 && supportedFPS[2] == "60");
+            }
+        }
         public int btnRes0_width { get; set; }
         public int btnRes1_width { get; set; }
         public int btnRes2_width { get; set; }
         public int btnRes3_width { get; set; }
 
 
+        public CornerRadius btnRes0_radius { get => btnRes0_radius_v; }
+        public CornerRadius btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
         public CornerRadius btnRes1_radius { get => btnRes1_radius_v; }
         public CornerRadius btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
 
@@ -935,7 +961,20 @@ namespace DDPM.UI.Plugin.ViewModels
         public Visibility btnRes3_show { get; set; } = Visibility.Visible;
 
 
-        public Visibility bdrPrioritize_show { get; set; } = Visibility.Visible;
+        public Visibility bdrPrioritize_show_value = Visibility.Visible;
+        public Visibility bdrPrioritize_show { 
+            get => bdrPrioritize_show_value;
+            set
+            {
+                bdrPrioritize_show_value = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(bdrPrioritize_show));
+            }
+        } 
+
+        
+
+
         public Visibility brdHello_show { get; set; } = Visibility.Visible;
         public Visibility brdHello_show_control { get; set; } = Visibility.Visible;
 
@@ -949,6 +988,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 is_hdr_enable = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsNotRecording));
+                OnPropertyChanged(nameof(IsFPS1Enable));
+                OnPropertyChanged(nameof(IsFPS2Enable));
                 //OnPropertyChanged(nameof(is_hdr_enable));
                 OnPropertyChanged(nameof(hdr_enable));
             }
@@ -1062,8 +1103,24 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsAutoFramingOn;
             set
             {
-
+                //if (value && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 1)
+                //{
+                //    if (WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][1] == "60")
+                //        SetFPS_Selected(0);
+                //    else if (WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 2 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][2] == "60")
+                //        SetFPS_Selected(1);
+                //}
+                if (value && WebcamSettings?.SupportedFPSs != null && WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+                {
+                    var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution];
+                    if (supportedFPS.Count > 1 && supportedFPS[1] == "60")
+                        SetFPS_Selected(0);
+                    else if (supportedFPS.Count > 2 && supportedFPS[2] == "60")
+                        SetFPS_Selected(1);
+                }
                 OnPropertyChanged(nameof(IsNotAutoFramingOn));
+                OnPropertyChanged(nameof(IsFPS1Enable));
+                OnPropertyChanged(nameof(IsFPS2Enable));
 
                 if (value == CurrentProfile.IsAutoFramingOn)
                     return;

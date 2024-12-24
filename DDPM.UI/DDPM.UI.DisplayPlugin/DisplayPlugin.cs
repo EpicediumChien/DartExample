@@ -17,7 +17,9 @@ using Microsoft.Extensions.DependencyInjection;
 using NGA.ThickClient.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
+using System.Windows.Threading;
 using VcpCore.Common;
+using Windows.Media.AppRecording;
 
 namespace DDPM.UI.Plugin.DisplayPlugin
 {
@@ -47,6 +49,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
         private readonly IPluginManager _pluginManager;
         //private readonly string? _applicationName;
         private bool _isConfigured;
+        private bool _isActivated = false;
 
         //Members for DeviceManager
         private IDeviceManagerSA _deviceManagerSAPlugin;
@@ -104,12 +107,18 @@ namespace DDPM.UI.Plugin.DisplayPlugin
 
             CancellationToken = StartupCancellationTokenSource.Token;
             _pluginManager.PluginsStarted += PluginManager_PluginsStarted;
+
+            //Robert_Lin, 2024-12-21 Register a event handler to handle when mainwindow
+            // move to new position
+            //_console.RegisterForEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, Handle_MainWindow_MoveToNewPosition);
         }
 
         public void OnActivated()
         {
             _log?.Info("OnActivated()");
             Mouse.OverrideCursor = null;
+            _isActivated = true;
+            DdpmCommonHelper.IsDisplayPluginActivated = true;
             //IDeviceInfo deviceInfo =
             //(IDeviceInfo)DdpmHomePlugin.DdpmHomePlugin.PluginIoc.GetServices<IDeviceInfo>();//
         }
@@ -118,6 +127,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin
         {
             _log?.Info("OnDeactivated()");
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+            _isActivated = false;
+            DdpmCommonHelper.IsDisplayPluginActivated = false;
         }
         private void ConfigureServices()
         {
@@ -454,5 +465,80 @@ namespace DDPM.UI.Plugin.DisplayPlugin
         }
 
         #endregion DDC/CI Status Changed
+
+        #region MainWindow Move To new position
+        /// <summary>
+        /// Handle the IConsole Event, MainWindow_MoveToNewPosition, when DDPM main window
+        /// move to a new position.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Handle_MainWindow_MoveToNewPosition(object sender, EventManagerArgs e)
+        {
+            //TO DO:
+            //Action_1: Determine to Monitor where DDPM is moved to
+            //Action_2: Show the model name OSD (if the monitor is supported monitor)
+            //Action_3: Change the SelectedItem of Monitors combobox (if DisplayPlugin is activated)
+            _log?.Info($"@Handle_MainWindow_MoveToNewPosition() is called. DisplayPugin.IsActivated={_isActivated}");
+
+            double dpiX = DDPM.SA.Common.CommonFunctions.GetDpiX();
+            string monitorDisplayName = "";
+            //Checking event args
+            if (e != null)
+            {
+                if (e.Tag != null)
+                {
+                    monitorDisplayName = e.Tag?.ToString();
+
+                    //Get mouse cursor position
+                    System.Drawing.Point cursorPosition = System.Windows.Forms.Cursor.Position;
+                    //Get the Screen of the cursor
+                    System.Windows.Forms.Screen screenOfCursor = System.Windows.Forms.Screen.FromPoint(cursorPosition);
+                    if (_deviceManagerSAPlugin != null)
+                    {
+                        //Get AllMonitors
+                        List<MonitorInfo> monitors = _deviceManagerSAPlugin.GetMonitors().Result;
+                    }
+                    if (_viewModel != null)
+                    {
+                        if (_viewModel.HomeDevices != null)
+                        {
+                            HomeDevice? inPlaceDevice = _viewModel.HomeDevices.Find(x => x.DisplayName == screenOfCursor.DeviceName);
+                            if (inPlaceDevice != null)
+                            {
+                                if (_deviceManagerSAPlugin != null)
+                                {
+                                    _deviceManagerSAPlugin.ShowOSD(inPlaceDevice.MonitorInfo, OSDType.DisplayChanged);
+                                }
+                            }
+                        }
+                    }
+
+                    System.Drawing.Point ptMouse = System.Windows.Forms.Control.MousePosition;
+                    System.Drawing.Point mousePos = new System.Drawing.Point(ptMouse.X, ptMouse.Y);
+
+                    mousePos.X = (int)((double)mousePos.X * dpiX);
+                    mousePos.Y = (int)((double)mousePos.Y * dpiX);
+                    System.Windows.Forms.Screen screen1 = System.Windows.Forms.Screen.FromPoint(mousePos);
+
+                    VcpCore.Common.User32.POINTL ptCursor = new VcpCore.Common.User32.POINTL();
+                    VcpCore.Common.User32._GetCursorPos(out ptCursor);
+                    System.Drawing.Point cursorPos = new System.Drawing.Point(ptCursor.x, ptCursor.y);
+                    cursorPos.X = (int)((double)cursorPos.X / dpiX);
+                    cursorPos.Y = (int)((double)cursorPos.Y / dpiX);
+                    System.Windows.Forms.Screen screen2 = System.Windows.Forms.Screen.FromPoint(cursorPos);
+
+
+
+                    monitorDisplayName = screen2.DeviceName;
+                }
+            }
+
+            //Dispatcher.Invoke(new Action(() =>
+            //{
+            //    this.Activate();
+            //}));
+        }
+        #endregion  MainWindow Move To new position
     }
 }

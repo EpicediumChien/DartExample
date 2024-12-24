@@ -108,6 +108,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //leo 2024/12/09 因為多加條件判斷,改變呼叫位置
             //BuildModuleGroups();
 
+
+
             var pName = _vm.ProfileCaptions[_vm.CurrentProfileName];
             if (PresetNames.Contains(pName))
             {
@@ -124,8 +126,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             Mouse.OverrideCursor = null;
             txtName.Text = Strings.Name;
             txtMsg.Text = Strings.NameIsTaken;
-            btnCancel.Caption = Strings.Cancel;
-            btnSave.Caption = Strings.Save;
+            btnCancel.Content = Strings.Cancel;
+            btnSave.Content = Strings.Save;
 
             //lock/unlock, no ui element currently
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -185,6 +187,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             };
             _timer.Tick += Timer_Tick;
 
+            //2024/12/21 fixed
+            _vm.running_state = true;
+            in_CameraPlugin = true;
+
             exit_status_thread = false;
             if (status_thread == null)
             {
@@ -212,7 +218,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 status_thread.Start();
             }
 
-            in_CameraPlugin = true;
+            
 
             //因為需要處理PresenceDetection分頁是否出現判斷,改變呼叫順序
             check_PresenceFunction();
@@ -729,6 +735,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             print_debug("CheckUSBtype() s3 AllSupportedResolutions- " + AllSupportedResolutions);
 
+
             switch (model)
             {
                 case "WB7022":
@@ -772,6 +779,58 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
                         _vm!.SetResolution_Selected(1);
+
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+
+                    }
+                    else
+                    {
+                        //恢復usb 3.0預設
+                        print_debug("CheckUSBtype() s4-1");
+                        //hdr on按鈕diable & 功能關閉
+                        _vm.hdr_enable = true;
+                        _vm.usb_hdr_enable = true;
+                        _vm.IsHDROn = true;
+
+                        // ProximitySensor按鈕diable & 功能關閉
+                        _vm.is_ProximitySensor_enable = true;
+                        _vm.IsChecked_ProximitySensor = true;
+
+                        //autoframe功能關閉 & 區域隱藏
+                        _vm.is_AutoFramingVisibility = true;
+                        _vm.IsAutoFramingOn = true;
+
+                        //身分偵測整個功能區域隱藏 
+                        //at BuildModuleGroups() to do
+
+
+                        //攝影機控制區域內windows hello隱藏
+                        _vm.brdHello_show = Visibility.Visible; 
+                        //PRESENCE DETECTION區域內windows hello隱藏
+                        _vm.brdHello_show_control = Visibility.Visible ;
+
+                        //連接usb 3.0提示訊息 Camera.14
+                        //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
+                        _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed;
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
+
+                        //fps與解析度,排除4k
+                        //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
+
+                        _vm.btnRes0_show = Visibility.Visible;
+                        _vm.btnRes0_width = 133;
+                        _vm.btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
+
+
+                        _vm.btnRes1_width = 133;
+                        _vm.btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
+                        _vm.btnRes2_width = 133;
+                        _vm!.SetResolution_Selected(1);
+
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Visible ;
+
                     }
                     break;
                 case "U3224KBA":
@@ -802,6 +861,40 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
                         _vm!.SetResolution_Selected(1);
+
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        print_debug("CheckUSBtype() s5-1");
+                        //hdr.ProximitySensor.autoframe功能保留
+                        //身分偵測整個功能區域隱藏保留
+
+
+                        //攝影機控制區域內windows hello隱藏
+                        _vm.brdHello_show = Visibility.Visible;
+                        //PRESENCE DETECTION區域內windows hello隱藏
+                        _vm.brdHello_show_control = Visibility.Visible;
+
+
+                        //連接usb 3.0提示訊息 Camera.14
+                        //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
+                        _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed ;
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
+
+                        //fps與解析度,排除4k Camera.14
+
+                        _vm.btnRes0_show = Visibility.Visible;
+                        _vm.btnRes0_width = 133;
+                        _vm.btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
+                        _vm.btnRes1_width = 133;
+                        _vm.btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
+                        _vm.btnRes2_width = 133;
+                        _vm!.SetResolution_Selected(1);
+
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Collapsed;
                     }
                     break;
                 case "U3223QZ":
@@ -831,6 +924,39 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes2_width = 201;
                         _vm!.SetResolution_Selected(1);
 
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+
+                    }
+                    else
+                    {
+                        print_debug("CheckUSBtype() s6-1");
+                        //hdr.ProximitySensor.autoframe功能保留
+                        //身分偵測整個功能區域隱藏保留
+
+                        //攝影機控制區域內windows hello隱藏
+                        _vm.brdHello_show = Visibility.Visible ;
+                        //PRESENCE DETECTION區域內windows hello隱藏
+                        _vm.brdHello_show_control = Visibility.Visible ;
+
+
+                        //連接usb 3.0提示訊息 Camera.15
+                        //Connect your monitor via USB 3.0 and select 'High Data Speed' under USB-C Prioritization to enable 4K UHD resolution.
+                        _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed;
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
+
+                        //fps與解析度,排除4k 
+
+                        _vm.btnRes0_show = Visibility.Collapsed;
+                        _vm.btnRes0_width = 133;
+                        _vm.btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
+                        _vm.btnRes1_width = 133;
+                        _vm.btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
+                        _vm.btnRes2_width = 133;
+                        _vm!.SetResolution_Selected(1);
+
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Collapsed;
                     }
                     break;
 
@@ -853,6 +979,30 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
                         _vm!.SetResolution_Selected(1);
+
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        print_debug("CheckUSBtype() s7-1");
+                        //連接usb 3.0提示訊息 Camera.15
+                        //Connect your monitor via USB 3.0 and select 'High Data Speed' under USB-C Prioritization to enable 4K UHD resolution.
+                        _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed ;
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"].Replace("4K", "2K");
+
+                        //fps與解析度,排除2k 
+
+                        _vm.btnRes0_show = Visibility.Visible ;
+                        _vm.btnRes0_width = 133;
+                        _vm.btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
+                        _vm.btnRes1_width = 133;
+                        _vm.btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
+                        _vm.btnRes2_width = 133;
+                        _vm!.SetResolution_Selected(1);
+
+                        //camera控制權
+                        _vm.bdrPrioritize_show = Visibility.Visible ;
                     }
                     break;
             }
@@ -1010,19 +1160,35 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 try
                 {
+
+                    StreamingCaptureMode captureMode;
+                    if (_vm.MicList.Contains(_vm.Model))
+                    {
+                        captureMode = StreamingCaptureMode.AudioAndVideo;
+                        //check mic on
+                        if(!_vm.IsMicEnumerationOn)
+                            captureMode = StreamingCaptureMode.Video;
+                    }
+                    else
+                    {
+                        captureMode = StreamingCaptureMode.Video;
+                    }
+
+
                     await _vm.MediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
                     {
                         SourceGroup = selectedFrameSourceGroup,
                         SharingMode = MediaCaptureSharingMode.ExclusiveControl,
                         //SharingMode = MediaCaptureSharingMode.SharedReadOnly,
                         MemoryPreference = MediaCaptureMemoryPreference.Cpu,
-                        StreamingCaptureMode = StreamingCaptureMode.AudioAndVideo
+                        StreamingCaptureMode = captureMode
                     });
                 }
                 catch (Exception ex)
                 {
                     print_debug("ex1:" + ex.Message);
                     Debug.WriteLine("MediaCapture initiate fail: " + ex.Message);
+                    _vm.mre.Set();
                     return;
                 }
 
@@ -1669,6 +1835,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs StartRecordingAsync() : " + ex.Message);
                 // File I/O errors are reported as exceptions
                 Debug.WriteLine("Exception when starting video recording: " + ex.ToString());
             }
@@ -1685,8 +1852,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.IsMicEnumerationOnEnabled = true;
 
             if (_vm.MediaCapture != null)
-                await _vm.MediaCapture.StopRecordAsync();
-
+            {
+                try
+                {
+                    await _vm.MediaCapture.StopRecordAsync();
+                }
+                catch (Exception ex) 
+                {
+                    DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs StopRecordingAsync() : " + ex.Message );
+                }
+            }
             _vm!.IsRecording = false;
 
 
@@ -1909,7 +2084,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void EditPreset(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            var profileName = ((Image)sender).Tag.ToString()!;
+            var profileName = ((FrameworkElement)sender).Tag.ToString()!;
             EditMode = "EDIT";
             EditingProfileName = profileName;
             if (profileName != _vm!.CurrentProfileName)
@@ -2092,7 +2267,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
         }
 
-        private void CancelClick(object sender, MouseButtonEventArgs e)
+        private void CancelClick(object sender, RoutedEventArgs e)
         {
             gdBattery.Visibility = Visibility.Visible;
             gdAddProfile.Visibility = Visibility.Collapsed;
@@ -2109,7 +2284,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             _vm.TooltipVisibility = Visibility.Collapsed;
         }
 
-        private void SaveClick(object sender, MouseButtonEventArgs e)
+        private void SaveClick(object sender, RoutedEventArgs e)
         {
             var txt = txbName.Text.Trim();
             //DdpmCommonHelper.DeviceManagerSA!.CreateCustomProfile(_vm!.CurrentDeviceInfo!.ID.ToString(), $"Test {_vm.WebcamSettings.CustomProfiles.Count + 1}");
