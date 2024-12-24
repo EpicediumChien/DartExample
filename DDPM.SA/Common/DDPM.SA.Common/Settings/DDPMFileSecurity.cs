@@ -1900,17 +1900,19 @@ namespace DDPM.SA.Common.Settings
         //}
 
         //Start process without any criteria
-        public static bool StartProcessSafely(
-            ILog log, string filePath,
-            string arguments = "")
-        {
-            string info = string.Empty;
-            if (!IsProcessInfoValid(log, filePath))
-                return false;
 
-            StartProcessByOptions(log, null, filePath, arguments);
-            return true;
-        }
+        // [sonarqube] This method signature overlaps and no used
+        //public static bool StartProcessSafely(
+        //    ILog log, string filePath,
+        //    string arguments = "")
+        //{
+        //    string info = string.Empty;
+        //    if (!IsProcessInfoValid(log, filePath))
+        //        return false;
+
+        //    StartProcessByOptions(log, null, filePath, arguments);
+        //    return true;
+        //}
 
         //Start process without any criteria
         public static bool StartProcessSafely(
