@@ -825,22 +825,18 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
 
         private void leftArrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            // For hiding restore to default button.
-            _ivm.SelectedHomeDevice.IsRestoreBtnVisible = Visibility.Collapsed;
+            e.Handled = true;
 
-            // Comment out code below since it is not called anywhere and will cause Landing mode back to home page.
-
-            //e.Handled = true;
             //Always reset to Landing mode
-            //if (_ivm != null)
-            //{
-            //    //_ivm.GroupSelIdx = -1;
-            //    //_ivm.VbarSelectedIndex = -1;
-            //}
+            if (_ivm != null)
+            {
+                //_ivm.GroupSelIdx = -1;
+                //_ivm.VbarSelectedIndex = -1;
+            }
 
-            ////Return to DdpmHomePage
-            //IConsole? console = DisplayPlugin.PluginIoc.GetService<IConsole>();
-            //console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+            //Return to DdpmHomePage
+            IConsole? console = DisplayPlugin.PluginIoc.GetService<IConsole>();
+            console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
         }
 
         private void OnLeftArrowClick(object sender, RoutedEventArgs e)
@@ -850,6 +846,12 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             console?.ShowHomePage();
 
             //console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+        }
+
+        private void leftView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // For hiding restore to default button.
+            _ivm.SelectedHomeDevice.IsRestoreBtnVisible = Visibility.Collapsed;
         }
 
         #endregion Nav

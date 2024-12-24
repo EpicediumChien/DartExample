@@ -109,7 +109,18 @@
             <!--<Style x:Key="CalculatorStyle" TargetType="Image" BasedOn="{StaticResource CalculatorSize}">
             <Setter Property="Margin" Value="-117, 0, 0, 0" />
             </Style>-->
-
+            <Style x:Key="KeyToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+                <Setter Property="Placement" Value="Top" />
+                <Setter Property="VerticalOffset" Value="-5" />
+                <Setter Property="HorizontalOffset">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource CenterToolTipConverter}">
+                            <Binding RelativeSource="{RelativeSource Self}" Path="PlacementTarget.ActualWidth" />
+                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth" />
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
