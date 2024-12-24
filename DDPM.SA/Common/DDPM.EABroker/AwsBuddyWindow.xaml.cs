@@ -373,16 +373,20 @@ namespace DDPM.EABroker
                 //}
                 //else // if (_workingSplit.CellCount==5)
                 //{
-                    foreach (CellObj objCell in localSplit.CellList)
+                foreach (CellObj objCell in localSplit.CellList)
+                {
+                    if (objCell.CellBd == null)
                     {
-                        if (objCell.CellBd == null)
-                            continue;
-
-                        objCell.rc = _vm.GetFrameworkElementRect(objCell.CellBd);
-
-                        if (objCell.rc.IsEmpty)
-                            _areCellRectsRefreshed = false;
+                        continue;
                     }
+
+                    objCell.rc = _vm.GetFrameworkElementRect(objCell.CellBd);
+
+                    if (objCell.rc.IsEmpty)
+                    {
+                        _areCellRectsRefreshed = false;
+                    }
+                }
                 //}
                 //else
                 //{

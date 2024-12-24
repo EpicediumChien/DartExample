@@ -51,9 +51,8 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Border Grid.Row="0" Width="432" Height="244" CornerRadius="4" BorderThickness="1"
-                            Background="#193457" BorderBrush="Gray" VerticalAlignment="Top">
-                        <ContentControl Content="{Binding VideoSwapContent}" Margin="6" />
+                    <Border Grid.Row="0" Width="432" Height="244" CornerRadius="4" BorderThickness="1" VerticalAlignment="Top">
+                        <ContentControl Content="{Binding VideoSwapContent_Left}" Margin="6" />
                     </Border>
                     <Grid Grid.Row="1" HorizontalAlignment="Center" >
                         <Grid.Resources>

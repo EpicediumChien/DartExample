@@ -213,12 +213,11 @@ namespace DDPM.EABroker
                 //
                 //1 Save original settings
                 bool orgSpanEnabled = _vm.IsSpanEnabled;
-                bool newSpanEnabled = orgSpanEnabled;
  
                 //2 Refresh settings
                 _vm.DetectSpanCondition();
                 //3 Check if changed
-                newSpanEnabled = _vm.IsSpanEnabled;
+                bool newSpanEnabled = _vm.IsSpanEnabled;
 
                 //4 Notify to UI if it's changed
                 if (newSpanEnabled != orgSpanEnabled)
@@ -244,13 +243,12 @@ namespace DDPM.EABroker
                 //Check for Span across multiple monitors
                 //
                 //1 Save original settings
-                bool orgSpanEnabled = _vm.IsSpanEnabled;
-                bool newSpanEnabled = orgSpanEnabled;
+                bool orgSpanEnabled = _vm.IsSpanEnabled;                
 
                 //2 Refresh settings
                 _vm.DetectSpanCondition();
                 //3 Check if changed
-                newSpanEnabled = _vm.IsSpanEnabled;
+                bool newSpanEnabled = _vm.IsSpanEnabled;
 
                 //4 Notify to UI if it's changed
                 if (newSpanEnabled != orgSpanEnabled)
@@ -290,6 +288,11 @@ namespace DDPM.EABroker
                 {
                     //The WorkingArea is the SpanScren rect
                     workingArea = _vm.SpanScreen.WorkingArea;
+                    WriteLog($"@LaunchAndArrange, SpanScreenEnabled=True, IncludeTargetMonitor=Yes, WorkingArea={CommonFunctions.FormatRectangle(workingArea)}");
+                }
+                else
+                {
+                    WriteLog("@LaunchAndArrange, SpanScreenEnabled=True, IncludeTargetMonitor=No");
                 }
             }
             //2 (not) in SpanScreen workng mode, then use the workingArea of moInfo
@@ -303,8 +306,12 @@ namespace DDPM.EABroker
                     return false;
                 }
                 workingArea = scr.WorkingArea;
+                WriteLog($"@LaunchAndArrange, SpanScreenEnabled={_vm.IsSpanScreenWorking}, WorkingArea={CommonFunctions.FormatRectangle(workingArea)}");
             }
+
             bool _isVertical = workingArea.Width < workingArea.Height;
+            WriteLog($"@LaunchAndArrange, IsVertical={_isVertical}");
+            
             //Phase B. Create EA Layout and determine the cellBorderCount
             ISplitCtrl? ispLayout = null;
             int cellBorderCount = 0;
@@ -369,6 +376,9 @@ namespace DDPM.EABroker
 
             //Phase C. Show EzMemLauncherWindow
             EzMemLauncherWindow emWin = new EzMemLauncherWindow(ispLayout, workingArea, arrangeCount, _log);
+
+            //Wayn's v1
+            ///*
             emWin.LayoutReady += delegate
             {
                 //Phase D. 
@@ -386,6 +396,26 @@ namespace DDPM.EABroker
                 int idxCell = 0;
                 emWin.LaunchAndArrange(sortApps, idxCell++, VM);
             };
+            //*/
+            //Robert's v2
+            //emWin.LayoutReady += delegate
+            //{
+            //    //Phase D. 
+            //    var sortedApps = sortApps.OrderBy(x => x.Key).Select(x => x.Value).ToList();
+            //    int idxCell = 0;
+            //    for (int i = 0; i < arrangeCount; i++)
+            //    {
+            //        //var sortedApps = sortApps.OrderBy(x => i).Select(x => x.Value).ToList();
+            //        var app = sortedApps[i];
+            //        //Task.Delay(500);
+            //        emWin.LaunchAndArrange_v2(app, i, _vm);
+
+            //    }
+
+            //    //int idxCell = 0;
+            //    //emWin.LaunchAndArrange(sortApps, idxCell++, VM);
+            //};
+
 
             emWin.ArrangeDone += delegate
             {

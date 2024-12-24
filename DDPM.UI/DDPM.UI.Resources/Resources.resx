@@ -3453,4 +3453,10 @@
   <data name="PIPLarge" xml:space="preserve">
     <value>PIP Large</value>
   </data>
+  <data name="Learn_more_for_firmware" xml:space="preserve">
+    <value>Learn more for firmware</value>
+  </data>
+  <data name="Learn_more_for_software" xml:space="preserve">
+    <value>Learn more for software</value>
+  </data>
 </root>

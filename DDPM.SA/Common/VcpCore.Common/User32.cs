@@ -803,5 +803,20 @@ namespace VcpCore.Common
         }*/
 
         public const int EDD_GET_DEVICE_INTERFACE_NAME = 1;
+
+        #region Cursor
+        //GetCursorPos(), Robert_Lin, 2024-12-21
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetCursorPos(out POINTL lpPoint);
+
+        public static bool _GetCursorPos(out POINTL lpPoint)
+        {
+            return GetCursorPos(out lpPoint);
+        }
+
+        #endregion Cursor
+
     }
 }

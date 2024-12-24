@@ -57,6 +57,25 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             _console = console;
             _log = log;
             _connectButtonClickCommand = new RelayCommand(HandleConnectButtonClickCommand);
+            //_console.RegisterForEvent(ConsoleEventNames.MainWindow_MoveToNewScreen, (sender, args) =>
+            //{
+            //    if (args != null)
+            //    {
+            //        if (args.Tag != null)
+            //        {
+            //            string screenDeviceName = args.Tag as string;
+            //            if (screenDeviceName != null)
+            //            {
+            //            }
+
+            //            IShowPluginManager showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
+            //            if (showPluginManager != null)
+            //            {
+            //            }
+            //            _console.
+            //        }
+            //    }
+            //});
         }
 
         public ILog Log => _log;
