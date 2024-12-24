@@ -28,7 +28,7 @@
     <!-- #endregion FakeTransparent: When you need a transparent color and need can response mouse click -->
     <SolidColorBrush x:Key="DefaultTheme_TxtColor" Color="#FFFFFF" />
     <SolidColorBrush x:Key="DefaultTheme_ProcessBarTxtColor" Color="#A4B8CD" />
-    <SolidColorBrush x:Key="DefaultTheme_BdBkColor" Color="#99194784" />
+    <SolidColorBrush x:Key="DefaultTheme_BdBkColor" Color="#99193457" />
     <SolidColorBrush x:Key="DefaultTheme_BdSolidBkColor" Color="#FF132F54" />
     <SolidColorBrush x:Key="DefaultTheme_BdBdColor" Color="#132F54" />
     <SolidColorBrush x:Key="DefaultTheme_BdSolidBdColor" Color="#1B385F" />
@@ -57,7 +57,6 @@
     <SolidColorBrush x:Key="DefaultTheme_DialogBoxBkColor" Color="#132F54"/>
     <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
     <SolidColorBrush x:Key="DefaultThemeRightViewAlertBkColor" Color="#364861" />
-    <SolidColorBrush x:Key="DefaultThemeToggleButtonBdColor" Color="#FFFFFF"/>
     <Style TargetType="UXControls:UXTextBlock"
            BasedOn="{StaticResource {x:Type UXControls:UXTextBlock}}">
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -1602,7 +1601,7 @@
     <SolidColorBrush x:Key="EQLine_Color" Color="#1B385F" />
     <Style x:Key="RightGroupBorderStyleForAudio" TargetType="Border">
         <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Background" Value="{DynamicResource RightGroupBkColor}" />
+        <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
     </Style>
 
     <Style x:Key="ModuleCaptionStyle" TargetType="UXControls:UXTextBlock">
@@ -1653,10 +1652,10 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    <SolidColorBrush x:Key="ToggleSwitch_NormalBackground" Color="#0B1E38" />
+    <SolidColorBrush x:Key="ToggleSwitch_NormalBackground" Color="#FF0B1E38" />
+    <SolidColorBrush x:Key="ToggleSwitch_NormalBorderBrush" Color="#FF1E3F6C" />
     <SolidColorBrush x:Key="ToggleSwitch_PressedBackground" Color="#0672CB" />
     <SolidColorBrush x:Key="ToggleSwitch_PressedBorderBrush" Color="#55B4FD" />
-    <SolidColorBrush x:Key="ToggleSwitch_BorderBrush" Color="#1E3F6C" />
     <!-- #endregion -->
 
     <Style TargetType="UXControls:UXTextBlock" x:Key="ProductNameTextStyle">
