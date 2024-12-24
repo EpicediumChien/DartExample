@@ -665,7 +665,7 @@ namespace DDPM.SA.Plugin.CLIManager
             WriteLog($"RunDDMCommand({command}) Entry");
             string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
             int exitCode = -1;
-            string value = "N/A";
+            string value = _commandLineInput.Options.Count > 0 ? _commandLineInput.Options[0].Option_Value : "N/A";
             string message = "N/A";
 
             if (!File.Exists(filePath))
@@ -846,7 +846,7 @@ namespace DDPM.SA.Plugin.CLIManager
             {
                 response.Value = _commandLineInput.Options[0].Option_Value;
 
-                if (int.TryParse(_commandLineInput.Options[0].Option_Value, out int port) && port >= 1024 && port <= 49151)
+                if (int.TryParse(_commandLineInput.Options[0].Option_Value, out int port))
                 {
                     command = $"/{command} {_commandLineInput.Options[0].Option_Value}";
                     var commandResult = RunDDMCommand(command);
@@ -916,20 +916,21 @@ namespace DDPM.SA.Plugin.CLIManager
 
             if (_commandLineInput.Command == "SET" && _commandLineInput.Options.Count == 0)
             {
-                command = $"/{command}";
-                var commandResult = RunDDMCommand(command);
+                var cmds = new List<string> { command, "exit" };
+                retcode = true;
+                response.Result = "PASS";
 
-                if (commandResult.exitCode == 0)
+                foreach (var cmd in cmds)
                 {
-                    retcode = true;
-                    response.Result = "PASS";
-                }
-                else
-                {
-                    retcode = false;
-                    response.Result = "FAIL";
-                    response.Message = commandResult.message;
-                    response.Value = commandResult.value;
+                    var commandResult = RunDDMCommand($"/{cmd}");
+
+                    if (commandResult.exitCode != 0)
+                    {
+                        retcode = false;
+                        response.Result = "FAIL";
+                        response.Message = commandResult.message;
+                        response.Value = commandResult.value;
+                    }
                 }
             }
             else
