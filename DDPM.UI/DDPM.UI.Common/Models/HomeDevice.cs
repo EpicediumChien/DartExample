@@ -1730,5 +1730,15 @@ namespace DDPM.UI.Common.Models
         }
         #endregion
 
+        private Visibility _isRestoreBtnVisible = Visibility.Visible;
+
+        public Visibility IsRestoreBtnVisible { 
+            get { return _isRestoreBtnVisible; } 
+            set
+            {
+                _isRestoreBtnVisible = value;
+                OnPropertyChanged(nameof(IsRestoreBtnVisible));
+            }
+        } 
     }
 }

@@ -105,8 +105,11 @@ namespace VcpCore.Common
                                         }
                                         finally
                                         {
-                                            registryKeyII.Close();
-                                            registryKeyII.Dispose();
+                                            if (registryKeyII != null)
+                                            {
+                                                registryKeyII.Close();
+                                                registryKeyII.Dispose();
+                                            }
                                         }
                                     }
                                 }
@@ -123,8 +126,11 @@ namespace VcpCore.Common
                             }
                             finally
                             {
-                                registryKey.Close();
-                                registryKey.Dispose();
+                                if (registryKey != null)
+                                {
+                                    registryKey.Close();
+                                    registryKey.Dispose();
+                                }
                             }
                         }
                     }
