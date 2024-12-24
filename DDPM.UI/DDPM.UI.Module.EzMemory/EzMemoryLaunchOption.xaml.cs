@@ -188,8 +188,15 @@ namespace DDPM.UI.Module.EzMemory
                 {
                     if (!CheckedAutoLunchTime())
                     {
-                        DdpmCommonHelper.DDPMPureMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryAutoLaunchErrorStringForLaunchOptionPage, true, System.Windows.Window.GetWindow(this));
-                        return;
+                        if (DdpmCommonHelper.DDPMMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryAutoLaunchErrorStringForLaunchOptionPage))
+                        {
+                            _log.Info("[EzMemoryLaunchOption] AutoLunchTime_Checked ... chooice Yes");
+                        }
+                        else
+                        {
+                            _log.Info("[EzMemoryLaunchOption] AutoLunchTime_Checked ... chooice No");
+                            return;
+                        }
                     }
                 }
 
