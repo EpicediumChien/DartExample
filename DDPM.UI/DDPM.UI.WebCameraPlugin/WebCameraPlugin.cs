@@ -76,7 +76,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Webcam"))
+            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType != null && e.device_peripherals.LogicalDeviceType.Contains("Webcam"))
             {
                 if (e.type == DeviceChangedType.Peripherals_UnPlug)
                 {
@@ -166,13 +166,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void WebCameraplugin_UIUpdateNotify(object? sender, UpdateUINotify e)
         {
             //Derek 1212
-            if (e == null || e == EventArgs.Empty || e.UI_Field_Name == null 
-                || e.UI_Field_Name == string.Empty) 
+            if (e == null || e == EventArgs.Empty || e.UI_Field_Name == null
+                || e.UI_Field_Name == string.Empty)
                 return;
 
             //Open this to get the message format of Webcam event
             //System.Windows.MessageBox.Show(e.UI_Field_Name);
-            Console.WriteLine("Get event : " + e.UI_Field_Name + "#" + DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") +"\r\n");
+            Console.WriteLine("Get event : " + e.UI_Field_Name + "#" + DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") + "\r\n");
 
             //cmd format sample
             //5;Device:Webcam;EventType:Webcam_IsHDROnChanged;DeviceId:28d64fee-3544-45c7-a1b0-10db20a4cf8e;NewValue:True
@@ -395,9 +395,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                 if (NewValue.ToLower() == "true")
                                     _viewModel!.IsAutoWhiteBalanceOn = true;
                                 else
-                                    _viewModel!.IsAutoWhiteBalanceOn  = false;
+                                    _viewModel!.IsAutoWhiteBalanceOn = false;
                             });
-                        } 
+                        }
                         break;
                         case "Webcam_SaturationChanged":
                         {

@@ -304,29 +304,29 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 }));
         }
 
-        public void initResolutionFPS()
-        {
-            _vm!.SetResolution_Selected(1);
-            try
-            {
-                if (_vm.WebcamSettings?.SupportedFPSs != null && _vm.WebcamSettings.SelectedResolution != null)
-                {
-                    if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.SelectedResolution))
-                    {
-                        List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
-                        int index = FPS.FindIndex(x => x == "30");
-                        if (index != -1)
-                        {
-                            _vm.SetFPS_Selected(index);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs initResolutionFPS() : " + ex.Message);
-            }
-        }
+        //public void initResolutionFPS()
+        //{
+        //    _vm!.SetResolution_Selected(1);
+        //    try
+        //    {
+        //        if (_vm.WebcamSettings?.SupportedFPSs != null && _vm.WebcamSettings.SelectedResolution != null)
+        //        {
+        //            if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.SelectedResolution))
+        //            {
+        //                List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
+        //                int index = FPS.FindIndex(x => x == "30");
+        //                if (index != -1)
+        //                {
+        //                    _vm.SetFPS_Selected(index);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs initResolutionFPS() : " + ex.Message);
+        //    }
+        //}
 
         bool noPresenceFunction = false;
         public void check_PresenceFunction()
@@ -1073,6 +1073,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             _vm.IsResolutionSectionEnable = false;
                             _vm.OnPropertyChanged(nameof(_vm.IsResolutionSectionEnable));
                             _vm.AlertVisibility = Visibility.Visible;
+                            Debug.WriteLine("show Alert");
+
                         }
                     });
                 }
@@ -1265,6 +1267,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.AlertVisibility = Visibility.Hidden;
                 _vm.IsResolutionSectionEnable = true;
                 _vm.OnPropertyChanged(nameof(_vm.IsResolutionSectionEnable));
+                Debug.WriteLine("hide alert");
 
             }
             catch (Exception Exc)
