@@ -796,14 +796,14 @@ namespace DDPM.SA.Common
             return (int)CLI_ExitCode.fail_FormantError;
         }
 
-        public static int Response_UnelevatedError(CommandLineInput commandLineInput)
+        public static int Response_UnelevatedError()
         {
             CLI_RESPONSE result = new CLI_RESPONSE()
             {
                 Model = "N/A",
                 SerialNumber = "N/A",
-                Command = commandLineInput.Command,
-                TargetFeature = commandLineInput.TargetFeature,
+                Command = "N/A",
+                TargetFeature = "N/A",
                 Result = "Process unelevated",
                 Index = "N/A",
                 ServiceTag = "N/A",

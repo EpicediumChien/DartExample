@@ -79,9 +79,6 @@ namespace DDPM.UI.Module.EzMemory
                 _vm?.RegisterCellBorder(cellBorder.CellBd, _no);
                 _no++;
             }
-
-            InitializePage();
-
             //Record UXTextBox
             if (_vm.ispCtrlForEm.CellList.Count <= 2)
             {
@@ -91,6 +88,9 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _vm.currentUXTextBoxInfo = Window1TextBlock;
             }
+
+            UserControl_Loaded(null, null);
+            InitializePage();
         }
 
 
@@ -386,25 +386,28 @@ namespace DDPM.UI.Module.EzMemory
 
                 foreach (KeyValuePair<string, InstalledAppInfo> kvp in data)
                 {
-                    Bind_AddFullPage_AppCollectionData new_Appdata = new Bind_AddFullPage_AppCollectionData();
+                    //if (kvp.Value.AppInstallPath.ToLower().Contains("program files"))
+                    //{
+                        Bind_AddFullPage_AppCollectionData new_Appdata = new Bind_AddFullPage_AppCollectionData();
 
-                    new_Appdata.AppName = kvp.Value.AppName;
-                    new_Appdata.InstalledDate = kvp.Value.lastModifyTime;
-                    new_Appdata.AppPath = kvp.Value.AppInstallPath;
-                    new_Appdata.AppUserModelID = kvp.Value.AppUserModelID;
-                    new_Appdata.AppType = kvp.Value.isDesktopApp.ToString();
+                        new_Appdata.AppName = kvp.Value.AppName;
+                        new_Appdata.InstalledDate = kvp.Value.lastModifyTime;
+                        new_Appdata.AppPath = kvp.Value.AppInstallPath;
+                        new_Appdata.AppUserModelID = kvp.Value.AppUserModelID;
+                        new_Appdata.AppType = kvp.Value.isDesktopApp.ToString();
 
-                    if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
-                    {
-                        new_Appdata.AppIcon = strFolder + kvp.Value.IconName + ".png";
-                    }
-                    else
-                    {
-                        new_Appdata.AppIcon = "Assets/palette.png";
-                    }
+                        if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
+                        {
+                            new_Appdata.AppIcon = strFolder + kvp.Value.IconName + ".png";
+                        }
+                        else
+                        {
+                            new_Appdata.AppIcon = "Assets/palette.png";
+                        }
 
-                    _vm._bind_apps.Add(new_Appdata);
-                    _vm._apps_all.Add(new_Appdata);
+                        _vm._bind_apps.Add(new_Appdata);
+                        _vm._apps_all.Add(new_Appdata);
+                    //}
 
                 }
             }

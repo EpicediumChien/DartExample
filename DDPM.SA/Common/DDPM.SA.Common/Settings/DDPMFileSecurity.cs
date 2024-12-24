@@ -1213,14 +1213,25 @@ namespace DDPM.SA.Common.Settings
 #endif
                     return false;
                 }*/
-
-                foreach(var hash in DDPM.SA.Obfuscation.ThumbprintHash.certificateHash)
+                foreach (var hash in DDPM.SA.Obfuscation.ThumbprintHash_NKVM.certificateHash)
                 {
                     string thumbprintString = BitConverter.ToString(hash).Replace("-", string.Empty);
-                    if(SignedFileThumbprintVerifier(null, filePath, thumbprintString, out info))
+                    if (SignedFileThumbprintVerifier(null, filePath, thumbprintString, out info))
                     {
                         gotMatched = true;
                         break;
+                    }
+                }
+                if (!gotMatched)
+                {
+                    foreach (var hash in DDPM.SA.Obfuscation.ThumbprintHash.certificateHash)
+                    {
+                        string thumbprintString = BitConverter.ToString(hash).Replace("-", string.Empty);
+                        if (SignedFileThumbprintVerifier(null, filePath, thumbprintString, out info))
+                        {
+                            gotMatched = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -2036,13 +2047,13 @@ namespace DDPM.SA.Common.Settings
             path = path.Replace(">>", string.Empty);
             path = path.Replace("${", string.Empty);
             path = path.Replace("$(", string.Empty);
-            if (path_org != path)
+            if (!path_org.Equals(path))
             {
                 info = ("The path contains invalid characters. Program will not continue");
                 return string.Empty;
             }
 
-            path_org = null;
+            //path_org = null;
             return path;
         }
 

@@ -22,6 +22,26 @@ namespace DDPM.SA.Common
 {
     public interface IDTPProxyPlugin : IFrameworkPlugin
     {
+        Task<bool> GetDTPProxyPluginReady();
+
+        #region globalperipheral
+        Task<bool> GetIsLockKeyNotificationsEnabledValue();
+
+        Task<bool> GetIsBatteryNotificationsEnabledValue();
+        Task<bool> GetIsPresenceDetectionSensnorStateNotificationsEnabledValue();
+        Task<bool> GetIsAnalyticsEnabledValue();
+        Task<bool> GetIsQuickAccessMenuEnabledValue();
+        
+        Task<bool> GetIsMuteStatusNotificationsEnabledValue();
+        Task<bool> GetIsQuickAccessMenuOSDEnabledValue();
+        Task<bool> SetIsLockKeyNotificationsEnabledValue(bool newValue);
+        Task<bool> SetIsBatteryNotificationsEnabledValue(bool newValue);
+        Task<bool> SetIsPresenceDetectionSensnorStateNotificationsEnabledValue(bool newValue);
+        Task<bool> SetIsAnalyticsEnabledValue(bool newValue);
+        Task<bool> SetIsQuickAccessMenuEnabledValue(bool newValue);
+        Task<bool> SetIsMuteStatusNotificationsEnabledValue(bool newValue);
+        Task<bool> SetIsQuickAccessMenuOSDEnabledValue(bool newValue);
+        #endregion globalperipheral
 
         #region Mouse
 
@@ -195,6 +215,7 @@ namespace DDPM.SA.Common
         Task<bool?> GetIsPrioritizeExternalWebcam(string Guid);
         Task<bool> GetIsZoomMeetingActive(string Guid);
         //Task<bool> GetZoomMeetingType(string Guid);
+        Task<bool> GetIsZoomMeetingActive();
         Task<int> GetZoomMeetingTypeAsync(string Guid);
         Task<bool> GetIsZoomScreenShareActive(string Guid);
 
@@ -205,6 +226,9 @@ namespace DDPM.SA.Common
         //event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
 
         Task<bool> GetIsESISupported(string Guid);
+
+        //Derek 1221 for QAM
+        Task<string> GetWebcamDeviceID();
 
         #endregion
 

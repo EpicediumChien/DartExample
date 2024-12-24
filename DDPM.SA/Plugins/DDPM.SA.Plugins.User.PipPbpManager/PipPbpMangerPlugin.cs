@@ -218,9 +218,11 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_Off);
+                bool res = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_Off).Result;
+                _logs.Info($"SetPipModOff({monitorInfo.modelName}), return {res}");
+                return Task.FromResult(res); // _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_Off);
             }
-            _lastError = $"SetPxpModeOff({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
+            _lastError = $"SetPxpModeOff({monitorInfo.modelName}): DeviceManagerPlugin is null.";
             _logs.DebugMsg($"[{pluginName}] {_lastError}");
             return Task.FromResult(false);
         }
@@ -229,7 +231,9 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_Small);
+                bool res = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_Small).Result;
+                _logs.Info($"SetPipModeSmall({monitorInfo.modelName}), return {res}");
+                return Task.FromResult(res); 
             }
             _lastError = $"SetPxpModeSmall({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
             _logs.DebugMsg($"[{pluginName}] {_lastError}");
@@ -293,13 +297,25 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         {
             if (_DisplayManagerPlugin != null)
             {
+                //For AA mode monitors
+                if (monitorInfo.modelName.Equals("UP2720Q", StringComparison.OrdinalIgnoreCase) ||
+                    monitorInfo.modelName.Equals("U4919DW", StringComparison.OrdinalIgnoreCase))
+                {
+                    _logs.Info($"VideoSwap({monitorInfo.modelName}, {x}, {y}), AA mode.");
+                    x = 0;
+                    y = 0;
+                }
+                else
+                {
+                    _logs.Info($"VideoSwap({monitorInfo.modelName}, {x}, {y}).");
+                }
                 //Write value: 0xF0xy, x and y is 0=main, 1=sub1, 2=sub2, 3=sub3
                 UInt16 wX = (UInt16)((x & 3) << 4);
-                UInt16 wY = (UInt16)((y & 3));
+                UInt16 wY = (UInt16)(y & 3);
                 UInt16 wValue = (UInt16)(0xF000 | wX | wY);
                 return _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE5, wValue);
             }
-            _lastError = $"VideoSwap({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
+            _lastError = $"VideoSwap({monitorInfo.modelName}): DeviceManagerPlugin is null.";
             _logs.DebugMsg($"[{pluginName}] {_lastError}");
             return Task.FromResult(false);
         }

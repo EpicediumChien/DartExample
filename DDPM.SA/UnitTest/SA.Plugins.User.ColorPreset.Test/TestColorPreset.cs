@@ -27,6 +27,8 @@ using DDPM.MonitorBorker;
 using System.Collections.Generic;
 using DdmLibrary;
 using DdmLibrary.Utility;
+using DDPM.ColorApp;
+using System.Windows.Forms;
 
 
 namespace DDPM.SA.Plugins.User.ColorPreset.Test
@@ -274,13 +276,24 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
         {
             IDeviceManagerSA deviceManagerPlugin = null;
             MonitorInfo m = null;
-            colorPresetPlugin.Launch_MonitorBorker(m, deviceManagerPlugin); //MonitorInfo is null
+            List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
+            colorPresetPlugin.Launch_MonitorBorker(_allInfoMonitors, m, deviceManagerPlugin); //MonitorInfo is null
             Assert.IsFalse(false);
 
             var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
             var DeviceManagerSA = DeviceManagerSAMock.Object;
             monitorInfo1.DisplayName = "display1";
-            colorPresetPlugin.Launch_MonitorBorker(monitorInfo1, DeviceManagerSA); //MonitorInfo is not null
+            _allInfoMonitors.Add(monitorInfo1);
+            colorPresetPlugin.Launch_MonitorBorker(_allInfoMonitors, monitorInfo1, DeviceManagerSA); //MonitorInfo is not null,s= null
+            Assert.IsTrue(true);
+
+            var LogMock = new Mock<ILog>();
+            var MainWindowLog = LogMock.Object;
+            var MainWindow = new MainWindow(DeviceManagerSA, monitorInfo1, MainWindowLog);
+            PrivateObject privateObjecta = new PrivateObject(MainWindow);
+            privateObjecta.SetFieldOrProperty("ColorPresetWin", new MonitorWin(DeviceManagerSA, monitorInfo, MainWindowLog));
+            monitorInfo1.DisplayName = Screen.PrimaryScreen.DeviceName;
+            colorPresetPlugin.Launch_MonitorBorker(_allInfoMonitors, monitorInfo1, DeviceManagerSA); //MonitorInfo is not null,s! = null
             Assert.IsTrue(true);
         }
 
@@ -295,9 +308,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
             string supported_preset = monitorInfo1.CapabilityString;
             Dictionary<string, ColorPresetSettings_AppInfo> appInfo = new Dictionary<string, ColorPresetSettings_AppInfo>();
             appInfo.Add("Command Prompt", new ColorPresetSettings_AppInfo() { Color = 0, HDRColor = -1, IconName = "cmd.exe" });
-            int index_config = 0;
-            int runType = 1;
-            int runType2 = 0;
+
             List<ColorPresetSettings> monitorConfigs1 = new List<ColorPresetSettings>() { new ColorPresetSettings() { ModelName = "DELLU2724DE", SerialNumber = "808597589", RunType = 0, AppInfo = appInfo } };
             ISettingsManagerDev settingsPlugin_;
             IDeviceManagerSA _deviceManagerPlugin;
@@ -311,27 +322,26 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
 
             var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
             var DeviceManagerSA = DeviceManagerSAMock.Object;
-            var monitorBorkerWin = new MainWindow(DeviceManagerSA, monitorInfo1);
+            var LogMock = new Mock<ILog>();
+            var MainWindowLog = LogMock.Object;
+            var monitorBorkerWin = new MainWindow(DeviceManagerSA, monitorInfo1, MainWindowLog);
             colorPresetprivateObject.SetFieldOrProperty("MonitorBorkerWin", monitorBorkerWin);
+            List<MonitorInfo> _allInfoMonitors = new List<MonitorInfo>();
+            _allInfoMonitors.Add(monitorInfo1);
 
-            if (on_off1 == "on")
-            {
-                if (index_config >= 0)
-                {
-                    var AutoSetColorPreset_resullt = colorPresetPlugin.AutoSetColorPresetForMonitorConfig(monitorInfo1, on_off1, settingsPluginManagerDev_, DeviceManagerSA).Result;   //set ColorPreset RunType Auto 1
-                    Assert.IsNotNull(AutoSetColorPreset_resullt);
-                    Assert.IsTrue(AutoSetColorPreset_resullt);
-                }
-            }
-            if (on_off2 == "off")
-            {
-                if (index_config >= 0)
-                {
-                    var AutoSetColorPreset_resullt2 = colorPresetPlugin.AutoSetColorPresetForMonitorConfig(monitorInfo1, on_off2, settingsPluginManagerDev_, DeviceManagerSA).Result;//set ColorPreset RunType Manual 0
-                    Assert.IsNotNull(AutoSetColorPreset_resullt2);
-                    Assert.IsTrue(AutoSetColorPreset_resullt2);
-                }
-            }
+            //on_off1 == "on"
+            var AutoSetColorPreset_resullt = colorPresetPlugin.AutoSetColorPresetForMonitorConfig(_allInfoMonitors, monitorInfo1, on_off1, settingsPluginManagerDev_, DeviceManagerSA).Result;   //set ColorPreset RunType Auto 1
+            Assert.IsNotNull(AutoSetColorPreset_resullt);
+            Assert.IsTrue(AutoSetColorPreset_resullt);
+
+            var MainWindow = new MainWindow(DeviceManagerSA, monitorInfo, MainWindowLog);
+            PrivateObject privateObjecta = new PrivateObject(MainWindow);
+            privateObjecta.SetFieldOrProperty("ColorPresetWin", new MonitorWin(DeviceManagerSA, monitorInfo, MainWindowLog));
+
+            // on_off2 == "off"
+            var AutoSetColorPreset_resullt2 = colorPresetPlugin.AutoSetColorPresetForMonitorConfig(_allInfoMonitors, monitorInfo1, on_off2, settingsPluginManagerDev_, DeviceManagerSA).Result;//set ColorPreset RunType Manual 0
+            Assert.IsNotNull(AutoSetColorPreset_resullt2);
+            Assert.IsTrue(AutoSetColorPreset_resullt2);
         }
 
         [Test]

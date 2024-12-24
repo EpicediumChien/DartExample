@@ -1,5 +1,6 @@
 ﻿using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 
@@ -392,6 +393,19 @@ namespace DDPM.UI.Common
                 UpdateFreezable("Webcam_TextBox_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0D121A"));
                 UpdateFreezable("Webcam_UndoRedo_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99F8FBFE"));
                 #endregion
+
+                #region EzArrange
+                UpdateFreezable("EzArrange_ShadowEffect", (ref DropShadowEffect shadow) => {
+                    shadow.Color = (Color)ColorConverter.ConvertFromString("#0A000000");
+                    shadow.ShadowDepth = 4;
+                    shadow.BlurRadius = 10;
+                    shadow.Opacity = 0.1;
+                    shadow.Direction = 270;
+                });
+                #endregion
+
+                UpdateBitmapImage("InterruptScreen_Image", new Uri($"pack://application:,,,/DDPM.UI.Common;component/Resources/Background_InterruptScreen_Light.png", UriKind.RelativeOrAbsolute));
+                UpdateFreezable("InterruptScreen_Backgroung", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFF2"));
 
                 BitmapImageUpdated?.Invoke(OSThemeEnum.Light);
             }

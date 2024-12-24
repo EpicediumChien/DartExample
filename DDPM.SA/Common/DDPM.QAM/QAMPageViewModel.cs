@@ -50,6 +50,9 @@ namespace DDPM.QAM
             set => _fullView = value;
         }
 
+        private bool isQAMPageViewModel_UIUpdateNotifyExist = false;
+
+
         public bool isStatusChagneByDDPM = false;
         public QAMPageViewModel()
         {
@@ -78,8 +81,27 @@ namespace DDPM.QAM
             }
 
             //Derek 1210
-            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += QAMPageViewModel_UIUpdateNotify;
+            if (!isQAMPageViewModel_UIUpdateNotifyExist)
+            {
+                DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += QAMPageViewModel_UIUpdateNotify;
+                isQAMPageViewModel_UIUpdateNotifyExist = true;
+
+                LogMsg($"Add event QAMPageViewModel_UIUpdateNotify, isQAMPageViewModel_UIUpdateNotifyExist={isQAMPageViewModel_UIUpdateNotifyExist}");                
+            }
             LoadCurrentStatus();
+        }
+
+        //~QAMPageViewModel()
+        //{
+        //    RemoveQAMWebcamEvent();
+        //}
+
+        public void RemoveQAMWebcamEvent()
+        {
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify -= QAMPageViewModel_UIUpdateNotify;
+            isQAMPageViewModel_UIUpdateNotifyExist = false;
+
+            LogMsg($"Remove event QAMPageViewModel_UIUpdateNotify");
         }
 
         private void LoadCurrentStatus()

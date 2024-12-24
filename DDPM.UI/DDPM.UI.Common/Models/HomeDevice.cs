@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using VcpCore.Common;
+//using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.UI.Common.Models
 {
@@ -223,10 +224,68 @@ namespace DDPM.UI.Common.Models
             {
                 if (DeviceInfo != null)
                 {
-                    if (DeviceInfo.Name.ToUpper().Contains("WD19S"))
+                    //Robert_Lin, 2024-12-24, Checked with BruceChuang below can be commented-out
+                    //if (DeviceInfo.Name.ToUpper().Contains("WD19S"))
+                    //{
+                    //    return DeviceInfo.Name.Replace("_", " ");
+                    //}
+
+                    //Robert_Lin, 2024-12-24, from Alex MC Yen
+                    // "R19 IL, 將所有的 DeviceName 都沒有加上 model number
+                    // 意思是有我們要另外去抓 model number，自已加在 homepage的 hover tooltip 囉"
+                    //例外情形: EOL models 的 Model 會已經包含在 Name 的中間, 例如: ""
+                    //已經將 EOL Peripheral models 集中在 DdpmCommonHelper.IsPeripheralEOLModel(model)
+                    //
+                    //Logic:
+                    // If the peripheral is EOL then
+                    //    Show "{Name}"
+                    // Else
+                    //    Some of Keyboard/Mouse need to convert ModelNumber to model
+                    //    Show "{Name} + " {model}"
+                    //NEW Code:
+                    if (DdpmCommonHelper.IsPeripheralEOLModel(DeviceInfo.ModelNumber))
                     {
-                        return DeviceInfo.Name.Replace("_", " ");
+                        //EOL 的 Keyboard/Mouse, Name已包含 {ModelNumber}, homepage tooltip 直接顯示 {Name}
+                        return DeviceInfo.Name;
                     }
+                    else //Not EOL
+                    {
+                        string model = DeviceInfo.ModelNumber;
+                        //以下 Keyboard/Mouse 的 Model 需要轉換
+                        switch (DeviceInfo.ModelNumber)
+                        {
+                            //Keyboard
+                            case "KB740":
+                            case "KB7120W":
+                                model = "KB740";
+                                break;
+                            case "KB500":
+                            case "KB3121W":
+                                model = "KB500";
+                                break;
+                            case "KB700":
+                            case "KB7221W":
+                                model = "KB700";
+                                break;
+
+                            //Mouse
+                            case "MS300":
+                            case "MS3121W":
+                                model = "MS300";
+                                break;
+
+                            //Default
+                            default:
+                                //model = deviceInfo.ModelNumber;
+                                break;
+                        } //switch(deviceInfo.ModelNumber)
+
+                        return DeviceInfo.Name + $" {model}";
+
+                    }
+
+                    //OLD Code:
+                    /*
                     //Robert_Lin, 2024-11-22, [PIMS-316846], DeviceName is "MouseSettings" so it seems that should be
                     // Name="Dell Pro Premium Mouse" + ModelNumber="MS900" => "Dell Pro Premium Mouse MS900"
                     //Based on Indilogic reply:
@@ -281,6 +340,8 @@ namespace DDPM.UI.Common.Models
                     {
                         return DeviceInfo.Name;
                     }
+                    //END of Robert_Lin, 2024-12-24
+                    */
                     //Robert_Lin, 2024-11-20, [PIMS-316846] change the tooltip on homepage to DeviceName
                     //return DeviceInfo.DeviceName;
                     //return DeviceInfo.Name; 
@@ -298,7 +359,7 @@ namespace DDPM.UI.Common.Models
                     //Robert_Lin, 2024-8-29, for DDPMW-2094 Update DDPM 2.0 Display Frontend for NPI; Non-NPI TBD
                     //For NPI models, MonitorInfo.MarketName will provide the name to show
                     //Otherwise (Non-NPI), MonitorInfo.MarketName will be empty, will show DisplayName (Model + instanceNo)
-                    if (String.IsNullOrWhiteSpace(MonitorInfo.MarketingName))
+                    if (string.IsNullOrWhiteSpace(MonitorInfo.MarketingName))
                         return DisplayName;
                     else
                     {
@@ -1428,7 +1489,7 @@ namespace DDPM.UI.Common.Models
                 return false;
 
             //VCP contains "EE" => has USB KVM capability
-            if (MonitorInfo.CapabilityDic.ContainsKey("EE"))
+            if (MonitorInfo.CapabilityDic.ContainsKey("E7"))
                 return true;
 
             //Determine if it has Network KVM capability
@@ -1454,7 +1515,7 @@ namespace DDPM.UI.Common.Models
                     return false;
 
                 //VCP contains "EE" => has USB KVM capability
-                if (MonitorInfo.CapabilityDic.ContainsKey("EE"))
+                if (MonitorInfo.CapabilityDic.ContainsKey("E7"))
                 {
                     return true;
                 }
@@ -1652,7 +1713,7 @@ namespace DDPM.UI.Common.Models
             {
                 if (MonitorInfo != null)
                 {
-                    if (String.IsNullOrWhiteSpace(MonitorInfo.MarketingName))
+                    if (string.IsNullOrWhiteSpace(MonitorInfo.MarketingName))
                         return Strings.Display;
                     /* Debug text
                     return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sem lorem, ornare at fringilla sed, eleifend ut nibh. Nullam a tincidunt sapien. Donec luctus felis eget facilisis sodales. Mauris nec ipsum elit. Curabitur sagittis mollis libero, id fringilla neque interdum at. Vivamus sit amet tortor consectetur enim egestas volutpat in id elit.";
@@ -1669,5 +1730,16 @@ namespace DDPM.UI.Common.Models
         }
         #endregion
 
+        private Visibility _isRestoreBtnVisible = Visibility.Visible;
+
+        public Visibility IsRestoreBtnVisible
+        {
+            get { return _isRestoreBtnVisible; }
+            set
+            {
+                _isRestoreBtnVisible = value;
+                OnPropertyChanged(nameof(IsRestoreBtnVisible));
+            }
+        }
     }
 }

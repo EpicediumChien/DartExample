@@ -54,8 +54,15 @@
                     <Image Margin="10,26,0,0" Source="/DDPM.UI.Common;component/Resources/Info.png" Stretch="Fill"
                                                Width="16" Height="16" VerticalAlignment="Top">
                       <Image.ToolTip>
-                        <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                          <TextBlock Style="{StaticResource MouseToolTipTextStyle}" Text="{Binding TouchScrollInfoTip}" />
+                        <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                          <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                            <Border.Resources>
+                              <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                            </Border.Resources>
+                            <StackPanel Orientation="Horizontal">
+                              <TextBlock Text="{Binding TouchScrollInfoTip}" />
+                            </StackPanel>
+                          </Border>
                         </ToolTip>
                       </Image.ToolTip>
                     </Image>
@@ -69,7 +76,7 @@
                   <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,7,0,0">
                     <UXControls:UXTextBlock Text="{Binding [Slow], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="#A4B8CD" Margin="0,0,10,0" />
                     <UXControls:UXSlider TickFrequency="1" TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TouchScrollSensitivityLevel}" Minimum="0" Maximum="2" Width="360"
-                                                             Thumb.DragStarted="TouchScrollSlider_DragStarted" Thumb.DragCompleted="TouchScrollSlider_DragCompleted" />
+                                                             Thumb.DragStarted="TouchScrollSlider_DragStarted" Thumb.DragCompleted="TouchScrollSlider_DragCompleted" IsMoveToPointEnabled="True" />
                     <UXControls:UXTextBlock Text="{Binding [High], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="#A4B8CD" Margin="10,0,0,0" />
                   </StackPanel>
                 </Grid>
@@ -116,8 +123,8 @@
                   <UXControls:UXTextBlock Text="{Binding DPIMinText}" FontSize="14" Foreground="#A4B8CD" Margin="22,2,8,0" FontFamily="Roboto" />
                 </Grid>
                 <Grid Grid.Column="1">
-                  <UXControls:UXSlider x:Name="DPISlider" TickFrequency="{Binding DpiDelta}"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding DPIValue}" HorizontalAlignment="Left" 
-                                                         Minimum="{Binding DPIMin}" Maximum="{Binding DPIMax}" Width="365" Thumb.DragStarted="DPISlider_DragStarted" Thumb.DragCompleted="DPISlider_DragCompleted" />
+                  <UXControls:UXSlider x:Name="DPISlider" TickFrequency="{Binding DpiDelta}"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding DPIValue}" HorizontalAlignment="Left" KeyUp="DPISlider_KeyUp" PreviewKeyDown="DPISlider_PreviewKeyDown"
+                                       IsMoveToPointEnabled="True" Minimum="{Binding DPIMin}" Maximum="{Binding DPIMax}" Width="365" Thumb.DragStarted="DPISlider_DragStarted" Thumb.DragCompleted="DPISlider_DragCompleted" />
                 </Grid>
                 <Grid Grid.Column="2">
                   <UXControls:UXTextBlock Text="{Binding DPIMaxText}" FontSize="14" Foreground="#A4B8CD" Margin="9,2,0,0" FontFamily="Roboto" />
@@ -147,8 +154,15 @@
                   <Image Margin="10,26,0,0" Source="/DDPM.UI.Common;component/Resources/Info.png" Stretch="Fill"
                                            Width="16" Height="16" VerticalAlignment="Top">
                     <Image.ToolTip>
-                      <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                        <TextBlock Style="{StaticResource MouseToolTipTextStyle}" Text="{Binding PollingRateInfoTip}" TextWrapping="Wrap" Width="350" />
+                      <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                          <Border.Resources>
+                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                          </Border.Resources>
+                          <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding PollingRateInfoTip}" TextWrapping="Wrap" Width="350" />
+                          </StackPanel>
+                        </Border>
                       </ToolTip>
                     </Image.ToolTip>
                   </Image>
@@ -156,31 +170,31 @@
               </Grid>
               <Grid VerticalAlignment="top" Grid.Row="1">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,14,0,0" Visibility="{Binding IsDongleRateVisible, Converter={StaticResource BoolToVisibilityConverter}}">
-                  <common:TabButton Margin="0,0,0,0" HasInfoIcon="False" Background="#0A2343"
+                  <common:TabButton Margin="0,0,0,0" HasInfoIcon="False"
                                                       Width="152" Height="30" Focused="{Binding Hz125Focused}" CaptionSize="14" BorderThickness="0" CornerRadius="4,0,0,4"
                                                       Caption="125 Hz" Command="{Binding Hz125ClickedCommand}" />
-                  <common:TabButton Name="Hz250" Margin="0,0,0,0" HasInfoIcon="False" Background="#0A2343"
+                  <common:TabButton Name="Hz250" Margin="0,0,0,0" HasInfoIcon="False"
                                                       Width="152" Height="30" Focused="{Binding Hz250Focused}" CaptionSize="14" BorderThickness="0" CornerRadius="0"
                                                       Caption="250 Hz" Command="{Binding Hz2501ClickedCommand}" />
-                  <common:TabButton Margin="0,0,0,0" HasInfoIcon="False" Background="#0A2343"
+                  <common:TabButton Margin="0,0,0,0" HasInfoIcon="False"
                                                       Width="152" Height="30" Focused="{Binding Hz333Focused}" CaptionSize="14" BorderThickness="0" CornerRadius="0,4,4,0"
                                                       Caption="333 Hz" Command="{Binding Hz333ClickedCommand}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,14,0,0" Visibility="{Binding IsBluetoothRateVisible, Converter={StaticResource BoolToVisibilityConverter}}">
-                  <common:TabButton Margin="0,0,0,0" HasInfoIcon="False" Background="#0A2343"
+                  <common:TabButton Margin="0,0,0,0" HasInfoIcon="False"
                                                       Width="228" Height="30" Focused="{Binding Hz133Focused}" CaptionSize="14" BorderThickness="0" CornerRadius="4,0,0,4"
                                                       Caption="133 Hz" Command="{Binding Hz133ClickedCommand}" />
-                  <common:TabButton Margin="0,0,0,0" HasInfoIcon="False" Background="#0A2343"
+                  <common:TabButton Margin="0,0,0,0" HasInfoIcon="False"
                                                       Width="228" Height="30" Focused="{Binding Hz250Focused}" CaptionSize="14" BorderThickness="0" CornerRadius="0,4,4,0"
                                                       Caption="250 Hz" Command="{Binding Hz2502ClickedCommand}" />
                 </StackPanel>
               </Grid>
-              <Border Name="bdrAlert" Background="#364861" CornerRadius="4" Margin="16,116,16,-118" BorderThickness="7,0,0,0" Height="53" BorderBrush="#0E92F2">
+              <Border Name="bdrAlert" Background="{DynamicResource bdrAlert_BgColor}" CornerRadius="4" Margin="16,116,16,-118" BorderThickness="7,0,0,0" Height="53" BorderBrush="#0E92F2">
                 <StackPanel Orientation="Horizontal">
                   <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
                                            VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
                   </Image>
-                  <UXControls:UXTextBlock Name="txtPollingRateMessage" FontSize="14" Background="#364861" Foreground="#F5F6F7" TextWrapping="Wrap"
+                  <UXControls:UXTextBlock Name="txtPollingRateMessage" FontSize="14" Background="{DynamicResource bdrAlert_BgColor}" Foreground="#F5F6F7" TextWrapping="Wrap"
                                                             VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,16,0,13" LineHeight="21" Padding="0,3,35,2">
                     <Run Name="txtAlert1" FontFamily="Roboto" FontWeight="Normal" />
                   </UXControls:UXTextBlock>

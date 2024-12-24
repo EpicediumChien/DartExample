@@ -147,7 +147,7 @@
                                     <UXControls:UXTextBlock Name="txtSystemName3" Foreground="#F5F6F7" VerticalAlignment="Center"
                                                             HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
                                 </StackPanel>
-                                <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="#1B385F" StrokeThickness="2" />
+                                <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
                                 <UXControls:UXTextBlock Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" Margin="20,13,0,0" />
                                 <UXControls:UXTextBlock Name="txtSlot" Style="{StaticResource ConnectionStyle3}" Margin="20,15,0,0" />
                             </StackPanel>
@@ -156,18 +156,18 @@
                             <StackPanel Orientation="Vertical">
                                 <StackPanel Name="Host1" Orientation="Horizontal" Margin="20,18,0,0">
                                     <UXControls:UXTextBlock Name="txt1" Text="" FontSize="14"/>
-                                    <Path x:Name="imgBL1" Data="M3.5 15.9508V9.40078L0.7 12.0008L0 11.3008L3.5 8.05078V7.95078L0 4.70078L0.7 4.00078L3.5 6.60078V0.0507812L8.35 4.90078L5 8.00078L8.35 11.1008L3.5 15.9508ZM4.5 8.90078V13.5508L6.9 11.1508L4.5 8.90078ZM4.5 2.45078V7.10078L6.9 4.85078L4.5 2.45078Z" Fill="{DynamicResource DefaultTheme_PathColor}" Margin="4,0,0,0" Width="16" Height="16" />
+                                    <ContentControl x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
                                     <!--<Image x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" />-->
                                     <UXControls:UXTextBlock Name="txtBLHost1" Margin="4,0,0,0" />
                                 </StackPanel>
                                 <StackPanel Name="Host2" Orientation="Horizontal" Margin="20,18,0,8">
                                     <UXControls:UXTextBlock Name="txt2" Text="" FontSize="14"/>
-                                    <Path x:Name="imgBL2" Data="M3.5 15.9508V9.40078L0.7 12.0008L0 11.3008L3.5 8.05078V7.95078L0 4.70078L0.7 4.00078L3.5 6.60078V0.0507812L8.35 4.90078L5 8.00078L8.35 11.1008L3.5 15.9508ZM4.5 8.90078V13.5508L6.9 11.1508L4.5 8.90078ZM4.5 2.45078V7.10078L6.9 4.85078L4.5 2.45078Z" Fill="{DynamicResource DefaultTheme_PathColor}" Margin="4,0,0,0" Width="16" Height="16" />
+                                    <ContentControl x:Name="imgBL2" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
                                     <!--<Image x:Name="imgBL2" Margin="4,0,0,0" Width="16" Height="16" />-->
                                     <UXControls:UXTextBlock Name="txtBLHost2" Margin="4,0,0,0" />
                                 </StackPanel>
                                 <!-- Horz Line -->
-                                <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="#1B385F" StrokeThickness="2" />
+                                <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
 
                                 <!-- This device can be paired with 2 hosts simulaneously -->
                                 <UXControls:UXTextBlock Name="txtAudioBLText" Margin="20,16,20,16" Text="" FontSize="14"
@@ -190,7 +190,8 @@
                             <StackPanel Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal" Margin="20,18,0,0">
                                     <UXControls:UXTextBlock Name="Wiredtxt1" Text="1" />
-                                    <Image x:Name="imgWired1" Margin="4,0,0,0" Width="16" Height="16" />
+                                    <ContentControl x:Name="imgWired1" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Port}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
+                                    <!-- <Image x:Name="imgWired1" Margin="4,0,0,0" Width="16" Height="16" /> -->
                                     <UXControls:UXTextBlock Name="txtWiredSystemName" Margin="4,0,0,0" />
                                 </StackPanel>
                             </StackPanel>

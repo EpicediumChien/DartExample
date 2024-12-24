@@ -799,6 +799,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             try
             {
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " all start");
+                _logs.DebugMsg_1(nameof(DownloadAndInstall) + " fwUpdateInfos.Count : " + fwUpdateInfos.Count);
                 _IsUITrigger = isUITrigger;
                 List<FWUpdateInfo> temp_FWUpdateInfo = fwUpdateInfos.FindAll(o => o.IsDisplay);
                 //判斷是否有非Display更新，有的話停止DPM
@@ -1593,14 +1594,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _ProgressLogPath = $"{logPath}\\PrgoressResult";
                     _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " create log path done");
                 }
+                // 生成唯一的管道名稱
+                string _namedPipeName = Guid.NewGuid().ToString("D");
                 if (!fwUpdateInfo.IsDisplay)
                 {
                     _timeOutCount = _fwTimeOutCount;
                     _timerTimeOut = new Timer();
                     _timerTimeOut.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
                     _timerTimeOut.Elapsed += new ElapsedEventHandler(_timerTimeOut_Tick);
-                    //foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
-                    string _namedPipeName = Guid.NewGuid().ToString("D"); // 生成唯一的管道名稱
                     _namedPipeServer = new NamedPipeStreamServer(_namedPipeName, fwUpdateInfo.Thumbprint, _IsSkipSHA); // 創建命名管道伺服器
                     _namedPipeServer.MessageReceived += _namedPipeServer_MessageReceived;
                     _namedPipeServer.ClientConnectedEvent += _namedPipeServer_ClientConnectedEvent;
@@ -1614,28 +1615,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         NotificationFWupdate(LangHelper.Instance["FW_info"], fwUpdateInfo.DeviceName + " " + LangHelper.Instance["FW_is_being_Installing"]);
                     }
-                    // 要運行的安裝程式路徑和命令行參數
-                    arguments = (fwUpdateInfo.IsUOD ? "/uod " : "") + "/silent" + " /pipename:" + _namedPipeName;
+                }
+                arguments = BuildArgs(fwUpdateInfo, _namedPipeName, logPath);
+                _logs.DebugMsg_1($"arguments : {arguments}");
+                if (_timerTimeOut != null)
+                {
                     _timerTimeOut.Enabled = true;
-                }
-                else
-                {
-                    arguments = $"-q --force --skip-app-retry -f";
-                }
-                if (fwUpdateInfo.DeviceType == DeviceType.LogicalDock || fwUpdateInfo.DeviceType == DeviceType.PhysicalWiredDock)
-                {
-                    arguments += $" /f";
-                    if (!string.IsNullOrEmpty(logPath))
-                    {
-                        arguments += $" /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"";
-                    }
-                }
-                else
-                {
-                    if (!string.IsNullOrEmpty(logPath))
-                    {
-                        arguments += $" \"{logPath}\"";
-                    }
                 }
                 var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
                 if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
@@ -1664,43 +1649,63 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " StartProcessAndBypassUACWithAdmin go");
                     PInvoke.PROCESS_INFORMATION procInfo;
-                    bool b = WTSFunction.StartProcessAndBypassUACWithAdmin(fwUpdateInfo.InstallPaths + " " + arguments, out procInfo);
-                    string processName = Path.GetFileNameWithoutExtension(fwUpdateInfo.InstallPaths);
-                    _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} Searching for process: {processName}");
-                    Process[] processes = Process.GetProcessesByName(processName);
-                    if (processes != null && processes.Length > 0)
+                    string arguments_Final = fwUpdateInfo.InstallPaths + " " + arguments;
+                    _logs.DebugMsg_1($"arguments_Final : {arguments_Final}");
+                    string workingDirectory = DDPMFileSecurity.SanitizePath(Path.GetDirectoryName(fwUpdateInfo.InstallPaths), out string info);
+                    if (!string.IsNullOrEmpty(workingDirectory))
                     {
-                        _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} {processName}.Length: {processes.Length}");
-                        _clientProcess = processes[0];
-                        if (fwUpdateInfo.IsDisplay)
+                        _logs.DebugMsg_1($"workingDirectory is not null");
+                        if (DDPMFileSecurity.ValidateFilePath(workingDirectory, out info))
                         {
-                            _clientProcess.EnableRaisingEvents = true;
-                            _clientProcess.Exited += (sender, e) =>
+                            bool b = WTSFunction.StartProcessAndBypassUACWithAdmin(arguments_Final, workingDirectory, out procInfo);
+                            string processName = Path.GetFileNameWithoutExtension(fwUpdateInfo.InstallPaths);
+                            _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} Searching for process: {processName}");
+                            Process[] processes = Process.GetProcessesByName(processName);
+                            if (processes != null && processes.Length > 0)
                             {
-                                Process p = (Process)sender;
-                                if (fwUpdateInfo.IsDisplay && p != null)
+                                _logs.DebugMsg_1($"{nameof(Install)} {fwUpdateInfo.DeviceName} {processName}.Length: {processes.Length}");
+                                _clientProcess = processes[0];
+
                                 {
-                                    _logs.DebugMsg_1($"{processName} (Process)sender.ExitCode go");
-                                    exitCode = p.ExitCode;
-                                    _logs.DebugMsg_1($"{processName} (Process)sender.ExitCode done");
+                                    _clientProcess.EnableRaisingEvents = true;
+                                    _clientProcess.Exited += (sender, e) =>
+                                    {
+                                        Process p = (Process)sender;
+                                        if (fwUpdateInfo.IsDisplay && p != null)
+                                        {
+                                            _logs.DebugMsg_1($"{processName} (Process)sender.ExitCode go");
+                                            exitCode = p.ExitCode;
+                                            _logs.DebugMsg_1($"{processName} (Process)sender.ExitCode done");
+                                        }
+                                    };
                                 }
-                            };
+                                _clientProcess.WaitForExit();
+                                _logs.DebugMsg_1($"{processName} process is done.");
+                            }
+                            else
+                            {
+                                _logs.DebugMsg_1($"{processName} process not found.");
+                                resetState();
+                                _updateErrorCode = FWUErrorCode.Unknow;
+                                _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName} {nameof(Install)} {LangHelper.Instance["Service_not_running_Try_again"]}");
+                                _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
+                                return _updateErrorCode;
+                            }
+                            _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " StartProcessAndBypassUACWithAdmin done b : " + b);
                         }
-                        _clientProcess.WaitForExit();
-                        _logs.DebugMsg_1($"{processName} process is done.");
+                        else
+                        {
+                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} {fwUpdateInfo.DeviceName} FilePathIsNotSafe - result : {info}");
+                            _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            _updateErrorCode = FWUErrorCode.FileIsNoSafe;
+                            return _updateErrorCode;
+                        }
                     }
                     else
                     {
-                        _logs.DebugMsg_1($"{processName} process not found.");
-                        resetState();
-                        _updateErrorCode = FWUErrorCode.Unknow;
-                        _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName} {nameof(Install)} {LangHelper.Instance["Service_not_running_Try_again"]}");
-                        _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
-                        _namedPipeServer.Dispose();
-                        return _updateErrorCode;
+                        _logs.DebugMsg_1($"{nameof(Install)} workingDirectory is null, info : {info}");
                     }
-
-                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " StartProcessAndBypassUACWithAdmin done b : " + b);
                     //UserImpersonator.RunAsUser(token, () =>
                     //{
                     //    using (_clientProcess = new Process())
@@ -1717,10 +1722,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     //        }
                     //    }
                     //});
+
+                    if (_updateErrorCode == FWUErrorCode.Unknow)
+                    {
+                        _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
+                    }
+                    _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " _updateErrorCode : " + _updateErrorCode);
+
                 }
+                _logs.DebugMsg_1($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} exitCode : {exitCode}");
                 if (fwUpdateInfo.IsDisplay)
                 {
-                    WriteLog($"{DateTime.Now}--DeviceName : {fwUpdateInfo.DeviceName} Model : {fwUpdateInfo.Model} to ver : {fwUpdateInfo.TheLatestVersion} exitCode : {exitCode}");
                     if (exitCode == 0)
                     {
                         _updateErrorCode = FWUErrorCode.NoError;
@@ -1810,7 +1822,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _updateErrorCode = FWUErrorCode.Unknow;
                 _logs.DebugMsg_1(fwUpdateInfo.DeviceName + nameof(Install) + " Error:" + ex.ToString());
                 _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
-                _namedPipeServer.Dispose();
                 return _updateErrorCode;
             }
         }
@@ -1957,27 +1968,41 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     if (msg1Node.InnerText == "M1")
                     {
-                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                        if (_fWUpdateInfo.DeviceType == DeviceType.LogicalMouse)
                         {
-                            DeviceName = _fWUpdateInfo.DeviceName,
-                            Model = _fWUpdateInfo.Model,
-                            TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                            ProcessName = LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"]
-                        };
-                        sendMessageToEvent(updateProgressInfo);
-                        _logs.DebugMsg_1("Get M1:Please double click mouse left button to start firmware update");
+                            UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                            {
+                                DeviceName = _fWUpdateInfo.DeviceName,
+                                Model = _fWUpdateInfo.Model,
+                                TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                                ProcessName = LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"]
+                            };
+                            sendMessageToEvent(updateProgressInfo);
+                            _logs.DebugMsg_1("Get M1:Please double click mouse left button to start firmware update");
+                        }
+                        else
+                        {
+                            _logs.DebugMsg_1("Get M1: but device is not mouse");
+                        }
                     }
                     else if (msg1Node.InnerText == "M2")
                     {
-                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                        if (_fWUpdateInfo.DeviceType == DeviceType.LogicalKeyboard)
                         {
-                            DeviceName = _fWUpdateInfo.DeviceName,
-                            Model = _fWUpdateInfo.Model,
-                            TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                            ProcessName = LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"]
-                        };
-                        sendMessageToEvent(updateProgressInfo);
-                        _logs.DebugMsg_1("Get M2:Please press \"U\" key on keyboard to start firmware update");
+                            UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                            {
+                                DeviceName = _fWUpdateInfo.DeviceName,
+                                Model = _fWUpdateInfo.Model,
+                                TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                                ProcessName = LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"]
+                            };
+                            sendMessageToEvent(updateProgressInfo);
+                            _logs.DebugMsg_1("Get M2:Please press \"U\" key on keyboard to start firmware update");
+                        }
+                        else
+                        {
+                            _logs.DebugMsg_1("Get M2: but device is not keyboard");
+                        }
                     }
                     else
                     {
@@ -2183,6 +2208,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _namedPipeServer.MessageReceived -= _namedPipeServer_MessageReceived;
                 _namedPipeServer.ClientConnectedEvent -= _namedPipeServer_ClientConnectedEvent;
                 _namedPipeServer.ClientDisconnectedEvent -= _namedPipeServer_ClientDisconnectedEvent;
+                _namedPipeServer.Dispose();
                 _namedPipeServer = null;
                 _logs.DebugMsg_1($"{nameof(resetState)} _namedPipeServer remove event done");
             }
@@ -2454,6 +2480,85 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _logs.DebugMsg_1($"GetConnected ConnectionType : {ConnectionType}");
             _logs.DebugMsg_1($"GetConnected done");
             return ConnectionType;
+        }
+        string BuildArgs(FWUpdateInfo fwUpdateInfo, string namedPipeName, string logPath)
+        {
+            _logs.DebugMsg_1($"BuildArgs start");
+            string arguments = "";
+            if (!fwUpdateInfo.IsDisplay)
+            {
+                // 要運行的安裝程式路徑和命令行參數
+                arguments = (fwUpdateInfo.IsUOD ? "/uod " : "") + "/silent" + " /pipename:" + namedPipeName;
+                if (fwUpdateInfo.DeviceType == DeviceType.LogicalMouse ||
+                    fwUpdateInfo.DeviceType == DeviceType.LogicalKeyboard)
+                {
+                    //updatepath commandLine
+                    _logs.DebugMsg_1($"BuildArgs updatepath go");
+                    switch (fwUpdateInfo.Connectivity)
+                    {
+                        case "Wired":
+                            arguments += $" /updatepath:Wired";
+                            _logs.DebugMsg_1($"BuildArgs Add : /updatepath:Wired");
+                            break;
+                        case "RF":
+                            arguments += $" /updatepath:RF";
+                            _logs.DebugMsg_1($"BuildArgs Add : /updatepath:RF");
+                            break;
+                        case "Bluetooth":
+                            arguments += $" /updatepath:BLE";
+                            _logs.DebugMsg_1($"BuildArgs Add : /updatepath:BLE");
+                            break;
+                    }
+                    _logs.DebugMsg_1($"BuildArgs updatepath done");
+                    _logs.DebugMsg_1($"BuildArgs DeviceType go");
+                    //DeviceType commandLine
+                    switch (fwUpdateInfo.DeviceType)
+                    {
+                        case DeviceType.LogicalMouse:
+                            arguments += $" /DeviceType:Mouse";
+                            _logs.DebugMsg_1($"BuildArgs Add : /DeviceType:Mouse");
+                            break;
+                        case DeviceType.LogicalKeyboard:
+                            arguments += $" /DeviceType:Keyboard";
+                            _logs.DebugMsg_1($"BuildArgs Add : /DeviceType:Keyboard");
+                            break;
+                    }
+                    _logs.DebugMsg_1($"BuildArgs DeviceType done");
+                }
+                _logs.DebugMsg_1($"BuildArgs devicePath go");
+                arguments += $" /devicePath:" + fwUpdateInfo.DevicePath;
+                _logs.DebugMsg_1($"BuildArgs devicePath done");
+                _logs.DebugMsg_1($"BuildArgs Log go");
+                //Log commandLine
+                switch (fwUpdateInfo.DeviceType)
+                {
+                    case DeviceType.LogicalDock:
+                    case DeviceType.PhysicalWiredDock:
+                        arguments += $" /f";
+                        if (!string.IsNullOrEmpty(logPath))
+                        {
+                            arguments += $" /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"";
+                            _logs.DebugMsg_1($"BuildArgs Add : /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"");
+                        }
+                        break;
+                }
+                _logs.DebugMsg_1($"BuildArgs Log done");
+            }
+            else
+            {
+                _logs.DebugMsg_1($"BuildArgs display go");
+                arguments = $"-q --force --skip-app-retry -f";
+                if (!string.IsNullOrEmpty(logPath))
+                {
+                    _logs.DebugMsg_1($"BuildArgs Log go");
+                    arguments += $" \"{logPath}\"";
+                    _logs.DebugMsg_1($"BuildArgs Add : \"{logPath}\"");
+                    _logs.DebugMsg_1($"BuildArgs Log done");
+                }
+                _logs.DebugMsg_1($"BuildArgs display done");
+            }
+            _logs.DebugMsg_1($"BuildArgs done");
+            return arguments;
         }
 
         // add @ 20241202 stephen

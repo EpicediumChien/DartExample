@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Documents;
@@ -16,6 +17,8 @@ using static DDPM.RemoteManagement.Common.Interfaces.Params;
 using static DDPM.SA.Common.ICLICommandTable;
 using Convert = System.Convert;
 
+
+[assembly: InternalsVisibleTo("CLI.Plugins.Display.Test")]   //For internal class test
 namespace CLI.Plugins.Display
 {
     internal class CLIPxp

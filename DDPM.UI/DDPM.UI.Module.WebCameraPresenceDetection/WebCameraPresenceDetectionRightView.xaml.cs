@@ -299,7 +299,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
         {
             var psi = new System.Diagnostics.ProcessStartInfo();
 
-            psi.FileName = "ms-settings:signinoptions-launchfaceenrollment";
+            psi.FileName = "ms-settings:presence"; // Jim 20241223 Modify for PIMS-319086 [DDPM Win 2.0][R15 webcam] Click "Windows setting" in DDPM Presence Detection link is wrong, when SUT Support HPD_MPS, DUT is with HPD_MPS FW.
             psi.UseShellExecute = true;
 
             System.Diagnostics.Process.Start(psi);

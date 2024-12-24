@@ -8,6 +8,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace DDPM.UI.Plugin.SettingsPlugin
@@ -38,7 +39,15 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void CheckUpdate_Click(object sender, RoutedEventArgs e)
         {
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
-            vm.CheckUpdate();
+            if (vm != null)
+            {
+                vm.CheckUpdate();
+            }
+            else
+            {
+                _log?.Info("CheckUpdate_Click vm is null");
+            }
+            _log?.Info("CheckUpdate_Click finish");
         }
         private void DownloadAndInstall_Click(object sender, RoutedEventArgs e)
         {
@@ -60,28 +69,52 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         private void CallFWU(SettingsPageViewModel vm)
         {
-            List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true).Result;
-            bool b = true;
-            foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfos)
-            {
-                if (fwUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
-                {
-                    //b = true;
-                }
-            }
-            if (b || vm.SWUpdateInfoPackage.SWUpdateInfo.Count > 0)
+            _log?.Info("CallFWU start");
+            if (vm != null)
             {
                 if (vm.SWUpdateInfoPackage.SWUpdateInfo.Count > 0)
                 {
+                    _log?.Info("CallFWU SW_DownloadAndInstall go");
                     List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(vm.SWUpdateInfoPackage.SWUpdateInfo, true).Result;
+                    _log?.Info("CallFWU SW_DownloadAndInstall finish");
                 }
-                if (vm.SWUpdateInfoPackage.SWUpdateInfo.Count <= 0)
+                else if (vm.FWUpdateInfoPackage.FWUpdateInfo.Count > 0)
                 {
-                    string exePath = Assembly.GetExecutingAssembly().Location;
-                    string folderPath = Path.GetDirectoryName(exePath);
-                    Thread t1 = new Thread(() => DdpmCommonHelper.DeviceManagerSA.CallDDPMUI(folderPath));
-                    t1.Start();
+                    _log?.Info("CallFWU DownloadAndInstall go");
+                    List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true).Result;
+                    _log?.Info("CallFWU DownloadAndInstall finish");
+                    _log?.Info("CallFWU restart DDPM go");
+                    string? exePath = Assembly.GetExecutingAssembly().Location;
+                    if (!string.IsNullOrEmpty(exePath))
+                    {
+                        string? folderPath = Path.GetDirectoryName(exePath);
+                        if (!string.IsNullOrEmpty(folderPath))
+                        {
+                            if (DdpmCommonHelper.DeviceManagerSA != null)
+                            {
+                                Thread t1 = new Thread(() => DdpmCommonHelper.DeviceManagerSA.CallDDPMUI(folderPath));
+                                t1.Start();
+                                _log?.Info("CallFWU restart DDPM finish");
+                            }
+                            else
+                            {
+                                _log?.Info("CallFWU restart DDPM DeviceManagerSA is null");
+                            }
+                        }
+                        else
+                        {
+                            _log?.Info("CallFWU restart DDPM folderPath is null");
+                        }
+                    }
+                    else
+                    {
+                        _log?.Info("CallFWU restart DDPM exePath is null");
+                    }
                 }
+            }
+            else
+            {
+                _log?.Info("CallFWU vm is null");
             }
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -111,6 +144,19 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void ChangeToHorizontalLayout()
         {
             spFWUpdate.Orientation = Orientation.Horizontal;
+        }
+
+        private void HandlePreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.Handled = true;
+                var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
+                eventArg.RoutedEvent = UIElement.MouseWheelEvent;
+                eventArg.Source = sender;
+                var parent = ((Control)sender).Parent as UIElement;
+                parent.RaiseEvent(eventArg);
+            }
         }
     }
 }

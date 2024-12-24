@@ -75,7 +75,35 @@ namespace DDPM.SA.Common.Popup
                 Task.Delay(autoCloseTimeInSeconds * 1000).ContinueWith(t => this.Dispatcher.Invoke(Close));
             }
         }
+        public void UpdateContent(string HeaderText, string SubHeaderText)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(UpdateContent);
+                return;
+            }
+            Header1.Text = HeaderText;
+            SubHeader1.Text = SubHeaderText;
+        }
+        public void ShowWindow()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(ShowWindow);
+                return;
+            }
+            Show();
+        }
 
+        public void CloseWindow()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(CloseWindow);
+                return;
+            }
+            Close();
+        }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             //Robert_Lin, 2024-11-8, the return value of PopBase.ShowDialog()

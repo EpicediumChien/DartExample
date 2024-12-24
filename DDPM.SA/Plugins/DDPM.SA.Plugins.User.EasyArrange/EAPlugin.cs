@@ -1,6 +1,3 @@
-//#define REMOVE_EA
-//Define this flag will remove EA functions
-
 using CommunityToolkit.Mvvm.DependencyInjection;
 using DDPM.Easy.Common;
 using DDPM.EABroker;
@@ -122,6 +119,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
  
         #region Log/Debug messages
 
+        //Robert_Lin, 2024-12-20, LogInfo() and LogExcetion() will be removed, use WriteLog() instead.
         private void LogInfo(string msg)
         {
             _log?.Info(msg);
@@ -137,15 +135,16 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + "[EAPlugin] " + msg);
         }
 
-        private bool isDebug20241008()
-        {
-            string iniFile = @"C:\temp\DDPMDebug.txt";
-            if (System.IO.File.Exists(iniFile))
-            {
-                return (Win32Lib.Win32.IniReadInt("DDPMDebug", "DDPM.SA.EAPlugin.Debug.20241008", 0, iniFile) == 1);
-            }
-            return false;
-        }
+        //Robert_Lin, 2024-12-20 Comment-out unused code
+        //private bool isDebug20241008()
+        //{
+        //    string iniFile = @"C:\temp\DDPMDebug.txt";
+        //    if (System.IO.File.Exists(iniFile))
+        //    {
+        //        return (Win32Lib.Win32.IniReadInt("DDPMDebug", "DDPM.SA.EAPlugin.Debug.20241008", 0, iniFile) == 1);
+        //    }
+        //    return false;
+        //}
         #endregion Log/Debug messages
 
         #region IDisposableObservable Support
@@ -183,7 +182,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             PluginCondition = new PluginStartedCondition();
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
 
-#if !REMOVE_EA
             //Monitoring plugins state
             //2024-8-13 Robert_Lin, EAPlugin has fixed .NET 8 issues, so uncomment below statements.
             // 2024-08-06 Elie, Mask InitializeDeviceManagerPlugin() function to skip .NET 8 for more than two monitor cause exception issue. ==> System.IO.IOException: 'Cannot locate resource 'eaworkwindow.baml'.'
@@ -194,10 +192,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 InitializeDisplayManagerPlugin();
                 InitializeHotkeyPlugin();
             }
-#endif
         }
 
-#endregion Overriding methods
+        #endregion Overriding methods
 
         #region PluginManager related
 
@@ -705,13 +702,28 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             Trace.WriteLine("@ EditCommand()");
             Trace.WriteLine($"  * Monitor.Model=[{monitorInfo.modelName}], ServiceTag=[{monitorInfo.edid.ServiceTag}]");
             Trace.WriteLine($"  * EAArgs.Split=[{args.SplitJson.CellCount}{args.SplitJson.SplitKey}], CustomName=[{args.SplitJson.CustomName}]");
-            LogInfo($"@EAPlugin.EditCommand(Monitor:{monitorInfo.modelName}[{monitorInfo.edid.ServiceTag}],EAArgs:{args.SplitJson.CellCount}{args.SplitJson.SplitKey}[{args.SplitJson.CustomName}])");
-            
+
+            //Robert_Lin, 2024-12-20, LogInfo will be removed, used WriteLog() instead.
+            //Add LogInfo in this file will be chaned to WriteLog()
+
+            //LogInfo($"@EAPlugin.EditCommand(Monitor:{monitorInfo.modelName}[{monitorInfo.edid.ServiceTag}],EAArgs:{args.SplitJson.CellCount}{args.SplitJson.SplitKey}[{args.SplitJson.CustomName}])");
+            WriteLog($"@EAPlugin.EditCommand(Monitor:{monitorInfo.modelName}[{monitorInfo.edid.ServiceTag}],EAArgs:{args.SplitJson.CellCount}{args.SplitJson.SplitKey}[{args.SplitJson.CustomName}])");
+
             //Validation
             //
             if (!_isEaBrokerStarted)
             {
-                LogInfo("@EAPlugin.EditCommand(), _isEaBrokerStarted is false.");
+                WriteLog("@EAPlugin.EditCommand(), _isEaBrokerStarted is false.");
+                return Task.FromResult(false);
+            }
+            if (_eaBroker == null)
+            {
+                WriteLog("@EAPlugin.EditCommand(), _eaBroker is null.");
+                return Task.FromResult(false);
+            }
+            if (_eaBroker?.RunningState != eEARunningStates.Waiting)
+            {
+                WriteLog($"@EAPlugin.EditCommand(), EABroker.RunningState is {_eaBroker?.RunningState}.");
                 return Task.FromResult(false);
             }
 
@@ -815,6 +827,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                     //2 To notify EABroker, we are in Edit process, disable WorkWindow/AwsWindow
                     _eaBroker.VM.IsWorkUIEnabled = false;
+                    _eaBroker.RunningState = eEARunningStates.Edit;
 
                     //3 Show SaveCustomWindow, until user click Save or Cancel
                     //_saveCustomWindow = new EABroker.SaveCustomWindow(_deviceManagerPlugin);
@@ -839,7 +852,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         //}
                         SendEditReturn_Cancel("User cancel the editing.");
                         if (_eaBroker != null)
+                        {
                             _eaBroker.VM.IsWorkUIEnabled = true;
+                            _eaBroker.RunningState = eEARunningStates.Waiting;
+                        }
                         return true;
                     }
 
@@ -888,7 +904,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                             EditReturn(this, retArgs);
 
                         if (_eaBroker != null)
+                        {
                             _eaBroker.VM.IsWorkUIEnabled = true;
+                            _eaBroker.RunningState = eEARunningStates.Waiting;
+                        }
                     }; //_overlapWindow.CaptureDone += delegate
 
                    // _overlapWindow.Show();
@@ -923,7 +942,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 else //_editOverlapCutsomWay=1
                 {
                     //DO NOT set _editOverlapCutsomWay=1, issues not been fixed
-
+                    //Robert_Lin, 2024-12-19 comment-out the unused code
+                    /*
                     //1 Show EditWindow
                     _editWindow = new EABroker.EAEditWindow(_log);
                     //if (!_editWindow.ShowAndEdit_v1(args, workingArea))
@@ -950,7 +970,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                     //4 To notify EABroker, we are in Edit process, disable WorkWindow/AwsWindow
                     _eaBroker.VM.IsWorkUIEnabled = false;
-
+                    */
                 }
             }
             else //Non-Overlap layout
@@ -987,6 +1007,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         _saveCustomWindow.Close();
                         _saveCustomWindow = null;
                     }
+
+                    if (_eaBroker != null)
+                    {
+                        _eaBroker.VM.IsWorkUIEnabled = true;
+                        _eaBroker.RunningState = eEARunningStates.Waiting;
+                    }
                 };
                 _saveCustomWindow.SaveButtonClick += delegate
                 {
@@ -1015,7 +1041,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         EditReturn(this, retArgs);
 
                     if (_eaBroker != null)
+                    {
                         _eaBroker.VM.IsWorkUIEnabled = true;
+                        _eaBroker.RunningState = eEARunningStates.Waiting;
+                    }
 
                     if (_editWindow != null)
                     {
@@ -1038,6 +1067,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
                 //4 To notify EABroker, we are in Edit process, disable WorkWindow/AwsWindow
                 _eaBroker.VM.IsWorkUIEnabled = false;
+                _eaBroker.RunningState = eEARunningStates.Edit;
 
                 //5 Wait for user click "Save" or "Cancel"
             }
@@ -1088,24 +1118,27 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         /// <returns></returns>
         public Task<bool> SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
         {
+            //Robert_Lin, 2024-12-20, LogInfo will be removed, used WriteLog() instead.
+            //Add LogInfo in this file will be chaned to WriteLog()
+
             if (_eaBroker == null)
             {
-                LogInfo($"SetEASelectedLayout({eaId}) return false: _eaBroker is null.");
+                WriteLog($"SetEASelectedLayout({eaId}) return false: _eaBroker is null.");
                 return Task.FromResult(false);
             }
             if (!_isEaBrokerStarted)
             {
-                LogInfo($"SetEASelectedLayout({eaId}) return false: _eaBroker is not started.");
+                WriteLog($"SetEASelectedLayout({eaId}) return false: _eaBroker is not started.");
                 return Task.FromResult(false);
             }
             if (_deviceManagerPlugin == null)
             {
-                LogInfo($"SetEASelectedLayout({eaId}) return false: _deviceManagerPlugin is not started.");
+                WriteLog($"SetEASelectedLayout({eaId}) return false: _deviceManagerPlugin is not started.");
                 return Task.FromResult(false);
             }
             if (_eaBroker.VM == null)
             {
-                LogInfo($"SetEASelectedLayout({eaId}) return false: EABroker.VM is null.");
+                WriteLog($"SetEASelectedLayout({eaId}) return false: EABroker.VM is null.");
                 return Task.FromResult(false);
             }
 
@@ -1127,7 +1160,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     if (cusSplit == null)
                     {
                         _eaBroker.VM.EAPluginLastError = $"EAID(={eaId}) not found in CustomList.";
-                        LogInfo($"SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
+                        WriteLog($"SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
                         return Task.FromResult(false);
                     }
                 }
@@ -1136,7 +1169,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 //[50~999] Invalid EAID
                 _eaBroker.VM.EAPluginLastError = $"EAID(={eaId}) is not a valid EA layout ID.";
-                LogInfo($"SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
+                WriteLog($"SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
                 return Task.FromResult(false);
             }
 
@@ -1145,7 +1178,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (eaSettings == null)
             {
                 _eaBroker.VM.EAPluginLastError = "ReadEAMonitorSettings() return null.";
-                LogInfo($"SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
+                WriteLog($"SetEASelectedLayout({eaId}) return false: {_eaBroker.VM.EAPluginLastError}");
                 return Task.FromResult(false);
             }
 
@@ -1154,7 +1187,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             {
                 if (eaSettings.SelectedSplit.EAID == eaId)
                 {
-                    LogInfo($"SetEASelectedLayout({eaId}) return true: Current selected layout is the same, nothing to do.");
+                    WriteLog($"SetEASelectedLayout({eaId}) return true: Current selected layout is the same, nothing to do.");
                     return Task.FromResult(true);
                 }
             }
@@ -1175,6 +1208,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         private bool STA_SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
         {
+            //Robert_Lin, 2024-12-20, LogInfo will be removed, used WriteLog() instead.
+            //Add LogInfo in this file will be chaned to WriteLog()
+
             if (_eaBroker == null)
             {
                 LogInfo($"STA_SetEASelectedLayout({eaId}) return false: _eaBroker is null.");
@@ -1656,12 +1692,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         #region EA Broker
 
         /// <summary>
-        /// A <Display.DeviceName, WorkWindow> dictionary, each display will allcate a WorkWindow to serve it.
-        /// where Display.DeviceName example: "\\.\DISPLAY1"
+        /// Startup the EABroker. Set _isEaBrokerStarted to true, and let EABroker enter Waitig state.
         /// </summary>
-        //private Dictionary<string, EAWorkWindow> _workWindows = new Dictionary<string, EAWorkWindow>();
-
-
         public void EABroker_Start()
         {
             //Lock until we set _isEaBrokerStarted
@@ -1696,16 +1728,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             }
 
-            //Robert_Lin: Debug - Need to remove in release build
-            //if (isDebug20241008())
-            //{
-            //    _vmArrange.EzSettings = new EzSettings()
-            //    {
-            //        //IsOnlyAllowWhenShiftKeyPressed = true,
-            //        //IsAwsEnabled = true
-            //    };
-            //}
-
             EzMemLauncher.DeviceManagerSA = _deviceManagerPlugin;
             EzMemLauncher.Log = _log;
 
@@ -1716,77 +1738,36 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
             //Robert_Lin, 2024-12-10
             _agent.RegisterForEvent(AgentEventNames.AllInfoMonitorsChanged, AllInfoMonitorChangedHandler);
-            ConsoleWriteLine(" = = = = = = = = = =   EABroker Exit");
+            ConsoleWriteLine(" = = = = = = = = = =  END of EABroker Start");
         }
 
-        //private void Debug_New3Windows()
-        //{
-        //    Thread thread = new Thread(() =>
-        //    {
-        //        try
-        //        {
-        //            _log?.Info($"@ before new w1.");
-        //            Window1 w1 = new Window1();
-        //            _log?.Info($"@ after new w1.");
-        //            w1.Show();
-        //        }
-        //        catch (Exception e1)
-        //        {
-        //            _log?.Info(e1, $"new w1 exception");
-        //        }
-
-        //        try
-        //        {
-        //            _log?.Info($"@ before new w2.");
-        //            Window1 w2 = new Window1();
-        //            _log?.Info($"@ after new w2.");
-        //            w2.Show();
-        //        }
-        //        catch (Exception e2)
-        //        {
-        //            _log?.Info(e2, $"new w2 exception");
-        //        }
-
-        //        try
-        //        {
-        //            _log?.Info($"@ before new w3.");
-        //            Window1 w3 = new Window1();
-        //            _log?.Info($"@ after new w3.");
-        //            w3.Show();
-        //        }
-        //        catch (Exception e3)
-        //        {
-        //            _log?.Info(e3, $"new w3 exception");
-        //        }
-
-        //        System.Windows.Threading.Dispatcher.Run();
-        //    });
-
-        //    thread.SetApartmentState(ApartmentState.STA);
-        //    thread.Start();
-
-        //    _log?.Info($"@ Debug_New3Windows(), after thread.Start().");
-        //}
-
+        /// <summary>
+        /// Exiting from EABroker_Start().
+        /// </summary>
         public void EABroker_Stop()
         {
-            Thread thread = new Thread(() =>
-            {
-                Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + "[EAPlugin] EABroker_Stop.");
+            //Robert_Lin, 2024-12-20 no need a STA thread to do something any more, comment-out
+            //Thread thread = new Thread(() =>
+            //{
+            //    Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + "[EAPlugin] EABroker_Stop.");
 
-                //WinEventHook_Stop();
-                //_vmArrange.ClearWorkWindows();
-                //_vmArrange.ResetWorkWindows2();
+            //    //WinEventHook_Stop();
+            //    //_vmArrange.ClearWorkWindows();
+            //    //_vmArrange.ResetWorkWindows2();
 
-                System.Windows.Threading.Dispatcher.Run();
-            });
+            //    System.Windows.Threading.Dispatcher.Run();
+            //});
 
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
+            //thread.SetApartmentState(ApartmentState.STA);
+            //thread.Start();
 
             //if (_displayManagerPlugin != null)
             //    _displayManagerPlugin.Displaychanged -= _displayManagerPlugin_Displaychanged;
             _agent.UnregisterForEvent(AgentEventNames.DisplaySettingsChanged, DisplaySettingsChangedHandler);
+            if (_eaBroker != null)
+            {
+                _eaBroker.Stop();
+            }
         }
 
         //It should be call once DeviceManagerSA & DisplayManager are loaded
@@ -1807,183 +1788,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             PluginIoc.ConfigureServices(services.BuildServiceProvider());
         }
 
-        //private EAWorkWindow? _workWin0, _workWin1, _workWin2, _workWin3, _workWin4;
-        //private SaveCustomWindow? _save2;
-
-        private void InitAllWindows_Unused()
-        {
-            /*
-            int added = 0;
-            Thread thread = new Thread(() =>
-            {
-
-                if (_editWindow == null)
-                {
-                    try
-                    {
-                        LogInfo("Before new EAEditWindow");
-                        _editWindow = new EAEditWindow();
-                        LogInfo("After new EAEditWindow");
-                        _editWindow.DataContext = _vmArrange;
-                        _editWindow.Show();
-                    }
-                    catch (Exception exA)
-                    {
-                        LogException(exA, "EXCEPTION when new EAEditWindow()");
-                    }
-                }
-                if (_saveCustomWindow == null)
-                {
-                    try
-                    {
-                        LogInfo("Before new SaveCustomWindow");
-                        _saveCustomWindow = new SaveCustomWindow();
-                        LogInfo("After new SaveCustomWindow");
-                        if (_editWindow != null)
-                        {
-                            LogInfo("Setting up SaveCustomWindow");
-                            _saveCustomWindow.Owner = _editWindow;
-                            _saveCustomWindow.CancelButtonClick += saveCustomWidow_CancelButtonClick;
-                            _saveCustomWindow.SaveButtonClick += saveCustomWidow_SaveButtonClick;
-                            LogInfo("Setting up SaveCustomWindow - done");
-                        }
-                    }
-                    catch (Exception exS)
-                    {
-                        LogException(exS, "EXCEPTION when new SaveCustomWindow");
-                    }
-
-                }
-
-                if (_infoWindow == null)
-                {
-                    try
-                    {
-                        LogInfo("Before new InfoWindow");
-                        _infoWindow = new InfoWindow(_vmArrange);
-                        LogInfo("After new InfoWindow");
-                        _infoWindow.Show();
-                    }
-                    catch (Exception exIn)
-                    {
-                        LogException(exIn, "EXCEPTION when new InfoWindow");
-                    }
-                }
-
-                if (_workWin0 == null)
-                {
-                    try
-                    {
-                        LogInfo($"Before new EAWorkWindow(0)");
-                        _workWin0 = new EAWorkWindow(_vmArrange);
-                        LogInfo($"After new EAWorkWindow(0)");
-                        _workWin0.Show();
-                        _vmArrange.AddWorkWindow(_workWin0);
-                    }
-                    catch (Exception exW0)
-                    {
-                        LogException(exW0, "EXCEPTION when new EAWorkWindow(0)");
-                    }
-                }
-
-                if (_workWin1 == null)
-                {
-                    try
-                    {
-                        LogInfo($"Before new EAWorkWindow(1)");
-                        _workWin1 = new EAWorkWindow(_vmArrange);
-                        LogInfo($"After new EAWorkWindow(1)");
-                        _workWin1.Show();
-                        _vmArrange.AddWorkWindow(_workWin1);
-                    }
-                    catch (Exception exW1)
-                    {
-                        LogException(exW1, "EXCEPTION when new EAWorkWindow(1)");
-                    }
-                }
-
-                if (_workWin2 == null)
-                {
-                    try
-                    {
-                        LogInfo($"Before new EAWorkWindow(2)");
-                        _workWin2 = new EAWorkWindow(_vmArrange);
-                        LogInfo($"After new EAWorkWindow(2)");
-                        _workWin2.Show();
-                        _vmArrange.AddWorkWindow(_workWin2);
-                    }
-                    catch (Exception exW2)
-                    {
-                        LogException(exW2, "EXCEPTION when new EAWorkWindow(2)");
-                    }
-                }
-
-                if (_workWin3 == null)
-                {
-                    try
-                    {
-                        LogInfo($"Before new EAWorkWindow(3)");
-                        _workWin3 = new EAWorkWindow(_vmArrange);
-                        LogInfo($"After new EAWorkWindow(3)");
-                        _workWin3.Show();
-                        _vmArrange.AddWorkWindow(_workWin3);
-                    }
-                    catch (Exception exW3)
-                    {
-                        LogException(exW3, "EXCEPTION when new EAWorkWindow(3)");
-                    }
-                }
-
-                if (_workWin4 == null)
-                {
-                    try
-                    {
-                        LogInfo($"Before new EAWorkWindow(4)");
-                        _workWin4 = new EAWorkWindow(_vmArrange);
-                        LogInfo($"After new EAWorkWindow(4)");
-                        _workWin4.Show();
-                        _vmArrange.AddWorkWindow(_workWin4);
-                    }
-                    catch (Exception exW4)
-                    {
-                        LogException(exW4, "EXCEPTION when new EAWorkWindow(4)");
-                    }
-                }
-
-                if (_awsWindow == null)
-                {
-                    try
-                    {
-                        LogInfo($"Before new AwsWindow()");
-                        _awsWindow = new AwsWindow(_vmArrange);
-                        LogInfo($"After new AwsWindow(3)");
-                        _awsWindow.Show();
-                        _vmArrange.AwsWindow = _awsWindow;
-
-                    }
-                    catch (Exception exAws)
-                    {
-                        LogException(exAws, "EXCEPTION when new AwsWindow");
-                    }
-                }
-
-
-
-                added++;
-
-                System.Windows.Threading.Dispatcher.Run();
-            });
-
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-
-            while (added <= 0)
-            {
-                Thread.Sleep(10);
-            }
-            */
-        }
-        #endregion EA Broker
+         #endregion EA Broker
 
         #region Display Changed event
 
@@ -2008,6 +1813,14 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                             isInit = true;
                     }
                 }
+
+                //If we are in Edit state, then cancel the editing
+                if (_eaBroker.RunningState == eEARunningStates.Edit)
+                {
+                    //Fore to cancel the Edit Procedure
+                    
+                }
+
                 _eaBroker.Handle_DisplaySettingsChanged(isInit);
                 //Move blew statement into Handle_DisplaySettingsChanged()
                 //_eaBroker.VM.RefreshWorkWindows();
@@ -2020,6 +1833,14 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
 
         //Robert_Lin, 2024-12-10 added 
+        /// <summary>
+        /// The handler of IAgent event: AllInfoMonitorsChanged. 
+        /// The event is signaled from DisplayManagerPlugin.NotifyEAPluginAllInfoMonitorsChanged() 
+        /// when DisplayManager has collected all monitors.
+        /// EABroker need to detect SpanScreen when all monitors are rebuild.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AllInfoMonitorChangedHandler(object sender, EventManagerArgs e)
         {
             if (_eaBroker != null)
@@ -2029,51 +1850,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
         #endregion Display Changed event
 
-        #region InfoWindow - Unused
-
-        //private InfoWindow _infoWindow;
-
-        //private void InitInfoWindow()
-        //{
-        //    if (_infoWindow != null)
-        //        return;
-
-        //    int added = 0;
-        //    Task.Run(() =>
-        //    {
-        //        int addCount = 0;
-        //        Thread thread = new Thread(() =>
-        //        {
-        //            LogInfo("Before new InfoWindow");
-        //            _infoWindow = new InfoWindow(_vmArrange);
-        //            LogInfo("After new InfoWindow");
-        //            //_infoWindow.DataContext = _vmArrange;
-        //            _infoWindow.Show();
-        //            addCount++;
-        //            added++;
-        //            System.Windows.Threading.Dispatcher.Run();
-        //        });
-
-        //        thread.SetApartmentState(ApartmentState.STA);
-        //        thread.IsBackground = true;
-        //        thread.Start();
-
-        //        while (addCount <= 0)
-        //        {
-        //            Thread.Sleep(10);
-        //        }
-        //        //thread.Abort();
-        //        return Task.CompletedTask;
-        //    });
-        //    while (added <= 0)
-        //    {
-        //        Thread.Sleep(10);
-        //    }
-
-
-        //}
-
-        #endregion InfoWindow
 
         #region WorkWindows
 
@@ -2409,50 +2185,6 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         #endregion WorkWindows
 
-        #region AWS Window - Unused 
-        //private AwsWindow _awsWindow;
-
-        //private void InitAwsWindow()
-        //{
-        //    if (_awsWindow != null)
-        //        return;
-
-        //    int added = 0;
-        //    Task.Run(() =>
-        //    {
-        //        int addCount = 0;
-        //        Thread thread = new Thread(() =>
-        //        {
-        //            LogInfo("Before new AwsWindow");
-        //            _awsWindow = new AwsWindow(_vmArrange);
-        //            LogInfo("After new AwsWindow");
-        //            //_infoWindow.DataContext = _vmArrange;
-        //            _awsWindow.Show();
-        //            _vmArrange.AwsWindow = _awsWindow;  
-        //            addCount++;
-        //            added++;
-        //            System.Windows.Threading.Dispatcher.Run();
-        //        });
-
-        //        thread.SetApartmentState(ApartmentState.STA);
-        //        thread.IsBackground = true;
-        //        thread.Start();
-
-        //        while (addCount <= 0)
-        //        {
-        //            Thread.Sleep(10);
-        //        }
-        //        //thread.Abort();
-        //        return Task.CompletedTask;
-        //    });
-        //    while (added <= 0)
-        //    {
-        //        Thread.Sleep(10);
-        //    }
-
-
-        //}
-        #endregion AWS Window
 
         #region EditWindow and SaveCustomWindow
         /// <summary>
@@ -2888,15 +2620,17 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         }
         #endregion Debug Msg
 
-        #region General DDPM.SA Plugins Methods
+        #region General DDPM.SA Plugins Methods - Unused
 
-        private List<MonitorInfo>? GetMonitors()
-        {
-            if (_displayManagerPlugin == null)
-                return null;
+        //Robert_Lin, 2024-12-20 unused method, will be removed.
+        //EABroker call ArrangeVN.GetMonitors() now.
+        //private List<MonitorInfo>? GetMonitors()
+        //{
+        //    if (_displayManagerPlugin == null)
+        //        return null;
 
-            return _displayManagerPlugin.GetMonitors().Result;
-        }
+        //    return _displayManagerPlugin.GetMonitors().Result;
+        //}
 
         #endregion General DDPM.SA Plugins Methods
 

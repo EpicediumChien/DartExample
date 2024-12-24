@@ -462,11 +462,11 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         {
                             total_result += "Display :";
                             List<string> stringList = new List<string>
-                        {
-                            "RESTOREFACTORYDEFAULTS",
-                            "RESTORELEVELDEFAULTS",
-                            "RESTORECOLORDEFAULTS"
-                        };
+                            {
+                                "RESTOREFACTORYDEFAULTS",
+                                "RESTORELEVELDEFAULTS",
+                                "RESTORECOLORDEFAULTS"
+                            };
                             foreach (string str in stringList)
                             {
                                 e.commandLineInput.TargetFeature = str;
@@ -524,6 +524,22 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             Thread.Sleep(5000);
                         });
                         total_result += $"\n{JsonConvert.SerializeObject(cliPeripheralEventResults, Formatting.Indented)}";
+
+                        #region Set Telemetry Consent to Default(False)
+                        DDPMSettings data = _DevManagerPlugin.ReloadAppConfigData().Result;
+                        commandLineInput.TargetFeature = "TELEMETRYCONSENT";
+                        commandLineInput.Options = new List<CommandType_Option> { new CommandType_Option("VALUE", "FALSE") };
+                        cliEventResult = CLIHandlerApp.CLI_Analytics_Consent(Log, data, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                        total_result += $"\n{cliEventResult.serialize_Json_response}";
+                        #endregion
+
+                        #region Set ScreenNotification to Default(False)
+                        e.commandLineInput.TargetFeature = "SCREENNOTIFICATION";
+                        e.commandLineInput.Options = new List<CommandType_Option> { new CommandType_Option("VALUE", "ON") };
+                        cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
+                        total_result += $"\n{cliEventResult.serialize_Json_response}";
+                        #endregion
+
                         var result = new CLIEventResult()
                         {
                             command_guid_string = e.command_guid_string,

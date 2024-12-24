@@ -8,6 +8,7 @@ using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
@@ -270,7 +271,7 @@ namespace DDPM.UI.Common.ViewModels
             _log = console.CreateLog(logName);
         }
 
-        public void LogInfo(string message, Exception ex=null)
+        public void LogInfo(string message, Exception ex = null)
         {
             if (_log != null)
             {
@@ -415,6 +416,8 @@ namespace DDPM.UI.Common.ViewModels
             string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
             string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
             AMPMList = new List<string> { amDesignator, pmDesignator };
+
+            _isApplyEnabled = false;
         }
 
         private double _progressValue = 1;
@@ -471,6 +474,13 @@ namespace DDPM.UI.Common.ViewModels
 
         #region First page
 
+        private bool _isApplyEnabled = false;
+        public bool IsApplyEnabled
+        {
+            get => _isApplyEnabled;
+            set => SetProperty(ref _isApplyEnabled, value);
+        }
+
         private int _currentSelectsEAID;
         public int CurrentSelectsEAID
         {
@@ -508,7 +518,7 @@ namespace DDPM.UI.Common.ViewModels
             set => SetProperty(ref _isAddPageBack, value);
         }
 
-        private string _inputText = "Profile 1";
+        private string _inputText = LangHelper.Instance["EazyMemory.6"] + " 1";// "Profile 1";
         public string InputText
         {
             get => _inputText;
@@ -518,7 +528,7 @@ namespace DDPM.UI.Common.ViewModels
 
         #region RightView page
 
-        private string _profileTitleTextBlockValue;
+        private string _profileTitleTextBlockValue = "N/A";
         public string ProfileTitleTextBlockValue
         {
             get => _profileTitleTextBlockValue;
@@ -529,7 +539,7 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
-        private string _automaticStartupValue;
+        private string _automaticStartupValue = "N/A";
         public string AutomaticStartupValue
         {
             get => _automaticStartupValue;
@@ -540,7 +550,7 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
-        private string _launchByTimeValue;
+        private string _launchByTimeValue = "N/A";
         public string LaunchByTimeValue
         {
             get => _launchByTimeValue;
@@ -551,7 +561,7 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
-        private string _appDocumentValue;
+        private string _appDocumentValue = "N/A";
         public string AppDocumentValue
         {
             get => _appDocumentValue;
@@ -677,14 +687,14 @@ namespace DDPM.UI.Common.ViewModels
             if (string.IsNullOrEmpty(text) || textBox == null)
                 return 0;
 
- 
+
             Typeface typeface = new Typeface(
                 textBox.FontFamily,
                 textBox.FontStyle,
                 textBox.FontWeight,
                 textBox.FontStretch);
 
- 
+
             FormattedText formattedText = new FormattedText(
                 text,
                 System.Globalization.CultureInfo.CurrentCulture,
@@ -707,7 +717,7 @@ namespace DDPM.UI.Common.ViewModels
         {
             if (string.IsNullOrEmpty(text) || textBox == null)
                 return string.Empty;
-       
+
             const string ellipsis = "...";
             double ellipsisWidth = MeasureStringWidth(ellipsis, textBox);
             double textWidth = MeasureStringWidth(text, textBox);
@@ -729,7 +739,7 @@ namespace DDPM.UI.Common.ViewModels
                 string result = "";
                 while (start < end)
                 {
-                    int mid = (start + end) / 2;  
+                    int mid = (start + end) / 2;
                     string substring = text.Substring(0, mid);
                     double substringWidth = MeasureStringWidth(substring, textBox);
                     if (substringWidth + ellipsisWidth <= availableWidth)
@@ -926,13 +936,13 @@ namespace DDPM.UI.Common.ViewModels
                     return;
                 }
 
-                if (_sortApps.Values.Any(a =>a.AppName.Equals(fileName.First().Value.FileName, StringComparison.OrdinalIgnoreCase) || a.AppPath.Equals(fileName.First().Value.FilePath, StringComparison.OrdinalIgnoreCase)))
+                if (_sortApps.Values.Any(a => a.AppName.Equals(fileName.First().Value.FileName, StringComparison.OrdinalIgnoreCase) || a.AppPath.Equals(fileName.First().Value.FilePath, StringComparison.OrdinalIgnoreCase)))
                 {
                     _log.Info($"@[EzArrangeViewModel] HasDuplicateApp {cellBorder.Name} {fileName.First().Value.FileName}");
                     PopUpAlreadyexistsMessage(null);
                     return;
                 }
-                    var appData = new Bind_AddFullPage_AppCollectionData
+                var appData = new Bind_AddFullPage_AppCollectionData
                 {
                     AppType = "True" // Desktop
                 };
@@ -1017,7 +1027,7 @@ namespace DDPM.UI.Common.ViewModels
                 BitmapImage bitmap = new BitmapImage();
                 bitmap.BeginInit();
                 bitmap.UriSource = new Uri(filePath, UriKind.Absolute);
-                bitmap.CacheOption = BitmapCacheOption.OnLoad; 
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
                 bitmap.EndInit();
                 bitmap.Freeze();
                 _imageSource = bitmap;
@@ -1260,7 +1270,7 @@ namespace DDPM.UI.Common.ViewModels
             get => _ampmList;
             set => SetProperty(ref _ampmList, value);
         }
-       
+
         private string _selectedHour;
         public string SelectedHour
         {

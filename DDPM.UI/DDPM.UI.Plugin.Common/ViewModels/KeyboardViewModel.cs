@@ -120,6 +120,9 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!base.SetCurrentDevice(instanceID))
                 return false;
 
+            if (!IsCopilotEnabled)
+                RemoveCopilotAction();
+
             InitializeKey();
             if (CurrentDeviceInfo!.IsCollabsKeysSupported)
             {
@@ -177,6 +180,19 @@ namespace DDPM.UI.Plugin.ViewModels
                 CopilotInfoVisibility = Visibility.Collapsed;
 
             return true;
+        }
+
+        private void RemoveCopilotAction()
+        {
+            foreach (var ka in KeyboardAction.KeyActions)
+            {
+                if (ka.Value.AssignedAction.ID == 1)
+                {
+                    SelectedKey = ka.Key.ToString();
+                    UpdateAction(ka.Value.DefaultActionID);
+                }
+            }
+            SelectedKey = "";
         }
 
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")

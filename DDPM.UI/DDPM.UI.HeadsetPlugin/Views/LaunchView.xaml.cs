@@ -9,6 +9,7 @@ using DDPM.UI.Module.HeadsetDeviceSettings;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF.Controls;
+using System;
 using System.Diagnostics;
 using System.Net;
 using System.Windows;
@@ -114,6 +115,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                         }
                     }
                     DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+                    Loaded += LaunchView_LoadedStatus;
                 }
             }
         }
@@ -123,6 +125,31 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
                 DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+                DdpmCommonHelper.WriteUILog($"[Headset] ~LaunchView");
+            }
+        }
+
+        private async void LaunchView_LoadedStatus(object sender, RoutedEventArgs e)
+        {
+            if (_vm == null) return;
+
+            try
+            {
+                await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
+                DdpmCommonHelper.WriteUILog($"LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
+                if (!_vm.IsRestoreEnable)
+                {
+                    btnRestore.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    btnRestore.Visibility = Visibility.Collapsed;
+                }
+                DdpmCommonHelper.WriteUILog($"LaunchView_LoadedStatus IsRestoreEnable Check Done");
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"LaunchView_LoadedStatus Exception = {ex.Message}");
             }
         }
 
@@ -167,7 +194,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             moduleGroup.AddHeader(AudioSettings, new HeadsetAudioSettingsModule(_vm!));
             groups.Add(moduleGroup);
 
-            if (_vm.Model != "WH5024" && _vm.Model != "WH3024")
+            if (_vm!.Model != "WH5024" && _vm.Model != "WH3024")
             {
                 moduleGroup = new ModuleGroup()
                 {
@@ -178,8 +205,41 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
                 groups.Add(moduleGroup);
             }
-            //if (!_vm.IsIlluminationSupported)
-            //{
+            else
+            {
+                if (_vm.Model == "WH3024")
+                {
+                    DdpmCommonHelper.WriteUILog($"[LaunchView] Model = WH3024, FirmwareVersion = {_vm.FirmwareVersion}");
+                    if (_vm.ConvertVersionToInt(_vm.FirmwareVersion) >= 275)
+                    {
+                        moduleGroup = new ModuleGroup()
+                        {
+                            GroupName = AutomatedActions,
+                            GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
+                            GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
+                        };
+                        moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
+                        groups.Add(moduleGroup);
+                    }
+                }
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[LaunchView] Model = WH5024, FirmwareVersion = {_vm.FirmwareVersion}");
+                    if (_vm.ConvertVersionToInt(_vm.FirmwareVersion) >= 252)
+                    {
+                        moduleGroup = new ModuleGroup()
+                        {
+                            GroupName = AutomatedActions,
+                            GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
+                            GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
+                        };
+                        moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
+                        groups.Add(moduleGroup);
+                    }
+                }
+            }
+
+
             moduleGroup = new ModuleGroup()
             {
                 GroupName = DeviceSettings,
@@ -188,7 +248,6 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             };
             moduleGroup.AddHeader(DeviceSettings, new HeadsetDeviceSettingsModule(_vm!));
             groups.Add(moduleGroup);
-            //}
 
             _vm.ModuleGroups = groups;
         }

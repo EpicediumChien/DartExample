@@ -42,6 +42,7 @@ using System.Windows.Threading;
 using DDPM.SA.Common.UpdateProgressPage;
 using Windows.ApplicationModel.VoiceCommands;
 using Microsoft.Toolkit.Uwp.Notifications;
+using System.Linq;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -61,6 +62,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private const string PluginName = "DDPM Home plugin";
         private const string PluginVersion = "1.0";
         private const string Description = "Display DDPM.Homepage";
+
+        private List<MonitorInfo> _monitorCache = new List<MonitorInfo>();
 
         //internal static readonly Ioc PluginIoc = new();
         public static readonly Ioc PluginIoc = new();
@@ -150,6 +153,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 AddIconsToMasthead(masthead);
             }
+
+            //Robert_Lin, 2024-12-21 Register a event handler to handle when mainwindow
+            // move to new position
+            _console.RegisterForEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, Handle_MainWindow_MoveToNewPosition);
+
         }
 
         private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)
@@ -324,28 +332,34 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             _log.Info("Return from CollectAndCompareDevicesAsync()");
 
                             //Elapsed= 3692, 392 msec
+                            //Robert_Lin, 2024-12-18, PIMS-316225 DDPM take > 10sec to show Home Page on Launch after restart
+                            //  Move below code into a background task
                             //Robert_Lin 2024-8-2 DDPMW-579, If there is any FW/SW update available,
                             //then the Gear icon on masthead will show breathe & glow animation.
                             //Call once
-                            _log.Info("Calling to CheckIfSwFwUpdateAvailable()");
-                            if (CheckIfSwFwUpdateAvailable(_deviceManager)) 
+                            Task t1 = Task.Run(() =>
                             {
-                                _log.Info("Return from CheckIfSwFwUpdateAvailable(), return true");
-                                //Robert_Lin, 2024-12-9, Change GlowEffect_Start() to GlowEffect_Trigger()
-                                if (_iconGear != null)
+                                _log.Info("Calling to CheckIfSwFwUpdateAvailable()");
+                                if (CheckIfSwFwUpdateAvailable(_deviceManager))
                                 {
-                                    //Elapsed= 1, 1 msec
-                                    _log.Info("Calling to GlowEffect_Trigger()");
-                                    _iconGear.GlowEffect_Trigger();
-                                    //_iconGear.GlowEffect_Start();
+                                    _log.Info("Return from CheckIfSwFwUpdateAvailable(), return true");
+                                    //Robert_Lin, 2024-12-9, Change GlowEffect_Start() to GlowEffect_Trigger()
+                                    if (_iconGear != null)
+                                    {
+                                        //Elapsed= 1, 1 msec
+                                        _log.Info("Calling to GlowEffect_Trigger()");
+                                        _iconGear.GlowEffect_Trigger();
+                                        //_iconGear.GlowEffect_Start();
+                                    }
+                                    else
+                                    {
+                                        _log.Info("Not calling to GlowEffect_Trigger(), due to _iconGear is null.");
+                                    }
                                 }
                                 else
-                                {
-                                    _log.Info("Not calling to GlowEffect_Trigger(), due to _iconGear is null.");
-                                }
-                            }
-                            else
-                                _log.Info("Return from CheckIfSwFwUpdateAvailable(), return false");
+                                    _log.Info("Return from CheckIfSwFwUpdateAvailable(), return false");
+
+                            });
 
                             //Robert_Lin, 2024-12-9 install event handler for new update fw/sw info
                             _deviceManager.Peripherals_UpdateNotify += _deviceManager_Peripherals_UpdateNotify;
@@ -364,7 +378,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                         //Elapsed= 1 msec
                         _log.Info($"Calling to CheckIfNeedImportSetting_Display()");
-                        CheckIfNeedImportSetting_Display();
+                        _monitorCache.Clear();
+                        _monitorCache = _monitorInfos;
+                        CheckIfNeedImportSetting_Display(_monitorInfos);
                         _log.Info($"Return from CheckIfNeedImportSetting_Display()");
 
                         //await DDPMInfoSAHomepageIsReady();
@@ -488,7 +504,21 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         }
                     }
 
-                    if(e.device_display != null) CheckIfNeedImportSetting_Display();
+                    MonitorInfo newPlugIn = null;
+                    // If is a plugin event
+                    if(_monitorInfos.Count() >= _monitorCache.Count())
+                    {
+                        foreach (MonitorInfo monitor in _monitorInfos)
+                        {
+                            if (!_monitorCache.Contains(monitor))
+                            {
+                                newPlugIn = monitor;
+                                _monitorCache = _monitorInfos;
+                                break;
+                            }
+                        }
+                    }
+                    if (newPlugIn != null) CheckIfNeedImportSetting_Display(new List<MonitorInfo>() { newPlugIn });
                 }
                 else
                 {
@@ -511,14 +541,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
         }
 
-        private void CheckIfNeedImportSetting_Display()
+        private void CheckIfNeedImportSetting_Display(List<MonitorInfo> monitorInfos)
         {
             //For existing monitor to check if need to pop-up message to import setting
             Task.Run(() =>
             {
-                if (_monitorInfos == null && _monitorInfos.Count == 0)
+                if (monitorInfos == null && monitorInfos.Count == 0)
                     return;
-                List<MonitorInfo> temp_mos = _monitorInfos;
                 //make sure no walkthrough page displaying
                 while (WalkThroughQueue != null && WalkThroughQueue.Count > 0)
                 {
@@ -527,7 +556,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
                 string path = localAppDataPath + "\\Dell Display and Peripheral Manager\\Export";
 
-                foreach (MonitorInfo info in temp_mos)
+                foreach (MonitorInfo info in monitorInfos)
                 {
                     string model = info.modelName;//"U2724DE";
                     string serviceTag = info.edid.ServiceTag;
@@ -536,10 +565,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     //if(can popup messagebox && not yet to import / already click no need import)
                     if (File.Exists(exportpath))
                     {
-                        //avoid timing issue to cause monitor updated
-                        if (temp_mos.Count != _monitorInfos.Count)
-                            return;
-
                         //force return here to avoid page trigger, need Jason handle it
                         //return;
                         if (_viewModel != null)
@@ -1544,5 +1569,78 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
         }
         #endregion WalkThrough
+
+        #region MainWindow Move To new position
+        /// <summary>
+        /// Handle the IConsole Event, MainWindow_MoveToNewPosition, when DDPM main window
+        /// move to a new position.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">
+        /// e.Tag (bool): True if the window is moved by hotkey.
+        /// </param>
+        private void Handle_MainWindow_MoveToNewPosition(object sender, EventManagerArgs e)
+        {
+            //Conditions to handle this event
+            //1 DisplayPlugin is not activate
+            if (DdpmCommonHelper.IsDisplayPluginActivated)
+                return;
+            //2 DeviceManagerPlugin is ready
+            if (_deviceManager == null)
+                return;
+            //3 HomeDevices has monitor
+            if (_viewModel == null)
+                return;
+            if (_viewModel.HomeDeviceCount == 0)
+                return;
+
+            //TO DO:
+            //Action_1: Determine the Monitor where DDPM is moved to
+            //Action_2: Show the model name OSD (if the monitor is supported monitor)
+            //Action_3: Change the SelectedItem of Monitors combobox (if DisplayPlugin is activated)
+            _log?.Info($"@Handle_MainWindow_MoveToNewPosition() is called.");
+
+            //Action_1: Determine the Monitor where DDPM is moved to
+            string screenDeviceName = "";
+
+            //If e.Tag contains a DeviceName, then move the specified screen
+            if (e.Tag != null)
+            {
+                if (e.Tag is string)
+                {
+                    screenDeviceName = e.Tag.ToString();
+                }
+            }
+            //Else the screen will be get from mouse cursor position
+            if (String.IsNullOrEmpty(screenDeviceName))
+            {
+                //Get mouse cursor position
+                System.Drawing.Point cursorPosition = System.Windows.Forms.Cursor.Position;
+                //Get the Screen of the cursor
+                System.Windows.Forms.Screen screenOfCursor = System.Windows.Forms.Screen.FromPoint(cursorPosition);
+                screenDeviceName = screenOfCursor.DeviceName;
+            }
+
+            //Check if screen is different with last show
+            if (!screenDeviceName.Equals(DdpmCommonHelper.LastShowOsdScreenDeviceName))
+            {
+                //Find the monitor of the screen
+                foreach (HomeDevice homeDev in _viewModel.HomeDevices)
+                {
+                    if (homeDev.DeviceCategory != eDeviceCategory.Display)
+                        continue;
+                    if (homeDev.MonitorInfo == null)
+                        continue;
+                    if (homeDev.MonitorInfo.DisplayName.Equals(screenDeviceName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _deviceManager.ShowOSD(homeDev.MonitorInfo, OSDType.DisplayChanged);
+                    }
+                } //foreach
+
+                DdpmCommonHelper.LastShowOsdScreenDeviceName = screenDeviceName;
+            }
+        }
+        #endregion  MainWindow Move To new position
+
     }
 }
