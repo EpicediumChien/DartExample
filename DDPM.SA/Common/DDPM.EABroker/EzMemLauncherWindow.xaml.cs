@@ -258,13 +258,13 @@ namespace DDPM.EABroker
                     {
                         Trace.WriteLine($"[LaunchAndArrange] 2 => ArrangeWindow = {idx},{winUWP} APP already exit, SpecialGetHandle Find Handle = {handle}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, EzMemorySetForegroundWindow");
                         _log?.Info($"[LaunchAndArrange] 2 => ArrangeWindow = {idx}, {winUWP} APPalready exit, SpecialGetHandle Find Handle = {handle}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, EzMemorySetForegroundWindow");
-                        //if (app.AppType != "True")// 已經在而且為UWP
-                        //{
-                        //    Process process = LaunchApp(app, _log);
-                        //    handle = GetWindowHandle(app, _log);
-                        //    //Task.Delay(1000);
-                        //    //WinEventHook._SetWindowPos(handle, new IntPtr(-1))
-                        //}
+                        if (app.AppType != "True")// 已經在而且為UWP
+                        {
+                            Process process = LaunchApp(app, _log);
+                            handle = GetWindowHandle(app, _log);
+                            //Task.Delay(1000);
+                            //WinEventHook._SetWindowPos(handle, new IntPtr(-1))
+                        }
                         //else
                         //ShowWindowAsync(handle, SW_MAXIMIZE);
                         //ShowWindowAsync(handle, SW_SHOWNORMAL);
