@@ -2816,13 +2816,15 @@ namespace VcpCore.Plugins
         {
             uint cPhysicalMonitors = 0;
             bool bSuccess = _GetNumberOfPhysicalMonitorsFromHMONITOR(monitor.hMonitor, ref cPhysicalMonitors);
-            PHYSICAL_MONITOR[] pPhysicalMonitors = new PHYSICAL_MONITOR[cPhysicalMonitors];
-            bSuccess = _GetPhysicalMonitorsFromHMONITOR(monitor.hMonitor, cPhysicalMonitors, pPhysicalMonitors);
-
             if (bSuccess)
             {
-                if (pPhysicalMonitors.Length >= monitor.cPhysicalMonitors_index)
-                    monitor.hPhysicalMonitor = pPhysicalMonitors[monitor.cPhysicalMonitors_index].hPhysicalMonitor;
+                PHYSICAL_MONITOR[] pPhysicalMonitors = new PHYSICAL_MONITOR[cPhysicalMonitors];
+                bSuccess = _GetPhysicalMonitorsFromHMONITOR(monitor.hMonitor, cPhysicalMonitors, pPhysicalMonitors);
+                if (bSuccess)
+                {
+                    if (pPhysicalMonitors.Length >= monitor.cPhysicalMonitors_index)
+                        monitor.hPhysicalMonitor = pPhysicalMonitors[monitor.cPhysicalMonitors_index].hPhysicalMonitor;
+                }
             }
         }
 
@@ -2882,8 +2884,11 @@ namespace VcpCore.Plugins
                         }
                         finally
                         {
-                            regCount.Close();
-                            regCount.Dispose();
+                            if (regCount != null)
+                            {
+                                regCount.Close();
+                                regCount.Dispose();
+                            }
                         }
                     }
                 }

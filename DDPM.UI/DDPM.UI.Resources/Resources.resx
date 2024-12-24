@@ -3453,4 +3453,7 @@
   <data name="PIPLarge" xml:space="preserve">
     <value>PIP Large</value>
   </data>
+  <data name="Brightness.21" xml:space="preserve">
+    <value>Applies brightness/luminance, contrast, schedule settings,\nand color presets to the connected monitors</value>
+  </data>
 </root>
