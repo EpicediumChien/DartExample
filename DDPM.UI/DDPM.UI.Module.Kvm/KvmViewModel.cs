@@ -1074,28 +1074,35 @@ namespace DDPM.UI.Module.Kvm
             if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E9"))
             {
                 PxPCode = _curPxpMode;
-                if (PxPcodeDictionary[_curPxpMode] != null)
-                {
-                    VideoSwapContent = PxPcodeDictionary[_curPxpMode];
-                }
-                else
-                {
-                    PxpModeaddDic(_curPxpMode);
-                    VideoSwapContent = PxPcodeDictionary[_curPxpMode];
-
-                }
-                if (USBKVMisON)
+                if (PxPcodeDictionary.ContainsKey(_curPxpMode))
                 {
                     if (PxPcodeDictionary[_curPxpMode] != null)
                     {
-                        VideoSwapContent_Left = PxPcodeDictionary[_curPxpMode];
+                        VideoSwapContent = PxPcodeDictionary[_curPxpMode];
                     }
                     else
                     {
                         PxpModeaddDic(_curPxpMode);
-                        VideoSwapContent_Left = PxPcodeDictionary[_curPxpMode];
+                        VideoSwapContent = PxPcodeDictionary[_curPxpMode];
 
                     }
+                    if (USBKVMisON)
+                    {
+                        if (PxPcodeDictionary[_curPxpMode] != null)
+                        {
+                            VideoSwapContent_Left = PxPcodeDictionary[_curPxpMode];
+                        }
+                        else
+                        {
+                            PxpModeaddDic(_curPxpMode);
+                            VideoSwapContent_Left = PxPcodeDictionary[_curPxpMode];
+
+                        }
+                    }
+                }
+                else
+                {
+                    _log?.Debug("[RunWorkerCompleted_RefreshData] PxPcodeDictionary is null or PxPCode not found.");
                 }
             }
             else

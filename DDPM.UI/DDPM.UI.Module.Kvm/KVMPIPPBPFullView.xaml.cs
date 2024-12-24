@@ -335,15 +335,21 @@ namespace DDPM.UI.Module.Kvm
                     //vm.PxPCode = _pbpcode;
                     //vm.VideoSwapContent = vm.PxPcodeDictionary[_pbpcode];
                     //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[_pbpcode];
-                    if (vm.PxPcodeDictionary[_pbpcode] != null)
+                    if (vm.PxPcodeDictionary.ContainsKey(_pbpcode))
                     {
-                        vm.VideoSwapContent = vm.PxPcodeDictionary[_pbpcode];
+                        if (vm.PxPcodeDictionary[_pbpcode] != null)
+                        {
+                            vm.VideoSwapContent = vm.PxPcodeDictionary[_pbpcode];
+                        }
+                        else
+                        {
+                            vm.PxpModeaddDic(_pbpcode);
+                            vm.VideoSwapContent = vm.PxPcodeDictionary[_pbpcode];
+                        }
                     }
                     else
                     {
-                        vm.PxpModeaddDic(_pbpcode);
-                        vm.VideoSwapContent = vm.PxPcodeDictionary[_pbpcode];
-
+                        vm._log?.Debug("[OnPbpItemClicked]PxPcodeDictionary is null or PxPCode not found.");
                     }
                 }
             }
