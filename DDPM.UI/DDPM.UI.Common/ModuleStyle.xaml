@@ -278,6 +278,14 @@
         </Canvas>
     </ControlTemplate>
 
+    <!-- Icon Pause -->
+    <ControlTemplate x:Key="icon_Resume" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+            <Path Data="M12 7L-6.52533e-07 13.9282L-4.68497e-08 0.0717964L12 7Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
+    
     <!-- Icon Undo -->
     <ControlTemplate x:Key="icon_Undo" TargetType="ContentControl">
         <Canvas Width="40" Height="40">
@@ -1802,11 +1810,12 @@
     <SolidColorBrush x:Key="KeyToolTipText_FgColor" Color="#F5F6F7" />
     <Style x:Key="KeyToolTipTextStyle" TargetType="TextBlock">
         <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
-        <Setter Property="Background" Value="{DynamicResource KeyToolTipText_BgColor}" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="12" />
         <Setter Property="Foreground" Value="{DynamicResource KeyToolTipText_FgColor}" />
-        <Setter Property="Padding" Value="12,16,12,10" />
+        <Setter Property="Padding" Value="1" />
+        <Setter Property="Margin" Value="0" />
         <Setter Property="LineHeight" Value="20" />
         <Setter Property="VerticalAlignment" Value="center" />
         <Setter Property="HorizontalAlignment" Value="center" />
@@ -2084,5 +2093,6 @@
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdSolidBkColor}" />
     </Style>
     <!-- #endregion -->
-
+    <BitmapImage x:Key="InterruptScreen_Image" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_InterruptScreen.png" />
+    <SolidColorBrush x:Key="InterruptScreen_Backgroung" Color="#132F54" />
 </ResourceDictionary>

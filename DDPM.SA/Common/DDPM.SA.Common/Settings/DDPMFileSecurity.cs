@@ -2047,13 +2047,13 @@ namespace DDPM.SA.Common.Settings
             path = path.Replace(">>", string.Empty);
             path = path.Replace("${", string.Empty);
             path = path.Replace("$(", string.Empty);
-            if (path_org != path)
+            if (!path_org.Equals(path))
             {
                 info = ("The path contains invalid characters. Program will not continue");
                 return string.Empty;
             }
 
-            path_org = null;
+            //path_org = null;
             return path;
         }
 
