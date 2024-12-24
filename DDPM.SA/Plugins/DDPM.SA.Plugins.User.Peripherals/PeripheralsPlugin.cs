@@ -2680,6 +2680,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = "BatteryStatusChanged";
                     OnNotify(_EventArgs);
+                    Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
+                    writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
 
                     try
                     {
@@ -2730,6 +2732,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 Message = deviceInfo.Name
                             };
                             OnOSDNotify(args);
+                            Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
+                            writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
                         }
                     }
                     catch (Exception e)
@@ -2807,6 +2811,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = "BatteryLevelChanged";
                     OnNotify(_EventArgs);
+                    Debug.WriteLine($"BatteryLevelChanged: ID: {arg1.Id} Level: {arg2}");
+                    writelog($"BatteryLevelChanged: ID: {arg1.Id} Level: {arg2}");
 
                     try
                     {
@@ -2857,6 +2863,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 Message = deviceInfo.Name
                             };
                             OnOSDNotify(args);
+                            Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
+                            writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
                         }
                     }
                     catch (Exception e)
