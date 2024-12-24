@@ -70,25 +70,33 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType != null && e.device_peripherals.LogicalDeviceType.Contains("Keyboard"))
+            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType != null)
             {
-                if (e.type == DeviceChangedType.Peripherals_UnPlug)
+                if (e.device_peripherals.LogicalDeviceType.Contains("Keyboard"))
                 {
-                    if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
+                    if (e.type == DeviceChangedType.Peripherals_UnPlug)
                     {
-                        _viewModel.OnGoBackClicked();
-                        return;
+                        if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
+                        {
+                            _viewModel.OnGoBackClicked();
+                            return;
+                        }
+                        if (_viewModel.DeviceInfos.ContainsKey(e.device_peripherals.ID))
+                            _viewModel.DeviceInfos.Remove(e.device_peripherals.ID);
+                        //GetPeripheralsAsync();
                     }
-                    if (_viewModel.DeviceInfos.ContainsKey(e.device_peripherals.ID))
-                        _viewModel.DeviceInfos.Remove(e.device_peripherals.ID);
-                    //GetPeripheralsAsync();
+                    if (e.type == DeviceChangedType.Peripherals_PlugIn)
+                    {
+                        if (e.device_peripherals.ModelNumber == _viewModel?.CurrentDeviceInfo?.ModelNumber && !_viewModel.DeviceInfos.ContainsKey(e.device_peripherals.ID))
+                            _viewModel.DeviceInfos.Add(e.device_peripherals.ID, e.device_peripherals);
+                    }
+                    _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
                 }
-                if (e.type == DeviceChangedType.Peripherals_PlugIn)
+                else
                 {
-                    if (e.device_peripherals.ModelNumber == _viewModel?.CurrentDeviceInfo?.ModelNumber && !_viewModel.DeviceInfos.ContainsKey(e.device_peripherals.ID))
-                        _viewModel.DeviceInfos.Add(e.device_peripherals.ID, e.device_peripherals);
+                    if (e.type == DeviceChangedType.Peripherals_UnPlug || e.type == DeviceChangedType.Peripherals_PlugIn)
+                        _viewModel!.OnGoBackClicked();
                 }
-                _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
             }
         }
 
