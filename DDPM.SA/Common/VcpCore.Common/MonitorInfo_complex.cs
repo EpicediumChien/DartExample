@@ -38,6 +38,7 @@ namespace VcpCore.Common
         public string SupplierID { get; set; } = string.Empty;
         public string D_Ctrl { get; set; } = string.Empty;
         public double scalingFactor { get; set; } = 0x0;
+        public uint cPhysicalMonitors_index { get; set; } = 0x0;
 
         public override bool Equals(object obj)
         {
