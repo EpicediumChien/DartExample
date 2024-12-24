@@ -889,7 +889,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   查詢類似 Applies brightness/luminance, contrast, schedule settings,\nand color presets to the connected monitors 的當地語系化字串。
+        ///   查詢類似 Applies brightness/luminance, contrast, schedule settings\nand color presets to the connected monitors 的當地語系化字串。
         /// </summary>
         internal static string Brightness_21 {
             get {
@@ -5556,6 +5556,24 @@ namespace DDPM.UI.Resources {
         internal static string Learn_more {
             get {
                 return ResourceManager.GetString("Learn_more", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Learn more for firmware 的當地語系化字串。
+        /// </summary>
+        internal static string Learn_more_for_firmware {
+            get {
+                return ResourceManager.GetString("Learn_more_for_firmware", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查詢類似 Learn more for software 的當地語系化字串。
+        /// </summary>
+        internal static string Learn_more_for_software {
+            get {
+                return ResourceManager.GetString("Learn_more_for_software", resourceCulture);
             }
         }
         
