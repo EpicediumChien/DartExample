@@ -12068,7 +12068,7 @@ namespace DDPM.CLI.Plugins.Display
                 case "OSDENABLE": return (value | 0x4000).ToString();                   // b14:1;
                 case "OSDUNLOCK": return (value & 0x7FFF).ToString();                 // b15:0;
                 case "OSDLOCK": return (value | 0x8000).ToString();                   // b15:1;
-                case "OSDUNLOCK,OSDDISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
+                case "OSDUNLOCK,OSDDISABLE": return ((value & 0x3FFF) /*| 0x0000*/).ToString();//b15 b14: 00
                 case "OSDUNLOCK,OSDENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
                 case "OSDLOCK,OSDDISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
                 case "OSDLOCK,OSDENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
