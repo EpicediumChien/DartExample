@@ -104,15 +104,22 @@ namespace DDPM.UI.Module.Kvm
             if (vm != null)
             {
                 vm.VideoSwapContent_Left = null;
-                if (vm.PxPcodeDictionary[vm.PxPCode] != null)
+                if (vm.PxPcodeDictionary.ContainsKey(vm.PxPCode))
                 {
-                    vm.VideoSwapContent_Left = vm.PxPcodeDictionary[vm.PxPCode];
+                    if (vm.PxPcodeDictionary[vm.PxPCode] != null)
+                    {
+                        vm.VideoSwapContent_Left = vm.PxPcodeDictionary[vm.PxPCode];
+                    }
+                    else
+                    {
+                        vm.PxpModeaddDic(vm.PxPCode);
+                        vm.VideoSwapContent_Left = vm.PxPcodeDictionary[vm.PxPCode];
+
+                    }
                 }
                 else
                 {
-                    vm.PxpModeaddDic(vm.PxPCode);
-                    vm.VideoSwapContent_Left = vm.PxPcodeDictionary[vm.PxPCode];
-
+                    vm._log?.Debug("[BackMKFullView]PxPcodeDictionary is null or PxPCode not found.");
                 }
                 if (vm.ToProgressValue > 3 || vm.ToProgressValue < 0)
                 {
@@ -413,15 +420,22 @@ namespace DDPM.UI.Module.Kvm
             if (vm != null)
             {
                 vm.VideoSwapContent_Left = null;
-                if (vm.PxPcodeDictionary[vm.PxPCode] != null)
+                if (vm.PxPcodeDictionary.ContainsKey(vm.PxPCode))
                 {
-                    vm.VideoSwapContent_Left = vm.PxPcodeDictionary[vm.PxPCode];
+                    if (vm.PxPcodeDictionary[vm.PxPCode] != null)
+                    {
+                        vm.VideoSwapContent_Left = vm.PxPcodeDictionary[vm.PxPCode];
+                    }
+                    else
+                    {
+                        vm.PxpModeaddDic(vm.PxPCode);
+                        vm.VideoSwapContent_Left = vm.PxPcodeDictionary[vm.PxPCode];
+
+                    }
                 }
                 else
                 {
-                    vm.PxpModeaddDic(vm.PxPCode);
-                    vm.VideoSwapContent_Left = vm.PxPcodeDictionary[vm.PxPCode];
-
+                    vm._log?.Debug("[CloseUSBKVM]PxPcodeDictionary is null or PxPCode not found.");
                 }
                 //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[vm.PxPCode];
                 //vm.OnPipPbpCapsChanged();
