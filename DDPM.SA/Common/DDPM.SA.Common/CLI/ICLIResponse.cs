@@ -624,10 +624,10 @@ namespace DDPM.SA.Common
     {
         public DeviceDataKeyboardResponse(int index, DeviceInfo deviceInfo) : base(index, deviceInfo)
         {
-            CollabCameraEnable = deviceInfo.IsCollaborationCameraEnable ? "ON" : "OFF";
-            CollabMicMute = deviceInfo.IsCollaborationMicEnable ? "ON" : "OFF";
-            CollabScreenShare = deviceInfo.IsCollaborationScreenShareEnable ? "ON" : "OFF";
-            CollabChatEnable = deviceInfo.IsCollaborationChatEnable ? "ON" : "OFF";
+            CollabCameraEnable = deviceInfo.IsCollabsKeysSupported ? (deviceInfo.IsCollaborationCameraEnable ? "ON" : "OFF") : "N/A";
+            CollabMicMute = deviceInfo.IsCollabsKeysSupported ? (deviceInfo.IsCollaborationMicEnable ? "ON" : "OFF") : "N/A";
+            CollabScreenShare = deviceInfo.IsCollabsKeysSupported ? (deviceInfo.IsCollaborationScreenShareEnable ? "ON" : "OFF") : "N/A";
+            CollabChatEnable = deviceInfo.IsCollabsKeysSupported ? (deviceInfo.IsCollaborationChatEnable ? "ON" : "OFF") : "N/A";
         }
 
         public DeviceDataKeyboardResponse() : base()

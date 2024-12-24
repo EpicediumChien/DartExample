@@ -11585,22 +11585,30 @@ namespace DDPM.CLI.Plugins.Display
                                             {
                                                 case "COLLABSCREENSHARE":
                                                     writelog("COLLABSCREENSHARE entry");
-                                                    if (property.Value.ToString() == "ON")
+                                                    writelog("device.IsMicEnumerationSupported entry");
+                                                    if (device.IsMicEnumerationSupported)
                                                     {
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable entry");
-                                                        _devMgr.SetCollaborationScreenShareEnable(true, device.ID);
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable exit");
-                                                    }
-                                                    else if (property.Value.ToString() == "OFF")
-                                                    {
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable entry");
-                                                        _devMgr.SetCollaborationScreenShareEnable(false, device.ID);
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable exit");
+                                                        if (property.Value.ToString() == "ON")
+                                                        {
+                                                            writelog("_devMgr.SetCollaborationScreenShareEnable entry");
+                                                            _devMgr.SetCollaborationScreenShareEnable(true, device.ID);
+                                                            writelog("_devMgr.SetCollaborationScreenShareEnable exit");
+                                                        }
+                                                        else if (property.Value.ToString() == "OFF")
+                                                        {
+                                                            writelog("_devMgr.SetCollaborationScreenShareEnable entry");
+                                                            _devMgr.SetCollaborationScreenShareEnable(false, device.ID);
+                                                            writelog("_devMgr.SetCollaborationScreenShareEnable exit");
+                                                        }
+                                                        else
+                                                        {
+                                                            resultMessages.Add("COLLABSCREENSHARE is wrong value");
+                                                            ispass = false;
+                                                        }
                                                     }
                                                     else
                                                     {
-                                                        resultMessages.Add("COLLABSCREENSHARE is wrong value");
-                                                        ispass = false;
+                                                        resultMessages.Add("COLLABSCREENSHARE not support");
                                                     }
                                                     break;
                                                 default:
@@ -12080,8 +12088,8 @@ namespace DDPM.CLI.Plugins.Display
                 case "OSDLOCK,OSDDISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
                 case "OSDLOCK,OSDENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
                 default: return "unknown_command";
+                }
             }
-        }
 
         private static string get_SpeakerMicrophone_status(int value)
         {
