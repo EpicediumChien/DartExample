@@ -643,7 +643,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                                 // check if show OSD for Presence Detection Sensor Cover
                                 if (_globalSettings.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State)
+                                { 
                                     DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.Fingerprint);
+                                    _viewModel.IsChecked_Snooze = false; // jim 20241221 add for 和DPeM 行為對齊 
+                                }
                             }
                         }
                         break;

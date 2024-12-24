@@ -213,12 +213,11 @@ namespace DDPM.EABroker
                 //
                 //1 Save original settings
                 bool orgSpanEnabled = _vm.IsSpanEnabled;
-                bool newSpanEnabled = orgSpanEnabled;
  
                 //2 Refresh settings
                 _vm.DetectSpanCondition();
                 //3 Check if changed
-                newSpanEnabled = _vm.IsSpanEnabled;
+                bool newSpanEnabled = _vm.IsSpanEnabled;
 
                 //4 Notify to UI if it's changed
                 if (newSpanEnabled != orgSpanEnabled)
@@ -244,13 +243,12 @@ namespace DDPM.EABroker
                 //Check for Span across multiple monitors
                 //
                 //1 Save original settings
-                bool orgSpanEnabled = _vm.IsSpanEnabled;
-                bool newSpanEnabled = orgSpanEnabled;
+                bool orgSpanEnabled = _vm.IsSpanEnabled;                
 
                 //2 Refresh settings
                 _vm.DetectSpanCondition();
                 //3 Check if changed
-                newSpanEnabled = _vm.IsSpanEnabled;
+                bool newSpanEnabled = _vm.IsSpanEnabled;
 
                 //4 Notify to UI if it's changed
                 if (newSpanEnabled != orgSpanEnabled)
