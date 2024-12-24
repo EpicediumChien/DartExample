@@ -1457,21 +1457,24 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     if (result == "0")
                                     {
                                         x.Result = "PASS";
-                                        retvalue = _devMgr.GetAntiFlicker(x.Guid).Result;
-                                        if(!string.IsNullOrEmpty(retvalue.ToString()))
+                                        var retvalue = _devMgr.GetAntiFlicker(x.Guid).Result;
+                                        if (retvalue != null)
                                         {
-                                            switch (retvalue.ToString())
+                                            if (!string.IsNullOrEmpty(retvalue.ToString()))
                                             {
-                                                case "1":
-                                                    x.Value = "50";
-                                                    break;
-                                                case "2":
-                                                    x.Value = "60";
-                                                    break;
-                                                default:
-                                                    break;
+                                                switch (retvalue.ToString())
+                                                {
+                                                    case "1":
+                                                        x.Value = "50";
+                                                        break;
+                                                    case "2":
+                                                        x.Value = "60";
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
                                             }
-                                        }
+                                        }                                       
                                         else
                                         {
                                             x.Value ="Interface return null";
