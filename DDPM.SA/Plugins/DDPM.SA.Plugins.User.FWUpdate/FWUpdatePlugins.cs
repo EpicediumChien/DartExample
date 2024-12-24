@@ -1968,27 +1968,41 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     if (msg1Node.InnerText == "M1")
                     {
-                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                        if (_fWUpdateInfo.DeviceType == DeviceType.LogicalMouse)
                         {
-                            DeviceName = _fWUpdateInfo.DeviceName,
-                            Model = _fWUpdateInfo.Model,
-                            TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                            ProcessName = LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"]
-                        };
-                        sendMessageToEvent(updateProgressInfo);
-                        _logs.DebugMsg_1("Get M1:Please double click mouse left button to start firmware update");
+                            UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                            {
+                                DeviceName = _fWUpdateInfo.DeviceName,
+                                Model = _fWUpdateInfo.Model,
+                                TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                                ProcessName = LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"]
+                            };
+                            sendMessageToEvent(updateProgressInfo);
+                            _logs.DebugMsg_1("Get M1:Please double click mouse left button to start firmware update");
+                        }
+                        else
+                        {
+                            _logs.DebugMsg_1("Get M1: but device is not mouse");
+                        }
                     }
                     else if (msg1Node.InnerText == "M2")
                     {
-                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                        if (_fWUpdateInfo.DeviceType == DeviceType.LogicalKeyboard)
                         {
-                            DeviceName = _fWUpdateInfo.DeviceName,
-                            Model = _fWUpdateInfo.Model,
-                            TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                            ProcessName = LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"]
-                        };
-                        sendMessageToEvent(updateProgressInfo);
-                        _logs.DebugMsg_1("Get M2:Please press \"U\" key on keyboard to start firmware update");
+                            UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                            {
+                                DeviceName = _fWUpdateInfo.DeviceName,
+                                Model = _fWUpdateInfo.Model,
+                                TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                                ProcessName = LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"]
+                            };
+                            sendMessageToEvent(updateProgressInfo);
+                            _logs.DebugMsg_1("Get M2:Please press \"U\" key on keyboard to start firmware update");
+                        }
+                        else
+                        {
+                            _logs.DebugMsg_1("Get M2: but device is not keyboard");
+                        }
                     }
                     else
                     {
