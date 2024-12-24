@@ -216,6 +216,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static bool _IsSkipCA = false;
 
         private QAMPage _QAM = null;
+        private Thread threadQAM = null;
         private Point QAM_Position;
         private bool isDDPMHomepageReady = false;
         private bool isDDPMLaunchedByQAM = false;
@@ -10272,7 +10273,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                                              //_ZoomMeetingType != ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
                     )
                 {
-                    ResetQAMCondition();
+                    //ResetQAMCondition();
                     QAMClose(false);
                     CloseQAMOSD();
 
@@ -10612,6 +10613,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 QAM_Position = new Point(_QAM.Left, _QAM.Top);
                 _QAM.Closed -= QAMCloseEvent;
                 _QAM = null;
+                threadQAM = null;
 
                 if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null
                     && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder &&
@@ -10619,7 +10621,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
                 }
+
+                writelog($"QAMCloseEvent finished with _QAM != null");
             }
+            else
+                writelog($"QAMCloseEvent finished with _QAM == null");
         }
 
         private Task QAMHide()
@@ -10670,7 +10676,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 writelog($"Try to run QAMClose");
-                _QAM?.Dispatcher.BeginInvoke(DispatcherPriority.Normal, () => _QAM?.Close());
+                _QAM?.Dispatcher.Invoke(DispatcherPriority.Normal, () => _QAM?.Close());
                 isOpenOSDWhenQAMClosed = openQAMOSD;
             }
             catch (Exception e)
@@ -10709,7 +10715,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             try
             {
-                if (_QAM == null)
+                if (_QAM == null && null == threadQAM)
                 {
                     //writelog($"CallQAM_UI: Go");
                     //List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
@@ -10718,7 +10724,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"CallQAM_UI: Create QAM UI due to _QAM == null");
 
-                        Thread threadQAM = new Thread(() =>
+                        threadQAM = new Thread(() =>
                         {
                             _QAM = new QAMPage(deviceMangerPlugin, Log);
                             _QAM.Closed += QAMCloseEvent;
@@ -10726,8 +10732,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
                             if (QAM_Position.X != 0 && QAM_Position.Y != 0)
                             {
-                                _QAM.Top = QAM_Position.Y;
-                                _QAM.Left = QAM_Position.X;
+                                //_QAM.Top = QAM_Position.Y;
+                                //_QAM.Left = QAM_Position.X;
+
+                                //Derek 1224
+                                _QAM?.Dispatcher.Invoke(() => {
+                                    _QAM.Top = QAM_Position.Y;
+                                    _QAM.Left = QAM_Position.X;
+                                });
                             }
                             else
                             {
@@ -10743,8 +10755,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     scaleFactorY = dpiY / logicalDpi;
                                 }
 
-                                _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
-                                _QAM.Left = 0;
+                                //_QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
+                                //_QAM.Left = 0;
+
+                                //Derek 1224 for "调用线程无法访问此对象，因为另一个线程拥有该对象。"
+                                _QAM?.Dispatcher.Invoke(() => {
+                                    _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
+                                    _QAM.Left = 0;
+                                });
                             }
 
                             _QAM.Dispatcher.Invoke(() => _QAM.Show());
@@ -10757,9 +10775,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 else
                 {
-                    //_QAM.Show();
+                    //_QAM.Show();                    
                     _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
                     //Dispatcher.Run(); //may block the process Derek 1219
+
+                    writelog($"CallQAM_UI: Show QAM UI due to _QAM != null");
                 }
 
                 //close DDPM UI
