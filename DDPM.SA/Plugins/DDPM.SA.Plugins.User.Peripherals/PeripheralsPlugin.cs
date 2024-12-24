@@ -3307,7 +3307,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = $"DonglePairingStatusChanged|{requestDeviceName}";
-                    //Debug.WriteLine($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
+                    Debug.WriteLine($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
                     writelog($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
                     OnNotify(_EventArgs);
                 }
