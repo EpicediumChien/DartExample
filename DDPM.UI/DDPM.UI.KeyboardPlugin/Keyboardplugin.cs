@@ -53,6 +53,19 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             _console = console;
             _log = console.CreateLog("Keyboard");
             _log.Info($"{nameof(LaunchView)} - Constructed");
+            //_console.RegisterForEvent(ConsoleEventNames.MainWindow_MoveToNewScreen, (sender, args) =>
+            //{
+            //    if (args != null)
+            //    {
+            //        if (args.Tag != null)
+            //        {
+            //            string screenDeviceName = args.Tag as string;
+            //            if (screenDeviceName != null)
+            //            {
+            //            }
+            //        }
+            //    }
+            //});
         }
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
