@@ -12,6 +12,7 @@
 
 using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
+using DDPM.SA.Common.UI;
 using DDPM.SA.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
@@ -31,6 +32,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Media.Media3D;
 using VcpCore.Common;
 using Windows.ApplicationModel;
 using IDeviceManager = IndiLogic.DPeM.Broker.IDeviceManager;
@@ -1542,13 +1544,15 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             if (item is ILogicalDevice3 _logicalDevice3)
                             {
                                 // 2024-12-21, Elie R19 change that. (Using function calll to do that)
-                                //info.IsCollaborationBlinkEffectEnable = _logicalDevice3.IsCollaborationBlinkEffectEnable();
-                                //info.IsCollaborationCameraEnable = _logicalDevice3.IsCollaborationCameraEnable();
-                                //info.IsCollaborationChatEnable = _logicalDevice3.IsCollaborationChatEnable();
-                                //info.IsCollaborationDoubleTapEnable = _logicalDevice3.IsCollaborationDoubleTapEnable();
-                                //info.IsCollaborationKeyEnable = _logicalDevice3.IsCollaborationKeyEnable();
-                                //info.IsCollaborationMicEnable = _logicalDevice3.IsCollaborationMicEnable();
-                                //info.IsCollaborationScreenShareEnable = _logicalDevice3.IsCollaborationScreenShareEnable();
+                                // << 2024-12-23 Updted by Hess
+                                info.IsCollaborationBlinkEffectEnable = _logicalDevice3.IsCollaborationBlinkEffectEnable;
+                                info.IsCollaborationCameraEnable = _logicalDevice3.IsCollaborationCameraEnable;
+                                info.IsCollaborationChatEnable = _logicalDevice3.IsCollaborationChatEnable;
+                                info.IsCollaborationDoubleTapEnable = _logicalDevice3.IsCollaborationDoubleTapEnable;
+                                info.IsCollaborationKeyEnable = _logicalDevice3.IsCollaborationKeyEnable;
+                                info.IsCollaborationMicEnable = _logicalDevice3.IsCollaborationMicEnable;
+                                info.IsCollaborationScreenShareEnable = _logicalDevice3.IsCollaborationScreenShareEnable;
+                                // >>
                                 info.IsIlluminationSupported = _logicalDevice3.IsIlluminationSupported;
                                 info.BackLightingControls = _logicalDevice3.BackLightingControls;
                                 info.BackLightingLevel = _logicalDevice3.BackLightingLevel;
@@ -1800,20 +1804,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                                         info.DockData = dockData;
                                                         info.DockType = dockData.DockType;
                                                         info.ModelNumber = dockData.MarketingName;
-                                                        //info.Name = $"Dell Dock";
-                                                        if (info.ModelNumber.ToUpper().StartsWith("WD19S"))
-                                                        {
-                                                            info.ModelNumber = $"{dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
-                                                        }
                                                         if (string.IsNullOrEmpty(info.DockServiceTag) && !string.IsNullOrEmpty(dockData.ServiceTag))
                                                         {
                                                             info.DockServiceTag = dockData.ServiceTag;
                                                         }
-                                                        //if (string.IsNullOrEmpty(info.DockPackageFwVersion) && !string.IsNullOrEmpty(dockData.PackageFirmwareVersion.ToString()))
-                                                        //{
-                                                        //    info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString();
-                                                        //    info.DockPackageFwVersion = dockData.PackageFirmwareVersion.ToString();
-                                                        //}
                                                     }
                                                 }
                                             }
@@ -2678,6 +2672,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = "BatteryStatusChanged";
                     OnNotify(_EventArgs);
+                    Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
+                    writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
 
                     try
                     {
@@ -2700,6 +2696,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         {
                             OSDType_Device type = OSDType_Device.Unknown;
                             var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
+                            var model = SACommonHelper.MappingModel(deviceInfo.ModelNumber);
+                            var message = $"{deviceInfo.Name.Replace(deviceInfo.ModelNumber, "").Trim()} {model}";
                             if (deviceType.Contains("PEN"))
                             {
                                 if (deviceInfo.ModelNumber == "PN5122W" && deviceInfo.BatteryLevel > 6)
@@ -2718,16 +2716,29 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             {
                                 type = OSDType_Device.Headset;
                             }
+                            else if (SACommonHelper.EOLKBList.Contains(deviceInfo.ModelNumber))
+                            {
+                                type = OSDType_Device.Keyboard;
+                                message = SACommonHelper.MappingEOLName(model);
+                            }
+                            else if (SACommonHelper.EOLMouseList.Contains(deviceInfo.ModelNumber))
+                            {
+                                type = OSDType_Device.Mouse;
+                                message = SACommonHelper.MappingEOLName(model);
+                            }
+
                             //_ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
-                            OSDEventArgs args = new OSDEventArgs()
+                            OSDEventArgs args = new()
                             {
                                 Requester = "BatteryLow",
                                 DeviceName = Screen.PrimaryScreen.DeviceName,
                                 osd_type = OSDType.BatteryLow,
                                 osd_device = type,
-                                Message = deviceInfo.Name
+                                Message = message
                             };
                             OnOSDNotify(args);
+                            Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
+                            writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
                         }
                     }
                     catch (Exception e)
@@ -2805,6 +2816,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = "BatteryLevelChanged";
                     OnNotify(_EventArgs);
+                    Debug.WriteLine($"BatteryLevelChanged: ID: {arg1.Id} Level: {arg2}");
+                    writelog($"BatteryLevelChanged: ID: {arg1.Id} Level: {arg2}");
 
                     try
                     {
@@ -2827,6 +2840,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         {
                             OSDType_Device type = OSDType_Device.Unknown;
                             var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
+                            var model = SACommonHelper.MappingModel(deviceInfo.ModelNumber);
+                            var message = $"{deviceInfo.Name.Replace(deviceInfo.ModelNumber, "").Trim()} {model}";
                             if (deviceType.Contains("PEN"))
                             {
                                 if (deviceInfo.ModelNumber == "PN5122W" && arg2 > 6)
@@ -2845,6 +2860,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             {
                                 type = OSDType_Device.Headset;
                             }
+                            else if (SACommonHelper.EOLKBList.Contains(deviceInfo.ModelNumber))
+                            {
+                                type = OSDType_Device.Keyboard;
+                                message = SACommonHelper.MappingEOLName(model);
+                            }
+                            else if (SACommonHelper.EOLMouseList.Contains(deviceInfo.ModelNumber))
+                            {
+                                type = OSDType_Device.Mouse;
+                                message = SACommonHelper.MappingEOLName(model);
+                            }
+
                             //_ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
                             OSDEventArgs args = new OSDEventArgs()
                             {
@@ -2852,9 +2878,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 DeviceName = Screen.PrimaryScreen.DeviceName,
                                 osd_type = OSDType.BatteryLow,
                                 osd_device = type,
-                                Message = deviceInfo.Name
+                                Message = message
                             };
                             OnOSDNotify(args);
+                            Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
+                            writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
                         }
                     }
                     catch (Exception e)
@@ -3317,7 +3345,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = $"DonglePairingStatusChanged|{requestDeviceName}";
-                    //Debug.WriteLine($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
+                    Debug.WriteLine($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
                     writelog($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
                     OnNotify(_EventArgs);
                 }

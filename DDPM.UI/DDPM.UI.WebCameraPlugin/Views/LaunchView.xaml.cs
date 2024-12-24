@@ -135,7 +135,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
                 DdpmCommonHelper.DeviceManagerSA.SystemSuspend += DeviceManagerSA_OnSystemSuspend;
                 DdpmCommonHelper.DeviceManagerSA.SystemResume += DeviceManagerSA_OnSystemResume;
-                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+                //DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
                 DdpmCommonHelper.DeviceManagerSA.SystemSessionEnd += DeviceManagerSA_OnSystemSessionEnd;
                 //Derek 1212
                 DdpmCommonHelper.DeviceManagerSA.UIUpdateNotify += DeviceManagerSA_UIUpdateNotify;
@@ -169,7 +169,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             RecordingTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(1)
+                Interval = TimeSpan.FromSeconds(0.5)
             };
             RecordingTimer.Tick += RecordingTimer_Tick;
 
@@ -223,7 +223,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //因為需要處理PresenceDetection分頁是否出現判斷,改變呼叫順序
             check_PresenceFunction();
             BuildModuleGroups();
-            initResolutionFPS();
+            //initResolutionFPS();
             //usb 2.0限制規則要放在最後做校正
             CheckUSBtype();
 
@@ -293,40 +293,40 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             ArrowLeft.Source = (BitmapImage)System.Windows.Application.Current.Resources["Arrow_Left"];
         }
 
-        private void DeviceManagerSA_DeviceChanged(object? sender, DeviceChangedEventArgs e)
-        {
-            DdpmCommonHelper.WriteUILog($"catch event DeviceManagerSA_DeviceChanged");
+        //private void DeviceManagerSA_DeviceChanged(object? sender, DeviceChangedEventArgs e)
+        //{
+        //    DdpmCommonHelper.WriteUILog($"catch event DeviceManagerSA_DeviceChanged");
 
-            if (_vm!.IsRecording)
-                Dispatcher.Invoke(new Action(() =>
-                {
-                    UserStopRecord();
-                }));
-        }
+        //    if (_vm!.IsRecording)
+        //        Dispatcher.Invoke(new Action(() =>
+        //        {
+        //            UserStopRecord();
+        //        }));
+        //}
 
-        public void initResolutionFPS()
-        {
-            _vm!.SetResolution_Selected(1);
-            try
-            {
-                if (_vm.WebcamSettings?.SupportedFPSs != null && _vm.WebcamSettings.SelectedResolution != null)
-                {
-                    if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.SelectedResolution))
-                    {
-                        List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
-                        int index = FPS.FindIndex(x => x == "30");
-                        if (index != -1)
-                        {
-                            _vm.SetFPS_Selected(index);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs initResolutionFPS() : " + ex.Message);
-            }
-        }
+        //public void initResolutionFPS()
+        //{
+        //    _vm!.SetResolution_Selected(1);
+        //    try
+        //    {
+        //        if (_vm.WebcamSettings?.SupportedFPSs != null && _vm.WebcamSettings.SelectedResolution != null)
+        //        {
+        //            if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.SelectedResolution))
+        //            {
+        //                List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
+        //                int index = FPS.FindIndex(x => x == "30");
+        //                if (index != -1)
+        //                {
+        //                    _vm.SetFPS_Selected(index);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs initResolutionFPS() : " + ex.Message);
+        //    }
+        //}
 
         bool noPresenceFunction = false;
         public void check_PresenceFunction()
@@ -1070,7 +1070,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         if (!_vm.hdr_change)
                         {
                             _vm.AlertType = WebcamAlert.Alert2;
+                            _vm.IsResolutionSectionEnable = false;
+                            _vm.OnPropertyChanged(nameof(_vm.IsResolutionSectionEnable));
                             _vm.AlertVisibility = Visibility.Visible;
+                            Debug.WriteLine("show Alert");
+
                         }
                     });
                 }
@@ -1261,6 +1265,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 before_height = (int)mediaFrameSource.CurrentFormat.VideoFormat.Height;
 
                 _vm.AlertVisibility = Visibility.Hidden;
+                _vm.IsResolutionSectionEnable = true;
+                _vm.OnPropertyChanged(nameof(_vm.IsResolutionSectionEnable));
+                Debug.WriteLine("hide alert");
+
             }
             catch (Exception Exc)
             {
@@ -1367,7 +1375,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
                 DdpmCommonHelper.DeviceManagerSA.SystemSuspend -= DeviceManagerSA_OnSystemSuspend;
                 DdpmCommonHelper.DeviceManagerSA.SystemResume -= DeviceManagerSA_OnSystemResume;
-                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+                //DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
                 DdpmCommonHelper.DeviceManagerSA.SystemSessionEnd -= DeviceManagerSA_OnSystemSessionEnd;
             }
             try

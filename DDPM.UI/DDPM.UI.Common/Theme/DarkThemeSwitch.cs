@@ -394,6 +394,9 @@ namespace DDPM.UI.Common
                 });
                 #endregion
 
+                UpdateBitmapImage("InterruptScreen_Image", new Uri($"pack://application:,,,/DDPM.UI.Common;component/Resources/Background_InterruptScreen.png", UriKind.RelativeOrAbsolute));
+                UpdateFreezable("InterruptScreen_Backgroung", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#132F54"));
+
                 BitmapImageUpdated?.Invoke(OSThemeEnum.Dark);
             }
             catch (Exception ex)

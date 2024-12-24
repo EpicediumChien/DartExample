@@ -220,10 +220,10 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _log.Error($"@[EzMemoryRightView] OnListViewItemDeleted, Error occurred while deleting from MonitorSettings: {ex.Message}");
             }
-            _vm.ProfileTitleTextBlockValue = string.Empty;
-            _vm.AutomaticStartupValue = string.Empty;
-            _vm.LaunchByTimeValue = string.Empty;
-            _vm.AppDocumentValue = string.Empty;
+            _vm.ProfileTitleTextBlockValue = "N/A";
+            _vm.AutomaticStartupValue = "N/A";
+            _vm.LaunchByTimeValue = "N/A";
+            _vm.AppDocumentValue = "N/A";
             return;
         }
 
@@ -451,7 +451,11 @@ namespace DDPM.UI.Module.EzMemory
 
             }
 
-            splitListView_RecentForEzM.MoveSelectedItemToSecondPosition();
+            if(_vm.SelectedSplitItem != null)
+            {
+                _vm.IsApplyEnabled = true;
+            }
+            //splitListView_RecentForEzM.MoveSelectedItemToSecondPosition();
             //SaveEaSettings();
         }
 
@@ -580,6 +584,12 @@ namespace DDPM.UI.Module.EzMemory
                 splitListView_RecentForEzM.AddButtonClickCommand = new RelayCommand<SplitListView>(OnListViewItemAddClicked);
                 splitListView_RecentForEzM.HasAddButton = true;
                 splitListView_RecentForEzM.IsVertical = _vm.IsVertical;
+
+                _vm.ProfileTitleTextBlockValue = "N/A";
+                _vm.AutomaticStartupValue = "N/A";
+                _vm.LaunchByTimeValue = "N/A";
+                _vm.AppDocumentValue = "N/A";
+                _vm.IsApplyEnabled = false;
 
                 // 取得User EAProfiles
                 List<EAProfileDDPM> initListViewIEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
@@ -717,12 +727,12 @@ namespace DDPM.UI.Module.EzMemory
         //    IConsole? console = DdpmCommonHelper.MyConsole;
         //    if (console != null)
         //    {
-        //        if  (ck.IsChecked != null)
-        //        {
-        //            var args = new EventManagerArgs();
-        //            args.Tag = (bool)ck.IsChecked; //true=Show, false=Hide
-        //            console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, args);
-        //        }
+        //        //if (ck.IsChecked != null)
+        //        //{
+        //        //    var args = new EventManagerArgs();
+        //        //    args.Tag = (bool)ck.IsChecked; //true=Show, false=Hide
+        //        //    console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, args);
+        //        //}
         //    }
         //}
 
@@ -731,12 +741,12 @@ namespace DDPM.UI.Module.EzMemory
         //    IConsole? console = DdpmCommonHelper.MyConsole;
         //    if (console != null)
         //    {
-        //        if (ckSettings.IsChecked != null)
-        //        {
-        //            var args = new EventManagerArgs();
-        //            args.Tag = (bool)ckSettings.IsChecked; //true=Show, false=Hide
-        //            console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, this, args);
-        //        }
+        //        //if (ckSettings.IsChecked != null)
+        //        //{
+        //        //    var args = new EventManagerArgs();
+        //        //    args.Tag = (bool)ckSettings.IsChecked; //true=Show, false=Hide
+        //        //    console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, this, args);
+        //        //}
         //    }
         //}
     }
