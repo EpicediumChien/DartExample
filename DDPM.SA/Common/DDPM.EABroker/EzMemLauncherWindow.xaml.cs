@@ -40,6 +40,10 @@ namespace DDPM.EABroker
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId);
+        public static IntPtr _GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId)
+        {
+            return GetWindowThreadProcessId(hWnd, out nProcessId);
+        }
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -62,17 +66,15 @@ namespace DDPM.EABroker
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        private const int SW_RESTORE = 9;
-        private const int SW_SHOWNA = 8;
-        private const int SW_MAXIMIZE = 3;
+        public static bool EzMemoryShowWindow(IntPtr hWnd, int nCmdShow)
+        {
+            return ShowWindow(hWnd, nCmdShow);
+        }
         private const int SW_SHOWNORMAL = 1;
         private const int SW_SHOWMAXIMIZED = 3;
-
-
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
-
+        private const int SW_MAXIMIZE = 3;
+        private const int SW_SHOWNA = 8;
+        private const int SW_RESTORE = 9;
 
         #region Private members
         private const string myName = "EzMemLauncherWin";
@@ -256,18 +258,18 @@ namespace DDPM.EABroker
                     {
                         Trace.WriteLine($"[LaunchAndArrange] 2 => ArrangeWindow = {idx},{winUWP} APP already exit, SpecialGetHandle Find Handle = {handle}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, EzMemorySetForegroundWindow");
                         _log?.Info($"[LaunchAndArrange] 2 => ArrangeWindow = {idx}, {winUWP} APPalready exit, SpecialGetHandle Find Handle = {handle}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, EzMemorySetForegroundWindow");
-                        if (app.AppType != "True")// 已經在而且為UWP
-                        {
+                        //if (app.AppType != "True")// 已經在而且為UWP
+                        //{
                         //    Process process = LaunchApp(app, _log);
                         //    handle = GetWindowHandle(app, _log);
-                        //    Task.Delay(1500);
-                            //WinEventHook._SetWindowPos(handle, new IntPtr(-1))
-                        }
+                        //    //Task.Delay(1000);
+                        //    //WinEventHook._SetWindowPos(handle, new IntPtr(-1))
+                        //}
                         //else
-                        ShowWindowAsync(handle, SW_MAXIMIZE);
-                        ShowWindowAsync(handle, SW_SHOWNORMAL);
-                        ShowWindow(handle, SW_RESTORE);
-                        ShowWindow(handle, SW_SHOWNORMAL);
+                        //ShowWindowAsync(handle, SW_MAXIMIZE);
+                        //ShowWindowAsync(handle, SW_SHOWNORMAL);
+                        EzMemoryShowWindow(handle, SW_RESTORE);
+                        //ShowWindow(handle, SW_SHOWNORMAL);
                         EzMemorySetForegroundWindow(handle); // 把應用程式拉到前景
                         appHandles.Add((handle, idx));
                     }
@@ -492,10 +494,7 @@ namespace DDPM.EABroker
             return Win32Lib.Win32._GetWindowText(hWnd);
             //return title.ToString();
         }
-        public static IntPtr _GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId)
-        {
-            return GetWindowThreadProcessId(hWnd, out nProcessId);
-        }
+
         private bool IsHandleBelongsToApp(IntPtr handle, string expectedAppName, ILog? log = null)
         {
             try
