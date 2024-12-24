@@ -22,10 +22,11 @@
                 x:Key="BooleanToBrushConverter"
                 FalseBrush="White"
                 TrueBrush="Gray" />
+
             <local:CustomBooleanToBrushConverter
                 x:Key="CustomBooleanToBrushConverter"
-                FalseBrushDarkTheme="{StaticResource TextBlock_ForegroundColor}"
-                FalseBrushLightTheme="{StaticResource TextBlock_ForegroundColor}"
+                FalseBrushDarkTheme="{DynamicResource TextBlock_ForegroundColor}"
+                FalseBrushLightTheme="{DynamicResource TextBlock_ForegroundColor}"
                 TrueBrush="Gray" />
 
             <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
@@ -682,6 +683,7 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
+
                                         <UXControls:UXTextBlock
                                             Grid.Column="0"
                                             HorizontalAlignment="Left"
