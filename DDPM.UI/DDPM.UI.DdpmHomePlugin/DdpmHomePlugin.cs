@@ -153,6 +153,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 AddIconsToMasthead(masthead);
             }
+
+            //Robert_Lin, 2024-12-21 Register a event handler to handle when mainwindow
+            // move to new position
+            _console.RegisterForEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, Handle_MainWindow_MoveToNewPosition);
+
         }
 
         private void PluginManager_PluginsStarted(object? sender, PluginsStartedEventArgs pluginsStartedEventArgs)
@@ -1564,5 +1569,78 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
         }
         #endregion WalkThrough
+
+        #region MainWindow Move To new position
+        /// <summary>
+        /// Handle the IConsole Event, MainWindow_MoveToNewPosition, when DDPM main window
+        /// move to a new position.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">
+        /// e.Tag (bool): True if the window is moved by hotkey.
+        /// </param>
+        private void Handle_MainWindow_MoveToNewPosition(object sender, EventManagerArgs e)
+        {
+            //Conditions to handle this event
+            //1 DisplayPlugin is not activate
+            if (DdpmCommonHelper.IsDisplayPluginActivated)
+                return;
+            //2 DeviceManagerPlugin is ready
+            if (_deviceManager == null)
+                return;
+            //3 HomeDevices has monitor
+            if (_viewModel == null)
+                return;
+            if (_viewModel.HomeDeviceCount == 0)
+                return;
+
+            //TO DO:
+            //Action_1: Determine the Monitor where DDPM is moved to
+            //Action_2: Show the model name OSD (if the monitor is supported monitor)
+            //Action_3: Change the SelectedItem of Monitors combobox (if DisplayPlugin is activated)
+            _log?.Info($"@Handle_MainWindow_MoveToNewPosition() is called.");
+
+            //Action_1: Determine the Monitor where DDPM is moved to
+            string screenDeviceName = "";
+
+            //If e.Tag contains a DeviceName, then move the specified screen
+            if (e.Tag != null)
+            {
+                if (e.Tag is string)
+                {
+                    screenDeviceName = e.Tag.ToString();
+                }
+            }
+            //Else the screen will be get from mouse cursor position
+            if (String.IsNullOrEmpty(screenDeviceName))
+            {
+                //Get mouse cursor position
+                System.Drawing.Point cursorPosition = System.Windows.Forms.Cursor.Position;
+                //Get the Screen of the cursor
+                System.Windows.Forms.Screen screenOfCursor = System.Windows.Forms.Screen.FromPoint(cursorPosition);
+                screenDeviceName = screenOfCursor.DeviceName;
+            }
+
+            //Check if screen is different with last show
+            if (!screenDeviceName.Equals(DdpmCommonHelper.LastShowOsdScreenDeviceName))
+            {
+                //Find the monitor of the screen
+                foreach (HomeDevice homeDev in _viewModel.HomeDevices)
+                {
+                    if (homeDev.DeviceCategory != eDeviceCategory.Display)
+                        continue;
+                    if (homeDev.MonitorInfo == null)
+                        continue;
+                    if (homeDev.MonitorInfo.DisplayName.Equals(screenDeviceName, StringComparison.OrdinalIgnoreCase))
+                    {
+                        _deviceManager.ShowOSD(homeDev.MonitorInfo, OSDType.DisplayChanged);
+                    }
+                } //foreach
+
+                DdpmCommonHelper.LastShowOsdScreenDeviceName = screenDeviceName;
+            }
+        }
+        #endregion  MainWindow Move To new position
+
     }
 }

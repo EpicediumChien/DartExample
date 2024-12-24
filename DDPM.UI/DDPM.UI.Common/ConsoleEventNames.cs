@@ -30,6 +30,11 @@ namespace DDPM.UI.Common
         /// DeActivate MainWindow with Window.DeActivate(). Registered by Webcamera plugin. 
         /// </summary>
         public const string MainWindow_DeActivate = "MainWindow.DeActivate";
+
+        /// <summary>
+        /// Trigger from MainWindow, when DDPM move to a new position (position is changed)
+        /// </summary>
+        public const string MainWindow_MoveToNewPosition = "MainWindow.MoveToNewPosition";
         #endregion MainWindow
 
         #region DisplayPlugin
