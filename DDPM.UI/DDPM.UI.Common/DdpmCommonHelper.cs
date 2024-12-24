@@ -132,7 +132,7 @@ namespace DDPM.UI.Common
                 }
             }
             DDPMMsgBox msgBox = new DDPMMsgBox(title, text, hwnd);
-            
+
             msgBox.ShowDialog();
 
             //if (result == MessageBoxResult.Yes)
@@ -552,9 +552,10 @@ namespace DDPM.UI.Common
             switch (model)
             {
                 case "WK636":
+                case "KM713":
                     return $"Dell {model} Wireless Keyboard";
                 case "WK717":
-                    return $"Dell Premier Wireless Keyboard";
+                    return $"Dell Premier Wireless Keyboard WK717";
                 case "WM116":
                 case "WM514":
                 case "UV514":
