@@ -1800,20 +1800,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                                         info.DockData = dockData;
                                                         info.DockType = dockData.DockType;
                                                         info.ModelNumber = dockData.MarketingName;
-                                                        //info.Name = $"Dell Dock";
-                                                        if (info.ModelNumber.ToUpper().StartsWith("WD19S"))
-                                                        {
-                                                            info.ModelNumber = $"{dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
-                                                        }
                                                         if (string.IsNullOrEmpty(info.DockServiceTag) && !string.IsNullOrEmpty(dockData.ServiceTag))
                                                         {
                                                             info.DockServiceTag = dockData.ServiceTag;
                                                         }
-                                                        //if (string.IsNullOrEmpty(info.DockPackageFwVersion) && !string.IsNullOrEmpty(dockData.PackageFirmwareVersion.ToString()))
-                                                        //{
-                                                        //    info.FirmwareVersion = dockData.PackageFirmwareVersion.ToString();
-                                                        //    info.DockPackageFwVersion = dockData.PackageFirmwareVersion.ToString();
-                                                        //}
                                                     }
                                                 }
                                             }
