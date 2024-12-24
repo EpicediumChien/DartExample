@@ -90,6 +90,7 @@ namespace NetworkKVM.Plugins
 
         protected override void OnPluginStarting()
         {
+            _logs.DebugMsg("[NetworkKVM] OnPluginStarting");
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
 
             InitializeVcpCorePlugin();
@@ -105,16 +106,16 @@ namespace NetworkKVM.Plugins
         #region INKVM implementation
         public Task CreatNewNamedpipe()
         {
-            _logs.DebugMsg("[NetworkKVM] CreatNewNamedpipe...");
+            _logs.DebugMsg("[CreatNewNamedpipe] CreatNewNamedpipe...");
             if (pipeServer != null)
             {
                 if (pipeServer.IsConnected)
                 {
-                    _logs.DebugMsg("[NetworkKVM] Named pipe is Connected.");
+                    _logs.DebugMsg("[CreatNewNamedpipe] Named pipe is Connected.");
                 }
                 else
                 {
-                    _logs.DebugMsg("[NetworkKVM] Named pipe is Disconnected.");
+                    _logs.DebugMsg("[CreatNewNamedpipe] Named pipe is Disconnected.");
                     Disconnect();
                     Thread.Sleep(1000);
                     cts = new CancellationTokenSource();
@@ -124,7 +125,7 @@ namespace NetworkKVM.Plugins
             }
             else
             {
-                _logs.DebugMsg("[NetworkKVM] Named pipe is null.");
+                _logs.DebugMsg("[CreatNewNamedpipe] Named pipe is null.");
                 cts = new CancellationTokenSource();
                 CancellationToken token = cts.Token;
                 _ = Task.Run(async () => await NamedPipeServer_UI(token));
@@ -139,9 +140,11 @@ namespace NetworkKVM.Plugins
             {
                 if (pipeServer.IsConnected)
                 {
-                    _logs.DebugMsg("[NetworkKVM] Namedpipe is Connected.");
+                    _logs.DebugMsg("[IsNamedpipeConnected] NamedPipe is Connected.");
                     return Task.FromResult(true);
                 }
+                else
+                    _logs.DebugMsg("[IsNamedpipeConnected] NamedPipe is NOT Connected.");
             }
             return Task.FromResult(false);
         }
@@ -158,9 +161,12 @@ namespace NetworkKVM.Plugins
             //{
             if (monitorInfos == null || monitorInfos.Count == 0)
             {
+                _logs.DebugMsg("[UpdateMonitorInfo] monitorInfos is null or zero count.");
                 if (_AllInfoMonitors.Count == 0)
+                {
+                    _logs.DebugMsg("[UpdateMonitorInfo] _AllInfoMonitors count is zero.");
                     return Task.CompletedTask;//return directly, no change
-
+                }
                 //means unplug all connected dell monitors
                 //Call Func: OnMonitorUnPlug(_AllInfoMonitors);
                 //_SupportedMonitors = GetSupportedNKVM().Result;
@@ -168,23 +174,26 @@ namespace NetworkKVM.Plugins
                 {
                     if (pipeServer.IsConnected)
                     {
+                        _logs.DebugMsg("[UpdateMonitorInfo] MonitorPlug wait.");
                         MonitorPlug().Wait();
                     }
+                    _logs.DebugMsg("[UpdateMonitorInfo] do disconnect(1).");
                     Disconnect();
                     Thread.Sleep(1000);
                 }
+                _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(1).");
                 _ = Task.Run(async () => await NamedPipeServer(token));
                 _AllInfoMonitors.Clear();
             }
             else
             {
                 if (_AllInfoMonitors.Count == 0 && monitorInfos.Count > 0)
-                {
+                {                    
                     //means plugin 1 or more monitor in
-                    _logs.DebugMsg("[NetworkKVM] monitor 0 -> 1");
+                    _logs.DebugMsg("[UpdateMonitorInfo] monitor 0 -> 1");
                     //Call Func: OnMonitorPlugIn(List<MonitorInfo> mos);
                     //_SupportedMonitors = GetSupportedNKVM().Result;
-                    _logs.DebugMsg("[NetworkKVM] NKVMState:" + NKVMState);
+                    _logs.DebugMsg("[UpdateMonitorInfo] NKVMState:" + NKVMState);
                     //if (NKVMState)
                     //{
                     if (pipeServer != null)
@@ -192,22 +201,27 @@ namespace NetworkKVM.Plugins
                         if (pipeServer.IsConnected)
                         {
                             //ResponseSupportedMonitor();
+                            _logs.DebugMsg("[UpdateMonitorInfo] MonitorPlug no wait(1).");
                             MonitorPlug();
                         }
                         else
                         {
+                            _logs.DebugMsg("[UpdateMonitorInfo] do disconnect(2).");
                             Disconnect();
                             Thread.Sleep(1000);
                             isMonintorChange = true;
                             //_runloop = true;
+                            _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(2).");
                             _ = Task.Run(async () => await NamedPipeServer(token));
                         }
                     }
                     else
                     {
+                        _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(3).");
                         isMonintorChange = true;
                         _ = Task.Run(async () => await NamedPipeServer(token));
                     }
+                    _logs.DebugMsg($"[UpdateMonitorInfo] add {monitorInfos.Count} monitor(s) (1)");
                     _AllInfoMonitors.AddRange(monitorInfos);
                 }
                 else
@@ -221,23 +235,28 @@ namespace NetworkKVM.Plugins
                     {
                         //Call Func: OnMonitorUnPlug(unplug);
                         //_SupportedMonitors = GetSupportedNKVM().Result;
+                        _logs.DebugMsg($"[UpdateMonitorInfo] unplug {unplug.Count} monitor(s)");
                         if (pipeServer != null)
                         {
                             if (pipeServer.IsConnected)
                             {
+                                _logs.DebugMsg("[UpdateMonitorInfo] MonitorPlug no wait(2).");
                                 MonitorPlug();
                             }
                             else
                             {
+                                _logs.DebugMsg("[UpdateMonitorInfo] do disconnect(3).");
                                 Disconnect();
                                 Thread.Sleep(1000);
                                 isMonintorChange = true;
                                 //_runloop = true;
+                                _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(4).");
                                 _ = Task.Run(async () => await NamedPipeServer(token));
                             }
                         }
                         else
                         {
+                            _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(5).");
                             isMonintorChange = true;
                             _ = Task.Run(async () => await NamedPipeServer(token));
                         }
@@ -255,32 +274,35 @@ namespace NetworkKVM.Plugins
                         {
                             if (pipeServer.IsConnected)
                             {
+                                _logs.DebugMsg("[UpdateMonitorInfo] MonitorPlug no wait(3).");
                                 //ResponseSupportedMonitor();
                                 MonitorPlug();
                             }
                             else
                             {
+                                _logs.DebugMsg("[UpdateMonitorInfo] do disconnect(4).");
                                 Disconnect();
                                 Thread.Sleep(1000);
                                 isMonintorChange = true;
                                 //_runloop = true;
+                                _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(6).");
                                 _ = Task.Run(async () => await NamedPipeServer(token));
                             }
                         }
                         else
                         {
+                            _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(7).");
                             isMonintorChange = true;
                             _ = Task.Run(async () => await NamedPipeServer(token));
                         }
                     }
-
+                    _logs.DebugMsg($"[UpdateMonitorInfo] clear and add {monitorInfos.Count} monitor(s)");
                     _AllInfoMonitors.Clear();
                     _AllInfoMonitors.AddRange(monitorInfos);
                 }
             }
             return Task.CompletedTask;
             //}
-
         }
 
         public Task MonitorPlug()
@@ -700,6 +722,7 @@ namespace NetworkKVM.Plugins
                         if (hotkey == VirtualKey.Menu)
                         {
                             hotkeyWinform.Alt = true;
+                            _logs.DebugMsg("[SetHotkey] Alt");
                         }
                         else
                         {
@@ -708,6 +731,7 @@ namespace NetworkKVM.Plugins
                         if (hotkey == VirtualKey.Control)
                         {
                             hotkeyWinform.Control = true;
+                            _logs.DebugMsg("[SetHotkey] Ctrl");
                         }
                         else
                         {
@@ -716,6 +740,7 @@ namespace NetworkKVM.Plugins
                         if (hotkey == VirtualKey.Shift)
                         {
                             hotkeyWinform.Shift = true;
+                            _logs.DebugMsg("[SetHotkey] Shift");
                         }
                         else
                         {
@@ -724,6 +749,7 @@ namespace NetworkKVM.Plugins
                         if (hotkey != VirtualKey.Menu && hotkey != VirtualKey.Shift && hotkey != VirtualKey.Control)
                         {
                             hotkeyWinform.Key = (int)hotkey;
+                            _logs.DebugMsg($"[SetHotkey] Key {hotkey}");
                             break;
                         }
                     }
@@ -735,9 +761,9 @@ namespace NetworkKVM.Plugins
                     WriteAsync(set_HOTKEY.ToJson()).Wait();
                 }
             }
-            catch
+            catch(Exception e)
             {
-                ;
+                _logs.DebugMsg($"[SetHotkey] exception: {e.Message}");
             }
             return Task.FromResult(false);
         }
@@ -778,9 +804,9 @@ namespace NetworkKVM.Plugins
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
-                ;
+                _logs.DebugMsg($"[NKVM_ChangeLimitedSW] exception: {e.Message}");
             }
 
             _AllInfoMonitors = GetMonitors().Result;
@@ -802,9 +828,9 @@ namespace NetworkKVM.Plugins
                     WriteAsync(change_MONITOR_ID.ToJson()).Wait();
                 }
             }
-            catch
+            catch (Exception e)
             {
-                ;
+                _logs.DebugMsg($"[NKVM_ChangeMonitorIndex] exception: {e.Message}");
             }
             return Task.CompletedTask;
         }
@@ -1164,15 +1190,16 @@ namespace NetworkKVM.Plugins
             _logs.DebugMsg("[NetworkKVM] SaveVCPcode....");
             if (nKVMVCPValues != null)
             {
-                NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
-                if (nKVMVCPValues.Exists(x => x.monitorInfo == value.monitorInfo))
+                int idx = nKVMVCPValues.FindIndex(x => x.monitorInfo == value.monitorInfo);
+                if (idx >= 0)
                 {
-                    nKVMVCPValue = nKVMVCPValues.Find(x => x.monitorInfo == value.monitorInfo);
-                    nKVMVCPValue = value;
+                    _logs.DebugMsg("[NetworkKVM] SaveVCPcode: exist and replace");
+                    nKVMVCPValues[idx] = value;//do update with index
                 }
                 else
                 {
-                    nKVMVCPValues.Add(value);
+                    _logs.DebugMsg("[NetworkKVM] SaveVCPcode: new add");
+                    nKVMVCPValues.Add(value);//new object, add it
                 }
             }
             return Task.CompletedTask;
@@ -2270,7 +2297,7 @@ namespace NetworkKVM.Plugins
             }
             return Task.CompletedTask;
         }
-
+        /*
         private async Task<string> DisconnectNamedPipe()
         {
             DISCONNECT _COMMAND = new DISCONNECT();
@@ -2292,7 +2319,7 @@ namespace NetworkKVM.Plugins
                 _ = WriteAsync(_RESPONSE.ToJson());
             }
             return Task.CompletedTask;
-        }
+        }*/
 
         private async Task<bool> ResponseSucces(JObject json)
         {

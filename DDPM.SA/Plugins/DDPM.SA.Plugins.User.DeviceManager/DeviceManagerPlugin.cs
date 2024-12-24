@@ -9752,7 +9752,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (!settings.UserSettings.isDisplayConsentPage)
                     {
                         writelog($"[DeviceMangerPlugin] GetFirstReadStatus");
-                        bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", true).Result;
+                        if (!CheckOnlyInstallDPeM().Result)
+                        {
+                            bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", true).Result;
+                        }
                     }
                 }
             }
@@ -9765,9 +9768,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<bool> CheckInstallFirstOpen()
         {
             var ReadReg = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen").Result;
+            if (ReadReg == null)
+            {
+                return false;
+            }
             writelog($"[DeviceMangerPlugin] ReadReg Status {ReadReg} And {ReadReg.GetType()}");
             Boolean.TryParse(ReadReg.ToString(), out var getRegValue);
-            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady().Result)
+            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady().Result&& CheckHasInstallDPeM().Result)
             {
                 count++;
                 writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Count:{count}...");
@@ -9776,6 +9783,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return true;
             }
             return false;
+        }
+
+        private async Task<bool> CheckOnlyInstallDPeM()
+        {
+            writelog($"[DeviceMangerPlugin] Check Has Installed DDPM");
+            var HasDDPM = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen").Result;
+            if (HasDDPM != null)
+            {
+                return true;
+            }
+            return false;
+        }
+        private async Task<bool> CheckHasInstallDPeM() 
+        {
+            writelog($"[DeviceMangerPlugin] Check Has Installed DPeM");
+            var isAnalyticsFirstLaunchDone = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Global", "isAnalyticsFirstLaunchDone").Result;
+            if (isAnalyticsFirstLaunchDone == null) 
+            {
+                return false;
+            }
+            return true;
         }
 
         private void GetDPeMGlobalSettings()
@@ -14114,6 +14142,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return ret;
         }
+
+        //Robert_Lin, 2024-12-21 for PIMS-332780 [DDPM Win 2.0.0] - R18 : In PBP 3 window & 4 window mode,
+        //"Swapping 2 inputs of PIP/PBP windows" hotkeys can be switched.
+        /// <summary>
+        /// Return true if current PXP mode is PIP_Small or PIP_Large
+        /// </summary>
+        /// <param name="mo"></param>
+        /// <returns></returns>
         private bool IsPIPMode(MonitorInfo mo)
         {
             bool ret = false;
@@ -14184,13 +14220,57 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] Swap_IputPIPPBP >begin [keys:{log_keys}]");
             if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
-                if (!IsPIPMode(monitorInfo))
+                //Robert_Lin, 2024-12-21 fix, for  PIMS-332780 [DDPM Win 2.0.0] - R18 : In PBP 3 window & 4 window mode,
+                //"Swapping 2 inputs of PIP/PBP windows" hotkeys can be switched.
+                //NEW:
+                //Check if this monitor has PIP/PBP capability
+                if (!monitorInfo.CapabilityDic.ContainsKey("E9"))
                 {
-                    //pxp off
-                    Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Swap_IputPIPPBP not take effect due to PXP mode is off or not supported");
-                    writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] will not take effect due to PXP mode is off.[keys:{log_keys}]");
+                    writelog("@Swap_IputPIPPBP(), Monitor has no PIP/PBP capability (E9).");
                     return;
                 }
+                //Get current PxpMode
+                ObjGetVCP objVcp = GetPxpMode(monitorInfo).Result;
+                //It should never return null
+                if (objVcp == null)
+                {
+                    writelog("@Swap_IputPIPPBP(), GetPxpMode() return null.");
+                    return;
+                }
+                if (!objVcp.result)
+                {
+                    writelog("@Swap_IputPIPPBP(), GetPxpMode() return false.");
+                    return;
+                }
+                if (objVcp.value == null)
+                {
+                    writelog("@Swap_IputPIPPBP(), GetPxpMode() return value is null.");
+                    return;
+                }
+                 UInt16 pxpMode = 0;
+                if (!UInt16.TryParse(objVcp.value.ToString(), out pxpMode))
+                {
+                    writelog("@Swap_IputPIPPBP(), GetPxpMode() return value convert to UINT16 type failed.");
+                    return;
+                }
+                //Check if pxpMode is 2 splits
+                int splitCount = PxpModeObj.GetSplitCountOfPxpMode(pxpMode);
+                if (splitCount != 2)
+                {
+                    writelog($"@Swap_IputPIPPBP(), PxpMode=0x{pxpMode:X}, SplitCount={splitCount}, Not 2 splits.");
+                    return;
+                }
+                writelog($"@Swap_IputPIPPBP(), PxpMode=0x{pxpMode:X}, SplitCount={splitCount}.");
+
+                //OLD:
+                //if (!IsPIPMode(monitorInfo))
+                //{
+                //    //pxp off
+                //    Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Swap_IputPIPPBP not take effect due to PXP mode is off or not supported");
+                //    writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] will not take effect due to PXP mode is off.[keys:{log_keys}]");
+                //    return;
+                //}
+
                 //0 = main, 1 = sub1, 2 = sub2, 3 = sub3
                 Dictionary<string, InputInfo> inputList = GetInputSourcelist(monitorInfo).Result;
                 //pip/pbp subinput should only one
@@ -16714,13 +16794,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return null;
         }
 
-        public Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps)
-        {
-            if (_IEzMemoryPlugin != null)
-                return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeApps(sortApps).Result);
-            else
-                return null;
-        }
+        //public Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps)
+        //{
+        //    if (_IEzMemoryPlugin != null)
+        //        return Task.FromResult(_IEzMemoryPlugin.LaunchAndArrangeApps(sortApps).Result);
+        //    else
+        //        return null;
+        //}
 
         public Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
         {

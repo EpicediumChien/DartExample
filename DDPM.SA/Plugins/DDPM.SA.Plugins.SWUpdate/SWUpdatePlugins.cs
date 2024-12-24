@@ -801,7 +801,17 @@ namespace DDPM.SA.Plugins.SWUpdate
                 _logs.DebugMsg_1($"{nameof(Install)} start");
                 string miniInstallPath = swUpdateInfos.InstallPaths;
                 PInvoke.PROCESS_INFORMATION procInfo;
-                WTSFunction.StartProcessAndBypassUACWithAdmin(miniInstallPath, out procInfo);
+                string workingDirectory = DDPMFileSecurity.SanitizePath(Path.GetDirectoryName(miniInstallPath), out string info);
+                if (!string.IsNullOrEmpty(workingDirectory))
+                {
+                    _logs.DebugMsg_1($"{nameof(Install)} workingDirectory is not null");
+                    WTSFunction.StartProcessAndBypassUACWithAdmin(miniInstallPath, workingDirectory, out procInfo);
+                }
+                else
+                {
+                    _logs.DebugMsg_1($"{nameof(Install)} workingDirectory is null, info : {info}");
+                }
+                    
                 //var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
                 //if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
                 //IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
