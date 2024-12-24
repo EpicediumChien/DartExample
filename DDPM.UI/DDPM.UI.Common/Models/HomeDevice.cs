@@ -15,7 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using VcpCore.Common;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+//using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.UI.Common.Models
 {
@@ -1713,7 +1713,7 @@ namespace DDPM.UI.Common.Models
             {
                 if (MonitorInfo != null)
                 {
-                    if (String.IsNullOrWhiteSpace(MonitorInfo.MarketingName))
+                    if (string.IsNullOrWhiteSpace(MonitorInfo.MarketingName))
                         return Strings.Display;
                     /* Debug text
                     return "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sem lorem, ornare at fringilla sed, eleifend ut nibh. Nullam a tincidunt sapien. Donec luctus felis eget facilisis sodales. Mauris nec ipsum elit. Curabitur sagittis mollis libero, id fringilla neque interdum at. Vivamus sit amet tortor consectetur enim egestas volutpat in id elit.";
@@ -1732,13 +1732,14 @@ namespace DDPM.UI.Common.Models
 
         private Visibility _isRestoreBtnVisible = Visibility.Visible;
 
-        public Visibility IsRestoreBtnVisible { 
-            get { return _isRestoreBtnVisible; } 
+        public Visibility IsRestoreBtnVisible
+        {
+            get { return _isRestoreBtnVisible; }
             set
             {
                 _isRestoreBtnVisible = value;
                 OnPropertyChanged(nameof(IsRestoreBtnVisible));
             }
-        } 
+        }
     }
 }
