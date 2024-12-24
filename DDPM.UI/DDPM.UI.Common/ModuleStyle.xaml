@@ -1806,6 +1806,18 @@
         <Setter Property="FontFamily" Value="Roboto" />
     </Style>
 
+    <Style x:Key="KeyToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+        <Setter Property="Placement" Value="Top" />
+        <Setter Property="VerticalOffset" Value="-5" />
+        <Setter Property="HorizontalOffset">
+            <Setter.Value>
+                <MultiBinding Converter="{StaticResource CenterToolTipConverter}">
+                    <Binding RelativeSource="{RelativeSource Self}" Path="PlacementTarget.ActualWidth" />
+                    <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth" />
+                </MultiBinding>
+            </Setter.Value>
+        </Setter>
+    </Style>
     <SolidColorBrush x:Key="KeyToolTipText_BgColor" Color="#1D2C3B" />
     <SolidColorBrush x:Key="KeyToolTipText_FgColor" Color="#F5F6F7" />
     <Style x:Key="KeyToolTipTextStyle" TargetType="TextBlock">
@@ -1814,7 +1826,8 @@
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="12" />
         <Setter Property="Foreground" Value="{DynamicResource KeyToolTipText_FgColor}" />
-        <Setter Property="Padding" Value="12,16,12,10" />
+        <Setter Property="Padding" Value="1" />
+        <Setter Property="Margin" Value="0" />
         <Setter Property="LineHeight" Value="20" />
         <Setter Property="VerticalAlignment" Value="center" />
         <Setter Property="HorizontalAlignment" Value="center" />
