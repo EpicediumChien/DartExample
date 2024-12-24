@@ -40,7 +40,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             _log?.Info("CheckUpdate_Click start");
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
-            vm.CheckUpdate();
+            if (vm != null)
+            {
+                vm.CheckUpdate();
+            }
+            else
+            {
+                _log?.Info("CheckUpdate_Click vm is null");
+            }
             _log?.Info("CheckUpdate_Click finish");
         }
         private void DownloadAndInstall_Click(object sender, RoutedEventArgs e)
@@ -64,44 +71,51 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void CallFWU(SettingsPageViewModel vm)
         {
             _log?.Info("CallFWU start");
-            if (vm.SWUpdateInfoPackage.SWUpdateInfo.Count > 0)
+            if (vm != null)
             {
-                _log?.Info("CallFWU SW_DownloadAndInstall go");
-                List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(vm.SWUpdateInfoPackage.SWUpdateInfo, true).Result;
-                _log?.Info("CallFWU SW_DownloadAndInstall finish");
-            }
-            else if (vm.FWUpdateInfoPackage.FWUpdateInfo.Count > 0)
-            {
-                _log?.Info("CallFWU DownloadAndInstall go");
-                List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true).Result;
-                _log?.Info("CallFWU DownloadAndInstall finish");
-                _log?.Info("CallFWU restart DDPM go");
-                string? exePath = Assembly.GetExecutingAssembly().Location;
-                if (!string.IsNullOrEmpty(exePath))
+                if (vm.SWUpdateInfoPackage.SWUpdateInfo.Count > 0)
                 {
-                    string? folderPath = Path.GetDirectoryName(exePath);
-                    if (!string.IsNullOrEmpty(folderPath))
+                    _log?.Info("CallFWU SW_DownloadAndInstall go");
+                    List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(vm.SWUpdateInfoPackage.SWUpdateInfo, true).Result;
+                    _log?.Info("CallFWU SW_DownloadAndInstall finish");
+                }
+                else if (vm.FWUpdateInfoPackage.FWUpdateInfo.Count > 0)
+                {
+                    _log?.Info("CallFWU DownloadAndInstall go");
+                    List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true).Result;
+                    _log?.Info("CallFWU DownloadAndInstall finish");
+                    _log?.Info("CallFWU restart DDPM go");
+                    string? exePath = Assembly.GetExecutingAssembly().Location;
+                    if (!string.IsNullOrEmpty(exePath))
                     {
-                        if (DdpmCommonHelper.DeviceManagerSA != null)
+                        string? folderPath = Path.GetDirectoryName(exePath);
+                        if (!string.IsNullOrEmpty(folderPath))
                         {
-                            Thread t1 = new Thread(() => DdpmCommonHelper.DeviceManagerSA.CallDDPMUI(folderPath));
-                            t1.Start();
-                            _log?.Info("CallFWU restart DDPM finish");
+                            if (DdpmCommonHelper.DeviceManagerSA != null)
+                            {
+                                Thread t1 = new Thread(() => DdpmCommonHelper.DeviceManagerSA.CallDDPMUI(folderPath));
+                                t1.Start();
+                                _log?.Info("CallFWU restart DDPM finish");
+                            }
+                            else
+                            {
+                                _log?.Info("CallFWU restart DDPM DeviceManagerSA is null");
+                            }
                         }
                         else
                         {
-                            _log?.Info("CallFWU restart DDPM DeviceManagerSA is null");
+                            _log?.Info("CallFWU restart DDPM folderPath is null");
                         }
                     }
                     else
                     {
-                        _log?.Info("CallFWU restart DDPM folderPath is null");
+                        _log?.Info("CallFWU restart DDPM exePath is null");
                     }
                 }
-                else
-                {
-                    _log?.Info("CallFWU restart DDPM exePath is null");
-                }
+            }
+            else
+            {
+                _log?.Info("CallFWU vm is null");
             }
             _log?.Info("CallFWU finish");
             Dispatcher.BeginInvoke(new Action(() =>
