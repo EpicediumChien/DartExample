@@ -2093,5 +2093,6 @@
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdSolidBkColor}" />
     </Style>
     <!-- #endregion -->
-
+    <BitmapImage x:Key="InterruptScreen_Image" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_InterruptScreen.png" />
+    <SolidColorBrush x:Key="InterruptScreen_Backgroung" Color="#132F54" />
 </ResourceDictionary>
