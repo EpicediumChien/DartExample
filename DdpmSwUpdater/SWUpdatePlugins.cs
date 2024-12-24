@@ -121,14 +121,6 @@ namespace DdpmSwUpdater
                     };
                     LogManage.Version = SWUpdateInfo.TheLatestVersion;
                     swUpdateInfos.Add(SWUpdateInfo);
-                    UpdateProgressInfo fWUpdateInfo = new UpdateProgressInfo()
-                    {
-                        DeviceName = SWUpdateInfo.SoftwareName,
-                        TheLatestVersion = SWUpdateInfo.TheLatestVersion,
-                        ProcessName = LangHelper.Instance["Downloading_and_installing"],
-                        ProcessProgress = 0.0,
-                    };
-                    sendMessageToEvent(fWUpdateInfo);
                 }
             }
             else
@@ -157,6 +149,7 @@ namespace DdpmSwUpdater
             LogManage.LogMessage($"_instanceMutex?.Dispose() go");
             _instanceMutex?.Dispose();
             LogManage.LogMessage($"_instanceMutex?.Dispose() done");
+            Thread.Sleep(5000);
             try
             {
                 string saveFolderName = Guid.NewGuid().ToString();

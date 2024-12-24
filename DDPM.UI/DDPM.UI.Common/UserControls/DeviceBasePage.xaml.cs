@@ -2,12 +2,15 @@
 using DDPM.UI.Common.ViewModels;
 using Dell.Client.Framework.Common;
 using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using UserControl = System.Windows.Controls.UserControl;
+using VcpCore.Common;
 
 namespace DDPM.UI.Common.UserControls
 {
@@ -277,7 +280,60 @@ namespace DDPM.UI.Common.UserControls
             { 
                 ChangeToLandingMode();
                 RightGrid.Visibility = Visibility.Collapsed;
-            }
+
+                /*
+                // Jim add 20241221 for PIMS-303368 [DDPM Win 2.0][R11 Webcam] The text button "Restore to Default" always showing in DDPM UI under DUT.
+                bool blResetToDefault_Visible = true;
+
+                // check bightness
+                double Brightness_Value;
+                ObjGetVCP obj = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(viewModel.SelectedHomeDevice.MonitorInfo, 0x10, 0).Result;
+                if (obj.result)
+                {
+                    //if (Brightness_Value < 0)
+                    //{
+                    //    Brightness_Value = Convert.ToDouble((uint)(long)obj.value);
+                    //}
+                    //else
+                    Brightness_Value = Convert.ToDouble((uint)(long)obj.value);
+
+                    if (Brightness_Value != (double)75.0f)
+                        blResetToDefault_Visible = true;
+                    else
+                        blResetToDefault_Visible = false;
+
+                }
+
+                if (!blResetToDefault_Visible)
+                {
+                    // check contrast
+                    double Contrast_Value;
+                    obj = DdpmCommonHelper.DeviceManagerSA.GetVCPCapability(viewModel.SelectedHomeDevice.MonitorInfo, 0x12, 0).Result;
+                    if (obj.result)
+                    {
+                        //if (Brightness_Value < 0)
+                        //{
+                        //    Brightness_Value = Convert.ToDouble((uint)(long)obj.value);
+                        //}
+                        //else
+                        Contrast_Value = Convert.ToDouble((uint)(long)obj.value);
+
+                        if (Contrast_Value != (double)75.0f)
+                            blResetToDefault_Visible = true;
+                        else
+                            blResetToDefault_Visible = false;
+
+                    }
+
+
+                    if (blResetToDefault_Visible)
+                        ((Border)(viewModel.DefaultLeftView.FindName("btnRestore"))).Visibility = Visibility.Visible;
+                    else
+                        ((Border)(viewModel.DefaultLeftView.FindName("btnRestore"))).Visibility = Visibility.Collapsed;
+                }
+                */
+
+            }            
 
             //tbDisplayName.Width = gridDisplayName.ActualWidth;
             //_log?.Info($"tbDisplayName.ActualWidth = {tbDisplayName.ActualWidth}");
@@ -313,6 +369,11 @@ namespace DDPM.UI.Common.UserControls
             stVbarRightFrame.Orientation = System.Windows.Controls.Orientation.Horizontal;
 
             //PrintDebugData("ChangeNonLandingMode");
+
+            /*
+            // Jim add 20241221 for  PIMS-303368 [DDPM Win 2.0][R11 Webcam] The text button "Restore to Default" always showing in DDPM UI under DUT.
+            ((Border)(viewModel.DefaultLeftView.FindName("btnRestore"))).Visibility = Visibility.Collapsed;
+            */
         }
 
         private void ExtendVBarOnVerticalLayout()

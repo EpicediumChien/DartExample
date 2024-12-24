@@ -65,6 +65,12 @@ namespace DDPM.SA.Common.Method
                     ZipFile.ExtractToDirectory(zipFilePath, extractPath, true);
                     _logs?.DebugMsg_1(nameof(Unzip) + " done");
                     exeFilePath = GetExeFilePath(extractPath);
+                    //Dean 1223 check output
+                    if (string.IsNullOrEmpty(exeFilePath) || exeFilePath.Length == 0)
+                    {
+                        _logs?.DebugMsg_1(nameof(Unzip) + "Unzip: search exe file got null/empty return");
+                        return false;
+                    }
                 }
                 return true;
             }
@@ -124,15 +130,14 @@ namespace DDPM.SA.Common.Method
                 _logs?.DebugMsg_1(nameof(Unzip) + "Get exe files in folder fail: " + ex.Message);
             }
 
+            // 如果不存在 .exe 檔案，則返回空字串
+            if (exeFiles == null || exeFiles.Length == 0)
+            {
+                return string.Empty;
+            }
             // 如果存在 .exe 檔案，則返回第一個 .exe 檔案的路徑
-            if (exeFiles.Length > 0)
-            {
-                return exeFiles[0];
-            }
-            else
-            {
-                return "";
-            }
+            return exeFiles[0];
+
         }
     }
 }

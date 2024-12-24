@@ -116,6 +116,11 @@ namespace CLI.Subagent
         //If runMode = true, means run as elevated mode
         private void RunManagement(string[] args, bool runMode)
         {
+            if (!runMode)//0724 only allow elevated privilege to perform action
+            {
+                _exitcode = ICLICommandTable.Response_UnelevatedError();
+                return;
+            }
             // 2024-08-28 Casper: move upper to let command parser work earlier
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);            
             List<CommandLineInput> commandLineInputs = new List<CommandLineInput>();
@@ -174,14 +179,6 @@ namespace CLI.Subagent
                 foreach (CommandLineInput commandLineInput in commandLineInputs)
                 {
                     commandLineInput.isCliRunAdmin = runMode;
-                    if (!runMode)//0724 only allow elevated privilege to perform action
-                    {
-                        _exitcode = ICLICommandTable.Response_UnelevatedError(commandLineInput);
-                        return;
-                    }
-
-
-
                     //***
                     //Assign command line input to CLIManager and it will pass data to CLIProxy (Relay)
                     //CLIProxy should handle all possible condition and return json serialize string included in CLIEventResult

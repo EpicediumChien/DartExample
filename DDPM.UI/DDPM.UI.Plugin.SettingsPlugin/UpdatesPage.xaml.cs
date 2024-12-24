@@ -38,7 +38,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         }
         private void CheckUpdate_Click(object sender, RoutedEventArgs e)
         {
-            _log?.Info("CheckUpdate_Click start");
             SettingsPageViewModel vm = (SettingsPageViewModel)DataContext;
             if (vm != null)
             {
@@ -117,7 +116,6 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 _log?.Info("CallFWU vm is null");
             }
-            _log?.Info("CallFWU finish");
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 UpdatesPageUI.IsEnabled = true;
