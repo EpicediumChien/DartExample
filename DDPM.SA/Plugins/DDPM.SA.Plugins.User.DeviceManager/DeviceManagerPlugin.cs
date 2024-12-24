@@ -194,6 +194,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //FW update progress bar
         private UpdateProgress _UpdateProgress;
+        private PopupBase _PopupBase = null;
 
         //Bruce 07-30 Added total screens
         private int _lastScreenCount;
@@ -1138,7 +1139,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             bool blRet = true;
 
-            var rt = false; 
+            var rt = false;
             var Displaysettings_Function = new Displaysettings_Function();
 
             if (!string.IsNullOrEmpty(NightLightStatus))
@@ -1585,9 +1586,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             bool SmartHDR_ON = GetHDRStatus(mo).Result;
 
-            var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(mo, on_off, _SettingsPlugin, this, Is_Game_DeviceName, SmartHDR_ON).Result;
-
-            return Task.FromResult(temp);
+            if ( (_AllInfoMonitors != null) && (mo != null) )
+            {
+                var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(_AllInfoMonitors, mo, on_off, _SettingsPlugin, this, Is_Game_DeviceName, SmartHDR_ON).Result;
+                writelog($"[DeviceManagerPlugin - AutoSetColorPresetForMonitorConfig] result {temp}");
+                return Task.FromResult(temp);
+            }
+            else
+                return Task.FromResult(false);           
         }
 
         /// <summary>
@@ -6082,6 +6088,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         toastContentBuilder.AddArgument(title);
                         toastContentBuilder.AddText(title);
                         toastContentBuilder.AddText(info);
+                    }
+                    if (_PopupBase != null && _PopupBase.Activate())
+                    {
+                        _PopupBase.CloseWindow();
+                        _PopupBase = null;
                     }
                     toastContentBuilder.Show(); // 顯示Toast通知
                     writelog("[CallPopup], popup Show.");
@@ -11117,7 +11128,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #region FW Update
-
         private void OnProgressUpdateEvent(UpdateProgressInfo fWUpdateInfo)
         {
             writelog($"{nameof(OnProgressUpdateEvent)} start");
@@ -11128,6 +11138,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"{nameof(OnProgressUpdateEvent)} {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
                 handler.Invoke(this, fWUpdateInfo);
+                if (_UpdateProgress == null)
+                {
+                    if (_PopupBase != null && _PopupBase.Activate())
+                    {
+                        _PopupBase.UpdateContent(LangHelper.Instance["FW_info"], fWUpdateInfo.ProcessName);
+                    }
+                    else
+                    {
+                        _PopupBase = new PopupBase(LangHelper.Instance["FW_info"], fWUpdateInfo.ProcessName, "", "", null, true, 0);
+                        _PopupBase.ShowWindow();
+                        const double NotificationHeight = 252;
+                        const double NotificationWidth = 417;
+                        const double NotificationSpacing = 10;
+                        _PopupBase.Height = NotificationHeight;
+                        _PopupBase.Width = NotificationWidth;
+                        double screenHeight = SystemParameters.PrimaryScreenHeight;
+                        double screenWidth = SystemParameters.PrimaryScreenWidth;
+                        _PopupBase.Left = screenWidth - NotificationWidth - NotificationSpacing;
+                        _PopupBase.Top = screenHeight - NotificationHeight - NotificationSpacing;
+                    }
+                }
             }
             writelog($"{nameof(OnProgressUpdateEvent)} done");
         }
@@ -17060,7 +17091,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void UpdateInstancesToPeripheralPlugin(ISettingsManagerDev SettingsInstance, IDTPProxyPlugin DTPInstance)
         {
-            if(_PeripheralsPlugin != null && SettingsInstance != null)
+            if (_PeripheralsPlugin != null && SettingsInstance != null)
             {
                 _PeripheralsPlugin.UpdateSettingsInstance(SettingsInstance);
             }
@@ -17077,7 +17108,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (string.IsNullOrEmpty(e.Requester))
                 return;
 
-            switch(e.Requester)
+            switch (e.Requester)
             {
                 case "CollaborationNotAvailable.Keyboard":
                     ShowOSD(e.DeviceName, e.osd_type, e.osd_device, e.Message);

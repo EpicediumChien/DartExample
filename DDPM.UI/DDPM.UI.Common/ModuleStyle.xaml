@@ -311,6 +311,7 @@
                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
         </Canvas>
     </ControlTemplate>
+    
     <!-- Icon Chat -->
     <ControlTemplate x:Key="icon_Chat" TargetType="ContentControl">
         <Canvas Width="18" Height="16">
@@ -318,6 +319,7 @@
                   Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
         </Canvas>
     </ControlTemplate>
+    
     <!-- Icon Mic -->
     <ControlTemplate x:Key="icon_Mic" TargetType="ContentControl">
         <Canvas Width="20" Height="14">
@@ -327,9 +329,19 @@
           Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
         </Canvas>
     </ControlTemplate>
+    
+    <!-- Icon Pen -->
+    <ControlTemplate x:Key="icon_Pen" TargetType="ContentControl">
+        <Canvas Width="17" Height="16">
+            <Path Data="M13.57 0L2.34 11.23L0.68 15.49L0.5 16L1.01 15.82L5.28 14.15L16.5 2.93L13.57 0ZM2.37 14.13L3.23 11.91L4.6 13.26L2.37 14.13ZM5.37 12.52L3.96 11.12L11.96 3.12L13.37 4.51L5.37 12.51V12.52ZM12.74 2.36L13.57 1.53L14.97 2.93L14.15 3.75L12.74 2.36Z"
+          Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
+        </Canvas>
+    </ControlTemplate>
+    
     <!-- endregion -->
 
     <!-- endregion -->
+    
     <!--<Style TargetType="TextBlock">
     <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
     </Style>-->

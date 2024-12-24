@@ -124,7 +124,7 @@
                 </Grid>
                 <Grid Grid.Column="1">
                   <UXControls:UXSlider x:Name="DPISlider" TickFrequency="{Binding DpiDelta}"  TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding DPIValue}" HorizontalAlignment="Left" KeyUp="DPISlider_KeyUp" PreviewKeyDown="DPISlider_PreviewKeyDown"
-                                                         Minimum="{Binding DPIMin}" Maximum="{Binding DPIMax}" Width="365" Thumb.DragStarted="DPISlider_DragStarted" Thumb.DragCompleted="DPISlider_DragCompleted" />
+                                       IsMoveToPointEnabled="True" Minimum="{Binding DPIMin}" Maximum="{Binding DPIMax}" Width="365" Thumb.DragStarted="DPISlider_DragStarted" Thumb.DragCompleted="DPISlider_DragCompleted" />
                                 </Grid>
                                 <Grid Grid.Column="2">
                                     <UXControls:UXTextBlock Text="{Binding DPIMaxText}" FontSize="14" Foreground="#A4B8CD" Margin="9,2,0,0" FontFamily="Roboto" />

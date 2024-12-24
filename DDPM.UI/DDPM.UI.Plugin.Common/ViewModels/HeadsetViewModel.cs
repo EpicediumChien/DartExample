@@ -403,6 +403,11 @@ namespace DDPM.UI.Plugin.ViewModels
             //modelTest = model;
             ReadQRCodeReg();
             AllResetHeadsetPage();
+            string fwv = string.Empty;
+            if (!IsDTPReady)
+                fwv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceInfo!.ID.ToString()).Result;
+            else
+                fwv = FirmwareVersion;
 
             switch (model.ToUpper())
             {
@@ -439,8 +444,11 @@ namespace DDPM.UI.Plugin.ViewModels
                     //Page 1
                     _controlTheNoiseIHearPageShow = true;
                     _configureMyAudioModesPageShow = true;
-                    //Page 2
-                    _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
+                    //Page 2                  
+                    if (ConvertVersionToInt(fwv) >= 252)
+                        _automatedActionsAnswerCallPageShow = true;
+                    else
+                        _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
                     //Page 3
                     _voiceGuidancePageShow = true;
                     _deviceSettingsDownloadDellAudioPageShow = false;
@@ -461,7 +469,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     _controlTheNoiseIHearPageShow = false;//Fix PIMS-PIMS-294568
                     _configureMyAudioModesPageShow = true;
                     //Page 2
-                    _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
+                    if (ConvertVersionToInt(fwv) >= 275)
+                        _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;
+                    else
+                        _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
                     //Page 3
                     _deviceSettingsDownloadDellAudioPageShow = false;
                     //defult page
@@ -1782,7 +1793,7 @@ namespace DDPM.UI.Plugin.ViewModels
             else
                 UpdateDTHValue();
             // Call DetectPageShow
-            //await DetectPageShow(model);
+            DetectPageShow(model);
             //HidePleaseWait();
         }
 
@@ -2217,12 +2228,23 @@ namespace DDPM.UI.Plugin.ViewModels
                         DeviceInfoDTP.AncMode = 1;
                         _isTransparencyChecked = false;
                         _isNoiseOffChecked = false;
+                        DeviceInfoDTP!.Sidetone = true;
+                        _isSidetoneStatus = true;
                         if (IsDTPReady)
+                        {
                             _debouncerHeadset.Debounce("ANC");
+                            _debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
+                        }
                         else
+                        {
                             _deviceManager.SetAncMode(1, CurrentDeviceInfo!.ID).Wait();
+                            _deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
+                        }
                         OnPropertyChanged(nameof(IsTransparencyChecked));
                         OnPropertyChanged(nameof(IsNoiseOffChecked));
+                        OnPropertyChanged(nameof(Sidetone_String));
+                        OnPropertyChanged(nameof(SidetoneStatus));
+                        OnPropertyChanged(nameof(SidetoneSliderStatus));
                     }
                 }
             }
@@ -2290,12 +2312,23 @@ namespace DDPM.UI.Plugin.ViewModels
                         DeviceInfoDTP.AncMode = 0;
                         _isActiveNoiseCancellingChecked = false;
                         _isTransparencyChecked = false;
+                        DeviceInfoDTP!.Sidetone = true;
+                        _isSidetoneStatus = true;
                         if (IsDTPReady)
+                        {
                             _debouncerHeadset.Debounce("NoiseOff");
+                            _debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
+                        }
                         else
+                        {
                             _deviceManager.SetAncMode(0, CurrentDeviceInfo!.ID).Wait();
+                            _deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
+                        }
                         OnPropertyChanged(nameof(IsActiveNoiseCancellingChecked));
                         OnPropertyChanged(nameof(IsTransparencyChecked));
+                        OnPropertyChanged(nameof(Sidetone_String));
+                        OnPropertyChanged(nameof(SidetoneStatus));
+                        OnPropertyChanged(nameof(SidetoneSliderStatus));
                     }
                 }
             }
@@ -3315,6 +3348,23 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         #endregion
 
+        public int ConvertVersionToInt(string version)
+        {
+            if (string.IsNullOrWhiteSpace(version))
+                throw new ArgumentException("Version string cannot be null or empty.");
+
+            string numericVersion = version.Replace(".", "");
+
+            if (int.TryParse(numericVersion, out int result))
+            {
+                return result;
+            }
+            else
+            {
+                throw new FormatException("Invalid version format. Could not convert to integer.");
+            }
+        }
+
         private bool CheckIfCurrentSettingsMatchDefault(DeviceInfoDTP currentSettings, string model)
         {
             if (!ModelDefaultSettings.ContainsKey(model))
@@ -3563,26 +3613,6 @@ namespace DDPM.UI.Plugin.ViewModels
         public int WearDetectionSensitivityFromDTP { get; set; } = 0;
         public bool AnswerCall { get; set; } = false;
     }
-    //public static class DefaultDeviceSettings
-    //{
-    //    public const int Band1Gain = 0;
-    //    public const int Band2Gain = 0;
-    //    public const int Band3Gain = 0;
-    //    public const int Band4Gain = 0;
-    //    public const int Band5Gain = 0;
-    //    public const int AncGain = 3;
-    //    public const int AncMode = 2;
-    //    public const bool BusyLight = true;
-    //    public const bool MicNoiseCancellation = true;
-    //    public const bool MicNCIncoming = false;
-    //    public const bool Sidetone = false;
-    //    public const int SidetoneLevel = 1;
-    //    public const int SelectedPreset = 1;
-    //    public const bool VoiceGuidance = true;
-    //    public const bool WearDetection = false;
-    //    public const bool AnswerCall = false;
-    //    //DetectPageShow...WL7024
-    //}
 
     //***********************************************************************
     //DeviceInfoDTP.AncMode.....................= 2

@@ -30,6 +30,9 @@ namespace DDPM.ColorApp
 
         private bool b_SmartHDR_ON= false;
         private bool b_Is_Game_DeviceName = false;  // Jim 20241207 add
+        private bool bl_actived_mi_matched_config = false; // Jim 20241219 add
+
+        private List<MonitorInfo> _AllInfoMonitors = new List<MonitorInfo>(); // Jim 20241218 add for PIMS-326072 
 
         #region data region
 
@@ -43,7 +46,7 @@ namespace DDPM.ColorApp
 
         #endregion data region
 
-        public MonitorWin(IDeviceManagerSA _ddmLib, MonitorInfo m)
+        public MonitorWin(IDeviceManagerSA _ddmLib, MonitorInfo m, ILog log)
         {
             //Trace.WriteLine("ColorApp - MonitorWin");
 
@@ -54,6 +57,7 @@ namespace DDPM.ColorApp
             this.WindowStyle = WindowStyle.None;
             AllowsTransparency = true;
             Opacity = 0.0f;
+            Log = log; 
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -100,11 +104,14 @@ namespace DDPM.ColorApp
             reload_color_settings_to_config();
         }
 
-        // For PIMS-326072
-        public void Set_Active_Monitor(MonitorInfo m)
+        // jim 20241218 modify For PIMS-326072
+        public void Set_AllMonitors(List<MonitorInfo> allInfoMonitors)
         {
-            if (Mi != null && m != null)
-                Mi = m;
+            //if (Mi != null && m != null)
+            //    Mi = m;
+
+            _AllInfoMonitors.Clear();
+            _AllInfoMonitors.AddRange(allInfoMonitors);
         }
 
         public void reload_color_settings_to_config()
@@ -247,6 +254,12 @@ namespace DDPM.ColorApp
 
                     screen = Screen.FromHandle(data.ActiveWindowHandle);
 
+                    if (screen == null)
+                    {
+                        writelog($"[EventAppStatus_SendValue] Active window handle is null");
+                        return;
+                    }
+
                     System.Windows.Forms.Screen? s = System.Windows.Forms.Screen.AllScreens.FirstOrDefault(x => x.DeviceName == Mi.DisplayName);
 
                     Trace.WriteLine("Mi.DisplayName = " + Mi.DisplayName);
@@ -276,11 +289,11 @@ namespace DDPM.ColorApp
                     writelog("s.WorkingArea.Left = " + s.WorkingArea.Left);
 
 
-                    if (s == null)//Dean 0626 fix SAST issue
-                        return;
+                    //if (s == null)//Dean 0626 fix SAST issue
+                    //    return;
 
-                    if ((screen.WorkingArea.Height != s.WorkingArea.Height) || (screen.WorkingArea.Width != s.WorkingArea.Width) || (screen.WorkingArea.Left != s.WorkingArea.Left))
-                        return;
+                    //if ((screen.WorkingArea.Height != s.WorkingArea.Height) || (screen.WorkingArea.Width != s.WorkingArea.Width) || (screen.WorkingArea.Left != s.WorkingArea.Left))
+                    //    return;
 
                     string strFilePath = data.ActiveWindowFilePath;
 
@@ -289,15 +302,32 @@ namespace DDPM.ColorApp
                     writelog("EventAppStatus_SendValue ActiveWindowProcessModuleName = " + data.ActiveWindowProcessModuleName);
                     writelog("EventAppStatus_SendValue ActiveWindowFilePath = " + data.ActiveWindowFilePath);
 
+                    MonitorInfo actived_mi = null;
+                    if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
+                    {
+                        actived_mi = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(screen.DeviceName.ToUpper()));
+
+                    }
+                    else
+                    {
+                        writelog($"_AllInfoMonitors.Count = {_AllInfoMonitors.Count} ");
+                        writelog("No any Monitors is matched");
+                        return;
+                    }
+
+
                     //Get actived Monitor from actived window
                     //screen = Screen.FromHandle(data.ActiveWindowHandle);
 
-                    MonitorInfo actived_mi = Mi;
+                    //MonitorInfo actived_mi = Mi;
 
-                    if (!actived_mi.IsDellMonitor)
+                    if (actived_mi != null)
                     {
-                        writelog("actived_mi.IsDellMonitor is False");
-                        return;
+                        if (!actived_mi.IsDellMonitor)
+                        {
+                            writelog("actived_mi.IsDellMonitor is False");
+                            return;
+                        }
                     }
 
                     //////get active process's modeul info
@@ -311,11 +341,15 @@ namespace DDPM.ColorApp
                     }
                     //convert module name to app name, ex: 7zFM.exe -> 7-Zip File Manager
                     string reqAppName = string.Empty;
-                    int index = _apps.FindIndex(x =>
+                    int index = -1;
+                    if (forgroundProcess != null && forgroundProcess.MainModule != null) {
+                    index = _apps.FindIndex(x =>
                                      forgroundProcess.MainModule.FileName.ToLower().Trim().IndexOf(x.AppPath.ToLower().Trim()) >= 0 ||
                                     //forgroundProcess.MainModule.FileName.ToLower().Trim().IndexOf(x.AppName.ToLower().Trim()) >= 0 ||
                                     forgroundProcess.MainModule.ModuleName.ToLower().Trim().Replace(".exe", "") == x.AppName.ToLower().Trim().Replace(".exe", "")
                                     );
+                    }
+
                     if (index < 0)
                     {
                         //check with filepath (UWP like app would be this condition)
@@ -364,8 +398,15 @@ namespace DDPM.ColorApp
                         }
 
                         //Check if actived monitor has its color preset section in config file
-                        if (actived_mi.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
-                            actived_mi.edid.SerialNumber.Trim() == config.SerialNumber.Trim())
+
+                        bl_actived_mi_matched_config = (actived_mi.edid.ModelName.Trim() == config.ModelName.Trim()) && (actived_mi.edid.SerialNumber.Trim() == config.SerialNumber.Trim());
+
+                        if (!bl_actived_mi_matched_config)
+                            bl_actived_mi_matched_config = (actived_mi.edid.ModelName.Trim() == config.ModelName.Trim()) && (actived_mi.edid.ServiceTag.Trim() == config.ServiceTag.Trim());
+
+                        //if (actived_mi.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
+                        //    actived_mi.edid.SerialNumber.Trim() == config.SerialNumber.Trim())
+                        if (bl_actived_mi_matched_config)
                         {
                             if (config.RunType != (int)ColorPresetRunType.Auto)
                             {
@@ -506,6 +547,7 @@ namespace DDPM.ColorApp
 
                                 //Trace.WriteLine("Pre_reqKey and reqKey is the same");
                             }
+                            
                         }
                     }
 
