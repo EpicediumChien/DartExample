@@ -13349,7 +13349,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
         {
-            KeyboardHook_Debounce(3000, null, KeyboardHook_KeyUpProc, e);
+            KeyboardHook_Debounce(300, null, KeyboardHook_KeyUpProc, e);
         }
 
         private void KeyboardHook_KeyUpProc(KeyEventArgs e)
