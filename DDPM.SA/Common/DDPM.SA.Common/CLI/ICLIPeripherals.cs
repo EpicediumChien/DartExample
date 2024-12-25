@@ -105,11 +105,31 @@ namespace DDPM.SA.Common
                     if (_devMgr.GetIsPropertyAntiFlickerSupported(Guid).Result)
                     {
                         retvalue = _devMgr.GetAntiFlicker(Guid).Result;
-                        Value = retvalue.ToString();
-                        //Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
-                        Result = "PASS";
-                        Message = "N/A";
-                        TargetFeature = targetFeature;
+                        if (!string.IsNullOrEmpty(retvalue.ToString()))
+                        {
+                            switch (retvalue.ToString())
+                            {
+                                case "1":
+                                    Value = "50";
+                                    break;
+                                case "2":
+                                    Value = "60";
+                                    break;
+                                default:
+                                    break;
+
+                            }
+                            //Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
+                            Result = "PASS";
+                            Message = "N/A";
+                            TargetFeature = targetFeature;
+                        }
+                        else
+                        {
+                            Value = "N/A";
+                            Result = "FAIL";
+                            Message = "Interface is return null";
+                        }
                     }
                     else
                     {
