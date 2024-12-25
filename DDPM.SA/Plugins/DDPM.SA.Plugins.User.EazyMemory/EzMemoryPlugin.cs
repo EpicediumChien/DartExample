@@ -657,23 +657,24 @@ namespace DDPM.SA.Plugins.User.EzMemory
             Dictionary<string, InstalledAppInfo> installedApp = new Dictionary<string, InstalledAppInfo>();
             string fileinfo = string.Empty, info = string.Empty;
             bool canSave = true;
-            if (!System.IO.Directory.Exists(IconFolder))
+            if (!System.IO.Directory.Exists(RootColorPath))
             {
-                if (DDPMFileSecurity.ValidateFilePath(RootColorPath, out info))
-                { 
-                    System.IO.Directory.CreateDirectory(IconFolder);
-                }
-                else
-                {
-                    _logs.Info($"[EzMemoryManagerPlugin][ValidateFilePath] RootColorPath path invalid: {info}");
-                    canSave = false;
-                }
-
+                System.IO.Directory.CreateDirectory(RootColorPath);
+                _logs.Info($"[EzMemoryManagerPlugin][ValidateFilePath] RootColorPath isn't exist, create it");
             }
-            if(!DDPMFileSecurity.ValidateFilePath(IconFolder, out info))
+            if (canSave && !DDPMFileSecurity.ValidateFilePath(RootColorPath, out info))
             {
-                _logs.Info($"[EzMemoryManagerPlugin][ValidateFilePath] folder path invalid: {info}");
-                //return Task.FromResult(installedApp);
+                _logs.Info($"[EzMemoryManagerPlugin][ValidateFilePath] RootColorPath abnormal, do not save icon: {info}");
+                canSave = false;
+            }
+            if (canSave && !System.IO.Directory.Exists(IconFolder))
+            {
+                System.IO.Directory.CreateDirectory(IconFolder);
+                _logs.Info($"[EzMemoryManagerPlugin][ValidateFilePath] IconFolder isn't exist, create it");
+            }
+            if (canSave && !DDPMFileSecurity.ValidateFilePath(IconFolder, out info))
+            {
+                _logs.Info($"[EzMemoryManagerPlugin][ValidateFilePath] IconFolder abnormal, do not save icon: {info}");
                 canSave = false;
             }
 

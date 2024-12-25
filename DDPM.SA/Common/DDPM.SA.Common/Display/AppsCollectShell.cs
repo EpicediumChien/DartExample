@@ -191,6 +191,7 @@ namespace DDPM.SA.Common
 
     public class AppsCollectShell
     {
+        private static string RootDDPMPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dell\\Dell Display and Peripheral Manager";
         private static string RootColorPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dell\\Dell Display and Peripheral Manager\\AppLibrary";
 
         //private static string IconFolder = RootColorPath + Environment.UserName + "\\Icon\\";
@@ -257,23 +258,37 @@ namespace DDPM.SA.Common
 
             //if (!DDPMFileSecurity.CheckFold(IconFolder, out folderInfo, out info))
             //    return installedApp;
-            if (!System.IO.Directory.Exists(IconFolder))
-            {
-                if (DDPMFileSecurity.ValidateFilePath(RootColorPath, out folderInfo))
-                {
-                    System.IO.Directory.CreateDirectory(IconFolder);
-                    WriteLog("[FindAppsbyShell][ValidateFilePath] create icon folder");
-                }
-                else
-                {
-                    WriteLog($"[FindAppsbyShell][ValidateFilePath] RootColorPath abnormal: {folderInfo}");
-                }
-            }
+
             //Dean 1225 replace CheckFold by updated SDL function
-            if (!DDPMFileSecurity.ValidateFilePath(IconFolder, out folderInfo))
+            if (!System.IO.Directory.Exists(RootDDPMPath))
             {
-                canSave = false;// return installedApp;
-                WriteLog($"[FindAppsbyShell][ValidateFilePath] drop to save icon since path abnormal: {folderInfo}");
+                canSave = false;
+                WriteLog($"[FindAppsbyShell][ValidateFilePath] RootDDPMPath isn't exist, do not save icon");
+            }
+            if (canSave && !DDPMFileSecurity.ValidateFilePath(RootDDPMPath, out folderInfo))
+            {
+                WriteLog($"[FindAppsbyShell][ValidateFilePath] RootDDPMPath abnormal: {folderInfo}");
+                canSave = false;
+            }
+            if (canSave && !System.IO.Directory.Exists(RootColorPath))
+            {
+                System.IO.Directory.CreateDirectory(RootColorPath);
+                WriteLog($"[FindAppsbyShell][ValidateFilePath] RootColorPath isn't exist, create it");
+            }
+            if (canSave && !DDPMFileSecurity.ValidateFilePath(RootColorPath, out folderInfo))
+            {
+                WriteLog($"[FindAppsbyShell][ValidateFilePath] RootDDPMPath abnormal: {folderInfo}");
+                canSave = false;
+            }
+            if (canSave && !System.IO.Directory.Exists(IconFolder))
+            {
+                System.IO.Directory.CreateDirectory(IconFolder);
+                WriteLog($"[FindAppsbyShell][ValidateFilePath] IconFolder isn't exist, create it");
+            }
+            if (canSave && !DDPMFileSecurity.ValidateFilePath(IconFolder, out folderInfo))
+            {
+                WriteLog($"[FindAppsbyShell][ValidateFilePath] IconFolder abnormal, do not save icon: {folderInfo}");
+                canSave = false;
             }
 
             Dictionary<string, List<AppItemInfo>> dictionary = new Dictionary<string, List<AppItemInfo>>();
