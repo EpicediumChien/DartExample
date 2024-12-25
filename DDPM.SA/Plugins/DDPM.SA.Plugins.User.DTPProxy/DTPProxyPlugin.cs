@@ -158,7 +158,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     var value = GetPropertyValue(_globalperipheralInterfaceType, commodity, "IsLockKeyNotificationsEnabled");
                     writelog($"Get IsLockKeyNotificationsEnabled Value:{(bool)value}");
                     return value != null && (bool)value;
-                    ;
                 }
                 else
                 {
@@ -184,7 +183,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     var value = GetPropertyValue(_globalperipheralInterfaceType, commodity, "IsBatteryNotificationsEnabled");
                     writelog($"Get IsBatteryNotificationsEnabled Value:{(bool)value}");
                     return value != null && (bool)value;
-                    ;
                 }
                 else
                 {
@@ -211,7 +209,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     var value = GetPropertyValue(_globalperipheralInterfaceType, commodity, "IsPresenceDetectionSensnorStateNotificationsEnabled");
                     writelog($"Get IsPresenceDetectionSensnorStateNotificationsEnabled Value:{(bool)value}");
                     return value != null && (bool)value;
-                    ;
                 }
                 else
                 {
@@ -237,7 +234,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     var value = GetPropertyValue(_globalperipheralInterfaceType, commodity, "IsAnalyticsEnabled");
                     writelog($"Get IsAnalyticsEnabled Value:{(bool)value}");
                     return value != null && (bool)value;
-                    ;
                 }
                 else
                 {
@@ -264,7 +260,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     var value = GetPropertyValue(_globalperipheralInterfaceType, commodity, "IsQuickAccessMenuEnabled");
                     writelog($"Get IsQuickAccessMenuEnabled Value:{(bool)value}");
                     return value != null && (bool)value;
-                    ;
                 }
                 else
                 {
@@ -291,7 +286,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     var value = GetPropertyValue(_globalperipheralInterfaceType, commodity, "IsMuteStatusNotificationsEnabled");
                     writelog($"Get IsMuteStatusNotificationsEnabled Value:{(bool)value}");
                     return value != null && (bool)value;
-                    ;
                 }
                 else
                 {
@@ -317,7 +311,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     var value = GetPropertyValue(_globalperipheralInterfaceType, commodity, "IsQuickAccessMenuOSDEnabled");
                     writelog($"Get IsQuickAccessMenuOSDEnabled Value:{(bool)value}");
                     return value != null && (bool)value;
-                    ;
                 }
                 else
                 {
@@ -570,7 +563,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "DeleteAllAssignedActions");
                 Debug.WriteLine($"{value ?? ""}");
                 return value != null && (bool)value;
-                ;
             }
             else
             {
@@ -625,7 +617,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "StartKeystrokeRecording");
                 Debug.WriteLine($"{value ?? ""}");
                 return value != null && (bool)value;
-                ;
             }
             else
             {
@@ -644,7 +635,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 var value = GetPropertyValue(_mouseInterfaceType, commodity, "StopKeystrokeRecording");
                 Debug.WriteLine($"{value ?? ""}");
                 return value != null && (bool)value;
-                ;
             }
             else
             {
@@ -881,7 +871,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 var value = GetPropertyValue(_keyboardInterfaceType, commodity, "DeleteAllAssignedActions");
                 Debug.WriteLine($"{value ?? ""}");
                 return value != null && (bool)value;
-                ;
             }
             else
             {
@@ -964,7 +953,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 var value = GetPropertyValue(_keyboardInterfaceType, commodity, "StartKeystrokeRecording");
                 Debug.WriteLine($"{value ?? ""}");
                 return value != null && (bool)value;
-                ;
             }
             else
             {
@@ -983,7 +971,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 var value = GetPropertyValue(_keyboardInterfaceType, commodity, "StopKeystrokeRecording");
                 Debug.WriteLine($"{value ?? ""}");
                 return value != null && (bool)value;
-                ;
             }
             else
             {
@@ -1242,7 +1229,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsWindowsHelloCapabilityVerified");
                     return value != null && (bool)value;
-                    ;
                 }
                 else
                 {
@@ -1269,7 +1255,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsAllSupportedResolutionsFound");
                     return value != null && (bool)value;
-                    ;
                 }
                 else
                 {
@@ -1296,7 +1281,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsPropertyFOVSupported");
                     return value != null && (bool)value;
-                    ;
                 }
                 else
                 {
@@ -1349,7 +1333,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsPropertyHDRSupported");
                     return value != null && (bool)value;
-                    ;
                 }
                 else
                 {
@@ -1376,7 +1359,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsHDROn");
                     return value != null && (bool)value;
-                    ;
                 }
                 else
                 {
@@ -1403,7 +1385,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsPropertyHDRSupported");
                     return value != null && (bool)value;
-                    ;
                 }
                 else
                 {
@@ -5904,7 +5885,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     var value = GetPropertyValue(_headsetInterfaceType, commodity, "BoomMic");
                     writelog($"[DTPProxyPlugin] [Headset] GetBoomMicAsync succeeded for {guid}");
                     return value != null && (bool)value;
-                    ;
                 }
 
                 writelog($"[DTPProxyPlugin] [Headset] GetBoomMicAsync failed: Could not retrieve commodity interface for {guid}");
@@ -6470,7 +6450,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioMicMuteSoundEnable");
                     writelog($"[Speaker] GetIsWiredAudioMicMuteSoundEnableAsync succeeded for {guid}");
                     return value != null && (bool)value;
-                    ;
                 }
 
                 writelog($"[Speaker] GetIsWiredAudioMicMuteSoundEnableAsync failed: Could not retrieve commodity interface for {guid}");
@@ -6525,7 +6504,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsWiredAudioIMicNSEnable");
                     writelog($"[Speaker] GetIsWiredAudioIMicNSEnableAsync succeeded for {guid}");
                     return value != null && (bool)value;
-                    ;
                 }
 
                 writelog($"[Speaker] GetIsWiredAudioIMicNSEnableAsync failed: Could not retrieve commodity interface for {guid}");
@@ -6555,7 +6533,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsAudioEqualizerSupported");
                     writelog($"[Speaker] GetIsAudioEqualizerSupportedAsync succeeded for {guid}");
                     return value != null && (bool)value;
-                    ;
                 }
 
                 writelog($"[Speaker] GetIsAudioEqualizerSupportedAsync failed: Could not retrieve commodity interface for {guid}");
@@ -6583,7 +6560,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     var value = GetPropertyValue(_speakerInterfaceType, commodity, "MuteStatus");
                     writelog($"[Speaker] GetMuteStatusAsyncForSpeaker succeeded for {guid}");
                     return value != null && (bool)value;
-                    ;
                 }
 
                 writelog($"[Speaker] GetMuteStatusAsyncForSpeaker failed: Could not retrieve commodity interface for {guid}");
