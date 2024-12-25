@@ -491,22 +491,28 @@ namespace DDPM.QAM
             {
                 _AutoFramingStatus = value;
 
-                if (!isStatusChagneByDDPM)
-                {
-                    bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), _AutoFramingStatus).Result;
-
-                    LogMsg($"QAM SetIsAutoFramingOn value to {_AutoFramingStatus}, result is {result}");
-                }
-                else
-                    LogMsg($"QAM SetIsAutoFramingOn value has modified by UI");
-
-                System.Windows.MessageBox.Show($"AutoFramingStatus -> {isStatusChagneByDDPM}");
-
                 RefreshUI();
 
                 OnPropertyChanged(nameof(AutoFramingStatus));
+
+                SetAutoFramingStatus();
             }
         }
+
+        public void SetAutoFramingStatus()
+        {
+            if (!isStatusChagneByDDPM)
+            {
+                bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), _AutoFramingStatus).Result;
+
+                LogMsg($"QAM SetIsAutoFramingOn value to {_AutoFramingStatus}, result is {result}");
+            }
+            else
+                LogMsg($"QAM SetIsAutoFramingOn value has modified by UI");
+
+            //LogMsg($"AutoFramingStatus -> {isStatusChagneByDDPM}");
+        }
+
         #endregion
         #region FOV
         public bool[] FOV_IsSelected { get; set; } = { false, false, false };
