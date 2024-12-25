@@ -138,10 +138,11 @@
 
                                     <!-- Voice Guidance Buttons -->
                                     <StackPanel x:Name="VoiceGuidanceStackPanel" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,0">
-                                        <UXControls:UXToggleSwitch x:Name="EssentialButton" Grid.Row="1" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_BorderBrush}" Width="224" Height="52" Margin="0,8,0,20" Padding="16"  IsChecked="{Binding IsEssentialChecked, Mode=TwoWay}">
+                                        <UXControls:UXToggleSwitch x:Name="EssentialButton" Grid.Row="1" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}" Background="{DynamicResource ToggleSwitch_NormalBackground}"
+                                                                   Width="224" Height="52" Margin="0,8,0,20" Padding="16"  IsChecked="{Binding IsEssentialChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="EssentialButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Border x:Name="EssentialButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                 <UXControls:UXTextBlock x:Name="EssentialButtonTextBlock" Text="{Binding [HeadsetDeviceSettings.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
@@ -158,10 +159,11 @@
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
                                         </UXControls:UXToggleSwitch>
-                                        <UXControls:UXToggleSwitch x:Name="AllButton" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_BorderBrush}" Width="224" Height="52" Margin="8,8,0,20" Padding="16" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsAllChecked, Mode=TwoWay}">
+                                        <UXControls:UXToggleSwitch x:Name="AllButton" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}" Background="{DynamicResource ToggleSwitch_NormalBackground}"
+                                                                   Width="224" Height="52" Margin="8,8,0,20" Padding="16" IsChecked="{Binding IsAllChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="AllButtonBorder"  BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Border x:Name="AllButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                 <UXControls:UXTextBlock x:Name="AllButtonTextBlock" Text="{Binding [HeadsetDeviceSettings.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />

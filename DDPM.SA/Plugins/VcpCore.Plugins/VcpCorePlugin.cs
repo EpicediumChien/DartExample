@@ -2736,7 +2736,7 @@ namespace VcpCore.Plugins
                 else if (category.Equals(@"Input Select", StringComparison.OrdinalIgnoreCase))
                 {
                     var defaultValue = default(KeyValuePair<string, uint>);
-                    var input = VcpCodeList.VCP60.Where(x => x.Key.ToLower().Equals(str.ToLower())).FirstOrDefault();
+                    var input = VcpCodeList.VCP60.FirstOrDefault(x => x.Key.ToLower().Equals(str.ToLower()));
                     if (!input.Equals(defaultValue))
                         rc = input.Value;
                 }
