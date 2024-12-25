@@ -184,7 +184,7 @@ namespace CLI.Subagent
 
                 foreach (string arg in args)
                 {
-                    Console.WriteLine("@@@@stephen RunManagement arg = " + arg);
+                    //Console.WriteLine("@@@@stephen RunManagement arg = " + arg);
 
                     cmds = cmds + arg + " ";
                     if (arg.ToLower().Contains("defer"))
@@ -195,11 +195,11 @@ namespace CLI.Subagent
 
                 if (hasDefer)
                 {
-                    Console.WriteLine("@@@@stephen check Defer Result ");
+                    //Console.WriteLine("@@@@stephen check Defer Result ");
 
                     if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds.Trim()).Result)
                     {
-                        Console.WriteLine("@@@@stephen check Defer Result = true ");
+                        //Console.WriteLine("@@@@stephen check Defer Result = true ");
                         return;
                     }
                 }
