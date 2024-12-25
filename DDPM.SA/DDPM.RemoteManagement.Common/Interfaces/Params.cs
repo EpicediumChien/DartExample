@@ -16,6 +16,8 @@
             public const int DISPLAY_CONNECT = 11;
             public const int DISPLAY_DISCONNECT = 12;
 
+            public const int DEFER = 51; // add @ 20241219 stephen
+
             public const int UNKNOWN_ERROR = 99;
         }
 
