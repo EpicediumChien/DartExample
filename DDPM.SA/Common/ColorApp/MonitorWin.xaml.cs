@@ -329,6 +329,8 @@ namespace DDPM.ColorApp
                             return;
                         }
                     }
+                    else //Robert_Lin, 2024-12-24
+                        return;
 
                     //////get active process's modeul info
                     Process forgroundProcess = Process.GetProcessById((int)data.ActiveWindowProcessId);
