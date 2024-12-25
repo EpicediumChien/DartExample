@@ -3459,4 +3459,7 @@
   <data name="Learn_more_for_software" xml:space="preserve">
     <value>Learn more for software</value>
   </data>
+  <data name="Brightness.21" xml:space="preserve">
+    <value>Applies brightness/luminance, contrast, schedule settings\nand color presets to the connected monitors</value>
+  </data>
 </root>
