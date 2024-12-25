@@ -69,13 +69,14 @@ namespace DDPM.QAM
                     ZoomMax = CurrentDeviceInfo.ZoomMax;
                     ZoomMin = CurrentDeviceInfo.ZoomMin;
 
-                    if (!CurrentDeviceInfo.IsPropertyAutoFramingSupported)
+                    //if (!CurrentDeviceInfo.IsPropertyAutoFramingSupported)
+                    if (!IsAutoFramingVisable())
                     {
                         Settings_IsVisibility[1] = Visibility.Collapsed;
                     }
 
                     //added by Derek 1225 to get Webcam AutoFraming Property
-                    LogMsg($"AutoFraming Property, IsPropertyAutoFramingSupported = " +
+                    LogMsg($"AutoFraming Property,IsAutoFramingVisable = {IsAutoFramingVisable()}, IsPropertyAutoFramingSupported = " +
                         $"{CurrentDeviceInfo.IsPropertyAutoFramingSupported}, GetIsPropertyAutoFramingSupported = " +
                         $"{DdpmCommonHelper.DeviceManagerSA?.GetIsPropertyAutoFramingSupported(DdpmCommonHelper.DeviceManagerSA?.GetWebcamDeviceID().Result).Result}");
 
@@ -523,6 +524,23 @@ namespace DDPM.QAM
                 LogMsg($"QAM SetIsAutoFramingOn value has modified by UI");
 
             //LogMsg($"AutoFramingStatus -> {isStatusChagneByDDPM}");
+        }
+
+        public bool IsAutoFramingVisable()
+        {
+            try
+            {
+                return (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported ||
+                        CurrentDeviceInfo!.IsPropertyAutoFramingSizeSupported ||
+                        CurrentDeviceInfo!.IsPropertyAutoFramingTransitionSupported);
+            }
+            catch (Exception e)
+            {
+                LogMsg($"IsAutoFramingVisable get exception {e.Message}");
+                
+                return false;
+            }
+            
         }
 
         #endregion

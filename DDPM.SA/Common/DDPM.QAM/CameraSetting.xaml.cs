@@ -37,7 +37,10 @@ namespace DDPM.QAM
         {
             if (DataContext is QAMPageViewModel vm && vm.CurrentDeviceInfo != null)
             {
-                if (vm.CurrentDeviceInfo.IsPropertyAutoFramingSupported)
+                //condition from UI Derek 1225
+                //CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported
+                //if (vm.CurrentDeviceInfo.IsPropertyAutoFramingSupported)
+                if (vm.IsAutoFramingVisable())
                 {
                     btnRes0.Width = 72;
                     btnRes1.Width = 72;
