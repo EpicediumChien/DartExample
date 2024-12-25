@@ -34,6 +34,7 @@ namespace DDPM.QAM
             if (DataContext is QAMPageViewModel vm)
             {
                 vm.isStatusChagneByDDPM = false;
+                System.Windows.MessageBox.Show($"ToggleButton_Click -> {vm.isStatusChagneByDDPM}");
             }
         }
     }

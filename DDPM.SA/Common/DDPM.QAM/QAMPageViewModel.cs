@@ -124,6 +124,8 @@ namespace DDPM.QAM
             {
                 LogMsg($"Catch exception[{e.Message}]");
             }
+
+            isStatusChagneByDDPM = false;
         }
 
         private int ChangeFOVToSelectIndex(int fov)
@@ -497,6 +499,8 @@ namespace DDPM.QAM
                 }
                 else
                     LogMsg($"QAM SetIsAutoFramingOn value has modified by UI");
+
+                System.Windows.MessageBox.Show($"AutoFramingStatus -> {isStatusChagneByDDPM}");
 
                 RefreshUI();
 
