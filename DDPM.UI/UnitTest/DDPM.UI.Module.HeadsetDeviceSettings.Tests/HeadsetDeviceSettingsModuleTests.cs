@@ -138,15 +138,17 @@ namespace DDPM.UI.Module.HeadsetDeviceSettings.Tests
         [Test]
         public void TestOnSelectedHomeDeviceChanged()
         {
-            try
-            {
-                headsetDeviceSettingsModule.OnSelectedHomeDeviceChanged();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
+            headsetDeviceSettingsModule.IsModuleActive = false;
+            headsetDeviceSettingsModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChangeda()
+        {
+            headsetDeviceSettingsModule.IsModuleActive = true;
+            headsetDeviceSettingsModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
         }
 
         [Test]

@@ -122,15 +122,17 @@ namespace DDPM.UI.Module.AddHeadset_Wired.Tests
         [Test]
         public void TestOnSelectedHomeDeviceChanged()
         {
-            try
-            {
-                addHeadset_WiredModule.OnSelectedHomeDeviceChanged();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
+            addHeadset_WiredModule.IsModuleActive = false;
+            addHeadset_WiredModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChangeda()
+        {
+            addHeadset_WiredModule.IsModuleActive = true;
+            addHeadset_WiredModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
         }
 
         [Test]
