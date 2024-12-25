@@ -6730,7 +6730,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (!GetItemIDAsync("Dock", guid).Result)
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return null;
+                    return Task.FromResult<DockData>(null);
                 }
                 var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
                 if (commodity is ICommodity)
@@ -6786,16 +6786,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                             writelog($"[Dock] GetDockData Dock Data Error : {ex.Message}");
                         }
                     }
-                    return null;
+                    return Task.FromResult<DockData>(null);
                 }
 
                 writelog($"[Dock] GetDockData failed: Could not retrieve commodity interface for {guid}");
-                return null;
+                return Task.FromResult<DockData>(null);
             }
             catch (Exception ex)
             {
                 writelog($"[Dock] GetDockData failed for {guid} - Exception: {ex.Message}");
-                return null;
+                return Task.FromResult<DockData>(null);
             }
         }
         public Task<string> GetFirmwareVersionForDock(string guid)

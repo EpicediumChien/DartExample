@@ -16791,7 +16791,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_IEzMemoryPlugin != null)
                 return Task.FromResult(_IEzMemoryPlugin.GetAllAppList().Result);
             else
-                return null;
+                return Task.FromResult<Dictionary<string, InstalledAppInfo>>(null);
         }
 
         //public Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps)
@@ -16829,7 +16829,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_IEzMemoryPlugin != null)
                 return Task.FromResult(_IEzMemoryPlugin.CheckEAIDExit(moinfo, eAID).Result);
             else
-                return null;
+                return Task.FromResult(false);
         }
 
         public Task<bool> DeleteEAID(MonitorInfo moinfo, int eAID)
@@ -16837,7 +16837,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_IEzMemoryPlugin != null)
                 return Task.FromResult(_IEzMemoryPlugin.DeleteEAID(moinfo, eAID).Result);
             else
-                return null;
+                return Task.FromResult(false);
         }
 
         #endregion EzM
