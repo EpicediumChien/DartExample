@@ -10611,6 +10611,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 HandleQAMV2();
         }
 
+        public Task<string> GetWebcamDeviceID()
+        {
+            return _DTPProxyPlugin.GetWebcamDeviceID();
+        }
+
         //Marked by Derek 1125 because they had covered by WebcamEventHandler
         //private void ZoomChanged(object sender, ZoomChangedArgs e)
         //{

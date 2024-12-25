@@ -68,10 +68,16 @@ namespace DDPM.QAM
                     ImportWebcamProfiles(CurrentDeviceInfo.ModelNumber);
                     ZoomMax = CurrentDeviceInfo.ZoomMax;
                     ZoomMin = CurrentDeviceInfo.ZoomMin;
+
                     if (!CurrentDeviceInfo.IsPropertyAutoFramingSupported)
                     {
                         Settings_IsVisibility[1] = Visibility.Collapsed;
                     }
+
+                    //added by Derek 1225 to get Webcam AutoFraming Property
+                    LogMsg($"AutoFraming Property, IsPropertyAutoFramingSupported = " +
+                        $"{CurrentDeviceInfo.IsPropertyAutoFramingSupported}, GetIsPropertyAutoFramingSupported = " +
+                        $"{DdpmCommonHelper.DeviceManagerSA?.GetIsPropertyAutoFramingSupported(DdpmCommonHelper.DeviceManagerSA?.GetWebcamDeviceID().Result).Result}");
 
                     for (int k = 0; k < CurrentDeviceInfo!.FOVValues.Length; k++)
                     {
@@ -111,7 +117,9 @@ namespace DDPM.QAM
                 isStatusChagneByDDPM = true;
 
                 ZoomValue = DdpmCommonHelper.DeviceManagerSA!.GetZoom(CurrentDeviceInfo!.ID.ToString()).Result;
-                AutoFramingStatus = DdpmCommonHelper.DeviceManagerSA!.GetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString()).Result;
+
+                if (CurrentDeviceInfo!.IsPropertyAutoFramingSupported) //Derek 1225
+                    AutoFramingStatus = DdpmCommonHelper.DeviceManagerSA!.GetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString()).Result;
 
                 FieldOfView = DdpmCommonHelper.DeviceManagerSA!.GetFieldOfView(CurrentDeviceInfo!.ID.ToString()).Result;
 
@@ -246,7 +254,7 @@ namespace DDPM.QAM
             try
             {
                 var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
-                
+
                 if (File.Exists(filePath))
                 {
                     Dictionary<string, WebcamProfile> presetProfiles = new();
@@ -292,6 +300,10 @@ namespace DDPM.QAM
                             Profile_Name_Key = profile.Key,
                         });
                     }
+                }
+                else
+                {
+                    LogMsg($"Webcam profile {filePath} not exist!!");
                 }
             }
             catch (Exception e)
