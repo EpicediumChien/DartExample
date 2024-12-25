@@ -1900,17 +1900,19 @@ namespace DDPM.SA.Common.Settings
         //}
 
         //Start process without any criteria
-        public static bool StartProcessSafely(
-            ILog log, string filePath,
-            string arguments = "")
-        {
-            string info = string.Empty;
-            if (!IsProcessInfoValid(log, filePath))
-                return false;
 
-            StartProcessByOptions(log, null, filePath, arguments);
-            return true;
-        }
+        // [sonarqube] This method signature overlaps and no used
+        //public static bool StartProcessSafely(
+        //    ILog log, string filePath,
+        //    string arguments = "")
+        //{
+        //    string info = string.Empty;
+        //    if (!IsProcessInfoValid(log, filePath))
+        //        return false;
+
+        //    StartProcessByOptions(log, null, filePath, arguments);
+        //    return true;
+        //}
 
         //Start process without any criteria
         public static bool StartProcessSafely(
@@ -1920,31 +1922,32 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
+        // [sonarqube] This method signature overlaps and no used
         //hashType: SHA256 / SHA512
-        public static bool StartProcessSafely(
-            ILog log,
-            ProcessStartInfo startInfo,
-            bool needCheckThumbprintInbox = false,
-            string fileHash = "",
-            string hashType = "SHA512",
-            bool isWaitExitCode = false,
-            bool isLockNeeded = false)
-        {
-            string info = string.Empty;
-            if (startInfo == null)
-            {
-                if (log != null)
-                    log.Error("[StartProcessSafely] null process StartInfo");
-                return false;
-            }
+        //public static bool StartProcessSafely(
+        //    ILog log,
+        //    ProcessStartInfo startInfo,
+        //    bool needCheckThumbprintInbox = false,
+        //    string fileHash = "",
+        //    string hashType = "SHA512",
+        //    bool isWaitExitCode = false,
+        //    bool isLockNeeded = false)
+        //{
+        //    string info = string.Empty;
+        //    if (startInfo == null)
+        //    {
+        //        if (log != null)
+        //            log.Error("[StartProcessSafely] null process StartInfo");
+        //        return false;
+        //    }
 
-            string filePath = startInfo.FileName;
+        //    string filePath = startInfo.FileName;
 
-            if (!IsProcessInfoValid(log, filePath, fileHash, hashType, needCheckThumbprintInbox))
-                return false;
+        //    if (!IsProcessInfoValid(log, filePath, fileHash, hashType, needCheckThumbprintInbox))
+        //        return false;
 
-            return StartProcessByOptions(log, startInfo, "", "", isLockNeeded, isWaitExitCode);
-        }
+        //    return StartProcessByOptions(log, startInfo, "", "", isLockNeeded, isWaitExitCode);
+        //}
 
         // [sonarqube] This method signature overlaps
         //hashType: SHA256 / SHA512
