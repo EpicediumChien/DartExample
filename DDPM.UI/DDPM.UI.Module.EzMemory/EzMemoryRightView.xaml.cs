@@ -624,11 +624,16 @@ namespace DDPM.UI.Module.EzMemory
                                             ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
                                             if (spCtrl == null)
                                                 continue;
+
+                                            
                                             spCtrl.Settings = new List<double>(spj.Settings);
                                             spCtrl.SplitMode = eSplitModes.Icon;
                                             spCtrl.FriendlyName = spj.CustomName;
                                             spCtrl.EAID = spj.EAID;
-                                            splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                            SplitItem item = splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                            // splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                            item.IsDeleteEnabled = true;
+                                            item.IsEditEnabled = true;
                                         }
                                     }
                                 }

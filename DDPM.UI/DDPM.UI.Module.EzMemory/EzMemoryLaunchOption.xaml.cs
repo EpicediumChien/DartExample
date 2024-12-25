@@ -193,11 +193,12 @@ namespace DDPM.UI.Module.EzMemory
                         DDPM.SA.Common.Popup.PopupBase popBase = new DDPM.SA.Common.Popup.PopupBase(
                             Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage,
                             Strings.ezMemoryAutoLaunchErrorStringForLaunchOptionPage,
-                            Strings.No,
-                            Strings.Yes,
+                            "",
+                            Strings.OK,
                             null, 
                             false, 
-                            0);
+                            0,
+                            "C");
                         popBase.Owner = System.Windows.Application.Current.MainWindow;
                         bool? popResult = popBase.ShowDialog();
                         //popResult: Close=null; LeftButton=false; RightButton=true
