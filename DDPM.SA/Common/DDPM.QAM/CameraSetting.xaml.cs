@@ -50,7 +50,7 @@ namespace DDPM.QAM
                 else
                 {
                     btnRes0.Width = 96;
-                    btnRes1.Width = 96;
+                    //btnRes1.Width = 96;
                     btnRes2.Width = 96;
                     btnRes3.Width = 96;
                 }
