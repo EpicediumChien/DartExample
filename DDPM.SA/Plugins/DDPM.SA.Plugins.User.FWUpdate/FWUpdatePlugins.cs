@@ -43,6 +43,7 @@ using DDPM.SA.Common.Security;
 using System.ServiceProcess;
 using System.IO.Compression;
 using DDPM.SA.Resources.Helper;
+using System.Windows;
 
 
 namespace DDPM.SA.Plugins.User.FWUpdate
@@ -407,10 +408,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _logs.DebugMsg_1($"{nameof(updateHelper.UpdateItems.Count)} = {updateHelper.UpdateItems.Count}");
                     for (int i = 0; i < updateHelper.UpdateItems.Count; i++)
                     {
-                        _logs.DebugMsg_1($"updateHelper.UpdateItems[i].DeviceName = {updateHelper.UpdateItems[i].DeviceName}");
-                        _logs.DebugMsg_1($"updateHelper.UpdateItems[i].DeviceModelNumber = {updateHelper.UpdateItems[i].DeviceModelNumber}");
-                        _logs.DebugMsg_1($"updateHelper.UpdateItems[i].NewVersion = {updateHelper.UpdateItems[i].NewVersion}");
-                        _logs.DebugMsg_1($"updateHelper.UpdateItems[i].CurrentVersion = {updateHelper.UpdateItems[i].CurrentVersion}");
+                        _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].DeviceName = {updateHelper.UpdateItems[i].DeviceName}");
+                        _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].DeviceModelNumber = {updateHelper.UpdateItems[i].DeviceModelNumber}");
+                        _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].NewVersion = {updateHelper.UpdateItems[i].NewVersion}");
+                        _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].CurrentVersion = {updateHelper.UpdateItems[i].CurrentVersion}");
                         string newVer = updateHelper.UpdateItems[i].NewVersion;
                         string oldVer = updateHelper.UpdateItems[i].CurrentVersion;
                         if (!string.IsNullOrEmpty(newVer))
@@ -429,12 +430,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _logs.DebugMsg_1($"{nameof(CheckUpdate)} {nameof(deviceInfo)} is no null");
                             deviceConnectivity = GetConnected(deviceInfo.PhysicalDeviceType);
                             deviceSupplierID = GetODM(deviceInfo.OdmId);
-                            if (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock || updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)
-                            {
-                                _logs.DebugMsg_1($"{nameof(CheckUpdate)} deviceInfo.DeviceName : {deviceInfo.Name}");
-                                //updateHelper.UpdateItems[i].DeviceModelNumber = deviceInfo.ModelNumber;
-                                updateHelper.UpdateItems[i].DeviceName = deviceInfo.Name;
-                            }
                         }
                         if (deviceTypeList == null && !isOnlyDisplay)
                         {
@@ -448,7 +443,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 FileSavepath = updateHelper.UpdateItems[i].InstallPath,
                                 Model = updateHelper.UpdateItems[i].DeviceModelNumber,
                                 DeviceName = updateHelper.UpdateItems[i].DeviceName,
-                                //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷，UI有個地方也會跟著異動
                                 DeviceType = updateHelper.UpdateItems[i].DeviceType,
                                 DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                 DevicePath = updateHelper.UpdateItems[i].DevicePath,
@@ -463,11 +457,28 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 Connectivity = deviceConnectivity,
                                 Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
                                 ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
-                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : ""
+                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : "",
+                                IsESISupported = false,
 
                             };
-                            _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
-                            _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                            if ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWebcam ||
+                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalWebcam))
+                            {
+                                if (fWUpdateInfo.IsESISupported)
+                                {
+                                    _logs.DebugMsg_1($"{nameof(deviceTypeList)} is HPD can _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
+                                    _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                                }
+                                else
+                                {
+                                    _logs.DebugMsg_1($"{nameof(deviceTypeList)} is MPS CAN NOT _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
+                                }
+                            }
+                            else
+                            {
+                                _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
+                                _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                            }
                         }
                         else if (deviceTypeList != null && !isOnlyDisplay)
                         {
@@ -486,7 +497,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     FileSavepath = updateHelper.UpdateItems[i].InstallPath,
                                     Model = updateHelper.UpdateItems[i].DeviceModelNumber,
                                     DeviceName = updateHelper.UpdateItems[i].DeviceName,
-                                    //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷，UI有個地方也會跟著異動
                                     DeviceType = updateHelper.UpdateItems[i].DeviceType,
                                     DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                     DevicePath = updateHelper.UpdateItems[i].DevicePath,
@@ -501,10 +511,29 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     Connectivity = deviceConnectivity,
                                     Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
                                     ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
-                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : ""
+                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : "",
+                                    IsESISupported= false,
+                                    //    IsESISupported = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWebcam ||
+                                    //updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalWebcam) && deviceInfo != null) ? deviceInfo.IsESISupported : false,
                                 };
-                                _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
-                                _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                                if ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWebcam ||
+                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalWebcam))
+                                {
+                                    if (fWUpdateInfo.IsESISupported)
+                                    {
+                                        _logs.DebugMsg_1($"{nameof(deviceTypeList)} is HPD can _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
+                                        _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                                    }
+                                    else
+                                    {
+                                        _logs.DebugMsg_1($"{nameof(deviceTypeList)} is MPS CAN NOT _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
+                                    }
+                                }
+                                else
+                                {
+                                    _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
+                                    _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                                }
                             }
                         }
                     }
@@ -514,9 +543,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _logs.DebugMsg_1($"{nameof(displayUpdateHelper.Firmwares.Count)} = {displayUpdateHelper.Firmwares.Count}");
                     for (int i = 0; i < displayUpdateHelper.Firmwares.Count; i++)
                     {
-                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[i].id(DeviceName) = {displayUpdateHelper.Firmwares[i].id}");
-                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[i].TheLastVersion = {displayUpdateHelper.Firmwares[i].TheLastVersion}");
-                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[i].CurrentVersion = {displayUpdateHelper.Firmwares[i].CurrentVersion}");
+                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[{i}].id(DeviceName) = {displayUpdateHelper.Firmwares[i].id}");
+                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[{i}].TheLastVersion = {displayUpdateHelper.Firmwares[i].TheLastVersion}");
+                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[{i}].CurrentVersion = {displayUpdateHelper.Firmwares[i].CurrentVersion}");
                         FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                         {
                             TheLatestVersion = displayUpdateHelper.Firmwares[i].TheLastVersion,
@@ -2559,6 +2588,71 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             _logs.DebugMsg_1($"BuildArgs done");
             return arguments;
+        }
+        public void check_PresenceFunction()
+        {
+
+            //先過完check_PresenceFunction()功能後,會再過一次 CheckUSBtype(); 做必要的disable和隱藏
+
+            print_debug("check_PresenceFunction() v1 start");
+
+            //需要特殊邏輯處理的型號
+            List<string> SpecialCase = new List<string>()
+            {
+                "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB","WB7022"
+            };
+
+            string model = _vm.CurrentDeviceInfo!.ModelNumber;
+
+            if (model == null)
+            {
+                string log = $"[DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs] check_PresenceFunction() model is null";
+                DdpmCommonHelper.WriteUILog(log);
+                return;
+            }
+
+            if (!SpecialCase.Contains(model))
+                return;
+
+            //check usb 2.0 / 3.0
+            AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+
+            //api回傳camera硬體是否支援windows hello
+            bool is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+
+            //api回傳camera是否支援ESI
+            bool is_EsiSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsESISupported(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
+
+            //檢查是否為dell7 camera做程式分支處理
+            bool is_camera_dell7 = check_camera_dell7();
+
+            //檢查windows是否符合windows hello標準 win10需要大於20H2 win11需要大於22H2
+            bool is_WindowsVer_OK = check_windowsVer_OK();
+
+            //檢查是否為dell電腦
+            bool is_DellPc = check_DellPc();
+
+            //現在規格已經不需要判斷韌體奇偶數直接從 is_EsiSupport 判斷就好
+
+            //硬體與條件狀態模擬測試 rd測試用
+            if (File.Exists(@"C:\ui_cond\ddpm_cond.txt"))
+            {
+                ui_cond cond = JsonConvert.DeserializeObject<ui_cond>(File.ReadAllText(@"C:\ui_cond\ddpm_cond.txt"));
+
+                is_EsiSupport = cond.is_EsiSupport;
+                is_WindwosHelloSupport = cond.is_WindwosHelloSupport;
+                is_camera_dell7 = cond.is_camera_dell7;
+                is_WindowsVer_OK = cond.is_WindowsVer_OK;
+                is_DellPc = cond.is_DellPc;
+                AllSupportedResolutions = cond.AllSupportedResolutions;
+            }
+
+            print_debug("is_EsiSupport:" + is_EsiSupport);
+            print_debug("is_WindwosHelloSupport:" + is_WindwosHelloSupport);
+            print_debug("is_camera_dell7:" + is_camera_dell7);
+            print_debug("is_WindowsVer_OK:" + is_WindowsVer_OK);
+            print_debug("is_DellPc:" + is_DellPc);
+            print_debug("AllSupportedResolutions:" + AllSupportedResolutions);
         }
 
         // add @ 20241202 stephen
