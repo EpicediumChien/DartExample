@@ -437,7 +437,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 List<string> Display_Lock_WithoutAction = new List<string>()
                 {
                     "INAPPBRICONT",
-                    "INAPPAUTOBRITEMP",
+                    //"INAPPAUTOBRITEMP",
                     "INAPPAUTOBRIGHTNESSCOLOR",//1004 InAppAutoBrightnessColor DDPMW1341, same as INAPPAUTOBRITEMP
                     "INAPPNETWORKKVM",
                     "INAPPCOLORPRESET",

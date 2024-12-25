@@ -347,7 +347,7 @@ namespace DDPM.SA.Plugin.CLIManager
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
                     //break;
-                case "INAPPAUTOBRITEMP":         //InAppAutoBriTemp          DDPMW-1341
+                //case "INAPPAUTOBRITEMP":         //InAppAutoBriTemp          DDPMW-1341
                 case "INAPPAUTOBRIGHTNESSCOLOR"://1004 InAppAutoBrightnessColor DDPMW1341
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
                         rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
