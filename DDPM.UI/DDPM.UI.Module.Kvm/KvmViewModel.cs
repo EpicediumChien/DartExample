@@ -219,25 +219,25 @@ namespace DDPM.UI.Module.Kvm
             [0x0] = null,
             [0x11] = null,
             [0x12] = null
-        //    [0x24] = new PBPSplitCtrl2A(),
-        //    [0x2F] = new PBPSplitCtrl2B(),
-        //    [0x26] = new PBPSplitCtrl2C(),
-        //    [0x28] = new PBPSplitCtrl2C(),
-        //    [0x2A] = new PBPSplitCtrl2C(),
-        //    [0x2C] = new PBPSplitCtrl2C(),
-        //    [0x2E] = new PBPSplitCtrl2C(),
-        //    [0x25] = new PBPSplitCtrl2D(),
-        //    [0x27] = new PBPSplitCtrl2D(),
-        //    [0x29] = new PBPSplitCtrl2D(),
-        //    [0x2B] = new PBPSplitCtrl2D(),
-        //    [0x2D] = new PBPSplitCtrl2D(),
-        //    [0x31] = new PBPSplitCtrl3E(),
-        //    [0x32] = new PBPSplitCtrl3D(),
-        //    [0x33] = new PBPSplitCtrl3H(),
-        //    [0x34] = new PBPSplitCtrl3B(),
-        //    [0x35] = new PBPSplitCtrl3I(),
-        //    [0x41] = new PBPSplitCtrl4A(),
-        //    [0x42] = new PBPSplitCtrl4D()
+            //    [0x24] = new PBPSplitCtrl2A(),
+            //    [0x2F] = new PBPSplitCtrl2B(),
+            //    [0x26] = new PBPSplitCtrl2C(),
+            //    [0x28] = new PBPSplitCtrl2C(),
+            //    [0x2A] = new PBPSplitCtrl2C(),
+            //    [0x2C] = new PBPSplitCtrl2C(),
+            //    [0x2E] = new PBPSplitCtrl2C(),
+            //    [0x25] = new PBPSplitCtrl2D(),
+            //    [0x27] = new PBPSplitCtrl2D(),
+            //    [0x29] = new PBPSplitCtrl2D(),
+            //    [0x2B] = new PBPSplitCtrl2D(),
+            //    [0x2D] = new PBPSplitCtrl2D(),
+            //    [0x31] = new PBPSplitCtrl3E(),
+            //    [0x32] = new PBPSplitCtrl3D(),
+            //    [0x33] = new PBPSplitCtrl3H(),
+            //    [0x34] = new PBPSplitCtrl3B(),
+            //    [0x35] = new PBPSplitCtrl3I(),
+            //    [0x41] = new PBPSplitCtrl4A(),
+            //    [0x42] = new PBPSplitCtrl4D()
         };
 
         public string InputName1 { get; set; }
@@ -670,7 +670,11 @@ namespace DDPM.UI.Module.Kvm
                     ObjGetVCP ret_PxP = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(mo).Result;
                     if (ret_PxP != null && ret_PxP.result)
                     {
-                        pxpModeValue = Convert.ToUInt16(ret_PxP.value);
+                        //pxpModeValue = Convert.ToUInt16(ret_PxP.value);
+                        if (!ushort.TryParse((string?)ret_PxP.value, out pxpModeValue))
+                        {
+                            pxpModeValue = curPxpMode;
+                        }
                     }
                     else
                     {
