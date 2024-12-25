@@ -27,6 +27,7 @@ using Microsoft.Win32;
 using DDPM.SA.Common.Popup;
 using System.Windows.Interop;
 using DDPM.UI.Resources.Helper;
+using System.Diagnostics;
 
 namespace DDPM.UI.Module.EzArrange
 {
@@ -134,6 +135,8 @@ namespace DDPM.UI.Module.EzArrange
         #region Init SplitListView and SplitItems
         private void InitListViewItems()
         {
+            Stopwatch sw = Stopwatch.StartNew();
+
             //0. Prepare
             //
             if (_deviceManagerSA == null) return;
@@ -578,6 +581,9 @@ namespace DDPM.UI.Module.EzArrange
             {
                 SaveEaSettings();
             }
+            sw.Stop();
+            _vm.LogInfo($"@InitListViewItems() Elapsed time: {sw.ElapsedMilliseconds} msec.");
+            _vm.LogInfo("");
         }
 
         private void CreateCellBorderListToSplitCtrlFromCellJsons(CellJson[] cellJsons, ref ISplitCtrl ispCtrl)
