@@ -33,6 +33,10 @@ using Google.Protobuf.WellKnownTypes;
 using System.IO;
 using Type = System.Type;
 using DDPM.SA.Common.UI;
+using System.Collections.Generic;
+using static DDPM.RemoteManagement.Common.Interfaces.Params;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+using Newtonsoft.Json;
 using MS.WindowsAPICodePack.Internal;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
@@ -97,6 +101,18 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         public const string PluginLogId = "DTPProxy";
 
+        //Derek 1219 for webcam events handling
+        private ICommodity _comdityWebcam = null;
+        private List<WebcamEventHandleObject> webcamList = new List<WebcamEventHandleObject>();
+        internal class WebcamEventHandleObject
+        {
+            public ICommodity webcamCommodity = null;
+            public string webcamIndex = string.Empty; //DellPeripheral.Webcam.0
+            public string DeviceName { get; set; } = string.Empty; //Dell Pro 24 Plus Video Conferencing Monitor
+            public string DeviceId { get; set; } = string.Empty;     //36ce653b-7a0f-4c85-97f7-aad029cceeb2
+            public string ModelNumber { get; set; } = string.Empty;  //P2424HEB
+        };
+        
 
         /// <summary>
         /// Webcam change event
@@ -121,6 +137,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             InitializeDTPProxy();
             writelog($"Initialized successfully");
+        }
+
+        //Derek 1219
+        ~DTPProxyPlugin()
+        {
+            _ = UnsubscribeDTPGlobalEventsAsync();
         }
 
         #endregion
@@ -1091,6 +1113,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                     writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    
                     return new JArray();
                 }
             }
@@ -1098,9 +1121,42 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                
                 return new JArray();
             }
         }
+
+        //Derek 1221 from QAM
+        public Task<string> GetWebcamDeviceID()
+        {
+            if (1 == webcamList.Count)
+            {
+                try
+                {
+                    //if (_comdityWebcam is IWebcamCommodity webcamCommodity)
+                    //{
+                    //    string jsonStr = webcamCommodity.DeviceItemsEx[0].ToString();
+                    //    WebcamEventHandleObject jsonObject = JsonSerializer.Deserialize<WebcamEventHandleObject>(jsonStr)!;
+
+                    //    writelog($"The only one webcam device's devcie id = {jsonObject.DeviceId}， and keey by SA's is {webcamList[0].DeviceId}");
+
+                    //    return Task.FromResult(jsonObject.DeviceId);
+                    //}
+                    //else
+                    //    return Task.FromResult(string.Empty);
+
+                    return Task.FromResult(webcamList[0].DeviceId);
+                }
+                catch (Exception e)
+                {
+                    writelog($"GetWebcamDeviceID get exception {e.Message}");
+                    return Task.FromResult(string.Empty);
+                }   
+            }
+            else
+                return Task.FromResult(string.Empty);
+        }
+
         public async Task<JArray> GetPresetProfiles(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -2525,6 +2581,31 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return null;
             }
         }
+
+        public async Task<bool> GetIsZoomMeetingActive()
+        {
+            //_itemID = new ItemId("DellPeripheral.Webcam");
+
+            if (_webcamMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_webcamInterfaceType, commodity, "IsZoomMeetingActive");
+                    return (bool)value;
+                }
+                else
+                {
+                    writelog($"[GetIsZoomMeetingActive]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            else
+            {
+                writelog($"[GetIsZoomMeetingActive]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
+                return false;
+            }
+        }
+
         public async Task<bool> GetIsZoomMeetingActive(string Guid)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
@@ -7270,28 +7351,139 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
 
             //Derek 1119 for Webcam event
-            writelog($"Register Webcam Commodity event...");
-            _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId("DellPeripheral.Webcam"), CancellationToken.None);
-            if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _WebcamComConnectEvent)
+            writelog($"Register Webcam Commodity event by DellPeripheral.Webcam...");
+            _comdityWebcam = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId("DellPeripheral.Webcam"), CancellationToken.None);
+            if (_comdityWebcam is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _WebcamComConnectEvent)
             {
                 try
                 {
+                    webcamList.Clear();
                     //PrintWebcamObjectInfo(_WebcamComConnectEvent);
 
                     _WebcamComConnectEvent.Connected += Webcam_Connected;
                     _WebcamComConnectEvent.Disconnected += Webcam_Disconnected;
 
-                    writelog($"Webcam Commodity event(connected/disconnected) registered");
+
+                    writelog($"connected _WebcamComConnectEvent.DeviceItems = {_WebcamComConnectEvent.DeviceItems.Length}");
+                    int i = 0;
+                    foreach (var item in _WebcamComConnectEvent.DeviceItems)
+                    {
+                        //output:
+                        //DellPeripheral.Webcam.0
+                        writelog($"connected _WebcamComConnectEvent.DeviceItems[{i}] = {item}");
+
+                        //output:
+                        //"{
+                        //DeviceName": "Dell Pro 24 Plus Video Conferencing Monitor",
+                        //"DeviceId": "36ce653b-7a0f-4c85-97f7-aad029cceeb2",
+                        //"ModelNumber": "P2424HEB"
+                        //}
+                        string jsonStr = _WebcamComConnectEvent.DeviceItemsEx[i++].ToString();
+                        writelog($"connected _WebcamComConnectEvent.DeviceItems, jsonStr = {jsonStr}");
+
+                        if (jsonStr != null && jsonStr != string.Empty)
+                        {
+                            WebcamEventHandleObject jsonObject = JsonSerializer.Deserialize<WebcamEventHandleObject>(jsonStr)!;
+                            jsonObject.webcamCommodity = null;
+                            jsonObject.webcamIndex = item;
+                            writelog($"jsonObject values: {jsonObject.webcamIndex}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+                            webcamList.Add(jsonObject);
+                        }
+                    }
+                    
+                    writelog($"connected _WebcamComConnectEvent.DeviceItemsEx.Count = {_WebcamComConnectEvent.DeviceItemsEx.Count}");
+
+                    writelog($"Webcam Commodity event(connected/disconnected) registered successfully");
                 }
                 catch (Exception e)
                 {
-                    writelog($"Find IWebcamCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                    writelog($"Webcam Commodity event(connected/disconnected) registered exception: {e.Message}");
                 }
             }
+            else
+                writelog($"IWebcamCommodity not find");
 
-            await RegisterEventsForAllWebcamsAsync();
+            await RegisterEventsForAllConnectedWebcamsAsync();
 
             await RegisterEventsForAllHeadsetAsync();
+
+            //for test
+            //await UnsubscribeDTPGlobalEventsAsync();
+        }
+
+        private List<WebcamEventHandleObject> CreateWebcamObjectListByCurrentConditon()
+        {
+            List < WebcamEventHandleObject > list = new List<WebcamEventHandleObject>();
+
+            if (_comdityWebcam is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity webcamObj)
+            {
+                int i = 0;
+                foreach (var item in webcamObj.DeviceItems)
+                {
+                    //output:
+                    //DellPeripheral.Webcam.0
+                    writelog($"connected _WebcamComConnectEvent.DeviceItems[{i}] = {item}");
+
+                    //output:
+                    //"{
+                    //DeviceName": "Dell Pro 24 Plus Video Conferencing Monitor",
+                    //"DeviceId": "36ce653b-7a0f-4c85-97f7-aad029cceeb2",
+                    //"ModelNumber": "P2424HEB"
+                    //}
+                    string jsonStr = webcamObj.DeviceItemsEx[i++].ToString();
+                    writelog($"connected _WebcamComConnectEvent.DeviceItems = {jsonStr}");
+
+                    if (null != jsonStr && jsonStr != string.Empty)
+                    {
+                        WebcamEventHandleObject jsonObject = JsonSerializer.Deserialize<WebcamEventHandleObject>(jsonStr)!;
+                        jsonObject.webcamCommodity = null;
+                        jsonObject.webcamIndex = item;
+
+                        list.Add(jsonObject);
+
+                        writelog($"jsonObject values: {jsonObject.webcamIndex}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+                    }
+                }
+            }
+            
+            return list;
+        }
+
+        private async Task<bool> UnsubscribeDTPGlobalEventsAsync()
+        {
+            try
+            {
+                if (null == _comdityWebcam)
+                {
+                    writelog($"UnsubscribeDTPGlobalEvents _comdityWebcam is null");
+
+                    return false;
+                }
+
+                //test result: Derek 1219
+                //2024.12.19 15:02:57.444 [30756] (00027) I ------DTPProxy: [DTPProxyPlugin]
+                //UnsubscribeDTPGlobalEvents webcam global events successfully,
+                //Caller Name:UnsubscribeDTPGlobalEventsAsync, Source Line 6939
+                if (_comdityWebcam is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _WebcamGlobalEvent)
+                {
+                    _WebcamGlobalEvent.Connected -= Webcam_Connected;
+                    _WebcamGlobalEvent.Disconnected -= Webcam_Disconnected;
+
+                    writelog($"UnsubscribeDTPGlobalEvents webcam global events successfully");
+
+                    return true;
+                }
+                else
+                    writelog($"UnsubscribeDTPGlobalEvents _comdityWebcam is not a IWebcamCommodity object");
+
+                return false;
+            }
+            catch (Exception e)
+            {
+                writelog($"UnsubscribeDTPGlobalEvents catch exception: {e.Message}");
+
+                return false;
+            }
         }
         private async Task<int> GetHeadsetDevsCountAsync()
         {
@@ -7334,13 +7526,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        private async Task RegisterEventsForAllWebcamsAsync()
+        private async Task RegisterEventsForAllConnectedWebcamsAsync()
         {
             var webcams = await GetWebcamDevsCountAsync();
 
             if (webcams > 0)
             {
-                writelog($"Webcam instance count: {webcams} to register");
+                writelog($"Webcam instance count: {webcams} to register, count from save list is {webcamList.Count}");
 
                 for (int i = 0; i < webcams; i++)
                 {
@@ -7356,42 +7548,50 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                         writelog($"Retry register result is {result}");
                     }
                 }
-            }
-            else
-            {
-                writelog($"No any webcam instance to register.");
-                //try to force release current --> will catch exception  1123
-                //await UnregisterEventsForWebcamAsync(0);
-            }
-        }
 
-        private async Task UnregisterEventsForAllWebcamsAsync()
-        {
-            var webcams = await GetWebcamDevsCountAsync();
-
-            if (webcams > 0)
-            {
-                writelog($"Webcam instance count: {webcams} to unregister.");
-
-                for (int i = webcams - 1; i >= 0; i--)
+                //output for double check Derek 1220
+                foreach (var item in webcamList)
                 {
-                    bool result = await UnregisterEventsForWebcamAsync(i);
+                    writelog($"ConnectedWebcamObject = {item.webcamCommodity},{item.webcamIndex},{item.DeviceName},{item.DeviceId},{item.ModelNumber}");
                 }
+
             }
             else
-                writelog($"No any webcam instance to unregister.");
+            {
+                writelog($"No any connected webcam device need to register.");
+            }
         }
 
-        private async Task<bool> RegisterEventsForWebcamAsync(int index)
+        //Derek 1220
+        //private async Task UnregisterEventsForAllWebcamsAsync()
+        //{
+        //    var webcams = await GetWebcamDevsCountAsync();
+
+        //    if (webcams > 0)
+        //    {
+        //        writelog($"Webcam instance count: {webcams} to unregister.");
+
+        //        for (int i = webcams - 1; i >= 0; i--)
+        //        {
+        //            bool result = await UnregisterEventsForWebcamAsync(i);
+        //        }
+        //    }
+        //    else
+        //        writelog($"No any webcam instance to unregister.");
+        //}
+
+        private bool RegisterEventsForWebcam(ICommodity _comdityWebcam)
         {
-            if (null == _commSdk || null == _comdity || index < 0)
+            if (null == _comdityWebcam)
+            {
+                writelog($"_comdityWebcam == null");
+
                 return false;
+            }
 
             try
             {
-                _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
-
-                if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                if (_comdityWebcam is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
                 {
                     //PrintWebcamObjectInfo(_Webcamcom);
                     // 2024-12-21, Elie R19 change that. (It seems to be removed from R19)
@@ -7430,9 +7630,109 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Webcamcom.Esi_IsCameraSensorCoveredChanged += Webcam_Esi_IsCameraSensorCoveredChanged;
                     _Webcamcom.Esi_WALLockCountdownChanged += Webcam_Esi_WALLockCountdownChanged;
 
-                    writelog($"Webcam{index} Commodity events registered successfully");
+                    writelog($"Webcam Commodity {_Webcamcom.DeviceName}/{_Webcamcom.DeviceId}/{_Webcamcom.ModelNumber} events registered successfully");
+
                     return true;
                 }
+                else
+                {
+                    writelog($"_comdityWebcam is not Dell.TechHub.Commodity.Peripheral.IWebcamCommodity");
+
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch exception {e.Message} when run RegisterEventsForWebcam");
+
+                return false;
+            }
+        }
+
+        private async Task<bool> RegisterEventsForWebcamAsync(int index)
+        {
+            if (null == _commSdk || index < 0)
+            {
+                writelog($"RegisterEventsForWebcamAsync --> null == _commSdk || index < 0");
+
+                return false;
+            }
+
+            try
+            {
+                string registerID = $"DellPeripheral.Webcam.{index}";
+                ICommodity _comdityWebcamTmp = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId(registerID), CancellationToken.None);
+
+                if (RegisterEventsForWebcam(_comdityWebcamTmp))
+                {
+                    writelog($"Webcam {index} Commodity events registered successfully");
+
+                    //Derek 1220 save this _comdityWebcamTmp to list
+                    foreach (var item in webcamList)
+                    {
+                        if (registerID == item.webcamIndex)
+                            item.webcamCommodity = _comdityWebcamTmp;
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    writelog($"Webcam{index} Commodity events registered fail");
+
+                    return false;
+                }
+
+                //if (_comdityWebcamTmp is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                //{
+                //    //PrintWebcamObjectInfo(_Webcamcom);
+
+                //    _Webcamcom.ProfileManagerAdded += Webcam_ProfileManagerAdded;
+                //    _Webcamcom.IsMicEnumerationOnChanged += Webcam_IsMicEnumerationOnChanged;
+                //    _Webcamcom.CurrentSelectedProfileChanged += Webcam_CurrentSelectedProfileChanged;
+                //    _Webcamcom.CustomProfileAdded += Webcam_CustomProfileAdded;
+                //    _Webcamcom.CustomProfileRemoved += Webcam_CustomProfileRemoved;
+
+                //    _Webcamcom.PriorityChanged += Webcam_PriorityChanged;
+                //    _Webcamcom.IsFocusOnChanged += Webcam_IsFocusOnChanged;
+                //    _Webcamcom.FocusChanged += Webcam_FocusChanged;
+                //    _Webcamcom.PanChanged += Webcam_PanChanged;
+                //    _Webcamcom.TiltChanged += Webcam_TiltChanged;
+                //    _Webcamcom.ZoomChanged += Webcam_ZoomChanged; //QAM also use this event
+                //    _Webcamcom.BrightnessChanged += Webcam_BrightnessChanged;
+                //    _Webcamcom.ContrastChanged += Webcam_ContrastChanged;
+                //    _Webcamcom.AntiFlickerChanged += Webcam_AntiFlickerChanged;
+                //    _Webcamcom.SaturationChanged += Webcam_SaturationChanged;
+                //    _Webcamcom.SharpnessChanged += Webcam_SharpnessChanged;
+                //    _Webcamcom.IsAutoWhiteBalanceOnChanged += Webcam_IsAutoWhiteBalanceOnChanged;
+                //    _Webcamcom.AutoWhiteBalanceChanged += Webcam_AutoWhiteBalanceChanged;
+                //    _Webcamcom.IsAutoFramingTransitionOnChanged += Webcam_IsAutoFramingTransitionOnChanged;
+                //    _Webcamcom.IsAutoFramingOnChanged += Webcam_IsAutoFramingOnChanged;
+                //    _Webcamcom.AutoFramingSensitivityChanged += Webcam_AutoFramingSensitivityChanged;
+                //    _Webcamcom.AutoFramingFrameSizeChanged += Webcam_AutoFramingFrameSizeChanged;
+                //    _Webcamcom.FieldOfViewChanged += Webcam_FieldOfViewChanged;
+                //    _Webcamcom.IsHDROnChanged += Webcam_IsHDROnChanged;
+                //    _Webcamcom.SerialNumberChanged += Webcam_SerialNumberChanged;
+                //    _Webcamcom.IsZoomMeetingActiveChanged += Webcam_IsZoomMeetingActiveChanged; //for QAM
+                //    _Webcamcom.IsZoomScreenShareActiveChanged += Webcam_IsZoomScreenShareActiveChanged; //for QAM
+                //    _Webcamcom.ZoomMeetingTypeChanged += Webcam_ZoomMeetingTypeChanged; //for QAM
+
+                //    _Webcamcom.WALSnoozeTimeLeftInSecondsChanged += Webcam_WALSnoozeTimeLeftInSecondsChanged;
+                //    _Webcamcom.Esi_IsWALLockCountdownStartedChanged += Webcam_Esi_IsWALLockCountdownStartedChanged;
+                //    _Webcamcom.Esi_IsCameraSensorCoveredChanged += Webcam_Esi_IsCameraSensorCoveredChanged;
+                //    _Webcamcom.Esi_WALLockCountdownChanged += Webcam_Esi_WALLockCountdownChanged;
+
+                //    writelog($"Webcam{index} Commodity events registered successfully");
+
+                //    //Derek 1220 save this _comdityWebcamTmp to list
+                //    foreach (var item in webcamList)
+                //    {
+                //        if (registerID == item.webcamIndex)
+                //            item.webcamCommodity = _comdityWebcamTmp;
+                //    }
+
+                //    return true;
+                //}
             }
             catch (Exception e)
             {
@@ -7440,59 +7740,157 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 return false;
             }
+        }
+
+        private async Task<bool> RegisterEventsForWebcamAsync(string deviceID)
+        {
+            if (null == _comdityWebcam || deviceID == null || deviceID == string.Empty)
+            {
+                writelog($"null == _comdityWebcam || deviceID == null || deviceID == string.Empty");
+
+                return false;
+            }
+
+            try
+            {
+                if (_comdityWebcam is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _WebcamComObj)
+                {
+                    writelog($"connected _WebcamComObj.DeviceItems = {_WebcamComObj.DeviceItems.Length}");
+                        
+                    int i = 0;
+                    foreach (var item in _WebcamComObj.DeviceItems)
+                    {
+                        //output:
+                        //DellPeripheral.Webcam.0
+                        writelog($"connected _WebcamComObj.DeviceItems[{i}] = {item}");
+
+                        //output:
+                        //"{
+                        //DeviceName": "Dell Pro 24 Plus Video Conferencing Monitor",
+                        //"DeviceId": "36ce653b-7a0f-4c85-97f7-aad029cceeb2",
+                        //"ModelNumber": "P2424HEB"
+                        //}
+                        string jsonStr = _WebcamComObj.DeviceItemsEx[i++].ToString();
+                        writelog($"connected _WebcamComObj.DeviceItems = {jsonStr}");
+
+                        WebcamEventHandleObject jsonObject = JsonSerializer.Deserialize<WebcamEventHandleObject>(jsonStr)!;
+
+                        if (jsonObject != null && jsonObject.DeviceId == deviceID)
+                        {
+                            writelog($"jsonObject values: {item}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+
+                            ICommodity _comdityWebcamTmp = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId(item), CancellationToken.None);
+
+                            if (RegisterEventsForWebcam(_comdityWebcamTmp))
+                            {
+                                jsonObject.webcamIndex = item;
+                                jsonObject.webcamCommodity = _comdityWebcamTmp;
+                                webcamList.Add(jsonObject);
+
+                                writelog($"Webcam {deviceID} Commodity events registered successfully");
+
+                                return true;
+                            }
+                            else
+                            {
+                                writelog($"Webcam {deviceID} Commodity events registered fail");
+
+                                return false;
+                            }
+                        }   
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Webcam{deviceID} RegisterEventsForWebcamAsync Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private bool UnregisterEventsForWebcam(WebcamEventHandleObject obj)
+        {
+            if (obj.webcamCommodity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+            {
+                //_Webcamcom.ProfileManagerAdded -= Webcam_ProfileManagerAdded;
+                _Webcamcom.IsMicEnumerationOnChanged -= Webcam_IsMicEnumerationOnChanged;
+                _Webcamcom.CurrentSelectedProfileChanged -= Webcam_CurrentSelectedProfileChanged;
+                _Webcamcom.CustomProfileAdded -= Webcam_CustomProfileAdded;
+                _Webcamcom.CustomProfileRemoved -= Webcam_CustomProfileRemoved;
+
+                _Webcamcom.PriorityChanged -= Webcam_PriorityChanged;
+                _Webcamcom.IsFocusOnChanged -= Webcam_IsFocusOnChanged;
+                _Webcamcom.FocusChanged -= Webcam_FocusChanged;
+                _Webcamcom.PanChanged -= Webcam_PanChanged;
+                _Webcamcom.TiltChanged -= Webcam_TiltChanged;
+                _Webcamcom.ZoomChanged -= Webcam_ZoomChanged;
+                _Webcamcom.BrightnessChanged -= Webcam_BrightnessChanged;
+                _Webcamcom.ContrastChanged -= Webcam_ContrastChanged;
+                _Webcamcom.AntiFlickerChanged -= Webcam_AntiFlickerChanged;
+                _Webcamcom.SaturationChanged -= Webcam_SaturationChanged;
+                _Webcamcom.SharpnessChanged -= Webcam_SharpnessChanged;
+                _Webcamcom.IsAutoWhiteBalanceOnChanged -= Webcam_IsAutoWhiteBalanceOnChanged;
+                _Webcamcom.AutoWhiteBalanceChanged -= Webcam_AutoWhiteBalanceChanged;
+                _Webcamcom.IsAutoFramingTransitionOnChanged -= Webcam_IsAutoFramingTransitionOnChanged;
+                _Webcamcom.IsAutoFramingOnChanged -= Webcam_IsAutoFramingOnChanged;
+                _Webcamcom.AutoFramingSensitivityChanged -= Webcam_AutoFramingSensitivityChanged;
+                _Webcamcom.AutoFramingFrameSizeChanged -= Webcam_AutoFramingFrameSizeChanged;
+                _Webcamcom.FieldOfViewChanged -= Webcam_FieldOfViewChanged;
+                _Webcamcom.IsHDROnChanged -= Webcam_IsHDROnChanged;
+                _Webcamcom.SerialNumberChanged -= Webcam_SerialNumberChanged;
+                _Webcamcom.IsZoomMeetingActiveChanged -= Webcam_IsZoomMeetingActiveChanged;
+                _Webcamcom.IsZoomScreenShareActiveChanged -= Webcam_IsZoomScreenShareActiveChanged;
+                _Webcamcom.ZoomMeetingTypeChanged -= Webcam_ZoomMeetingTypeChanged; //for QAM
+
+                _Webcamcom.WALSnoozeTimeLeftInSecondsChanged -= Webcam_WALSnoozeTimeLeftInSecondsChanged;
+                _Webcamcom.Esi_IsWALLockCountdownStartedChanged -= Webcam_Esi_IsWALLockCountdownStartedChanged;
+                _Webcamcom.Esi_IsCameraSensorCoveredChanged -= Webcam_Esi_IsCameraSensorCoveredChanged;
+                _Webcamcom.Esi_WALLockCountdownChanged -= Webcam_Esi_WALLockCountdownChanged;
+
+                writelog($"Webcam {obj.webcamIndex}/{obj.ModelNumber} Commodity events unregistered successfully");
+
+                return true;
+            }
+            else
+                writelog($"obj.webcamCommodity is not Dell.TechHub.Commodity.Peripheral.IWebcamCommodity for {obj.ModelNumber}");
 
             return false;
         }
 
         private async Task<bool> UnregisterEventsForWebcamAsync(int index)
         {
-            if (null == _commSdk || null == _comdity || index < 0)
+            if (null == _commSdk || index < 0 || webcamList.Count == 0)
+            {
+                writelog($"null == _commSdk || index < 0 || webcamList.Count == 0");
+
                 return false;
+            }
 
             try
             {
-                _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
+                // find _comdity object for this device
+                string webcamID = $"DellPeripheral.Webcam.{index}";
+                writelog($"Search {webcamID} from webcamList for Unregister Events");
 
-                if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                bool result = false;
+                foreach (var item in webcamList)
                 {
-                    // 2024-12-21, Elie R19 change that. (It seems to be removed from R19)
-                    //_Webcamcom.ProfileManagerAdded -= Webcam_ProfileManagerAdded;
-                    _Webcamcom.IsMicEnumerationOnChanged -= Webcam_IsMicEnumerationOnChanged;
-                    _Webcamcom.CurrentSelectedProfileChanged -= Webcam_CurrentSelectedProfileChanged;
-                    _Webcamcom.CustomProfileAdded -= Webcam_CustomProfileAdded;
-                    _Webcamcom.CustomProfileRemoved -= Webcam_CustomProfileRemoved;
-
-                    _Webcamcom.PriorityChanged -= Webcam_PriorityChanged;
-                    _Webcamcom.IsFocusOnChanged -= Webcam_IsFocusOnChanged;
-                    _Webcamcom.FocusChanged -= Webcam_FocusChanged;
-                    _Webcamcom.PanChanged -= Webcam_PanChanged;
-                    _Webcamcom.TiltChanged -= Webcam_TiltChanged;
-                    _Webcamcom.ZoomChanged -= Webcam_ZoomChanged;
-                    _Webcamcom.BrightnessChanged -= Webcam_BrightnessChanged;
-                    _Webcamcom.ContrastChanged -= Webcam_ContrastChanged;
-                    _Webcamcom.AntiFlickerChanged -= Webcam_AntiFlickerChanged;
-                    _Webcamcom.SaturationChanged -= Webcam_SaturationChanged;
-                    _Webcamcom.SharpnessChanged -= Webcam_SharpnessChanged;
-                    _Webcamcom.IsAutoWhiteBalanceOnChanged -= Webcam_IsAutoWhiteBalanceOnChanged;
-                    _Webcamcom.AutoWhiteBalanceChanged -= Webcam_AutoWhiteBalanceChanged;
-                    _Webcamcom.IsAutoFramingTransitionOnChanged -= Webcam_IsAutoFramingTransitionOnChanged;
-                    _Webcamcom.IsAutoFramingOnChanged -= Webcam_IsAutoFramingOnChanged;
-                    _Webcamcom.AutoFramingSensitivityChanged -= Webcam_AutoFramingSensitivityChanged;
-                    _Webcamcom.AutoFramingFrameSizeChanged -= Webcam_AutoFramingFrameSizeChanged;
-                    _Webcamcom.FieldOfViewChanged -= Webcam_FieldOfViewChanged;
-                    _Webcamcom.IsHDROnChanged -= Webcam_IsHDROnChanged;
-                    _Webcamcom.SerialNumberChanged -= Webcam_SerialNumberChanged;
-                    _Webcamcom.IsZoomMeetingActiveChanged -= Webcam_IsZoomMeetingActiveChanged;
-                    _Webcamcom.IsZoomScreenShareActiveChanged -= Webcam_IsZoomScreenShareActiveChanged;
-
-                    _Webcamcom.WALSnoozeTimeLeftInSecondsChanged -= Webcam_WALSnoozeTimeLeftInSecondsChanged;
-                    _Webcamcom.Esi_IsWALLockCountdownStartedChanged -= Webcam_Esi_IsWALLockCountdownStartedChanged;
-                    _Webcamcom.Esi_IsCameraSensorCoveredChanged -= Webcam_Esi_IsCameraSensorCoveredChanged;
-                    _Webcamcom.Esi_WALLockCountdownChanged -= Webcam_Esi_WALLockCountdownChanged;
-
-                    writelog($"Webcam{index} Commodity events unregistered successfully");
-                    return true;
+                    if (item.webcamIndex == webcamID)
+                    {
+                        result = true;
+                        writelog($"Found object {item.DeviceName} from webcamList for Unregister Events");
+                        result = UnregisterEventsForWebcam(item);
+                        writelog($"UnregisterEventsForWebcam result is {result}");
+                        result = webcamList.Remove(item);
+                        writelog($"webcamList.Remove(item) result is {result}");
+                        break;
+                    }
                 }
+
+                return result;
             }
             catch (Exception e)
             {
@@ -7500,59 +7898,68 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 return false;
             }
-
-            return false;
         }
 
-        private async Task<bool> UnregisterEventsForWebcamAsync()
+        private async Task<bool> UnregisterEventsForWebcamAsync(string devcieID)
         {
-            if (null == _commSdk || null == _comdity)
+            if (devcieID == null || devcieID == string.Empty || webcamList.Count == 0)
+            {
+                writelog($"devcieID == string.Empty || devcieID == null || webcamList.Count == 0");
+
                 return false;
+            }
 
             try
             {
-                _comdity = await _commSdk.GetCommodityAsync<IWebcamCommodity>(new ItemId($"DellPeripheral.Webcam"), CancellationToken.None);
+                // find _comdity object for this device
+                writelog($"Search {devcieID} from webcamList for Unregister Events");
 
-                if (_comdity is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _Webcamcom)
+                bool result = false;
+                foreach (var item in webcamList)
                 {
-                    // 2024-12-21, Elie R19 change that. (It seems to be removed from R19)
-                    //_Webcamcom.ProfileManagerAdded -= Webcam_ProfileManagerAdded;
-                    _Webcamcom.IsMicEnumerationOnChanged -= Webcam_IsMicEnumerationOnChanged;
-                    _Webcamcom.CurrentSelectedProfileChanged -= Webcam_CurrentSelectedProfileChanged;
-                    _Webcamcom.CustomProfileAdded -= Webcam_CustomProfileAdded;
-                    _Webcamcom.CustomProfileRemoved -= Webcam_CustomProfileRemoved;
-
-                    _Webcamcom.PriorityChanged -= Webcam_PriorityChanged;
-                    _Webcamcom.IsFocusOnChanged -= Webcam_IsFocusOnChanged;
-                    _Webcamcom.FocusChanged -= Webcam_FocusChanged;
-                    _Webcamcom.PanChanged -= Webcam_PanChanged;
-                    _Webcamcom.TiltChanged -= Webcam_TiltChanged;
-                    _Webcamcom.ZoomChanged -= Webcam_ZoomChanged;
-                    _Webcamcom.BrightnessChanged -= Webcam_BrightnessChanged;
-                    _Webcamcom.ContrastChanged -= Webcam_ContrastChanged;
-                    _Webcamcom.AntiFlickerChanged -= Webcam_AntiFlickerChanged;
-                    _Webcamcom.SaturationChanged -= Webcam_SaturationChanged;
-                    _Webcamcom.SharpnessChanged -= Webcam_SharpnessChanged;
-                    _Webcamcom.IsAutoWhiteBalanceOnChanged -= Webcam_IsAutoWhiteBalanceOnChanged;
-                    _Webcamcom.AutoWhiteBalanceChanged -= Webcam_AutoWhiteBalanceChanged;
-                    _Webcamcom.IsAutoFramingTransitionOnChanged -= Webcam_IsAutoFramingTransitionOnChanged;
-                    _Webcamcom.IsAutoFramingOnChanged -= Webcam_IsAutoFramingOnChanged;
-                    _Webcamcom.AutoFramingSensitivityChanged -= Webcam_AutoFramingSensitivityChanged;
-                    _Webcamcom.AutoFramingFrameSizeChanged -= Webcam_AutoFramingFrameSizeChanged;
-                    _Webcamcom.FieldOfViewChanged -= Webcam_FieldOfViewChanged;
-                    _Webcamcom.IsHDROnChanged -= Webcam_IsHDROnChanged;
-                    _Webcamcom.SerialNumberChanged -= Webcam_SerialNumberChanged;
-                    _Webcamcom.IsZoomMeetingActiveChanged -= Webcam_IsZoomMeetingActiveChanged;
-                    _Webcamcom.IsZoomScreenShareActiveChanged -= Webcam_IsZoomScreenShareActiveChanged;
-
-                    _Webcamcom.WALSnoozeTimeLeftInSecondsChanged -= Webcam_WALSnoozeTimeLeftInSecondsChanged;
-                    _Webcamcom.Esi_IsWALLockCountdownStartedChanged -= Webcam_Esi_IsWALLockCountdownStartedChanged;
-                    _Webcamcom.Esi_IsCameraSensorCoveredChanged -= Webcam_Esi_IsCameraSensorCoveredChanged;
-                    _Webcamcom.Esi_WALLockCountdownChanged -= Webcam_Esi_WALLockCountdownChanged;
-
-                    writelog($"Webcam Commodity events unregistered successfully");
-                    return true;
+                    if (item.DeviceId == devcieID)
+                    {
+                        result = true;
+                        writelog($"Found object {item.DeviceName} from webcamList for Unregister Events");
+                        result = UnregisterEventsForWebcam(item);
+                        writelog($"UnregisterEventsForWebcam result is {result}");
+                        result = webcamList.Remove(item);
+                        writelog($"webcamList.Remove(item) result is {result}");
+                        break;
+                    }
                 }
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                writelog($"Webcam{devcieID} UnregisterEventsForWebcam Exception {e.Message}");
+
+                return false;
+            }
+        }
+
+        private async Task<bool> UnregisterEventsForAllWebcamsAsync()
+        {
+            if (null == _commSdk || 0 == webcamList.Count)
+            {
+                writelog($"null == _commSdk || 0 == webcamList.Count");
+
+                return false;
+            }
+
+            try
+            {
+                bool result = false;
+
+                foreach (var item in webcamList)
+                {
+                    result = UnregisterEventsForWebcam(item);
+                }
+                    
+                webcamList.Clear();
+
+                return result;
             }
             catch (Exception e)
             {
@@ -7560,8 +7967,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 return false;
             }
-
-            return false;
         }
 
         private void OnDTPProxyPluginConditionChangeHandler(object sender, EventArgs e)
@@ -8001,24 +8406,26 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_Disconnected(object sender, DisconnectedArgs e)
         {
-            _ = UnregisterEventsForAllWebcamsAsync();
-            //_ = UnregisterEventsForWebcamAsync();
-            _ = RegisterEventsForAllWebcamsAsync();
+            //_ = UnregisterEventsForAllWebcamsAsync();
+            //_ = UnregisterEventsForWebcamAsync(0);
+            //_ = RegisterEventsForAllConnectedWebcamsAsync();
+            Task<bool> result = UnregisterEventsForWebcamAsync(e.DeviceId);
 
             //SendDTPEventToUI($"3;Device:Webcam;Event:Disconnected;DeviceId:{e.DeviceId}");
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Disconnected", e.DeviceId));
 
-            writelog($"Catch event _Webcam_Disconnected, current devCount is {GetWebcamDevsCountAsync().Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcam_Disconnected, unregister events result is {result.Result}, current devCount is {webcamList.Count} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_Connected(object sender, ConnectedArgs e)
         {
-            Task<int> webcams = GetWebcamDevsCountAsync();
-            bool result = RegisterEventsForWebcamAsync(webcams.Result - 1).Result;
+            //Task<int> webcams = GetWebcamDevsCountAsync();
+            //bool result = RegisterEventsForWebcamAsync(webcams.Result - 1).Result;
+            Task<bool> result = RegisterEventsForWebcamAsync(e.DeviceId);
 
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_Connected", e.DeviceId));
 
-            writelog($"Catch event _Webcam_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Webcam_Connected, register events result is {result.Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private string CreateEventMsg(string devType, string eventType, string devID, string eventContent = "NewValue:NoContent")
