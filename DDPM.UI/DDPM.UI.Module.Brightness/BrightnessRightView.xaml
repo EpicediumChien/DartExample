@@ -22,10 +22,11 @@
                 x:Key="BooleanToBrushConverter"
                 FalseBrush="White"
                 TrueBrush="Gray" />
+
             <local:CustomBooleanToBrushConverter
                 x:Key="CustomBooleanToBrushConverter"
-                FalseBrushDarkTheme="{StaticResource TextBlock_ForegroundColor}"
-                FalseBrushLightTheme="{StaticResource TextBlock_ForegroundColor}"
+                FalseBrushDarkTheme="{DynamicResource TextBlock_ForegroundColor}"
+                FalseBrushLightTheme="{DynamicResource TextBlock_ForegroundColor}"
                 TrueBrush="Gray" />
 
             <local:InverseBooleanConverter x:Key="InverseBooleanConverter" />
@@ -232,7 +233,6 @@
                                                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                                     <UXControls:UXButton
                                                         Name="btnManualBrightnessContrast"
-                                                        IsEnabled="{Binding ManualBCHotkeyBtn}"
                                                         Width="111"
                                                         Height="40"
                                                         Margin="8,0,0,16"
@@ -242,6 +242,7 @@
                                                         Click="Hotkey_Click"
                                                         Content="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}"
                                                         CornerRadius="2"
+                                                        IsEnabled="{Binding ManualBCHotkeyBtn}"
                                                         Style="{StaticResource Button_WhiteFrame}" />
                                                     <UXControls:UXButton
                                                         Width="111"
@@ -682,6 +683,7 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
+
                                         <UXControls:UXTextBlock
                                             Grid.Column="0"
                                             HorizontalAlignment="Left"
@@ -743,10 +745,10 @@
                                             Margin="0,0,10,0"
                                             Padding="10,0,0,0"
                                             HorizontalAlignment="Right"
-                                            SelectionChanged="cbAutoBrightness_SelectionChanged"
                                             IsEnabled="{Binding AutoBrightnessStatus}"
-                                            ItemsSource="{Binding AutoBrightnessRangeLevel}"  
+                                            ItemsSource="{Binding AutoBrightnessRangeLevel}"
                                             SelectedIndex="{Binding AutoBrightnessRangeLevel_SelectedIndex, Mode=TwoWay}"
+                                            SelectionChanged="cbAutoBrightness_SelectionChanged"
                                             Style="{StaticResource DdpmComboBoxStyle}" />
                                         <Border
                                             Grid.Column="0"
@@ -1661,7 +1663,8 @@
                                     <Grid
                                         Height="60"
                                         IsEnabled="{Binding BrightnessEnable}"
-                                        Opacity="{Binding BrightnessOpacity}">
+                                        Opacity="{Binding BrightnessOpacity}"
+                                        Visibility="{Binding isShowSynchronize}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
@@ -1695,7 +1698,7 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding [Brightness.5], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                <TextBlock Text="{Binding [Brightness.21], Source={x:Static lang:LangHelper.Instance}}" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
@@ -1725,8 +1728,8 @@
                                             ContentPlacement="Left"
                                             ContentTextVisibility="True"
                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                            IsChecked="{Binding Path=IsSynchronize_Scheduled}" />
-                                        <!--  IsEnabled="{Binding IsSynchronizeDisabled, Converter={StaticResource InverseBooleanConverter}}"  -->
+                                            IsChecked="{Binding Path=IsSynchronize_Scheduled}"
+                                            IsEnabled="{Binding IsSynchronizeDisabled, Converter={StaticResource InverseBooleanConverter}}" />
                                     </Grid>
                                 </StackPanel>
                             </Expander.Content>
@@ -2322,7 +2325,8 @@
                                     <Grid
                                         Height="60"
                                         IsEnabled="{Binding BrightnessEnable}"
-                                        Opacity="{Binding BrightnessOpacity}">
+                                        Opacity="{Binding BrightnessOpacity}"
+                                        Visibility="{Binding isShowSynchronize}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
@@ -2356,7 +2360,7 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding [Brightness.5], Source={x:Static lang:LangHelper.Instance}}" />
+                                                                <TextBlock Text="{Binding [Brightness.21], Source={x:Static lang:LangHelper.Instance}}" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
@@ -2386,8 +2390,8 @@
                                             ContentPlacement="Left"
                                             ContentTextVisibility="True"
                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                            IsChecked="{Binding Path=IsSynchronize_Scheduled}" />
-                                        <!--  IsEnabled="{Binding IsSynchronizeDisabled, Converter={StaticResource InverseBooleanConverter}}"  -->
+                                            IsChecked="{Binding Path=IsSynchronize_Scheduled}"
+                                            IsEnabled="{Binding IsSynchronizeDisabled, Converter={StaticResource InverseBooleanConverter}}" />
                                     </Grid>
                                 </StackPanel>
                             </Expander.Content>

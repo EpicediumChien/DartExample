@@ -21,6 +21,7 @@ namespace DDPM.SA.Common
         ColorPresetString = 10,
         no_PrimaryMonitorSyncCheck = 11,
         ALSValueSyncCheck = 12,
+        InAppAutoBriTemp= 13,
     }
 
     public class AutoBrightnessRangeLevel
