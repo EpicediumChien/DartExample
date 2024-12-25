@@ -6327,29 +6327,27 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         /////////////////////////Get////////////////////////////////
 
-        public async Task<string> GetProfileAsync(string Guid)
+        public async Task<string> GetProfileAsync(string item)
         {
-            string guid = Guid;
-
             try
             {
-                if (!await GetItemIDAsync("Speaker", guid))
+                if (!await GetItemIDAsync("Speaker", item))
                     return null;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_speakerInterfaceType, commodity, "Profile");
-                    writelog($"[Speaker] GetProfileAsync succeeded for {guid}");
+                    writelog($"[Speaker] GetProfileAsync succeeded for {item}");
                     return (string)value;
                 }
 
-                writelog($"[Speaker] GetProfileAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[Speaker] GetProfileAsync failed: Could not retrieve commodity interface for {item}");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[Speaker] GetTrebleAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[Speaker] GetTrebleAsync failed for {item} - Exception: {ex.Message}");
                 return null;
             }
         }

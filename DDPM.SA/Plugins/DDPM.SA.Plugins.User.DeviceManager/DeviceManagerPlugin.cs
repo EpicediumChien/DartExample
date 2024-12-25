@@ -5289,22 +5289,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<string> GetOSDOrientation(MonitorInfo monitorInfo)
+        public Task<string> GetOSDOrientation(MonitorInfo monitorInfos)
         {
             string ret = "";
             if (_DisplayManagerPlugin != null)
             {
-                ret = _DisplayManagerPlugin.GetOSDOrientation(monitorInfo).Result;
+                ret = _DisplayManagerPlugin.GetOSDOrientation(monitorInfos).Result;
             }
             return Task.FromResult(ret);
         }
 
-        public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string Orientation)
+        public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfos, string Orientation)
         {
             bool? ret = null;
             if (_DisplayManagerPlugin != null)
             {
-                ret = _DisplayManagerPlugin.SetOSDOrientation(monitorInfo, Orientation).Result;
+                ret = _DisplayManagerPlugin.SetOSDOrientation(monitorInfos, Orientation).Result;
             }
             return Task.FromResult(ret);
         }
