@@ -645,7 +645,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
         public Task<Dictionary<string, InstalledAppInfo>> GetAllAppList()
         {
-            AppsCollectShell appshell = new AppsCollectShell();
+            AppsCollectShell appshell = new AppsCollectShell(Log);
             string RootColorPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dell\\Dell Display and Peripheral Manager\\AppLibrary";
             string IconFolder = RootColorPath + "\\Icons\\";
 
@@ -656,14 +656,26 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
             Dictionary<string, InstalledAppInfo> installedApp = new Dictionary<string, InstalledAppInfo>();
             string fileinfo = string.Empty, info = string.Empty;
-            
-            if (!System.IO.Directory.Exists(IconFolder))
-                System.IO.Directory.CreateDirectory(IconFolder);
-
-            if(!DDPMFileSecurity.CheckFold(IconFolder, out fileinfo, out info))
+            bool canSave = true;
+            if (!System.IO.Directory.Exists(RootColorPath))
             {
-                _logs.Info($"[EzMemoryManagerPlugin][CheckFold] folder path invalid: {info}");
-                return Task.FromResult(installedApp);
+                System.IO.Directory.CreateDirectory(RootColorPath);
+                _logs.Info($"[EzMemoryManagerPlugin][ValidateFilePath] RootColorPath isn't exist, create it");
+            }
+            if (canSave && !DDPMFileSecurity.ValidateFilePath(RootColorPath, out info))
+            {
+                _logs.Info($"[EzMemoryManagerPlugin][ValidateFilePath] RootColorPath abnormal, do not save icon: {info}");
+                canSave = false;
+            }
+            if (canSave && !System.IO.Directory.Exists(IconFolder))
+            {
+                System.IO.Directory.CreateDirectory(IconFolder);
+                _logs.Info($"[EzMemoryManagerPlugin][ValidateFilePath] IconFolder isn't exist, create it");
+            }
+            if (canSave && !DDPMFileSecurity.ValidateFilePath(IconFolder, out info))
+            {
+                _logs.Info($"[EzMemoryManagerPlugin][ValidateFilePath] IconFolder abnormal, do not save icon: {info}");
+                canSave = false;
             }
 
             Dictionary<string, List<AppItemInfo>> dictionary = new Dictionary<string, List<AppItemInfo>>();
@@ -716,7 +728,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
                         DateTime lastAccessTime = f.CreationTime;//.LastAccessTime;
                         if (!File.Exists(IconFolder + text + ".png"))
                         {
-                            System.Drawing.Icon.ExtractAssociatedIcon(value)!.ToBitmap().Save(IconFolder + text + ".png");
+                            if(canSave)
+                                System.Drawing.Icon.ExtractAssociatedIcon(value)!.ToBitmap().Save(IconFolder + text + ".png");
                         }
                         if (!dictionary.ContainsKey(value))
                         {
@@ -753,10 +766,10 @@ namespace DDPM.SA.Plugins.User.EzMemory
                     }
                     continue;
                 }
-                else
-                {
-                    //_logs.Info($"[EzMemoryManagerPlugin], not desktop app");
-                }
+                //else
+                //{
+                //    //_logs.Info($"[EzMemoryManagerPlugin], not desktop app");
+                //}
                 //
                 // UWP application parsing
                 //
@@ -780,7 +793,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
                         bitmap.UnlockBits(bitmapData);
                         if (!File.Exists(IconFolder + filename + ".png"))
                         {
-                            bitmap.Save(IconFolder + filename + ".png");
+                            if(canSave)
+                                bitmap.Save(IconFolder + filename + ".png");
                         }
                         if (!installedApp.ContainsKey(text2))
                         {

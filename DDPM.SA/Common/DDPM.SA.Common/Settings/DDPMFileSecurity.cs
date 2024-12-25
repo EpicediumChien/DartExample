@@ -113,13 +113,31 @@ namespace DDPM.SA.Common.Settings
             //Dean 0913 if file not exist, this check will cause the fail and never init
             if (File.Exists(target_file))
             {
-                string FileInfo;
-                if (!IsFilePathValid(target_file, out FileInfo))
+                if (!IsFilePathValid(target_file, out info))
                 {
-                    info = $"[SetJsonContentFromSerializedString] {FileInfo}";
+                    info = $"[SetJsonContentFromSerializedString] {info}";
                     return false;
                 }
             }
+
+            //Dean 1225 add Security code to drop data save if path include symlink
+            FileInfo fInfo = new FileInfo(target_file);
+            if(fInfo == null)
+            {
+                info = $"[SetJsonContentFromSerializedString] can't create FileInfo via target_file";
+                return false;
+            }
+            if(string.IsNullOrEmpty(fInfo.DirectoryName))
+            {
+                info = $"[SetJsonContentFromSerializedString] retrieve file's folder via target_file fail";
+                return false;
+            }
+            if(!ValidateFilePath(fInfo.DirectoryName, out info))
+            {
+                return false;
+            }
+            //end add
+
             string signature;
             string strTicketToFile;
             string strRandom;
@@ -220,14 +238,32 @@ namespace DDPM.SA.Common.Settings
         public static string GetSerializedJsonString(string filePath, out string info)
         {
             info = "Success";
-            //if (!IsFilePathValid(filePath, out info)) //for checkmarx issue, change to use ValidateFilePath. Dean 1207
-            //{
-            //    info = $"[GetSerializedJsonString] {info}";
-            //    return string.Empty;
-            //}
-
             string json_content = string.Empty;
             string filePath_sanitized = string.Empty;
+
+            //Dean 1225 add Security code to drop data save if path include symlink
+            FileInfo fInfo = new FileInfo(filePath);
+            if (fInfo == null)
+            {
+                info = $"[GetSerializedJsonString] can't create FileInfo via target_file";
+                return string.Empty;
+            }
+            if (string.IsNullOrEmpty(fInfo.DirectoryName))
+            {
+                info = $"[GetSerializedJsonString] retrieve file's folder via target_file fail";
+                return string.Empty;
+            }
+            if (!ValidateFilePath(fInfo.DirectoryName, out info))
+            {
+                return string.Empty;
+            }
+            if(!File.Exists(filePath))
+            {
+                info = $"[GetSerializedJsonString] filePath isn't exist";
+                return string.Empty;
+            }
+            //end add
+
             try
             {
                 filePath_sanitized = SanitizePath(filePath, out info);
