@@ -156,17 +156,28 @@ namespace DDPM.UI.Plugin.Common
 
         private void KeystrokeTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (txtKeystroke.Text == "")
+            btnClear.IsEnabled = false;
+            btnSave.IsEnabled = false;
+            var txt = txtKeystroke.Text.Trim();
+            if (txt == "")
+                return;
+
+            btnClear.IsEnabled = true;
+            if (_deviceCat == AdvancedAction.OpenWebPage)
             {
-                btnClear.IsEnabled = false;
-                btnSave.IsEnabled = false;
+                if (txt.Length < 7)
+                    return;
+
+                var url = txt.Substring(0, 7).ToLower();
+                if (url != "http://" && url != "https:/")
+                    return;
+
+                if (url != "http://" && txt.Substring(0, 8).ToLower() != "https://")
+                    return;
             }
-            else
-            {
-                btnClear.IsEnabled = true;
-                btnSave.IsEnabled = true;
-                Parameter = txtKeystroke.Text;
-            }
+
+            btnSave.IsEnabled = true;
+            Parameter = txt;
         }
 
         private void Keystroke_PreviewKeyUp(object sender, KeyEventArgs e)

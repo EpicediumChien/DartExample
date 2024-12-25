@@ -79,9 +79,6 @@ namespace DDPM.UI.Module.EzMemory
                 _vm?.RegisterCellBorder(cellBorder.CellBd, _no);
                 _no++;
             }
-
-            InitializePage();
-
             //Record UXTextBox
             if (_vm.ispCtrlForEm.CellList.Count <= 2)
             {
@@ -91,6 +88,9 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _vm.currentUXTextBoxInfo = Window1TextBlock;
             }
+
+            UserControl_Loaded(null, null);
+            InitializePage();
         }
 
 

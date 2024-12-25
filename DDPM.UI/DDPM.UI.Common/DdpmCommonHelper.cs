@@ -16,6 +16,7 @@ using System.Windows.Data;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Windows.Devices.PointOfService;
 using static DDPM.UI.Common.Views.DDPMMsgBox;
 using Application = System.Windows.Application;
 using Path = System.Windows.Shapes.Path;
@@ -80,6 +81,14 @@ namespace DDPM.UI.Common
         /// </summary>
         public static bool UIDebugModeFlag { get; set; } = false;
 
+        //Robert_Lin, 2024-12-21 added, DdpmHomePLugin must know whether DisplayPlugin is
+        // activated or not. When DisplayPlugin is activate, the MainWindow_MoveToNewPosition
+        // event will be handled by DisplayPugin, or DdpmHomePlugin shoud take over.
+        public static bool IsDisplayPluginActivated { get; set; } = false;
+
+        //The last DisplayName (DeviceName) of the screen which show the OSD.
+        public static string LastShowOsdScreenDeviceName = "";
+
         public enum log_type
         {
             info = 0,
@@ -124,7 +133,7 @@ namespace DDPM.UI.Common
                 }
             }
             DDPMMsgBox msgBox = new DDPMMsgBox(title, text, hwnd);
-            
+
             msgBox.ShowDialog();
 
             //if (result == MessageBoxResult.Yes)
@@ -544,9 +553,10 @@ namespace DDPM.UI.Common
             switch (model)
             {
                 case "WK636":
+                case "KM713":
                     return $"Dell {model} Wireless Keyboard";
                 case "WK717":
-                    return $"Dell Premier Wireless Keyboard";
+                    return $"Dell Premier Wireless Keyboard WK717";
                 case "WM116":
                 case "WM514":
                 case "UV514":
@@ -556,6 +566,35 @@ namespace DDPM.UI.Common
                     return $"Dell {model} Wireless Mouse";
                 default:
                     return model;
+            }
+        }
+
+        /// <summary>
+        /// Check if the specifc peripheral model is EOL model.
+        /// Based on "Copy of Peripheral-SupportedDeviceList_20241224.xlsx"
+        /// Used by Homepage tooltip text.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static bool IsPeripheralEOLModel(string model)
+        {
+            switch (model)
+            {
+                //Keyboard : (Marketname)
+                case "WK636": //Dell WK636  Wireless Keyboard
+                case "WK717": //Dell Premier Wireless Keyboard WK717
+                case "KM713": //Dell KM713  Wireless Keyboard
+
+                //Mouse
+                case "WM116": //Dell WM116  Wireless Mouse
+                case "WM514": //Dell WM514  Wireless Mouse
+                case "UV514": //Dell UV514  Wireless Mouse
+                case "WM126": //(Alex 說 IL 還沒能 support, Robert_Lin, 2024-12-24)
+                case "WM326": //Dell WM326  Wireless Mouse
+                case "WM527": //Dell WM527 Wireless Mouse
+                    return true;
+                default:
+                    return false;
             }
         }
         #endregion

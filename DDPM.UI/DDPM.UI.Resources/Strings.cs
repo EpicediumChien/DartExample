@@ -210,8 +210,8 @@ namespace DDPM.UI.Common
         public static readonly string Home = GetString("Home");
         public static readonly string End = GetString("End");
         public static readonly string PageDown = GetString("PageDown");//Page Down
-        public static readonly string PageUp = GetString("Page Up");//Page Up
-        public static readonly string WebBrowser = GetString("Web Browser");//Web Browser
+        public static readonly string PageUp = GetString("PageUp");//Page Up
+        public static readonly string WebBrowser = GetString("WebBrowser");//Web Browser
 
         //Word
         public static readonly string Autoscroll = GetString("Word.1");

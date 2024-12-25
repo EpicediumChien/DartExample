@@ -3,6 +3,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.ViewModels;
 using DDPM.UI.Module.InputSource;
 using DDPM.UI.Plugin.Common;
+using DDPM.UI.Plugin.DisplayPlugin.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics;
@@ -17,7 +18,9 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
     /// </summary>
     public partial class DisplayDefaultLeftView : UserControl
     {
-        private readonly string Restore = Strings.RestoreToDefault;// "Restore to default";
+        private readonly string Restore = Strings.RestoreToDefault;// "Restore to default";'
+
+        private DisplayPageViewModel viewModel;
 
         //private ILog? _log;
 
@@ -25,7 +28,6 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         {
             InitializeComponent();
             txtRestore.Text = Restore;
-
             //if (DdpmCommonHelper.MyConsole != null)
             //{
             //    _log = DdpmCommonHelper.MyConsole.CreateLog("DisplayDefaultLeftView");
@@ -99,7 +101,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         }
 
         // 20240617  jim add
-        private void Restore_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Restore_Click(object sender, RoutedEventArgs e)
         {
             if (txtRestore.IsEnabled == false)
                 return;
@@ -153,6 +155,11 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 //MessageBox.Show("OK button was clicked");
             }
             */
+        }
+
+        public void CollapseRestoreToDefaultbtn()
+        {
+            btnRestore.Visibility = Visibility.Collapsed;
         }
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)

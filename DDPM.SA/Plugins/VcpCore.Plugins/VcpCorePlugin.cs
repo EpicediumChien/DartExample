@@ -2826,8 +2826,11 @@ namespace VcpCore.Plugins
                         }
                         finally
                         {
-                            regCount.Close();
-                            regCount.Dispose();
+                            if (regCount != null)
+                            {
+                                regCount.Close();
+                                regCount.Dispose();
+                            }
                         }
                     }
                 }
