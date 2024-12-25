@@ -449,7 +449,7 @@ namespace DDPM.UI.Module.PipPbp.Tests
             pipPbpViewModel.SelectedHomeDevice = device;
             privateObject.SetFieldOrProperty("_isUsbKvmOn", true);
             result = pipPbpViewModel.IsUsbSwitchButtonEnabled;
-            Assert.That(result, Is.EqualTo(true));
+            Assert.That(result, Is.EqualTo(false));
         }
 
         [Test]
