@@ -1019,7 +1019,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             return;
                         }
                     }
-                    _logs.DebugMsg("[DisplayMangerPlugin] InitializeAllALSInfo ... Monitor.Count = " + monitorALS.Count().ToString() + " || AllALSConfig.Count = " + AllALSConfig.Count().ToString());
+                    _logs.DebugMsg("[DisplayMangerPlugin] InitializeAllALSInfo ... Monitor.Count = " + monitorALS.Count.ToString() + " || AllALSConfig.Count = " + AllALSConfig.Count.ToString());
                 }
                 catch (Exception ex)
                 {
@@ -1161,7 +1161,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     List<ALSConfig> temp = new List<ALSConfig>();
 
                     Trace.WriteLine($"[DisplayMangerPlugin] GetBitValue(value.AllValue, 5) == 1 " + value.Edid.ModelName.ToString());
-                    _logs.DebugMsg($"[DisplayMangerPlugin] CheckisPrimaryMonitorSyncOnOff ... Monitors.Count = " + monitorALS.Count().ToString() + " || AllALSConfig.Count = " + AllALSConfig.Count().ToString());
+                    _logs.DebugMsg($"[DisplayMangerPlugin] CheckisPrimaryMonitorSyncOnOff ... Monitors.Count = " + monitorALS.Count.ToString() + " || AllALSConfig.Count = " + AllALSConfig.Count.ToString());
 
                     foreach (MonitorInfo mon in monitorALS)//copy to als_connected first
                     {
@@ -1190,7 +1190,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorValueToOtherMonitor ... Fail");
 
                     AllALSConfig = als_connected2;//replace static AllALSConfig data
-                    _logs.DebugMsg($"2 [DisplayMangerPlugin] CheckisPrimaryMonitorSyncOnOff ... Monitors.Count = " + monitorALS.Count().ToString() + " || AllALSConfig.Count = " + AllALSConfig.Count().ToString());
+                    _logs.DebugMsg($"2 [DisplayMangerPlugin] CheckisPrimaryMonitorSyncOnOff ... Monitors.Count = " + monitorALS.Count.ToString() + " || AllALSConfig.Count = " + AllALSConfig.Count.ToString());
                 }
                 return Task.FromResult(true);
             }
