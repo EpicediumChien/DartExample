@@ -16,6 +16,7 @@ using System.Windows.Data;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Windows.Devices.PointOfService;
 using static DDPM.UI.Common.Views.DDPMMsgBox;
 using Application = System.Windows.Application;
 using Path = System.Windows.Shapes.Path;
@@ -565,6 +566,35 @@ namespace DDPM.UI.Common
                     return $"Dell {model} Wireless Mouse";
                 default:
                     return model;
+            }
+        }
+
+        /// <summary>
+        /// Check if the specifc peripheral model is EOL model.
+        /// Based on "Copy of Peripheral-SupportedDeviceList_20241224.xlsx"
+        /// Used by Homepage tooltip text.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static bool IsPeripheralEOLModel(string model)
+        {
+            switch (model)
+            {
+                //Keyboard : (Marketname)
+                case "WK636": //Dell WK636  Wireless Keyboard
+                case "WK717": //Dell Premier Wireless Keyboard WK717
+                case "KM713": //Dell KM713  Wireless Keyboard
+
+                //Mouse
+                case "WM116": //Dell WM116  Wireless Mouse
+                case "WM514": //Dell WM514  Wireless Mouse
+                case "UV514": //Dell UV514  Wireless Mouse
+                case "WM126": //(Alex 說 IL 還沒能 support, Robert_Lin, 2024-12-24)
+                case "WM326": //Dell WM326  Wireless Mouse
+                case "WM527": //Dell WM527 Wireless Mouse
+                    return true;
+                default:
+                    return false;
             }
         }
         #endregion

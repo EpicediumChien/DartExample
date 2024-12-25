@@ -408,29 +408,33 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 if (_SelectedSnoozeLength.SnoozeLength == 30)
                 {
-                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
-                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
+                    if (_isChecked_Snooze) // Jim 20241223 add a judgment condition to set snoozewhen SnoozeLength is selected. 
+                        DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
                     //_SelectedSnoozeLength.SnoozeLength = 1800;
                     //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                 }
                 else if (_SelectedSnoozeLength.SnoozeLength == 60)
                 {
-                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
-                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
+                    if (_isChecked_Snooze) // Jim 20241223 add a judgment condition to set snoozewhen SnoozeLength is selected. 
+                        DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
                     //_SelectedSnoozeLength.SnoozeLength = 3600;
                     //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                 }
                 else if (_SelectedSnoozeLength.SnoozeLength == 90)
                 {
-                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 2);
-                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(2, CurrentDeviceInfo!.ID);
+                    if (_isChecked_Snooze) // Jim 20241223 add a judgment condition to set snoozewhen SnoozeLength is selected. 
+                        DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 2);
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(2, CurrentDeviceInfo!.ID);
                     //_SelectedSnoozeLength.SnoozeLength = 5400;
                     //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                 }
                 else if (_SelectedSnoozeLength.SnoozeLength == 120)
                 {
-                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 3);
-                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(3, CurrentDeviceInfo!.ID);
+                    if (_isChecked_Snooze) // Jim 20241223 add a judgment condition to set snoozewhen SnoozeLength is selected. 
+                        DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 3);
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(3, CurrentDeviceInfo!.ID);
                     //_SelectedSnoozeLength.SnoozeLength = 7200;
                     //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                 }
