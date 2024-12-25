@@ -14,282 +14,315 @@
              d:DataContext="{d:DesignInstance Type=plugin:MouseViewModel}"
              d:DesignHeight="671" d:DesignWidth="1374"
              SizeChanged="UserControl_SizeChanged">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-            <PluginCommon:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
-            <PluginCommon:CenterVToolTipConverter x:Key="CenterVToolTipConverter" />
-            <Storyboard x:Key="StoryGotoTwoView">
-                <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+      <PluginCommon:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
+      <PluginCommon:CenterVToolTipConverter x:Key="CenterVToolTipConverter" />
+      <Storyboard x:Key="StoryGotoTwoView">
+        <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
                                  Duration="0:0:0.4" From="{Binding RightFrameWidthFrom}" To="{Binding RightFrameWidthTo}" FillBehavior="HoldEnd" />
-            </Storyboard>
-            <Style x:Key="ButtonToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
-                <Setter Property="Placement" Value="Right" />
-                <Setter Property="HorizontalOffset" Value="8" />
-                <Setter Property="VerticalOffset">
-                    <Setter.Value>
-                        <MultiBinding Converter="{StaticResource CenterVToolTipConverter}">
-                            <Binding RelativeSource="{RelativeSource Self}" Path="PlacementTarget.ActualHeight" />
-                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualHeight" />
-                        </MultiBinding>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <Style x:Key="B1Style" TargetType="Image">
-                <Setter Property="Width" Value="28" />
-                <Setter Property="Height" Value="48" />
-            </Style>
-            <Style x:Key="B2Style" TargetType="Image">
-                <Setter Property="Width" Value="28" />
-                <Setter Property="Height" Value="60" />
-            </Style>
-            <Style x:Key="B3Style" TargetType="Image">
-                <Setter Property="Width" Value="24" />
-                <Setter Property="Height" Value="58" />
-            </Style>
-            <Thickness x:Key="B4Margin" />
-            <Style x:Key="B4Style" TargetType="Image" BasedOn="{StaticResource B3Style}">
-                <Setter Property="Margin" Value="{DynamicResource B4Margin}" />
-            </Style>
-        </ResourceDictionary>
-    </UserControl.Resources>
+      </Storyboard>
+      <Style x:Key="ButtonToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+        <Setter Property="Placement" Value="Right" />
+        <Setter Property="HorizontalOffset" Value="8" />
+        <Setter Property="VerticalOffset">
+          <Setter.Value>
+            <MultiBinding Converter="{StaticResource CenterVToolTipConverter}">
+              <Binding RelativeSource="{RelativeSource Self}" Path="PlacementTarget.ActualHeight" />
+              <Binding RelativeSource="{RelativeSource Self}" Path="ActualHeight" />
+            </MultiBinding>
+          </Setter.Value>
+        </Setter>
+      </Style>
+      <Style x:Key="B1Style" TargetType="Image">
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="48" />
+      </Style>
+      <Style x:Key="B2Style" TargetType="Image">
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="60" />
+      </Style>
+      <Style x:Key="B3Style" TargetType="Image">
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="58" />
+      </Style>
+      <Thickness x:Key="B4Margin" />
+      <Style x:Key="B4Style" TargetType="Image" BasedOn="{StaticResource B3Style}">
+        <Setter Property="Margin" Value="{DynamicResource B4Margin}" />
+      </Style>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid>
     <Grid>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <!-- Right side: Header + RightView -->
-            <Grid Grid.Column="1" Name="RightGrid" Width="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <!-- Right side: Header + RightView -->
+      <Grid Grid.Column="1" Name="RightGrid" Width="0">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-                <!-- RightViewHeader -->
-                <common:RightViewHeaderCtrl Grid.Row="0" Name="rightViewHeaderCtrl"
+        <!-- RightViewHeader -->
+        <common:RightViewHeaderCtrl Grid.Row="0" Name="rightViewHeaderCtrl"
                                             SelectedIndex="{Binding RightViewHeaderSelectedIndex, Mode=TwoWay}"
                                             ItemsSource="{Binding RightViewHeaders, Mode=TwoWay}"
                                             SelectionChanged="RightViewHeaderCtrl_SelectionChanged" />
-                <ContentControl Grid.Row="1" Name="RightFrame" Content="{Binding RightView, Mode=TwoWay}" SizeChanged="RightFrame_SizeChanged"/>
-            </Grid>
-            <!-- Layer 2 : Nav -->
-            <Grid Grid.Column="0">
-                <Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
-                <!--Image-->
-                <Grid>
-                    <Viewbox Name="largeImage" Margin="30,0" MaxWidth="500">
-                        <Grid>
-                            <Grid>
-                                <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="500" />
-                            </Grid>
-                            <Grid Name="SectionA" Margin="210,106,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
-                                <StackPanel Orientation="Horizontal">
-                                    <Image x:Name="ScrollTiltLeft" Source="{Binding ScrollTiltLeftImageFile}" Style="{StaticResource B1Style}"
+        <ContentControl Grid.Row="1" Name="RightFrame" Content="{Binding RightView, Mode=TwoWay}" SizeChanged="RightFrame_SizeChanged"/>
+      </Grid>
+      <!-- Layer 2 : Nav -->
+      <Grid Grid.Column="0">
+        <Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
+        <!--Image-->
+        <Grid>
+          <Viewbox Name="largeImage" Margin="30,0" MaxWidth="500">
+            <Grid>
+              <Grid>
+                <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="500" />
+              </Grid>
+              <Grid Name="SectionA" Margin="210,106,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal">
+                  <Image x:Name="ScrollTiltLeft" Source="{Binding ScrollTiltLeftImageFile}" Style="{StaticResource B1Style}"
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsScrollTiltLeftVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
-                                        <Image.ToolTip>
-                                            <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollTiltLeftTooltip}" />
-                                            </ToolTip>
-                                        </Image.ToolTip>
-                                    </Image>
-                                    <Image x:Name="ScrollWheelClick" Source="{Binding ScrollWheelClickImageFile}"  Style="{StaticResource B2Style}" Margin="-2,0,0,0"
+                    <Image.ToolTip>
+                      <ToolTip Style="{StaticResource ButtonToolTipStyle}">
+                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollTiltLeftTooltip}" />
+                      </ToolTip>
+                    </Image.ToolTip>
+                  </Image>
+                  <Image x:Name="ScrollWheelClick" Source="{Binding ScrollWheelClickImageFile}"  Style="{StaticResource B2Style}" Margin="-2,0,0,0"
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsScrollWheelClickVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
-                                        <Image.ToolTip>
-                                            <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollWheelClickTooltip}" />
-                                            </ToolTip>
-                                        </Image.ToolTip>
-                                    </Image>
-                                    <Image x:Name="ScrollTiltRight" Source="{Binding ScrollTiltRightImageFile}"  Style="{StaticResource B1Style}" Margin="-2,0,0,0"
+                    <Image.ToolTip>
+                      <ToolTip Style="{StaticResource ButtonToolTipStyle}">
+                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollWheelClickTooltip}" />
+                      </ToolTip>
+                    </Image.ToolTip>
+                  </Image>
+                  <Image x:Name="ScrollTiltRight" Source="{Binding ScrollTiltRightImageFile}"  Style="{StaticResource B1Style}" Margin="-2,0,0,0"
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsScrollTiltRightVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
-                                        <Image.ToolTip>
-                                            <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollTiltRightTooltip}" />
-                                            </ToolTip>
-                                        </Image.ToolTip>
-                                    </Image>
-                                </StackPanel>
-                            </Grid>
-                            <Grid Name="SectionB" Margin="140,173,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
-                                <StackPanel Orientation="Vertical">
-                                    <Image x:Name="SideButtonForward" Source="{Binding SideButtonForwardImageFile}" Style="{StaticResource B3Style}"
-                                           MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsSideButtonForwardVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
-                                        <Image.ToolTip>
-                                            <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding SideButtonForwardTooltip}" />
-                                            </ToolTip>
-                                        </Image.ToolTip>
-                                    </Image>
-                                    <Image x:Name="SideButtonBack" Source="{Binding SideButtonBackImageFile}" Style="{StaticResource B4Style}"
-                                           MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsSideButtonBackVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
-                                        <Image.ToolTip>
-                                            <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding SideButtonBackTooltip}" />
-                                            </ToolTip>
-                                        </Image.ToolTip>
-                                    </Image>
-                                </StackPanel>
-                            </Grid>
-                            <Grid Name="SectionC" Margin="229,21,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Visibility="{Binding IsTouchScrollSensitivitySupported, Converter={StaticResource BoolToVisibilityConverter}}">
-                                <Image x:Name="ScrollButton2" Source="/DDPM.UI.Resources;component/Resources/Images/ScrollButton2.png" Stretch="Fill" Width="35" Visibility="{Binding IsTouchScrollHilighted}" />
-                                <Image x:Name="ScrollButton1" Source="/DDPM.UI.Resources;component/Resources/Images/ScrollButton1.png" Stretch="Fill" Width="40" />
-                            </Grid>
-                        </Grid>
-                    </Viewbox>
-                </Grid>
-            </Grid>
-            <!--Name & Model-->
-            <Grid VerticalAlignment="Top" Height="130">
-                <Border Background="Transparent" MouseDown="PushBack"></Border>
-                <StackPanel Orientation="Vertical">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" x:Name="devNameStackPanel">
-                        <Image Margin="64,21,0,0" Source="{DynamicResource mouse_setting_title_back}" Stretch="Fill"
-                               VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24">
-                            <Image.InputBindings>
-                                <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
-                            </Image.InputBindings>
-                        </Image>
-                        <UXControls:UXTextBlock Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
-                                                x:Name="devName" Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <UXControls:UXTextBlock Text="{Binding Model2}" Margin="101,18,0,0" HorizontalAlignment="Left"
-                                                Style="{StaticResource ModelNumberTextStyle}" />
-                        <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
-                               VerticalAlignment="Top" Cursor="" Width="16" Height="16">
-                            <Image.InputBindings>
-                                <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
-                            </Image.InputBindings>
-                            <Image.ToolTip>
-                                <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                        <Border.Resources>
-                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                        </Border.Resources>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding FirmwareVersion2}" />
-                                        </StackPanel>
-                                    </Border>
-                                </ToolTip>
-                            </Image.ToolTip>
-                        </Image>
-                        <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/MultiDevice.png" Stretch="Fill"
-                               VerticalAlignment="Top" Width="16" Height="16" Visibility="{Binding MultiDevicesInfoVisibility}">
-                            <Image.ToolTip>
-                                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                                    <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding MultiDeviceTooltip}" TextWrapping="Wrap" Width="350" />
-                                </ToolTip>
-                            </Image.ToolTip>
-                        </Image>
-                    </StackPanel>
-                    <UXControls:UXTextBlock Name="txtEOL" Margin="101,18,0,0" HorizontalAlignment="Left" Style="{StaticResource ModelNumberTextStyle}" Visibility="Collapsed" Text="{Binding [EOL.0], Source={x:Static lang:LangHelper.Instance}}"/>
+                    <Image.ToolTip>
+                      <ToolTip Style="{StaticResource ButtonToolTipStyle}">
+                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollTiltRightTooltip}" />
+                      </ToolTip>
+                    </Image.ToolTip>
+                  </Image>
                 </StackPanel>
+              </Grid>
+              <Grid Name="SectionB" Margin="140,173,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <StackPanel Orientation="Vertical">
+                  <Image x:Name="SideButtonForward" Source="{Binding SideButtonForwardImageFile}" Style="{StaticResource B3Style}"
+                                           MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsSideButtonForwardVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
+                    <Image.ToolTip>
+                      <ToolTip Style="{StaticResource ButtonToolTipStyle}">
+                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding SideButtonForwardTooltip}" />
+                      </ToolTip>
+                    </Image.ToolTip>
+                  </Image>
+                  <Image x:Name="SideButtonBack" Source="{Binding SideButtonBackImageFile}" Style="{StaticResource B4Style}"
+                                           MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsSideButtonBackVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
+                    <Image.ToolTip>
+                      <ToolTip Style="{StaticResource ButtonToolTipStyle}">
+                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding SideButtonBackTooltip}" />
+                      </ToolTip>
+                    </Image.ToolTip>
+                  </Image>
+                </StackPanel>
+              </Grid>
+              <Grid Name="SectionC" Margin="229,21,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Visibility="{Binding IsTouchScrollSensitivitySupported, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Image x:Name="ScrollButton2" Source="/DDPM.UI.Resources;component/Resources/Images/ScrollButton2.png" Stretch="Fill" Width="35" Visibility="{Binding IsTouchScrollHilighted}" />
+                <Image x:Name="ScrollButton1" Source="/DDPM.UI.Resources;component/Resources/Images/ScrollButton1.png" Stretch="Fill" Width="40" />
+              </Grid>
             </Grid>
-            <!-- Vbar -->
-            <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
-                <ItemsControl Name="vbarList" Margin="0,10,0,0"
+          </Viewbox>
+        </Grid>
+      </Grid>
+      <!--Name & Model-->
+      <Grid VerticalAlignment="Top" Height="130">
+        <Border Background="Transparent" MouseDown="PushBack"></Border>
+        <StackPanel Orientation="Vertical">
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" x:Name="devNameStackPanel">
+            <Image Margin="64,21,0,0" Source="{DynamicResource mouse_setting_title_back}" Stretch="Fill"
+                               VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="Hand" Width="24" Height="24">
+              <Image.InputBindings>
+                <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
+              </Image.InputBindings>
+            </Image>
+            <UXControls:UXTextBlock Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
+                                                x:Name="devName" Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal">
+            <UXControls:UXTextBlock Text="{Binding Model2}" Margin="101,18,0,0" HorizontalAlignment="Left"
+                                                Style="{StaticResource ModelNumberTextStyle}" />
+            <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
+                               VerticalAlignment="Top" Cursor="" Width="16" Height="16">
+              <Image.InputBindings>
+                <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
+              </Image.InputBindings>
+              <Image.ToolTip>
+                <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                  <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                    <Border.Resources>
+                      <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                    </Border.Resources>
+                    <StackPanel Orientation="Horizontal">
+                      <TextBlock Text="{Binding FirmwareVersion2}" />
+                    </StackPanel>
+                  </Border>
+                </ToolTip>
+              </Image.ToolTip>
+            </Image>
+            <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/MultiDevice.png" Stretch="Fill"
+                               VerticalAlignment="Top" Width="16" Height="16" Visibility="{Binding MultiDevicesInfoVisibility}">
+              <Image.ToolTip>
+                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                  <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding MultiDeviceTooltip}" TextWrapping="Wrap" Width="350" />
+                </ToolTip>
+              </Image.ToolTip>
+            </Image>
+          </StackPanel>
+          <UXControls:UXTextBlock Name="txtEOL" Margin="101,18,0,0" HorizontalAlignment="Left" Style="{StaticResource ModelNumberTextStyle}" Visibility="Collapsed" Text="{Binding [EOL.0], Source={x:Static lang:LangHelper.Instance}}"/>
+        </StackPanel>
+      </Grid>
+      <!-- Vbar -->
+      <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
+        <ItemsControl Name="vbarList" Margin="0,10,0,0"
                                   HorizontalAlignment="Right" VerticalAlignment="Top"
                                   ItemsSource="{Binding VbarItems}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <ContentPresenter />
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Grid>
-            <!--Battery-->
-            <Grid VerticalAlignment="Bottom" MinHeight="180">
-                <Border Background="Transparent" MouseDown="PushBack"></Border>
-                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                        <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel Orientation="Horizontal" Margin="19,18,0,0">
-                                    <ContentControl Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
-                                    <!-- <Image Margin="0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" /> -->
-                                    <UXControls:UXTextBlock Name="txtDongleHost" Foreground="{DynamicResource DefaultTheme_TxtColor}" VerticalAlignment="Center" Margin="7,0,0,0"
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Grid>
+                <ContentPresenter />
+              </Grid>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </Grid>
+      <!--Battery-->
+      <Grid VerticalAlignment="Bottom" MinHeight="180">
+        <Border Background="Transparent" MouseDown="PushBack"></Border>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+            <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
+              <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" Margin="19,18,0,0">
+                  <ContentControl Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
+                  <!-- <Image Margin="0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" /> -->
+                  <UXControls:UXTextBlock Name="txtDongleHost" Foreground="{DynamicResource DefaultTheme_TxtColor}" VerticalAlignment="Center" Margin="7,0,0,0"
                                                             HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" FontWeight="Bold" Text="{Binding [USBWirelessReceiver], Source={x:Static lang:LangHelper.Instance}}"/>
-                                </StackPanel>
-                                <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
-                                <UXControls:UXTextBlock Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" Margin="20,13,0,0" />
-                                <UXControls:UXTextBlock Name="txtSlot" Style="{StaticResource ConnectionStyle3}" Margin="20,15,0,0" />
-                            </StackPanel>
-                        </Border>
-                        <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="BLConnection" VerticalAlignment="Bottom">
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel Name="Host1" Orientation="Horizontal" Margin="20,18,0,0">
-                                    <UXControls:UXTextBlock Name="txt1" Text="1" />
-                                    <ContentControl x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
-                                    <!-- <Image x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" /> -->
-                                    <UXControls:UXTextBlock Name="txtBLHost1" Margin="4,0,0,0" />
-                                </StackPanel>
-                                <StackPanel Name="Host2" Orientation="Horizontal" Margin="20,18,0,18">
-                                    <UXControls:UXTextBlock Name="txt2" Text="2" />
-                                    <ContentControl x:Name="imgBL2" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
-                                    <!-- <Image x:Name="imgBL2" Margin="4,0,0,0" Width="16" Height="16" /> -->
-                                    <UXControls:UXTextBlock Name="txtBLHost2" Margin="4,0,0,0" />
-                                </StackPanel>
-                                <StackPanel Name="Host3" Orientation="Horizontal" Margin="20,0,0,18">
-                                    <UXControls:UXTextBlock Name="txt3" Text="3" />
-                                    <ContentControl x:Name="imgBL3" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
-                                    <!-- <Image x:Name="imgBL3" Margin="4,0,0,0" Width="16" Height="16" /> -->
-                                    <UXControls:UXTextBlock Name="txtBLHost3" Margin="4,0,0,0" />
-                                </StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <DDPMUserControls:BatteryIndicator Name="Battery" Margin="0,0,0,70" HorizontalAlignment="Center" MouseEnter="BatteryIndicator_MouseEnter"
+                </StackPanel>
+                <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
+                <UXControls:UXTextBlock Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" Margin="20,13,0,0" />
+                <UXControls:UXTextBlock Name="txtSlot" Style="{StaticResource ConnectionStyle3}" Margin="20,15,0,0" />
+              </StackPanel>
+            </Border>
+            <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="BLConnection" VerticalAlignment="Bottom">
+              <StackPanel Orientation="Vertical">
+                <StackPanel Name="Host1" Orientation="Horizontal" Margin="20,18,0,0">
+                  <UXControls:UXTextBlock Name="txt1" Text="1" />
+                  <ContentControl x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}">
+                    <ContentControl.Style>
+                      <Style TargetType="ContentControl">
+                        <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}"/>
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding ImgBL1}" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}"/>
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </ContentControl.Style>
+                  </ContentControl>
+                  <!-- <Image x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" /> -->
+                  <UXControls:UXTextBlock Name="txtBLHost1" Margin="4,0,0,0" />
+                </StackPanel>
+                <StackPanel Name="Host2" Orientation="Horizontal" Margin="20,18,0,18">
+                  <UXControls:UXTextBlock Name="txt2" Text="2" />
+                  <ContentControl x:Name="imgBL2" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}">
+                    <ContentControl.Style>
+                      <Style TargetType="ContentControl">
+                        <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}"/>
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding ImgBL2}" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}"/>
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </ContentControl.Style>
+                  </ContentControl>
+                  <!-- <Image x:Name="imgBL2" Margin="4,0,0,0" Width="16" Height="16" /> -->
+                  <UXControls:UXTextBlock Name="txtBLHost2" Margin="4,0,0,0" />
+                </StackPanel>
+                <StackPanel Name="Host3" Orientation="Horizontal" Margin="20,0,0,18">
+                  <UXControls:UXTextBlock Name="txt3" Text="3" />
+                  <ContentControl x:Name="imgBL3" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}">
+                    <ContentControl.Style>
+                      <Style TargetType="ContentControl">
+                        <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}"/>
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding ImgBL3}" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}"/>
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </ContentControl.Style>
+                  </ContentControl>
+                  <!-- <Image x:Name="imgBL3" Margin="4,0,0,0" Width="16" Height="16" /> -->
+                  <UXControls:UXTextBlock Name="txtBLHost3" Margin="4,0,0,0" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <DDPMUserControls:BatteryIndicator Name="Battery" Margin="0,0,0,70" HorizontalAlignment="Center" MouseEnter="BatteryIndicator_MouseEnter"
                                                            BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}" MouseLeave="BatteryIndicator_MouseLeave"
                                                            ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
-                        <!--<Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="{Binding IsRestoreEnable, Converter={StaticResource BoolToVisibilityConverter}}" x:Name="btnRestore">
+            <!--<Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="{Binding IsRestoreEnable, Converter={StaticResource BoolToVisibilityConverter}}" x:Name="btnRestore">
                         <Grid>
                         <UXControls:UXTextBlock Name="txtRestore" Foreground="#F5F6F7" VerticalAlignment="Center"
                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
                         </Grid>
                         </Border>-->
-                        <ContentControl Name="EOLDongle" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Height="40" Visibility="Collapsed" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
-                        <!-- <Image Name="EOLDongle" Source="/DDPM.UI.Resources;component/Resources/Images/EOLDongle.png" Stretch="Fill" Visibility="Collapsed"
+            <ContentControl Name="EOLDongle" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Height="40" Visibility="Collapsed" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
+            <!-- <Image Name="EOLDongle" Source="/DDPM.UI.Resources;component/Resources/Images/EOLDongle.png" Stretch="Fill" Visibility="Collapsed"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="40" Height="40" /> -->
-                        <Border Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair"
+            <Border Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair"
                     BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
-                            <UXControls:UXTextBlock Name="txtUnpair" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}"/>
-                        </Border>
-                    </StackPanel>
-                </StackPanel>
-            </Grid>
-        </Grid>
-        <Grid x:Name="AppCaptionArea" Width="250" Height="280" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,172" Visibility="Collapsed">
-            <StackPanel Orientation="Vertical">
-                <UXControls:UXTextBlock Name="txtActionCaption" Margin="0" HorizontalAlignment="Left"
-                                        FontFamily="Roboto" Foreground="{DynamicResource txtActionCaption_TxtColor}"  FontSize="20" FontWeight="Normal" Text="{Binding [Mouse.0], Source={x:Static lang:LangHelper.Instance}}"/>
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="40,33,0,28">
-                        <Border x:Name="bdrAllApp" Style="{StaticResource Border1}"></Border>
-                        <UXControls:UXTextBlock Name="txtAllApp" Style="{StaticResource AppCaptionStyle}" MouseLeftButtonDown="App_MouseLeftButtonDown" MouseEnter="App_MouseEnter" MouseLeave="App_MouseLeave" Tag="0" Text="{Binding [Mouse.1], Source={x:Static lang:LangHelper.Instance}}"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="40,0,0,28" Visibility="{Binding WordVisibility}">
-                        <Border x:Name="bdrWord" Style="{StaticResource Border1}" Visibility="Collapsed"></Border>
-                        <UXControls:UXTextBlock Name="txtWord" Style="{StaticResource AppCaptionStyle}" MouseLeftButtonDown="App_MouseLeftButtonDown" MouseEnter="App_MouseEnter" MouseLeave="App_MouseLeave" Tag="1" Text="{Binding [Mouse.2], Source={x:Static lang:LangHelper.Instance}}"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="40,0,0,28" Visibility="{Binding ExcelVisibility}">
-                        <Border x:Name="bdrExcel" Style="{StaticResource Border1}" Visibility="Collapsed"></Border>
-                        <UXControls:UXTextBlock Name="txtExcel" Style="{StaticResource AppCaptionStyle}" MouseLeftButtonDown="App_MouseLeftButtonDown" MouseEnter="App_MouseEnter" MouseLeave="App_MouseLeave" Tag="2" Text="{Binding [Mouse.3], Source={x:Static lang:LangHelper.Instance}}"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="40,0,0,28" Visibility="{Binding PowerPointVisibility}">
-                        <Border x:Name="bdrPowerPoint" Style="{StaticResource Border1}" Visibility="Collapsed"></Border>
-                        <UXControls:UXTextBlock Name="txtPowerPoint" Style="{StaticResource AppCaptionStyle}" MouseLeftButtonDown="App_MouseLeftButtonDown" MouseEnter="App_MouseEnter" MouseLeave="App_MouseLeave" Tag="3" Text="{Binding [Mouse.4], Source={x:Static lang:LangHelper.Instance}}"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="40,0,0,0" Visibility="{Binding OutlookVisibility}">
-                        <Border x:Name="bdrOutlook" Style="{StaticResource Border1}" Visibility="Collapsed"></Border>
-                        <UXControls:UXTextBlock Name="txtOutlook" Style="{StaticResource AppCaptionStyle}" MouseLeftButtonDown="App_MouseLeftButtonDown" MouseEnter="App_MouseEnter" MouseLeave="App_MouseLeave" Tag="4" Text="{Binding [Mouse.5], Source={x:Static lang:LangHelper.Instance}}"/>
-                    </StackPanel>
-                    <!--<UXControls:UXTextBox Name="AppSelectedIndex" Text="{Binding AppSelectedIndex}" TextChanged="AppSelectedIndex_TextChanged" Visibility="Collapsed" />-->
-                </StackPanel>
-            </StackPanel>
-        </Grid>
+              <UXControls:UXTextBlock Name="txtUnpair" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}"/>
+            </Border>
+          </StackPanel>
+        </StackPanel>
+      </Grid>
     </Grid>
+    <Grid x:Name="AppCaptionArea" Width="250" Height="280" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,172" Visibility="Collapsed">
+      <StackPanel Orientation="Vertical">
+        <UXControls:UXTextBlock Name="txtActionCaption" Margin="0" HorizontalAlignment="Left"
+                                        FontFamily="Roboto" Foreground="{DynamicResource txtActionCaption_TxtColor}"  FontSize="20" FontWeight="Normal" Text="{Binding [Mouse.0], Source={x:Static lang:LangHelper.Instance}}"/>
+        <StackPanel>
+          <StackPanel Orientation="Horizontal" Margin="40,33,0,28">
+            <Border x:Name="bdrAllApp" Style="{StaticResource Border1}"></Border>
+            <UXControls:UXTextBlock Name="txtAllApp" Style="{StaticResource AppCaptionStyle}" MouseLeftButtonDown="App_MouseLeftButtonDown" MouseEnter="App_MouseEnter" MouseLeave="App_MouseLeave" Tag="0" Text="{Binding [Mouse.1], Source={x:Static lang:LangHelper.Instance}}"/>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Margin="40,0,0,28" Visibility="{Binding WordVisibility}">
+            <Border x:Name="bdrWord" Style="{StaticResource Border1}" Visibility="Collapsed"></Border>
+            <UXControls:UXTextBlock Name="txtWord" Style="{StaticResource AppCaptionStyle}" MouseLeftButtonDown="App_MouseLeftButtonDown" MouseEnter="App_MouseEnter" MouseLeave="App_MouseLeave" Tag="1" Text="{Binding [Mouse.2], Source={x:Static lang:LangHelper.Instance}}"/>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Margin="40,0,0,28" Visibility="{Binding ExcelVisibility}">
+            <Border x:Name="bdrExcel" Style="{StaticResource Border1}" Visibility="Collapsed"></Border>
+            <UXControls:UXTextBlock Name="txtExcel" Style="{StaticResource AppCaptionStyle}" MouseLeftButtonDown="App_MouseLeftButtonDown" MouseEnter="App_MouseEnter" MouseLeave="App_MouseLeave" Tag="2" Text="{Binding [Mouse.3], Source={x:Static lang:LangHelper.Instance}}"/>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Margin="40,0,0,28" Visibility="{Binding PowerPointVisibility}">
+            <Border x:Name="bdrPowerPoint" Style="{StaticResource Border1}" Visibility="Collapsed"></Border>
+            <UXControls:UXTextBlock Name="txtPowerPoint" Style="{StaticResource AppCaptionStyle}" MouseLeftButtonDown="App_MouseLeftButtonDown" MouseEnter="App_MouseEnter" MouseLeave="App_MouseLeave" Tag="3" Text="{Binding [Mouse.4], Source={x:Static lang:LangHelper.Instance}}"/>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Margin="40,0,0,0" Visibility="{Binding OutlookVisibility}">
+            <Border x:Name="bdrOutlook" Style="{StaticResource Border1}" Visibility="Collapsed"></Border>
+            <UXControls:UXTextBlock Name="txtOutlook" Style="{StaticResource AppCaptionStyle}" MouseLeftButtonDown="App_MouseLeftButtonDown" MouseEnter="App_MouseEnter" MouseLeave="App_MouseLeave" Tag="4" Text="{Binding [Mouse.5], Source={x:Static lang:LangHelper.Instance}}"/>
+          </StackPanel>
+          <!--<UXControls:UXTextBox Name="AppSelectedIndex" Text="{Binding AppSelectedIndex}" TextChanged="AppSelectedIndex_TextChanged" Visibility="Collapsed" />-->
+        </StackPanel>
+      </StackPanel>
+    </Grid>
+  </Grid>
 </UserControl>
