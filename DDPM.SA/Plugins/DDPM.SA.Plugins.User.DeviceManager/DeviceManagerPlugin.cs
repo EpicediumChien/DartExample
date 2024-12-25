@@ -492,26 +492,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _curPxpMode = Convert.ToUInt16(ret.value);
                     switch (_curPxpMode)
                     {
-                        case 0x11:
+                        case 0x00://off
+                            usbKvmPBP.isPBPmode = false;
+                            break;
+                        case 0x21://PIP small
                             usbKvmPBP.isPBPmode = false;
                             break;
 
-                        case 0x12:
+                        case 0x22://PIP large
                             usbKvmPBP.isPBPmode = false;
                             break;
-
+                        case 0x23:
                         case 0x24:
-                        case 0x2F:
-                        case 0x26:
-                        case 0x28:
-                        case 0x2A:
-                        case 0x2C:
-                        case 0x2E:
                         case 0x25:
+                        case 0x26:
                         case 0x27:
+                        case 0x28:
                         case 0x29:
+                        case 0x2A:
                         case 0x2B:
+                        case 0x2C:
                         case 0x2D:
+                        case 0x2E:
+                        case 0x2F:
                         case 0x31:
                         case 0x32:
                         case 0x33:
@@ -663,11 +666,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                         else
                         {
-                            writelog($"[HotkeyPressed]No Job matched:Hotkey(id:{hotkeyInfo.ID}):{e.KeyString}");
+                            Debug.WriteLine($"[HotkeyPressed]No Job matched:Hotkey(id:{e.HotkeyInfo.ID}):{e.KeyString}");
+                            writelog($"[HotkeyPressed]No Job matched:Hotkey(id:{e.HotkeyInfo.ID}):{e.KeyString}");
+                            string v = string.Join("\n", settings.HotkeyInfo.Select(x => "ID=" + x.ID + "; Job=" + x.Job).ToList());
+                            Debug.WriteLine($"[HotkeyPressed]No Job matched regist ID,current settings: {v}");
+                            writelog($"[HotkeyPressed]No Job matched regist ID,current settings: {v}");
                         }
                     }
                     else
                     {
+                        Debug.WriteLine($"[HotkeyPressed](id:{e.HotkeyInfo.ID}):{e.KeyString},HotkeyInfo is null");
                         writelog($"[HotkeyPressed](id:{e.HotkeyInfo.ID}):{e.KeyString},HotkeyInfo is null");
                     }
                 }
@@ -1586,14 +1594,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             bool SmartHDR_ON = GetHDRStatus(mo).Result;
 
-            if ( (_AllInfoMonitors != null) && (mo != null) )
+            if ((_AllInfoMonitors != null) && (mo != null))
             {
                 var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(_AllInfoMonitors, mo, on_off, _SettingsPlugin, this, Is_Game_DeviceName, SmartHDR_ON).Result;
                 writelog($"[DeviceManagerPlugin - AutoSetColorPresetForMonitorConfig] result {temp}");
                 return Task.FromResult(temp);
             }
             else
-                return Task.FromResult(false);           
+                return Task.FromResult(false);
         }
 
         /// <summary>
@@ -12627,7 +12635,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             WriteHotkeySettings(settings);
-            ReloadHotkeyConfigData();
+            //update _hotkeySettings only
+            if (_hotkeySettings != null && _hotkeySettings.Count > 0)
+            {
+                HotkeySettings hotkeySettings1 = _hotkeySettings.ElementAtOrDefault(0);
+                if (hotkeySettings1 != null)
+                    hotkeySettings1.HotkeyOptions = hotkeySettings.HotkeyOptions;
+            }
+            //ReloadHotkeyConfigData();
             return Task.FromResult(true);
         }
 
@@ -12659,7 +12674,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             string model = mo.modelName;
             string serviceTag = mo.edid.ServiceTag;
-
             if (hotkeyDataInputSource == null || hotkeyDataInputSource.Count == 0)
             {
                 writelog($"@ GetInputSourceHotKeyDataAndSaveBack: ReloadMonitorSettings(model={model}) return null.");
@@ -12674,6 +12688,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
             Debug.WriteLine($"GetInputSourceHotKeyDataAndSaveNewBack:{mo.edid.ServiceTag}");
+            Debug.WriteLine($"[GetInputSourceHotKeyDataAndSaveNewBack(monitor:{mo.AliasDeviceName = mo.edid.ServiceTag})]param=hotkeyDataInputSource:{string.Join("+", hotkeyDataInputSource.Select(x => "inputsource" + "(" + x.Name + ":" + x.Code + ")").ToList())}");
+            writelog($"[GetInputSourceHotKeyDataAndSaveNewBack(monitor:{mo.AliasDeviceName = mo.edid.ServiceTag})]param=hotkeyDataInputSource:{string.Join("+", hotkeyDataInputSource.Select(x => "inputsource" + "(" + x.Name + ":" + x.Code + ")").ToList())}");
             //Find the previous saved device settings
             DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(mo.edid.ServiceTag));
             //If not found => return error, GetAllMonitor() will init and create an initial settings instance for us
@@ -12685,14 +12701,69 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             //monitorSettings.hotkeyData = hotkeyData;
             //update hotkey data
-            HotkeyData hotkeyData = new HotkeyData { hotkeyType = hotkeyType, inputSource = hotkeyDataInputSource };
-            List<HotkeyData> removeHotkeyDatas = monitorSettings.hotkeyData.Where(x => x.hotkeyType.Equals(hotkeyType) || x.hotkeyType.Equals(HotkeyType.None)).ToList();
-            foreach (var item in removeHotkeyDatas)
+            //update USB KVM Switch between PCs inputsource data
+            if (hotkeyType == HotkeyType.KvmSwitchInputSource)
             {
-                monitorSettings.hotkeyData.Remove(item);
+                List<InputSourceObj> usbKVMInputs = new List<InputSourceObj>();
+                try
+                {
+                    if (!string.IsNullOrEmpty(monitorSettings.KVM.strUSBKVMPCsList))
+                    {
+                        Dictionary<string, PCsInfo> USBKVMPCsList = USBKVMPCsListDeserialize(monitorSettings.KVM.strUSBKVMPCsList);
+                        if (USBKVMPCsList != null)
+                        {
+                            if (USBKVMPCsList.Count != 0)
+                            {
+                                foreach (var pc in USBKVMPCsList)
+                                {
+                                    if (!string.IsNullOrEmpty(pc.Key) && pc.Value != null)
+                                    {
+                                        usbKVMInputs.Add(new InputSourceObj((ushort)pc.Value.Code, pc.Value.InputType));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    writelog($"[GetInputSourceHotKeyDataAndSaveNewBack] USBKVMPCsList exception:{e.Message}");
+                }
+                string v = string.Join("+", usbKVMInputs.Select(x => "inputsource" + "(" + x.Name + ":" + x.Code + ")").ToList());
+                Debug.WriteLine($"[GetInputSourceHotKeyDataAndSaveNewBack] get inputsource data form strUSBKVMPCsList is :{v}");
+                writelog($"[GetInputSourceHotKeyDataAndSaveNewBack] get inputsource data form strUSBKVMPCsList is :{v}");
+                if (usbKVMInputs.Count != 0)
+                {
+                    HotkeyData hotkeyData = new HotkeyData { hotkeyType = hotkeyType, inputSource = usbKVMInputs };
+                    List<HotkeyData> removeHotkeyDatas = monitorSettings.hotkeyData.Where(x => x.hotkeyType.Equals(hotkeyType) || x.hotkeyType.Equals(HotkeyType.None)).ToList();
+                    foreach (var item in removeHotkeyDatas)
+                    {
+                        monitorSettings.hotkeyData.Remove(item);
+                    }
+                    monitorSettings.hotkeyData.Add(hotkeyData);
+                }
+                else
+                {
+                    //use default list
+                    HotkeyData hotkeyData = new HotkeyData { hotkeyType = hotkeyType, inputSource = hotkeyDataInputSource };
+                    List<HotkeyData> removeHotkeyDatas = monitorSettings.hotkeyData.Where(x => x.hotkeyType.Equals(hotkeyType) || x.hotkeyType.Equals(HotkeyType.None)).ToList();
+                    foreach (var item in removeHotkeyDatas)
+                    {
+                        monitorSettings.hotkeyData.Remove(item);
+                    }
+                    monitorSettings.hotkeyData.Add(hotkeyData);
+                }
             }
-            monitorSettings.hotkeyData.Add(hotkeyData);
-
+            else
+            {
+                HotkeyData hotkeyData = new HotkeyData { hotkeyType = hotkeyType, inputSource = hotkeyDataInputSource };
+                List<HotkeyData> removeHotkeyDatas = monitorSettings.hotkeyData.Where(x => x.hotkeyType.Equals(hotkeyType) || x.hotkeyType.Equals(HotkeyType.None)).ToList();
+                foreach (var item in removeHotkeyDatas)
+                {
+                    monitorSettings.hotkeyData.Remove(item);
+                }
+                monitorSettings.hotkeyData.Add(hotkeyData);
+            }
             if (!_SettingsPlugin.WriteMonitorSettings(mo.modelName, settings).Result)
             {
                 writelog($"@ GetInputSourceHotKeyDataAndSaveBack(model={model}, serviceTage={serviceTag}) failed.");
@@ -13555,7 +13626,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case HotkeyType.ChangePIPPosition:
                     _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Change_PIPPosition));
                     break;
-
+                //USB KVM: Switch between PCs
                 case HotkeyType.KvmSwitchInputSource:
                     HotkeyInfo kvmhotkeyInfo = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.KvmSwitchInputSource));
                     List<HotkeyData> list3 = GetInputSourceHotKeyData(monitorInfo);
@@ -13565,11 +13636,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { kvmhotkeyInfo, hotkeyData3.inputSource }, Kvm_SwitchInputSource));
                     }
                     break;
-
+                //USB KVM: Switch keyboard and mouse
                 case HotkeyType.KvmSwitchKbMsKey:
                     _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Kvm_SwitchKbMsKey));
                     break;
-
+                //USB KVM: Change PIP position
                 case HotkeyType.KvmChangePIPPosition:
                     _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Kvm_ChangePIPPosition));
                     break;
@@ -13940,9 +14011,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Kvm_SwitchInputSource(MonitorInfo monitorInfo, Object[] param)
         {
+            //USB KVM Hotkey page: Switch between PCs
             if (!GetOnUSBKVM(monitorInfo).Result)
             {
                 writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] USB KVM is off, do nothing");
+                Debug.WriteLine($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] USB KVM is off, do nothing");
+                return;
+            }
+            //if pxpMode
+            if (!IsPxPModeOFF(monitorInfo))
+            {
+                writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] PXP Mode on, do nothing");
+                Debug.WriteLine($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] PXP Mode on, do nothing");
                 return;
             }
             Debug.WriteLine($"Kvm_SwitchInputSource:current inputsource= {monitorInfo.inputSource}");
@@ -14011,6 +14091,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"Kvm_SwitchKbMsKey:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] USB KVM is off, do nothing");
                 return;
             }
+            if (IsPxPModeOFF(monitorInfo))
+            {
+                writelog($"Kvm_SwitchKbMsKey:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}]PXP mode OFF, USB KVM Switch keyboard and mouse only when PXP ON, do nothing");
+                Debug.WriteLine($"Kvm_SwitchKbMsKey:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}]PXP mode OFF, USB KVM Switch keyboard and mouse only when PXP ON, do nothing");
+                return;
+            }
             bool usbSwitch = UsbSwitch1(monitorInfo).Result;
             writelog($"Kvm_SwitchKbMsKey:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}]" + (usbSwitch ? "success" : "fail"));
         }
@@ -14043,6 +14129,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
+        private bool IsPxPModeOFF(MonitorInfo mo)
+        {
+            bool ret = false;
+            if (!mo.CapabilityDic.ContainsKey("E9"))
+                return ret;
+            ObjGetVCP pxpMode = GetPxpMode(mo).Result;
+            Debug.WriteLine($"GetPxpMode result={pxpMode?.result}, value={(UInt32)pxpMode.value}");
+            if (pxpMode != null && pxpMode.result == true)
+            {
+                ret = Convert.ToUInt16(pxpMode.value) == 0;
+            }
+            return ret;
+        }
 
         //Robert_Lin, 2024-12-21 for PIMS-332780 [DDPM Win 2.0.0] - R18 : In PBP 3 window & 4 window mode,
         //"Swapping 2 inputs of PIP/PBP windows" hotkeys can be switched.
@@ -14053,22 +14152,60 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <returns></returns>
         private bool IsPIPMode(MonitorInfo mo)
         {
-            //Check if this monitor has PIP/PBP capability
+            bool ret = false;
             if (!mo.CapabilityDic.ContainsKey("E9"))
-                return false;
-            //Get curent PxP mode
+                return ret;
             ObjGetVCP pxpMode = GetPxpMode(mo).Result;
             Debug.WriteLine($"GetPxpMode result={pxpMode?.result}, value={(UInt32)pxpMode.value}");
             if (pxpMode != null && pxpMode.result == true)
             {
-                //Robert_Lin, 2024-12-21 fix
-                //NEW:
-                UInt16 _pxpMode = (UInt16)pxpMode.value;
-                return (_pxpMode == PxpModeObj.PxpMode_PipSmall) || (_pxpMode == PxpModeObj.PxpMode_PipLarge);
-                //OLD:
-                //return (UInt32)pxpMode.value != 0;
+                ushort _curPxpMode = Convert.ToUInt16(pxpMode.value);
+                switch (_curPxpMode)
+                {
+                    case 0x00://off
+                        ret = false;
+                        break;
+                    case 0x01://01h: PIP size toggling (s->bigger...>s, NOT to off)
+                        ret = true;
+                        break;
+                    case 0x02://02h: PIP position toggling (top right->...->top right)
+                        ret = true;
+                        break;
+                    case 0x21://PIP small
+                        ret = true;
+                        break;
+
+                    case 0x22://PIP large
+                        ret = true;
+                        break;
+                    case 0x23:
+                    case 0x24:
+                    case 0x25:
+                    case 0x26:
+                    case 0x27:
+                    case 0x28:
+                    case 0x29:
+                    case 0x2A:
+                    case 0x2B:
+                    case 0x2C:
+                    case 0x2D:
+                    case 0x2E:
+                    case 0x2F:
+                    case 0x31:
+                    case 0x32:
+                    case 0x33:
+                    case 0x34:
+                    case 0x35:
+                    case 0x41:
+                    case 0x42:
+                        ret = false;
+                        break;
+                    default:
+                        ret = false;
+                        break;
+                }
             }
-            return false;
+            return ret;
         }
 
         private void Swap_IputPIPPBP(MonitorInfo monitorInfo, Object[] param)
