@@ -360,7 +360,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 {
                     if (Guid.TryParse(x, out Guid guid))
                     {
-                        var di = _deviceinfo.Where(x => x.ID == guid && x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                        var di = _deviceinfo.FirstOrDefault(x => x.ID == guid && x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType));
                         if (di == null)
                         {
                             GetResults.Add(new CLI_PeripheralRESPONSE(x, "GET", _commandLineInput.TargetFeature, "Fail", "Device not found"));
@@ -382,7 +382,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 _commandLineInput.Model.ForEach(model =>
                 {
-                    var di = _deviceinfo.Where(_ => _.ModelNumber == model && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                    var di = _deviceinfo.FirstOrDefault(_ => _.ModelNumber == model && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType));
                     if (di == null)
                     {
                         GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", null, model));
@@ -398,7 +398,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 _commandLineInput.ServiceTag.ForEach(serviceTag =>
                 {
-                    var di = _deviceinfo.Where(_ => _.DockServiceTag == serviceTag && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                    var di = _deviceinfo.FirstOrDefault(_ => _.DockServiceTag == serviceTag && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType));
                     if (di == null)
                     {
                         GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", null, null, serviceTag));
@@ -982,14 +982,88 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //    return (int)CLI_ExitCode.success;
                 case "COLLABCAMERAENABLE":
                     writelog("SetPeripheralProperty: COLLABCAMERAENABLE Entry");
-                    taskB = _devMgr.SetCollaborationCameraEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            if (di.IsCollabsKeysSupported)
+                            {
+                                var result = RunAsyncTimeout(_devMgr.SetCollaborationCameraEnable(bl, Guid.Parse(x.Guid))).Result;
+                                if (result == "0")
+                                {
+                                    x.Result = "PASS";
+                                    retcode = di.IsCollaborationCameraEnable;
+                                    x.Value = (retcode) ? "ON" : "OFF";
+                                    x.Message = "N/A";
+                                }
+                                else if (result == "1")
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = "Timeout";
+                                }
+                                else
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = result;
+                                }
+                                retcode = (result == "0") ? true : false;
+                            }
+                            else
+                            {
+                                x.Value = "Not supported";
+                                x.Result = "FAIL";
+                                x.Message = "Keyboard not support COLLABCAMERAENABLE";
+                                retcode = false;
+                                writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABCAMERAENABLE");
+                            }
+                        }
+                    });
+                    writelog("SetPeripheralProperty: COLLABCAMERAENABLE" + (retcode ? "SUCCESS" : "FAIL"));
+                    return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                 case "COLLABCHATENABLE":
                     writelog("SetPeripheralProperty: COLLABCHATENABLE Entry");
-                    taskB = _devMgr.SetCollaborationChatEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            if (di.IsCollabsKeysSupported)
+                            {
+                                var result = RunAsyncTimeout(_devMgr.SetCollaborationChatEnable(bl, Guid.Parse(x.Guid))).Result;
+                                if (result == "0")
+                                {
+                                    x.Result = "PASS";
+                                    retcode = di.IsCollaborationChatEnable;
+                                    x.Value = (retcode) ? "ON" : "OFF";
+                                    x.Message = "N/A";
+                                }
+                                else if (result == "1")
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = "Timeout";
+                                }
+                                else
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = result;
+                                }
+                                retcode = (result == "0") ? true : false;
+                            }
+                            else
+                            {
+                                x.Value = "Not supported";
+                                x.Result = "FAIL";
+                                x.Message = "Keyboard not support COLLABCHATENABLE";
+                                retcode = false;
+                                writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABCHATENABLE");
+                            }
+                        }
+                    });
+                    writelog("SetPeripheralProperty: COLLABCHATENABLE" + (retcode ? "SUCCESS" : "FAIL"));
+                    return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                 //case "COLLABORATIONDOUBLETAPENABLE":
                 //    taskB = _devMgr.SetCollaborationDoubleTapEnable;
                 //    RunTaskB(bl);
@@ -1000,14 +1074,88 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //    return (int)CLI_ExitCode.success;
                 case "COLLABMICMUTE":
                     writelog("SetPeripheralProperty: COLLABMICMUTE Entry");
-                    taskB = _devMgr.SetCollaborationMicEnable;
-                    RunTaskB(!bl);
-                    return (int)CLI_ExitCode.success;
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            if (di.IsCollabsKeysSupported)
+                            {
+                                var result = RunAsyncTimeout(_devMgr.SetCollaborationMicEnable(bl, Guid.Parse(x.Guid))).Result;
+                                if (result == "0")
+                                {
+                                    x.Result = "PASS";
+                                    retcode = di.IsCollaborationMicEnable;
+                                    x.Value = (retcode) ? "ON" : "OFF";
+                                    x.Message = "N/A";
+                                }
+                                else if (result == "1")
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = "Timeout";
+                                }
+                                else
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = result;
+                                }
+                                retcode = (result == "0") ? true : false;
+                            }
+                            else
+                            {
+                                x.Value = "Not supported";
+                                x.Result = "FAIL";
+                                x.Message = "Keyboard not support COLLABMICMUTE";
+                                retcode = false;
+                                writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABMICMUTE");
+                            }
+                        }
+                    });
+                    writelog("SetPeripheralProperty: COLLABMICMUTE" + (retcode ? "SUCCESS" : "FAIL"));
+                    return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                 case "COLLABSCREENSHARE":
                     writelog("SetPeripheralProperty: COLLABSCREENSHARE Entry");
-                    taskB = _devMgr.SetCollaborationScreenShareEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            if (di.IsCollabsKeysSupported)
+                            {
+                                var result = RunAsyncTimeout(_devMgr.SetCollaborationScreenShareEnable(bl, Guid.Parse(x.Guid))).Result;
+                                if (result == "0")
+                                {
+                                    x.Result = "PASS";
+                                    retcode = di.IsCollaborationScreenShareEnable;
+                                    x.Value = (retcode) ? "ON" : "OFF";
+                                    x.Message = "N/A";
+                                }
+                                else if (result == "1")
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = "Timeout";
+                                }
+                                else
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = result;
+                                }
+                                retcode = (result == "0") ? true : false;
+                            }
+                            else
+                            {
+                                x.Value = "Not supported";
+                                x.Result = "FAIL";
+                                x.Message = "Keyboard not support COLLABSCREENSHARE";
+                                retcode = false;
+                                writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABSCREENSHARE");
+                            }
+                        }
+                    });
+                    writelog("SetPeripheralProperty: COLLABSCREENSHARE" + (retcode ? "SUCCESS" : "FAIL"));
+                    return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                 //case "DPILEVEL":
                 //    taskA = _devMgr.SetDPILevel;
                 //    RunTaskA(val);
@@ -1446,14 +1594,40 @@ namespace DDPM.CLI.Plugins.Peripherals
                         {
                             if(val == 50 || val == 60)
                             {
+                                if(val == 50)
+                                    val = 1;
+                                else if(val == 60)
+                                    val = 2;
+
                                 if (_devMgr.GetIsPropertyAntiFlickerSupported(x.Guid).Result)
                                 {
                                     var result = RunAsyncTimeout(_devMgr.SetAntiFlicker(x.Guid, val)).Result;
                                     if (result == "0")
                                     {
                                         x.Result = "PASS";
-                                        retvalue = _devMgr.GetAntiFlicker(x.Guid).Result;
-                                        x.Value = retvalue.ToString();
+                                        var retvalue = _devMgr.GetAntiFlicker(x.Guid).Result;
+                                        if (retvalue != null)
+                                        {
+                                            if (!string.IsNullOrEmpty(retvalue.ToString()))
+                                            {
+                                                switch (retvalue.ToString())
+                                                {
+                                                    case "1":
+                                                        x.Value = "50";
+                                                        break;
+                                                    case "2":
+                                                        x.Value = "60";
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                            }
+                                        }                                       
+                                        else
+                                        {
+                                            x.Value ="Interface return null";
+                                        }
+                                        
                                         //x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                                         x.Message = "N/A";
                                     }

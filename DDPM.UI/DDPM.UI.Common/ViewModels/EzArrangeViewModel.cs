@@ -416,6 +416,8 @@ namespace DDPM.UI.Common.ViewModels
             string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
             string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
             AMPMList = new List<string> { amDesignator, pmDesignator };
+
+            _isApplyEnabled = false;
         }
 
         private double _progressValue = 1;
@@ -472,6 +474,13 @@ namespace DDPM.UI.Common.ViewModels
 
         #region First page
 
+        private bool _isApplyEnabled = false;
+        public bool IsApplyEnabled
+        {
+            get => _isApplyEnabled;
+            set => SetProperty(ref _isApplyEnabled, value);
+        }
+
         private int _currentSelectsEAID;
         public int CurrentSelectsEAID
         {
@@ -519,7 +528,7 @@ namespace DDPM.UI.Common.ViewModels
 
         #region RightView page
 
-        private string _profileTitleTextBlockValue;
+        private string _profileTitleTextBlockValue = "N/A";
         public string ProfileTitleTextBlockValue
         {
             get => _profileTitleTextBlockValue;
@@ -530,7 +539,7 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
-        private string _automaticStartupValue;
+        private string _automaticStartupValue = "N/A";
         public string AutomaticStartupValue
         {
             get => _automaticStartupValue;
@@ -541,7 +550,7 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
-        private string _launchByTimeValue;
+        private string _launchByTimeValue = "N/A";
         public string LaunchByTimeValue
         {
             get => _launchByTimeValue;
@@ -552,7 +561,7 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
-        private string _appDocumentValue;
+        private string _appDocumentValue = "N/A";
         public string AppDocumentValue
         {
             get => _appDocumentValue;

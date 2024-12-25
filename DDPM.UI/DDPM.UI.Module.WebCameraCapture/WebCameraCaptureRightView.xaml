@@ -72,7 +72,7 @@
         <Border CornerRadius="6" Margin="0,22,0,0">
           <StackPanel Orientation="Vertical">
             <UXControls:UXTextBlock Margin="18,25,0,18" Text="{Binding [WebCameraCapture.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsNotRecording}" />
-            <Grid Margin="18,0,18,18">
+            <Grid Margin="18,0,18,18" IsEnabled="{Binding IsResolutionSectionEnable}">
               <!-- Define a Grid with three equal columns -->
               <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="btnRes0_Col" Width="{Binding btnRes0_width}"  />
@@ -84,7 +84,7 @@
                 <ColumnDefinition x:Name="btnRes3_Col" Width="{Binding btnRes3_width}" />
                 <!-- Third column -->
               </Grid.ColumnDefinitions>
-              <Border Grid.Column="0" x:Name="btnRes0" Visibility="{Binding btnRes0_show}" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="btnResolution_Click" Height="30" Tag="0" IsEnabled="{Binding IsNotRecording}"
+              <Border Grid.Column="0" x:Name="btnRes0" Visibility="{Binding btnRes0_show}" CornerRadius="{Binding btnRes0_radius}" Focusable="True" MouseLeftButtonDown="btnResolution_Click" Height="30" Tag="0" IsEnabled="{Binding IsNotRecording}"
                                     HorizontalAlignment="Stretch">
                 <Border.Style>
                   <Style TargetType="Border" BasedOn="{StaticResource BorderBase}">
@@ -232,9 +232,9 @@
               <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
                 <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                 <Border.ToolTip>
-                  <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                  <ToolTip Placement="Right" VerticalOffset="-60" HorizontalOffset="-15">
                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                      <TextBlock Width="350" Height="56" Text="{Binding [WebCameraCapture.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" TextWrapping="Wrap" />
+                      <TextBlock Width="350" Height="Auto" Text="{Binding [WebCameraCapture.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" TextWrapping="Wrap" />
                     </Border>
                   </ToolTip>
                 </Border.ToolTip>

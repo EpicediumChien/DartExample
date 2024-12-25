@@ -329,8 +329,11 @@ namespace DDPM.ColorApp
                             return;
                         }
                     }
-                    else //Robert_Lin, 2024-12-24
+                    else // Jim 20241223 add check if null to avoid Exception
+                    {
+                        writelog("No any Monitors is matched,actived_mi was null");                        
                         return;
+                    }
 
                     //////get active process's modeul info
                     Process forgroundProcess = Process.GetProcessById((int)data.ActiveWindowProcessId);

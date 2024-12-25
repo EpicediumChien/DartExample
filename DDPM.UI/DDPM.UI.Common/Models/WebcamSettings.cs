@@ -65,21 +65,26 @@ namespace DDPM.UI.Common
                     }
                 }
 
-                //var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
-                var resolutions = JsonConvert.DeserializeObject<Dictionary<string, ResolutionItem>>(str)!;
-                foreach (var res in resolutions.OrderByDescending(x => x.Key))
+                var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
+                //var resolutions = JsonConvert.DeserializeObject<Dictionary<string, ResolutionItem>>(str)!;
+                if (resolutions != null)
                 {
-                    var resName = res.Key switch
+                    foreach (var res in resolutions.OrderByDescending(x => x.Resolution))
                     {
-                        "1280x720" => "HD",
-                        "1920x1080" => "Full HD",
-                        "2560x1440" => "2K QHD",
-                        "3840x2160" => "4K UHD",
-                        _ => "8K UHD"
-                    };
-                    SupportedFPSs.Add(resName, res.Value.FPS);
-                    Resolutions.Add(resName, res.Value.Resolution);
+                        var resName = res.Resolution switch
+                        {
+                            "1280x720" => "HD",
+                            "1920x1080" => "Full HD",
+                            "2560x1440" => "2K QHD",
+                            "3840x2160" => "4K UHD",
+                            _ => "8K UHD"
+                        };
+                        SupportedFPSs.Add(resName, res.FPS);
+                        SelectedFPSs.Add(resName, "30");
+                        Resolutions.Add(resName, res.Resolution);
+                    }
                 }
+
                 task = DdpmCommonHelper.DeviceManagerSA!.GetSelectedResolution(di.ID.ToString());
                 str = task.Result;
                 if (string.IsNullOrEmpty(str))
@@ -88,30 +93,26 @@ namespace DDPM.UI.Common
                     str = di.SelectedResolution;
                 }
                 if (string.IsNullOrEmpty(str))
-                    str = "{\"Resolution\":\"1280x720\",\"FPS\":[\"24\"]}";
+                    str = "{\"Resolution\":\"1280x720\",\"FPS\":[\"30\"]}";
 
-                var currentRes = JsonConvert.DeserializeObject<ResolutionItem>(task.Result)!;
-                SelectedResolution = Resolutions.FirstOrDefault(x => x.Value == currentRes.Resolution).Key;
-                SelectedFPSs.Add(SelectedResolution, currentRes.FPS[0]);
-
-                var customProfiles = di.CustomProfiles.ToObject<List<WebcamProfile>>()!.ToList();
-                //Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA!.GetCustomProfiles(di.ID.ToString());
-                //var jArray = JArray.FromObject(task1.Result);
-                //var customProfiles = jArray.ToObject<List<WebcamProfile>>()!.ToList();
-                for (var l = customProfiles.Count - 1; l >= 0; l--)
+                var currentRes = JsonConvert.DeserializeObject<ResolutionItem>(str);
+                if (currentRes != null)
                 {
-                    CustomProfiles.Add(customProfiles[l].Name, customProfiles[l]);
+                    SelectedResolution = Resolutions.FirstOrDefault(x => x.Value == currentRes.Resolution).Key;
                 }
-                var presetProfiles = di.PresetProfiles.ToObject<List<WebcamProfile>>()!.ToList();
-                //task1 = DdpmCommonHelper.DeviceManagerSA!.GetPresetProfiles(di.ID.ToString());
-                //jArray = JArray.FromObject(task1.Result);
-                //var presetProfiles = jArray.ToObject<List<WebcamProfile>>()!.ToList();
-                //foreach (var profile in presetProfiles.OrderBy(x => x.Name))
-                //{
-                //    profile.Focus = di.FocusMin;
-                //    PresetProfiles.Add(profile.Name, profile);
-                //    //ProfileIDs.Add(profile.Name, profile.Id);
-                //}
+
+                var customProfiles = di.CustomProfiles.ToObject<List<WebcamProfile>>()?.ToList();
+                if (customProfiles != null)
+                {
+                    for (var l = customProfiles.Count - 1; l >= 0; l--)
+                    {
+                        CustomProfiles.Add(customProfiles[l].Name, customProfiles[l]);
+                    }
+                }
+
+                var presetProfiles = di.PresetProfiles?.ToObject<List<WebcamProfile>>()?.ToList();
+                if (presetProfiles != null)
+                    presetProfiles = new List<WebcamProfile>();
 
                 WebcamProfile profile = new();
                 profile.Name = "Default";

@@ -41,6 +41,10 @@ namespace DDPM.EABroker
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId);
+        public static IntPtr _GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId)
+        {
+            return GetWindowThreadProcessId(hWnd, out nProcessId);
+        }
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -63,12 +67,15 @@ namespace DDPM.EABroker
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-        private const int SW_RESTORE = 9;
-        private const int SW_SHOWNA = 8;
-        private const int SW_MAXIMIZE = 3;
+        public static bool EzMemoryShowWindow(IntPtr hWnd, int nCmdShow)
+        {
+            return ShowWindow(hWnd, nCmdShow);
+        }
         private const int SW_SHOWNORMAL = 1;
         private const int SW_SHOWMAXIMIZED = 3;
+        private const int SW_MAXIMIZE = 3;
+        private const int SW_SHOWNA = 8;
+        private const int SW_RESTORE = 9;
 
 
         [DllImport("user32.dll")]
@@ -658,10 +665,7 @@ namespace DDPM.EABroker
             return Win32Lib.Win32._GetWindowText(hWnd);
             //return title.ToString();
         }
-        public static IntPtr _GetWindowThreadProcessId(IntPtr hWnd, out uint nProcessId)
-        {
-            return GetWindowThreadProcessId(hWnd, out nProcessId);
-        }
+
         private bool IsHandleBelongsToApp(IntPtr handle, string expectedAppName, ILog? log = null)
         {
             try

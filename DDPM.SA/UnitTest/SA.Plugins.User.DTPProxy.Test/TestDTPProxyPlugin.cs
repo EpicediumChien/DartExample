@@ -237,6 +237,308 @@ namespace DDPM.SA.Plugins.User.DTPProxy.Test
             Assert.IsNotNull(SetDpiValueg_result);
         }
 
+        [Test]
+        public void TestSetMouseAction()
+        {
+            byte[] newValue = new byte[] { 0x01, 0x02, 0x03 };
+            Guid MouseGuid = Guid.NewGuid();
+            string Guid1 = MouseGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_mouseMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetDpiValueg_result = dTPProxyPlugin.SetMouseAction(Guid1, newValue);
+            Assert.IsNotNull(SetDpiValueg_result);
+        }
+
+        [Test]
+        public void TestSetCurrentSelectedAppSpecificProfile()
+        {
+            string newValue = "123";
+            Guid MouseGuid = Guid.NewGuid();
+            string Guid1 = MouseGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_mouseMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetCurrentSelectedAppSpecificProfile_result = dTPProxyPlugin.SetCurrentSelectedAppSpecificProfile(Guid1, newValue);
+            Assert.IsNotNull(SetCurrentSelectedAppSpecificProfile_result);
+        }
+
+        [Test]
+        public void TestDeleteMouseAssignedAction()
+        {
+            int newValue = 1;
+            Guid MouseGuid = Guid.NewGuid();
+            string Guid1 = MouseGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_mouseMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var DeleteMouseAssignedAction_result = dTPProxyPlugin.DeleteMouseAssignedAction(Guid1, newValue);
+            Assert.IsNotNull(DeleteMouseAssignedAction_result);
+        }
+
+        [Test]
+        public void TestSetMouseAssignDialogAction()
+        {
+            byte[] newValue = new byte[] { 0x01, 0x02 };
+            Guid MouseGuid = Guid.NewGuid();
+            string Guid1 = MouseGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_mouseMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetMouseAssignDialogAction_result = dTPProxyPlugin.SetMouseAssignDialogAction(Guid1, newValue);
+            Assert.IsNotNull(SetMouseAssignDialogAction_result);
+        }
+
+        [Test]
+        public void TestSetMouseAssignKeystrokeAction()
+        {
+            byte[] newValue = new byte[] { 0x01, 0x02, 0x03 };
+            Guid MouseGuid = Guid.NewGuid();
+            string Guid1 = MouseGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_mouseMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetMouseAssignKeystrokeAction_result = dTPProxyPlugin.SetMouseAssignKeystrokeAction(Guid1, newValue);
+            Assert.IsNotNull(SetMouseAssignKeystrokeAction_result);
+        }
+
+        [Test]
+        public void TestRestoreToDefaultMouse()
+        {
+            bool isFromCli;
+            Guid MouseGuid = Guid.NewGuid();
+            string Guid1 = MouseGuid.ToString();
+            isFromCli = false;
+            privateteDTPProxyPlugin.SetFieldOrProperty("IsDTPReady", false);
+
+            var RestoreToDefaultMouse_result = dTPProxyPlugin.RestoreToDefaultMouse(Guid1, isFromCli).Result; //IsDTPReady false
+            Assert.That(RestoreToDefaultMouse_result, Is.EqualTo(false));
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("IsDTPReady", true);
+            var RestoreToDefaultMouse_result2 = dTPProxyPlugin.RestoreToDefaultMouse(Guid1, isFromCli).Result; //IsDTPReady true
+            Assert.IsNotNull(RestoreToDefaultMouse_result2);
+            Assert.That(RestoreToDefaultMouse_result2, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestSetReportRate()
+        {
+            int newValue = 2;
+            Guid MouseGuid = Guid.NewGuid();
+            string Guid1 = MouseGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_mouseMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetReportRate_result = dTPProxyPlugin.SetReportRate(Guid1, newValue).Result;
+            Assert.IsNotNull(SetReportRate_result);
+            Assert.That(SetReportRate_result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestDeleteKeyboardAssignedAction()
+        {
+            int newValue = 2;
+            Guid KeyboardGuid = Guid.NewGuid();
+            string Guid1 = KeyboardGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_mouseMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var DeleteKeyboardAssignedAction_result = dTPProxyPlugin.DeleteKeyboardAssignedAction(Guid1, newValue);
+            Assert.IsNotNull(DeleteKeyboardAssignedAction_result);
+        }
+
+        [Test]
+        public void TestGetKbProgrammableKeys()
+        {
+            Guid KeyboardGuid = Guid.NewGuid();
+            string Guid1 = KeyboardGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_keyboardMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var GetKbProgrammableKeys_result = dTPProxyPlugin.GetKbProgrammableKeys(Guid1).Result;
+            Assert.IsNotNull(GetKbProgrammableKeys_result);
+            Assert.That(GetKbProgrammableKeys_result, Is.EqualTo(new JArray()));
+        }
+
+        [Test]
+        public void TestDeleteKeyboardAllAssignedActions()
+        {
+            Guid KeyboardGuid = Guid.NewGuid();
+            string Guid1 = KeyboardGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_keyboardMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var DeleteKeyboardAllAssignedActions_result = dTPProxyPlugin.DeleteKeyboardAllAssignedActions(Guid1).Result;
+            Assert.IsNotNull(DeleteKeyboardAllAssignedActions_result);
+            Assert.That(DeleteKeyboardAllAssignedActions_result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestGetKbAssignableActions()
+        {
+            Guid KeyboardGuid = Guid.NewGuid();
+            string Guid1 = KeyboardGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_keyboardMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var GetKbAssignableActions_result = dTPProxyPlugin.GetKbAssignableActions(Guid1).Result;
+            Assert.IsNotNull(GetKbAssignableActions_result);
+            Assert.That(GetKbAssignableActions_result, Is.EqualTo(new JArray()));
+        }
+
+        [Test]
+        public void TestGetKeyboardDeviceItemsEx()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_keyboardMethodInfo", null);
+            var GetKeyboardDeviceItemsEx_result = dTPProxyPlugin.GetKeyboardDeviceItemsEx().Result;  //_keyboardMethodInfo null 
+            Assert.IsNotNull(GetKeyboardDeviceItemsEx_result);
+            Assert.That(GetKeyboardDeviceItemsEx_result, Is.EqualTo(new JArray()));
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_keyboardMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetKeyboardDeviceItemsEx_result2 = dTPProxyPlugin.GetKeyboardDeviceItemsEx().Result;  //_keyboardMethodInfo not null 
+            Assert.IsNotNull(GetKeyboardDeviceItemsEx_result2);
+            Assert.That(GetKeyboardDeviceItemsEx_result2, Is.EqualTo(new JArray()));
+        }
+
+        [Test]
+        public void TestGetKeyboardKeystrokeDisplayData()
+        {
+            Guid KeyboardGuid = Guid.NewGuid();
+            string Guid1 = KeyboardGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_keyboardMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var GetKeyboardKeystrokeDisplayData_result = dTPProxyPlugin.GetKeyboardKeystrokeDisplayData(Guid1).Result;
+            Assert.IsNotNull(GetKeyboardKeystrokeDisplayData_result);
+            Assert.That(GetKeyboardKeystrokeDisplayData_result, Is.EqualTo(string.Empty));
+        }
+
+        [Test]
+        public void TestStartKeyboardKeystrokeRecording()
+        {
+            Guid KeyboardGuid = Guid.NewGuid();
+            string Guid1 = KeyboardGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_keyboardMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var StartKeyboardKeystrokeRecording_result = dTPProxyPlugin.StartKeyboardKeystrokeRecording(Guid1).Result;
+            Assert.IsNotNull(StartKeyboardKeystrokeRecording_result);
+            Assert.That(StartKeyboardKeystrokeRecording_result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestStopKeyboardKeystrokeRecording()
+        {
+            Guid KeyboardGuid = Guid.NewGuid();
+            string Guid1 = KeyboardGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_keyboardMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var StopKeyboardKeystrokeRecording_result = dTPProxyPlugin.StopKeyboardKeystrokeRecording(Guid1).Result;
+            Assert.IsNotNull(StopKeyboardKeystrokeRecording_result);
+            Assert.That(StopKeyboardKeystrokeRecording_result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestSetKbAssignKeystrokeAction()
+        {
+            byte[] newValue = new byte[] { 0x01, 0x02 };
+            Guid KeyboardGuid = Guid.NewGuid();
+            string Guid1 = KeyboardGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_keyboardMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetKbAssignKeystrokeAction_result = dTPProxyPlugin.SetKbAssignKeystrokeAction(Guid1, newValue);
+            Assert.IsNotNull(SetKbAssignKeystrokeAction_result);
+        }
+
+        [Test]
+        public void TestSetKbAssignDialogAction()
+        {
+            byte[] newValue = new byte[] { 0x01, 0x03 };
+            Guid KeyboardGuid = Guid.NewGuid();
+            string Guid1 = KeyboardGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_keyboardMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetKbAssignDialogAction_result = dTPProxyPlugin.SetKbAssignDialogAction(Guid1, newValue);
+            Assert.IsNotNull(SetKbAssignDialogAction_result);
+        }
+
+        [Test]
+        public void TestSetKbAssignedAction()
+        {
+            byte[] newValue = new byte[] { 0x01, 0x02 };
+            Guid KeyboardGuid = Guid.NewGuid();
+            string Guid1 = KeyboardGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_keyboardMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetKbAssignedAction_result = dTPProxyPlugin.SetKbAssignedAction(Guid1, newValue);
+            Assert.IsNotNull(SetKbAssignedAction_result);
+        }
+
+        [Test]
+        public void TestRestoreToDefaultKB()
+        {
+            Guid KeyboardGuid = Guid.NewGuid();
+            string Guid1 = KeyboardGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("IsDTPReady", false);
+
+            var RestoreToDefaultKB_result = dTPProxyPlugin.RestoreToDefaultKB(Guid1).Result; //IsDTPReady false
+            Assert.That(RestoreToDefaultKB_result, Is.EqualTo(false));
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("IsDTPReady", true);
+            var RestoreToDefaultKB_result2 = dTPProxyPlugin.RestoreToDefaultKB(Guid1).Result; //IsDTPReady true
+            Assert.IsNotNull(RestoreToDefaultKB_result2);
+            Assert.That(RestoreToDefaultKB_result2, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestGetWebcamDeviceItemsEx()
+        {
+            byte[] newValue = new byte[] { 0x01, 0x02 };
+            Guid KeyboardGuid = Guid.NewGuid();
+            string Guid1 = KeyboardGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", null);
+
+            var GetWebcamDeviceItemsExAsync_result = dTPProxyPlugin.GetWebcamDeviceItemsExAsync().Result;  //_webcamMethodInfo null
+            Assert.IsNotNull(GetWebcamDeviceItemsExAsync_result);
+            Assert.That(GetWebcamDeviceItemsExAsync_result, Is.EqualTo(new JArray()));
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetWebcamDeviceItemsExAsync_result2 = dTPProxyPlugin.GetWebcamDeviceItemsExAsync().Result;  //_webcamMethodInfo null
+            Assert.IsNotNull(GetWebcamDeviceItemsExAsync_result2);
+            Assert.That(GetWebcamDeviceItemsExAsync_result2, Is.EqualTo(new JArray()));
+        }
+
+        [Test]
+        public void TestGetPresetProfiles()
+        {
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var GetPresetProfiles_result = dTPProxyPlugin.GetPresetProfiles(Guid1).Result;
+            Assert.IsNotNull(GetPresetProfiles_result);
+            Assert.That(GetPresetProfiles_result, Is.EqualTo(new JArray()));
+        }
+
+        [Test]
+        public void TestGetCustomProfiles()
+        {
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var GetCustomProfiles_result = dTPProxyPlugin.GetCustomProfiles(Guid1).Result;
+            Assert.IsNotNull(GetCustomProfiles_result);
+            Assert.That(GetCustomProfiles_result, Is.EqualTo(new JArray()));
+        }
 
         [OneTimeTearDown]
         public void TearDown()
