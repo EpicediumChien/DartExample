@@ -700,25 +700,28 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             switch (fwUpdateInfo.DeviceType)
             {
                 case DeviceType.LogicalMouse:
-                    UXAlertItemVisibility = Visibility.Visible;
+                    
                     if (deviceBatteryLow == true)
                     {
+                        UXAlertItemVisibility = Visibility.Visible;
                         UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
                     }
                     else if (deviceBatteryLow == null)
                     {
+                        UXAlertItemVisibility = Visibility.Visible;
                         UXAlertItemMessage = LangHelper.Instance["Update_Mouse_Alert"];
                     }
                     break;
 
                 case DeviceType.LogicalKeyboard:
-                    UXAlertItemVisibility = Visibility.Visible;
                     if (deviceBatteryLow == true)
                     {
+                        UXAlertItemVisibility = Visibility.Visible;
                         UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
                     }
                     else if (deviceBatteryLow == null)
                     {
+                        UXAlertItemVisibility = Visibility.Visible;
                         UXAlertItemMessage = LangHelper.Instance["Update_Mouse_Alert"];
                     }
                     break;
