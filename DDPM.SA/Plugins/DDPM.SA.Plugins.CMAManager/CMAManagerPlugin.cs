@@ -1219,7 +1219,19 @@ namespace DDPM.SA.Plugins.CMAManager
             {
                 WriteLog($"[CMA] item[{counter}] in list = {item}");
 
-                DeferItem data = new DeferItem(item);
+                DeferItem data;
+
+                try
+                {
+                    data = new DeferItem(item);
+                }
+                catch (Exception e)
+                {
+                    WriteLog($"[CMA] Exception: data = new DeferItem(item); item = {item}");
+                    counter = counter + 1; ;
+                    continue;
+                }
+
                 long newDeferId = ((long)Convert.ToDouble(data.deferid)) + DAY_IN_SECONDS;
 
                 if (currentDateTimeSecond < newDeferId)
@@ -1260,6 +1272,9 @@ namespace DDPM.SA.Plugins.CMAManager
                             WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CLI");
                             ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
                             CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(data.commanddata.Split(' '));
+
+                            commandLineInput.isCliRunAdmin = true;
+
                             CLIEventResult result = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
 
                             break;

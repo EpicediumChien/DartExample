@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DDPM.SA.Common.Settings;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,8 +9,12 @@ namespace DDPM.SA.Common.Defer
 {
     public static class DeferControlPanel
     {
-        private const string FILE_PATH = @"c:\cmacmd\defer\";
-        private const string FILE_NAME = @"defer_data.txt";
+        //C:\ProgramData\Dell\Dell Display and Peripheral Manager
+        private static readonly string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+        private static readonly string path_folder = "\\Dell\\Dell Display and Peripheral Manager\\DEFER\\";
+        private static readonly string FILE_PATH = path_programdata + path_folder;
+        //private static readonly string FILE_PATH = @"c:\cmacmd\defer\";
+        private static readonly string FILE_NAME = @"defer_data.txt";
 
         public const int SRC_FROM_CLI = 0;
         public const int SRC_FROM_CMA = 1;
@@ -64,8 +70,27 @@ namespace DDPM.SA.Common.Defer
         {
             try
             {
-                string[] alllines = File.ReadAllLines(FILE_PATH + FILE_NAME);
-                listDefer = alllines.ToList();
+                //string[] alllines = File.ReadAllLines(FILE_PATH + FILE_NAME);
+                //listDefer = alllines.ToList();
+
+                string info = string.Empty;
+                string serialized_string = DDPMFileSecurity.GetSerializedJsonString((FILE_PATH + FILE_NAME), out info);
+
+                //Console.WriteLine(serialized_string);
+
+                JArray jarray = JArray.Parse(serialized_string);
+                foreach (var item in jarray)
+                {
+                    /*Console.WriteLine("item output : ");
+                    Console.WriteLine(item.ToString());*/
+
+                    if (0 >= item.ToString().Length)
+                    {
+                        continue;
+                    }
+
+                    listDefer.Add(item.ToString());
+                }
             }
             catch (Exception e)
             {
@@ -89,7 +114,11 @@ namespace DDPM.SA.Common.Defer
                 Console.WriteLine("CreateDirectory Exception: " + e.Message);
             }
 
-            File.WriteAllLines(FILE_PATH + FILE_NAME, listDefer.ToArray());
+            string info = string.Empty;
+            bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listDefer).ToString(), (FILE_PATH + FILE_NAME), out info);
+            Console.WriteLine(write);
+
+            //File.WriteAllLines(FILE_PATH + FILE_NAME, listDefer.ToArray());
         }
     }
 }
