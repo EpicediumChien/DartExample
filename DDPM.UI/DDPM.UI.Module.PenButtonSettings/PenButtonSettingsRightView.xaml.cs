@@ -298,8 +298,8 @@ namespace DDPM.UI.Module.PenButtonSettings
                 id = (int)((UXRadioButton)sender).DataContext;
                 rb.Name = $"Radio{id}";
                 //rb.Content = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.PenActions[id].Caption : Actions.KnMActions[id].Caption;
-                //rb.Content = Actions.PenActions[id].Caption;
-                rb.Content = _vm.ActionNames[id];
+                rb.Content = Actions.PenActions[id].Caption;
+                //rb.Content = _vm.ActionNames[id];
                 if (rb.Tag.ToString() != "search")
                     rb.IsChecked = id == _vm.SelectedActionID;
             }
