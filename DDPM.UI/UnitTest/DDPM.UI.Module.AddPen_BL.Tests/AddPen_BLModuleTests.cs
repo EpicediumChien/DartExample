@@ -113,30 +113,17 @@ namespace DDPM.UI.Module.AddPen_BL.Tests
         [Test]
         public void TestOnSelectedHomeDeviceChanged()
         {
-            //IsModuleActive==false;
-            try
-            {
-                addPen_BLModule.OnSelectedHomeDeviceChanged();
-                Assert.True(true);
-                Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
+            addPen_BLModule.IsModuleActive = false;
+            addPen_BLModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
+        }
 
-            //IsModuleActive==true
-            addPen_BLModule.IsModuleActive=true;
-            try
-            {
-                addPen_BLModule.OnSelectedHomeDeviceChanged();
-                Assert.True(true);
-                Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
+        [Test]
+        public void TestOnSelectedHomeDeviceChangeda()
+        {
+            addPen_BLModule.IsModuleActive = true;
+            addPen_BLModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
         }
 
         [Test]

@@ -124,17 +124,19 @@ namespace DDPM.UI.Module.AddHeadset_BL.Tests
         [Test]
         public void TestOnSelectedHomeDeviceChanged()
         {
-            try
-            {
-                addHeadset_BLModule.OnSelectedHomeDeviceChanged();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
+            addHeadset_BLModule.IsModuleActive = false;
+            addHeadset_BLModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
         }
-       
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChangeda()
+        {
+            addHeadset_BLModule.IsModuleActive = true;
+            addHeadset_BLModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
+        }
+
         [Test]
         public void TestOnActivated()
         {

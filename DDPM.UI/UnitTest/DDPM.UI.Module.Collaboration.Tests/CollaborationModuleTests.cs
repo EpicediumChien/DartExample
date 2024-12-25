@@ -101,5 +101,36 @@ namespace DDPM.UI.Module.Collaboration.Test
             // Assert
             Assert.That(moduleOwner, Is.EqualTo(moduleOwnerMock.Object));
         }
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChanged()
+        {
+            collaborationModule.IsModuleActive = false;
+            collaborationModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChangeda()
+        {
+            collaborationModule.IsModuleActive = true;
+            collaborationModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestOnActivated()
+        {
+            privateObject.SetFieldOrProperty("isSelectChanged", true);
+            collaborationModule.OnActivated();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestOnDeactivated()
+        {
+            collaborationModule.OnDeactivated();
+            Assert.Pass();
+        }
     }
 }
