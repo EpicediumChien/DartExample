@@ -65,13 +65,13 @@ namespace DDPM.UI.Common
                     }
                 }
 
-                //var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
-                var resolutions = JsonConvert.DeserializeObject<Dictionary<string, ResolutionItem>>(str)!;
+                var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
+                //var resolutions = JsonConvert.DeserializeObject<Dictionary<string, ResolutionItem>>(str)!;
                 if (resolutions != null)
                 {
-                    foreach (var res in resolutions.OrderByDescending(x => x.Key))
+                    foreach (var res in resolutions.OrderByDescending(x => x.Resolution))
                     {
-                        var resName = res.Key switch
+                        var resName = res.Resolution switch
                         {
                             "1280x720" => "HD",
                             "1920x1080" => "Full HD",
@@ -79,9 +79,9 @@ namespace DDPM.UI.Common
                             "3840x2160" => "4K UHD",
                             _ => "8K UHD"
                         };
-                        SupportedFPSs.Add(resName, res.Value.FPS);
+                        SupportedFPSs.Add(resName, res.FPS);
                         SelectedFPSs.Add(resName, "30");
-                        Resolutions.Add(resName, res.Value.Resolution);
+                        Resolutions.Add(resName, res.Resolution);
                     }
                 }
 

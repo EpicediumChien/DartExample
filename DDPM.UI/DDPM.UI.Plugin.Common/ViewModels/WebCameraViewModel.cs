@@ -350,7 +350,7 @@ namespace DDPM.UI.Plugin.ViewModels
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(3, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 7200;
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
-                        }   
+                        }
 
                     }
                 }
@@ -606,6 +606,7 @@ namespace DDPM.UI.Plugin.ViewModels
             return true;
         }
 
+        public bool IsUSB3 = false;
         private void InitializeWebcam()
         {
             WebcamSettings = WebcamSettings.ImportWebcamSettings(Model, CurrentDeviceInfo!);
@@ -710,6 +711,12 @@ namespace DDPM.UI.Plugin.ViewModels
                 _fOVs[k] = int.Parse(CurrentDeviceInfo!.FOVValues[k]);
             }
 
+            IsUSB3 = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(CurrentDeviceInfo!.ID.ToString()).Result;
+            if (!IsUSB3)
+            {
+                _ = DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), false);
+                OnPropertyChanged(nameof(IsHDROn));
+            }
             SetProfile();
             //if (!IsDTPReady)
             //    return;
@@ -760,6 +767,8 @@ namespace DDPM.UI.Plugin.ViewModels
             CurrentProfile.IsAutoFramingTransitionOn = _isAutoFramingTransitionOn;
             CurrentProfile.AutoFramingFrameSize = _autoFramingFrameSize;
             CurrentProfile.AutoFramingSensitivity = _autoFramingSensitivity;
+            if (!IsUSB3)
+                CurrentProfile.IsHDROn = false;
 
             //var IsNormalProfile = CurrentProfileName != "Smooth" && CurrentProfileName != "Vibrant" && CurrentProfileName != "Warm";
             Task<bool> task;
@@ -798,7 +807,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
 
-            if (CurrentDeviceInfo.IsPropertyHDRSupported)
+            if (CurrentDeviceInfo.IsPropertyHDRSupported && IsUSB3)
             {
                 task = DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsHDROn);
                 if (!task.Result)
@@ -973,7 +982,8 @@ namespace DDPM.UI.Plugin.ViewModels
 
 
         public Visibility bdrPrioritize_show_value = Visibility.Visible;
-        public Visibility bdrPrioritize_show { 
+        public Visibility bdrPrioritize_show
+        {
             get => bdrPrioritize_show_value;
             set
             {
@@ -981,9 +991,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(bdrPrioritize_show));
             }
-        } 
+        }
 
-        
+
 
 
         public Visibility brdHello_show { get; set; } = Visibility.Visible;
