@@ -194,17 +194,65 @@ namespace DDPM.SA.Common
                     TargetFeature = "FIRMWAREVERSION";
                     break;
                 case "COLLABCAMERAENABLE":
-                    TargetFeature = "ISCOLLABORATIONCAMERAENABLE";
-                    break;
+                    TargetFeature = targetFeature;
+                    if (di.IsCollabsKeysSupported)
+                    {
+                        retcode = di.IsCollaborationCameraEnable;
+                        Value = retcode ? "ON" : "OFF";
+                        Result = "PASS";
+                    }
+                    else
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Keyboard not support COLLABCAMERAENABLE";
+                    }
+                    return;
                 case "COLLABMICMUTE":
-                    TargetFeature = "ISCOLLABORATIONMICENABLE";
-                    break;
+                    TargetFeature = targetFeature;
+                    if (di.IsCollabsKeysSupported)
+                    {
+                        retcode = di.IsCollaborationMicEnable;
+                        Value = retcode ? "ON" : "OFF";
+                        Result = "PASS";
+                    }
+                    else
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Keyboard not support COLLABMICMUTE";
+                    }
+                    return;
                 case "COLLABSCREENSHARE":
-                    TargetFeature = "ISCOLLABORATIONSCREENSHAREENABLE";
-                    break;
+                    TargetFeature = targetFeature;
+                    if (di.IsCollabsKeysSupported)
+                    {
+                        retcode = di.IsCollaborationScreenShareEnable;
+                        Value = retcode ? "ON" : "OFF";
+                        Result = "PASS";
+                    }
+                    else
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Keyboard not support COLLABSCREENSHARE";
+                    }
+                    return;
                 case "COLLABCHATENABLE":
-                    TargetFeature = "ISCOLLABORATIONCHATENABLE";
-                    break;
+                    TargetFeature = targetFeature;
+                    if (di.IsCollabsKeysSupported)
+                    {
+                        retcode = di.IsCollaborationChatEnable;
+                        Value = retcode ? "ON" : "OFF";
+                        Result = "PASS";
+                    }
+                    else
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Keyboard not support COLLABCHATENABLE";
+                    }
+                    return;
                 default:
                     TargetFeature = targetFeature;
                     break;
