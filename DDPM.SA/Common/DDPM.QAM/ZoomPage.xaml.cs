@@ -52,12 +52,9 @@ namespace DDPM.QAM
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is double sliderValue)
+            if (value is double sliderValue && DdpmCommonHelper.QAMPageViewModel != null)
             {
-                if (DdpmCommonHelper.QAMPageViewModel != null)
-                {
-                    return (DdpmCommonHelper.QAMPageViewModel.ZoomMin - sliderValue) / (DdpmCommonHelper.QAMPageViewModel.ZoomMin - DdpmCommonHelper.QAMPageViewModel.ZoomMax) * 200;
-                }
+                return (DdpmCommonHelper.QAMPageViewModel.ZoomMin - sliderValue) / (DdpmCommonHelper.QAMPageViewModel.ZoomMin - DdpmCommonHelper.QAMPageViewModel.ZoomMax) * 200;
             }
             return 0;
         }

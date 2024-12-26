@@ -4578,13 +4578,11 @@ namespace VcpCore.Plugins
                         }
                     }
 
-                    if (string.IsNullOrWhiteSpace(_TargetMonitor.series))
+                    if (string.IsNullOrWhiteSpace(_TargetMonitor.series) &&
+                        CheckIsSupportDisplayByBit(in _TargetMonitor, _TargetMonitor.modelName))
                     {
-                        if (CheckIsSupportDisplayByBit(in _TargetMonitor, _TargetMonitor.modelName))
-                        {
-                            _TargetMonitor.series = ChekSeries(_TargetMonitor.modelName);
-                            rc = true;
-                        }
+                        _TargetMonitor.series = ChekSeries(_TargetMonitor.modelName);
+                        rc = true;
                     }
 
                     _logs.DebugMsg("[VcpCorePlugin] _TargetMonitor.modelName: " + _TargetMonitor.modelName);
