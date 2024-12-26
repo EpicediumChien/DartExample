@@ -986,13 +986,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         {
                             //_DeviceManagerPlugin.SetWearDetectionAsync(deviceId.ToString(), setvalue); // Set WearDetection On
                             _DTPProxyPlugin.SetWearDetectionAsync(deviceId.ToString(), setvalue);
-                            //_DTPProxyPlugin.SendHeadsetEventToUI($"HeadsetEvent_5;Device:Headset;EventType:Headset_WearDetectionChanged;DeviceId:{deviceId};Headset_WearDetectionChanged:{setvalue.ToString()}");
                             //if (!_DeviceManagerPlugin.GetIsWearDetectionMuteMicEnabledAsync(deviceId.ToString()).Result) // Check Mute Mic Enabled/Disable first
                             if (!_DTPProxyPlugin.GetIsWearDetectionMuteMicEnabledAsync(deviceId.ToString()).Result)
                             {
                                 //_DeviceManagerPlugin.SetIsWearDetectionMuteMicEnabledAsync(deviceId.ToString(), true); // If Mute Mic Disable, need to turn On
                                 _DTPProxyPlugin.SetIsWearDetectionMuteMicEnabledAsync(deviceId.ToString(), true);
-                                //_DTPProxyPlugin.SendHeadsetEventToUI($"HeadsetEvent_5;Device:Headset;EventType:Headset_WearDetectionChanged;DeviceId:{deviceId};Headset_IsWearDetectionMuteMicEnabledChanged:True");
+                                _DTPProxyPlugin.SendHeadsetEventToUI($"HeadsetEvent_5;Device:Headset;EventType:Headset_WearDetectionChanged;DeviceId:{deviceId};Headset_IsWearDetectionMuteMicEnabledChanged:True");
                             }
                         }
                         else// If WearDetection need to turn Off
@@ -1000,6 +999,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             //_DeviceManagerPlugin.SetWearDetectionAsync(deviceId.ToString(), setvalue);
                             _DTPProxyPlugin.SetWearDetectionAsync(deviceId.ToString(), setvalue);
                         }
+                        _DTPProxyPlugin.SendHeadsetEventToUI($"HeadsetEvent_5;Device:Headset;EventType:Headset_WearDetectionChanged;DeviceId:{deviceId};Headset_WearDetectionChanged:{setvalue.ToString()}");
                         DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID == deviceId);
                         if (_deviceInfo != null)
                         {
