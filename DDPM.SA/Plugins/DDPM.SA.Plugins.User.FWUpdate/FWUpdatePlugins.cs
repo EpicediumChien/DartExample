@@ -1601,6 +1601,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 string _namedPipeName = Guid.NewGuid().ToString("D");
                 if (!fwUpdateInfo.IsDisplay)
                 {
+                    _fwTimeOutCount = 60;
                     _timeOutCount = _fwTimeOutCount;
                     _timerTimeOut = new Timer();
                     _timerTimeOut.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
@@ -2177,8 +2178,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 if (timeOut != null)
                 {
-                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get timeOut value : {timeOut.ToString()}");
                     int.TryParse(timeOut.InnerText, out _fwTimeOutCount);
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get timeOut value : {_fwTimeOutCount}");
                     if (_fwTimeOutCount < 60)
                     {
                         _fwTimeOutCount = 60;
