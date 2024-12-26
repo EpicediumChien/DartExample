@@ -29,6 +29,7 @@ namespace DDPM.UI.Module.Kvm.Tests
         private KvmRightView? kvmRightView;
         private Mock<IConsole>? MyConsoleMock;
         private Mock<ILog>? logMock;
+        private Thread thread;
 
         [SetUp]
         public void Setup()
@@ -45,6 +46,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             MyConsoleMock = new Mock<IConsole>();
             MyConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(logMock.Object);
             DdpmCommonHelper.MyConsole = MyConsoleMock.Object;
+            kvmViewModel = new KvmViewModel();
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManagerSA = deviceManagerMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
