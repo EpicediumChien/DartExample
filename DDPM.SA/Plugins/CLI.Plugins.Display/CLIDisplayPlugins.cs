@@ -424,7 +424,11 @@ namespace DDPM.CLI.Plugins.Display
                     result.serialize_Json_response = tmp.result;
                     return result;
                 //break;
-
+                case"INAPPAUTOBRITEMP":
+                    var tmpInAppAutoBriTemp = ProcessAlsFunction(devMgr, commandLineInput);
+                    result.ExitCode = tmpInAppAutoBriTemp.code;
+                    result.serialize_Json_response = tmpInAppAutoBriTemp.result;
+                    return result;
                 case "COLORPROFILE":
                     if (commandLineInput.Command.Equals("GET"))
                     {
@@ -7550,6 +7554,9 @@ namespace DDPM.CLI.Plugins.Display
                 case "MULTIMONITORSYNC"://Dean 0611
                     type = ALSFeatureQueryType.MMS;
                     break;
+                case "INAPPAUTOBRITEMP"://Dean 0611
+                    type = ALSFeatureQueryType.InAppAutoBriTemp;
+                    break;
 
                 default:
                     return WriteALSResponse(_AllInfoMonitors, val.ToString(), target_type, CLI_ExitCode.unknow_command, false, "Unknow command");
@@ -7601,7 +7608,9 @@ namespace DDPM.CLI.Plugins.Display
                 case "MULTIMONITORSYNC"://Dean 0611
                     type = ALSFeatureQueryType.MMS;
                     break;
-
+                case "INAPPAUTOBRITEMP":
+                    type = ALSFeatureQueryType.InAppAutoBriTemp;
+                    break;
                 default:
                     return WriteALSResponse(_AllInfoMonitors, idx, target_type, CLI_ExitCode.unknow_command, false, target_type.TargetFeature.ToString());
             }
@@ -7670,6 +7679,12 @@ namespace DDPM.CLI.Plugins.Display
 
                     case ALSFeatureQueryType.All:
                         set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.All, value).Result;
+                        break;
+                    case ALSFeatureQueryType.InAppAutoBriTemp:
+                        set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.AutoColorTemperature, value).Result;
+                        if (!set_result)
+                            break;
+                        set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.AutoBrightness, value).Result;
                         break;
 
                     default:
@@ -7771,6 +7786,11 @@ namespace DDPM.CLI.Plugins.Display
 
                         case "MULTIMONITORSYNC":
                             ALS_RESPONSE.Value = param.isMMSEnable ? "ON" : "OFF";
+                            break;
+                        case "INAPPAUTOBRITEMP":
+                            ALS_RESPONSE.Value = param.isAutoBrightness && param.isAutoColorTemp ? "ON"
+                                : !param.isAutoBrightness && !param.isAutoColorTemp ? "OFF"
+                                : $"AutoBrightness: {(param.isAutoBrightness ? "ON" : "OFF")} AutoColorTemp: {(param.isAutoColorTemp ? "ON" : "OFF")}";
                             break;
                     }
                 }
@@ -11585,22 +11605,30 @@ namespace DDPM.CLI.Plugins.Display
                                             {
                                                 case "COLLABSCREENSHARE":
                                                     writelog("COLLABSCREENSHARE entry");
-                                                    if (property.Value.ToString() == "ON")
+                                                    writelog("device.IsMicEnumerationSupported entry");
+                                                    if (device.IsMicEnumerationSupported)
                                                     {
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable entry");
-                                                        _devMgr.SetCollaborationScreenShareEnable(true, device.ID);
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable exit");
-                                                    }
-                                                    else if (property.Value.ToString() == "OFF")
-                                                    {
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable entry");
-                                                        _devMgr.SetCollaborationScreenShareEnable(false, device.ID);
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable exit");
+                                                        if (property.Value.ToString() == "ON")
+                                                        {
+                                                            writelog("_devMgr.SetCollaborationScreenShareEnable entry");
+                                                            _devMgr.SetCollaborationScreenShareEnable(true, device.ID);
+                                                            writelog("_devMgr.SetCollaborationScreenShareEnable exit");
+                                                        }
+                                                        else if (property.Value.ToString() == "OFF")
+                                                        {
+                                                            writelog("_devMgr.SetCollaborationScreenShareEnable entry");
+                                                            _devMgr.SetCollaborationScreenShareEnable(false, device.ID);
+                                                            writelog("_devMgr.SetCollaborationScreenShareEnable exit");
+                                                        }
+                                                        else
+                                                        {
+                                                            resultMessages.Add("COLLABSCREENSHARE is wrong value");
+                                                            ispass = false;
+                                                        }
                                                     }
                                                     else
                                                     {
-                                                        resultMessages.Add("COLLABSCREENSHARE is wrong value");
-                                                        ispass = false;
+                                                        resultMessages.Add("COLLABSCREENSHARE not support");
                                                     }
                                                     break;
                                                 default:
@@ -12308,19 +12336,19 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             case "OFF":
                                 writelog($"PowerSetting E0 set off");
-                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x01").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x01").Result || SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
                                 cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 break;
 
                             case "ON":
                                 writelog($"PowerSetting E0 set on");
-                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result || SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
                                 cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 break;
 
                             case "STANDBY":
                                 writelog($"PowerSetting E0 set standby");
-                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x01").Result);
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result || SetVCPCode(devMgr, monitor, "0xE1", "0x01").Result);
                                 cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 break;
                         }

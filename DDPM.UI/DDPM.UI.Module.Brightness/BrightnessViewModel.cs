@@ -3128,6 +3128,7 @@ namespace DDPM.UI.Module.Brightness
 
         private bool _autoBrightnessStatus = false;
         public bool ManualBCHotkeyBtn { get; set; } = true;
+
         //brightness/contrast/luminance hotkey is setup or not
         public void updateHotkeyBtn()
         {
@@ -3138,7 +3139,6 @@ namespace DDPM.UI.Module.Brightness
                 //disable hotkey btn
                 //btnManualBrightnessContrast.IsEnabled = false;
                 ManualBCHotkeyBtn = false;
-
             }
             else
             {
@@ -3147,6 +3147,7 @@ namespace DDPM.UI.Module.Brightness
             }
             NotifyPropertyChanged("ManualBCHotkeyBtn");
         }
+
         public bool isBCHotkeyNotSet()
         {
             //DDPMW-764
@@ -3161,6 +3162,7 @@ namespace DDPM.UI.Module.Brightness
                 $"_contrastMinsKey=[{_contrastMinsKey.Trim()}],_contrastAddKey=[{_contrastAddKey.Trim()}]");
             return ret;
         }
+
         /// <summary>
         /// Binding Auto Brightness element
         /// </summary>
@@ -3207,7 +3209,6 @@ namespace DDPM.UI.Module.Brightness
                     IsBusy = false;
                     NotifyPropertyChanged("IsBusy");
                 }));
-
             }
         }
 
@@ -3260,7 +3261,6 @@ namespace DDPM.UI.Module.Brightness
                     IsBusy = false;
                     NotifyPropertyChanged("IsBusy");
                 }));
-
             }
         }
 
@@ -3391,6 +3391,7 @@ namespace DDPM.UI.Module.Brightness
         }
 
         public int AutoBrightnessSelectedIndex { get; set; } = 0;
+
         public List<string> AutoBrightnessRangeLevel { get; set; } =
             new List<string>() { Strings.ALSRangeLevelLow, Strings.ALSRangeLevelMid, Strings.ALSRangeLevelHigh };//{ "Low", "Mid", "High" }; //mapping to 40%, 60%, 100%
 

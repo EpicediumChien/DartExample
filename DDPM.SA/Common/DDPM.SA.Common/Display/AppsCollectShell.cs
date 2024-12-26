@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common.Settings;
+using Dell.Client.Framework.Common;
 using Microsoft.WindowsAPICodePack.Shell;
 using Newtonsoft.Json;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 
@@ -77,14 +79,13 @@ namespace DDPM.SA.Common
     {
         private static readonly string storageFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dell\\Dell Display and Peripheral Manager";
 
-        private static string user = Environment.UserName;// Dean 0626 SAST issue
+        private static string user = Environment.UserName;
 
-        private static readonly string fileName = "InstalledAppInfo.json";// Dean 0626 SAST issue
+        private static readonly string fileName = "InstalledAppInfo.json";
 
-        //////public static string DatafilePath = storageFolder + "\\DellDDM\\" + user + "\\" + fileName;
-        private static string DatafilePath = storageFolder + "\\AppLibrary\\" + fileName; // Dean 0626 SAST issue
+        private static string DatafilePath = storageFolder + "\\AppLibrary\\" + fileName; 
 
-        private static readonly string iconFolder = storageFolder + "\\AppLibrary\\Icons";// Dean 0626 SAST issue
+        private static readonly string iconFolder = storageFolder + "\\AppLibrary\\Icons";
 
         private Thread ThthSaveAppDataFile;
 
@@ -92,16 +93,34 @@ namespace DDPM.SA.Common
 
         public Dictionary<string, InstalledAppInfo> AppInstallsList { get; set; } = new Dictionary<string, InstalledAppInfo>();
 
-        public static AppListDictionary GetInstance()
+        public static AppListDictionary GetInstance(ILog log = null)
         {
             if (INSTANCE == null)
             {
-                INSTANCE = new AppListDictionary();
+                INSTANCE = new AppListDictionary(log);
                 INSTANCE.AppInstallsList = new Dictionary<string, InstalledAppInfo>();
             }
 
             DatafilePath = storageFolder + "\\" + user + "\\" + fileName;
+            INSTANCE?.WriteLog($"DatafilePath is {DatafilePath}");
             return INSTANCE;
+        }
+
+        private static ILog _log = null;
+        public AppListDictionary(ILog log = null)
+        {
+            _log = log;
+        }
+
+        public void SetLogObj(ILog log)
+        {
+            _log = log;
+        }
+
+        private void WriteLog(string message)
+        {
+            Console.WriteLine($"[AppListDictionary] {message}");
+            _log?.Info($"[AppListDictionary] {message}");
         }
 
         public void SaveInstalledAppInfo_Thread()
@@ -117,11 +136,21 @@ namespace DDPM.SA.Common
                 string text = Serialization.Serialize(AppInstallsList);
                 if (text.Length > 0)
                 {
-                    File.WriteAllText(DatafilePath, text);
+                    if(!DDPMFileSecurity.ValidateFilePath(DatafilePath, out string info))
+                    {
+                        WriteLog($"[SaveInstalledAppInfo] ValidateFilePath with fail: {info}");
+                        return;
+                    }
+                    //File.WriteAllText(DatafilePath, text);
+                    if(!DDPMFileSecurity.SetJsonContentFromSerializedString(text, DatafilePath, out info))
+                    {
+                        WriteLog($"[SaveInstalledAppInfo] write file failed: {info}");
+                    }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                WriteLog($"[SaveInstalledAppInfo] exception: {e.Message}");
             }
         }
 
@@ -131,24 +160,38 @@ namespace DDPM.SA.Common
             {
                 if (!File.Exists(DatafilePath))
                 {
+                    WriteLog("[LoadFile] file is not exist");
+                    return;
+                }
+                if (!DDPMFileSecurity.ValidateFilePath(DatafilePath, out string info))
+                {
+                    WriteLog($"[LoadFile] ValidateFilePath with fail: {info}");
                     return;
                 }
 
-                using StreamReader streamReader = new StreamReader(DatafilePath);
-                string text = streamReader.ReadToEnd();
-                if (text.Length > 0)
+                //using StreamReader streamReader = new StreamReader(DatafilePath);
+                //string text = streamReader.ReadToEnd();
+                string text = DDPMFileSecurity.GetSerializedJsonString(DatafilePath, out info);
+                if (!string.IsNullOrEmpty(text))
                 {
                     AppInstallsList = JsonConvert.DeserializeObject<Dictionary<string, InstalledAppInfo>>(text);
                 }
+                else
+                {
+                    WriteLog($"[LoadFile] GetSerializedJsonString with fail or empty content: {info}");
+                    AppInstallsList = new Dictionary<string, InstalledAppInfo>();
+                }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                WriteLog($"[LoadFile] exception: {e.Message}");
             }
         }
     }
 
     public class AppsCollectShell
     {
+        private static string RootDDPMPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dell\\Dell Display and Peripheral Manager";
         private static string RootColorPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dell\\Dell Display and Peripheral Manager\\AppLibrary";
 
         //private static string IconFolder = RootColorPath + Environment.UserName + "\\Icon\\";
@@ -163,16 +206,30 @@ namespace DDPM.SA.Common
 
         private AppListDictionary tmpAppListDictionary = AppListDictionary.GetInstance();
 
-        public AppsCollectShell()
+        private ILog _log = null;
+
+        public AppsCollectShell(ILog log = null)
         {
             //use default Icon folder
+
+            _log = log;
+            tmpAppListDictionary?.SetLogObj(_log);            
         }
 
-        public AppsCollectShell(string icon_folder)
+        public AppsCollectShell(string icon_folder, ILog log = null)
         {
             //update icon folder
             if (!string.IsNullOrEmpty(icon_folder))
                 IconFolder = icon_folder;
+
+            _log = log;
+            tmpAppListDictionary?.SetLogObj(_log);
+        }
+
+        private void WriteLog(string message)
+        {
+            Console.WriteLine($"[AppsCollectShell] {message}");
+            _log?.Info($"[AppsCollectShell] {message}");
         }
 
         private string CheckFileNameValid(string filename)
@@ -194,16 +251,45 @@ namespace DDPM.SA.Common
 
         public Dictionary<string, InstalledAppInfo> FindAppsbyShell()// ref Dictionary<string, InstalledAppInfo> installedApp)
         {
-            //logger.SetLogModule("ColorApp");
-
+            bool canSave = true;
             Dictionary<string, InstalledAppInfo> installedApp = new Dictionary<string, InstalledAppInfo>();
             //logger.WriteLog($"[ColorApp][FindAppsbyShell] App Icon folder: {IconFolder}");
             string folderInfo = string.Empty, info = string.Empty;
-            if (!DDPMFileSecurity.CheckFold(IconFolder, out folderInfo, out info))
-                return installedApp;
 
-            if (!System.IO.Directory.Exists(IconFolder))
+            //if (!DDPMFileSecurity.CheckFold(IconFolder, out folderInfo, out info))
+            //    return installedApp;
+
+            //Dean 1225 replace CheckFold by updated SDL function
+            if (!System.IO.Directory.Exists(RootDDPMPath))
+            {
+                canSave = false;
+                WriteLog($"[FindAppsbyShell][ValidateFilePath] RootDDPMPath isn't exist, do not save icon");
+            }
+            if (canSave && !DDPMFileSecurity.ValidateFilePath(RootDDPMPath, out folderInfo))
+            {
+                WriteLog($"[FindAppsbyShell][ValidateFilePath] RootDDPMPath abnormal: {folderInfo}");
+                canSave = false;
+            }
+            if (canSave && !System.IO.Directory.Exists(RootColorPath))
+            {
+                System.IO.Directory.CreateDirectory(RootColorPath);
+                WriteLog($"[FindAppsbyShell][ValidateFilePath] RootColorPath isn't exist, create it");
+            }
+            if (canSave && !DDPMFileSecurity.ValidateFilePath(RootColorPath, out folderInfo))
+            {
+                WriteLog($"[FindAppsbyShell][ValidateFilePath] RootDDPMPath abnormal: {folderInfo}");
+                canSave = false;
+            }
+            if (canSave && !System.IO.Directory.Exists(IconFolder))
+            {
                 System.IO.Directory.CreateDirectory(IconFolder);
+                WriteLog($"[FindAppsbyShell][ValidateFilePath] IconFolder isn't exist, create it");
+            }
+            if (canSave && !DDPMFileSecurity.ValidateFilePath(IconFolder, out folderInfo))
+            {
+                WriteLog($"[FindAppsbyShell][ValidateFilePath] IconFolder abnormal, do not save icon: {folderInfo}");
+                canSave = false;
+            }
 
             Dictionary<string, List<AppItemInfo>> dictionary = new Dictionary<string, List<AppItemInfo>>();
             IKnownFolder ikf = null;
@@ -211,18 +297,18 @@ namespace DDPM.SA.Common
             {
                 ikf = KnownFolderHelper.FromKnownFolderId(FOLDERID_AppsFolder);
             }
-            catch (ArgumentException)// ae)
+            catch (ArgumentException ae)
             {
-                //logger.WriteLog($"[ColorApp][FindAppsbyShell] try to query [FOLDERID_AppsFolder], exception: {ae.Message}");
+                WriteLog($"[FindAppsbyShell] try to query [FOLDERID_AppsFolder], exception: {ae.Message}");
                 return installedApp;
             }
             if (ikf == null)
             {
-                //logger.WriteLog($"[ColorApp][FindAppsbyShell] KnownFolderHelper.FromKnownFolderId got null return");
+                WriteLog($"[FindAppsbyShell] KnownFolderHelper.FromKnownFolderId got null return");
                 return installedApp;
             }
 
-            //logger.WriteLog($"[ColorApp][FindAppsbyShell] Step ShellObject loop, count:{ikf.ToList().Count}");
+            WriteLog($"[FindAppsbyShell] Step ShellObject loop, count:{ikf.ToList().Count}");
             foreach (ShellObject item in (IKnownFolder)(ShellObject)ikf)
             {
                 string name = string.IsNullOrEmpty(item.Name) ? string.Empty : item.Name;
@@ -234,8 +320,9 @@ namespace DDPM.SA.Common
                     value = item.Properties.System.Link.TargetParsingPath.Value;
                     value2 = item.Properties.System.Link.Arguments.Value;
                 }
-                catch (Exception)// ex)
+                catch (Exception ex)
                 {
+                    WriteLog($"[FindAppsbyShell] item ({name}) retrieve TargetParsingPath and Arguments exception: {ex.Message}");
                 }
 
                 //
@@ -256,23 +343,23 @@ namespace DDPM.SA.Common
                         DateTime lastAccessTime = f.CreationTime;//.LastAccessTime;
                         if (!File.Exists(IconFolder + text + ".png"))
                         {
-                            System.Drawing.Icon.ExtractAssociatedIcon(value)!.ToBitmap().Save(IconFolder + text + ".png");
+                            if(canSave)
+                                System.Drawing.Icon.ExtractAssociatedIcon(value)!.ToBitmap().Save(IconFolder + text + ".png");
                             //logger.WriteLog($"[ColorApp][FindAppsbyShell] Save icon to [{IconFolder}{text}.png] (Desktop)");
                         }
                         if (!dictionary.ContainsKey(value))
                         {
                             dictionary.Add(value, new List<AppItemInfo>
-                                                    {
-                                                        new AppItemInfo
-                                                        {
-                                                            AppName = name,
-                                                            AppExeName = text,
-                                                            InstalledDate = lastAccessTime,
-                                                            PathArgument = value2,
-                                                            AppUserModelID = parsingName
-                                                        }
-                                                    }
-                            );
+                            {
+                                new AppItemInfo
+                                {
+                                    AppName = name,
+                                    AppExeName = text,
+                                    InstalledDate = lastAccessTime,
+                                    PathArgument = value2,
+                                    AppUserModelID = parsingName
+                                }
+                            });
                             //logger.WriteLog($"[ColorApp][FindAppsbyShell] Add installed app AppName[{name}]AppExeName[{text}]Date[{lastAccessTime}]ModelID[{parsingName}]");
                         }
                         else
@@ -288,16 +375,16 @@ namespace DDPM.SA.Common
                             //logger.WriteLog($"[ColorApp][FindAppsbyShell] Add installed app Exist[{value}]: AppName[{name}]AppExeName[{text}]Date[{lastAccessTime}]ModelID[{parsingName}]");
                         }
                     }
-                    catch (Exception)// ex1)
+                    catch (Exception ex1)
                     {
-                        //logger.WriteLog($"[ColorApp][FindAppsbyShell] Desktop:({ex1.Message})");
+                        WriteLog($"[FindAppsbyShell] Desktop:({ex1.Message})");
                     }
                     continue;
                 }
-                else
-                {
-                    //logger.WriteLog($"[ColorApp][FindAppsbyShell] item:({item}), got null [item.Properties.System.Link.TargetParsingPath.Value], not desktop app");
-                }
+                //else
+                //{
+                //    //logger.WriteLog($"[ColorApp][FindAppsbyShell] item:({item}), got null [item.Properties.System.Link.TargetParsingPath.Value], not desktop app");
+                //}
                 //
                 // UWP application parsing
                 //
@@ -321,7 +408,8 @@ namespace DDPM.SA.Common
                         bitmap.UnlockBits(bitmapData);
                         if (!File.Exists(IconFolder + filename + ".png"))
                         {
-                            bitmap.Save(IconFolder + filename + ".png");
+                            if(canSave)
+                                bitmap.Save(IconFolder + filename + ".png");
                             //logger.WriteLog($"[ColorApp][FindAppsbyShell] Save icon to [{IconFolder}{filename}.png] (UWP)");
                         }
                         if (!installedApp.ContainsKey(text2))
@@ -331,16 +419,16 @@ namespace DDPM.SA.Common
                         }
                     }
                 }
-                catch (Exception)// ex2)
+                catch (Exception ex2)
                 {
-                    //logger.WriteLog($"[ColorApp][FindAppsbyShell] UWP:({ex2.Message})");
+                    WriteLog($"[FindAppsbyShell] UWP:({ex2.Message})");
                 }
                 finally
                 {
                     bitmap?.Dispose();
                 }
             }
-            try
+            try //action sorting
             {
                 foreach (KeyValuePair<string, List<AppItemInfo>> item2 in dictionary)
                 {
@@ -372,12 +460,12 @@ namespace DDPM.SA.Common
                     }
                 }
             }
-            catch (Exception)// ex3)
+            catch (Exception ex3)
             {
-                //logger.WriteLog($"[ColorApp][FindAppsbyShell] Merge:({ex3.Message})");
+                WriteLog($"[FindAppsbyShell][sorting] exception:({ex3.Message})");
             }
             AppListDictionary.GetInstance().LoadFile();
-            tmpAppListDictionary = AppListDictionary.GetInstance();
+            tmpAppListDictionary = AppListDictionary.GetInstance(_log);
             foreach (string key in installedApp.Keys)
             {
                 if (!tmpAppListDictionary.AppInstallsList.ContainsKey(key))
@@ -391,7 +479,7 @@ namespace DDPM.SA.Common
                 {
                     continue;
                 }
-                try
+                try//action sorting2
                 {
                     if (tmpAppListDictionary.AppInstallsList[key2].isDesktopApp)
                     {
@@ -405,15 +493,16 @@ namespace DDPM.SA.Common
                         tmpAppListDictionary.AppInstallsList.Remove(key2);
                     }
                 }
-                catch
+                catch(Exception ee)
                 {
+                    WriteLog($"[FlashAppByShell][sorting2] exception: {ee.Message}");
                 }
             }
             tmpAppListDictionary.SaveInstalledAppInfo_Thread();
 
             return installedApp;
         }
-
+        /*
         public Dictionary<string, InstalledAppInfo> FindAppsbyShellForEzMemoryFullPathKey()// ref Dictionary<string, InstalledAppInfo> installedApp)
         {
             //logger.SetLogModule("ColorApp");
@@ -633,6 +722,6 @@ namespace DDPM.SA.Common
             tmpAppListDictionary.SaveInstalledAppInfo_Thread();
 
             return installedApp;
-        }
+        }*/
     }
 }

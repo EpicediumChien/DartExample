@@ -156,6 +156,7 @@ namespace DDPM.EABroker
                 }
             }
         }
+        public ILog Log => _log;
         #endregion
 
         #region DDPM.SA Functions

@@ -177,12 +177,21 @@ namespace NetworkKVM.Plugins
                         _logs.DebugMsg("[UpdateMonitorInfo] MonitorPlug wait.");
                         MonitorPlug().Wait();
                     }
-                    _logs.DebugMsg("[UpdateMonitorInfo] do disconnect(1).");
-                    Disconnect();
-                    Thread.Sleep(1000);
+                    else
+                    {
+                        _logs.DebugMsg("[UpdateMonitorInfo] do disconnect(1).");
+                        Disconnect();
+                        Thread.Sleep(1000);
+                        isMonintorChange = true;
+                        _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(1).");
+                        _ = Task.Run(async () => await NamedPipeServer(token));
+                    }
                 }
-                _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(1).");
-                _ = Task.Run(async () => await NamedPipeServer(token));
+                else
+                {
+                    _logs.DebugMsg("[UpdateMonitorInfo] await NamedPipeServer(1).");
+                    _ = Task.Run(async () => await NamedPipeServer(token));
+                }
                 _AllInfoMonitors.Clear();
             }
             else
@@ -539,102 +548,6 @@ namespace NetworkKVM.Plugins
                 }
             }
 
-            //if (ModelName.IndexOf("P2424HEB") != -1 ||
-            //    ModelName.IndexOf("P2725DEB") != -1 ||
-            //    ModelName.IndexOf("P3424WEB") != -1 ||
-            //    ModelName.IndexOf("P5524Q") != -1 ||
-            //    ModelName.IndexOf("P5524QT") != -1 ||
-            //    ModelName.IndexOf("P6524QT") != -1 ||
-            //    ModelName.IndexOf("P7524QT") != -1 ||
-            //    ModelName.IndexOf("P8624QT") != -1 ||
-            //    ModelName.IndexOf("P5525QC") != -1)
-            //{
-            //    return Task.FromResult(true);
-            //}
-            //if (monitorInfo.CapabilityDic.ContainsKey("C6"))
-            //{
-            //    _logs.DebugMsg("[NetworkKVM] C6....");
-            //    string capabilityString = monitorInfo.CapabilityString;
-            //    if (_SupportedMonitors != null)
-            //    {
-            //        if (_SupportedMonitors.Count > 0)
-            //        {
-            //            if (_SupportedMonitors.IndexOf(ModelName) == -1)
-            //            {
-            //                if (IsSupportNKVM(capabilityString))
-            //                {
-            //                    _SupportedMonitors.Add(ModelName);
-            //                    return Task.FromResult(true);
-            //                }
-            //                else if (!ModelName.Contains("25"))
-            //                {
-            //                    string strSupport = ModelName.Substring(0, 1);
-            //                    switch (strSupport)
-            //                    {
-            //                        case "U":
-            //                        case "C":
-            //                            return Task.FromResult(true);
-            //                    }
-            //                }
-            //            }
-            //            else
-            //            {
-            //                return Task.FromResult(true);
-            //            }
-            //        }
-            //        else
-            //        {
-            //            if (IsSupportNKVM(capabilityString))
-            //            {
-            //                _SupportedMonitors.Add(ModelName);
-            //                return Task.FromResult(true);
-            //            }
-            //            else if (!ModelName.Contains("25"))
-            //            {
-            //                string strSupport = ModelName.Substring(0, 1);
-            //                switch (strSupport)
-            //                {
-            //                    case "U":
-            //                    case "C":
-            //                        return Task.FromResult(true);
-            //                }
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        _SupportedMonitors = new List<string>();
-            //        if (IsSupportNKVM(capabilityString))
-            //        {
-            //            _SupportedMonitors.Add(ModelName);
-            //            return Task.FromResult(true);
-            //        }
-            //        else if (!ModelName.Contains("25"))
-            //        {
-            //            string strSupport = ModelName.Substring(0, 1);
-            //            switch (strSupport)
-            //            {
-            //                case "U":
-            //                case "C":
-            //                    return Task.FromResult(true);
-            //            }
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    _logs.DebugMsg("[NetworkKVM] no C6....");
-            //    if (!ModelName.Contains("25"))
-            //    {
-            //        string strSupport = ModelName.Substring(0, 1);
-            //        switch (strSupport)
-            //        {
-            //            case "U":
-            //            case "C":
-            //                return Task.FromResult(true);
-            //        }
-            //    }
-            //}
             return Task.FromResult(false);
         }
 
@@ -1359,7 +1272,7 @@ namespace NetworkKVM.Plugins
             {
                 _logs.DebugMsg("NKVM NamedPipeServer is go...");
                 Trace.WriteLine("NKVM NamedPipeServer is go...");
-                int i = 0;
+                //int i = 0;
                 while (_runloop)
                 {
                     //if (CancellationToken.IsCancellationRequested)
@@ -1372,12 +1285,12 @@ namespace NetworkKVM.Plugins
                     //    i = 0;
                     //    //break;
                     //}
-                    if (i > 10)
-                    {
-                        _logs.DebugMsg("[NetworkKVM] loop error times is 10");
-                        Disconnect();
-                        break;
-                    }
+                    //if (i > 10)
+                    //{
+                    //    _logs.DebugMsg("[NetworkKVM] loop error times is 10");
+                    //    Disconnect();
+                    //    break;
+                    //}
                     if (pipeServer != null)
                     {
                         if (pipeServer.IsConnected)
@@ -1386,18 +1299,18 @@ namespace NetworkKVM.Plugins
                             {
                                 _logs.DebugMsg("[NetworkKVM]Token is cancel");
                                 Trace.WriteLine("[NetworkKVM]Token is cancel");
-                                Disconnect();
-                                Thread.Sleep(1000);
-                                _AllInfoMonitors = GetMonitors().Result;
-                                if (CreateNamedPipe_init())
-                                {
-                                    break;
-                                }
-                                else
-                                {
-                                    i++;
-                                    Thread.Sleep(500);
-                                }
+                                //Disconnect();
+                                //Thread.Sleep(1000);
+                                //_AllInfoMonitors = GetMonitors().Result;
+                                //if (CreateNamedPipe_init())
+                                //{
+                                //    break;
+                                //}
+                                //else
+                                //{
+                                    //i++;
+                                    Thread.Sleep(1000);
+                                //}
                             }
                             else
                             {
@@ -1405,7 +1318,7 @@ namespace NetworkKVM.Plugins
                                 {
                                     try
                                     {
-                                        i = 0;
+                                        //i = 0;
                                         response = ReadAsync().Result;
                                         _logs.DebugMsg("[NetworkKVM] Get :" + response);
                                         if (!string.IsNullOrEmpty(response))
@@ -1469,7 +1382,7 @@ namespace NetworkKVM.Plugins
                                         }
                                         else
                                         {
-                                            i++;
+                                            //i++;
                                             Thread.Sleep(500);
                                         }
                                     }
@@ -1478,15 +1391,15 @@ namespace NetworkKVM.Plugins
                         }
                         else
                         {
-                            i++;
+                            //i++;
                             Thread.Sleep(500);
                         }
                     }
                     else
                     {
                         _logs.DebugMsg("pipeServer is null");
-                        Disconnect();
-                        Thread.Sleep(1000);
+                        //Disconnect();
+                        //Thread.Sleep(1000);
                         _AllInfoMonitors = GetMonitors().Result;
                         break; // 2024-12-13 Elie, break infinite loop when it doesn't support NKVM.
                     }
@@ -1506,15 +1419,15 @@ namespace NetworkKVM.Plugins
                 //CallShowNKVM(0, 100, 100);
                 _logs.DebugMsg("NKVM NamedPipeServer_UI is go...");
                 Trace.WriteLine("NKVM NamedPipeServer_UI is go...");
-                int i = 0;
+                //int i = 0;
                 while (_runloop)
                 {
-                    if (i > 2)
-                    {
-                        _logs.DebugMsg("[NetworkKVM] loop error times = 3");
-                        Disconnect();
-                        break;
-                    }
+                    //if (i > 10)
+                    //{
+                    //    _logs.DebugMsg("[NetworkKVM] loop error times = 10");
+                    //    Disconnect();
+                    //    break;
+                    //}
                     if (pipeServer != null)
                     {
                         if (pipeServer.IsConnected)
@@ -1523,17 +1436,18 @@ namespace NetworkKVM.Plugins
                             {
                                 _logs.DebugMsg("[NetworkKVM]Token is cancel");
                                 Trace.WriteLine("[NetworkKVM]Token is cancel");
-                                Disconnect();
-                                Thread.Sleep(1000);
-                                _AllInfoMonitors = GetMonitors().Result;
-                                if (CreateNamedPipe())
-                                {
-                                    break;
-                                }
-                                else
-                                {
-                                    i++;
-                                }
+                                //Disconnect();
+                                //Thread.Sleep(1000);
+                                //_AllInfoMonitors = GetMonitors().Result;
+                                //if (CreateNamedPipe())
+                                //{
+                                //    break;
+                                //}
+                                //else
+                                //{
+                                    //i++;
+                                    Thread.Sleep(1000);
+                                //}
                             }
                             else
                             {
@@ -1541,7 +1455,7 @@ namespace NetworkKVM.Plugins
                                 {
                                     try
                                     {
-                                        i = 0;
+                                        //i = 0;
                                         response = ReadAsync().Result;
                                         _logs.DebugMsg("[NetworkKVM] Get :" + response);
                                         if (!string.IsNullOrEmpty(response))
@@ -1599,21 +1513,30 @@ namespace NetworkKVM.Plugins
                                         Disconnect();
                                         Thread.Sleep(1000);
                                         _AllInfoMonitors = GetMonitors().Result;
-                                        CreateNamedPipe();
-                                        i++;
+                                        if (CreateNamedPipe_init())
+                                        {
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            //i++;
+                                            Thread.Sleep(500);
+                                        }
                                     }
                                 }
                             }
                         }
                         else
                         {
-                            i++;
+                            //i++;
+                            Thread.Sleep(500);
                         }
                     }
                     else
                     {
-                        _logs.DebugMsg("pipeServer is null...");
-                        Disconnect();
+                        _logs.DebugMsg("pipeServer is null");
+                        //Disconnect();
+                        //Thread.Sleep(1000);
                         _AllInfoMonitors = GetMonitors().Result;
                         break;
                     }
@@ -1670,9 +1593,10 @@ namespace NetworkKVM.Plugins
                 }
                 Trace.WriteLine("NKVM CreateNamedPipe_init is End...");
             }
-            catch
+            catch (Exception ex)
             {
                 _logs.DebugMsg("[NetworkKVM] CreateNamedPipe_init is error");
+                _logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
                 Disconnect();
                 return false;
             }
@@ -1713,9 +1637,10 @@ namespace NetworkKVM.Plugins
                 }
                 Trace.WriteLine("NKVM CreateNamedPipe is End...");
             }
-            catch
+            catch (Exception ex)
             {
                 _logs.DebugMsg("[NetworkKVM] CreateNamedPipe is error");
+                _logs.DebugMsg($"[NetworkKVM] Failed to create {ex}");
                 Disconnect();
                 return false;
             }

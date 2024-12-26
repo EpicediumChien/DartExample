@@ -488,6 +488,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             Assert.IsTrue(true);
         }
 
+        //Robert_Lin, 2024-12-20 GetMonitors() unused method, will be removed.
         [Test]
         public void TestGetMonitors()
         {
@@ -497,14 +498,14 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             Mock_DisplayManagerPlugin.Setup(x => x.GetMonitors()).Returns(Task.FromResult(_allInfoMonitors));
             var DisplayManagerPluginObj = Mock_DisplayManagerPlugin.Object;
             PrivateObject privateEAplugin = new PrivateObject(EAplugin);
-            privateEAplugin.SetFieldOrProperty("_displayManagerPlugin", null);
-            var Getmonitor_result1 = (List<MonitorInfo>)privateEAplugin.Invoke("GetMonitors"); //_displayManagerPlugin null
-            Assert.IsNull(Getmonitor_result1);
+            //privateEAplugin.SetFieldOrProperty("_displayManagerPlugin", null);   
+            //var Getmonitor_result1 = (List<MonitorInfo>)privateEAplugin.Invoke("GetMonitors"); //_displayManagerPlugin null
+            //Assert.IsNull(Getmonitor_result1);
 
-            privateEAplugin.SetFieldOrProperty("_displayManagerPlugin", DisplayManagerPluginObj);
-            var Getmonitor_result2 = (List<MonitorInfo>)privateEAplugin.Invoke("GetMonitors");  //_displayManagerPlugin not  null
-            Assert.IsNotNull(Getmonitor_result2);
-            Assert.Greater(Getmonitor_result2.Count, 0);
+            //privateEAplugin.SetFieldOrProperty("_displayManagerPlugin", DisplayManagerPluginObj);
+            //var Getmonitor_result2 = (List<MonitorInfo>)privateEAplugin.Invoke("GetMonitors");  //_displayManagerPlugin not  null
+            //Assert.IsNotNull(Getmonitor_result2);
+            //Assert.Greater(Getmonitor_result2.Count, 0);
         }
 
         [Test]

@@ -155,6 +155,17 @@ namespace DDPM.UI.Common
             msgBox.ShowDialog();
         }
 
+        public static bool DDPMEzMesssageChangeButtonBox(string title, string text, bool IsCloseButton, Window Owner, int width, int height, Thickness titlemargin, Thickness submargin, Thickness leftbtn, Thickness rightbtn)
+        {
+            DDPMMsgBox msgBox = new DDPMMsgBox(title, text, IsCloseButton, Owner, width, height, titlemargin, submargin, leftbtn, rightbtn);
+            msgBox.ShowDialog();
+            if (msgBox.result == DDPMMsgBox_btn_result.left)
+                return true;
+            else
+                return false;
+        }
+
+
         public static bool IsMainWindowAtPrimaryScreen = true;
 
         /// <summary>

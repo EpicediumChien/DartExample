@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
+using System.Security;
 using System.Text;
+using static DDPM.Win32Lib.Win32;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -10,6 +14,90 @@ namespace DDPM.Win32Lib
 {
     public class Win32
     {
+        #region Window General
+        public static void HideWinFromAltTab(IntPtr hWnd)
+        {
+            int exStyle = (int)Win32Lib.Win32._GetWindowLong(hWnd, (int)Win32Lib.Win32.WindowLongFlags.GWL_EXSTYLE);
+
+            exStyle |= (int)Win32Lib.Win32.WindowStylesEx.WS_EX_TOOLWINDOW;
+            Win32Lib.Win32.SetWindowLong(hWnd, (int)Win32Lib.Win32.WindowLongFlags.GWL_EXSTYLE, (IntPtr)exStyle);
+        }
+
+
+        public static int IntPtrToInt32(IntPtr intPtr)
+        {
+            return unchecked((int)intPtr.ToInt64());
+        }
+
+        [DllImport("kernel32.dll", EntryPoint = "SetLastError")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern void SetLastError(int dwErrorCode);
+
+        public static void _SetLastError(int dwErrorCode)
+        {
+            SetLastError(dwErrorCode);
+        }
+        #endregion Window General
+
+        #region WindowLong
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
+
+        public static IntPtr _GetWindowLong(IntPtr hWnd, int nIndex)
+        {
+            return GetWindowLong(hWnd, nIndex);
+        }
+
+        public static IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
+        {
+            int error = 0;
+            IntPtr result = IntPtr.Zero;
+            // Win32 SetWindowLong doesn't clear error on success
+            _SetLastError(0);
+
+            if (IntPtr.Size == 4)
+            {
+                // use SetWindowLong
+                Int32 tempResult = _IntSetWindowLong(hWnd, nIndex, IntPtrToInt32(dwNewLong));
+                error = Marshal.GetLastWin32Error();
+                result = new IntPtr(tempResult);
+            }
+            else
+            {
+                // use SetWindowLongPtr
+                result = _IntSetWindowLongPtr(hWnd, nIndex, dwNewLong);
+                error = Marshal.GetLastWin32Error();
+            }
+
+            if ((result == IntPtr.Zero) && (error != 0))
+            {
+                throw new System.ComponentModel.Win32Exception(error);
+            }
+
+            return result;
+        }
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern IntPtr IntSetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+        public static IntPtr _IntSetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
+        {
+            return IntSetWindowLongPtr(hWnd, nIndex, dwNewLong);
+        }
+
+        [DllImport("user32.dll", EntryPoint = "SetWindowLong", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern Int32 IntSetWindowLong(IntPtr hWnd, int nIndex, Int32 dwNewLong);
+
+        public static Int32 _IntSetWindowLong(IntPtr hWnd, int nIndex, Int32 dwNewLong)
+        {
+            return IntSetWindowLong(hWnd, nIndex, dwNewLong);
+        }
+        #endregion WindowLong
+
+        #region Window Styles
         [Flags]
         public enum WindowStylesEx : uint
         {
@@ -259,84 +347,7 @@ namespace DDPM.Win32Lib
             DWLP_MSGRESULT = 0x0,
             DWLP_DLGPROC = 0x4
         }
-
-        public static void HideWinFromAltTab(IntPtr hWnd)
-        {
-            int exStyle = (int)Win32Lib.Win32._GetWindowLong(hWnd, (int)Win32Lib.Win32.WindowLongFlags.GWL_EXSTYLE);
-
-            exStyle |= (int)Win32Lib.Win32.WindowStylesEx.WS_EX_TOOLWINDOW;
-            Win32Lib.Win32.SetWindowLong(hWnd, (int)Win32Lib.Win32.WindowLongFlags.GWL_EXSTYLE, (IntPtr)exStyle);
-        }
-
-        [DllImport("user32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
-
-        public static IntPtr _GetWindowLong(IntPtr hWnd, int nIndex)
-        {
-            return GetWindowLong(hWnd, nIndex);
-        }
-
-        public static IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
-        {
-            int error = 0;
-            IntPtr result = IntPtr.Zero;
-            // Win32 SetWindowLong doesn't clear error on success
-            _SetLastError(0);
-
-            if (IntPtr.Size == 4)
-            {
-                // use SetWindowLong
-                Int32 tempResult = _IntSetWindowLong(hWnd, nIndex, IntPtrToInt32(dwNewLong));
-                error = Marshal.GetLastWin32Error();
-                result = new IntPtr(tempResult);
-            }
-            else
-            {
-                // use SetWindowLongPtr
-                result = _IntSetWindowLongPtr(hWnd, nIndex, dwNewLong);
-                error = Marshal.GetLastWin32Error();
-            }
-
-            if ((result == IntPtr.Zero) && (error != 0))
-            {
-                throw new System.ComponentModel.Win32Exception(error);
-            }
-
-            return result;
-        }
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern IntPtr IntSetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
-        public static IntPtr _IntSetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
-        {
-            return IntSetWindowLongPtr(hWnd, nIndex, dwNewLong);
-        }
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowLong", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern Int32 IntSetWindowLong(IntPtr hWnd, int nIndex, Int32 dwNewLong);
-
-        public static Int32 _IntSetWindowLong(IntPtr hWnd, int nIndex, Int32 dwNewLong)
-        {
-            return IntSetWindowLong(hWnd, nIndex, dwNewLong);
-        }
-
-        public static int IntPtrToInt32(IntPtr intPtr)
-        {
-            return unchecked((int)intPtr.ToInt64());
-        }
-
-        [DllImport("kernel32.dll", EntryPoint = "SetLastError")]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern void SetLastError(int dwErrorCode);
-
-        public static void _SetLastError(int dwErrorCode)
-        {
-            SetLastError(dwErrorCode);
-        }
+        #endregion Window Styles
 
         #region Read/Write INI file
 
@@ -431,7 +442,7 @@ namespace DDPM.Win32Lib
         #endregion Actions (Wayn)
 
         #region EnumWindows
-       //The major (high-level) method to Enumerate Windows is GetWindowHandles()
+        //The major (high-level) method to Enumerate Windows is GetWindowHandles()
 
         /// <summary>
         /// EnumWindows with the 'proc' as the firter, and then add all acceptable WindowHandles as output.
@@ -467,6 +478,15 @@ namespace DDPM.Win32Lib
         private static bool _EnumWindows(EnumWindowsProc proc, IntPtr lParam)
         {
             return EnumWindows(proc, lParam);
+        }
+
+        //EnumChildWindows( )
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool EnumChildWindows(IntPtr hwndParent, EnumWindowsProc lpEnumFunc, IntPtr lParam);
+        public static bool _EnumChildWindows(IntPtr hwndParent, EnumWindowsProc proc, IntPtr lParam)
+        {
+            return EnumChildWindows(hwndParent, proc, lParam);
         }
 
         //IsWindowVisible()
@@ -736,7 +756,7 @@ namespace DDPM.Win32Lib
         private static extern bool SetForegroundWindow(IntPtr hWnd);
         public static bool _SetForegroundWindow(IntPtr hWnd)
         {
-            return SetForegroundWindow(hWnd); 
+            return SetForegroundWindow(hWnd);
         }
 
 
@@ -918,6 +938,260 @@ namespace DDPM.Win32Lib
             return className.ToString();
         }
         #endregion
+
+        #region Process
+
+        private static bool EnumChildProc(IntPtr hWnd, IntPtr lParam)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Get Process from window handle (hWnd)
+        /// </summary>
+        /// <param name="hWnd">[IN] Window handle</param>
+        /// <param name="p">[OUT] Process</param>
+        /// <param name="msg">[OUT] The error message if return false</param>
+        /// <returns></returns>
+        public static bool GetProcessFromWindowHandle(IntPtr hWnd, out Process p, out string msg)
+        {
+            if (hWnd == IntPtr.Zero)
+            {
+                p = null;
+                msg = "ERR, Window handle is null";
+                return false;
+            }
+
+            try
+            {
+                //Get ProcessId from window handle
+                uint processId = 0;
+                uint threadId = Win32._GetWindowThreadProcessId(hWnd, out processId);
+
+                //Get Process from ProcessId
+                p = Process.GetProcessById((int)processId);
+
+                if (p == null)
+                {
+                    msg = $"ERR, GetProcessById(), ProcessId={processId}";
+                    return false;
+                }
+                msg = "OK";
+                return true;
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                p = null;
+            }
+            return false;
+        }
+
+        //GetWindowThreadProcessId()
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+
+        public static uint _GetWindowThreadProcessId(IntPtr hWnd, out uint processId)
+        {
+            return GetWindowThreadProcessId(hWnd, out processId);
+        }
+
+        //QueryFullProcessImageName()
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        private static extern bool QueryFullProcessImageName(IntPtr hProcess, uint dwFlags, [Out, MarshalAs(UnmanagedType.LPTStr)] StringBuilder lpExeName, ref uint lpdwSize);
+
+        public static bool _QueryFullProcessImageName(IntPtr hProcess, uint dwFlags, [Out, MarshalAs(UnmanagedType.LPTStr)] StringBuilder lpExeName, ref uint lpdwSize)
+        {
+            return QueryFullProcessImageName(hProcess, dwFlags, lpExeName, ref lpdwSize);
+        }
+
+        //OpenProcess()
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr OpenProcess(uint processAccess, bool bInheritHandle, uint processId);
+        public static IntPtr _OpenProcess(uint processAccess, bool bInheritHandle, uint processId)
+        {
+            return OpenProcess(processAccess, bInheritHandle, processId);
+        }
+
+        //CloseHandle()
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
+        [SuppressUnmanagedCodeSecurity]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool CloseHandle(IntPtr hObject);
+        public static bool _CloseHandle(IntPtr hObject)
+        {
+            return CloseHandle(hObject);
+        }
+        #endregion
+
+
+        #region PropertyStore
+        public enum HRESULT : int
+        {
+            S_OK = 0,
+            S_FALSE = 1,
+            E_NOINTERFACE = unchecked((int)0x80004002),
+            E_NOTIMPL = unchecked((int)0x80004001),
+            E_FAIL = unchecked((int)0x80004005)
+        }
+
+        public struct PROPERTYKEY
+        {
+            public PROPERTYKEY(Guid InputId, UInt32 InputPid)
+            {
+                fmtid = InputId;
+                pid = InputPid;
+            }
+            Guid fmtid;
+            uint pid;
+        };
+
+        [StructLayout(LayoutKind.Sequential, Pack = 0)]
+        public struct PROPARRAY
+        {
+            public UInt32 cElems;
+            public IntPtr pElems;
+        }
+
+        [ComImport, Guid("886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        public interface IPropertyStore
+        {
+            HRESULT GetCount([Out] out uint propertyCount);
+            HRESULT GetAt([In] uint propertyIndex, [Out, MarshalAs(UnmanagedType.Struct)] out PROPERTYKEY key);
+            HRESULT GetValue([In, MarshalAs(UnmanagedType.Struct)] ref PROPERTYKEY key, [Out, MarshalAs(UnmanagedType.Struct)] out PROPVARIANT pv);
+            HRESULT SetValue([In, MarshalAs(UnmanagedType.Struct)] ref PROPERTYKEY key, [In, MarshalAs(UnmanagedType.Struct)] ref PROPVARIANT pv);
+            HRESULT Commit();
+        }
+
+        [StructLayout(LayoutKind.Explicit, Pack = 1)]
+        public struct PROPVARIANT
+        {
+            [FieldOffset(0)]
+            public ushort varType;
+            [FieldOffset(2)]
+            public ushort wReserved1;
+            [FieldOffset(4)]
+            public ushort wReserved2;
+            [FieldOffset(6)]
+            public ushort wReserved3;
+
+            [FieldOffset(8)]
+            public byte bVal;
+            [FieldOffset(8)]
+            public sbyte cVal;
+            [FieldOffset(8)]
+            public ushort uiVal;
+            [FieldOffset(8)]
+            public short iVal;
+            [FieldOffset(8)]
+            public UInt32 uintVal;
+            [FieldOffset(8)]
+            public Int32 intVal;
+            [FieldOffset(8)]
+            public UInt64 ulVal;
+            [FieldOffset(8)]
+            public Int64 lVal;
+            [FieldOffset(8)]
+            public float fltVal;
+            [FieldOffset(8)]
+            public double dblVal;
+            [FieldOffset(8)]
+            public short boolVal;
+            [FieldOffset(8)]
+            public IntPtr pclsidVal; // GUID ID pointer
+            [FieldOffset(8)]
+            public IntPtr pszVal; // Ansi string pointer
+            [FieldOffset(8)]
+            public IntPtr pwszVal; // Unicode string pointer
+            [FieldOffset(8)]
+            public IntPtr punkVal; // punkVal (interface pointer)
+            [FieldOffset(8)]
+            public PROPARRAY ca;
+            [FieldOffset(8)]
+            public System.Runtime.InteropServices.ComTypes.FILETIME filetime;
+        }
+
+        public static PROPERTYKEY PKEY_AppUserModel_ID = new PROPERTYKEY(new Guid("9F4C2855-9F79-4B39-A8D0-E1D42DE1D5F3"), 5);
+
+        //SHGetPropertyStoreForWindow()
+        [DllImport("Shell32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        private static extern HRESULT SHGetPropertyStoreForWindow(IntPtr hwnd, ref Guid iid, [Out(), MarshalAs(UnmanagedType.Interface)] out IPropertyStore propertyStore);
+        #endregion
+
+        #region UWP
+        public const uint PROCESS_QUERY_INFORMATION = 0x0400;
+        public const uint PROCESS_VM_READ = 0x0010;
+
+        public static string GetUwpAppPathName(IntPtr hWndParent, uint processId, out IntPtr hProcessChild)
+        {
+            List<uint> childPids = new List<uint>();
+            hProcessChild = IntPtr.Zero;
+            //EnumWindowsProc funcEnumWin = EnumChildProc;
+            //_EnumChildWindows(hWndParent, funcEnumWin, IntPtr.Zero);
+
+            _EnumChildWindows(hWndParent, delegate (IntPtr hWnd, IntPtr lParam)
+            {
+                try
+                {
+                    uint pid;
+                    _GetWindowThreadProcessId(hWnd, out pid);
+                    if (pid != processId)
+                        childPids.Add(pid);
+                }
+                catch (Exception ex2)
+                {
+
+                }
+                return true;
+            }
+            , IntPtr.Zero);
+
+            if (childPids.Count > 0)
+            {
+                uint dwDesiredAccess = Win32.PROCESS_QUERY_INFORMATION | Win32.PROCESS_VM_READ;
+                IntPtr hProcess = _OpenProcess(dwDesiredAccess, false, childPids[0]);
+                if (hProcess == IntPtr.Zero)
+                {
+                    return string.Empty;
+                }
+                hProcessChild = hProcess;
+                uint lpdwSize = 2048;
+                StringBuilder sb = new StringBuilder((int)lpdwSize);
+                if (Win32._QueryFullProcessImageName(hProcess, 0, sb, ref lpdwSize))
+                {
+                    return sb.ToString();
+                }
+            }
+            return String.Empty;
+        }
+
+        /// <summary>
+        /// Get the AppUserModelId from the WindowHanlde of an UWP App.
+        /// </summary>
+        /// <param name="hWnd">[IN] The window handle to get</param>
+        /// <param name="outString">[OUT] the AppUserModelId of the UWP app if return true. Or the error message if return false.</param>
+        /// <returns></returns>
+        public static bool GetUwpAppUserModelId(IntPtr hWnd, out string outString)
+        {
+            IPropertyStore propertyStore;
+            Guid guid = new Guid("{886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99}");
+            HRESULT hr = SHGetPropertyStoreForWindow(hWnd, ref guid, out propertyStore);
+            if (hr == HRESULT.S_OK)
+            {
+                PROPVARIANT propVar = new PROPVARIANT();
+                hr = propertyStore.GetValue(ref PKEY_AppUserModel_ID, out propVar);
+                outString = Marshal.PtrToStringUni(propVar.pwszVal);
+                return true;
+            }
+            else
+            {
+                outString = $"SHGetPropertyStoreForWindow(hWnd=0x{hWnd:X}) return {hr}";
+                return false;
+            }
+        }
+        #endregion UWP
 
     }
 }
