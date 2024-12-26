@@ -1003,6 +1003,17 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         writelog("_devMgr.GetAntiFlicker entry");
                         webcam.AntiFlicker = _devMgr.GetAntiFlicker(guid).Result.ToString();
+                        switch (webcam.AntiFlicker)
+                        {
+                            case "1":
+                                webcam.AntiFlicker = "50";
+                                break;
+                            case "2":
+                                webcam.AntiFlicker = "60";
+                                break;
+                            default:
+                                break;
+                        }
                     }
                     writelog("device.IsMicEnumerationSupported entry");
                     if (device.IsMicEnumerationSupported)
@@ -11688,8 +11699,9 @@ namespace DDPM.CLI.Plugins.Display
                                                     {
                                                         if (property.Value.ToString() == "50" || property.Value.ToString() == "60")
                                                         {
+                                                            var antiflickerValue = property.Value.ToString() == "50" ? 1 : 2;
                                                             writelog("_devMgr.SetAntiFlicker entry");
-                                                            _devMgr.SetAntiFlicker(device.ID.ToString(), int.Parse(property.Value.ToString()));
+                                                            _devMgr.SetAntiFlicker(device.ID.ToString(), antiflickerValue);
                                                             writelog("_devMgr.SetAntiFlicker exit");
                                                         }
                                                         else
@@ -11757,6 +11769,34 @@ namespace DDPM.CLI.Plugins.Display
                                                     else
                                                     {
                                                         resultMessages.Add("AIAUTOFRAMING not support");
+                                                    }
+                                                    break;
+                                                case "PRESENCEDETECTION":
+                                                    writelog("PRESENCEDETECTION entry");
+                                                    writelog("device.IsESISupported entry");
+                                                    if (device.IsESISupported)
+                                                    {
+                                                        if (property.Value.ToString() == "ON")
+                                                        {
+                                                            writelog("_devMgr.SetIsProximitySensorEnable entry");
+                                                            _devMgr.SetIsProximitySensorEnable(device.ID.ToString(), true);
+                                                            writelog("_devMgr.SetIsProximitySensorEnable exit");
+                                                        }
+                                                        else if (property.Value.ToString() == "OFF")
+                                                        {
+                                                            writelog("_devMgr.SetIsProximitySensorEnable entry");
+                                                            _devMgr.SetIsProximitySensorEnable(device.ID.ToString(), false);
+                                                            writelog("_devMgr.SetIsProximitySensorEnable exit");
+                                                        }
+                                                        else
+                                                        {
+                                                            resultMessages.Add("PRESENCEDETECTION is wrong value");
+                                                            ispass = false;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        resultMessages.Add("PRESENCEDETECTION not support");
                                                     }
                                                     break;
                                                 default:
