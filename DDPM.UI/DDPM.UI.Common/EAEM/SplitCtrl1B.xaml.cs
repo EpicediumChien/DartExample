@@ -66,10 +66,11 @@ namespace DDPM.UI.Common.EAEM
 
         #region For Pxp Usage
 
+        //Robert_Lin, 2024-12-25 change the "0x022" to defined constant variable
         /// <summary>
         /// The capability Code of PIP, the defult code is used for default settings
         /// </summary>
-        public UInt16 PbpCapabilityCode { get; set; } = 0x0022;
+        public UInt16 PbpCapabilityCode { get; set; } = DDPM.SA.Common.Display.PxpModeObj.PxpMode_PipLarge; //=0x0022;
 
         private PxpInfo _pxpInfo = new PxpInfo();
 
