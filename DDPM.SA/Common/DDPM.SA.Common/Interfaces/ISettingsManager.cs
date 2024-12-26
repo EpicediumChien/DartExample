@@ -55,7 +55,7 @@ namespace DDPM.SA.Common
 
         Task<List<string>> GetInfos(bool force_reload = false);
 
-        Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam);
+        Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam, bool needExceptionString = false);
         Task<bool> SaveLog(string saveFolderPath);
 
 
