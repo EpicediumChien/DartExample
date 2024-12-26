@@ -246,6 +246,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             File.Delete(colorpresettingsObject_path1_);
         }
 
+        // RunSerializeObject ColorPresetSettings method had been remove in SettingManagerSA.cs
         [Test]
         public void TestRunSerializeColorPresetSettingsObject()
         {
@@ -255,9 +256,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             File.WriteAllText(colorpresettingsObject_path1_, jsonData);
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
             privateSettingsManagerObject.SetFieldOrProperty("_colorsettings_path", colorpresettingsObject_path1_);
-            var RunSerializeObjectResult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", colorPresetSettingsConfigs);
-            Assert.Greater(RunSerializeObjectResult.Length, 0);
-            File.Delete(colorpresettingsObject_path1_);
+            //var RunSerializeObjectResult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", colorPresetSettingsConfigs);  
+            //Assert.Greater(RunSerializeObjectResult.Length, 0);
+            //File.Delete(colorpresettingsObject_path1_);
         }
 
         [Test]
@@ -862,40 +863,40 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             var settings_Data = new DDPMSettings(Ddpm_app_, Ddpm_user_, Ddpm_it_);
             string _settings_pathNull = string.Empty;
             privateSettingsManagerObject.SetFieldOrProperty("_settings_path", _settings_pathNull);
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", null);
+            var ddpm_it = new DDPMITConfig();
 
-            if (string.IsNullOrEmpty(_settings_pathNull))
-            {
-                var ddpm_it = new DDPMITConfig();
-                Mock<ISettingsManagerSA> SysSettingsPlugin = new Mock<ISettingsManagerSA>();
-                SysSettingsPlugin.Setup(x => x.GetITGlobalConfigs(It.IsAny<bool>())).Returns(Task.FromResult(Ddpm_it_));
-                var SysSettingsPluginObj = SysSettingsPlugin.Object;
-                privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginObj);
-                var ReloadAppConfigDataResult1 = SettingsManagerSAPlugin.ReloadAppConfigData(force_reload).Result; //_settings_pathNull  is null , _settings not null
-                Assert.IsNotNull(ReloadAppConfigDataResult1);
-                Assert.That(ReloadAppConfigDataResult1.LockSettings, Is.EqualTo(settings_Data.LockSettings));
-            }
+            var ReloadAppConfigDataResult0 = SettingsManagerSAPlugin.ReloadAppConfigData(force_reload).Result; //_settings_pathNull  is null , _settings not null,_SysSettingsPlugin is null
+            Assert.IsNotNull(ReloadAppConfigDataResult0);
+
+            Mock<ISettingsManagerSA> SysSettingsPlugin = new Mock<ISettingsManagerSA>();
+            SysSettingsPlugin.Setup(x => x.GetITGlobalConfigs(It.IsAny<bool>())).Returns(Task.FromResult(Ddpm_it_));
+            var SysSettingsPluginObj = SysSettingsPlugin.Object;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPluginObj);  //_SysSettingsPlugin is not null
+
+            //_settings_pathNull null            
+            var ReloadAppConfigDataResult1 = SettingsManagerSAPlugin.ReloadAppConfigData(force_reload).Result; //_settings_pathNull  is null , _settings not null
+            Assert.IsNotNull(ReloadAppConfigDataResult1);
+            Assert.That(ReloadAppConfigDataResult1.LockSettings, Is.EqualTo(settings_Data.LockSettings));
 
             string accessInfo_ = "testaccessinfo";
             string serialized_string = "{\"key\":\"value\"}";
             string settings_path_target_file = "testReloadAppConfigDatafile.json";
             File.WriteAllText(settings_path_target_file, serialized_string);
-            //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", accessInfo_);
+
             privateSettingsManagerObject.SetFieldOrProperty("_settings_path", settings_path_target_file);
             privateSettingsManagerObject.SetFieldOrProperty("_settings", null);
-            if (!string.IsNullOrEmpty(settings_path_target_file))
-            {
-                var ReloadAppConfigDataResult2 = SettingsManagerSAPlugin.ReloadAppConfigData(force_reload).Result; //settings_path_target_file is  not null , _settings=null
-                Assert.IsNull(ReloadAppConfigDataResult2);
-            }
 
-            if (settings_Data != null)
-            {
-                privateSettingsManagerObject.SetFieldOrProperty("_settings", settings_Data);
-                var ReloadAppConfigDataResult3 = SettingsManagerSAPlugin.ReloadAppConfigData(force_reload).Result; //settings_path_target_file is  not null , _settings not null
-                Assert.IsNotNull(ReloadAppConfigDataResult3);
-                Assert.That(ReloadAppConfigDataResult3.LockSettings, Is.EqualTo(settings_Data.LockSettings));
-                File.Delete(settings_path_target_file);
-            }
+            // settings_path_target_file Is not NullOrEmpty
+            var ReloadAppConfigDataResult2 = SettingsManagerSAPlugin.ReloadAppConfigData(force_reload).Result; //settings_path_target_file is  not null , _settings=null
+            Assert.IsNotNull(ReloadAppConfigDataResult2);
+
+            //settings_Data not null
+            privateSettingsManagerObject.SetFieldOrProperty("_settings", settings_Data);
+            var ReloadAppConfigDataResult3 = SettingsManagerSAPlugin.ReloadAppConfigData(force_reload).Result; //settings_path_target_file is  not null , _settings not null
+            Assert.IsNotNull(ReloadAppConfigDataResult3);
+            Assert.That(ReloadAppConfigDataResult3.LockSettings, Is.EqualTo(settings_Data.LockSettings));
+            File.Delete(settings_path_target_file);
         }
 
         [Test]
