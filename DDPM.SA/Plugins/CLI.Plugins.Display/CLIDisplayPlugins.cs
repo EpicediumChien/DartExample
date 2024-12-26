@@ -12529,7 +12529,12 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = devMgr.GetMonitors().Result;
 
-            var serviceTags = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).Distinct().ToList();
+            var serviceTags = _AllInfoMonitors.Where(_ => commandLineInput.DeviceIndex.Count == 0 || commandLineInput.DeviceIndex.Contains((_.Index + 1).ToString()))
+                                              .Where(_ => commandLineInput.ServiceTag.Count == 0 || commandLineInput.ServiceTag.Contains(_.edid.ServiceTag))
+                                              .Where(_ => commandLineInput.Model.Count == 0 || commandLineInput.Model.Contains(_.modelName))
+                                              .Select(_ => _.edid.ServiceTag)
+                                              .Distinct()
+                                              .ToList();
 
             foreach (string serviceTag in serviceTags)
             {
@@ -12620,7 +12625,8 @@ namespace DDPM.CLI.Plugins.Display
 
                                 if (setvalue != "unknown_command")
                                 {
-                                    retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
+                                    SetVCPCode(devMgr, monitor, "0x62", setvalue);
+                                    retcode = true;
                                     cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 }
                                 else
