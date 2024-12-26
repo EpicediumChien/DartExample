@@ -27,9 +27,11 @@
             </Storyboard>
             <Storyboard x:Key="StoryShrink">
                 <DoubleAnimation Storyboard.TargetName="largeImage" Storyboard.TargetProperty="MaxWidth" From="900" To="540" Duration="0:0:0.4" AutoReverse="False" />
+                <!--<DoubleAnimation Storyboard.TargetName="BottomGrid" Storyboard.TargetProperty="MaxHeight" From="540" To="500" Duration="0:0:0.4" AutoReverse="False" />-->
             </Storyboard>
             <Storyboard x:Key="StoryEnlarge">
                 <DoubleAnimation Storyboard.TargetName="largeImage" Storyboard.TargetProperty="MaxWidth" Duration="0:0:0.4" From="540" To="900" />
+                <!--<DoubleAnimation Storyboard.TargetName="BottomGrid" Storyboard.TargetProperty="MaxHeight" Duration="0:0:0.4" From="500" To="540" />-->
             </Storyboard>
             <Style x:Key="Border1" TargetType="{x:Type Border}">
                 <Setter Property="Background" Value="{DynamicResource DdpmCB_BkColor}" />
@@ -153,6 +155,17 @@
                         <StackPanel Orientation="Horizontal">
                             <UXControls:UXTextBlock Text="{Binding Model}" Margin="101,18,0,0" HorizontalAlignment="Left"
                                           Style="{StaticResource ModelNumberTextStyle}" />
+                            <!--<Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info18.png" Stretch="Fill"
+                         VerticalAlignment="Top" Cursor="" Width="16" Height="16">
+                      <Image.InputBindings>
+                          <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
+                      </Image.InputBindings>
+                      <Image.ToolTip>
+                          <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                              <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
+                          </ToolTip>
+                      </Image.ToolTip>
+                  </Image>-->
                             <Border Background="{StaticResource FakeTransparent}">
                                 <ContentControl Template="{StaticResource icon_Info}" Margin="9,22.5,0,0" VerticalAlignment="Top" Cursor="" Width="16" Height="16" />
                                 <Border.InputBindings>
@@ -244,6 +257,9 @@
                 <Grid VerticalAlignment="Center" Grid.Column="0" Grid.Row="1">
                     <Border Name="bdrAlert" Background="{DynamicResource DefaultTheme_DialogBoxBkColor}" CornerRadius="4" Margin="0" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" Width="317" Visibility="{Binding AlertVisibility}" >
                         <StackPanel Orientation="Horizontal">
+                            <!--<Image x:Name="InfoIcon" Margin="10,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info18.png" Stretch="Fill"
+                          VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
+                   </Image>-->
                             <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                             <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="Transparent" Foreground="{DynamicResource DefaultTheme_TxtColor}" TextWrapping="Wrap" Width="260" Text="{Binding AlertText}"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,0,0,0" LineHeight="19.5" Padding="0,18,0,16" FontFamily="Roboto" FontWeight="Normal" />
@@ -266,6 +282,7 @@
                                             </Border>
                                         </ToolTip>
                                     </Border.ToolTip>
+                                    <!--<Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Folder.png" Stretch="Fill" Width="17" Height="16" />-->
                                     <ContentControl Margin="0" Width="17" Height="16" Template="{StaticResource icon_Folder}" />
                                 </Border>
                                 <Border Style="{StaticResource Border1}" Cursor="Hand" Margin="8,0,0,0" Visibility="Collapsed" x:Name="btnPause" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnPause_Click">
@@ -286,7 +303,7 @@
                                             </Border>
                                         </ToolTip>
                                     </Border.ToolTip>
-                                    <ContentControl Template="{StaticResource icon_Resume}" Foreground="{DynamicResource DefaultTheme_PathColor}" Width="13" Height="14" />
+                                    <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Play.png" Stretch="Fill" Width="13" Height="14" />
                                 </Border>
                                 <Border Cursor="Hand" Margin="8,0,0,0" Visibility="Visible" x:Name="btnRecord" MouseLeftButtonDown="btnRecord_Click" Height="40" Width="40"  VerticalAlignment="Bottom"
                             Border.CornerRadius="2" BorderThickness="0" BorderBrush="#1B385F">
@@ -321,6 +338,13 @@
                                                                 <Grid Height="30" Margin="0,5,0,0">
                                                                     <StackPanel Orientation="Horizontal" Width="110" HorizontalAlignment="Left">
                                                                         <UXControls:UXTextBlock Cursor="Hand" Margin="0" Tag="{Binding ID}" Text="{Binding Caption}" HorizontalAlignment="Left" MouseLeftButtonDown="ProfileSelected" FontFamily="Roboto" FontSize="14" VerticalAlignment="Center" />
+                                                                        <!--<Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Visibility="{Binding TooltipVisibility}" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" Tag="{Binding ID}">
+                                                                <Image.ToolTip>
+                                                                    <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                                                                        <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding Tooltip}"/>
+                                                                    </ToolTip>
+                                                                </Image.ToolTip>
+                                                            </Image>-->
                                                                         <Border Background="{StaticResource FakeTransparent}">
                                                                             <ContentControl Template="{StaticResource icon_Info}" Margin="8,0,0,0" Width="16" Height="16"  Visibility="{Binding TooltipVisibility}"
                                                                              HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" Tag="{Binding ID}"/>
@@ -334,9 +358,7 @@
                                                                         </Border>
                                                                     </StackPanel>
                                                                     <StackPanel Margin="0,0,0,0" Orientation="Horizontal" Visibility="{Binding ButtonVisibility}" HorizontalAlignment="Right">
-                                                                        <Border Background="{StaticResource FakeTransparent}" Cursor="Hand" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="EditPreset" Tag="{Binding ID}">
-                                                                            <ContentControl Template="{StaticResource icon_Pen}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
-                                                                        </Border>
+                                                                        <Image Margin="0" Source="/DDPM.UI.Resources;component/Resources/Images/Pen.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="EditPreset" Tag="{Binding ID}"/>
                                                                         <Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/TrashCan.png" Cursor="Hand" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" Tag="{Binding ID}"/>
                                                                     </StackPanel>
                                                                 </Grid>
@@ -358,8 +380,11 @@
                                 BorderThickness="1"
                                 BorderBrush="#31A2E3">
                                         <Grid>
+                                            <!--<Image Margin="10,12,0,12" Source="/DDPM.UI.Resources;component/Resources/Images/CameraPreset.png" Stretch="Fill" Width="17" Height="16" HorizontalAlignment="Left" />-->
                                             <ContentControl Margin="10,12,0,12" Width="17" Height="16" HorizontalAlignment="Left" Template="{StaticResource icon_CameraPreset}" />
                                             <UXControls:UXTextBlock Name="txtPreset" Margin="35,0,0,0" FontFamily="Roboto" FontSize="14" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                            <!--<Image Name="imgDown" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" Stretch="Uniform" Margin="0,0,10,0"
+                     Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="12" Height="12"/>-->
                                             <ContentControl Name="imgDown" Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="12" Height="12" 
                                                 RenderTransformOrigin="0.5,0.5"  Template="{StaticResource icon_DownArrow}" />
                                         </Grid>
@@ -375,13 +400,15 @@
                             <StackPanel Orientation="Vertical">
                                 <Border x:Name="bdrName" BorderThickness="1" BorderBrush="#7E7E7E" CornerRadius="4" Margin="16,0,0,0">
                                     <UXControls:UXTextBox Name="txbName" Width="260" Height="40" Padding="8,12" FontWeight="Medium" FontFamily="Roboto" MaxLength="30" FontSize="14"
-                           HorizontalAlignment="Center" Margin="0,0,0,0" BorderThickness="0" Background="{DynamicResource Webcam_TextBox_BkColor}" PreviewTextInput="txtSearchText_PreviewTextInput"
+                           HorizontalAlignment="Center" Margin="0,0,0,0" Background="#141D28" BorderThickness="0" Foreground="#F5F6F7" PreviewTextInput="txtSearchText_PreviewTextInput"
                            TextChanged="NameTextChanged" TextWrapping="NoWrap" FocusVisualStyle="{StaticResource BorderFocused}"/>
 
                                 </Border>
                                 <UXControls:UXTextBlock Name="txtMsg" Margin="16,5,0,-20" FontFamily="Roboto" FontSize="12" FontWeight="Medium" Foreground="#FF3E3B" Visibility="Collapsed" />
                             </StackPanel>
+                            <!-- <common:ActionButton Name="btnCancel" Style="{StaticResource CancelButtonStyle}" Margin="16,0,7,0" MouseDown="CancelClick" Width="107" />-->
                             <Button Name="btnCancel" Style="{StaticResource SecondaryButtonStyle}" Margin="16,0,7,0" Click="CancelClick" Width="107" />
+                            <!-- <common:ActionButton Name="btnSave" Style="{StaticResource SaveButtonStyle}" MouseDown="SaveClick" IsEnabled="False" Width="94" />-->
                             <Button Name="btnSave" Style="{StaticResource PrimaryButtonStyle}" Click="SaveClick" IsEnabled="False" Width="94" />
                         </StackPanel>
                     </Grid>

@@ -983,7 +983,7 @@ namespace DDPM.UI.Plugin.ViewModels
             var fv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
             if (fv == null || fv == string.Empty)
             {
-                _log.Info($"[HeadsetViewModel] SetCurrentDevice ... GetHeadsetFirmwareVersionAsync ... nill or empty ... DTP fail ...");
+                _log.Info($"[HeadsetViewModel] SetCurrentDevice ... GetHeadsetFirmwareVersionAsync ... Null or Empty ... DTP fail ...");
                 IsDTPReady = false;
                 fv = CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
                 FirmwareVersion2 = $"Firmware Version {fv}";

@@ -216,6 +216,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static bool _IsSkipCA = false;
 
         private QAMPage _QAM = null;
+        private Thread threadQAM = null;
         private Point QAM_Position;
         private bool isDDPMHomepageReady = false;
         private bool isDDPMLaunchedByQAM = false;
@@ -9943,6 +9944,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             GlobalSettingChangeEvent?.Invoke(this, null);
 
             //Derek 1209 to handle QAM event
+            writelog($"HandleQAMV2 launched by event Set_GlobalSetting_EnableQuickAccessWidget");
             HandleQAMV2();
 
             return Task.FromResult(ret);
@@ -10307,7 +10309,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                                              //_ZoomMeetingType != ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
                     )
                 {
-                    ResetQAMCondition();
+                    //ResetQAMCondition();
                     QAMClose(false);
                     CloseQAMOSD();
 
@@ -10316,9 +10318,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     return;
                 }
 
-                _IsZoomScreenShareActive = _DTPProxyPlugin.GetIsZoomScreenShareActive(QAMWebcamDeviceGuid).Result;
-                _IsZoomMeetingActive = _DTPProxyPlugin.GetIsZoomMeetingActive(QAMWebcamDeviceGuid).Result;
-                _ZoomMeetingType = (ZoomMeetingType)_DTPProxyPlugin.GetZoomMeetingTypeAsync(QAMWebcamDeviceGuid).Result;
+                //Derek 1221
+                //if (null == QAMWebcamDeviceGuid || string.Empty == QAMWebcamDeviceGuid)
+                //{
+                //    writelog($"null == QAMWebcamDeviceGuid || string.Empty == QAMWebcamDeviceGuid");
+
+                //    //_IsZoomScreenShareActive = _DTPProxyPlugin.GetIsZoomScreenShareActive().Result;
+                //    //_IsZoomMeetingActive = _DTPProxyPlugin.GetIsZoomMeetingActive().Result;
+                //    //_ZoomMeetingType = (ZoomMeetingType)_DTPProxyPlugin.GetZoomMeetingTypeAsync().Result;
+
+                //    writelog($"Zoom meeting condition 1, _IsZoomScreenShareActive = {_IsZoomScreenShareActive}, _IsZoomMeetingActive = {_IsZoomMeetingActive}, _ZoomMeetingType = {_ZoomMeetingType}");
+                //}
+                //else
+                //{
+                //    _IsZoomScreenShareActive = _DTPProxyPlugin.GetIsZoomScreenShareActive(QAMWebcamDeviceGuid).Result;
+                //    _IsZoomMeetingActive = _DTPProxyPlugin.GetIsZoomMeetingActive(QAMWebcamDeviceGuid).Result;
+                //    _ZoomMeetingType = (ZoomMeetingType)_DTPProxyPlugin.GetZoomMeetingTypeAsync(QAMWebcamDeviceGuid).Result;
+
+                //    writelog($"Zoom meeting condition 2, _IsZoomScreenShareActive = {_IsZoomScreenShareActive}, _IsZoomMeetingActive = {_IsZoomMeetingActive}, _ZoomMeetingType = {_ZoomMeetingType}");
+                //}
                 writelog($"Zoom meeting condition, _IsZoomScreenShareActive = {_IsZoomScreenShareActive}, _IsZoomMeetingActive = {_IsZoomMeetingActive}, _ZoomMeetingType = {_ZoomMeetingType}");
 
                 //OSD condition
@@ -10377,11 +10395,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception e)
             {
-                ResetQAMCondition();
+                //ResetQAMCondition();
                 writelog($"Catch exception[{e.Message}] when Handle QAM process!");
             }
 
-            ResetQAMCondition();
+            //ResetQAMCondition();
             writelog($"HandleQAMV2 done");
         }
 
@@ -10483,6 +10501,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             eventMsg = EventMsg.CreateEventObjectFromEventMsg(msg);
             int WebcamDevCnt = GetWebcamDeviceCount();
+            writelog($"HandleQAMEvent WebcamDevCnt = {WebcamDevCnt}, eventMsg = {msg}");
 
             if (null == eventMsg)
                 return;
@@ -10501,49 +10520,82 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case "Webcam_IsZoomMeetingActiveChanged":
                     isQAMHandleEvent = true;
 
-                    if (1 == WebcamDevCnt)
-                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
+                        _IsZoomMeetingActive = false;
 
-                    //if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
-                    //    _IsZoomMeetingActive = false;
+                    //if (1 == WebcamDevCnt)
+                    //{
+                    //    //QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    //    QAMWebcamDeviceGuid = _DTPProxyPlugin.GetWebcamDeviceID().Result;
 
+                    //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_IsZoomScreenShareActiveChanged");
+                    //}
+
+                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomMeetingActiveChanged");
                     break;
 
                 case "Webcam_IsZoomScreenShareActiveChanged":
                     isQAMHandleEvent = true;
 
-                    if (1 == WebcamDevCnt)
-                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
+                        _IsZoomScreenShareActive = false;
 
-                    //if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
-                    //    _IsZoomScreenShareActive = false;
+                    //if (1 == WebcamDevCnt)
+                    //{
+                    //    //QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    //    QAMWebcamDeviceGuid = _DTPProxyPlugin.GetWebcamDeviceID().Result;
 
+                    //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_IsZoomScreenShareActiveChanged");
+                    //}
+                    
+                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomScreenShareActiveChanged");
                     break;
 
                 case "Webcam_ZoomMeetingTypeChanged":
                     isQAMHandleEvent = true;
 
-                    if (1 == WebcamDevCnt)
-                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    int type = (int)ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
 
-                    //int type = (int)ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+                    if (int.TryParse(eventMsg.NewValue, out type))
+                        _ZoomMeetingType = (ZoomMeetingType)type;
+                    else
+                        _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
 
-                    //if (int.TryParse(eventMsg.NewValue, out type))
-                    //    _ZoomMeetingType = (ZoomMeetingType)type;
-                    //else
-                    //    _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+                    //if (1 == WebcamDevCnt)
+                    //{
+                    //    //QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    //    QAMWebcamDeviceGuid = _DTPProxyPlugin.GetWebcamDeviceID().Result;
 
+                    //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_ZoomMeetingTypeChanged");
+                    //}
+
+                    writelog($"HandleQAMV2 launched by event Webcam_ZoomMeetingTypeChanged");
                     break;
 
                 case "Webcam_Disconnected":
                     isQAMHandleEvent = true;
+                    //Derek 1221 if there is only one device after this event, should update QAMWebcamDeviceGuid
+                    //if (1 == WebcamDevCnt)
+                    //{
+                    //    QAMWebcamDeviceGuid = _DTPProxyPlugin.GetWebcamDeviceID().Result;
+
+                    //    writelog($"There is only one device after this event, should update QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid}");
+                    //}
+                    writelog($"HandleQAMV2 launched by event Webcam_Disconnected");
                     break;
 
                 case "Webcam_Connected":
                     isQAMHandleEvent = true;
 
-                    if (1 == WebcamDevCnt)
-                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    //if (1 == WebcamDevCnt)
+                    //{
+                    //    //QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    //    QAMWebcamDeviceGuid = _DTPProxyPlugin.GetWebcamDeviceID().Result;
+
+                    //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_Connected");
+                    //}
+
+                    writelog($"HandleQAMV2 launched by event Webcam_Connected");
                     break;
 
                 default:
@@ -10597,6 +10649,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 QAM_Position = new Point(_QAM.Left, _QAM.Top);
                 _QAM.Closed -= QAMCloseEvent;
                 _QAM = null;
+                threadQAM = null;
 
                 if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null
                     && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder &&
@@ -10604,7 +10657,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
                 }
+
+                writelog($"QAMCloseEvent finished with _QAM != null");
             }
+            else
+                writelog($"QAMCloseEvent finished with _QAM == null");
         }
 
         private Task QAMHide()
@@ -10655,7 +10712,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 writelog($"Try to run QAMClose");
-                _QAM?.Dispatcher.BeginInvoke(DispatcherPriority.Normal, () => _QAM?.Close());
+                _QAM?.Dispatcher.Invoke(DispatcherPriority.Normal, () => _QAM?.Close());
                 isOpenOSDWhenQAMClosed = openQAMOSD;
             }
             catch (Exception e)
@@ -10694,16 +10751,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             try
             {
-                if (_QAM == null)
+                if (_QAM == null && null == threadQAM)
                 {
                     //writelog($"CallQAM_UI: Go");
                     //List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
                     //writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
                     //if (deviceInfos.Count == 1)
                     {
-                        writelog($"CallQAM_UI: have Webcam show QAM");
+                        writelog($"CallQAM_UI: Create QAM UI due to _QAM == null");
 
-                        Thread threadQAM = new Thread(() =>
+                        threadQAM = new Thread(() =>
                         {
                             _QAM = new QAMPage(deviceMangerPlugin, Log);
                             _QAM.Closed += QAMCloseEvent;
@@ -10711,8 +10768,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
                             if (QAM_Position.X != 0 && QAM_Position.Y != 0)
                             {
-                                _QAM.Top = QAM_Position.Y;
-                                _QAM.Left = QAM_Position.X;
+                                //_QAM.Top = QAM_Position.Y;
+                                //_QAM.Left = QAM_Position.X;
+
+                                //Derek 1224
+                                _QAM?.Dispatcher.Invoke(() => {
+                                    _QAM.Top = QAM_Position.Y;
+                                    _QAM.Left = QAM_Position.X;
+                                });
                             }
                             else
                             {
@@ -10728,8 +10791,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     scaleFactorY = dpiY / logicalDpi;
                                 }
 
-                                _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
-                                _QAM.Left = 0;
+                                //_QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
+                                //_QAM.Left = 0;
+
+                                //Derek 1224 for "调用线程无法访问此对象，因为另一个线程拥有该对象。"
+                                _QAM?.Dispatcher.Invoke(() => {
+                                    _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
+                                    _QAM.Left = 0;
+                                });
                             }
 
                             _QAM.Dispatcher.Invoke(() => _QAM.Show());
@@ -10742,9 +10811,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 else
                 {
-                    //_QAM.Show();
+                    //_QAM.Show();                    
                     _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
                     //Dispatcher.Run(); //may block the process Derek 1219
+
+                    writelog($"CallQAM_UI: Show QAM UI due to _QAM != null");
                 }
 
                 //close DDPM UI
@@ -13192,6 +13263,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _IsZoomScreenShareActive = false;
             _ZoomMeetingType = ZoomMeetingType.CONF_3RD_EVENT_MEETING;
 
+            writelog($"HandleQAMV2 launched by event CreateWebcamEventForDebug_ShowUI");
             HandleQAMV2();
             //_IsZoomMeetingActive = false;
             //_ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
@@ -13202,6 +13274,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _IsZoomScreenShareActive = true;
             _IsZoomMeetingActive = true;
 
+            writelog($"HandleQAMV2 launched by event CreateWebcamEventForDebug_HideUI");
             HandleQAMV2();
         }
 
@@ -14719,7 +14792,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        bool ret = SetVCPCapability(monitorInfo, 0xE0, (0 | (uint)getvalue)).Result;
+                        bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
                         writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
                     }
                 }
@@ -14762,7 +14835,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        bool ret = SetVCPCapability(monitorInfo, 0xE0, (0 | (uint)getvalue)).Result;
+                        bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
                         writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
                     }
                 }

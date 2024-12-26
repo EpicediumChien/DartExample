@@ -215,6 +215,7 @@ namespace DDPM.SA.Common
         Task<bool?> GetIsPrioritizeExternalWebcam(string Guid);
         Task<bool> GetIsZoomMeetingActive(string Guid);
         //Task<bool> GetZoomMeetingType(string Guid);
+        Task<bool> GetIsZoomMeetingActive();
         Task<int> GetZoomMeetingTypeAsync(string Guid);
         Task<bool> GetIsZoomScreenShareActive(string Guid);
 
@@ -225,6 +226,9 @@ namespace DDPM.SA.Common
         //event EventHandler<IsZoomScreenShareActiveChangedArgs> IsZoomScreenShareActive_Notify;
 
         Task<bool> GetIsESISupported(string Guid);
+
+        //Derek 1221 for QAM
+        Task<string> GetWebcamDeviceID();
 
         #endregion
 
