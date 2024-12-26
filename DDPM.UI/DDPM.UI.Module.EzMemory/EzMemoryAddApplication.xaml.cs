@@ -65,6 +65,7 @@ namespace DDPM.UI.Module.EzMemory
             DataContext = vm;
             
             InitializeComponent();
+            edFilter_TextChanged(edFilter, new TextChangedEventArgs(TextBox.TextChangedEvent, UndoAction.None));
         }
 
         /// <summary>
