@@ -164,7 +164,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             try
             {
                 Log?.Info($"Invoke_RefreshData go");
-                bool GetPdemFile=DdpmCommonHelper.DeviceManagerSA.CheckInstallFirstOpen().Result;
+                //bool GetPdemFile=DdpmCommonHelper.DeviceManagerSA.CheckInstallFirstOpen().Result;
                 Global.SettingParam= DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
                 GlobalSettingParam = Global.SettingParam;
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;

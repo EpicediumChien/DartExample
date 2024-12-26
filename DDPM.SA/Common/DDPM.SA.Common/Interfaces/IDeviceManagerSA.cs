@@ -39,6 +39,13 @@ namespace DDPM.SA.Common
         public string UI_Field_Name { get; set; } = string.Empty;
     }
 
+
+
+    public class UpdateDTPProxyNotify : EventArgs
+    {
+        public string State { get; set; } = string.Empty;
+    }
+
     public interface IDeviceManagerSA : IFrameworkPlugin//, ISettingsManager
     {
         #region TelemetryScheduler
