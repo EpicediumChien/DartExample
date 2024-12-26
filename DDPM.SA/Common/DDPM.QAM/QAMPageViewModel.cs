@@ -530,6 +530,7 @@ namespace DDPM.QAM
         {
             try
             {
+                //Derek 1226 use the same check condition as DDPM
                 return (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported ||
                         CurrentDeviceInfo!.IsPropertyAutoFramingSizeSupported ||
                         CurrentDeviceInfo!.IsPropertyAutoFramingTransitionSupported);
