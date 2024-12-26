@@ -68,7 +68,7 @@
                                 <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
                                     <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                                     <Border.ToolTip>
-                                        <ToolTip Placement="Right" VerticalOffset="-35" HorizontalOffset="-15">
+                                        <ToolTip Placement="Right" VerticalOffset="-40" HorizontalOffset="-15">
                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                 <Border.Resources>
                                                     <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
