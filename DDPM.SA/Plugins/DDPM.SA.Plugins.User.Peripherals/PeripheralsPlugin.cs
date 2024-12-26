@@ -1596,6 +1596,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     _logicalDevice.BatteryStatusChanged += ILogicalDevice_BatteryStatusChanged;
                                     _logicalDevice.BatteryLevelChanged += ILogicalDevice_BatteryLevelChanged;
                                     LogicalDevices4.Add(_logicalDevice.Id);
+
+                                    CheckLowBatteryOSD(info);
                                 }
                             }
                             // >>
@@ -2234,8 +2236,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void OnNotify(DeviceChangedEventArgs e)
         {
-            if (Notify != null)
-                Notify(this, e);
+            Task.Run(() =>
+            {
+                if (Notify != null)
+                    Notify(this, e);
+            });
         }
 
         private void OnUpdateNotify(bool isUpdateAvailable)
@@ -2675,76 +2680,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
                     writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
 
-                    try
-                    {
-                        //var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
-                        //if (!settings.GlobalSetting_General.Low_Battery_Level)
-                        //    return;
-                        var settings = _UserSettingsPlugin.ReadGlobalSettings().Result;
-                        if (settings == null || settings.GlobalSetting_General == null)
-                        {
-                            writelog("Retrieve global setting [Low_Battery_Level] got null data");
-                            return;
-                        }
-                        if (!settings.GlobalSetting_General.Low_Battery_Level)
-                        {
-                            writelog("Retrieve global setting [Low_Battery_Level] got disable result");
-                            return;
-                        }
-
-                        if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9)
-                        {
-                            OSDType_Device type = OSDType_Device.Unknown;
-                            var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
-                            var model = SACommonHelper.MappingModel(deviceInfo.ModelNumber);
-                            var message = $"{deviceInfo.Name.Replace(deviceInfo.ModelNumber, "").Trim()} {model}";
-                            if (deviceType.Contains("PEN"))
-                            {
-                                if (deviceInfo.ModelNumber == "PN5122W" && deviceInfo.BatteryLevel > 6)
-                                { return; }
-                                type = OSDType_Device.Pen;
-                            }
-                            else if (deviceType.Contains("KEYBOARD"))
-                            {
-                                type = OSDType_Device.Keyboard;
-                            }
-                            else if (deviceType.Contains("MOUSE"))
-                            {
-                                type = OSDType_Device.Mouse;
-                            }
-                            else if (deviceType.Contains("HEADSET"))
-                            {
-                                type = OSDType_Device.Headset;
-                            }
-                            else if (SACommonHelper.EOLKBList.Contains(deviceInfo.ModelNumber))
-                            {
-                                type = OSDType_Device.Keyboard;
-                                message = SACommonHelper.MappingEOLName(model);
-                            }
-                            else if (SACommonHelper.EOLMouseList.Contains(deviceInfo.ModelNumber))
-                            {
-                                type = OSDType_Device.Mouse;
-                                message = SACommonHelper.MappingEOLName(model);
-                            }
-
-                            //_ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
-                            OSDEventArgs args = new()
-                            {
-                                Requester = "BatteryLow",
-                                DeviceName = Screen.PrimaryScreen.DeviceName,
-                                osd_type = OSDType.BatteryLow,
-                                osd_device = type,
-                                Message = message
-                            };
-                            OnOSDNotify(args);
-                            Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
-                            writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        writelog($"Retrieve global setting [Low_Battery_Level] to show osd with exception:{e.Message}");
-                    }
+                    CheckLowBatteryOSD(deviceInfo);
                 }
             }
         }
@@ -2802,6 +2738,85 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         //    }
         //}
 
+        private void CheckLowBatteryOSD(DeviceInfo deviceInfo)
+        {
+            try
+            {
+                //var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
+                //if (!settings.GlobalSetting_General.Low_Battery_Level)
+                //    return;
+                //var settings = _UserSettingsPlugin.ReadGlobalSettings().Result;
+                if (_UserSettingsPlugin == null)
+                    return;
+
+                var settings = _UserSettingsPlugin.ReadGlobalSettings().Result;
+                if (settings == null || settings.GlobalSetting_General == null)
+                {
+                    writelog("Retrieve global setting [Low_Battery_Level] got null data");
+                    return;
+                }
+                if (!settings.GlobalSetting_General.Low_Battery_Level)
+                {
+                    writelog("Retrieve global setting [Low_Battery_Level] got disable result");
+                    return;
+                }
+
+                if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9 && deviceInfo.BatteryStatus != "Charging")
+                {
+                    OSDType_Device type = OSDType_Device.Unknown;
+                    var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
+                    var model = SACommonHelper.MappingModel(deviceInfo.ModelNumber);
+                    var message = $"{deviceInfo.Name.Replace(deviceInfo.ModelNumber, "").Trim()} {model}";
+                    if (deviceType.Contains("PEN"))
+                    {
+                        if (deviceInfo.ModelNumber == "PN5122W" && deviceInfo.BatteryLevel > 6)
+                        { return; }
+                        type = OSDType_Device.Pen;
+                    }
+                    else if (deviceType.Contains("KEYBOARD"))
+                    {
+                        type = OSDType_Device.Keyboard;
+                    }
+                    else if (deviceType.Contains("MOUSE"))
+                    {
+                        type = OSDType_Device.Mouse;
+                    }
+                    else if (deviceType.Contains("HEADSET"))
+                    {
+                        type = OSDType_Device.Headset;
+                    }
+                    else if (SACommonHelper.EOLKBList.Contains(deviceInfo.ModelNumber))
+                    {
+                        type = OSDType_Device.Keyboard;
+                        message = SACommonHelper.MappingEOLName(model);
+                    }
+                    else if (SACommonHelper.EOLMouseList.Contains(deviceInfo.ModelNumber))
+                    {
+                        type = OSDType_Device.Mouse;
+                        message = SACommonHelper.MappingEOLName(model);
+                    }
+
+                    //_ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
+                    OSDEventArgs args = new OSDEventArgs()
+                    {
+                        Requester = "BatteryLow",
+                        DeviceName = Screen.PrimaryScreen.DeviceName,
+                        osd_type = OSDType.BatteryLow,
+                        osd_device = type,
+                        Message = message
+                    };
+                    OnOSDNotify(args);
+                    Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
+                    writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Retrieve global setting [Low_Battery_Level] to show osd with exception:{e.Message}");
+            }
+        }
+
+
         private void ILogicalDevice_BatteryLevelChanged(ILogicalDevice arg1, int arg2)
         {
             if (_deviceHelper is { deviceInfo: not null })
@@ -2819,76 +2834,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     Debug.WriteLine($"BatteryLevelChanged: ID: {arg1.Id} Level: {arg2}");
                     writelog($"BatteryLevelChanged: ID: {arg1.Id} Level: {arg2}");
 
-                    try
-                    {
-                        //var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
-                        //if (!settings.GlobalSetting_General.Low_Battery_Level)
-                        //    return;
-                        var settings = _UserSettingsPlugin.ReadGlobalSettings().Result;
-                        if (settings == null || settings.GlobalSetting_General == null)
-                        {
-                            writelog("Retrieve global setting [Low_Battery_Level] got null data");
-                            return;
-                        }
-                        if (!settings.GlobalSetting_General.Low_Battery_Level)
-                        {
-                            writelog("Retrieve global setting [Low_Battery_Level] got disable result");
-                            return;
-                        }
-
-                        if (arg2 >= 0 && arg2 <= 9)
-                        {
-                            OSDType_Device type = OSDType_Device.Unknown;
-                            var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
-                            var model = SACommonHelper.MappingModel(deviceInfo.ModelNumber);
-                            var message = $"{deviceInfo.Name.Replace(deviceInfo.ModelNumber, "").Trim()} {model}";
-                            if (deviceType.Contains("PEN"))
-                            {
-                                if (deviceInfo.ModelNumber == "PN5122W" && arg2 > 6)
-                                { return; }
-                                type = OSDType_Device.Pen;
-                            }
-                            else if (deviceType.Contains("KEYBOARD"))
-                            {
-                                type = OSDType_Device.Keyboard;
-                            }
-                            else if (deviceType.Contains("MOUSE"))
-                            {
-                                type = OSDType_Device.Mouse;
-                            }
-                            else if (deviceType.Contains("HEADSET"))
-                            {
-                                type = OSDType_Device.Headset;
-                            }
-                            else if (SACommonHelper.EOLKBList.Contains(deviceInfo.ModelNumber))
-                            {
-                                type = OSDType_Device.Keyboard;
-                                message = SACommonHelper.MappingEOLName(model);
-                            }
-                            else if (SACommonHelper.EOLMouseList.Contains(deviceInfo.ModelNumber))
-                            {
-                                type = OSDType_Device.Mouse;
-                                message = SACommonHelper.MappingEOLName(model);
-                            }
-
-                            //_ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
-                            OSDEventArgs args = new OSDEventArgs()
-                            {
-                                Requester = "BatteryLow",
-                                DeviceName = Screen.PrimaryScreen.DeviceName,
-                                osd_type = OSDType.BatteryLow,
-                                osd_device = type,
-                                Message = message
-                            };
-                            OnOSDNotify(args);
-                            Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
-                            writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        writelog($"Retrieve global setting [Low_Battery_Level] to show osd with exception:{e.Message}");
-                    }
+                    CheckLowBatteryOSD(deviceInfo);
                 }
             }
         }
@@ -3595,8 +3541,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 _UserSettingsPlugin = SettingsInstance;
                 writelog($"Assign instance {nameof(SettingsInstance)} to DTH peripheral plugin");
+
+                if (_deviceHelper != null && _deviceHelper.deviceInfo != null)
+                {
+                    foreach (var di in _deviceHelper.deviceInfo)
+                    {
+                        CheckLowBatteryOSD(di);
+                    }
+                }
             }
         }
+
 
         public event EventHandler<OSDEventArgs> Peripheral_OSD_Notify;
 
