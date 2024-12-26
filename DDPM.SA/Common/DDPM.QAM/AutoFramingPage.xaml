@@ -102,7 +102,7 @@
             <Grid HorizontalAlignment="Right"
                   VerticalAlignment="Center">
                 <ToggleButton Width="67"
-                              Height="20"
+                              Height="20" Click="ToggleButton_Click"
                               IsChecked="{Binding AutoFramingStatus}"/>
             </Grid>
         </Grid>

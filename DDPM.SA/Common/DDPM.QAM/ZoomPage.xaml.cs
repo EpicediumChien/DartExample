@@ -40,10 +40,10 @@ namespace DDPM.QAM
 
         private void ZoomSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
-            QAMPageViewModel vm = DataContext as QAMPageViewModel;
-            if (vm != null)
+            if (DataContext is QAMPageViewModel vm)
             {
                 vm.IsSliderDragging = false;
+                vm.isStatusChagneByDDPM = false;
                 vm.SetZoom();
             }
         }

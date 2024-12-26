@@ -1126,7 +1126,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        //Derek 1221 from QAM
+        //Derek 1221 for QAM
         public Task<string> GetWebcamDeviceID()
         {
             if (1 == webcamList.Count)
@@ -8190,10 +8190,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
         {
+            writelog($"Start Catch event _Webcamcom_IsZoomScreenShareActiveChanged, new value {e.IsZoomScreenShareActive}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsZoomScreenShareActiveChanged",
                                     e.DeviceId, $"NewValue:{e.IsZoomScreenShareActive}"));
 
-            writelog($"Catch event _Webcamcom_IsZoomScreenShareActiveChanged, new value {e.IsZoomScreenShareActive}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"End Catch event _Webcamcom_IsZoomScreenShareActiveChanged, new value {e.IsZoomScreenShareActive}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)

@@ -1539,6 +1539,8 @@ namespace DDPM.SA.Common
 
         Task WriteLog(string logMsg); //Derek 1210
 
+        Task<string> GetWebcamDeviceID(); //Derek 1225
+
         #endregion QAM
 
         #region System Suspend & Resume & SessionEnd
