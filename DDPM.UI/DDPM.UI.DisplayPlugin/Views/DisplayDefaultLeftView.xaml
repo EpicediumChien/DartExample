@@ -99,8 +99,8 @@
                 <Border Grid.Row="1" Style="{StaticResource BorderUnpair}"  Width="176" MouseLeftButtonDown="Restore_Click"  Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore"
                         BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
                 -->
-                <Button Grid.Row="1" Style="{StaticResource SecondaryButtonStyle}"  Width="176" Click="Restore_Click"  Cursor="Hand" Margin="8,0,0,70" x:Name="btnRestore"
-                        BorderBrush="{DynamicResource SecondaryButton_BdColor_Default}" Visibility="{Binding IsRestoreBtnVisible}">
+                <Border Grid.Row="1" Style="{StaticResource BorderUnpair}"  Width="176" MouseLeftButtonDown="Restore_Click"  Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore"
+                        BorderBrush="{DynamicResource SecondaryButton_BdColor_Default}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -151,21 +151,8 @@
                             </Image.ToolTip>
                         </Image> -->
                     </Grid>
-                </Button>
-            </StackPanel>
-            <!--Alert-->
-            <Grid  Grid.Row="0" VerticalAlignment="Center" Visibility="Collapsed">
-                <Border Name="bdrAlert" Background="{DynamicResource DefaultTheme_DialogBoxBkColor}" CornerRadius="4" Margin="0" BorderThickness="7,0,0,0" BorderBrush="#0E92F2" Width="317" >
-                    <StackPanel Orientation="Horizontal">
-                        <!--<Image x:Name="InfoIcon" Margin="10,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info18.png" Stretch="Fill"
-                               VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
-                        </Image>-->
-                        <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                        <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="Transparent" Foreground="{DynamicResource DefaultTheme_TxtColor}" TextWrapping="Wrap" Width="260" Text="The monitor is currently busy. You can only control limited functions."
-                                    VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,0,0,0" LineHeight="19.5" Padding="0,18,0,16" FontFamily="Roboto" FontWeight="Normal" />
-                    </StackPanel>
                 </Border>
-            </Grid>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>
