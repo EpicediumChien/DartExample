@@ -45,7 +45,6 @@ namespace DDPM.UI.Module.Kvm.Tests
             MyConsoleMock = new Mock<IConsole>();
             MyConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(logMock.Object);
             DdpmCommonHelper.MyConsole = MyConsoleMock.Object;
-            kvmViewModel = new KvmViewModel();
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManagerSA = deviceManagerMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
@@ -53,27 +52,36 @@ namespace DDPM.UI.Module.Kvm.Tests
             moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
-            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
-            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>() { { "AA", new List<string>() }, { "EE", new List<string>() } };
-            deviceManagerMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new ValueTuple<HotkeySettings, List<HotkeyData>>(new HotkeySettings() { HotkeyInfo = new List<HotkeyInfo>() { new HotkeyInfo() { Hotkey = new List<VirtualKey>() { VirtualKey.Q, VirtualKey.M } } } }, new List<HotkeyData>())));
-            kvmModule = new KvmModule(moduleOwner);
-            kvmViewModel.KvmModule = kvmModule;
-            kvmViewModel.KvmModule.SelectedHomeDevice = new HomeDevice();
-            kvmViewModel.KvmModule.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
-            deviceManagerMock.Setup(x => x.GetOnUSBKVM(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(true));
+            //DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
+            //DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>() { { "AA", new List<string>() }, { "EE", new List<string>() }, { "E9", new List<string>() } };
+            //deviceManagerMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new ValueTuple<HotkeySettings, List<HotkeyData>>(new HotkeySettings() { HotkeyInfo = new List<HotkeyInfo>() { new HotkeyInfo() { Hotkey = new List<VirtualKey>() { VirtualKey.Q, VirtualKey.M } } } }, new List<HotkeyData>())));
+            //kvmModule = new KvmModule(moduleOwner);
+            //kvmViewModel.KvmModule = kvmModule;
+            //kvmViewModel.KvmModule.SelectedHomeDevice = new HomeDevice();
+            //kvmViewModel.KvmModule.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
+            deviceManagerMock.Setup(x => x.GetOnUSBKVM(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(false));
             kvmModule = new KvmModule(moduleOwner);
             privateObject = new PrivateObject(kvmModule);
+            privateObject.SetFieldOrProperty("vm", kvmViewModel);
         }
 
         [Test]
+        [Apartment(ApartmentState.STA)]
         public void TestModuleName()
         {
-            // Act
-            var result = kvmModule!.ModuleName;
-
             // Assert
-            Assert.That(result, Is.EqualTo("KvmModule"));
+            Assert.That(kvmModule!.ModuleName, Is.EqualTo("KvmModule"));
         }
+
+        //public Func<UserControl> ThreadWithRetrun()
+        //{
+        //    var t = default(UserControl);
+        //    var thread = new Thread(() => { t = kvmModule!.GetLeftView(); });
+        //    thread.SetApartmentState(ApartmentState.STA);
+        //    thread.Start();
+        //    return () => { thread.Join(); return t; };
+        //}
+
 
         [Test]
         public void TestGetLeftView()
@@ -82,10 +90,24 @@ namespace DDPM.UI.Module.Kvm.Tests
             var result = kvmModule!.GetLeftView();
 
             // Assert
-            Assert.That(result, Is.Not.Null);
+            Assert.IsNull(result);
         }
 
         [Test]
+        public void TestGetLeftViewa()
+        {
+            // Act
+            deviceManagerMock.Setup(x => x.GetOnUSBKVM(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(true));
+            kvmModule = new KvmModule(moduleOwner);
+            var result = kvmModule!.GetLeftView();
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.InstanceOf<UserControl>());
+        }
+
+        [Test]
+
         public void TestGetRightView()
         {
             // Act
