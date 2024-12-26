@@ -458,23 +458,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
                                 ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
                                 updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : "",
-                                IsESISupported = false,
+                                IsESISupported = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWebcam ||
+                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalWebcam) && deviceInfo != null) ? deviceInfo.IsESISupported : false,
 
                             };
-                            if ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWebcam ||
-                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalWebcam))
-                            {
-                                if (fWUpdateInfo.IsESISupported)
-                                {
-                                    _logs.DebugMsg_1($"{nameof(deviceTypeList)} is HPD can _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
-                                    _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
-                                }
-                                else
-                                {
-                                    _logs.DebugMsg_1($"{nameof(deviceTypeList)} is MPS CAN NOT _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
-                                }
-                            }
-                            else
+                            if (Check_CanBeOTAUpdate(fWUpdateInfo))
                             {
                                 _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
                                 _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
@@ -512,24 +500,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
                                     ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
                                 updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : "",
-                                    IsESISupported= false,
-                                    //    IsESISupported = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWebcam ||
-                                    //updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalWebcam) && deviceInfo != null) ? deviceInfo.IsESISupported : false,
+                                    IsESISupported = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWebcam ||
+                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalWebcam) && deviceInfo != null) ? deviceInfo.IsESISupported : false,
                                 };
-                                if ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWebcam ||
-                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalWebcam))
-                                {
-                                    if (fWUpdateInfo.IsESISupported)
-                                    {
-                                        _logs.DebugMsg_1($"{nameof(deviceTypeList)} is HPD can _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
-                                        _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
-                                    }
-                                    else
-                                    {
-                                        _logs.DebugMsg_1($"{nameof(deviceTypeList)} is MPS CAN NOT _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
-                                    }
-                                }
-                                else
+                                if (Check_CanBeOTAUpdate(fWUpdateInfo))
                                 {
                                     _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
                                     _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
@@ -553,7 +527,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             NeedUpdated = true,
                             DeviceType = DeviceType.Unknown,
                             ServerPath = displayUpdateHelper.Firmwares[i].url,
-                            Model = displayUpdateHelper.Firmwares[i].id,
+                            Model = "",
                             DeviceName = displayUpdateHelper.Firmwares[i].id,
                             SHA256 = displayUpdateHelper.Firmwares[i].SHA256,
                             //SHA512 = displayUpdateHelper.Firmwares[i].SHA512,
@@ -1932,6 +1906,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 UpdateProgressInfo fWUpdateInfo = new UpdateProgressInfo()
                 {
                     DeviceName = _fWUpdateInfo.DeviceName,
+                    Model = _fWUpdateInfo.Model,
                     TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                     ProcessName = LangHelper.Instance["Timeout"],
                     ProcessProgress = _timeOutCount,
@@ -2202,7 +2177,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 if (timeOut != null)
                 {
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get timeOut value : {timeOut.ToString()}");
                     int.TryParse(timeOut.InnerText, out _fwTimeOutCount);
+                    if (_fwTimeOutCount < 60)
+                    {
+                        _fwTimeOutCount = 60;
+                    }
                     UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                     {
                         DeviceName = _fWUpdateInfo.DeviceName,
@@ -2589,70 +2569,43 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _logs.DebugMsg_1($"BuildArgs done");
             return arguments;
         }
-        public void check_PresenceFunction()
+        /// <summary>
+        /// Check whether the device to be updated supports OTA firmware updates
+        /// </summary>
+        /// <param name="fwUpdateInfo"></param>
+        /// <returns></returns>
+        public bool Check_CanBeOTAUpdate(FWUpdateInfo fwUpdateInfo)
         {
-
-            //先過完check_PresenceFunction()功能後,會再過一次 CheckUSBtype(); 做必要的disable和隱藏
-
-            print_debug("check_PresenceFunction() v1 start");
-
-            //需要特殊邏輯處理的型號
-            List<string> SpecialCase = new List<string>()
+            _logs.DebugMsg_1($"Check_CanBeOTAUpdate start");
+            bool ret = true;
+            if (fwUpdateInfo.DeviceType == DeviceType.LogicalWebcam ||
+                fwUpdateInfo.DeviceType == DeviceType.PhysicalWebcam)
             {
-                "U3223QZ","U3224KB","U3224KBA","P2424HEB","P2724DEB","P3424WEB","WB7022"
-            };
-
-            string model = _vm.CurrentDeviceInfo!.ModelNumber;
-
-            if (model == null)
-            {
-                string log = $"[DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs] check_PresenceFunction() model is null";
-                DdpmCommonHelper.WriteUILog(log);
-                return;
+                _logs.DebugMsg_1($"Check_CanBeOTAUpdate DeviceType is Webcam");
+                ret = false;
+                //作業系統必須是Windows10 20H2 以上
+                //或是Windows11 22H2以上
+                if (WinVersion.GetVersion(out var info))
+                {
+                    //win11以上
+                    if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))
+                    {
+                        _logs.DebugMsg_1($"Check_CanBeOTAUpdate OS is Windows11 22H2 or higher");
+                        ret = true;
+                    }
+                    //win10以上
+                    else if (info.BuildNum < (uint)(BuildNumber.Windows_11_21H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_20H2))
+                    {
+                        _logs.DebugMsg_1($"Check_CanBeOTAUpdate OS is Windows10 20H2 or higher");
+                        ret = true;
+                    }
+                }
+                _logs.DebugMsg_1($"Check_CanBeOTAUpdate Webcam FW is support HPD : {fwUpdateInfo.IsESISupported}");
+                //Updates can only be displayed if the firmware is HPD and the OS supports MPS.
+                ret = fwUpdateInfo.IsESISupported && ret;
             }
-
-            if (!SpecialCase.Contains(model))
-                return;
-
-            //check usb 2.0 / 3.0
-            AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-
-            //api回傳camera硬體是否支援windows hello
-            bool is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-
-            //api回傳camera是否支援ESI
-            bool is_EsiSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsESISupported(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-
-            //檢查是否為dell7 camera做程式分支處理
-            bool is_camera_dell7 = check_camera_dell7();
-
-            //檢查windows是否符合windows hello標準 win10需要大於20H2 win11需要大於22H2
-            bool is_WindowsVer_OK = check_windowsVer_OK();
-
-            //檢查是否為dell電腦
-            bool is_DellPc = check_DellPc();
-
-            //現在規格已經不需要判斷韌體奇偶數直接從 is_EsiSupport 判斷就好
-
-            //硬體與條件狀態模擬測試 rd測試用
-            if (File.Exists(@"C:\ui_cond\ddpm_cond.txt"))
-            {
-                ui_cond cond = JsonConvert.DeserializeObject<ui_cond>(File.ReadAllText(@"C:\ui_cond\ddpm_cond.txt"));
-
-                is_EsiSupport = cond.is_EsiSupport;
-                is_WindwosHelloSupport = cond.is_WindwosHelloSupport;
-                is_camera_dell7 = cond.is_camera_dell7;
-                is_WindowsVer_OK = cond.is_WindowsVer_OK;
-                is_DellPc = cond.is_DellPc;
-                AllSupportedResolutions = cond.AllSupportedResolutions;
-            }
-
-            print_debug("is_EsiSupport:" + is_EsiSupport);
-            print_debug("is_WindwosHelloSupport:" + is_WindwosHelloSupport);
-            print_debug("is_camera_dell7:" + is_camera_dell7);
-            print_debug("is_WindowsVer_OK:" + is_WindowsVer_OK);
-            print_debug("is_DellPc:" + is_DellPc);
-            print_debug("AllSupportedResolutions:" + AllSupportedResolutions);
+            _logs.DebugMsg_1($"Check_CanBeOTAUpdate finish. ret : {ret}");
+            return ret;
         }
 
         // add @ 20241202 stephen
