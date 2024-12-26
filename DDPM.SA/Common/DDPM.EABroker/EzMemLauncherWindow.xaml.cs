@@ -296,6 +296,8 @@ namespace DDPM.EABroker
                             _vm.WriteLog($"[LaunchAndArrange] 2 => {winUWP} APP, No. = {idx.ToString()}, handle = {handle.ToString()}");
                             await Task.Delay(1500);
                         }
+                        ShowWindow(handle, SW_SHOWNORMAL);
+                        Win32._SetForegroundWindow(handle);
                     }
                     Trace.WriteLine($"[LaunchAndArrange] 3 => {winUWP} APP, handle = {handle.ToString()}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, app.AppName = {app.AppName}");
                     _vm.WriteLog($"[LaunchAndArrange] 3 => {winUWP} APP,  handle = {handle.ToString()}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, app.AppName = {app.AppName}");
