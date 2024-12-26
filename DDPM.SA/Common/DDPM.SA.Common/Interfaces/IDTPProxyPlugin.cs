@@ -339,6 +339,7 @@ namespace DDPM.SA.Common
 
         Task<bool> GetBoomMicAsync(string Guid);
 
+        public void SendHeadsetEventToUI(string sendMsg);
         #endregion
 
         #region Wired Audio
