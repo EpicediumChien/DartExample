@@ -99,8 +99,8 @@
                 <Border Grid.Row="1" Style="{StaticResource BorderUnpair}"  Width="176" MouseLeftButtonDown="Restore_Click"  Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore"
                         BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
                 -->
-                <Button Grid.Row="1" Style="{StaticResource SecondaryButtonStyle}"  Width="176" Click="Restore_Click"  Cursor="Hand" Margin="8,0,0,70" x:Name="btnRestore"
-                        BorderBrush="{DynamicResource SecondaryButton_BdColor_Default}" Visibility="{Binding IsRestoreBtnVisible}">
+                <Border Grid.Row="1" Style="{StaticResource BorderUnpair}"  Width="176" MouseLeftButtonDown="Restore_Click"  Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore"
+                        BorderBrush="{DynamicResource SecondaryButton_BdColor_Default}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -151,7 +151,7 @@
                             </Image.ToolTip>
                         </Image> -->
                     </Grid>
-                </Button>
+                </Border>
             </StackPanel>
         </Grid>
     </Grid>

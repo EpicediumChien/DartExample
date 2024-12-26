@@ -474,6 +474,15 @@ namespace DDPM.UI.Common.ViewModels
 
         #region First page
 
+        public void RightViewDataClear()
+        {
+            ProfileTitleTextBlockValue = "N/A";
+            AutomaticStartupValue = "N/A";
+            LaunchByTimeValue = "N/A";
+            AppDocumentValue = "N/A";
+            IsApplyEnabled = false;
+        }
+
         private bool _isApplyEnabled = false;
         public bool IsApplyEnabled
         {

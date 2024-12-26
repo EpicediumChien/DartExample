@@ -28,7 +28,7 @@ namespace DDPM.SA.Common.UI
         {
             if (!UriParser.IsKnownScheme("pack"))
                 application = new System.Windows.Application();
-            if (application.Resources != null && application.Resources.MergedDictionaries.Count() == 0)
+            if (application.Resources != null && application.Resources.MergedDictionaries.Count == 0)
             {
                 // Get the current running assembly
                 Assembly assembly = Assembly.GetExecutingAssembly();

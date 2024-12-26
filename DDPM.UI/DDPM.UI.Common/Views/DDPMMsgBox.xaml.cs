@@ -84,6 +84,31 @@ namespace DDPM.UI.Common.Views
                 }
             }
 
+
+            private Thickness _leftBtnMargin = new Thickness(8, 0, 24, 24);
+
+            public Thickness LeftBtnMargin
+            {
+                get { return _leftBtnMargin; }
+                set
+                {
+                    _leftBtnMargin = value;
+                    NotifyPropertyChanged("LeftBtnMargin");
+                }
+            }
+
+            private Thickness _rightBtnMargin = new Thickness(24, 0, 8, 24);
+
+            public Thickness RightBtnrMargin
+            {
+                get { return _rightBtnMargin; }
+                set
+                {
+                    _rightBtnMargin = value;
+                    NotifyPropertyChanged("RightBtnrMargin");
+                }
+            }
+
             public void DisableBottomButtons()
             {
                 isButtonsShown = Visibility.Collapsed;
@@ -146,6 +171,24 @@ namespace DDPM.UI.Common.Views
             {
                 HeaderMargin = titlemargin,
                 SubHeaderMargin = submargin
+            };
+            this.DataContext = vm;
+        }
+
+        public DDPMMsgBox(string strTitle, string strContent, bool IsCloseButton, Window owner, double width, double height, Thickness titlemargin, Thickness submargin, Thickness leftbtn, Thickness rightbtn)
+        {
+            InitializeComponent();
+            this.Owner = owner;
+            this.Width = width;
+            this.Height = height;
+            SetStartPosition(owner);
+
+            DDPMMsgBoxViewModel vm = new DDPMMsgBoxViewModel(strTitle, strContent, IsCloseButton)
+            {
+                HeaderMargin = titlemargin,
+                SubHeaderMargin = submargin,
+                LeftBtnMargin = leftbtn,
+                RightBtnrMargin = rightbtn
             };
             this.DataContext = vm;
         }

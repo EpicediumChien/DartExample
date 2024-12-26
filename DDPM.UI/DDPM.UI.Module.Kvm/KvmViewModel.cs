@@ -23,6 +23,7 @@ using DDPM.UI.Resources.Helper;
 using System.Collections.ObjectModel;
 using DDPM.UI.Plugin.DdpmHomePlugin;
 using Dell.Client.Framework.UX.WPF;
+using Microsoft.VisualBasic.Logging;
 
 namespace DDPM.UI.Module.Kvm
 {
@@ -205,11 +206,12 @@ namespace DDPM.UI.Module.Kvm
         public string PC3_Input { get; set; }
         public string PC4_Input { get; set; }
 
-        public bool IsMoreThanPC2 { 
-            get 
+        public bool IsMoreThanPC2
+        {
+            get
             {
                 return PC3_Visibility == Visibility.Visible;
-            } 
+            }
         }
 
         public Dictionary<UInt16, System.Windows.Controls.UserControl> PxPcodeDictionary = new Dictionary<UInt16, System.Windows.Controls.UserControl>()
@@ -217,25 +219,25 @@ namespace DDPM.UI.Module.Kvm
             [0x0] = null,
             [0x11] = null,
             [0x12] = null
-        //    [0x24] = new PBPSplitCtrl2A(),
-        //    [0x2F] = new PBPSplitCtrl2B(),
-        //    [0x26] = new PBPSplitCtrl2C(),
-        //    [0x28] = new PBPSplitCtrl2C(),
-        //    [0x2A] = new PBPSplitCtrl2C(),
-        //    [0x2C] = new PBPSplitCtrl2C(),
-        //    [0x2E] = new PBPSplitCtrl2C(),
-        //    [0x25] = new PBPSplitCtrl2D(),
-        //    [0x27] = new PBPSplitCtrl2D(),
-        //    [0x29] = new PBPSplitCtrl2D(),
-        //    [0x2B] = new PBPSplitCtrl2D(),
-        //    [0x2D] = new PBPSplitCtrl2D(),
-        //    [0x31] = new PBPSplitCtrl3E(),
-        //    [0x32] = new PBPSplitCtrl3D(),
-        //    [0x33] = new PBPSplitCtrl3H(),
-        //    [0x34] = new PBPSplitCtrl3B(),
-        //    [0x35] = new PBPSplitCtrl3I(),
-        //    [0x41] = new PBPSplitCtrl4A(),
-        //    [0x42] = new PBPSplitCtrl4D()
+            //    [0x24] = new PBPSplitCtrl2A(),
+            //    [0x2F] = new PBPSplitCtrl2B(),
+            //    [0x26] = new PBPSplitCtrl2C(),
+            //    [0x28] = new PBPSplitCtrl2C(),
+            //    [0x2A] = new PBPSplitCtrl2C(),
+            //    [0x2C] = new PBPSplitCtrl2C(),
+            //    [0x2E] = new PBPSplitCtrl2C(),
+            //    [0x25] = new PBPSplitCtrl2D(),
+            //    [0x27] = new PBPSplitCtrl2D(),
+            //    [0x29] = new PBPSplitCtrl2D(),
+            //    [0x2B] = new PBPSplitCtrl2D(),
+            //    [0x2D] = new PBPSplitCtrl2D(),
+            //    [0x31] = new PBPSplitCtrl3E(),
+            //    [0x32] = new PBPSplitCtrl3D(),
+            //    [0x33] = new PBPSplitCtrl3H(),
+            //    [0x34] = new PBPSplitCtrl3B(),
+            //    [0x35] = new PBPSplitCtrl3I(),
+            //    [0x41] = new PBPSplitCtrl4A(),
+            //    [0x42] = new PBPSplitCtrl4D()
         };
 
         public string InputName1 { get; set; }
@@ -581,7 +583,7 @@ namespace DDPM.UI.Module.Kvm
                                     UInt16 curPxpMode = Convert.ToUInt16(ret_PxP.value);
                                     if (curPxpMode != 0)
                                     {
-                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
                                     }
                                     else
                                     {
@@ -591,7 +593,7 @@ namespace DDPM.UI.Module.Kvm
                             }
                             else
                             {
-                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
+                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
                             }
                         }
                         else
@@ -612,7 +614,7 @@ namespace DDPM.UI.Module.Kvm
                                     UInt16 curPxpMode = Convert.ToUInt16(ret_PxP.value);
                                     if (curPxpMode != 0)
                                     {
-                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
                                     }
                                     else
                                     {
@@ -622,7 +624,7 @@ namespace DDPM.UI.Module.Kvm
                             }
                             else
                             {
-                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
+                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
                             }
 
                         }
@@ -633,7 +635,17 @@ namespace DDPM.UI.Module.Kvm
                     }
                     if (curHotkey.HotkeyOptions.Count > 0 && curHotkey.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
                     {
-                        _autoSwitchChecked = true;
+                        if (selectedHomeDevice != null && selectedHomeDevice.MonitorInfo != null)
+                        {
+                            if (IsPBPMode(selectedHomeDevice.MonitorInfo, _curPxpMode))
+                            {
+                                _autoSwitchChecked = true;
+                            }
+                            else
+                            {
+                                _autoSwitchChecked = false;
+                            }
+                        }
                     }
                 }
 
@@ -645,6 +657,71 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
+        private bool IsPBPMode(MonitorInfo mo, UInt16 curPxpMode)
+        {
+            bool ret = false;
+            UInt16 pxpModeValue = 0;
+            if (!mo.CapabilityDic.ContainsKey("E9"))
+                return ret;
+            if (curPxpMode == 0)
+            {
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    ObjGetVCP ret_PxP = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(mo).Result;
+                    if (ret_PxP != null && ret_PxP.result)
+                    {
+                        //pxpModeValue = Convert.ToUInt16(ret_PxP.value);
+                        if (!ushort.TryParse((string?)ret_PxP.value, out pxpModeValue))
+                        {
+                            pxpModeValue = curPxpMode;
+                        }
+                    }
+                    else
+                    {
+                        pxpModeValue = curPxpMode;
+                    }
+                }
+            }
+            switch (pxpModeValue)
+            {
+                case 0x00://off
+                    ret = false;
+                    break;
+                case 0x21://PIP small
+                    ret = false;
+                    break;
+
+                case 0x22://PIP large
+                    ret = false;
+                    break;
+                case 0x23:
+                case 0x24:
+                case 0x25:
+                case 0x26:
+                case 0x27:
+                case 0x28:
+                case 0x29:
+                case 0x2A:
+                case 0x2B:
+                case 0x2C:
+                case 0x2D:
+                case 0x2E:
+                case 0x2F:
+                case 0x31:
+                case 0x32:
+                case 0x33:
+                case 0x34:
+                case 0x35:
+                case 0x41:
+                case 0x42:
+                    ret = true;
+                    break;
+                default:
+                    ret = false;
+                    break;
+            }
+            return ret;
+        }
         private void RunWorkerCompleted_RefreshHotkeyData(object sender, RunWorkerCompletedEventArgs e)
         {
             Debug.WriteLine("load kvm hotkey setting done");
@@ -1884,6 +1961,62 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
+
+        public bool isPxpModeOFF
+        {
+            get
+            {
+                return _curPxpMode == 0;
+            }
+        }
+        public bool isPBPmode
+        {
+            get
+            {
+                bool ret = false;
+                switch (_curPxpMode)
+                {
+                    case 0x00://off
+                        ret = false;
+                        break;
+                    case 0x21://PIP small
+                        ret = false;
+                        break;
+
+                    case 0x22://PIP large
+                        ret = false;
+                        break;
+                    case 0x23:
+                    case 0x24:
+                    case 0x25:
+                    case 0x26:
+                    case 0x27:
+                    case 0x28:
+                    case 0x29:
+                    case 0x2A:
+                    case 0x2B:
+                    case 0x2C:
+                    case 0x2D:
+                    case 0x2E:
+                    case 0x2F:
+                    case 0x31:
+                    case 0x32:
+                    case 0x33:
+                    case 0x34:
+                    case 0x35:
+                    case 0x41:
+                    case 0x42:
+                        ret = true;
+                        break;
+
+                    default:
+                        ret = false;
+                        break;
+                }
+                DdpmCommonHelper.WriteUILog($"[USBKVM Hotkey] _curPxpMode={_curPxpMode},isPBPmode={ret}");
+                return ret;
+            }
+        }
         #region Event
         /// <summary>
         /// Catch OSD menu event

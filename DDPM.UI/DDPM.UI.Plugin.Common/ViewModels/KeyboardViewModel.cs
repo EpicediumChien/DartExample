@@ -1231,6 +1231,39 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
+        private bool _imgBL1;
+        public bool ImgBL1
+        {
+            get => _imgBL1;
+            set
+            {
+                _imgBL1 = value;
+                OnPropertyChanged(nameof(ImgBL1));
+            }
+        }
+
+        private bool _imgBL2;
+        public bool ImgBL2
+        {
+            get => _imgBL2;
+            set
+            {
+                _imgBL2 = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _imgBL3;
+        public bool ImgBL3
+        {
+            get => _imgBL3;
+            set
+            {
+                _imgBL3 = value;
+                OnPropertyChanged();
+            }
+        }
+
         public CTKMessageHelper CTKMessageHelper { get; set; } = new();
     }
 }

@@ -57,21 +57,23 @@ namespace DDPM.UI.Common
                     switch (di.ModelNumber)
                     {
                         case "WB5023":
-                            str = "{\"1280x720\":{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},\"1920x1080\":{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},\"2560x1440\":{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}}";
+                            str = "[{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}]";
+                            //str = "{\"1280x720\":{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},\"1920x1080\":{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},\"2560x1440\":{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}}";
                             break;
                         default:
-                            str = "{\"1280x720\":{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},\"1920x1080\":{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},\"2560x1440\":{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}}";
+                            str = "[{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}]";
+                            //str = "{\"1280x720\":{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},\"1920x1080\":{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},\"2560x1440\":{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}}";
                             break;
                     }
                 }
 
-                //var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
-                var resolutions = JsonConvert.DeserializeObject<Dictionary<string, ResolutionItem>>(str)!;
+                var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
+                //var resolutions = JsonConvert.DeserializeObject<Dictionary<string, ResolutionItem>>(str)!;
                 if (resolutions != null)
                 {
-                    foreach (var res in resolutions.OrderByDescending(x => x.Key))
+                    foreach (var res in resolutions.OrderByDescending(x => x.Resolution))
                     {
-                        var resName = res.Key switch
+                        var resName = res.Resolution switch
                         {
                             "1280x720" => "HD",
                             "1920x1080" => "Full HD",
@@ -79,9 +81,9 @@ namespace DDPM.UI.Common
                             "3840x2160" => "4K UHD",
                             _ => "8K UHD"
                         };
-                        SupportedFPSs.Add(resName, res.Value.FPS);
+                        SupportedFPSs.Add(resName, res.FPS);
                         SelectedFPSs.Add(resName, "30");
-                        Resolutions.Add(resName, res.Value.Resolution);
+                        Resolutions.Add(resName, res.Resolution);
                     }
                 }
 
