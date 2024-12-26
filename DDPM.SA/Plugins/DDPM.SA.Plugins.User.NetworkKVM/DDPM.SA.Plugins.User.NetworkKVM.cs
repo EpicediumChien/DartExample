@@ -1274,7 +1274,7 @@ namespace NetworkKVM.Plugins
             {
                 _logs.DebugMsg("NKVM NamedPipeServer is go...");
                 Trace.WriteLine("NKVM NamedPipeServer is go...");
-                int i = 0;
+                //int i = 0;
                 while (_runloop)
                 {
                     //if (CancellationToken.IsCancellationRequested)
@@ -1287,12 +1287,12 @@ namespace NetworkKVM.Plugins
                     //    i = 0;
                     //    //break;
                     //}
-                    if (i > 10)
-                    {
-                        _logs.DebugMsg("[NetworkKVM] loop error times is 10");
-                        Disconnect();
-                        break;
-                    }
+                    //if (i > 10)
+                    //{
+                    //    _logs.DebugMsg("[NetworkKVM] loop error times is 10");
+                    //    Disconnect();
+                    //    break;
+                    //}
                     if (pipeServer != null)
                     {
                         if (pipeServer.IsConnected)
@@ -1320,7 +1320,7 @@ namespace NetworkKVM.Plugins
                                 {
                                     try
                                     {
-                                        i = 0;
+                                        //i = 0;
                                         response = ReadAsync().Result;
                                         _logs.DebugMsg("[NetworkKVM] Get :" + response);
                                         if (!string.IsNullOrEmpty(response))
@@ -1380,11 +1380,6 @@ namespace NetworkKVM.Plugins
                                         _AllInfoMonitors = GetMonitors().Result;
                                         if (CreateNamedPipe_init())
                                         {
-                                            i = 0;
-                                        }
-                                        else
-                                        {
-                                            i++;
                                             Thread.Sleep(500);
                                         }
                                     }
@@ -1421,7 +1416,7 @@ namespace NetworkKVM.Plugins
                 //CallShowNKVM(0, 100, 100);
                 _logs.DebugMsg("NKVM NamedPipeServer_UI is go...");
                 Trace.WriteLine("NKVM NamedPipeServer_UI is go...");
-                int i = 0;
+                //int i = 0;
                 while (_runloop)
                 {
                     //if (i > 10)
@@ -1515,15 +1510,15 @@ namespace NetworkKVM.Plugins
                                         Disconnect();
                                         Thread.Sleep(1000);
                                         _AllInfoMonitors = GetMonitors().Result;
-                                        if (CreateNamedPipe_init())
+                                        if (CreateNamedPipe())
                                         {
-                                            i = 0;
-                                        }
-                                        else
-                                        {
-                                            i++;
                                             Thread.Sleep(500);
                                         }
+                                        //else
+                                        //{
+                                        //    //i++;
+                                        //    Thread.Sleep(500);
+                                        //}
                                     }
                                 }
                             }
