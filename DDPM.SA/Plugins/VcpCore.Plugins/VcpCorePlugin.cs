@@ -202,15 +202,15 @@ namespace VcpCore.Plugins
             return Task.FromResult(_AllDisplays);
         }
 
-        public async Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken token)
+        public async Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken Token)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Re-Get Monitors List requested ...");
 
             try
             {
                 bool IsFinishedAlready = false;
-                var CancelStatusCheck = Task.Run(() => CancellationCheck(token, in IsFinishedAlready));
-                var ReGetTask = Task.Run(() => InitializeMonitorsList(true, token));
+                var CancelStatusCheck = Task.Run(() => CancellationCheck(Token, in IsFinishedAlready));
+                var ReGetTask = Task.Run(() => InitializeMonitorsList(true, Token));
 
                 List<MonitorInfo> _AllDisplays = new List<MonitorInfo>();
 

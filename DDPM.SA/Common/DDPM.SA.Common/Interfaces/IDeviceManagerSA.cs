@@ -875,7 +875,7 @@ namespace DDPM.SA.Common
 
         Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, bool reScan = true, bool isUITrigger = false);
 
-        Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUItrigger = false, string installPath = "");
+        Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUITrigger = false, string installPath = "");
 
         Task<InterruptScreenRoot> InterruptScreen_Metadata();
 
