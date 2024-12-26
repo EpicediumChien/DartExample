@@ -10,7 +10,7 @@
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              d:DataContext="{d:DesignInstance Type=plugin:SoundBarViewModel}"
              mc:Ignorable="d"
-             d:DesignHeight="655" d:DesignWidth="470">
+             d:DesignHeight="655" d:DesignWidth="470" Unloaded="UserControl_Unloaded">
     <UserControl.Resources>
         <ResourceDictionary>
 

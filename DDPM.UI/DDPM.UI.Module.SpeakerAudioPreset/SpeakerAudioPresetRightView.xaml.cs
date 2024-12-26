@@ -30,6 +30,11 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
             InitializeComponent();
             _vm = vm;
             InitializeAsync();
+            _vm!.SoundbarSettingChanged += SoundbarSettingChanged;
+        }
+        private void SoundbarSettingChanged(object? sender, EventArgs e)
+        {
+            InitializeAsync();
         }
 
         private async void InitializeAsync()
@@ -293,6 +298,11 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
             Segment2.Point1 = new Point((node2Position.X + node3Position.X) / 2, node2Position.Y);
             Segment2.Point2 = new Point((node2Position.X + node3Position.X) / 2, node3Position.Y);
             Segment2.Point3 = node3Position;
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _vm!.SoundbarSettingChanged -= SoundbarSettingChanged;
         }
     }
 }

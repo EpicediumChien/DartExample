@@ -24,6 +24,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public string _bassBoost = "{44F5D888-F551-4D2C-B41C-EFD6EBD09D23}";
         public string _trebleBoost = "{CEB39A69-EF4A-4E73-BC8F-8A8B66CE11E1}";
         private Debouncer _debouncerSpeaker;
+        public event EventHandler<EventArgs> SoundbarSettingChanged;
         #endregion Variables
 
         public new event PropertyChangedEventHandler? PropertyChanged;
@@ -146,6 +147,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable ............= {SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable.ToString()}");
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsAudioEqualizerSupported .......= {SpeakerInfoValueDTP.IsAudioEqualizerSupported.ToString()}");
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.GetMuteStatusAsync .......= {SpeakerInfoValueDTP.MuteStatus.ToString()}");
+                SoundbarSettingChanged?.Invoke(this, EventArgs.Empty);
             }
             catch (Exception ex)
             {
@@ -504,7 +506,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _deviceManager.SetResetToDefaultAsyncForSoundbar(CurrentDeviceInfo!.ID.ToString(), true).Wait();
                 await UpdateDTPValue();
                 CheckHeadsetFunc();
-                _showPluginManager?.ShowHomePage();
+                //_showPluginManager?.ShowHomePage();
             }
             catch (Exception ex)
             {

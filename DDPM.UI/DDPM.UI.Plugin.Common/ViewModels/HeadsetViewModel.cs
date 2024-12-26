@@ -28,7 +28,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private Debouncer _debouncerHeadsetMuteMicrophone;
         private Debouncer _debouncerHeadsetQuickPause;
         private Debouncer _debouncerHeadsetSidetoneCheck;
-
+        public event EventHandler<EventArgs> HeadsetSettingChanged;
         #endregion Variables
 
         public new event PropertyChangedEventHandler? PropertyChanged;
@@ -1136,7 +1136,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 CheckHeadsetFunc();
                 UpdateResetToDefault();
-                //OnPropertyChanged(nameof(IsRestoreEnable));
+                HeadsetSettingChanged?.Invoke(this, EventArgs.Empty);
                 //_showPluginManager?.ShowHomePage();
             }
             catch (Exception ex)

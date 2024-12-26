@@ -39,9 +39,12 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             converter.ViewModel = _vm;
 
             InitializeAsync();
-
+            _vm!.HeadsetSettingChanged += HeadsetSettingChanged;
         }
-
+        private void HeadsetSettingChanged(object? sender, EventArgs e)
+        {
+            InitializeAsync();
+        }
         private async void InitializeAsync()
         {
             //await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
@@ -534,6 +537,11 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             UpdateNodeValuePosition(node);
             UpdateCurve();
             //UpdateShadowVisibility();
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _vm!.HeadsetSettingChanged -= HeadsetSettingChanged;
         }
     }
 
