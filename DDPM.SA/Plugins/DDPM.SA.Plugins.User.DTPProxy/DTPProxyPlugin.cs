@@ -6162,7 +6162,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             return $"HeadsetEvent_5;Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}";
         }
 
-        private void SendHeadsetEventToUI(string sendMsg)
+        public void SendHeadsetEventToUI(string sendMsg)
         {
             UpdateUINotify headsetEventNotify = new UpdateUINotify();
             headsetEventNotify.UI_Field_Name = $"{sendMsg}";
