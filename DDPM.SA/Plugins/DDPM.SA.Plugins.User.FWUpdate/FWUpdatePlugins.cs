@@ -1298,21 +1298,28 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _checkUpdateScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
             if (_SettingsPlugin != null)
             {
-                DDPMITConfig data = _SettingsPlugin.GetITGlobalConfigs().Result;
-                if (!data.Lock_Settings_Updates)
+                try
                 {
-                    //TimeSpan difference = DateTime.Now - _fWUpdateInfoPackage.TheLastCheckTime;
-                    //int checkTime = 5;
-                    //if (difference.TotalMinutes > checkTime)
+                    DDPMITConfig data = _SettingsPlugin.GetITGlobalConfigs().Result;
+                    if (!data.Lock_Settings_Updates)
                     {
-                        CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+                        //TimeSpan difference = DateTime.Now - _fWUpdateInfoPackage.TheLastCheckTime;
+                        //int checkTime = 5;
+                        //if (difference.TotalMinutes > checkTime)
+                        {
+                            CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+                        }
+                        _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} CollCheckUpdate");
                     }
-                    _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} CollCheckUpdate");
+                    else
+                    {
+                        _checkUpdateScheduleTimer.Stop();
+                        _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _checkUpdateScheduleTimer stop");
+                    }
                 }
-                else
+                catch(Exception ex)
                 {
-                    _checkUpdateScheduleTimer.Stop();
-                    _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _checkUpdateScheduleTimer stop");
+                    _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} exception: {ex.Message}");
                 }
             }
             else

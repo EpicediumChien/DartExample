@@ -2031,7 +2031,7 @@ namespace ColorPreset.Plugins
             if (_AllAppData == null || _AllAppData.Count == 0 || renew_data == true)
             {
                 writelog("enter reflash procedure");
-                AppsCollectShell appshell = new AppsCollectShell(iconFolderPath);
+                AppsCollectShell appshell = new AppsCollectShell(iconFolderPath, Log);
                 _AllAppData = appshell.FindAppsbyShell();
             }
             writelog($"appshell.FindAppsbyShell get app count({_AllAppData.Count})");
