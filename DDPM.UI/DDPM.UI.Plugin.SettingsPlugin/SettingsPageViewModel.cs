@@ -686,11 +686,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     {
                         Debug.WriteLine($"deviceInfos.BatteryStatus : {deviceInfo.BatteryStatus}");
                         Debug.WriteLine($"deviceInfos.BatteryLevel : {deviceInfo.BatteryLevel}");
-                        if (deviceInfo.BatteryLevel <= 20)
+                        if (deviceInfo.BatteryLevel <= 20 && deviceInfo.BatteryLevel >= 0)
                         {
                             deviceBatteryLow = true;
                         }
-                        else if (deviceInfo.BatteryLevel == -1)
+                        else if (deviceInfo.BatteryLevel < 0)
                         {
                             deviceBatteryLow = null;
                         }
@@ -700,7 +700,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             switch (fwUpdateInfo.DeviceType)
             {
                 case DeviceType.LogicalMouse:
-                    
+
                     if (deviceBatteryLow == true)
                     {
                         UXAlertItemVisibility = Visibility.Visible;
