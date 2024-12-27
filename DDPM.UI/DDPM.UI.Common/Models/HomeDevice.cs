@@ -29,15 +29,23 @@ namespace DDPM.UI.Common.Models
 
         private MonitorInfo? _monitorInfo;
         private DeviceInfo? _deviceInfo;
+        private readonly ILog? _log = null;
 
+        //Default ctor
+        public HomeDevice()
+        {
+            NormalWidth = 400;
+        }
         /// <summary>
         /// MonitorModelName, will be used to display on HomePage (Tooltip) and Display Landing Page ComboBox
         /// The value will be extracted from MonitorInfo's capability string, see
         /// </summary>
 
-        public HomeDevice()
+        //Robert_Lin, 2024-12-27 add an additional ctor with ILog to let it can write log
+        public HomeDevice(ILog? log=null)
         {
             NormalWidth = 400;
+            _log = log;
             ////Register a handler for BitmapImageUpdated for Theme changed. Will update the image resources
             //DdpmCommonHelper.BitmapImageUpdated += bitmapImageUpdate_OnThemeChanged;
         }
@@ -671,6 +679,69 @@ namespace DDPM.UI.Common.Models
             string imageFileName = "Lineart";
             string assemblyName = "DDPM.UI.Resources";
 
+            //Robert_Lin, 2024-12-27 PIMS-336412 DUT icon will be invisible in DDPM main page
+            //Analysis: if the ImageFileName="S2422HGF", but the image file is not found in Resource
+            //          then the DeviceImage will not be assign value, so the image will be shown.
+            //NEW Code:
+            //Step_1, if ImageFileName is not empty,not "LineArt", and load successful then
+            //        load and show the image file
+            if (!String.IsNullOrWhiteSpace(MonitorInfo.ImageFileName))
+            {
+                //The filename will come from MonitorInfo.ImageFileName
+                //The ImageFileName will not have extention file name
+                //(for example, ImageFileName="U4323QE"), we need to append ".PNG"
+                imageFileName = MonitorInfo.ImageFileName;
+
+                //If the ImageFileName is NOT "LineArt" then load image from Resources
+                if (!imageFileName.Equals("LINEART", StringComparison.OrdinalIgnoreCase))
+                {
+                    //Try to load image from DDPM.UI.Resources project (assembly), Path="/Resources/Monitor/"
+                    ImageSource? imgSource = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Monitors/{imageFileName}.png", assemblyName);
+                    //If the image can be loaded (and not LineArt) then assign to DeviceImage to show
+                    if (imgSource != null)
+                    {
+                        DeviceImage = imgSource;
+                        WriteLog($"@HomeDevice.DetermineMonitorImage, Model={MonitorInfo.modelName}, ImageFileName={MonitorInfo.ImageFileName}, LoadImageFromResources=OK");
+                        return;
+                    }
+                    else
+                    {
+                        //The ImageFileName is not empty or LineArt, however it fail to load from Resources
+                        //So we will show the LineArt image
+                        WriteLog($"@HomeDevice.DetermineMonitorImage, Model={MonitorInfo.modelName}, ImageFileName={MonitorInfo.ImageFileName}, LoadImageFromResources=Error");
+                    }
+                }
+                else
+                {
+                    WriteLog($"@HomeDevice.DetermineMonitorImage, Model={MonitorInfo.modelName}, ImageFileName={MonitorInfo.ImageFileName}");
+                }
+            }
+            else
+            {
+                WriteLog($"@HomeDevice.DetermineMonitorImage, Model={MonitorInfo.modelName}, ImageFileName=(empty)");
+            }
+
+            //Step_2, We will load and show the LineArt image
+            try
+            {
+                DeviceImage = (BitmapImage)System.Windows.Application.Current.Resources["MonitorImage_LineArt"];
+                if (DeviceImage != null)
+                {
+                    WriteLog($"@HomeDevice.DetermineMonitorImage, LoadLineArtResource: OK");
+                }
+                else
+                {
+                    WriteLog($"@HomeDevice.DetermineMonitorImage, LoadLineArtResource: Error, image will be null");
+                }
+            }
+            catch (Exception ex1)
+            {
+                WriteLog($"@HomeDevice.DetermineMonitorImage, LoadLineArtResource: Exception", ex1);
+            }
+
+
+            //OLD Code:
+            /*
             //Determine filename
             //1 If no ImageFileName provided => Show line art
             //2 Not empty, use the filename provided
@@ -711,6 +782,7 @@ namespace DDPM.UI.Common.Models
                     DeviceImage = imgSource;
                 return;
             }
+            */
         }
 
         private void bitmapImageUpdated_RefreshLineArt(OSThemeEnum obj)
@@ -1729,6 +1801,23 @@ namespace DDPM.UI.Common.Models
             }
         }
         #endregion
+
+        #region WriteLog
+        private void WriteLog(string msg, Exception? ex=null)
+        {
+            if (_log != null)
+            {
+                if (ex != null)
+                {
+                    _log.Error(ex, msg);
+                }
+                else
+                {
+                    _log.Info(msg);
+                }
+            }
+        }
+        #endregion WriteLog
 
         private Visibility _isRestoreBtnVisible = Visibility.Visible;
 
