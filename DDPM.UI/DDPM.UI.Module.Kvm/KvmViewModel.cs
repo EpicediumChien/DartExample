@@ -1112,13 +1112,13 @@ namespace DDPM.UI.Module.Kvm
                                         //}
                                         switch (_curPxpMode)
                                         {
-                                            case 0x11:
+                                            case 0x21:
                                                 isPipSmall = true;
                                                 isPipLarge = false;
                                                 isPBP = false;
                                                 break;
 
-                                            case 0x12:
+                                            case 0x22:
                                                 isPipSmall = true;
                                                 isPipLarge = false;
                                                 isPBP = false;
@@ -1352,6 +1352,8 @@ namespace DDPM.UI.Module.Kvm
                 //if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
                 //{
                 bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(KvmModule.SelectedHomeDevice.MonitorInfo, "Input Select", pcsList["PC1"].InputType).Result;
+                string result = b ? "Success" : "Failed";
+                _log.Debug($"[KvmViewModel] MainInput PC1-{pcsList["PC1"].InputType} Done with {result}.");
                 if (b)
                 {
                     KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = pcsList["PC1"].InputType;
@@ -1834,100 +1836,109 @@ namespace DDPM.UI.Module.Kvm
             //set input source
             if (pcsList != null)
             {
-                // Since Profile issue PCs will be inconsistent need to rewrite each change
-                //if (!isPCsListSame(pcsList,  original_pcsList))
-                //{
-                if (pcsList.TryGetValue("PC1", out var pc1) && pcsList.TryGetValue("PC2", out var pc2))
+                // Since Profile issue PCs will be inconsistent need to rewrite each change, this may only happends when the change monitor state interrupted
+                if (!isPCsListSame(pcsList,  original_pcsList))
                 {
-                    InputSourceObj pc1input = new InputSourceObj((UInt16)pcsList["PC1"].Code, pcsList["PC1"].InputType);
-                    InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
-                    inputList[pcsList["PC1"].InputType].InputName = pcsList["PC1"].InputName;
-                    inputList[pcsList["PC2"].InputType].InputName = pcsList["PC2"].InputName;
-                    if (pcsList.Count >= 3)
+                    CurrentInputChange();
+
+                    if (pcsList.TryGetValue("PC1", out var pc1) && pcsList.TryGetValue("PC2", out var pc2))
                     {
-                        if (pcsList.TryGetValue("PC3", out var pc3))
+                        InputSourceObj pc1input = new InputSourceObj((UInt16)pcsList["PC1"].Code, pcsList["PC1"].InputType);
+                        InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
+                        inputList[pcsList["PC1"].InputType].InputName = pcsList["PC1"].InputName;
+                        inputList[pcsList["PC2"].InputType].InputName = pcsList["PC2"].InputName;
+                        if (pcsList.Count >= 3)
                         {
-                            InputSourceObj pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
-                            inputList[pcsList["PC3"].InputType].InputName = pcsList["PC3"].InputName;
-                            if (pcsList.Count == 4)
+                            if (pcsList.TryGetValue("PC3", out var pc3))
                             {
-                                if (pcsList.TryGetValue("PC4", out var pc4))
+                                InputSourceObj pc3input = new InputSourceObj((UInt16)pcsList["PC3"].Code, pcsList["PC3"].InputType);
+                                inputList[pcsList["PC3"].InputType].InputName = pcsList["PC3"].InputName;
+                                if (pcsList.Count == 4)
                                 {
-                                    InputSourceObj pc4input = new InputSourceObj((UInt16)pcsList["PC4"].Code, pcsList["PC4"].InputType);
-                                    inputList[pcsList["PC4"].InputType].InputName = pcsList["PC4"].InputName;
+                                    if (pcsList.TryGetValue("PC4", out var pc4))
+                                    {
+                                        InputSourceObj pc4input = new InputSourceObj((UInt16)pcsList["PC4"].Code, pcsList["PC4"].InputType);
+                                        inputList[pcsList["PC4"].InputType].InputName = pcsList["PC4"].InputName;
+                                        bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
+                                            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
+                                            pc2input, pc3input, pc4input).Result;
+                                        string result = res ? "Success" : "Failed";
+                                        _log.Debug($"[KvmViewModel] SubInputs PC2-{pc2input.Name}, PC3-{pc3input.Name}, PC4-{pc4input.Name} Done with {result}.");
+                                        if (res)
+                                        {
+                                            Thread.Sleep(1000);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        _log?.Debug("PC4 not found in pcsList.");
+                                    }
+                                }
+                                else
+                                {
                                     bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
                                         DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
-                                        pc2input, pc3input, pc4input).Result;
+                                        pc2input, pc3input, null).Result;
+                                    string result = res ? "Success" : "Failed";
+                                    _log.Debug($"[KvmViewModel] SubInputs PC2-{pc2input.Name}, PC3-{pc3input.Name} Done with {result}.");
                                     if (res)
                                     {
                                         Thread.Sleep(1000);
                                     }
                                 }
-                                else
-                                {
-                                    _log?.Debug("PC4 not found in pcsList.");
-                                }
                             }
                             else
                             {
-                                bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
+                                _log?.Debug("PC3 not found in pcsList.");
+                            }
+                        }
+                        else
+                        {
+                            bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
                                     DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
-                                    pc2input, pc3input, null).Result;
-                                if (res)
+                                    pc2input, null, null).Result;
+                            string result = res ? "Success" : "Failed";
+                            _log.Debug($"[KvmViewModel] SubInputs PC2-{pc2input.Name} Done with {result}.");
+                            if (res)
+                            {
+                                Thread.Sleep(1000);
+                            }
+                        }
+
+                        foreach (var pcs in pcsList)
+                        {
+                            //if (pcs.Key == "PC1" && pcs.Value.InputType != original_pcsList["PC1"].InputType)
+                            //{
+                            //    CurrentInputChange();
+                            //}
+                            //if (pcs.Value.InputName != vm.original_pcsList[pcs.Key].InputName)
+                            //{
+                            //    bool binputname = DdpmCommonHelper.DeviceManagerSA.SetInputName(pcs.Value.InputType, pcs.Value.InputName).Result;
+                            //}
+                            if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
+                            {
+                                bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
+                                _log.Debug($"[KvmViewModel] SetUSBUpstream {pcs.Key}-{pcs.Value.InputType}: {pcs.Value.USBUpstream} Done");
+                                if (bUSBuptream)
                                 {
                                     Thread.Sleep(1000);
                                 }
                             }
                         }
-                        else
-                        {
-                            _log?.Debug("PC3 not found in pcsList.");
-                        }
+
+                        //if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
+                        //{
+                        //}
+                        bool bin = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo, inputList).Result;
+                        bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
+                        original_pcsList = pcsList.ToDictionary(entry => entry.Key, entry => entry.Value);
+                        //isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
                     }
                     else
                     {
-                        bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
-                                DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
-                                pc2input, null, null).Result;
-                        if (res)
-                        {
-                            Thread.Sleep(1000);
-                        }
+                        _log?.Debug("PC1 or PC2 not found in pcsList.");
                     }
-
-                    foreach (var pcs in pcsList)
-                    {
-                        //if (pcs.Key == "PC1" && pcs.Value.InputType != original_pcsList["PC1"].InputType)
-                        //{
-                        //    CurrentInputChange();
-                        //}
-                        //if (pcs.Value.InputName != vm.original_pcsList[pcs.Key].InputName)
-                        //{
-                        //    bool binputname = DdpmCommonHelper.DeviceManagerSA.SetInputName(pcs.Value.InputType, pcs.Value.InputName).Result;
-                        //}
-                        if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
-                        {
-                            bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
-                            if (bUSBuptream)
-                            {
-                                Thread.Sleep(1000);
-                            }
-                        }
-                    }
-
-                    //if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
-                    //{
-                    CurrentInputChange();
-                    //}
-                    bool bin = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo, inputList).Result;
-                    bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
-                    //isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
                 }
-                else
-                {
-                    _log?.Debug("PC1 or PC2 not found in pcsList.");
-                }
-                //}
             }
             else
             {
@@ -2149,6 +2160,7 @@ namespace DDPM.UI.Module.Kvm
 
         private bool isPCsListSame(Dictionary<string, PCsInfo> sourceDict, Dictionary<string, PCsInfo> targetDict)
         {
+            bool isSame = true;
             if (sourceDict == null && targetDict == null) return true;
             else {
                 if (sourceDict == null || targetDict == null) return false; 
