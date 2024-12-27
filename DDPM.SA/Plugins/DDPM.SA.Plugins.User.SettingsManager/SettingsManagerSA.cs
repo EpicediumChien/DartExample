@@ -667,7 +667,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     }
                     string strReadJson = string.Empty;
 
-                    try
+                    /*try
                     {
                         using (var reader = new StreamReader(monitorSettings_path))
                         {
@@ -680,17 +680,31 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     }
 
                     if (strReadJson == string.Empty || strReadJson.Length == 0)
-                        return Task.FromResult(monitorSettings);
+                        return Task.FromResult(monitorSettings);*/
                     try
                     {
-                        //string info;
-                        //string output = DDPMFileSecurity.GetSerializedJsonString(monitorSettings_path, out info);//, false);
-                        monitorSettings = RunMonitorListDeserializeObject(strReadJson);
+                        string info = string.Empty;
+                        strReadJson = DDPMFileSecurity.GetSerializedJsonString(monitorSettings_path, out info);//, false);
+                        if(string.IsNullOrEmpty(strReadJson))
+                        {
+                            WriteLog($"[ReloadMonitorSettings][GetSerializedJsonString] return empty data: {info}");
+                            //force write back new data to replace file which has problem
+                            WriteMonitorSettings(modelname, monitorSettings);
+                            return Task.FromResult(monitorSettings);
+                        }
+                        else
+                            monitorSettings = RunMonitorListDeserializeObject(strReadJson);
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-                        ;
+                        WriteLog($"[ReloadMonitorSettings] exception: {e.Message}");
                     }
+                }
+                else
+                {
+                    //if file not exist then create new with default values
+                    WriteMonitorSettings(modelname, monitorSettings);
+                    return Task.FromResult(monitorSettings);
                 }
             }
             else
