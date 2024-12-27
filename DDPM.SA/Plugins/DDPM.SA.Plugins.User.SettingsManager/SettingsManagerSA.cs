@@ -1978,6 +1978,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         public Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam, bool writeToSys = true)
         {
             bool result = WriteSettings_Common(globalSettingParam, "global");
+            if(!result)
+            {
+                WriteLog(("Call [WriteSettings_Common] to write global setting failed"));
+            }
 
             //apply setting to system IT config
             if (_GlobalSettingParam != null && result)
@@ -1986,51 +1990,22 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 {
                     if (writeToSys)
                     {
-                        result = _SysSettingsPlugin.WriteGlobalSettingsToITConfig(_GlobalSettingParam).Result;
-                        WriteLog("Call sys plugin to write global setting failed.");
+                        try
+                        {
+                            result = _SysSettingsPlugin.WriteGlobalSettingsToITConfig(_GlobalSettingParam, true).Result;
+                            WriteLog(($"Call sys plugin to write global setting ") + (result ? "PASS" : "FAIL"));
+                        }
+                        catch(Exception e)
+                        {
+                            WriteLog(($"Call sys plugin to write global setting [exception]: {e.Message}"));
+                        }
                     }
                 }
             }
 
             return Task.FromResult(result);
         }
-        /*private string RunSerializeObject(GlobalSettingParam globalSettingParam, string filePath)
-        {
-            string jsonString = string.Empty;
-            jsonString = JsonConvert.SerializeObject(globalSettingParam);
-            //[Dean 0912] file could be not exist at here, avoid settings fail
-            //Elsa Add Security
-            //string FileInfo;
-            //if (!DDPMFileSecurity.IsFilePathValid(filePath, out FileInfo))
-            //{
-            //    _log.Info($"{nameof(RunSerializeObject)} {FileInfo}");
-            //    return string.Empty;
-            //}
-            using (StreamWriter writer = new StreamWriter(filePath))
-            {
-                writer.Write(jsonString);
-            }
-            return jsonString;
-        }
-        private string RunSerializeObject(GlobalSettingParam globalSettingParam)
-        {
-            string jsonString = string.Empty;
-            jsonString = JsonConvert.SerializeObject(globalSettingParam);
-            string jsonpath = _GlobalSetting_path;
-            //[Dean 0912] file could be not exist at here, avoid settings fail
-            //Elsa Add Security
-            //string FileInfo;
-            //if (!DDPMFileSecurity.IsFilePathValid(jsonpath, out FileInfo))
-            //{
-            //    _log.Info($"{nameof(RunSerializeObject)} {FileInfo}");
-            //    return string.Empty;
-            //}
-            using (StreamWriter writer = new StreamWriter(jsonpath))
-            {
-                writer.Write(jsonString);
-            }
-            return jsonString;
-        }*/
+
         private GlobalSettingParam RunGlobalSettinDeserializeObject(string value)
         {
             GlobalSettingParam retList = new GlobalSettingParam();
@@ -2038,9 +2013,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 retList = JsonConvert.DeserializeObject<GlobalSettingParam>(value);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                WriteLog($"[RunGlobalSettinDeserializeObject] exception: {e.Message}");
             }
             return retList;
         }

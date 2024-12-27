@@ -430,7 +430,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             if (globalSettingParam != null)
             {
                 Mock<ISettingsManagerSA> mock_SysSettingsPlugin = new Mock<ISettingsManagerSA>();
-                mock_SysSettingsPlugin.Setup(x => x.WriteGlobalSettingsToITConfig(It.IsAny<GlobalSettingParam>())).Returns(Task.FromResult(true));
+                mock_SysSettingsPlugin.Setup(x => x.WriteGlobalSettingsToITConfig(It.IsAny<GlobalSettingParam>(), false)).Returns(Task.FromResult(true));
                 var mock_SysSettingsPluginObj = mock_SysSettingsPlugin.Object;
                 privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", mock_SysSettingsPluginObj);
                 privateSettingsManagerObject.SetFieldOrProperty("_GlobalSettingParam", globalSettingParam);
