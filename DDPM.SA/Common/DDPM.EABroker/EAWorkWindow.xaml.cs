@@ -99,10 +99,9 @@ namespace DDPM.EABroker
         {
             get
             {
-                if (_attachedMonitors != null)
+                if (_attachedMonitors != null && _attachedMonitors.Any())
                 {
-                    if (_attachedMonitors.Any())
-                        return _attachedMonitors[0];
+                    return _attachedMonitors[0];
                 }
                 return null;
             }

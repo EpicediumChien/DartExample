@@ -12000,14 +12000,12 @@ namespace DDPM.CLI.Plugins.Display
                 return supported;
             }
 
-            if (commandLineInput.Options.Count > 0)
+            if (commandLineInput.Options.Count > 0 &&
+                commandLineInput.Options[0].Option_Value.Contains("LOCK"))
             {
-                if (commandLineInput.Options[0].Option_Value.Contains("LOCK"))
-                {
-                    writelog("Check monitor is support speaker lock/unlock");
-                    supported = value.Contains("C000");
-                    writelog(supported ? "Monitor is support speaker lock/unlock" : "Monitor is not support speaker lock/unlock");
-                }
+                writelog("Check monitor is support speaker lock/unlock");
+                supported = value.Contains("C000");
+                writelog(supported ? "Monitor is support speaker lock/unlock" : "Monitor is not support speaker lock/unlock");
             }
 
             return supported;
@@ -12032,14 +12030,12 @@ namespace DDPM.CLI.Plugins.Display
                 return supported;
             }
 
-            if (commandLineInput.Options.Count > 0)
+            if (commandLineInput.Options.Count > 0 &&
+                commandLineInput.Options[0].Option_Value.Contains("LOCK"))
             {
-                if (commandLineInput.Options[0].Option_Value.Contains("LOCK"))
-                {
-                    writelog("Check monitor is support microphone lock/unlock");
-                    supported = value.Contains("C000");
-                    writelog(supported ? "Monitor is support microphone lock/unlock" : "Monitor is not support microphone lock/unlock");
-                }
+                writelog("Check monitor is support microphone lock/unlock");
+                supported = value.Contains("C000");
+                writelog(supported ? "Monitor is support microphone lock/unlock" : "Monitor is not support microphone lock/unlock");
             }
 
             return supported;
