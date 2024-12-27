@@ -67,6 +67,13 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             }
             txtCaption.Text = Caption;
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += AddDeviceView_DeviceChanged;
+            ;
+        }
+
+        private void AddDeviceView_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void ImageUpdate(OSThemeEnum oSThemeEnum)

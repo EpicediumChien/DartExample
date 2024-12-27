@@ -158,7 +158,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             {
                 if (e.type == DeviceChangedType.Peripherals_SettingsChange)
                 {
-                    _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
+                    //_viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
                 }
                 else
                 {

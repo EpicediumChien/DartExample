@@ -2679,8 +2679,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = "BatteryStatusChanged";
                     OnNotify(_EventArgs);
-                    Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
-                    writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
+                    Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
+                    writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
 
                     CheckLowBatteryOSD(deviceInfo);
                 }
@@ -2833,8 +2833,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = "BatteryLevelChanged";
                     OnNotify(_EventArgs);
-                    Debug.WriteLine($"BatteryLevelChanged: ID: {arg1.Id} Level: {arg2}");
-                    writelog($"BatteryLevelChanged: ID: {arg1.Id} Level: {arg2}");
+                    Debug.WriteLine($"BatteryLevelChanged: ID: {arg1.Id} Status: {deviceInfo.BatteryStatus} Level: {arg2}");
+                    writelog($"BatteryLevelChanged: ID: {arg1.Id} Status: {deviceInfo.BatteryStatus} Level: {arg2}");
 
                     CheckLowBatteryOSD(deviceInfo);
                 }
