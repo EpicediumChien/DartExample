@@ -173,6 +173,16 @@ namespace DDPM.SA.Common.UpdateProgressPage
             Close();
         }
 
+        public void HideWindow()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(HideWindow);
+                return;
+            }
+            Hide();
+        }
+
         private void UXWindow_Loaded(object sender, RoutedEventArgs e)
         {
             this.Width = 800;
