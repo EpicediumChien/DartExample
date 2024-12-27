@@ -127,9 +127,17 @@ namespace DDPM.UI.Module.DisplayOthers.Tests
         [Test]
         public void TestOnSelectedHomeDeviceChanged()
         {
-            var displayOthersModule = new DisplayOthersModule();
+            displayOthersModule.IsModuleActive = false;
             displayOthersModule.OnSelectedHomeDeviceChanged();
-            Assert.Pass();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChangeda()
+        {
+            displayOthersModule.IsModuleActive = true;
+            displayOthersModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
         }
 
         [Test]
