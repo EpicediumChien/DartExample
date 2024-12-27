@@ -9739,7 +9739,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<GlobalSettingParam> GetGlobalSettingParam()
         {
-            FirstGetDPeMSettings();
             return Task.FromResult(_GlobalSettingParam);
         }
 
@@ -9753,7 +9752,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (!settings.UserSettings.isDisplayConsentPage)
                     {
                         writelog($"[DeviceMangerPlugin] GetFirstReadStatus");
-                        if (!CheckOnlyInstallDPeM().Result)
+                        if (!CheckOnlyInstallDDPM().Result&& CheckHasInstallDPeM().Result)
                         {
                             bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", true).Result;
                         }
@@ -9766,8 +9765,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        /// <summary>
+        /// To confirm whether it is installed and used for the first time, it will check whether there is a REG record, whether DPeM has been installed, and whether the SDK is connected. 
+        /// </summary>
+        /// <returns></returns>
         public async Task<bool> CheckInstallFirstOpen()
         {
+            writelog($"[DeviceMangerPlugin] CheckInstallFirstOpen");
             var ReadReg = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen").Result;
             if (ReadReg == null)
             {
@@ -9775,18 +9779,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"[DeviceMangerPlugin] ReadReg Status {ReadReg} And {ReadReg.GetType()}");
             Boolean.TryParse(ReadReg.ToString(), out var getRegValue);
-            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady().Result&& CheckHasInstallDPeM().Result)
+            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady().Result && CheckHasInstallDPeM().Result)
             {
                 count++;
                 writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Count:{count}...");
                 GetDPeMGlobalSettings();
+                var ck = SaveGlobalSettingParam();
                 obj = new Object();
                 return true;
             }
             return false;
         }
 
-        private async Task<bool> CheckOnlyInstallDPeM()
+
+        /// <summary>
+        /// Confirm that DDPM has been installed
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> CheckOnlyInstallDDPM()
         {
             writelog($"[DeviceMangerPlugin] Check Has Installed DDPM");
             var HasDDPM = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen").Result;
@@ -9796,10 +9806,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return false;
         }
+
+        /// <summary>
+        /// Confirm that DPeM has been installed
+        /// </summary>
+        /// <returns></returns>
         private async Task<bool> CheckHasInstallDPeM() 
         {
             writelog($"[DeviceMangerPlugin] Check Has Installed DPeM");
-            var isAnalyticsFirstLaunchDone = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Global", "isAnalyticsFirstLaunchDone").Result;
+            var isAnalyticsFirstLaunchDone = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Global", "isAnalyticsEnabled").Result;
             if (isAnalyticsFirstLaunchDone == null) 
             {
                 return false;
@@ -9807,6 +9822,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return true;
         }
 
+        /// <summary>
+        /// Get the GlobalSettings of DPeM
+        /// </summary>
         private void GetDPeMGlobalSettings()
         {
             _GlobalSettingParam.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State = GetIsPresenceDetectionSensnorStateNotificationsEnabledValue().Result;
@@ -9816,6 +9834,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _GlobalSettingParam.isTelemetryConsentOn = GetIsAnalyticsEnabledValue().Result;
             _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget = GetIsQuickAccessMenuEnabledValue().Result;
             _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder = GetIsQuickAccessMenuOSDEnabledValue().Result;
+            writelog($"[DeviceMangerPlugin] WriteRegistryData GetGlobalSettingParam WriteRegistryData False");
             bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", false).Result;
         }
 
@@ -11905,11 +11924,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return;
 
             _DTPProxyPlugin = _agent.PluginManager.FindPluginByType<IDTPProxyPlugin>(PluginResolution.Dynamic);
-
+            _DTPProxyPlugin.DTPProxyPluginSDKeventHandler += DTPProxyPlugin_DTPProxyPluginSDKeventHandler;
             if (_DTPProxyPlugin is IFrameworkPluginConditionNotification pluginCondition)
             {
                 pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
                 GetCurrentDTPProxyPluginCondition();
+            }
+        }
+
+        private void DTPProxyPlugin_DTPProxyPluginSDKeventHandler(object sender, UpdateDTPProxyNotify e)
+        {
+            if (e.State == "IsDTPReady OK")
+            {
+                FirstGetDPeMSettings();
+            }
+            else if (e.State == "DTPProxyPluginSDK Ready OK")
+            {
+                var ck = CheckInstallFirstOpen().Result;
             }
         }
 
