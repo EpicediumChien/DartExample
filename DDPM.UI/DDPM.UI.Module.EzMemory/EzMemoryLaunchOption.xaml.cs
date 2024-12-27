@@ -343,16 +343,19 @@ namespace DDPM.UI.Module.EzMemory
 
         private long GetAutoLaunchTime()
         {
+            string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+            string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
+
             int hour = int.TryParse(_vm.SelectedHour, out var h) ? h : 0;
             int minute = int.TryParse(_vm.SelectedMinute, out var m) ? m : 0;
 
             // PM
-            if (_vm.SelectedAMPM == "PM")
+            if (_vm.SelectedAMPM == pmDesignator)
             {
                 hour += 12;
             }
             // AM
-            else if (_vm.SelectedAMPM == "AM" && hour == 12)
+            else if (_vm.SelectedAMPM == amDesignator && hour == 12)
             {
                 hour = 0;
             }
