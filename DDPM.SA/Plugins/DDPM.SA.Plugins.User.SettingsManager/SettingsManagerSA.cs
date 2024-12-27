@@ -689,7 +689,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         {
                             WriteLog($"[ReloadMonitorSettings][GetSerializedJsonString] return empty data: {info}");
                             //force write back new data to replace file which has problem
-                            WriteMonitorSettings(modelname, monitorSettings);
+                            bool temp = WriteMonitorSettings(modelname, monitorSettings).Result;
+                            WriteLog($"[ReloadMonitorSettings][WriteMonitorSettings] replace by default data: result({temp})");
                             return Task.FromResult(monitorSettings);
                         }
                         else
@@ -1742,15 +1743,24 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
 
+            if(string.IsNullOrEmpty(value))
+            {
+                WriteLog($"[RunMonitorListDeserializeObject] empty value, return default data");
+                return monitorSettingsList;
+            }
             try
             {
                 monitorSettingsList = JsonConvert.DeserializeObject<List<DDPMMonitorSettings>>(value);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                ;
+                WriteLog($"[RunMonitorListDeserializeObject] for monitor settings with exception: {e.Message}");
             }
-
+            if (monitorSettingsList == null)
+            {
+                monitorSettingsList = new List<DDPMMonitorSettings>();
+                WriteLog($"[RunMonitorListDeserializeObject] empty value, return default data 2");
+            }
             return monitorSettingsList;
         }
 
