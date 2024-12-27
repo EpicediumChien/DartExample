@@ -8,11 +8,12 @@ using DDPM.UI.Module.KeyCustomization;
 using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using System.Diagnostics;
+using System.Drawing;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
+using Image = System.Windows.Controls.Image;
 
 namespace DDPM.UI.Plugin.KeyboardPlugin
 {
@@ -25,8 +26,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         private readonly int[] _rightFrameWidth = { 0, 333, 533, 533 };
         private readonly Style ConnectionStyle1;
         private readonly Style ConnectionStyle2;
-        private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
-        private readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
+        //private readonly BitmapImage img1 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth.png", UriKind.Relative));
+        //private readonly BitmapImage img2 = new(new Uri($"/DDPM.UI.Resources;component/Resources/Images/Bluetooth2.png", UriKind.Relative));
 
         public LaunchView()
         {
@@ -400,9 +401,10 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
 
         private void SetBLConnectionStatus()
         {
+            if (_vm == null)
+                return;
+
             string hostName = Dns.GetHostName();
-            if (hostName.Length > 15)
-                hostName = hostName.Substring(0, 15);
 
             txt1.Style = ConnectionStyle2;
             txtBLHost1.Style = ConnectionStyle2;
@@ -411,7 +413,11 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             txt3.Style = ConnectionStyle2;
             txtBLHost3.Style = ConnectionStyle2;
 
-            switch (_vm!.Model)
+            _vm.ImgBL1 = false;
+            _vm.ImgBL2 = false;
+            _vm.ImgBL3 = false;
+
+            switch (_vm.Model)
             {
                 case "KB700":
                 case "KB740":
@@ -424,11 +430,13 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     {
                         txt2.Style = ConnectionStyle1;
                         txtBLHost2.Style = ConnectionStyle1;
+                        _vm.ImgBL2 = true;
                     }
                     else
                     {
                         txt3.Style = ConnectionStyle1;
                         txtBLHost3.Style = ConnectionStyle1;
+                        _vm.ImgBL3 = true;
                     }
                     break;
 
@@ -440,11 +448,13 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     {
                         txt1.Style = ConnectionStyle1;
                         txtBLHost1.Style = ConnectionStyle1;
+                        _vm.ImgBL1 = true;
                     }
                     else
                     {
                         txt2.Style = ConnectionStyle1;
                         txtBLHost2.Style = ConnectionStyle1;
+                        _vm.ImgBL2 = true;
                     }
                     break;
 
@@ -454,6 +464,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     txt2.Style = ConnectionStyle1;
                     txtBLHost2.Text = hostName;
                     txtBLHost2.Style = ConnectionStyle1;
+                    _vm.ImgBL2 = true;
                     break;
             }
             if (txtBLHost1.Text.Length > 20)

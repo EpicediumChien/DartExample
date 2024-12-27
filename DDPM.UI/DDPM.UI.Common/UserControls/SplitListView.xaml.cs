@@ -87,6 +87,7 @@ namespace DDPM.UI.Common.UserControls
             {
                 spItem.IsDeleteEnabled = true;
                 spItem.IsEditEnabled = !spItem.IsAddedCustomLayout;
+
             }
             else if (vm.SplitOwner == eSplitOwner.EaWin)
             {

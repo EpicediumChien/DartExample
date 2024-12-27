@@ -216,6 +216,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private static bool _IsSkipCA = false;
 
         private QAMPage _QAM = null;
+        private Thread threadQAM = null;
         private Point QAM_Position;
         private bool isDDPMHomepageReady = false;
         private bool isDDPMLaunchedByQAM = false;
@@ -492,26 +493,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _curPxpMode = Convert.ToUInt16(ret.value);
                     switch (_curPxpMode)
                     {
-                        case 0x11:
+                        case 0x00://off
+                            usbKvmPBP.isPBPmode = false;
+                            break;
+                        case 0x21://PIP small
                             usbKvmPBP.isPBPmode = false;
                             break;
 
-                        case 0x12:
+                        case 0x22://PIP large
                             usbKvmPBP.isPBPmode = false;
                             break;
-
+                        case 0x23:
                         case 0x24:
-                        case 0x2F:
-                        case 0x26:
-                        case 0x28:
-                        case 0x2A:
-                        case 0x2C:
-                        case 0x2E:
                         case 0x25:
+                        case 0x26:
                         case 0x27:
+                        case 0x28:
                         case 0x29:
+                        case 0x2A:
                         case 0x2B:
+                        case 0x2C:
                         case 0x2D:
+                        case 0x2E:
+                        case 0x2F:
                         case 0x31:
                         case 0x32:
                         case 0x33:
@@ -663,11 +667,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                         else
                         {
-                            writelog($"[HotkeyPressed]No Job matched:Hotkey(id:{hotkeyInfo.ID}):{e.KeyString}");
+                            Debug.WriteLine($"[HotkeyPressed]No Job matched:Hotkey(id:{e.HotkeyInfo.ID}):{e.KeyString}");
+                            writelog($"[HotkeyPressed]No Job matched:Hotkey(id:{e.HotkeyInfo.ID}):{e.KeyString}");
+                            string v = string.Join("\n", settings.HotkeyInfo.Select(x => "ID=" + x.ID + "; Job=" + x.Job).ToList());
+                            Debug.WriteLine($"[HotkeyPressed]No Job matched regist ID,current settings: {v}");
+                            writelog($"[HotkeyPressed]No Job matched regist ID,current settings: {v}");
                         }
                     }
                     else
                     {
+                        Debug.WriteLine($"[HotkeyPressed](id:{e.HotkeyInfo.ID}):{e.KeyString},HotkeyInfo is null");
                         writelog($"[HotkeyPressed](id:{e.HotkeyInfo.ID}):{e.KeyString},HotkeyInfo is null");
                     }
                 }
@@ -1586,14 +1595,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             bool SmartHDR_ON = GetHDRStatus(mo).Result;
 
-            if ( (_AllInfoMonitors != null) && (mo != null) )
+            if ((_AllInfoMonitors != null) && (mo != null))
             {
                 var temp = _ColorPresetPlugin.AutoSetColorPresetForMonitorConfig(_AllInfoMonitors, mo, on_off, _SettingsPlugin, this, Is_Game_DeviceName, SmartHDR_ON).Result;
                 writelog($"[DeviceManagerPlugin - AutoSetColorPresetForMonitorConfig] result {temp}");
                 return Task.FromResult(temp);
             }
             else
-                return Task.FromResult(false);           
+                return Task.FromResult(false);
         }
 
         /// <summary>
@@ -5281,22 +5290,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(ret);
         }
 
-        public Task<string> GetOSDOrientation(MonitorInfo monitorInfo)
+        public Task<string> GetOSDOrientation(MonitorInfo monitorInfos)
         {
             string ret = "";
             if (_DisplayManagerPlugin != null)
             {
-                ret = _DisplayManagerPlugin.GetOSDOrientation(monitorInfo).Result;
+                ret = _DisplayManagerPlugin.GetOSDOrientation(monitorInfos).Result;
             }
             return Task.FromResult(ret);
         }
 
-        public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfo, string Orientation)
+        public Task<bool?> SetOSDOrientation(MonitorInfo monitorInfos, string Orientation)
         {
             bool? ret = null;
             if (_DisplayManagerPlugin != null)
             {
-                ret = _DisplayManagerPlugin.SetOSDOrientation(monitorInfo, Orientation).Result;
+                ret = _DisplayManagerPlugin.SetOSDOrientation(monitorInfos, Orientation).Result;
             }
             return Task.FromResult(ret);
         }
@@ -9730,7 +9739,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<GlobalSettingParam> GetGlobalSettingParam()
         {
-            FirstGetDPeMSettings();
             return Task.FromResult(_GlobalSettingParam);
         }
 
@@ -9744,7 +9752,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (!settings.UserSettings.isDisplayConsentPage)
                     {
                         writelog($"[DeviceMangerPlugin] GetFirstReadStatus");
-                        if (!CheckOnlyInstallDPeM().Result)
+                        if (!CheckOnlyInstallDDPM().Result&& CheckHasInstallDPeM().Result)
                         {
                             bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", true).Result;
                         }
@@ -9757,8 +9765,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        /// <summary>
+        /// To confirm whether it is installed and used for the first time, it will check whether there is a REG record, whether DPeM has been installed, and whether the SDK is connected. 
+        /// </summary>
+        /// <returns></returns>
         public async Task<bool> CheckInstallFirstOpen()
         {
+            writelog($"[DeviceMangerPlugin] CheckInstallFirstOpen");
             var ReadReg = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen").Result;
             if (ReadReg == null)
             {
@@ -9766,18 +9779,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"[DeviceMangerPlugin] ReadReg Status {ReadReg} And {ReadReg.GetType()}");
             Boolean.TryParse(ReadReg.ToString(), out var getRegValue);
-            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady().Result&& CheckHasInstallDPeM().Result)
+            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady().Result && CheckHasInstallDPeM().Result)
             {
                 count++;
                 writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Count:{count}...");
                 GetDPeMGlobalSettings();
+                var ck = SaveGlobalSettingParam();
                 obj = new Object();
                 return true;
             }
             return false;
         }
 
-        private async Task<bool> CheckOnlyInstallDPeM()
+
+        /// <summary>
+        /// Confirm that DDPM has been installed
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> CheckOnlyInstallDDPM()
         {
             writelog($"[DeviceMangerPlugin] Check Has Installed DDPM");
             var HasDDPM = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen").Result;
@@ -9787,10 +9806,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             return false;
         }
+
+        /// <summary>
+        /// Confirm that DPeM has been installed
+        /// </summary>
+        /// <returns></returns>
         private async Task<bool> CheckHasInstallDPeM() 
         {
             writelog($"[DeviceMangerPlugin] Check Has Installed DPeM");
-            var isAnalyticsFirstLaunchDone = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Global", "isAnalyticsFirstLaunchDone").Result;
+            var isAnalyticsFirstLaunchDone = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Global", "isAnalyticsEnabled").Result;
             if (isAnalyticsFirstLaunchDone == null) 
             {
                 return false;
@@ -9798,6 +9822,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return true;
         }
 
+        /// <summary>
+        /// Get the GlobalSettings of DPeM
+        /// </summary>
         private void GetDPeMGlobalSettings()
         {
             _GlobalSettingParam.GlobalSetting_General.Webcam_WB7022_Presence_Detection_Sensor_Cover_State = GetIsPresenceDetectionSensnorStateNotificationsEnabledValue().Result;
@@ -9807,6 +9834,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             _GlobalSettingParam.isTelemetryConsentOn = GetIsAnalyticsEnabledValue().Result;
             _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget = GetIsQuickAccessMenuEnabledValue().Result;
             _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder = GetIsQuickAccessMenuOSDEnabledValue().Result;
+            writelog($"[DeviceMangerPlugin] WriteRegistryData GetGlobalSettingParam WriteRegistryData False");
             bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", false).Result;
         }
 
@@ -9935,6 +9963,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             GlobalSettingChangeEvent?.Invoke(this, null);
 
             //Derek 1209 to handle QAM event
+            writelog($"HandleQAMV2 launched by event Set_GlobalSetting_EnableQuickAccessWidget");
             HandleQAMV2();
 
             return Task.FromResult(ret);
@@ -10299,7 +10328,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                                              //_ZoomMeetingType != ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW
                     )
                 {
-                    ResetQAMCondition();
+                    //ResetQAMCondition();
                     QAMClose(false);
                     CloseQAMOSD();
 
@@ -10308,9 +10337,25 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     return;
                 }
 
-                _IsZoomScreenShareActive = _DTPProxyPlugin.GetIsZoomScreenShareActive(QAMWebcamDeviceGuid).Result;
-                _IsZoomMeetingActive = _DTPProxyPlugin.GetIsZoomMeetingActive(QAMWebcamDeviceGuid).Result;
-                _ZoomMeetingType = (ZoomMeetingType)_DTPProxyPlugin.GetZoomMeetingTypeAsync(QAMWebcamDeviceGuid).Result;
+                //Derek 1221
+                //if (null == QAMWebcamDeviceGuid || string.Empty == QAMWebcamDeviceGuid)
+                //{
+                //    writelog($"null == QAMWebcamDeviceGuid || string.Empty == QAMWebcamDeviceGuid");
+
+                //    //_IsZoomScreenShareActive = _DTPProxyPlugin.GetIsZoomScreenShareActive().Result;
+                //    //_IsZoomMeetingActive = _DTPProxyPlugin.GetIsZoomMeetingActive().Result;
+                //    //_ZoomMeetingType = (ZoomMeetingType)_DTPProxyPlugin.GetZoomMeetingTypeAsync().Result;
+
+                //    writelog($"Zoom meeting condition 1, _IsZoomScreenShareActive = {_IsZoomScreenShareActive}, _IsZoomMeetingActive = {_IsZoomMeetingActive}, _ZoomMeetingType = {_ZoomMeetingType}");
+                //}
+                //else
+                //{
+                //    _IsZoomScreenShareActive = _DTPProxyPlugin.GetIsZoomScreenShareActive(QAMWebcamDeviceGuid).Result;
+                //    _IsZoomMeetingActive = _DTPProxyPlugin.GetIsZoomMeetingActive(QAMWebcamDeviceGuid).Result;
+                //    _ZoomMeetingType = (ZoomMeetingType)_DTPProxyPlugin.GetZoomMeetingTypeAsync(QAMWebcamDeviceGuid).Result;
+
+                //    writelog($"Zoom meeting condition 2, _IsZoomScreenShareActive = {_IsZoomScreenShareActive}, _IsZoomMeetingActive = {_IsZoomMeetingActive}, _ZoomMeetingType = {_ZoomMeetingType}");
+                //}
                 writelog($"Zoom meeting condition, _IsZoomScreenShareActive = {_IsZoomScreenShareActive}, _IsZoomMeetingActive = {_IsZoomMeetingActive}, _ZoomMeetingType = {_ZoomMeetingType}");
 
                 //OSD condition
@@ -10369,11 +10414,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception e)
             {
-                ResetQAMCondition();
+                //ResetQAMCondition();
                 writelog($"Catch exception[{e.Message}] when Handle QAM process!");
             }
 
-            ResetQAMCondition();
+            //ResetQAMCondition();
             writelog($"HandleQAMV2 done");
         }
 
@@ -10475,6 +10520,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             eventMsg = EventMsg.CreateEventObjectFromEventMsg(msg);
             int WebcamDevCnt = GetWebcamDeviceCount();
+            writelog($"HandleQAMEvent WebcamDevCnt = {WebcamDevCnt}, eventMsg = {msg}");
 
             if (null == eventMsg)
                 return;
@@ -10491,51 +10537,89 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case "Webcam_IsZoomMeetingActiveChanged":
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomMeetingActiveChanged");
                     isQAMHandleEvent = true;
 
-                    if (1 == WebcamDevCnt)
-                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
+                        _IsZoomMeetingActive = false;
 
-                    //if (!bool.TryParse(eventMsg.NewValue, out _IsZoomMeetingActive))
-                    //    _IsZoomMeetingActive = false;
+                    //if (1 == WebcamDevCnt)
+                    //{
+                    //    //QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    //    QAMWebcamDeviceGuid = _DTPProxyPlugin.GetWebcamDeviceID().Result;
 
+                    //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_IsZoomScreenShareActiveChanged");
+                    //}
+
+                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomMeetingActiveChanged");
                     break;
 
                 case "Webcam_IsZoomScreenShareActiveChanged":
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_IsZoomScreenShareActiveChanged");
                     isQAMHandleEvent = true;
 
-                    if (1 == WebcamDevCnt)
-                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
+                        _IsZoomScreenShareActive = false;
 
-                    //if (!bool.TryParse(eventMsg.NewValue, out _IsZoomScreenShareActive))
-                    //    _IsZoomScreenShareActive = false;
+                    //if (1 == WebcamDevCnt)
+                    //{
+                    //    //QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    //    QAMWebcamDeviceGuid = _DTPProxyPlugin.GetWebcamDeviceID().Result;
 
+                    //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_IsZoomScreenShareActiveChanged");
+                    //}
+                    
+                    writelog($"HandleQAMV2 launched by event Webcam_IsZoomScreenShareActiveChanged");
                     break;
 
                 case "Webcam_ZoomMeetingTypeChanged":
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_ZoomMeetingTypeChanged");
                     isQAMHandleEvent = true;
 
-                    if (1 == WebcamDevCnt)
-                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    int type = (int)ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
 
-                    //int type = (int)ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+                    if (int.TryParse(eventMsg.NewValue, out type))
+                        _ZoomMeetingType = (ZoomMeetingType)type;
+                    else
+                        _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
 
-                    //if (int.TryParse(eventMsg.NewValue, out type))
-                    //    _ZoomMeetingType = (ZoomMeetingType)type;
-                    //else
-                    //    _ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+                    //if (1 == WebcamDevCnt)
+                    //{
+                    //    //QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    //    QAMWebcamDeviceGuid = _DTPProxyPlugin.GetWebcamDeviceID().Result;
 
+                    //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_ZoomMeetingTypeChanged");
+                    //}
+
+                    writelog($"HandleQAMV2 launched by event Webcam_ZoomMeetingTypeChanged");
                     break;
 
                 case "Webcam_Disconnected":
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_Disconnected");
                     isQAMHandleEvent = true;
+                    //Derek 1221 if there is only one device after this event, should update QAMWebcamDeviceGuid
+                    //if (1 == WebcamDevCnt)
+                    //{
+                    //    QAMWebcamDeviceGuid = _DTPProxyPlugin.GetWebcamDeviceID().Result;
+
+                    //    writelog($"There is only one device after this event, should update QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid}");
+                    //}
+                    writelog($"HandleQAMV2 launched by event Webcam_Disconnected");
                     break;
 
                 case "Webcam_Connected":
+                    writelog($"HandleQAMV2 launch by webcam event Webcam_Connected");
                     isQAMHandleEvent = true;
 
-                    if (1 == WebcamDevCnt)
-                        QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    //if (1 == WebcamDevCnt)
+                    //{
+                    //    //QAMWebcamDeviceGuid = eventMsg.DeviceId;
+                    //    QAMWebcamDeviceGuid = _DTPProxyPlugin.GetWebcamDeviceID().Result;
+
+                    //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_Connected");
+                    //}
+
+                    writelog($"HandleQAMV2 launched by event Webcam_Connected");
                     break;
 
                 default:
@@ -10544,6 +10628,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (isQAMHandleEvent)
                 HandleQAMV2();
+        }
+
+        public Task<string> GetWebcamDeviceID()
+        {
+            return _DTPProxyPlugin.GetWebcamDeviceID();
         }
 
         //Marked by Derek 1125 because they had covered by WebcamEventHandler
@@ -10589,6 +10678,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 QAM_Position = new Point(_QAM.Left, _QAM.Top);
                 _QAM.Closed -= QAMCloseEvent;
                 _QAM = null;
+                threadQAM = null;
 
                 if (_GlobalSettingParam != null && _GlobalSettingParam.GlobalSetting_WidgetSettings != null
                     && _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget_Reminder &&
@@ -10596,7 +10686,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.QAM);
                 }
+
+                writelog($"QAMCloseEvent finished with _QAM != null");
             }
+            else
+                writelog($"QAMCloseEvent finished with _QAM == null");
         }
 
         private Task QAMHide()
@@ -10647,7 +10741,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 writelog($"Try to run QAMClose");
-                _QAM?.Dispatcher.BeginInvoke(DispatcherPriority.Normal, () => _QAM?.Close());
+                _QAM?.Dispatcher.Invoke(DispatcherPriority.Normal, () => _QAM?.Close());
                 isOpenOSDWhenQAMClosed = openQAMOSD;
             }
             catch (Exception e)
@@ -10686,16 +10780,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             try
             {
-                if (_QAM == null)
+                if (_QAM == null && null == threadQAM)
                 {
                     //writelog($"CallQAM_UI: Go");
                     //List<DeviceInfo> deviceInfos = GetDevices_WithoutAwait().Result.deviceInfo.FindAll(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
                     //writelog($"CallQAM_UI: deviceInfos.Count:{deviceInfos.Count}");
                     //if (deviceInfos.Count == 1)
                     {
-                        writelog($"CallQAM_UI: have Webcam show QAM");
+                        writelog($"CallQAM_UI: Create QAM UI due to _QAM == null");
 
-                        Thread threadQAM = new Thread(() =>
+                        threadQAM = new Thread(() =>
                         {
                             _QAM = new QAMPage(deviceMangerPlugin, Log);
                             _QAM.Closed += QAMCloseEvent;
@@ -10703,8 +10797,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             //if (QAM_Position != null && (QAM_Position.X != 0 && QAM_Position.Y != 0))
                             if (QAM_Position.X != 0 && QAM_Position.Y != 0)
                             {
-                                _QAM.Top = QAM_Position.Y;
-                                _QAM.Left = QAM_Position.X;
+                                //_QAM.Top = QAM_Position.Y;
+                                //_QAM.Left = QAM_Position.X;
+
+                                //Derek 1224
+                                _QAM?.Dispatcher.Invoke(() => {
+                                    _QAM.Top = QAM_Position.Y;
+                                    _QAM.Left = QAM_Position.X;
+                                });
                             }
                             else
                             {
@@ -10720,8 +10820,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     scaleFactorY = dpiY / logicalDpi;
                                 }
 
-                                _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
-                                _QAM.Left = 0;
+                                //_QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
+                                //_QAM.Left = 0;
+
+                                //Derek 1224 for "调用线程无法访问此对象，因为另一个线程拥有该对象。"
+                                _QAM?.Dispatcher.Invoke(() => {
+                                    _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
+                                    _QAM.Left = 0;
+                                });
                             }
 
                             _QAM.Dispatcher.Invoke(() => _QAM.Show());
@@ -10734,9 +10840,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 else
                 {
-                    //_QAM.Show();
+                    //_QAM.Show();                    
                     _QAM?.Dispatcher.Invoke(() => _QAM?.Show());
                     //Dispatcher.Run(); //may block the process Derek 1219
+
+                    writelog($"CallQAM_UI: Show QAM UI due to _QAM != null");
                 }
 
                 //close DDPM UI
@@ -11816,11 +11924,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return;
 
             _DTPProxyPlugin = _agent.PluginManager.FindPluginByType<IDTPProxyPlugin>(PluginResolution.Dynamic);
-
+            _DTPProxyPlugin.DTPProxyPluginSDKeventHandler += DTPProxyPlugin_DTPProxyPluginSDKeventHandler;
             if (_DTPProxyPlugin is IFrameworkPluginConditionNotification pluginCondition)
             {
                 pluginCondition.PluginConditionChangeHandler += OnDTPProxyPluginConditionChangeHandler;
                 GetCurrentDTPProxyPluginCondition();
+            }
+        }
+
+        private void DTPProxyPlugin_DTPProxyPluginSDKeventHandler(object sender, UpdateDTPProxyNotify e)
+        {
+            if (e.State == "IsDTPReady OK")
+            {
+                FirstGetDPeMSettings();
+            }
+            else if (e.State == "DTPProxyPluginSDK Ready OK")
+            {
+                var ck = CheckInstallFirstOpen().Result;
             }
         }
 
@@ -12627,7 +12747,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
             WriteHotkeySettings(settings);
-            ReloadHotkeyConfigData();
+            //update _hotkeySettings only
+            if (_hotkeySettings != null && _hotkeySettings.Count > 0)
+            {
+                HotkeySettings hotkeySettings1 = _hotkeySettings.ElementAtOrDefault(0);
+                if (hotkeySettings1 != null)
+                    hotkeySettings1.HotkeyOptions = hotkeySettings.HotkeyOptions;
+            }
+            //ReloadHotkeyConfigData();
             return Task.FromResult(true);
         }
 
@@ -12659,7 +12786,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             string model = mo.modelName;
             string serviceTag = mo.edid.ServiceTag;
-
             if (hotkeyDataInputSource == null || hotkeyDataInputSource.Count == 0)
             {
                 writelog($"@ GetInputSourceHotKeyDataAndSaveBack: ReloadMonitorSettings(model={model}) return null.");
@@ -12674,6 +12800,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
             Debug.WriteLine($"GetInputSourceHotKeyDataAndSaveNewBack:{mo.edid.ServiceTag}");
+            Debug.WriteLine($"[GetInputSourceHotKeyDataAndSaveNewBack(monitor:{mo.AliasDeviceName = mo.edid.ServiceTag})]param=hotkeyDataInputSource:{string.Join("+", hotkeyDataInputSource.Select(x => "inputsource" + "(" + x.Name + ":" + x.Code + ")").ToList())}");
+            writelog($"[GetInputSourceHotKeyDataAndSaveNewBack(monitor:{mo.AliasDeviceName = mo.edid.ServiceTag})]param=hotkeyDataInputSource:{string.Join("+", hotkeyDataInputSource.Select(x => "inputsource" + "(" + x.Name + ":" + x.Code + ")").ToList())}");
             //Find the previous saved device settings
             DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(mo.edid.ServiceTag));
             //If not found => return error, GetAllMonitor() will init and create an initial settings instance for us
@@ -12685,14 +12813,69 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             //monitorSettings.hotkeyData = hotkeyData;
             //update hotkey data
-            HotkeyData hotkeyData = new HotkeyData { hotkeyType = hotkeyType, inputSource = hotkeyDataInputSource };
-            List<HotkeyData> removeHotkeyDatas = monitorSettings.hotkeyData.Where(x => x.hotkeyType.Equals(hotkeyType) || x.hotkeyType.Equals(HotkeyType.None)).ToList();
-            foreach (var item in removeHotkeyDatas)
+            //update USB KVM Switch between PCs inputsource data
+            if (hotkeyType == HotkeyType.KvmSwitchInputSource)
             {
-                monitorSettings.hotkeyData.Remove(item);
+                List<InputSourceObj> usbKVMInputs = new List<InputSourceObj>();
+                try
+                {
+                    if (!string.IsNullOrEmpty(monitorSettings.KVM.strUSBKVMPCsList))
+                    {
+                        Dictionary<string, PCsInfo> USBKVMPCsList = USBKVMPCsListDeserialize(monitorSettings.KVM.strUSBKVMPCsList);
+                        if (USBKVMPCsList != null)
+                        {
+                            if (USBKVMPCsList.Count != 0)
+                            {
+                                foreach (var pc in USBKVMPCsList)
+                                {
+                                    if (!string.IsNullOrEmpty(pc.Key) && pc.Value != null)
+                                    {
+                                        usbKVMInputs.Add(new InputSourceObj((ushort)pc.Value.Code, pc.Value.InputType));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    writelog($"[GetInputSourceHotKeyDataAndSaveNewBack] USBKVMPCsList exception:{e.Message}");
+                }
+                string v = string.Join("+", usbKVMInputs.Select(x => "inputsource" + "(" + x.Name + ":" + x.Code + ")").ToList());
+                Debug.WriteLine($"[GetInputSourceHotKeyDataAndSaveNewBack] get inputsource data form strUSBKVMPCsList is :{v}");
+                writelog($"[GetInputSourceHotKeyDataAndSaveNewBack] get inputsource data form strUSBKVMPCsList is :{v}");
+                if (usbKVMInputs.Count != 0)
+                {
+                    HotkeyData hotkeyData = new HotkeyData { hotkeyType = hotkeyType, inputSource = usbKVMInputs };
+                    List<HotkeyData> removeHotkeyDatas = monitorSettings.hotkeyData.Where(x => x.hotkeyType.Equals(hotkeyType) || x.hotkeyType.Equals(HotkeyType.None)).ToList();
+                    foreach (var item in removeHotkeyDatas)
+                    {
+                        monitorSettings.hotkeyData.Remove(item);
+                    }
+                    monitorSettings.hotkeyData.Add(hotkeyData);
+                }
+                else
+                {
+                    //use default list
+                    HotkeyData hotkeyData = new HotkeyData { hotkeyType = hotkeyType, inputSource = hotkeyDataInputSource };
+                    List<HotkeyData> removeHotkeyDatas = monitorSettings.hotkeyData.Where(x => x.hotkeyType.Equals(hotkeyType) || x.hotkeyType.Equals(HotkeyType.None)).ToList();
+                    foreach (var item in removeHotkeyDatas)
+                    {
+                        monitorSettings.hotkeyData.Remove(item);
+                    }
+                    monitorSettings.hotkeyData.Add(hotkeyData);
+                }
             }
-            monitorSettings.hotkeyData.Add(hotkeyData);
-
+            else
+            {
+                HotkeyData hotkeyData = new HotkeyData { hotkeyType = hotkeyType, inputSource = hotkeyDataInputSource };
+                List<HotkeyData> removeHotkeyDatas = monitorSettings.hotkeyData.Where(x => x.hotkeyType.Equals(hotkeyType) || x.hotkeyType.Equals(HotkeyType.None)).ToList();
+                foreach (var item in removeHotkeyDatas)
+                {
+                    monitorSettings.hotkeyData.Remove(item);
+                }
+                monitorSettings.hotkeyData.Add(hotkeyData);
+            }
             if (!_SettingsPlugin.WriteMonitorSettings(mo.modelName, settings).Result)
             {
                 writelog($"@ GetInputSourceHotKeyDataAndSaveBack(model={model}, serviceTage={serviceTag}) failed.");
@@ -13117,10 +13300,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //Derek 1205 for Debug
         private void CreateWebcamEventForDebug_ShowUI()
         {
+            writelog($"HandleQAMV2 launch by event CreateWebcamEventForDebug_ShowUI");
+
             _IsZoomMeetingActive = true;
             _IsZoomScreenShareActive = false;
             _ZoomMeetingType = ZoomMeetingType.CONF_3RD_EVENT_MEETING;
 
+            writelog($"HandleQAMV2 launched by event CreateWebcamEventForDebug_ShowUI");
             HandleQAMV2();
             //_IsZoomMeetingActive = false;
             //_ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
@@ -13128,9 +13314,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void CreateWebcamEventForDebug_HideUI()
         {
+            writelog($"HandleQAMV2 launch by event CreateWebcamEventForDebug_HideUI");
+
             _IsZoomScreenShareActive = true;
             _IsZoomMeetingActive = true;
 
+            writelog($"HandleQAMV2 launched by event CreateWebcamEventForDebug_HideUI");
             HandleQAMV2();
         }
 
@@ -13196,7 +13385,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Keyboard_KeyUpProc(object sender, KeyEventArgs e)
         {
-            KeyboardHook_Debounce(3000, null, KeyboardHook_KeyUpProc, e);
+            KeyboardHook_Debounce(300, null, KeyboardHook_KeyUpProc, e);
         }
 
         private void KeyboardHook_KeyUpProc(KeyEventArgs e)
@@ -13526,7 +13715,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case HotkeyType.FavoriteInputSource:
-                    HotkeyInfo hotkeyInfoIs = settings.HotkeyInfo.Where(x => x.Job.Equals(HotkeyType.FavoriteInputSource)).SingleOrDefault();
+                    HotkeyInfo hotkeyInfoIs = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.FavoriteInputSource));
                     List<HotkeyData> list = GetInputSourceHotKeyData(monitorInfo);
                     HotkeyData hotkeyData = list.SingleOrDefault(x => x.hotkeyType == HotkeyType.FavoriteInputSource);
                     Debug.WriteLine($"FavoriteInputSource: {hotkeyData?.inputSource.Count}");
@@ -13537,7 +13726,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case HotkeyType.SwitchInputSource:
-                    HotkeyInfo hotkeyInfo = settings.HotkeyInfo.Where(x => x.Job.Equals(HotkeyType.SwitchInputSource)).SingleOrDefault();
+                    HotkeyInfo hotkeyInfo = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.SwitchInputSource));
                     List<HotkeyData> list2 = GetInputSourceHotKeyData(monitorInfo);
                     HotkeyData hotkeyData2 = list2.SingleOrDefault(x => x.hotkeyType == HotkeyType.SwitchInputSource);
                     if (hotkeyInfo != null && hotkeyData2 != null)// hotkeyInfo.InputSource != null)
@@ -13547,7 +13736,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
 
                 case HotkeyType.SwapIputPIPPBP:
-                    HotkeyInfo hotkeyInfo_SwapIputPIPPBP = settings.HotkeyInfo.Where(x => x.Job.Equals(HotkeyType.SwapIputPIPPBP)).SingleOrDefault();
+                    HotkeyInfo hotkeyInfo_SwapIputPIPPBP = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.SwapIputPIPPBP));
                     if (hotkeyInfo_SwapIputPIPPBP != null)
                         _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { hotkeyInfo_SwapIputPIPPBP }, Swap_IputPIPPBP));
                     break;
@@ -13555,9 +13744,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case HotkeyType.ChangePIPPosition:
                     _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Change_PIPPosition));
                     break;
-
+                //USB KVM: Switch between PCs
                 case HotkeyType.KvmSwitchInputSource:
-                    HotkeyInfo kvmhotkeyInfo = settings.HotkeyInfo.Where(x => x.Job.Equals(HotkeyType.KvmSwitchInputSource)).SingleOrDefault();
+                    HotkeyInfo kvmhotkeyInfo = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.KvmSwitchInputSource));
                     List<HotkeyData> list3 = GetInputSourceHotKeyData(monitorInfo);
                     HotkeyData hotkeyData3 = list3.SingleOrDefault(x => x.hotkeyType == HotkeyType.KvmSwitchInputSource);
                     if (kvmhotkeyInfo != null && hotkeyData3 != null)// kvmhotkeyInfo.InputSource != null)
@@ -13565,11 +13754,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { kvmhotkeyInfo, hotkeyData3.inputSource }, Kvm_SwitchInputSource));
                     }
                     break;
-
+                //USB KVM: Switch keyboard and mouse
                 case HotkeyType.KvmSwitchKbMsKey:
                     _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Kvm_SwitchKbMsKey));
                     break;
-
+                //USB KVM: Change PIP position
                 case HotkeyType.KvmChangePIPPosition:
                     _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Kvm_ChangePIPPosition));
                     break;
@@ -13940,9 +14129,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void Kvm_SwitchInputSource(MonitorInfo monitorInfo, Object[] param)
         {
+            //USB KVM Hotkey page: Switch between PCs
             if (!GetOnUSBKVM(monitorInfo).Result)
             {
                 writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] USB KVM is off, do nothing");
+                Debug.WriteLine($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] USB KVM is off, do nothing");
+                return;
+            }
+            //if pxpMode
+            if (!IsPxPModeOFF(monitorInfo))
+            {
+                writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] PXP Mode on, do nothing");
+                Debug.WriteLine($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] PXP Mode on, do nothing");
                 return;
             }
             Debug.WriteLine($"Kvm_SwitchInputSource:current inputsource= {monitorInfo.inputSource}");
@@ -14011,6 +14209,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"Kvm_SwitchKbMsKey:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] USB KVM is off, do nothing");
                 return;
             }
+            if (IsPxPModeOFF(monitorInfo))
+            {
+                writelog($"Kvm_SwitchKbMsKey:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}]PXP mode OFF, USB KVM Switch keyboard and mouse only when PXP ON, do nothing");
+                Debug.WriteLine($"Kvm_SwitchKbMsKey:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}]PXP mode OFF, USB KVM Switch keyboard and mouse only when PXP ON, do nothing");
+                return;
+            }
             bool usbSwitch = UsbSwitch1(monitorInfo).Result;
             writelog($"Kvm_SwitchKbMsKey:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}]" + (usbSwitch ? "success" : "fail"));
         }
@@ -14043,6 +14247,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
+        private bool IsPxPModeOFF(MonitorInfo mo)
+        {
+            bool ret = false;
+            if (!mo.CapabilityDic.ContainsKey("E9"))
+                return ret;
+            ObjGetVCP pxpMode = GetPxpMode(mo).Result;
+            Debug.WriteLine($"GetPxpMode result={pxpMode?.result}, value={(UInt32)pxpMode.value}");
+            if (pxpMode != null && pxpMode.result == true)
+            {
+                ret = Convert.ToUInt16(pxpMode.value) == 0;
+            }
+            return ret;
+        }
 
         //Robert_Lin, 2024-12-21 for PIMS-332780 [DDPM Win 2.0.0] - R18 : In PBP 3 window & 4 window mode,
         //"Swapping 2 inputs of PIP/PBP windows" hotkeys can be switched.
@@ -14053,28 +14270,66 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <returns></returns>
         private bool IsPIPMode(MonitorInfo mo)
         {
-            //Check if this monitor has PIP/PBP capability
+            bool ret = false;
             if (!mo.CapabilityDic.ContainsKey("E9"))
-                return false;
-            //Get curent PxP mode
+                return ret;
             ObjGetVCP pxpMode = GetPxpMode(mo).Result;
             Debug.WriteLine($"GetPxpMode result={pxpMode?.result}, value={(UInt32)pxpMode.value}");
             if (pxpMode != null && pxpMode.result == true)
             {
-                //Robert_Lin, 2024-12-21 fix
-                //NEW:
-                UInt16 _pxpMode = (UInt16)pxpMode.value;
-                return (_pxpMode == PxpModeObj.PxpMode_PipSmall) || (_pxpMode == PxpModeObj.PxpMode_PipLarge);
-                //OLD:
-                //return (UInt32)pxpMode.value != 0;
+                ushort _curPxpMode = Convert.ToUInt16(pxpMode.value);
+                switch (_curPxpMode)
+                {
+                    case 0x00://off
+                        ret = false;
+                        break;
+                    case 0x01://01h: PIP size toggling (s->bigger...>s, NOT to off)
+                        ret = true;
+                        break;
+                    case 0x02://02h: PIP position toggling (top right->...->top right)
+                        ret = true;
+                        break;
+                    case 0x21://PIP small
+                        ret = true;
+                        break;
+
+                    case 0x22://PIP large
+                        ret = true;
+                        break;
+                    case 0x23:
+                    case 0x24:
+                    case 0x25:
+                    case 0x26:
+                    case 0x27:
+                    case 0x28:
+                    case 0x29:
+                    case 0x2A:
+                    case 0x2B:
+                    case 0x2C:
+                    case 0x2D:
+                    case 0x2E:
+                    case 0x2F:
+                    case 0x31:
+                    case 0x32:
+                    case 0x33:
+                    case 0x34:
+                    case 0x35:
+                    case 0x41:
+                    case 0x42:
+                        ret = false;
+                        break;
+                    default:
+                        ret = false;
+                        break;
+                }
             }
-            return false;
+            return ret;
         }
 
         private void Swap_IputPIPPBP(MonitorInfo monitorInfo, Object[] param)
         {
             string log_keys = string.Empty;
-            if (param != null && param.Count() > 0)
+            if (param != null && param.Length > 0)
             {
                 HotkeyInfo hotkey = (HotkeyInfo)param[0];
                 log_keys = string.Join("+", hotkey.Hotkey.Select(x => x + "(" + (int)x + ")").ToList());
@@ -14212,7 +14467,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
                 string log_keys = string.Empty;
-                if (param != null && param.Count() > 0)
+                if (param != null && param.Length > 0)
                 {
                     HotkeyInfo hotkey = (HotkeyInfo)param[0];
                     log_keys = string.Join("+", hotkey.Hotkey.Select(x => x + "(" + (int)x + ")").ToList());
@@ -14239,7 +14494,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         Debug.WriteLine($"inputSourceObjs: {item.Name}={item.Code}");
                     }
-                    if (inputSourceObjs == null || inputSourceObjs.Count() == 0)
+                    if (inputSourceObjs == null || inputSourceObjs.Count == 0)
                     {
                         //hotkey.InputSource Count must not 0.
                         Debug.WriteLine($"Switch_InputSource convert InputSource count is 0");
@@ -14272,7 +14527,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (!IsHotkeyFuncLock(HotkeyType.LockActiveInputSource))
             {
                 string log_keys = string.Empty;
-                if (param != null && param.Count() > 0)
+                if (param != null && param.Length > 0)
                 {
                     HotkeyInfo hotkey = (HotkeyInfo)param[0];
                     log_keys = string.Join("+", hotkey.Hotkey.Select(x => x + "(" + (int)x + ")").ToList());
@@ -14582,7 +14837,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        bool ret = SetVCPCapability(monitorInfo, 0xE0, (0 | (uint)getvalue)).Result;
+                        bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
                         writelog($"PowerNap ReduceBrightness:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
                     }
                 }
@@ -14625,7 +14880,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        bool ret = SetVCPCapability(monitorInfo, 0xE0, (0 | (uint)getvalue)).Result;
+                        bool ret = SetVCPCapability(monitorInfo, 0xE0, (/*0 |*/ (uint)getvalue)).Result;
                         writelog($"PowerNap SuspendMonitor:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] OFF and setVcp:]" + (ret ? "success" : "fail"));
                     }
                 }
@@ -14939,7 +15194,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             List<HotkeySettings> read = _SettingsPlugin.ReadHotkeySettings().Result;
             //HotkeySettings hotkeySettings = read.Where(x => x.ModelName.Equals(monitorEdid.ModelName) && x.SerialNumber.Equals(monitorEdid.SerialNumber)).SingleOrDefault();
-            HotkeySettings hotkeySettings = read.Where(x => x.ModelName.Equals("DDPM") && x.SerialNumber.Equals("DDPM")).SingleOrDefault();
+            HotkeySettings hotkeySettings = read.SingleOrDefault(x => x.ModelName.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
 
             //1006 read hotkey data per monitor
             List<HotkeyData> list = GetInputSourceHotKeyData(mo);
@@ -16654,7 +16909,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_IEzMemoryPlugin != null)
                 return Task.FromResult(_IEzMemoryPlugin.GetAllAppList().Result);
             else
-                return null;
+                return Task.FromResult<Dictionary<string, InstalledAppInfo>>(null);
         }
 
         //public Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps)
@@ -16692,7 +16947,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_IEzMemoryPlugin != null)
                 return Task.FromResult(_IEzMemoryPlugin.CheckEAIDExit(moinfo, eAID).Result);
             else
-                return null;
+                return Task.FromResult(false);
         }
 
         public Task<bool> DeleteEAID(MonitorInfo moinfo, int eAID)
@@ -16700,7 +16955,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_IEzMemoryPlugin != null)
                 return Task.FromResult(_IEzMemoryPlugin.DeleteEAID(moinfo, eAID).Result);
             else
-                return null;
+                return Task.FromResult(false);
         }
 
         #endregion EzM

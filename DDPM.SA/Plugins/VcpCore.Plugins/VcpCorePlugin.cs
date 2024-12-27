@@ -86,6 +86,8 @@ namespace VcpCore.Plugins
         private static SemaphoreSlim _LockerSemaphoreSlim = new SemaphoreSlim(1, 1);
         private int _CoWorkSignal = 0;
         private int _InitialThreadCounter = 0;
+        private int _AddSignalfor0X52 = 0;
+        private int _AddSignalforStatusCheck = 0;
 
         private bool IsOutInitialize
         {
@@ -200,15 +202,15 @@ namespace VcpCore.Plugins
             return Task.FromResult(_AllDisplays);
         }
 
-        public async Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken token)
+        public async Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken Token)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Re-Get Monitors List requested ...");
 
             try
             {
                 bool IsFinishedAlready = false;
-                var CancelStatusCheck = Task.Run(() => CancellationCheck(token, in IsFinishedAlready));
-                var ReGetTask = Task.Run(() => InitializeMonitorsList(true, token));
+                var CancelStatusCheck = Task.Run(() => CancellationCheck(Token, in IsFinishedAlready));
+                var ReGetTask = Task.Run(() => InitializeMonitorsList(true, Token));
 
                 List<MonitorInfo> _AllDisplays = new List<MonitorInfo>();
 
@@ -608,13 +610,22 @@ namespace VcpCore.Plugins
 
             if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
-                Guid _guid = Guid.NewGuid();
-                _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
+                if (_AddSignalfor0X52 < 1)
+                {
+                    _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin add Watcher0x52 Task to TaskQueue ...");
+                    Interlocked.Add(ref _AddSignalfor0X52, 1);
+                    _logs.DebugMsg($"[VcpCorePlugin] After add Watcher0x52 Task _AddSignalfor0X52: {_AddSignalfor0X52}");
 
-                ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x52, new Type_Watcher0x52(_guid));
-                _TaskQueue.Enqueue(parameterType);
+                    Guid _guid = Guid.NewGuid();
+                    _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                Launch_TaskQueueExecutor();
+                    ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x52, new Type_Watcher0x52(_guid));
+                    _TaskQueue.Enqueue(parameterType);
+
+                    Launch_TaskQueueExecutor();
+                }
+                else
+                    _logs.DebugMsg("[VcpCorePlugin] TaskQueue exist the same as Watcher0x52 Task alredy, so ...Ignore");
             }
             else
                 _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is in Initialize. So, ignore requested");
@@ -626,13 +637,22 @@ namespace VcpCore.Plugins
 
             if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
-                Guid _guid = Guid.NewGuid();
-                _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
+                if (_AddSignalforStatusCheck < 1)
+                {
+                    _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin add Watcher0x02forStatusCheck Task to TaskQueue ...");
+                    Interlocked.Add(ref _AddSignalforStatusCheck, 1);
+                    _logs.DebugMsg($"[VcpCorePlugin] After add Watcher0x02forStatusCheck Task _AddSignalforStatusCheck: {_AddSignalforStatusCheck}");
 
-                ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x02forStatusCheck, new Type_Watcher0x02forStatusCheck(_guid));
-                _TaskQueue.Enqueue(parameterType);
+                    Guid _guid = Guid.NewGuid();
+                    _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                Launch_TaskQueueExecutor();
+                    ParameterType parameterType = new ParameterType(Queue_CommandType.Watcher0x02forStatusCheck, new Type_Watcher0x02forStatusCheck(_guid));
+                    _TaskQueue.Enqueue(parameterType);
+
+                    Launch_TaskQueueExecutor();
+                }
+                else
+                    _logs.DebugMsg("[VcpCorePlugin] TaskQueue exist the same as Watcher0x02forStatusCheck Task alredy, so ...Ignore");
             }
             else
                 _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is in Initialize. So, ignore requested");
@@ -867,6 +887,11 @@ namespace VcpCore.Plugins
 
                             case Queue_CommandType.Watcher0x52:
                                 {
+                                    _logs.DebugMsg($"[VcpCorePlugin] Before Dequeue Watcher0x52 Task _AddSignalfor0X52: {_AddSignalfor0X52}");
+                                    if (_AddSignalfor0X52 > 0)
+                                        Interlocked.Add(ref _AddSignalfor0X52, -1);
+                                    _logs.DebugMsg($"[VcpCorePlugin] After Dequeue Watcher0x52 Task _AddSignalfor0X52: {_AddSignalfor0X52}");
+
                                     Type_Watcher0x52 parameter = (Type_Watcher0x52)p.Parameter;
                                     _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Watcher0x52 GUID => " + parameter.guid);
                                     Watcher0x52_();
@@ -875,6 +900,11 @@ namespace VcpCore.Plugins
 
                             case Queue_CommandType.Watcher0x02forStatusCheck:
                                 {
+                                    _logs.DebugMsg($"[VcpCorePlugin] Before Dequeue Watcher0x02forStatusCheck Task _AddSignalforStatusCheck: {_AddSignalforStatusCheck}");
+                                    if (_AddSignalforStatusCheck > 0)
+                                        Interlocked.Add(ref _AddSignalforStatusCheck, -1);
+                                    _logs.DebugMsg($"[VcpCorePlugin] After Dequeue Watcher0x02forStatusCheck Task _AddSignalforStatusCheck: {_AddSignalforStatusCheck}");
+
                                     Type_Watcher0x02forStatusCheck parameter = (Type_Watcher0x02forStatusCheck)p.Parameter;
                                     _logs.DebugMsg(@"[VcpCorePlugin] TaskQueueExecutorDoWork doing Watcher0x02forStatusCheck GUID => " + parameter.guid);
                                     Watcher0x02forStatusCheck_();
@@ -1659,6 +1689,12 @@ namespace VcpCore.Plugins
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck 0x02 is null");
                             _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin DDC/CI is disconnected");
 
+                            if (monitor.Item1.DDCCIFail == 0)
+                            {
+                                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin VCP 0x02 First Fail Try Renew hPhysicalMonitor if possible");
+                                RenewPhysicalMonitor(ref monitor.Item1);
+                            }
+
                             monitor.Item1.DDCCIFail++;
 
                             if (monitor.Item1.DDCCIFail >= 3)
@@ -1855,6 +1891,12 @@ namespace VcpCore.Plugins
                             {
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin VCP 0x02 is null");
                                 _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin DDC/CI is disconnected");
+
+                                if (monitor.Item1.DDCCIFail == 0)
+                                {
+                                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin VCP 0x02 First Fail Try Renew hPhysicalMonitor if possible");
+                                    RenewPhysicalMonitor(ref monitor.Item1);
+                                }
 
                                 monitor.Item1.DDCCIFail++;
 
@@ -2736,7 +2778,7 @@ namespace VcpCore.Plugins
                 else if (category.Equals(@"Input Select", StringComparison.OrdinalIgnoreCase))
                 {
                     var defaultValue = default(KeyValuePair<string, uint>);
-                    var input = VcpCodeList.VCP60.Where(x => x.Key.ToLower().Equals(str.ToLower())).FirstOrDefault();
+                    var input = VcpCodeList.VCP60.FirstOrDefault(x => x.Key.ToLower().Equals(str.ToLower()));
                     if (!input.Equals(defaultValue))
                         rc = input.Value;
                 }
@@ -2768,6 +2810,22 @@ namespace VcpCore.Plugins
                 Watcher0x02forStatusCheck();
             else
                 _logs.DebugMsg("[VcpCorePlugin] [OnStatusTimedRaise] No monitors to service or in Initialize");
+        }
+
+        private void RenewPhysicalMonitor(ref MonitorInfo_complex monitor)
+        {
+            uint cPhysicalMonitors = 0;
+            bool bSuccess = _GetNumberOfPhysicalMonitorsFromHMONITOR(monitor.hMonitor, ref cPhysicalMonitors);
+            if (bSuccess)
+            {
+                PHYSICAL_MONITOR[] pPhysicalMonitors = new PHYSICAL_MONITOR[cPhysicalMonitors];
+                bSuccess = _GetPhysicalMonitorsFromHMONITOR(monitor.hMonitor, cPhysicalMonitors, pPhysicalMonitors);
+                if (bSuccess)
+                {
+                    if (pPhysicalMonitors.Length >= monitor.cPhysicalMonitors_index)
+                        monitor.hPhysicalMonitor = pPhysicalMonitors[monitor.cPhysicalMonitors_index].hPhysicalMonitor;
+                }
+            }
         }
 
         private (List<MonitorInfo_complex>, bool) _GetMonitors(CancellationToken token)
@@ -2888,6 +2946,7 @@ namespace VcpCore.Plugins
                             _TargetMonitor.Handle = hdcMonitor;
                             _TargetMonitor.pDevmode = devmode;
                             _TargetMonitor.displaydevice = dd;
+                            _TargetMonitor.cPhysicalMonitors_index = Convert.ToUInt32(realindex);
                             _TargetMonitor.hPhysicalMonitor = pPhysicalMonitors[realindex].hPhysicalMonitor;
                             _TargetMonitor.szPhysicalMonitorDescription = pPhysicalMonitors[realindex].szPhysicalMonitorDescription;
                             _TargetMonitor.ColorPresentDescription = new Dictionary<string, Dictionary<string, string>>();

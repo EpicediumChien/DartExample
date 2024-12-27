@@ -131,7 +131,7 @@ namespace DDPM.ColorApp
 
         private List<AppCollectionData> load_app_list()
         {
-            AppsCollectShell appshell = new AppsCollectShell();
+            AppsCollectShell appshell = new AppsCollectShell(Log);
             Dictionary<string, InstalledAppInfo> data = appshell.FindAppsbyShell();
             List<AppCollectionData> apps = new List<AppCollectionData>();
 
@@ -187,7 +187,7 @@ namespace DDPM.ColorApp
                 lstApps.ItemsSource = _apps;
             });
         }
-
+        /*
         public List<AppCollectionData>? get_loaded_apps_list()
         {
             if (_apps != null && _apps.Count > 0)
@@ -199,7 +199,7 @@ namespace DDPM.ColorApp
                 refresh_app_list();
                 return _apps;
             }
-        }
+        }*/
 
         private enum log_type
         {

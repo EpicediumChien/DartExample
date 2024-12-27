@@ -212,12 +212,14 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 if (_vm.DongleInfos.Values.First().PairedDeviceCount == _vm.DongleInfos.Values.First().MaxPairingSlots)
                 {
                     ShowMessage(Strings.Error, Strings.DongleSlotFull, "");
+                    DdpmCommonHelper.WriteUILog($"Dongle Slot Full PairedDeviceCount = {_vm.DongleInfos.Values.First().PairedDeviceCount.ToString()}");
                     return;
                 }
                 else
                 {
                     _vm.CurrentDongle = _vm.DongleInfos.Values.First();
                     _vm.StartPairing(_vm.DongleInfos.Keys.First());
+                    DdpmCommonHelper.WriteUILog($"Dongle StartPairing ...");
                 }
             }
             if (_vm.DeviceBarSelectedIndex == 4 && _vm.AudioDongleInfos.Count == 1)
@@ -225,12 +227,14 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 if (_vm.AudioDongleInfos.Values.First().PairedDeviceCount == _vm.AudioDongleInfos.Values.First().MaxPairingSlots)
                 {
                     ShowMessage(Strings.Error, Strings.DongleSlotFull, "");
+                    DdpmCommonHelper.WriteUILog($"Audio Dongle Slot Full PairedDeviceCount = {_vm.AudioDongleInfos.Values.First().PairedDeviceCount.ToString()}");
                     return;
                 }
                 else
                 {
                     _vm.CurrentDongle = _vm.AudioDongleInfos.Values.First();
                     _vm.StartPairing(_vm.AudioDongleInfos.Keys.First());
+                    DdpmCommonHelper.WriteUILog($"Audio Dongle StartPairing ...");
                 }
             }
         }

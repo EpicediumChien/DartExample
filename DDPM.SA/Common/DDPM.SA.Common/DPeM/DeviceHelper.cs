@@ -19,7 +19,7 @@ namespace DDPM.SA.Common
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            if (deviceInfo.Where(x => x.IsConnected).Count() > 0)
+            if (deviceInfo.Count(x => x.IsConnected) > 0)
             {
                 Console.WriteLine("Select Device Serial Number");
                 sb.AppendLine("*******  Connected Device List");

@@ -28,7 +28,7 @@ namespace DDPM.SA.Common.UI
         {
             if (!UriParser.IsKnownScheme("pack"))
                 application = new System.Windows.Application();
-            if (application.Resources != null && application.Resources.MergedDictionaries.Count() == 0)
+            if (application.Resources != null && application.Resources.MergedDictionaries.Count == 0)
             {
                 // Get the current running assembly
                 Assembly assembly = Assembly.GetExecutingAssembly();
@@ -116,7 +116,7 @@ namespace DDPM.SA.Common.UI
                     return model;
             }
         }
-        public static List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
-        public static List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
+        public static readonly List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        public static readonly List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
     }
 }

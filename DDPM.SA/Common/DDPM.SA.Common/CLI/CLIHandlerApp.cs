@@ -334,7 +334,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPBRICONT":
                             response.Value = data_IT.Lock_Display_BriCont ? "Lock" : "Unlock";
                             break;
-                        case "INAPPAUTOBRITEMP":
+                        //case "INAPPAUTOBRITEMP":
                         case "INAPPAUTOBRIGHTNESSCOLOR"://1004 InAppAutoBrightnessColor DDPMW1341
                             response.Value = data_IT.Lock_Display_AutoBriTemp ? "Lock" : "Unlock";
                             break;
@@ -415,7 +415,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPBRICONT":
                             data_IT.Lock_Display_BriCont = true;
                             break;
-                        case "INAPPAUTOBRITEMP":
+                        //case "INAPPAUTOBRITEMP":
                         case "INAPPAUTOBRIGHTNESSCOLOR"://1004 InAppAutoBrightnessColor DDPMW1341
                             data_IT.Lock_Display_AutoBriTemp = true;
                             break;
@@ -469,7 +469,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPBRICONT":
                             data_user.LockSettings.Lock_Display_BriCont = true;
                             break;
-                        case "INAPPAUTOBRITEMP":
+                        //case "INAPPAUTOBRITEMP":
                         case "INAPPAUTOBRIGHTNESSCOLOR"://1004 InAppAutoBrightnessColor DDPMW1341
                             data_user.LockSettings.Lock_Display_AutoBriTemp = true;
                             break;
@@ -526,7 +526,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPBRICONT":
                             data_IT.Lock_Display_BriCont = false;
                             break;
-                        case "INAPPAUTOBRITEMP":
+                        //case "INAPPAUTOBRITEMP":
                         case "INAPPAUTOBRIGHTNESSCOLOR"://1004 InAppAutoBrightnessColor DDPMW1341
                             data_IT.Lock_Display_AutoBriTemp = false;
                             break;
@@ -580,7 +580,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPBRICONT":
                             data_user.LockSettings.Lock_Display_BriCont = false;
                             break;
-                        case "INAPPAUTOBRITEMP":
+                        //case "INAPPAUTOBRITEMP":
                         case "INAPPAUTOBRIGHTNESSCOLOR"://1004 InAppAutoBrightnessColor DDPMW1341
                             data_user.LockSettings.Lock_Display_AutoBriTemp = false;
                             break;
@@ -644,7 +644,7 @@ namespace DDPM.SA.Common.CLI
                         case "INAPPBRICONT":
                             status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_BriCont" }).Result;
                             break;
-                        case "INAPPAUTOBRITEMP":
+                        //case "INAPPAUTOBRITEMP":
                         case "INAPPAUTOBRIGHTNESSCOLOR"://1004 InAppAutoBrightnessColor DDPMW1341
                             status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { $"Lock_Display_AutoBriTemp" }).Result;
                             break;
