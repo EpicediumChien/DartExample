@@ -87,8 +87,8 @@
                                 Height="40"
                                 FontSize="14"
                                 FontWeight="Medium"
-                                Click="Button_Click"
-                                Style="{StaticResource PrimaryButtonStyle}"
+                                Foreground="{DynamicResource Default_SA_QAM_Path_BkColor}"
+                                Background="#0672CB" Click="Button_Click"
                                 Content="{Binding [Go_to_Widget_Settings], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                     </Grid>
                 </Grid>

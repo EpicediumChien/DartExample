@@ -1960,30 +1960,28 @@ namespace DDPM.SA.Common.Settings
 
         // [sonarqube] This method signature overlaps and no used
         //hashType: SHA256 / SHA512
-        //public static bool StartProcessSafely(
-        //    ILog log,
-        //    ProcessStartInfo startInfo,
-        //    bool needCheckThumbprintInbox = false,
-        //    string fileHash = "",
-        //    string hashType = "SHA512",
-        //    bool isWaitExitCode = false,
-        //    bool isLockNeeded = false)
-        //{
-        //    string info = string.Empty;
-        //    if (startInfo == null)
-        //    {
-        //        if (log != null)
-        //            log.Error("[StartProcessSafely] null process StartInfo");
-        //        return false;
-        //    }
-
-        //    string filePath = startInfo.FileName;
-
-        //    if (!IsProcessInfoValid(log, filePath, fileHash, hashType, needCheckThumbprintInbox))
-        //        return false;
-
-        //    return StartProcessByOptions(log, startInfo, "", "", isLockNeeded, isWaitExitCode);
-        //}
+        //This function is used by NKVM in release build
+        public static bool StartProcessSafely(
+            ILog log,
+            ProcessStartInfo startInfo,
+            bool needCheckThumbprintInbox = false,
+            string fileHash = "",
+            string hashType = "SHA512",
+            bool isWaitExitCode = false,
+            bool isLockNeeded = false)
+        {
+            string info = string.Empty;
+            if (startInfo == null)
+            {
+                if (log != null)
+                    log.Error("[StartProcessSafely] null process StartInfo");
+                return false;
+            }
+            string filePath = startInfo.FileName;
+            if (!IsProcessInfoValid(log, filePath, fileHash, hashType, needCheckThumbprintInbox))
+                return false;
+            return StartProcessByOptions(log, startInfo, "", "", isLockNeeded, isWaitExitCode);
+        }
 
         // [sonarqube] This method signature overlaps
         //hashType: SHA256 / SHA512

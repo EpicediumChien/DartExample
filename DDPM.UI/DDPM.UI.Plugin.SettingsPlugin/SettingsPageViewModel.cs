@@ -164,8 +164,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             try
             {
                 Log?.Info($"Invoke_RefreshData go");
-                bool GetPdemFile=DdpmCommonHelper.DeviceManagerSA.CheckInstallFirstOpen().Result;
-                Global.SettingParam= DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                bool GetPdemFile = DdpmCommonHelper.DeviceManagerSA.CheckInstallFirstOpen().Result;
+                Global.SettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
                 GlobalSettingParam = Global.SettingParam;
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 Lock_AnalyticsPage = data.LockSettings.Lock_Settings_TelemetryConsent;
@@ -674,7 +674,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             UXAlertItemMessage = "";
             UXAlertItemVisibility_2 = Visibility.Collapsed;
             UXAlertItemMessage_2 = "";
-            bool deviceBatteryLow = false;
+            bool? deviceBatteryLow = false;
             if (deviceInfos != null && !fwUpdateInfo.IsDisplay)
             {
                 DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.ToString().Equals(fwUpdateInfo.DeviceId.Replace("{", "").Replace("}", "")));
@@ -686,9 +686,13 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     {
                         Debug.WriteLine($"deviceInfos.BatteryStatus : {deviceInfo.BatteryStatus}");
                         Debug.WriteLine($"deviceInfos.BatteryLevel : {deviceInfo.BatteryLevel}");
-                        if (deviceInfo.BatteryLevel <= 20)
+                        if (deviceInfo.BatteryLevel <= 20 && deviceInfo.BatteryLevel >= 0)
                         {
                             deviceBatteryLow = true;
+                        }
+                        else if (deviceInfo.BatteryLevel < 0)
+                        {
+                            deviceBatteryLow = null;
                         }
                     }
                 }
@@ -696,22 +700,29 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             switch (fwUpdateInfo.DeviceType)
             {
                 case DeviceType.LogicalMouse:
-                    UXAlertItemVisibility = Visibility.Visible;
-                    if (deviceBatteryLow)
+
+                    if (deviceBatteryLow == true)
                     {
+                        UXAlertItemVisibility = Visibility.Visible;
                         UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
                     }
-                    else
+                    else if (deviceBatteryLow == null)
                     {
+                        UXAlertItemVisibility = Visibility.Visible;
                         UXAlertItemMessage = LangHelper.Instance["Update_Mouse_Alert"];
                     }
                     break;
 
                 case DeviceType.LogicalKeyboard:
-                    if (deviceBatteryLow)
+                    if (deviceBatteryLow == true)
                     {
                         UXAlertItemVisibility = Visibility.Visible;
                         UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
+                    }
+                    else if (deviceBatteryLow == null)
+                    {
+                        UXAlertItemVisibility = Visibility.Visible;
+                        UXAlertItemMessage = LangHelper.Instance["Update_Mouse_Alert"];
                     }
                     break;
 
@@ -732,7 +743,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
                 case DeviceType.PhysicalPen:
                 case DeviceType.LogicalPen:
-                    if (deviceBatteryLow)
+                    if (deviceBatteryLow == true)
                     {
                         UXAlertItemVisibility = Visibility.Visible;
                         UXAlertItemMessage = LangHelper.Instance["Update_BatteryLow_Alert"];
@@ -781,13 +792,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 this.IsCheckUpdate = false;
             }
             //PIMS-316061 display add service tag to recognize.
+            //12/25 add Model
             if (fwUpdateInfo.IsDisplay)
             {
                 UpdateInfo = $"{LangHelper.Instance["Firmware_update"]} {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName} ({fwUpdateInfo.ServiceTag})";
             }
             else
             {
-                UpdateInfo = $"{LangHelper.Instance["Firmware_update"]} {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName}";
+                UpdateInfo = $"{LangHelper.Instance["Firmware_update"]} {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName} {fwUpdateInfo.Model}";
             }
         }
 
