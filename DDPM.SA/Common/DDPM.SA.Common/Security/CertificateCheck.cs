@@ -549,26 +549,24 @@ namespace DDPM.SA.Common.Security
 
             foreach (var extension in certificate.Extensions)
             {
-                if (extension is X509Extension x509Extension)
+                if (extension is X509Extension x509Extension &&
+                    x509Extension != null && 
+                    x509Extension.Oid != null)
                 {
-                    // Subject Alternative Name (SAN) extension OID: 2.5.29.17
-                    if (x509Extension != null && x509Extension.Oid != null)
+                    // Subject Alternative Name (SAN) extension OID: 2.5.29.17                    
+                    if (x509Extension.Oid.Value == "2.5.29.17" || x509Extension.Oid.Value == "Subject Alternative Name")
                     {
-                        if (x509Extension.Oid.Value == "2.5.29.17" || x509Extension.Oid.Value == "Subject Alternative Name")
-                        {
-                            var sanExtension = new AsnEncodedData(x509Extension.Oid, x509Extension.RawData);
-                            var sanString = sanExtension.Format(true);
+                        var sanExtension = new AsnEncodedData(x509Extension.Oid, x509Extension.RawData);
+                        var sanString = sanExtension.Format(true);
 
-                            // 解析 SAN 字符串
-                            var regex = new Regex(@"DNS Name=(?<san>[^,]+)");
-                            var matches = regex.Matches(sanString);
-                            foreach (Match match in matches)
-                            {
-                                sanList.Add(match.Groups["san"].Value);
-                            }
+                        // 解析 SAN 字符串
+                        var regex = new Regex(@"DNS Name=(?<san>[^,]+)");
+                        var matches = regex.Matches(sanString);
+                        foreach (Match match in matches)
+                        {
+                            sanList.Add(match.Groups["san"].Value);
                         }
                     }
-
                 }
             }
             _logs?.DebugMsg_1($"GetSubjectAlternativeNames sanList.Count : {sanList.Count}");
