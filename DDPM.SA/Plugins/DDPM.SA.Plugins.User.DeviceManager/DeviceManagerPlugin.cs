@@ -14950,7 +14950,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<List<PowerNapSetting>> ReadPowerNapSettings()
         {
-            List<PowerNapSetting> allSettings = _SettingsPlugin.ReadPowerNapSettings().Result;
+            //Dean 1227 do not use original settings file since data come from display modelname.json currently
+            /*List<PowerNapSetting> allSettings = _SettingsPlugin.ReadPowerNapSettings().Result;
             List<PowerNapSetting> saveList = new List<PowerNapSetting>();
             //update old place powerNap settings
             if (allSettings != null && allSettings.Count > 0)
@@ -14977,7 +14978,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 }
                 WritePowerNapSettings(saveList);
-            }
+            }*/
             //return all
             List<PowerNapSetting> retList = new List<PowerNapSetting>();
             foreach (var mo in _AllInfoMonitors)
@@ -15175,7 +15176,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult((new HotkeySettings(), list));
         }
 
-        public Task<bool> WritePowerNapSettings(List<PowerNapSetting> powerNapSettings)
+        /*public Task<bool> WritePowerNapSettings(List<PowerNapSetting> powerNapSettings)
         {
             bool r = false;
 
@@ -15188,7 +15189,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Thread.Sleep(100);
             //}
             return Task.FromResult(r);
-        }
+        }*/
 
         #region USBKVM
 

@@ -109,8 +109,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         private string _hotkeysettings_path { get; set; } = string.Empty;
         //private static List<HotkeySettings> _present_hotkey_settings = new List<HotkeySettings>();
 
-        private List<PowerNapSetting> _powerNapSettings { get; set; }
-        private string _powerNapsettings_path { get; set; } = string.Empty;
+        //private List<PowerNapSetting> _powerNapSettings { get; set; }
+        //private string _powerNapsettings_path { get; set; } = string.Empty;
         //private static List<PowerNapSetting> _present_powerNap_settings = new List<PowerNapSetting>();
         //private static string _settingsAccessInfo = string.Empty;
         private static string _settingsAccessInfoVer = string.Empty;
@@ -299,7 +299,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             InitDDPMUserConfigFile();
             InitColorPresetConfigFile();
             InitHotkeyConfigFile();
-            InitPowerNapConfigFile();
+            //InitPowerNapConfigFile();
             InitGlobalSettingConfigFile();
             InitInterruptScreenFile();
 
@@ -922,7 +922,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         #region powerNap settings
 
-        public Task<List<PowerNapSetting>> ReadPowerNapSettings()
+        /*public Task<List<PowerNapSetting>> ReadPowerNapSettings()
         {
             _powerNapSettings?.Clear();
             if (string.IsNullOrEmpty(_powerNapsettings_path))
@@ -965,22 +965,16 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 }
             }
             return Task.FromResult(_powerNapSettings);
-        }
+        }*/
 
-        public Task<bool> WritePowerNapSettings(List<PowerNapSetting> powerNapSettings)
+        /*public Task<bool> WritePowerNapSettings(List<PowerNapSetting> powerNapSettings)
         {
-            /*if (powerNapSettings == null)
-                return Task.FromResult(false);
-
-            string temp = RunSerializeObject(powerNapSettings);
-            if (!string.IsNullOrWhiteSpace(temp))
-                return Task.FromResult(true);*/
             bool result = WriteSettings_Common(powerNapSettings, "powernap");
 
             return Task.FromResult(result);
-        }
+        }*/
 
-        public Task<List<PowerNapSetting>> ImportPowerNapSettings(string filePath)
+        /*public Task<List<PowerNapSetting>> ImportPowerNapSettings(string filePath)
         {
             //Elsa Add Security
             string FileInfo;
@@ -1017,7 +1011,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
             }
             return Task.FromResult(_powerNapSettings);// _present_powerNap_settings);
-        }
+        }*/
 
         public Task<bool> ExportPowerNapSettings(List<PowerNapSetting> powerNapSettings, string filePath)
         {
@@ -1560,7 +1554,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return jsonString;
         }
 
-        private string RunSerializeObject(List<PowerNapSetting> powerNapSettings)
+        /*private string RunSerializeObject(List<PowerNapSetting> powerNapSettings)
         {
             string jsonString = string.Empty;
             jsonString = JsonConvert.SerializeObject(powerNapSettings);
@@ -1579,7 +1573,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
 
             return jsonString; ;
-        }
+        }*/
 
         private List<PowerNapSetting> RunPowerNapDeserializeObject(string value)
         {
@@ -2220,9 +2214,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 case "hotkey":
                     settings_path = _hotkeysettings_path;
                     break;
-                case "powernap":
-                    settings_path = _powerNapsettings_path;
-                    break;
+                //case "powernap":
+                //    settings_path = _powerNapsettings_path;
+                //    break;
                 case "interrupt":
                     settings_path = _InterruptScreen_path;
                     break;
@@ -2262,9 +2256,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 case "hotkey":
                     _hotkeySettings = (List<HotkeySettings>)dataObj;
                     break;
-                case "powernap":
-                    _powerNapSettings = (List<PowerNapSetting>)dataObj;
-                    break;
+                //case "powernap":
+                //    _powerNapSettings = (List<PowerNapSetting>)dataObj;
+                //    break;
                 case "interrupt":
                     _InterruptScreenParam = (InterruptScreenRoot)dataObj;
                     break;
@@ -2364,12 +2358,12 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                             if (hotkey != null && hotkey.Count == 0)
                                 need_new = true;
                             break;
-                        case "powernap":
-                            List<PowerNapSetting> pnap = ReadPowerNapSettings().Result;
-                            new_obj = pnap;
-                            if (pnap != null && pnap.Count == 0)
-                                need_new = true;
-                            break;
+                        //case "powernap":
+                        //    List<PowerNapSetting> pnap = ReadPowerNapSettings().Result;
+                        //    new_obj = pnap;
+                        //    if (pnap != null && pnap.Count == 0)
+                        //        need_new = true;
+                        //    break;
                         case "interrupt":
                             InterruptScreenRoot interrupt = ReadInterruptScreen().Result;
                             new_obj = interrupt;
@@ -2413,14 +2407,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         }
                         new_obj = hotkey;//keep memory data to allow program work properly
                         break;
-                    case "powernap":
-                        List<PowerNapSetting> pnap = new List<PowerNapSetting>();
-                        if (!WritePowerNapSettings(pnap).Result)
-                        {
-                            WriteLog("[WriteHotkeySettings] write new power nap setting failed");
-                        }
-                        new_obj = pnap;//keep memory data to allow program work properly
-                        break;
+                    //case "powernap":
+                    //    List<PowerNapSetting> pnap = new List<PowerNapSetting>();
+                    //    if (!WritePowerNapSettings(pnap).Result)
+                    //    {
+                    //        WriteLog("[WriteHotkeySettings] write new power nap setting failed");
+                    //    }
+                    //    new_obj = pnap;//keep memory data to allow program work properly
+                    //    break;
                     case "interrupt":
                         InterruptScreenRoot interrupt = new InterruptScreenRoot();
                         if (!WriteInterruptScreen(interrupt).Result)
@@ -2529,7 +2523,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return _hotkeySettings;
         }
 
-        private List<PowerNapSetting> InitPowerNapConfigFile()
+        /*private List<PowerNapSetting> InitPowerNapConfigFile()
         {
             string folder = GetActiveUserLocalAppDataPath();
             WriteLog($"InitPowerNapConfigFile: appdata path: {folder}");
@@ -2555,7 +2549,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (_powerNapSettings == null)
                 _powerNapSettings = new List<PowerNapSetting>();
             return _powerNapSettings;
-        }
+        }*/
 
         private GlobalSettingParam InitGlobalSettingConfigFile()
         {
