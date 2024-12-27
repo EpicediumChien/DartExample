@@ -1836,9 +1836,10 @@ namespace DDPM.UI.Module.Kvm
             //set input source
             if (pcsList != null)
             {
-                // Since Profile issue PCs will be inconsistent need to rewrite each change, this may only happends when the change monitor state interrupted
-                if (!isPCsListSame(pcsList,  original_pcsList))
-                {
+                // Since Profile issue PCs will be inconsistent need to rewrite each change,
+                // Monitor info is only updated by monitor info updated. Originally get from profile not real monitor status
+                // if (!isPCsListSame(pcsList,  original_pcsList))
+                // {
                     CurrentInputChange();
 
                     if (pcsList.TryGetValue("PC1", out var pc1) && pcsList.TryGetValue("PC2", out var pc2))
@@ -1938,7 +1939,7 @@ namespace DDPM.UI.Module.Kvm
                     {
                         _log?.Debug("PC1 or PC2 not found in pcsList.");
                     }
-                }
+                // }
             }
             else
             {
