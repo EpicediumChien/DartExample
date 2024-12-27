@@ -7423,6 +7423,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 slots available 的當地語系化字串。
+        /// </summary>
+        internal static string slot {
+            get {
+                return ResourceManager.GetString("slot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Slow 的當地語系化字串。
         /// </summary>
         internal static string Slow {

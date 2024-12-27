@@ -28,7 +28,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private Debouncer _debouncerHeadsetMuteMicrophone;
         private Debouncer _debouncerHeadsetQuickPause;
         private Debouncer _debouncerHeadsetSidetoneCheck;
-
+        public event EventHandler<EventArgs> HeadsetSettingChanged;
         #endregion Variables
 
         public new event PropertyChangedEventHandler? PropertyChanged;
@@ -1136,7 +1136,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 CheckHeadsetFunc();
                 UpdateResetToDefault();
-                //OnPropertyChanged(nameof(IsRestoreEnable));
+                HeadsetSettingChanged?.Invoke(this, EventArgs.Empty);
                 //_showPluginManager?.ShowHomePage();
             }
             catch (Exception ex)
@@ -1851,7 +1851,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         //public bool IsRestoreEnable { get; set; } = false;
 
-        private bool _isRestoreEnable = false;
+        public bool _isRestoreEnable = false;
 
         public bool IsRestoreEnable
         {
@@ -3394,10 +3394,10 @@ namespace DDPM.UI.Plugin.ViewModels
             if (currentSettings.AnswerCall != defaultSettings.AnswerCall) return false;
             return true;
         }
-        private static readonly Dictionary<string, DeviceDefaultSettings> ModelDefaultSettings =
-        new Dictionary<string, DeviceDefaultSettings>()
+        private static readonly Dictionary<string, HeadsetDeviceDefaultSettings> ModelDefaultSettings =
+        new Dictionary<string, HeadsetDeviceDefaultSettings>()
         {
-            { "WL7024", new DeviceDefaultSettings {
+            { "WL7024", new HeadsetDeviceDefaultSettings {
                 AncMode = 1,
                 AncGain = 3,
                 BusyLight = true,
@@ -3418,7 +3418,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 WearDetectionSensitivityFromDTP = 0,
                 AnswerCall = false
             }},
-            { "WH3024", new DeviceDefaultSettings {
+            { "WH3024", new HeadsetDeviceDefaultSettings {
                 AncMode = 0,
                 AncGain = 0,
                 BusyLight = true,
@@ -3439,7 +3439,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 WearDetectionSensitivityFromDTP = 0,
                 AnswerCall = false
             }},
-            { "WL3024", new DeviceDefaultSettings {
+            { "WL3024", new HeadsetDeviceDefaultSettings {
                 AncMode = 0,
                 AncGain = 0,
                 BusyLight = true,
@@ -3460,7 +3460,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 WearDetectionSensitivityFromDTP = 0,
                 AnswerCall = false
             }},
-            { "WL5024", new DeviceDefaultSettings {
+            { "WL5024", new HeadsetDeviceDefaultSettings {
                 AncMode = 1,
                 AncGain = 3,
                 BusyLight = true,
@@ -3481,7 +3481,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 WearDetectionSensitivityFromDTP = 1,
                 AnswerCall = false
             }},
-            { "WH5024", new DeviceDefaultSettings {
+            { "WH5024", new HeadsetDeviceDefaultSettings {
                 AncMode = 1,
                 AncGain = 3,
                 BusyLight = true,
@@ -3591,7 +3591,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
     }
-    public class DeviceDefaultSettings
+    public class HeadsetDeviceDefaultSettings
     {
         public int AncMode { get; set; } = 0;
         public int AncGain { get; set; } = 0;
