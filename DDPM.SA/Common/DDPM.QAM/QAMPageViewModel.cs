@@ -95,6 +95,7 @@ namespace DDPM.QAM
 
                 LogMsg($"Add event QAMPageViewModel_UIUpdateNotify, isQAMPageViewModel_UIUpdateNotifyExist={isQAMPageViewModel_UIUpdateNotifyExist}");                
             }
+
             LoadCurrentStatus();
         }
 
@@ -124,14 +125,14 @@ namespace DDPM.QAM
 
                 FieldOfView = DdpmCommonHelper.DeviceManagerSA!.GetFieldOfView(CurrentDeviceInfo!.ID.ToString()).Result;
 
-                LogMsg($"ZoomValue = {ZoomValue}, AutoFramingStatus = {AutoFramingStatus}, selFOVIdx = {FieldOfView}");
+                LogMsg($"ZoomValue = {ZoomValue}, AutoFramingStatus = {AutoFramingStatus}, selFOV = {FieldOfView}");
 
                 if (FieldOfView != -1)
                     FOV_Selected(ChangeFOVToSelectIndex(FieldOfView));
             }
             catch (Exception e)
             {
-                LogMsg($"Catch exception[{e.Message}]");
+                LogMsg($"LoadCurrentStatus Catch exception [{e.Message}]");
             }
 
             isStatusChagneByDDPM = false;
