@@ -498,7 +498,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     }
                     string exeFilePath;
                     using (FileLock fileLock = new FileLock(_installationFileStoragePath, PathCheckOption.None, lockNow: true))
-                    {
+                    {                        
                         if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
                         {
                             _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
