@@ -415,7 +415,51 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         string oldVer = updateHelper.UpdateItems[i].CurrentVersion;
                         if (!string.IsNullOrEmpty(newVer))
                         {
-                            newVer = Regex.Replace(updateHelper.UpdateItems[i].NewVersion, ".{1}", "$0.").Substring(0, (updateHelper.UpdateItems[i].NewVersion.Length * 2) - 1);
+                            // Jim 20241227 Comment out
+                            //newVer = Regex.Replace(updateHelper.UpdateItems[i].NewVersion, ".{1}", "$0.").Substring(0, (updateHelper.UpdateItems[i].NewVersion.Length * 2) - 1);
+
+                            // Jim 20241227 add to  PIMS-329393 DDPM is sending smart dock version as f.f.f.f.f.f.f.f
+                            string strBackup = string.Empty;
+                            string strTemp = string.Empty;
+                            
+                            strBackup = newVer;
+                            _logs.DebugMsg_1($" CheckUpdate(), newVer (original input) = {newVer}");
+                            _logs.DebugMsg_1($" CheckUpdate(), strBackup = {strBackup}");
+
+                            if (!string.IsNullOrEmpty(strBackup))
+                            {
+                                if (strBackup.Length < 5) //長度小於5
+                                {
+                                    newVer = Regex.Replace(updateHelper.UpdateItems[i].NewVersion, ".{1}", "$0.").Substring(0, (updateHelper.UpdateItems[i].NewVersion.Length * 2) - 1);
+
+                                }
+                                else if (strBackup.Length > 4) // 長度大於4
+                                {
+                                    //FF.FF.FF.FF(testing) or
+                                    //01004501 => 01.00.45.01 / 00011600 => 00.01.16.00(production)
+
+                                    if (strBackup.Length < 8) // 長度不足8,就補0在字首到長度為8
+                                        strBackup = strBackup.PadLeft(8, '0');
+
+                                    //FF.FF.FF.FF(testing) or
+                                    //00001541 => 1.5.4.1; 00001064 => 1.0.6.4(production)
+                                    if (strBackup.StartsWith("0000")) // 檢查前4個字元是否都為0
+                                    {
+                                        strTemp = strBackup.Substring(4);
+                                        newVer = Regex.Replace(strTemp, ".{1}", "$0.").Substring(0, (strTemp.Length * 2) - 1);
+                                    }
+                                    else
+                                    {
+                                        string pattern = @"(.{2})(.{2})(.{2})(.{2})";
+                                        string replacement = "$1:$2:$3:$4";
+                                        newVer = Regex.Replace(strBackup, pattern, replacement);
+                                    }
+
+                                }
+                            }
+
+                            _logs.DebugMsg_1($" CheckUpdate(), newVer (production output) = {newVer}");
+
                         }
                         if (!string.IsNullOrEmpty(oldVer))
                         {
