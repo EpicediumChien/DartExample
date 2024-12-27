@@ -210,28 +210,28 @@ namespace DDPM.UI.Module.EzMemory
                         else
                         {
                             _log.Info("[EzMemoryLaunchOption] AutoLunchTime_Checked ... chooice Yes");
+                            return;
+                            //EasyArrangementDDPM clickedeasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
 
-                            EasyArrangementDDPM clickedeasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
-
-                            if (clickedeasyArrangementDDPM != null && clickedeasyArrangementDDPM.Desktops.Count > 0)
-                            {
-                                foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
-                                {
-                                    if (ps.AutoStartTime == GetAutoLaunchTime())
-                                    {
-                                        ps.Auto = false;
-                                        ps.AutoStartTime = 0;
-                                        if (DdpmCommonHelper.DeviceManagerSA.UpdateMonitorEzProfileSettingDDPM(_selecthomeDevice.MonitorInfo, ps).Result)
-                                        {
-                                            _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup update success ");
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                _log.Info($"@{nameof(EzMemoryLaunchOption)} CheckedAutoLunchTime update error ");
-                            }
+                            //if (clickedeasyArrangementDDPM != null && clickedeasyArrangementDDPM.Desktops.Count > 0)
+                            //{
+                            //    foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
+                            //    {
+                            //        if (ps.AutoStartTime == GetAutoLaunchTime())
+                            //        {
+                            //            ps.Auto = false;
+                            //            ps.AutoStartTime = 0;
+                            //            if (DdpmCommonHelper.DeviceManagerSA.UpdateMonitorEzProfileSettingDDPM(_selecthomeDevice.MonitorInfo, ps).Result)
+                            //            {
+                            //                _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup update success ");
+                            //            }
+                            //        }
+                            //    }
+                            //}
+                            //else
+                            //{
+                            //    _log.Info($"@{nameof(EzMemoryLaunchOption)} CheckedAutoLunchTime update error ");
+                            //}
 
 
                         }
