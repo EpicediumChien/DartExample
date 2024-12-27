@@ -128,8 +128,17 @@ namespace DDPM.UI.Module.Brightness.Tests
         [Test]
         public void TestOnSelectedHomeDeviceChanged()
         {
+            brightnessModule.IsModuleActive = false;
             brightnessModule.OnSelectedHomeDeviceChanged();
-            Assert.Pass();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChangeda()
+        {
+            brightnessModule.IsModuleActive = true;
+            brightnessModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
         }
 
         [Test]
