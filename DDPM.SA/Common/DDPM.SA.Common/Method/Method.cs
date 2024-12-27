@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VcpCore.Common;
+using DDPM.SA.Common.Settings;
+using System.Windows.Shapes;
 
 namespace DDPM.SA.Common.Method
 {
@@ -203,20 +205,27 @@ namespace DDPM.SA.Common.Method
             bool result = false;
             try
             {
-                // 檢查資料夾是否存在
-                if (!string.IsNullOrEmpty(folderPath) && Directory.Exists(folderPath))
+                if (DDPMFileSecurity.ValidateFilePath(folderPath, out string folderInfo))
                 {
-                    WriteLog($"{nameof(DeleteFolder)} Directory.Delete go");
-                    // 刪除資料夾及其所有內容
-                    Directory.Delete(folderPath, true);
-                    WriteLog($"{nameof(DeleteFolder)} Directory.Delete done");
+                    // 檢查資料夾是否存在
+                    if (!string.IsNullOrEmpty(folderPath) && Directory.Exists(folderPath))
+                    {
+                        WriteLog($"{nameof(DeleteFolder)} Directory.Delete go");
+                        // 刪除資料夾及其所有內容
+                        Directory.Delete(folderPath, true);
+                        WriteLog($"{nameof(DeleteFolder)} Directory.Delete done");
+                    }
+                    else
+                    {
+                        WriteLog($"{nameof(DeleteFolder)} folderPath Is Null : {string.IsNullOrEmpty(folderPath)}");
+                        WriteLog($"{nameof(DeleteFolder)} folderPath is Exists : {Directory.Exists(folderPath)}");
+                    }
+                    result = true;
                 }
                 else
                 {
-                    WriteLog($"{nameof(DeleteFolder)} folderPath Is Null : {string.IsNullOrEmpty(folderPath)}");
-                    WriteLog($"{nameof(DeleteFolder)} folderPath is Exists : {Directory.Exists(folderPath)}");
+                    WriteLog($"{nameof(DeleteFolder)} ValidateFilePath fail : {folderInfo}");
                 }
-                result = true;
             }
             catch (Exception ex)
             {
