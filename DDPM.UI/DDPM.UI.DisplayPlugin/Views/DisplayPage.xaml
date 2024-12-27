@@ -98,7 +98,6 @@
 
     <Grid>
         <!-- Robert_Lin, 2024-6-2 remove all unused code, only a DeviceBasePage in this page -->
-        .
         <commonCtrl:DeviceBasePage Name="basePage" MouseLeftButtonDown="leftView_MouseLeftButtonDown"/>
     </Grid>
 </UserControl>
