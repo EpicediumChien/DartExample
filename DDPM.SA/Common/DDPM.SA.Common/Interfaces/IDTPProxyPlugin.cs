@@ -22,6 +22,7 @@ namespace DDPM.SA.Common
 {
     public interface IDTPProxyPlugin : IFrameworkPlugin
     {
+        event EventHandler<UpdateDTPProxyNotify> DTPProxyPluginSDKeventHandler;
         Task<bool> GetDTPProxyPluginReady();
 
         #region globalperipheral
