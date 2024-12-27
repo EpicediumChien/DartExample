@@ -7,15 +7,21 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VcpCore.Common;
 
 namespace DDPM.SA.Common.Method
 {
     public class Method : IDisposable
     {
         ILog _Log;
+        Logs _Logs;
         public Method(ILog log)
         {
             _Log = log;
+        }
+        public Method(Logs log)
+        {
+            _Logs = log;
         }
         public void Dispose()
         {
@@ -24,7 +30,7 @@ namespace DDPM.SA.Common.Method
         public bool CreateZipFile(string folderPath, string zipFilePath)
         {
             bool result = false;
-            _Log?.Info($"{nameof(CreateZipFile)} start");
+            WriteLog($"{nameof(CreateZipFile)} start");
             try
             {
                 if (File.Exists(zipFilePath))
@@ -36,9 +42,9 @@ namespace DDPM.SA.Common.Method
             }
             catch (Exception ex)
             {
-                _Log?.Info($"{nameof(CreateZipFile)} Exception occurred while creating ZIP file: {ex.Message}");
+                WriteLog($"{nameof(CreateZipFile)} Exception occurred while creating ZIP file: {ex.Message}");
             }
-            _Log?.Info($"{nameof(CreateZipFile)} end");
+            WriteLog($"{nameof(CreateZipFile)} end");
             return result;
         }
         public bool ExecuteWevtutilCommand(string exportFilePath)
@@ -83,18 +89,18 @@ namespace DDPM.SA.Common.Method
                     // 輸出結果
                     if (process.ExitCode == 0)
                     {
-                        Console.WriteLine("Events have been exported successfully.");
+                        WriteLog("Events have been exported successfully.");
                     }
                     else
                     {
-                        Console.WriteLine($"Error exporting events: {error}");
+                        WriteLog($"Error exporting events: {error}");
                     }
                 }
                 result = true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception occurred: {ex.Message}");
+                WriteLog($"Exception occurred: {ex.Message}");
             }
             return result;
         }
@@ -107,7 +113,7 @@ namespace DDPM.SA.Common.Method
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Exception occurred: {ex.Message}");
+                WriteLog($"Exception occurred: {ex.Message}");
                 return null;
             }
         }
@@ -142,20 +148,20 @@ namespace DDPM.SA.Common.Method
                     // 複製資料夾及其內容
                     if (!DirectoryCopy(sourceFolder, destinationFolder, true))
                     {
-                        _Log?.Info("[DirectoryCopy] got some files copy failed");
+                        WriteLog("[DirectoryCopy] got some files copy failed");
                     }
                     else
                         result = true;
-                    _Log?.Info("Log folder copy action finish.");
+                    WriteLog("Log folder copy action finish.");
                 }
                 else
                 {
-                    _Log?.Info("Source folder does not exist.");
+                    WriteLog("Source folder does not exist.");
                 }
             }
             catch (Exception ex)
             {
-                _Log?.Info($"Exception occurred while copying log folder: {ex.Message}");
+                WriteLog($"Exception occurred while copying log folder: {ex.Message}");
             }
             return result;
         }
@@ -175,7 +181,7 @@ namespace DDPM.SA.Common.Method
             }
             catch (Exception ex)
             {
-                _Log?.Info($"[DirectoryCopy] Get files in folder failed, message: {ex.Message}");
+                WriteLog($"[DirectoryCopy] Get files in folder failed, message: {ex.Message}");
                 all_pass = false;
             }
 
@@ -190,6 +196,40 @@ namespace DDPM.SA.Common.Method
                 }
             }
             return all_pass;
+        }
+        public bool DeleteFolder(string folderPath)
+        {
+            WriteLog($"{nameof(DeleteFolder)} start");
+            bool result = false;
+            try
+            {
+                // 檢查資料夾是否存在
+                if (!string.IsNullOrEmpty(folderPath) && Directory.Exists(folderPath))
+                {
+                    WriteLog($"{nameof(DeleteFolder)} Directory.Delete go");
+                    // 刪除資料夾及其所有內容
+                    Directory.Delete(folderPath, true);
+                    WriteLog($"{nameof(DeleteFolder)} Directory.Delete done");
+                }
+                else
+                {
+                    WriteLog($"{nameof(DeleteFolder)} folderPath Is Null : {string.IsNullOrEmpty(folderPath)}");
+                    WriteLog($"{nameof(DeleteFolder)} folderPath is Exists : {Directory.Exists(folderPath)}");
+                }
+                result = true;
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"{nameof(DeleteFolder)} error : {ex.Message}");
+                result = false;
+            }
+            WriteLog($"{nameof(DeleteFolder)} finish");
+            return result;
+        }
+        void WriteLog(string mes)
+        {
+            _Log?.Info(mes);
+            _Logs?.DebugMsg_1(mes);
         }
     }
 }

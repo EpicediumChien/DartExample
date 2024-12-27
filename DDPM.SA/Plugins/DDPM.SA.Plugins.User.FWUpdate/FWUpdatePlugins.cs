@@ -796,6 +796,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <returns>回傳裝置資訊表(在這個方法裡將原本傳入的裝置資訊表，再寫入對應裝置的下載安裝的結果碼)</returns>
         public Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isUITrigger, string installPath)
         {
+            Method method = new Method(_logs);
             try
             {
                 _logs.DebugMsg_1(nameof(DownloadAndInstall) + " all start");
@@ -849,6 +850,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                         NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         _logs.DebugMsg_1(nameof(DownloadAndInstall) + " savePath FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
+                        method.DeleteFolder(savePath);
                         return Task.FromResult(fwUpdateInfos);
                     }
                     _notificationStr = "";
@@ -861,6 +863,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.ConnectMultipleDocks;
                             NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            method.DeleteFolder(savePath);
                             continue;
                         }
                     }
@@ -868,6 +871,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.PCBatteryTooLow;
                         NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                        method.DeleteFolder(savePath);
                         continue;
                     }
                     string url = fwUpdateInfos[i].ServerPath;
@@ -880,6 +884,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} savePath FolderIsNotSafe - FolderInfo : {FolderInfo}");
                         _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} savePath FolderIsNotSafe - PathSymbolicLinInfo : {PathSymbolicLinInfo}");
+                        method.DeleteFolder(savePath);
                         continue;
                     }
                     _downloadTimer = new Timer();
@@ -923,6 +928,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         }
                         _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download File Fail");
+                        method.DeleteFolder(savePath);
                         continue;
                     }
                     string extractPath = Path.Combine(savePath + Path.GetFileName(url).Substring(0, Path.GetFileName(url).Length - 4));
@@ -939,6 +945,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} extractPath FolderIsNotSafe - PathSymbolicLinInfo : {PathSymbolicLinInfo}");
                         _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                         NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                        method.DeleteFolder(savePath);
                         continue;
                     }
                     try
@@ -952,6 +959,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} Unzip Fail");
                                 _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                                method.DeleteFolder(savePath);
                                 continue;
                             }
                             using (FileLock fileLock_2 = new FileLock(exeFilePath, PathCheckOption.None, lockNow: true))
@@ -962,6 +970,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} CheckThumbprint Faile");
                                     _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                                     NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                                    method.DeleteFolder(savePath);
                                     continue;
                                 }
                                 fwUpdateInfos[i].InstallPaths = exeFilePath;
@@ -982,12 +991,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} FileLock Error: {ex.Message}");
                     }
-                    // 檢查資料夾是否存在
-                    if (!string.IsNullOrEmpty(savePath) && Directory.Exists(savePath))
-                    {
-                        // 刪除資料夾及其所有內容
-                        Directory.Delete(savePath, true);
-                    }
+                    method.DeleteFolder(savePath);
                     _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} DeviceName : {fwUpdateInfos[i].DeviceName} Model : {fwUpdateInfos[i].Model} done");
                 }
                 _logs.DebugMsg_1($"{nameof(DownloadAndInstall)}, All done");
@@ -1005,6 +1009,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     StartService();
                 }
+                method.Dispose();
                 _isDefer = false;
                 _isForce = false;
                 _IsUITrigger = false;
@@ -1012,6 +1017,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             catch (Exception ex)
             {
+                method.Dispose();
                 if (_downloadTimer != null)
                 {
                     _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
@@ -1022,7 +1028,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     deviceInfo.FWUErrorCode = FWUErrorCode.NetworkDisconnection;
                 }
-                _notificationStr = LangHelper.Instance["Update_failed_due_to_network_error"];
+                _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                 _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} {_fWUpdateInfo.DeviceName} Error : {ex.Message}"); // 輸出錯誤訊息
                 StartService();
@@ -1317,7 +1323,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _checkUpdateScheduleTimer stop");
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} exception: {ex.Message}");
                 }
