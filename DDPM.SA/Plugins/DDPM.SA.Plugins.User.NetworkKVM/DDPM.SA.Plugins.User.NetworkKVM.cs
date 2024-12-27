@@ -1551,6 +1551,7 @@ namespace NetworkKVM.Plugins
                 if (namedpipe_Fail > 10)
                 {
                     _logs.DebugMsg($"[NetworkKVM] Named pipe Fail....");
+                    namedpipe_Fail = 0;
                     return false;
                 }
                 if (HaveSuppertMonitor().Result)
@@ -1612,6 +1613,7 @@ namespace NetworkKVM.Plugins
                 if (namedpipe_Fail > 10)
                 {
                     _logs.DebugMsg($"[NetworkKVM] Named pipe Fail....");
+                    namedpipe_Fail = 0;
                     return false;
                 }
 #if DEBUG
