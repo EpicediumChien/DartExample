@@ -43,6 +43,7 @@ using DDPM.SA.Common.Security;
 using System.ServiceProcess;
 using System.IO.Compression;
 using DDPM.SA.Resources.Helper;
+using System.Windows;
 
 
 namespace DDPM.SA.Plugins.User.FWUpdate
@@ -407,10 +408,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _logs.DebugMsg_1($"{nameof(updateHelper.UpdateItems.Count)} = {updateHelper.UpdateItems.Count}");
                     for (int i = 0; i < updateHelper.UpdateItems.Count; i++)
                     {
-                        _logs.DebugMsg_1($"updateHelper.UpdateItems[i].DeviceName = {updateHelper.UpdateItems[i].DeviceName}");
-                        _logs.DebugMsg_1($"updateHelper.UpdateItems[i].DeviceModelNumber = {updateHelper.UpdateItems[i].DeviceModelNumber}");
-                        _logs.DebugMsg_1($"updateHelper.UpdateItems[i].NewVersion = {updateHelper.UpdateItems[i].NewVersion}");
-                        _logs.DebugMsg_1($"updateHelper.UpdateItems[i].CurrentVersion = {updateHelper.UpdateItems[i].CurrentVersion}");
+                        _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].DeviceName = {updateHelper.UpdateItems[i].DeviceName}");
+                        _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].DeviceModelNumber = {updateHelper.UpdateItems[i].DeviceModelNumber}");
+                        _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].NewVersion = {updateHelper.UpdateItems[i].NewVersion}");
+                        _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].CurrentVersion = {updateHelper.UpdateItems[i].CurrentVersion}");
                         string newVer = updateHelper.UpdateItems[i].NewVersion;
                         string oldVer = updateHelper.UpdateItems[i].CurrentVersion;
                         if (!string.IsNullOrEmpty(newVer))
@@ -473,12 +474,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _logs.DebugMsg_1($"{nameof(CheckUpdate)} {nameof(deviceInfo)} is no null");
                             deviceConnectivity = GetConnected(deviceInfo.PhysicalDeviceType);
                             deviceSupplierID = GetODM(deviceInfo.OdmId);
-                            if (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock || updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)
-                            {
-                                _logs.DebugMsg_1($"{nameof(CheckUpdate)} deviceInfo.DeviceName : {deviceInfo.Name}");
-                                //updateHelper.UpdateItems[i].DeviceModelNumber = deviceInfo.ModelNumber;
-                                updateHelper.UpdateItems[i].DeviceName = deviceInfo.Name;
-                            }
                         }
                         if (deviceTypeList == null && !isOnlyDisplay)
                         {
@@ -492,7 +487,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 FileSavepath = updateHelper.UpdateItems[i].InstallPath,
                                 Model = updateHelper.UpdateItems[i].DeviceModelNumber,
                                 DeviceName = updateHelper.UpdateItems[i].DeviceName,
-                                //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷，UI有個地方也會跟著異動
                                 DeviceType = updateHelper.UpdateItems[i].DeviceType,
                                 DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                 DevicePath = updateHelper.UpdateItems[i].DevicePath,
@@ -507,11 +501,16 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 Connectivity = deviceConnectivity,
                                 Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
                                 ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
-                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : ""
+                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : "",
+                                IsESISupported = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWebcam ||
+                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalWebcam) && deviceInfo != null) ? deviceInfo.IsESISupported : false,
 
                             };
-                            _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
-                            _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                            if (Check_CanBeOTAUpdate(fWUpdateInfo))
+                            {
+                                _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
+                                _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                            }
                         }
                         else if (deviceTypeList != null && !isOnlyDisplay)
                         {
@@ -530,7 +529,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     FileSavepath = updateHelper.UpdateItems[i].InstallPath,
                                     Model = updateHelper.UpdateItems[i].DeviceModelNumber,
                                     DeviceName = updateHelper.UpdateItems[i].DeviceName,
-                                    //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷，UI有個地方也會跟著異動
                                     DeviceType = updateHelper.UpdateItems[i].DeviceType,
                                     DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                     DevicePath = updateHelper.UpdateItems[i].DevicePath,
@@ -545,10 +543,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     Connectivity = deviceConnectivity,
                                     Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
                                     ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
-                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : ""
+                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : "",
+                                    IsESISupported = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWebcam ||
+                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalWebcam) && deviceInfo != null) ? deviceInfo.IsESISupported : false,
                                 };
-                                _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
-                                _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                                if (Check_CanBeOTAUpdate(fWUpdateInfo))
+                                {
+                                    _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
+                                    _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                                }
                             }
                         }
                     }
@@ -558,9 +561,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _logs.DebugMsg_1($"{nameof(displayUpdateHelper.Firmwares.Count)} = {displayUpdateHelper.Firmwares.Count}");
                     for (int i = 0; i < displayUpdateHelper.Firmwares.Count; i++)
                     {
-                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[i].id(DeviceName) = {displayUpdateHelper.Firmwares[i].id}");
-                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[i].TheLastVersion = {displayUpdateHelper.Firmwares[i].TheLastVersion}");
-                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[i].CurrentVersion = {displayUpdateHelper.Firmwares[i].CurrentVersion}");
+                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[{i}].id(DeviceName) = {displayUpdateHelper.Firmwares[i].id}");
+                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[{i}].TheLastVersion = {displayUpdateHelper.Firmwares[i].TheLastVersion}");
+                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[{i}].CurrentVersion = {displayUpdateHelper.Firmwares[i].CurrentVersion}");
                         FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                         {
                             TheLatestVersion = displayUpdateHelper.Firmwares[i].TheLastVersion,
@@ -568,7 +571,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             NeedUpdated = true,
                             DeviceType = DeviceType.Unknown,
                             ServerPath = displayUpdateHelper.Firmwares[i].url,
-                            Model = displayUpdateHelper.Firmwares[i].id,
+                            Model = "",
                             DeviceName = displayUpdateHelper.Firmwares[i].id,
                             SHA256 = displayUpdateHelper.Firmwares[i].SHA256,
                             //SHA512 = displayUpdateHelper.Firmwares[i].SHA512,
@@ -1649,6 +1652,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 string _namedPipeName = Guid.NewGuid().ToString("D");
                 if (!fwUpdateInfo.IsDisplay)
                 {
+                    _fwTimeOutCount = 60;
                     _timeOutCount = _fwTimeOutCount;
                     _timerTimeOut = new Timer();
                     _timerTimeOut.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
@@ -1954,6 +1958,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 UpdateProgressInfo fWUpdateInfo = new UpdateProgressInfo()
                 {
                     DeviceName = _fWUpdateInfo.DeviceName,
+                    Model = _fWUpdateInfo.Model,
                     TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
                     ProcessName = LangHelper.Instance["Timeout"],
                     ProcessProgress = _timeOutCount,
@@ -2225,6 +2230,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 if (timeOut != null)
                 {
                     int.TryParse(timeOut.InnerText, out _fwTimeOutCount);
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get timeOut value : {_fwTimeOutCount}");
+                    if (_fwTimeOutCount < 60)
+                    {
+                        _fwTimeOutCount = 60;
+                    }
                     UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                     {
                         DeviceName = _fWUpdateInfo.DeviceName,
@@ -2610,6 +2620,44 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             _logs.DebugMsg_1($"BuildArgs done");
             return arguments;
+        }
+        /// <summary>
+        /// Check whether the device to be updated supports OTA firmware updates
+        /// </summary>
+        /// <param name="fwUpdateInfo"></param>
+        /// <returns></returns>
+        public bool Check_CanBeOTAUpdate(FWUpdateInfo fwUpdateInfo)
+        {
+            _logs.DebugMsg_1($"Check_CanBeOTAUpdate start");
+            bool ret = true;
+            if (fwUpdateInfo.DeviceType == DeviceType.LogicalWebcam ||
+                fwUpdateInfo.DeviceType == DeviceType.PhysicalWebcam)
+            {
+                _logs.DebugMsg_1($"Check_CanBeOTAUpdate DeviceType is Webcam");
+                ret = false;
+                //作業系統必須是Windows10 20H2 以上
+                //或是Windows11 22H2以上
+                if (WinVersion.GetVersion(out var info))
+                {
+                    //win11以上
+                    if (info.BuildNum >= (uint)(BuildNumber.Windows_11_22H2))
+                    {
+                        _logs.DebugMsg_1($"Check_CanBeOTAUpdate OS is Windows11 22H2 or higher");
+                        ret = true;
+                    }
+                    //win10以上
+                    else if (info.BuildNum < (uint)(BuildNumber.Windows_11_21H2) && info.BuildNum >= (uint)(BuildNumber.Windows_10_20H2))
+                    {
+                        _logs.DebugMsg_1($"Check_CanBeOTAUpdate OS is Windows10 20H2 or higher");
+                        ret = true;
+                    }
+                }
+                _logs.DebugMsg_1($"Check_CanBeOTAUpdate Webcam FW is support HPD : {fwUpdateInfo.IsESISupported}");
+                //Updates can only be displayed if the firmware is HPD and the OS supports MPS.
+                ret = fwUpdateInfo.IsESISupported && ret;
+            }
+            _logs.DebugMsg_1($"Check_CanBeOTAUpdate finish. ret : {ret}");
+            return ret;
         }
 
         // add @ 20241202 stephen
