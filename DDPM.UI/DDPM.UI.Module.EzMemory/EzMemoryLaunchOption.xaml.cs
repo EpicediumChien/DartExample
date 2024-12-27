@@ -323,7 +323,7 @@ namespace DDPM.UI.Module.EzMemory
                 // Clear UI and close view
                 _vm.ClearTextBlockAppName();
                 _vm.IsEditProfile = false;
-
+                _vm.RightViewDataClear();
                 DdpmCommonHelper.ModuleOwner?.CloseFullView();
             }
             catch (Exception ex)
@@ -465,6 +465,7 @@ namespace DDPM.UI.Module.EzMemory
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             _vm.ClearTextBlockAppName();
+            _vm.RightViewDataClear();
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
         }
 
