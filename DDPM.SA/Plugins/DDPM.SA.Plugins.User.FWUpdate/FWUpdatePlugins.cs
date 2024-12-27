@@ -623,6 +623,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 bool isUpdate = false;//判斷是否強制更新
                 bool isOnlyInfo = false;
                 string s = "";
+                if (_ForceFWUpdateInfoPackage != null && _ForceFWUpdateInfoPackage.FWUpdateInfo != null)
+                {
+                    _ForceFWUpdateInfoPackage.FWUpdateInfo.Clear();
+                }
+                else
+                {
+                    _ForceFWUpdateInfoPackage=new FWUpdateInfoPackage();
+                    _ForceFWUpdateInfoPackage.FWUpdateInfo = new List<FWUpdateInfo>();
+                }
                 if (_forCLI_FWUpdateInfoPackage.FWUpdateInfo.Count <= 0)
                 {
                     isOnlyInfo = true;
@@ -644,6 +653,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         else if (_isDefer)
                         {
                             _logs.DebugMsg_1($"HandleUpdateInfo _isDefer : {_isDefer}");
+                            _logs.DebugMsg_1($"HandleUpdateInfo _ForceFWUpdateInfoPackage.FWUpdateInfo.Add : {fwUpdateInfo.Model}");
+                            _ForceFWUpdateInfoPackage.FWUpdateInfo.Add(fwUpdateInfo);
                             if (!_DelayFWUpdateInfoPackage.FWUpdateInfo.Exists(o => o.Equals(fwUpdateInfo)))
                             {
                                 _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage.FWUpdateInfo.Add : {fwUpdateInfo.Model}");
@@ -1364,7 +1375,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _checkUpdateScheduleTimer stop");
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} exception: {ex.Message}");
                 }
@@ -1465,11 +1476,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     // 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
                     //FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(e.ToString());
-                    if (_ForceFWUpdateInfoPackage != null && _ForceFWUpdateInfoPackage.FWUpdateInfo != null)
-                    {
-                        _logs.DebugMsg_1($"{nameof(DelayEvent)} _ForceFWUpdateInfoPackage.FWUpdateInfo.Clear");
-                        _ForceFWUpdateInfoPackage.FWUpdateInfo.Clear();
-                    }
+
                     if (_forCLI_FWUpdateInfoPackage != null)
                     {
                         _logs.DebugMsg_1($"{nameof(DelayEvent)} _forCLI_FWUpdateInfoPackage is no null");
