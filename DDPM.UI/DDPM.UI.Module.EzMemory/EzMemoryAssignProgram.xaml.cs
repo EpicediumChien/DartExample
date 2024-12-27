@@ -256,6 +256,7 @@ namespace DDPM.UI.Module.EzMemory
         {
             _vm.ProgressValue = 1;
             _vm.IsAddPageBack = false;
+            _vm.RightViewDataClear();
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
             return;
         }

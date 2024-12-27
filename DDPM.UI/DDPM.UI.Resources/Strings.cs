@@ -94,7 +94,8 @@ namespace DDPM.UI.Common
         public static readonly string BottomBarrelButtonCaption = GetString("PenButtonSettings.2");
         public static readonly string PenButtonCustomizeMessage = GetString("PenButtonSettings.7");
         public static readonly string HoverClick = GetString("PenButtonSettings.6");
-
+        public static readonly string Slots = GetString("slot");
+        
         //Robert_Lin, 2024-7-25, Vbar Text for DisplayPlugin
         public static readonly string VbarText_DisplaySettings = GetString("DisplaySettings");
 
