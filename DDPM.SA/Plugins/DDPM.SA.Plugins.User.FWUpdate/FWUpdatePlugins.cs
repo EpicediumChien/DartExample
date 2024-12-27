@@ -597,6 +597,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         else if (_isDefer)
                         {
                             _logs.DebugMsg_1($"HandleUpdateInfo _isDefer : {_isDefer}");
+                            _logs.DebugMsg_1($"HandleUpdateInfo _ForceFWUpdateInfoPackage.FWUpdateInfo.Add : {fwUpdateInfo.Model}");
+                            _ForceFWUpdateInfoPackage.FWUpdateInfo.Add(fwUpdateInfo);
                             if (!_DelayFWUpdateInfoPackage.FWUpdateInfo.Exists(o => o.Equals(fwUpdateInfo)))
                             {
                                 _logs.DebugMsg_1($"HandleUpdateInfo _DelayFWUpdateInfoPackage.FWUpdateInfo.Add : {fwUpdateInfo.Model}");
