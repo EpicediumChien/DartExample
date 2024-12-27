@@ -959,6 +959,18 @@ namespace DDPM.SA.Common
             return arg;
         }
 
+        public static int ResponseDefer(CommandLineInput commandLineInput)
+        {
+            CLI_RESPONSE3 result = new CLI_RESPONSE3()
+            {
+                Command = commandLineInput.Command,
+                TargetFeature = commandLineInput.TargetFeature,
+                Result = "Defer"
+            };
+            Console.WriteLine(result.ToJson());
+            return (int)CLI_ExitCode.success;
+        }
+
         public static string change_0base_to_1base(string value)
         {
             return (int.Parse(value) + 1).ToString();

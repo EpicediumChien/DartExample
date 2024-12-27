@@ -177,32 +177,124 @@ namespace CLI.Subagent
                     return;
                 }
 
-                // add start @ 20241223 stephen: check defer
-                bool hasDefer = false;
-                string cmds = string.Empty;
-
-
-                foreach (string arg in args)
+                if (commandLineInputs.Count == 1)
                 {
-                    //Console.WriteLine("@@@@stephen RunManagement arg = " + arg);
+                    var commandLineInput = commandLineInputs[0];
+                    var isDefer = false;
+                    var isForceWithNotice = false;
+                    var isForceWithNoNotice = false;
+                    var cmds = string.Join(" ", args);
 
-                    cmds = cmds + arg + " ";
-                    if (arg.ToLower().Contains("defer"))
+                    if (commandLineInput.Command == "SET" && commandLineInput.Options.Count > 0)
                     {
-                        hasDefer = true;
+                        if ((commandLineInput.TargetType == "APP" && commandLineInput.TargetFeature == "FIRMWAREUPDATE") || 
+                            (commandLineInput.TargetType == "DOCK" && commandLineInput.TargetFeature == "SILENTFWUPDATE"))
+                        {
+                            foreach (var option in commandLineInput.Options)
+                            {
+                                if (option.Option_Value.Contains("DEFER"))
+                                {
+                                    isDefer = true;
+                                    if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds).Result)
+                                    {
+                                        _exitcode = ICLICommandTable.ResponseDefer(commandLineInput);
+                                        return;
+                                    }
+                                }
+                                else if (option.Option_Value.Contains("FORCEWITHNOTICE"))
+                                {
+                                    isForceWithNotice = true;
+                                    var deferItem = new DeferItem(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds);
+                                    _CliManagerPlugin.showNotification(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), deferItem);
+                                    break;
+                                }
+                                else if (option.Option_Value.Contains("FORCEWITHNONOTICE"))
+                                {
+                                    isForceWithNoNotice = true;
+                                    break;
+                                }
+                            }
+
+                            if (!(isDefer || isForceWithNotice || isForceWithNoNotice))
+                            {
+                                isDefer = true;
+                                if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds).Result)
+                                {
+                                    _exitcode = ICLICommandTable.ResponseDefer(commandLineInput);
+                                    return;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var option in commandLineInput.Options)
+                            {
+                                if (option.Option_Value.Contains(",DEFER"))
+                                {
+                                    isDefer = true;
+                                    option.Option_Value = option.Option_Value.Replace(",DEFER", "");
+                                    cmds = string.Join(" ", args.Select(_ => _.Replace(",DEFER", "")));
+
+                                    if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds).Result)
+                                    {
+                                        _exitcode = ICLICommandTable.ResponseDefer(commandLineInput);
+                                        return;
+                                    }
+                                }
+                                else if (option.Option_Value.Contains(",FORCEWITHNOTICE"))
+                                {
+                                    isForceWithNotice = true;
+                                    option.Option_Value = option.Option_Value.Replace(",FORCEWITHNOTICE", "");
+                                    cmds = string.Join(" ", args.Select(_ => _.Replace(",FORCEWITHNOTICE", "")));
+
+                                    var deferItem = new DeferItem(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds);
+                                    _CliManagerPlugin.showNotification(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), deferItem);
+                                    break;
+                                }
+                                else if (option.Option_Value.Contains(",FORCEWITHNONOTICE"))
+                                {
+                                    isForceWithNoNotice = true;
+                                    option.Option_Value = option.Option_Value.Replace(",FORCEWITHNONOTICE", "");
+                                    break;
+                                }
+                            }
+
+                            if (!(isDefer || isForceWithNotice || isForceWithNoNotice))
+                            {
+                                isForceWithNotice = true;
+                                var deferItem = new DeferItem(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds);
+                                _CliManagerPlugin.showNotification(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), deferItem);
+                            }
+                        }
                     }
                 }
 
-                if (hasDefer)
-                {
-                    //Console.WriteLine("@@@@stephen check Defer Result ");
+                //// add start @ 20241223 stephen: check defer
+                //bool hasDefer = false;
+                //string cmds = string.Empty;
 
-                    if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds.Trim()).Result)
-                    {
-                        //Console.WriteLine("@@@@stephen check Defer Result = true ");
-                        return;
-                    }
-                }
+
+                //foreach (string arg in args)
+                //{
+                //    //Console.WriteLine("@@@@stephen RunManagement arg = " + arg);
+
+                //    cmds = cmds + arg + " ";
+                //    if (arg.ToLower().Contains("defer"))
+                //    {
+                //        hasDefer = true;
+                //    }
+                //}
+
+                //if (hasDefer)
+                //{
+                //    //Console.WriteLine("@@@@stephen check Defer Result ");
+
+                //    if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds.Trim()).Result)
+                //    {
+                //        //Console.WriteLine("@@@@stephen check Defer Result = true ");
+                //        return;
+                //    }
+                //}
                 // add end @ 20241223
 
 
