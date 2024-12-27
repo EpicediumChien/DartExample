@@ -376,7 +376,14 @@ namespace DDPM.UI.Module.EzMemory
                     return;
                 _vm._bind_apps.Clear();
                 _vm._apps_all.Clear();
+
                 Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.GetAllAppList().Result;
+
+                if (data == null)
+                {
+                    _log.Info($"@{nameof(EzMemoryAssignProgram)} GetAllAppList NULL ... in");
+                    return;
+                }
 
                 string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
                 strFolder += "\\";

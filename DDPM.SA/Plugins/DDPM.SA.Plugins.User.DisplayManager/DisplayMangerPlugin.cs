@@ -4734,7 +4734,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     {
                                         if (!string.IsNullOrEmpty(testServer))
                                         {
-                                            firmwares_item.url.Replace("%2", testServer);
+                                            firmwares_item.url = firmwares_item.url.Replace("%2", testServer);
                                         }
                                     }
                                     else

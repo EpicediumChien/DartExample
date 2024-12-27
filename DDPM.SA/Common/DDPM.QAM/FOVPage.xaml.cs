@@ -31,8 +31,7 @@ namespace DDPM.QAM
         }
         private void InitializeFOV()
         {
-            QAMPageViewModel vm = DataContext as QAMPageViewModel;
-            if (vm != null && vm.CurrentDeviceInfo != null)
+            if (DataContext is QAMPageViewModel vm && vm.CurrentDeviceInfo != null)
             {
                 var FOV = vm.CurrentDeviceInfo!.FOVValues;
                 btnFOV0.Visibility = Visibility.Collapsed;
@@ -64,14 +63,14 @@ namespace DDPM.QAM
         {
             if (sender is Border bdr)
             {
-                QAMPageViewModel vm = DataContext as QAMPageViewModel;
-                if (vm != null)
+                if (DataContext is QAMPageViewModel vm)
                 {
                     var index = int.Parse(bdr.Tag.ToString()!);
                     var val = vm.FOVs[index];
                     if (val == vm.FieldOfView)
                     { return; }
                     vm.FOV_Selected(index);
+                    vm.isStatusChagneByDDPM = false;
                     vm.FieldOfView = val;
                 }
             }

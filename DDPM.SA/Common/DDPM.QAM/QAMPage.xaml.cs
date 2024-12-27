@@ -214,9 +214,8 @@ namespace DDPM.QAM
                 CameraSetting.Show();
             }
 
-            QAMPageViewModel vm = DataContext as QAMPageViewModel;
 
-            if (vm != null && vm.CurrentDeviceInfo != null)
+            if (DataContext is QAMPageViewModel vm && vm.CurrentDeviceInfo != null)
                 vm.IsCameraSettingSelected = !vm.IsCameraSettingSelected;
         }
 
@@ -264,7 +263,7 @@ namespace DDPM.QAM
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                QAMPageViewModel vm = DataContext as QAMPageViewModel;
+                QAMPageViewModel? vm = DataContext as QAMPageViewModel;
                 if (vm != null && vm.CurrentDeviceInfo != null)
                 {
                     vm.IsDragging = true;
@@ -320,12 +319,23 @@ namespace DDPM.QAM
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Dispatcher.Invoke(() =>
+            try
             {
-                CameraSetting?.Close();
-            });
+                Dispatcher.Invoke(() =>
+                {
+                    CameraSetting?.Close();
+                });
 
-            CameraSetting = null;
+                CameraSetting = null;
+
+                if (DataContext is QAMPageViewModel vm)
+                    vm.RemoveQAMWebcamEvent();
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"Catch exception {ex.Message} when QAM Window_Closing");
+            }
+            
         }
     }
 }

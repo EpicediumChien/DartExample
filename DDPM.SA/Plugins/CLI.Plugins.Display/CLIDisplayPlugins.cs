@@ -424,7 +424,11 @@ namespace DDPM.CLI.Plugins.Display
                     result.serialize_Json_response = tmp.result;
                     return result;
                 //break;
-
+                case"INAPPAUTOBRITEMP":
+                    var tmpInAppAutoBriTemp = ProcessAlsFunction(devMgr, commandLineInput);
+                    result.ExitCode = tmpInAppAutoBriTemp.code;
+                    result.serialize_Json_response = tmpInAppAutoBriTemp.result;
+                    return result;
                 case "COLORPROFILE":
                     if (commandLineInput.Command.Equals("GET"))
                     {
@@ -7550,6 +7554,9 @@ namespace DDPM.CLI.Plugins.Display
                 case "MULTIMONITORSYNC"://Dean 0611
                     type = ALSFeatureQueryType.MMS;
                     break;
+                case "INAPPAUTOBRITEMP"://Dean 0611
+                    type = ALSFeatureQueryType.InAppAutoBriTemp;
+                    break;
 
                 default:
                     return WriteALSResponse(_AllInfoMonitors, val.ToString(), target_type, CLI_ExitCode.unknow_command, false, "Unknow command");
@@ -7601,7 +7608,9 @@ namespace DDPM.CLI.Plugins.Display
                 case "MULTIMONITORSYNC"://Dean 0611
                     type = ALSFeatureQueryType.MMS;
                     break;
-
+                case "INAPPAUTOBRITEMP":
+                    type = ALSFeatureQueryType.InAppAutoBriTemp;
+                    break;
                 default:
                     return WriteALSResponse(_AllInfoMonitors, idx, target_type, CLI_ExitCode.unknow_command, false, target_type.TargetFeature.ToString());
             }
@@ -7670,6 +7679,12 @@ namespace DDPM.CLI.Plugins.Display
 
                     case ALSFeatureQueryType.All:
                         set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.All, value).Result;
+                        break;
+                    case ALSFeatureQueryType.InAppAutoBriTemp:
+                        set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.AutoColorTemperature, value).Result;
+                        if (!set_result)
+                            break;
+                        set_result = device.SetALSFeatureValue(_AllInfoMonitors[int.Parse(idx)], param, ALSFeatureQueryType.AutoBrightness, value).Result;
                         break;
 
                     default:
@@ -7771,6 +7786,11 @@ namespace DDPM.CLI.Plugins.Display
 
                         case "MULTIMONITORSYNC":
                             ALS_RESPONSE.Value = param.isMMSEnable ? "ON" : "OFF";
+                            break;
+                        case "INAPPAUTOBRITEMP":
+                            ALS_RESPONSE.Value = param.isAutoBrightness && param.isAutoColorTemp ? "ON"
+                                : !param.isAutoBrightness && !param.isAutoColorTemp ? "OFF"
+                                : $"AutoBrightness: {(param.isAutoBrightness ? "ON" : "OFF")} AutoColorTemp: {(param.isAutoColorTemp ? "ON" : "OFF")}";
                             break;
                     }
                 }
@@ -11432,11 +11452,11 @@ namespace DDPM.CLI.Plugins.Display
                                                     int getvalue = Convert.ToInt32(rc.value);
                                                     retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(property.Value.ToString(), getvalue)).Result;
 
-                                                    rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                                                    int getvalue2 = Convert.ToInt32(rc.value);
-                                                    bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(property.Value.ToString(), getvalue2)).Result;
+                                                    //rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                                    //int getvalue2 = Convert.ToInt32(rc.value);
+                                                    //bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(property.Value.ToString(), getvalue2)).Result;
 
-                                                        if (!retcode && !retcode2) ispass = false;
+                                                        if (!retcode) ispass = false;
                                                         else ApplyConfiguration.SpeakerMicrophone = property.Value.ToString();
                                                     writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
                                                 }
@@ -11585,22 +11605,30 @@ namespace DDPM.CLI.Plugins.Display
                                             {
                                                 case "COLLABSCREENSHARE":
                                                     writelog("COLLABSCREENSHARE entry");
-                                                    if (property.Value.ToString() == "ON")
+                                                    writelog("device.IsMicEnumerationSupported entry");
+                                                    if (device.IsMicEnumerationSupported)
                                                     {
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable entry");
-                                                        _devMgr.SetCollaborationScreenShareEnable(true, device.ID);
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable exit");
-                                                    }
-                                                    else if (property.Value.ToString() == "OFF")
-                                                    {
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable entry");
-                                                        _devMgr.SetCollaborationScreenShareEnable(false, device.ID);
-                                                        writelog("_devMgr.SetCollaborationScreenShareEnable exit");
+                                                        if (property.Value.ToString() == "ON")
+                                                        {
+                                                            writelog("_devMgr.SetCollaborationScreenShareEnable entry");
+                                                            _devMgr.SetCollaborationScreenShareEnable(true, device.ID);
+                                                            writelog("_devMgr.SetCollaborationScreenShareEnable exit");
+                                                        }
+                                                        else if (property.Value.ToString() == "OFF")
+                                                        {
+                                                            writelog("_devMgr.SetCollaborationScreenShareEnable entry");
+                                                            _devMgr.SetCollaborationScreenShareEnable(false, device.ID);
+                                                            writelog("_devMgr.SetCollaborationScreenShareEnable exit");
+                                                        }
+                                                        else
+                                                        {
+                                                            resultMessages.Add("COLLABSCREENSHARE is wrong value");
+                                                            ispass = false;
+                                                        }
                                                     }
                                                     else
                                                     {
-                                                        resultMessages.Add("COLLABSCREENSHARE is wrong value");
-                                                        ispass = false;
+                                                        resultMessages.Add("COLLABSCREENSHARE not support");
                                                     }
                                                     break;
                                                 default:
@@ -12069,25 +12097,61 @@ namespace DDPM.CLI.Plugins.Display
 
         private static string get_SpeakerMicrophone(string status, int value)
         {
+            string binaryString = Convert.ToString(value, 2).PadLeft(16, '0');
+
             switch (status.ToUpper())
             {
-                case "OSDDISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
-                case "OSDENABLE": return (value | 0x4000).ToString();                   // b14:1;
-                case "OSDUNLOCK": return (value & 0x7FFF).ToString();                 // b15:0;
-                case "OSDLOCK": return (value | 0x8000).ToString();                   // b15:1;
-                case "OSDUNLOCK,OSDDISABLE": return ((value & 0x3FFF) | 0x0000).ToString();//b15 b14: 00
-                case "OSDUNLOCK,OSDENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
-                case "OSDLOCK,OSDDISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
-                case "OSDLOCK,OSDENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
-                default: return "unknown_command";
+                case "OSDDISABLE":
+                    binaryString = ModifyBitInString(binaryString, 14, '1');
+                    break;
+                case "OSDENABLE":
+                    binaryString = ModifyBitInString(binaryString, 14, '0');
+                    break;
+                case "OSDUNLOCK":
+                    binaryString = ModifyBitInString(binaryString, 15, '0');
+                    break;
+                case "OSDLOCK":
+                    binaryString = ModifyBitInString(binaryString, 15, '1');
+                    break;
+                case "OSDUNLOCK,OSDDISABLE":
+                    binaryString = ModifyBitInString(binaryString, 15, '0');
+                    binaryString = ModifyBitInString(binaryString, 14, '1');
+                    break;
+                case "OSDUNLOCK,OSDENABLE":
+                    binaryString = ModifyBitInString(binaryString, 15, '0');
+                    binaryString = ModifyBitInString(binaryString, 14, '0');
+                    break;
+                case "OSDLOCK,OSDDISABLE":
+                    binaryString = ModifyBitInString(binaryString, 15, '1');
+                    binaryString = ModifyBitInString(binaryString, 14, '1');
+                    break;
+                case "OSDLOCK,OSDENABLE":
+                    binaryString = ModifyBitInString(binaryString, 15, '1');
+                    binaryString = ModifyBitInString(binaryString, 14, '0');
+                    break;
+                default:
+                    return "unknown_command";
             }
+
+            return "0x" + Convert.ToInt32(binaryString, 2).ToString("X");
+        }
+
+        private static string ModifyBitInString(string binaryString, int position, char newBitValue)
+        {
+            char[] binaryArray = binaryString.ToCharArray();
+
+            int arrayPosition = binaryArray.Length - 1 - position;
+            binaryArray[arrayPosition] = newBitValue;
+
+            return new string(binaryArray);
         }
 
         private static string get_SpeakerMicrophone_status(int value)
         {
+            string binaryString = Convert.ToString(value, 2).PadLeft(16, '0');
             string output = string.Empty;
-            output += ((value & 0x8000) == 0x8000) ? "OSDLOCK," : "OSDUNLOCK,";
-            output += ((value & 0x4000) == 0x4000) ? "OSDENABLE" : "OSDDISABLE";
+            output += binaryString[binaryString.Length - 1 - 15] == '1' ? "OSDLOCK," : "OSDUNLOCK,";
+            output += binaryString[binaryString.Length - 1 - 14] == '1' ? "OSDDISABLE" : "OSDENABLE";
 
             return output;
         }
@@ -12272,19 +12336,19 @@ namespace DDPM.CLI.Plugins.Display
                         {
                             case "OFF":
                                 writelog($"PowerSetting E0 set off");
-                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x01").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x01").Result || SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
                                 cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 break;
 
                             case "ON":
                                 writelog($"PowerSetting E0 set on");
-                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result || SetVCPCode(devMgr, monitor, "0xE1", "0x00").Result);
                                 cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 break;
 
                             case "STANDBY":
                                 writelog($"PowerSetting E0 set standby");
-                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result | SetVCPCode(devMgr, monitor, "0xE1", "0x01").Result);
+                                retcode = (SetVCPCode(devMgr, monitor, "0xE0", "0x00").Result || SetVCPCode(devMgr, monitor, "0xE1", "0x01").Result);
                                 cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 break;
                         }
@@ -12493,7 +12557,12 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = devMgr.GetMonitors().Result;
 
-            var serviceTags = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).Distinct().ToList();
+            var serviceTags = _AllInfoMonitors.Where(_ => commandLineInput.DeviceIndex.Count == 0 || commandLineInput.DeviceIndex.Contains((_.Index + 1).ToString()))
+                                              .Where(_ => commandLineInput.ServiceTag.Count == 0 || commandLineInput.ServiceTag.Contains(_.edid.ServiceTag))
+                                              .Where(_ => commandLineInput.Model.Count == 0 || commandLineInput.Model.Contains(_.modelName))
+                                              .Select(_ => _.edid.ServiceTag)
+                                              .Distinct()
+                                              .ToList();
 
             foreach (string serviceTag in serviceTags)
             {
@@ -12584,32 +12653,33 @@ namespace DDPM.CLI.Plugins.Display
 
                                 if (setvalue != "unknown_command")
                                 {
-                                    retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
+                                    SetVCPCode(devMgr, monitor, "0x62", setvalue);
+                                    retcode = true;
                                     cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 }
                                 else
                                     somethingfail |= 0x01;
 
-                                int count = 0;
-                                while (!_AllInfoMonitors.Any(_ => _.edid.ServiceTag == monitor.edid.ServiceTag) && count < 1000)
-                                {
-                                    _AllInfoMonitors = devMgr.GetMonitors().Result;
-                                    count++;
-                                }
+                                //int count = 0;
+                                //while (!_AllInfoMonitors.Any(_ => _.edid.ServiceTag == monitor.edid.ServiceTag) && count < 1000)
+                                //{
+                                //    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                                //    count++;
+                                //}
 
-                                monitor = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTag);
+                                //monitor = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTag);
 
-                                rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                                int getvalue2 = Convert.ToInt32(rc.value);
-                                string setvalue2 = get_SpeakerMicrophone(commandLineInput.Options[0].Option_Value, getvalue2);
+                                //rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                //int getvalue2 = Convert.ToInt32(rc.value);
+                                //string setvalue2 = get_SpeakerMicrophone(commandLineInput.Options[0].Option_Value, getvalue2);
 
-                                if (setvalue2 != "unknown_command")
-                                {
-                                    retcode = SetVCPCode(devMgr, monitor, "0x8D", setvalue2).Result;
-                                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
-                                }
-                                else
-                                    somethingfail |= 0x02;
+                                //if (setvalue2 != "unknown_command")
+                                //{
+                                //    retcode = SetVCPCode(devMgr, monitor, "0x8D", setvalue2).Result;
+                                //    cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                                //}
+                                //else
+                                //    somethingfail |= 0x02;
                             }
                             else if (commandLineInput.Command == "GET")
                             {

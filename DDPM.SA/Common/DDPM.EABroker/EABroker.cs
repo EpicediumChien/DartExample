@@ -278,6 +278,7 @@ namespace DDPM.EABroker
                 return false;
             }
 
+
             //Phase A. Determine the WorkingArea of the arrange
             Rectangle workingArea = Rectangle.Empty;
             // 1 If it's under SpanScreen working mode
@@ -375,7 +376,7 @@ namespace DDPM.EABroker
             WriteLog($"LaunchAndArrangeAppsWithEzArrange: Layout={ispLayout.CtrlClass} CellBorderCount={cellBorderCount}, AppCount={appCount} => ArrangeCount={arrangeCount}");
 
             //Phase C. Show EzMemLauncherWindow
-            EzMemLauncherWindow emWin = new EzMemLauncherWindow(ispLayout, workingArea, arrangeCount, _log);
+            EzMemLauncherWindow emWin = new EzMemLauncherWindow(ispLayout, workingArea, arrangeCount, VM);
 
             //Wayn's v1
             ///*

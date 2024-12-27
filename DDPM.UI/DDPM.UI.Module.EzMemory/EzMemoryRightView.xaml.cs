@@ -220,10 +220,7 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _log.Error($"@[EzMemoryRightView] OnListViewItemDeleted, Error occurred while deleting from MonitorSettings: {ex.Message}");
             }
-            _vm.ProfileTitleTextBlockValue = "N/A";
-            _vm.AutomaticStartupValue = "N/A";
-            _vm.LaunchByTimeValue = "N/A";
-            _vm.AppDocumentValue = "N/A";
+            _vm.RightViewDataClear();
             return;
         }
 
@@ -527,6 +524,7 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="spItem"></param>
         private void OnListViewItemAddClicked(SplitListView spItem)
         {
+            _vm.IsAddPageBack = true; //If add btn trigger, it is mean do not sync any profile
             List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
             if (checkEAProfileDDPM != null)
             {
@@ -585,11 +583,7 @@ namespace DDPM.UI.Module.EzMemory
                 splitListView_RecentForEzM.HasAddButton = true;
                 splitListView_RecentForEzM.IsVertical = _vm.IsVertical;
 
-                _vm.ProfileTitleTextBlockValue = "N/A";
-                _vm.AutomaticStartupValue = "N/A";
-                _vm.LaunchByTimeValue = "N/A";
-                _vm.AppDocumentValue = "N/A";
-                _vm.IsApplyEnabled = false;
+                _vm.RightViewDataClear();
 
                 // 取得User EAProfiles
                 List<EAProfileDDPM> initListViewIEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
@@ -630,11 +624,16 @@ namespace DDPM.UI.Module.EzMemory
                                             ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
                                             if (spCtrl == null)
                                                 continue;
+
+                                            
                                             spCtrl.Settings = new List<double>(spj.Settings);
                                             spCtrl.SplitMode = eSplitModes.Icon;
                                             spCtrl.FriendlyName = spj.CustomName;
                                             spCtrl.EAID = spj.EAID;
-                                            splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                            SplitItem item = splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                            // splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                            item.IsDeleteEnabled = true;
+                                            item.IsEditEnabled = true;
                                         }
                                     }
                                 }

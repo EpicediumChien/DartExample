@@ -96,6 +96,20 @@ IF "%option_cmd%"=="debug_ui" (
 )
 echo [target_folder] is [%target_folder%]
 Echo -------------------------------------------
+Echo [Copy NKVM thumbprint definition file]
+Echo -------------------------------------------
+cd /d %RootDir%
+IF "%build_type%"=="Release" (	
+	echo .
+	if not exist "..\Network-KVM\ThumbprintHash_NKVM.cs" goto copy_nkvm_cs_fail
+	echo ..
+    del /f ".\DDPM.SA\Common\DDPM.SA.Obfuscation\ThumbprintHash_NKVM.cs"
+	echo ...
+	xcopy "..\Network-KVM\ThumbprintHash_NKVM.cs" ".\DDPM.SA\Common\DDPM.SA.Obfuscation" /Y /S /Q
+	echo ....
+	if not exist "..\Network-KVM\ThumbprintHash_NKVM.cs" goto copy_nkvm_cs_fail
+)
+Echo -------------------------------------------
 Echo [Clear all temp folder (bin and obj)]
 Echo -------------------------------------------
 for /d /r "%target_folder%" %%d in (bin,obj,_bin) do (
@@ -212,6 +226,7 @@ del /S ".\src\Plugins\MouseCommodity\bin\%build_type%\*.pdb"
 del /S ".\src\Plugins\PenCommodity\bin\%build_type%\*.pdb"
 del /S ".\src\Plugins\SpeakerCommodity\bin\%build_type%\*.pdb"
 del /S ".\src\Plugins\WebcamCommodity\bin\%build_type%\*.pdb"
+del /S ".\src\Plugins\GlobalPeripheralCommodity\bin\%build_type%\*.pdb"
 echo errorlevel is %errorlevel%
 mkdir "_BIN"
 xcopy ".\DDPM.Interface\bin\%build_type%\*.nupkg" ".\_BIN" /Y /S /Q
@@ -233,6 +248,10 @@ echo errorlevel is %errorlevel%
 xcopy ".\src\Plugins\WebcamCommodity\bin\%build_type%\Dell.TechHub.Plugins.WebcamCommodity.dll" ".\_BIN" /Y /S /Q
 echo errorlevel is %errorlevel%
 xcopy ".\src\Plugins\DongleCommodity\bin\%build_type%\Dell.TechHub.Plugins.DongleCommodity.dll" ".\_BIN" /Y /S /Q
+echo errorlevel is %errorlevel%
+xcopy ".\src\Plugins\GlobalPeripheralCommodity\bin\%build_type%\Dell.TechHub.Plugins.GlobalPeripheralCommodity.dll" ".\_BIN" /Y /S /Q
+echo errorlevel is %errorlevel%
+xcopy ".\src\PeripheralCommon\bin\%build_type%\Dell.TechHub.Peripheral.Common.dll" ".\_BIN" /Y /S /Q
 echo errorlevel is %errorlevel%
 xcopy ".\Dependencies\DPeMSDK\*.*" ".\_BIN" /Y /S /Q
 echo errorlevel is %errorlevel%
@@ -378,14 +397,14 @@ echo [copy Network KVM]
 pwd
 xcopy "..\Network-KVM\ddmsetup.exe" ".\Installer\Res\Depenencies" /Y /S /Q
 echo errorlevel is %errorlevel%
-if %errorlevel% == 0 goto _seek_success
-echo *** Seek file from another Network KVM path ***
-xcopy "..\..\Network-KVM\ddmsetup.exe" ".\Installer\Res\Depenencies" /Y /S /Q
+::if %errorlevel% == 0 goto _seek_success
+::echo *** Seek file from another Network KVM path ***
+::xcopy "..\..\Network-KVM\ddmsetup.exe" ".\Installer\Res\Depenencies" /Y /S /Q
 if not %errorlevel% == 0 (
 	echo *** CAN'T find Network KVM file [ddmsetup.exe] ***
 	goto Installer_CopyFail
 )
-:_seek_success
+:::_seek_success
 echo *** Network KVM copied
 ::---------
 echo [copy cert]
@@ -545,6 +564,11 @@ goto fail_print
 :copy_ddm_lib_fail
 Echo --------------------------------------------
 Echo Copy DDM decryption lib to DDPM.SA fail with code %errorlevel%
+goto fail_print
+
+:copy_nkvm_cs_fail
+Echo --------------------------------------------
+Echo Copy DDM thumbprint definition to DDPM.SA fail with code %errorlevel%
 goto fail_print
 
 :fail_print
