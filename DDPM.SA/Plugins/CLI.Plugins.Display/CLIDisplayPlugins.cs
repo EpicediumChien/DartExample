@@ -9164,8 +9164,8 @@ namespace DDPM.CLI.Plugins.Display
 
                                     writelog($"LuminanceLevel Entry");
                                     rc = GetVCPCode(devMgr, monitor, "0x10").Result;
-                                    get_DeviceData.LuminanceLevel = (rc.value).ToString() + "%";
-                                    writelog($"LuminanceLevel Exit return value: {(rc.value).ToString() + "%"}");
+                                    get_DeviceData.LuminanceLevel = (rc.value).ToString();
+                                    writelog($"LuminanceLevel Exit return value: {(rc.value).ToString()}");
                                 }
 
                                 if (monitor.CapabilityDic.ContainsKey("66"))
@@ -9438,8 +9438,8 @@ namespace DDPM.CLI.Plugins.Display
 
                         writelog($"LuminanceLevel Entry");
                         rc = GetVCPCode(devMgr, monitor, "0x10").Result;
-                        get_DeviceData.LuminanceLevel = (rc.value).ToString() + "%";
-                        writelog($"LuminanceLevel Exit return value: {(rc.value).ToString() + "%"}");
+                        get_DeviceData.LuminanceLevel = (rc.value).ToString();
+                        writelog($"LuminanceLevel Exit return value: {(rc.value).ToString()}");
                     }
 
                     if (monitor.CapabilityDic.ContainsKey("66"))
