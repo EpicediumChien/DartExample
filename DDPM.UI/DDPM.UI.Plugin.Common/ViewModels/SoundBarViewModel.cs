@@ -186,6 +186,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.GetMuteStatusAsync .......= {SpeakerInfoValueDTP.MuteStatus.ToString()}");
 
                 UpdateResetToDefault();
+                CheckSpeakerFunc();
             }
             catch (Exception ex)
             {
@@ -821,11 +822,11 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private string _isIntelligentMicNoiseCancellation_String = "ON";
+        private string _isIntelligentMicNoiseCancellation_String = Strings.On;
 
         public string IntelligentMicNoiseCancellation_String
         {
-            get => _isIntelligentMicNoiseCancellationStatus ? "ON" : "OFF";
+            get => _isIntelligentMicNoiseCancellationStatus ? Strings.On : Strings.Off;
         }
 
         
@@ -872,11 +873,11 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private string _isMuteSoundNotification_String = "ON";
+        private string _isMuteSoundNotification_String = Strings.On;
 
         public string MuteSoundNotification_String
         {
-            get => _isMuteSoundNotificationStatus ? "ON" : "OFF";
+            get => _isMuteSoundNotificationStatus ? Strings.On : Strings.Off;
         }
 
 
@@ -950,13 +951,13 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private string _volumeAdjustmentToneString = "ON";
+        private string _volumeAdjustmentToneString = Strings.On;
 
         public string VolumeAdjustmentTone_String
         {
             get
             {
-                return _volumeAdjustmentToneStatus ? "ON" : "OFF";
+                return _volumeAdjustmentToneStatus ? Strings.On : Strings.Off;
             }
         }
 
