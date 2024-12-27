@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using VcpCore.Common;
 using DDPM.SA.Common.Settings;
-using System.Windows.Shapes;
 
 namespace DDPM.SA.Common.Method
 {
