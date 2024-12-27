@@ -118,8 +118,17 @@ namespace DDPM.UI.Module.ButtonSettings.Tests
         [Test]
         public void TestOnSelectedHomeDeviceChanged()
         {
+            buttonSettingsModule.IsModuleActive = false;
             buttonSettingsModule.OnSelectedHomeDeviceChanged();
-            Assert.Pass();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChangeda()
+        {
+            buttonSettingsModule.IsModuleActive = true;
+            buttonSettingsModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
         }
 
         [Test]
