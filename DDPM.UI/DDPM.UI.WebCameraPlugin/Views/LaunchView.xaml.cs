@@ -779,12 +779,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
 
-                        if (_vm.WebcamSettings.SelectedResolution != "Full HD" && _vm.WebcamSettings.SelectedResolution != "HD")
+                        if (_vm.WebcamSettings.Selected_Resolution != "Full HD" && _vm.WebcamSettings.Selected_Resolution != "HD")
                         {
                             _vm.SetResolution_Selected(1);
-                            if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.SelectedResolution))
+                            if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.Selected_Resolution))
                             {
-                                List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
+                                List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.Selected_Resolution];
                                 int index = FPS.FindIndex(x => x == "30");
                                 if (index != -1)
                                 {
