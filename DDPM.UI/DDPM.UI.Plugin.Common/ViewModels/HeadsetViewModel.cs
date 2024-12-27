@@ -270,6 +270,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "NoiseOff":
                         _log.Info($"[HeadsetViewModel] ExecuteDebouncedAction SetAncModeAsync ... {mode} ... {DeviceInfoDTP.AncMode.ToString()}");
                         _deviceManager.SetAncModeAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.AncMode).Wait();
+                        _log.Info($"[HeadsetViewModel] ExecuteDebouncedAction SetSidetoneAsync ... SidetoneCheck .... {DeviceInfoDTP.Sidetone.ToString()}");
+                        _deviceManager.SetSidetoneAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.Sidetone).Wait();
                         break;
                     case "TransparencylevelSlider":
                         _log.Info($"[HeadsetViewModel] ExecuteDebouncedAction SetAncGainAsync ... Transparencylevel ... {DeviceInfoDTP.AncGain.ToString()}");
@@ -2040,6 +2042,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 else
                     _deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
                 OnPropertyChanged(nameof(Sidetone_String));
+                OnPropertyChanged(nameof(SidetoneStatus));
                 OnPropertyChanged(nameof(SidetoneSliderStatus));
             }
         }
@@ -2233,13 +2236,15 @@ namespace DDPM.UI.Plugin.ViewModels
                         if (IsDTPReady)
                         {
                             _debouncerHeadset.Debounce("ANC");
-                            _debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
+                            //_debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
                         }
                         else
                         {
                             _deviceManager.SetAncMode(1, CurrentDeviceInfo!.ID).Wait();
-                            _deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
+                            //_deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
                         }
+                        //SidetoneStatus = true;
+                        _isSidetoneStatus = true;
                         OnPropertyChanged(nameof(IsTransparencyChecked));
                         OnPropertyChanged(nameof(IsNoiseOffChecked));
                         OnPropertyChanged(nameof(Sidetone_String));
@@ -2265,29 +2270,30 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isTransparencyChecked = value;
                     if (_isTransparencyChecked)
                     {
+                        _isRestoreEnable = false;
                         DeviceInfoDTP.AncMode = 2;
                         _isActiveNoiseCancellingChecked = false;
                         _isNoiseOffChecked = false;
+                        DeviceInfoDTP!.Sidetone = false;
+                        //SidetoneStatus = false;
+                        _isSidetoneStatus = false;
                         if (IsDTPReady)
-                        {
-                            _isRestoreEnable = false;
-                            DeviceInfoDTP!.Sidetone = false;
-                            _isSidetoneStatus = false;
+                        {                         
                             _debouncerHeadset.Debounce("Transparency");
-                            if (IsDTPReady)
-                                _debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
-                            else
-                                _deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
-                            OnPropertyChanged(nameof(Sidetone_String));
-                            OnPropertyChanged(nameof(SidetoneStatus));
-                            OnPropertyChanged(nameof(SidetoneSliderStatus));
+                            //if (IsDTPReady)
+                            //    _debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
+                            //else
+                            //    _deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
                         }
                         else
                             _deviceManager.SetAncMode(2, CurrentDeviceInfo!.ID).Wait();
                         OnPropertyChanged(nameof(IsActiveNoiseCancellingChecked));
                         OnPropertyChanged(nameof(IsNoiseOffChecked));
-                        OnPropertyChanged("IsTransparencyChecked");
-                        OnPropertyChanged("TransparencylevelSliderValue");
+                        OnPropertyChanged(nameof(IsTransparencyChecked));
+                        OnPropertyChanged(nameof(TransparencylevelSliderValue));
+                        OnPropertyChanged(nameof(Sidetone_String));
+                        OnPropertyChanged(nameof(SidetoneStatus));
+                        OnPropertyChanged(nameof(SidetoneSliderStatus));
                     }
                 }
             }
@@ -2313,16 +2319,17 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isActiveNoiseCancellingChecked = false;
                         _isTransparencyChecked = false;
                         DeviceInfoDTP!.Sidetone = true;
+                        //SidetoneStatus = true;
                         _isSidetoneStatus = true;
                         if (IsDTPReady)
                         {
                             _debouncerHeadset.Debounce("NoiseOff");
-                            _debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
+                            //_debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
                         }
                         else
                         {
                             _deviceManager.SetAncMode(0, CurrentDeviceInfo!.ID).Wait();
-                            _deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
+                            //_deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
                         }
                         OnPropertyChanged(nameof(IsActiveNoiseCancellingChecked));
                         OnPropertyChanged(nameof(IsTransparencyChecked));
