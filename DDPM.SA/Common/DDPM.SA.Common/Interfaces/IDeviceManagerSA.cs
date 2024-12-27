@@ -1421,6 +1421,7 @@ namespace DDPM.SA.Common
 
         ////////////////////////////////Get////////////////////////////////
 
+        Task<string> GetProfileNameAsync(string item);
         Task<string> GetProfileAsync(string item);
 
         Task<int> GetBassAsync(string Guid);
@@ -1438,6 +1439,20 @@ namespace DDPM.SA.Common
         Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
 
         Task<bool> GetMuteStatusAsyncForSpeaker(string guid);
+
+        Task<bool> GetIsIMicNSSupportedAsync(string Guid);
+
+        Task<bool> GetIsVolumeAdjustmentToneSupportedAsync(string Guid);
+
+        Task<bool> GetIsMicMuteSoundSupportedAsync(string Guid);
+
+        Task<bool> GetPresetProfilesAsync(string Guid);
+
+        Task<bool> GetIsBassEqualizerSupportedAsync(string Guid);
+
+        Task<bool> GetIsMidRangeEqualizerSupportedAsync(string Guid);
+
+        Task<bool> GetIsTrebleEqualizerSupportedAsync(string Guid);
 
         #endregion Wires Audio
 

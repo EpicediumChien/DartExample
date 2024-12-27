@@ -125,6 +125,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
                 DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+                Loaded -= LaunchView_LoadedStatus;
                 DdpmCommonHelper.WriteUILog($"[Headset] ~LaunchView");
             }
         }
@@ -136,7 +137,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             try
             {
                 await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
-                DdpmCommonHelper.WriteUILog($"LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
+                DdpmCommonHelper.WriteUILog($"[Headset] LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
                 if (!_vm.IsRestoreEnable)
                 {
                     btnRestore.Visibility = Visibility.Visible;
@@ -145,11 +146,11 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 {
                     btnRestore.Visibility = Visibility.Collapsed;
                 }
-                DdpmCommonHelper.WriteUILog($"LaunchView_LoadedStatus IsRestoreEnable Check Done");
+                DdpmCommonHelper.WriteUILog($"[Headset] LaunchView_LoadedStatus IsRestoreEnable Check Done");
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"LaunchView_LoadedStatus Exception = {ex.Message}");
+                DdpmCommonHelper.WriteUILog($"[Headset] LaunchView_LoadedStatus Exception = {ex.Message}");
             }
         }
 
@@ -466,14 +467,30 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 //_vm.PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result;
                 //_deviceManager.GetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
                 //string hostName = Dns.GetHostName();
-                //var hostIndex = _vm!.VisiblePairedHostName1.ToUpper() == "VISIBLE" ? 1 : (_vm.VisiblePairedHostName2.ToUpper() == "VISIBLE" ? 2 : 3);
-                txt1.Style = ConnectionStyle1;
-                //imgBL1.Source = img2;
-                txtBLHost1.Style = ConnectionStyle1;
-                txt2.Style = ConnectionStyle1;
-                //imgBL2.Source = img2;
-                txtBLHost2.Style = ConnectionStyle1;
-                txt3.Style = ConnectionStyle1;
+                if(string.IsNullOrEmpty(_vm.PairedHostName1))
+                {
+                    txt1.Style = ConnectionStyle2;
+                    txtBLHost1.Style = ConnectionStyle2;
+                    //imgBL1.Source = img2;
+                }
+                else
+                {
+                    txt1.Style = ConnectionStyle1;
+                    txtBLHost1.Style = ConnectionStyle1;
+                    //imgBL1.Source = img2;
+                }
+                if (string.IsNullOrEmpty(_vm.PairedHostName2))
+                {
+                    txt2.Style = ConnectionStyle2;
+                    txtBLHost2.Style = ConnectionStyle2;
+                    //imgBL2.Source = img2;
+                }
+                else
+                {
+                    txt2.Style = ConnectionStyle1;
+                    txtBLHost2.Style = ConnectionStyle1;
+                    //imgBL2.Source = img2;
+                }
                 txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
                 txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
                 BLConnection.Visibility = Visibility.Visible;

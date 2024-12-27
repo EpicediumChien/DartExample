@@ -1,4 +1,5 @@
-﻿using DDPM.UI.Plugin.ViewModels;
+﻿using DDPM.UI.Common;
+using DDPM.UI.Plugin.ViewModels;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,6 +33,14 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
             InitializeAsync();
             _vm!.SoundbarSettingChanged += SoundbarSettingChanged;
         }
+        ~SpeakerAudioPresetRightView()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                _vm!.SoundbarSettingChanged -= SoundbarSettingChanged;
+                _vm._log!.Info("[SpeakerAudioPresetRightView] ~SpeakerAudioPresetRightView ~~~~~~~~~~");
+            }
+        }
         private void SoundbarSettingChanged(object? sender, EventArgs e)
         {
             InitializeAsync();
@@ -40,8 +49,8 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
         private async void InitializeAsync()
         {
             _vm._log!.Info("[SpeakerAudioPresetRightView] Before Invoke_PleaseWaitAsync");
-            await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
-            _vm._log!.Info("[SpeakerAudioPresetRightView] After Invoke_PleaseWaitAsync");
+            //await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
+            //_vm._log!.Info("[SpeakerAudioPresetRightView] After Invoke_PleaseWaitAsync");
             if (_vm.SpeakerInfoValueDTP.SpeakerProfile == _vm._default)
             {
                 if (_vm.SpeakerInfoValueDTP.SpeakerBass > 2 || _vm.SpeakerInfoValueDTP.SpeakerBass < -2)
@@ -170,6 +179,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
         /// <param name="e">EventArgs</param>
         private void Node_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            _vm._isRestoreEnable = false;
             isDragging = false;
             if (currentNode != null)
             {
@@ -298,11 +308,6 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
             Segment2.Point1 = new Point((node2Position.X + node3Position.X) / 2, node2Position.Y);
             Segment2.Point2 = new Point((node2Position.X + node3Position.X) / 2, node3Position.Y);
             Segment2.Point3 = node3Position;
-        }
-
-        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
-        {
-            _vm!.SoundbarSettingChanged -= SoundbarSettingChanged;
         }
     }
 }

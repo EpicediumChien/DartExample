@@ -180,7 +180,7 @@ namespace DDPM.UI.WalkThroughData
                 },
                 
                 // Caspian - Dell Premier Active Pen
-                { "PN7522", new List<WalkThroughPageData>
+                { "PN7522W", new List<WalkThroughPageData>
                     {
                         new WalkThroughPageData { MainText = Strings.WalkThroughPen_Main0, SubText = Strings.WalkThroughPen_Sub0, MainImageSource = "WalkThrough/Pen/Caspian/Caspian_1.png" },
                         new WalkThroughPageData { MainText = Strings.WalkThroughPen_Main1, SubText = Strings.WalkThroughPen_Sub1, MainImageSource = "WalkThrough/Pen/Caspian/Caspian_2.png" },
