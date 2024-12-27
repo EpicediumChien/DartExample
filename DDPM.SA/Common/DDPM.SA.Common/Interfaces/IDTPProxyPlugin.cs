@@ -22,6 +22,7 @@ namespace DDPM.SA.Common
 {
     public interface IDTPProxyPlugin : IFrameworkPlugin
     {
+        event EventHandler<UpdateDTPProxyNotify> DTPProxyPluginSDKeventHandler;
         Task<bool> GetDTPProxyPluginReady();
 
         #region globalperipheral
@@ -339,6 +340,7 @@ namespace DDPM.SA.Common
 
         Task<bool> GetBoomMicAsync(string Guid);
 
+        public void SendHeadsetEventToUI(string sendMsg);
         #endregion
 
         #region Wired Audio

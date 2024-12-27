@@ -76,9 +76,9 @@ namespace NetworkKVM.Plugins
     {
         private readonly object _TaskLockQueuelock = new object();
 
-        public override void Enqueue(T item)
+        public override void Enqueue(T data)
         {
-            lock (_TaskLockQueuelock) { base.Enqueue(item); }
+            lock (_TaskLockQueuelock) { base.Enqueue(data); }
         }
 
         public override bool IsEmpty()

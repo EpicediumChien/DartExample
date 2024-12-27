@@ -74,6 +74,8 @@ namespace NetworkKVM.Plugins
 
         private List<NKVMVCPValue> nKVMVCPValues = new List<NKVMVCPValue>();
 
+        private int namedpipe_Fail = 0;
+
         #endregion Private Members
 
         #region Constructor
@@ -1378,11 +1380,6 @@ namespace NetworkKVM.Plugins
                                         _AllInfoMonitors = GetMonitors().Result;
                                         if (CreateNamedPipe_init())
                                         {
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            //i++;
                                             Thread.Sleep(500);
                                         }
                                     }
@@ -1513,15 +1510,15 @@ namespace NetworkKVM.Plugins
                                         Disconnect();
                                         Thread.Sleep(1000);
                                         _AllInfoMonitors = GetMonitors().Result;
-                                        if (CreateNamedPipe_init())
+                                        if (CreateNamedPipe())
                                         {
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            //i++;
                                             Thread.Sleep(500);
                                         }
+                                        //else
+                                        //{
+                                        //    //i++;
+                                        //    Thread.Sleep(500);
+                                        //}
                                     }
                                 }
                             }
@@ -1551,12 +1548,17 @@ namespace NetworkKVM.Plugins
         {
             try
             {
+                if (namedpipe_Fail > 10)
+                {
+                    _logs.DebugMsg($"[NetworkKVM] Named pipe Fail....");
+                    return false;
+                }
                 if (HaveSuppertMonitor().Result)
                 {
 #if DEBUG
                     namedpipeName = "VCPNamedPipe";
 #else
-                    namedpipeName = Guid.NewGuid().ToString("D");
+                namedpipeName = Guid.NewGuid().ToString("D");
 #endif
                     _logs.DebugMsg("[NetworkKVM] Name: " + namedpipeName);
                     PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity(PipeAccessRights.ReadWrite);
@@ -1572,7 +1574,7 @@ namespace NetworkKVM.Plugins
                     cancellationTokenSource = new CancellationTokenSource();
                     var c = CancellationTokenSource.CreateLinkedTokenSource(cancellationTokenSource.Token);
                     _logs.DebugMsg("[NetworkKVM] Wait Connection.....");
-                
+
                     if (CallNKVMConnent().Result)
                     {
                         StartAsync().Wait();
@@ -1607,6 +1609,11 @@ namespace NetworkKVM.Plugins
         {
             try
             {
+                if (namedpipe_Fail > 10)
+                {
+                    _logs.DebugMsg($"[NetworkKVM] Named pipe Fail....");
+                    return false;
+                }
 #if DEBUG
                 namedpipeName = "VCPNamedPipe";
 #else
@@ -1659,6 +1666,7 @@ namespace NetworkKVM.Plugins
             {
 #endif
                 _logs.DebugMsg("[NetworkKVM] Client Security Pass....");
+                namedpipe_Fail = 0;
                 if (isMonintorChange)
                 {
                     MonitorPlug().Wait();
@@ -1672,6 +1680,7 @@ namespace NetworkKVM.Plugins
             else
             {
                 _logs.DebugMsg($"[NetworkKVM] Client Security Fail....({info})");
+                namedpipe_Fail++;
                 Disconnect();
                 Thread.Sleep(1000);
                 CreateNamedPipe_init();

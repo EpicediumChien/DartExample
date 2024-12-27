@@ -39,6 +39,13 @@ namespace DDPM.SA.Common
         public string UI_Field_Name { get; set; } = string.Empty;
     }
 
+
+
+    public class UpdateDTPProxyNotify : EventArgs
+    {
+        public string State { get; set; } = string.Empty;
+    }
+
     public interface IDeviceManagerSA : IFrameworkPlugin//, ISettingsManager
     {
         #region TelemetryScheduler
@@ -875,7 +882,7 @@ namespace DDPM.SA.Common
 
         Task<SWUpdateInfoPackage> SW_GetSWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, bool reScan = true, bool isUITrigger = false);
 
-        Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUItrigger = false, string installPath = "");
+        Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUITrigger = false, string installPath = "");
 
         Task<InterruptScreenRoot> InterruptScreen_Metadata();
 
@@ -1538,6 +1545,8 @@ namespace DDPM.SA.Common
         Task SyncWebcamProfile(string profileName, bool isActionFromQAM = true); //Derek 1212
 
         Task WriteLog(string logMsg); //Derek 1210
+
+        Task<string> GetWebcamDeviceID(); //Derek 1225
 
         #endregion QAM
 

@@ -159,9 +159,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         //Derek 1120
         public event EventHandler<UpdateUINotify> DTPEventHandler;
+
+        public event EventHandler<UpdateDTPProxyNotify> DTPProxyPluginSDKeventHandler;
         public void OnUIUpdateNotify(UpdateUINotify e)
         {
             DTPEventHandler?.Invoke(this, e);
+        }
+
+        public void DTPProxyPluginSDKNotify(UpdateDTPProxyNotify e)
+        {
+            DTPProxyPluginSDKeventHandler?.Invoke(this, e);
         }
 
         public void NotifyNow()
@@ -173,6 +180,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsLockKeyNotificationsEnabledValue()
         {
             writelog($"Get IsLockKeyNotificationsEnabled Fun");
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -198,6 +206,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsBatteryNotificationsEnabledValue()
         {
             writelog($"Get IsBatteryNotificationsEnabled Fun");
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -223,7 +232,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsPresenceDetectionSensnorStateNotificationsEnabledValue()
         {
             writelog($"Get IsPresenceDetectionSensnorStateNotificationsEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -249,6 +258,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsAnalyticsEnabledValue()
         {
             writelog($"Get IsAnalyticsEnabled Fun");
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -274,7 +284,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsQuickAccessMenuEnabledValue()
         {
             writelog($"Get IsQuickAccessMenuEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -300,7 +310,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsMuteStatusNotificationsEnabledValue()
         {
             writelog($"Get IsMuteStatusNotificationsEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -326,6 +336,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsQuickAccessMenuOSDEnabledValue()
         {
             writelog($"Get IsQuickAccessMenuOSDEnabled Fun");
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -351,7 +362,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> SetIsLockKeyNotificationsEnabledValue(bool newValue)
         {
             writelog($"Set IsLockKeyNotificationsEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsLockKeyNotificationsEnabled :{newValue}");
@@ -368,7 +379,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> SetIsBatteryNotificationsEnabledValue(bool newValue)
         {
             writelog($"Set IsBatteryNotificationsEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsBatteryNotificationsEnabled :{newValue}");
@@ -385,7 +396,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> SetIsPresenceDetectionSensnorStateNotificationsEnabledValue(bool newValue)
         {
             writelog($"Set IsPresenceDetectionSensnorStateNotificationsEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsPresenceDetectionSensnorStateNotificationsEnabled :{newValue}");
@@ -402,7 +413,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> SetIsAnalyticsEnabledValue(bool newValue)
         {
             writelog($"Set IsAnalyticsEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsAnalyticsEnabled :{newValue}");
@@ -419,7 +430,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> SetIsQuickAccessMenuEnabledValue(bool newValue)
         {
             writelog($"Set IsQuickAccessMenuEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsQuickAccessMenuEnabled :{newValue}");
@@ -436,7 +447,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> SetIsMuteStatusNotificationsEnabledValue(bool newValue)
         {
             writelog($"Set IsMuteStatusNotificationsEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsMuteStatusNotificationsEnabled :{newValue}");
@@ -453,6 +464,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> SetIsQuickAccessMenuOSDEnabledValue(bool newValue)
         {
             writelog($"Set IsQuickAccessMenuOSDEnabled Fun");
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsQuickAccessMenuOSDEnabled :{newValue}");
@@ -1126,7 +1138,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
-        //Derek 1221 from QAM
+        //Derek 1221 for QAM
         public Task<string> GetWebcamDeviceID()
         {
             if (1 == webcamList.Count)
@@ -6162,7 +6174,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             return $"HeadsetEvent_5;Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}";
         }
 
-        private void SendHeadsetEventToUI(string sendMsg)
+        public void SendHeadsetEventToUI(string sendMsg)
         {
             UpdateUINotify headsetEventNotify = new UpdateUINotify();
             headsetEventNotify.UI_Field_Name = $"{sendMsg}";
@@ -6408,29 +6420,27 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         /////////////////////////Get////////////////////////////////
 
-        public async Task<string> GetProfileAsync(string Guid)
+        public async Task<string> GetProfileAsync(string item)
         {
-            string guid = Guid;
-
             try
             {
-                if (!await GetItemIDAsync("Speaker", guid))
+                if (!await GetItemIDAsync("Speaker", item))
                     return null;
 
                 var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_speakerInterfaceType, commodity, "Profile");
-                    writelog($"[Speaker] GetProfileAsync succeeded for {guid}");
+                    writelog($"[Speaker] GetProfileAsync succeeded for {item}");
                     return value == null ? "" : (string)value;
                 }
 
-                writelog($"[Speaker] GetProfileAsync failed: Could not retrieve commodity interface for {guid}");
+                writelog($"[Speaker] GetProfileAsync failed: Could not retrieve commodity interface for {item}");
                 return null;
             }
             catch (Exception ex)
             {
-                writelog($"[Speaker] GetTrebleAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[Speaker] GetTrebleAsync failed for {item} - Exception: {ex.Message}");
                 return null;
             }
         }
@@ -6813,7 +6823,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (!GetItemIDAsync("Dock", guid).Result)
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return null;
+                    return Task.FromResult<DockData>(null);
                 }
                 var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
                 if (commodity is ICommodity)
@@ -6869,16 +6879,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                             writelog($"[Dock] GetDockData Dock Data Error : {ex.Message}");
                         }
                     }
-                    return null;
+                    return Task.FromResult<DockData>(null);
                 }
 
                 writelog($"[Dock] GetDockData failed: Could not retrieve commodity interface for {guid}");
-                return null;
+                return Task.FromResult<DockData>(null);
             }
             catch (Exception ex)
             {
                 writelog($"[Dock] GetDockData failed for {guid} - Exception: {ex.Message}");
-                return null;
+                return Task.FromResult<DockData>(null);
             }
         }
         public Task<string> GetFirmwareVersionForDock(string guid)
@@ -7055,6 +7065,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
+                writelog($" GetCommodityInterfaceInstanceAsync_itemID : {_itemID} methodInfo :{methodInfo.Name}");
                 dynamic rawResult = methodInfo.Invoke(_commSdk, new object[] { _itemID, new CancellationTokenSource().Token });
                 Debug.WriteLine($"rawResult: {rawResult}");
                 return rawResult is null ? null : (ICommodity)await rawResult;
@@ -7091,7 +7102,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                         IsDTPReady = true;
                         writelog($"ICommodityClientSdk.InitializeAsync Complete time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-
+                        DTPProxyPluginSDKNotify(new UpdateDTPProxyNotify() { State = "IsDTPReady OK" });
                         writelog($"Find IGlobalPeripheralCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                         _globalperipheralInterfaceType = FindCommodityInterfaceType("IGlobalPeripheralCommodity");
                         if (_globalperipheralInterfaceType != null)
@@ -7213,6 +7224,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                             writelog($"Find IDockCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                         }
                         DTPProxyPluginReady = true;
+                        DTPProxyPluginSDKNotify(new UpdateDTPProxyNotify() {State= "DTPProxyPluginSDK Ready OK" });
                         _ = RegisterEventAsync();
                     });
                 }
@@ -8190,10 +8202,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_IsZoomScreenShareActiveChanged(object sender, IsZoomScreenShareActiveChangedArgs e)
         {
+            writelog($"Start Catch event _Webcamcom_IsZoomScreenShareActiveChanged, new value {e.IsZoomScreenShareActive}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+
             SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsZoomScreenShareActiveChanged",
                                     e.DeviceId, $"NewValue:{e.IsZoomScreenShareActive}"));
 
-            writelog($"Catch event _Webcamcom_IsZoomScreenShareActiveChanged, new value {e.IsZoomScreenShareActive}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"End Catch event _Webcamcom_IsZoomScreenShareActiveChanged, new value {e.IsZoomScreenShareActive}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Webcam_IsZoomMeetingActiveChanged(object sender, IsZoomMeetingActiveChangedArgs e)
