@@ -414,6 +414,7 @@ namespace DDPM.QAM
 
                         //Derek 1227 should set FOV
                         FieldOfView = CurrentProfile.FieldOfView;
+                        LogMsg($"SetProfile change FieldOfView to {FieldOfView}");
                     }
 
                     if (CurrentDeviceInfo.IsPropertyZoomSupported)
