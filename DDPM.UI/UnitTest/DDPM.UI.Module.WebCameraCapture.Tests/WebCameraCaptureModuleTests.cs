@@ -60,7 +60,7 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
             webcamSettings = new WebcamSettings();
             webcamSettings.SupportedFPSs = new Dictionary<string, List<string>>();
             webcamSettings.SupportedFPSs.Add("a",new List<string> { "a"});
-            webcamSettings.SelectedResolution = "a";
+            webcamSettings.Selected_Resolution = "a";
             webcamSettings.SelectedFPSs = new Dictionary<string, string>();
             webcamSettings.SelectedFPSs.Add("a", "a");
             webcamSettings.Resolutions = new Dictionary<string, string>();
@@ -135,15 +135,17 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
         [Test]
         public void TestOnSelectedHomeDeviceChanged()
         {
-            try
-            {
-                webCameraCaptureModule.OnSelectedHomeDeviceChanged();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
+            webCameraCaptureModule.IsModuleActive = false;
+            webCameraCaptureModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChangeda()
+        {
+            webCameraCaptureModule.IsModuleActive = true;
+            webCameraCaptureModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
         }
 
         [Test]

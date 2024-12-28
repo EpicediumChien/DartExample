@@ -522,7 +522,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 Resolution_IsSelected[j] = false;
             }
             Resolution_IsSelected[index] = true;
-            WebcamSettings.SelectedResolution = _resolutions[index];
+            WebcamSettings.Selected_Resolution = _resolutions[index];
             //if (!WebcamSettings.SelectedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
             //    WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, "30");
             WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
@@ -536,7 +536,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 FPS_IsSelected[j] = false;
             }
             FPS_IsSelected[index] = true;
-            WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution] = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][index];
+            WebcamSettings.SelectedFPSs[WebcamSettings.Selected_Resolution] = WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution][index];
             WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             OnPropertyChanged(nameof(FPS_IsSelected));
         }
@@ -574,6 +574,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public override bool SetCurrentDevice(string deviceID)
         {
+            _log.Error("WebCameraViewModel SetCurrentDevice");
             deviceID ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
 
             if (!base.SetCurrentDevice(deviceID))
@@ -599,6 +600,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsChecked_ProximitySensor = false;
                 WebcamSettings.IsFirstTime = false;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+                _log.Error("WebCameraViewModel ExportWebcamSettings Finish");
             }
 
             IsMicEnumerationOnEnabled = true;
@@ -610,6 +612,8 @@ namespace DDPM.UI.Plugin.ViewModels
         private void InitializeWebcam()
         {
             WebcamSettings = WebcamSettings.ImportWebcamSettings(Model, CurrentDeviceInfo!);
+            WebcamSettings.SetJsonToResolution(WebcamSettings,CurrentDeviceInfo!);
+            
             //if (WebcamSettings.SelectedProfileName == "")
             //{
             //    IsDTPReady = false;
@@ -722,13 +726,18 @@ namespace DDPM.UI.Plugin.ViewModels
             //    return;
 
             _resolutions = WebcamSettings.Resolutions.Keys.ToList();
-            var i = WebcamSettings.Resolutions.Keys.ToList().IndexOf(WebcamSettings.SelectedResolution);
+            var i = WebcamSettings.Resolutions.Keys.ToList().IndexOf(WebcamSettings.Selected_Resolution);
+            _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(_resolutions)}!");
+            _log.Info($"DTP (WebcamSettings.Selected_Resolution:{WebcamSettings.Selected_Resolution}!");
+            _log.Info($"DTP i:{i}!");
             SetResolution_Selected(i);
-            var j = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution]);
+            _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(WebcamSettings.SupportedFPSs)}!");          
+            var j = string.IsNullOrEmpty(WebcamSettings.Selected_FPS)?WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.Selected_Resolution]): WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution].IndexOf(WebcamSettings.Selected_FPS);
+            _log.Info($"DTP j:{j}!");
             SetFPS_Selected(j);
             foreach (var sf in WebcamSettings.SelectedFPSs)
             {
-                if (sf.Key != WebcamSettings.SelectedResolution)
+                if (sf.Key != WebcamSettings.Selected_Resolution)
                     WebcamSettings.SelectedFPSs[sf.Key] = "30";
             }
             IsResolutionSectionEnable = true;
@@ -940,12 +949,12 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if (WebcamSettings?.SupportedFPSs == null || !WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+                if (WebcamSettings?.SupportedFPSs == null || !WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.Selected_Resolution))
                 {
                     return false;
                 }
 
-                var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution];
+                var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution];
                 return !IsRecording && !(IsAutoFramingOn && supportedFPS.Count > 1 && supportedFPS[1] == "60");
             }
         }
@@ -954,12 +963,12 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if (WebcamSettings?.SupportedFPSs == null || !WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+                if (WebcamSettings?.SupportedFPSs == null || !WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.Selected_Resolution))
                 {
                     return false;
                 }
 
-                var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution];
+                var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution];
                 return !IsRecording && !(IsAutoFramingOn && supportedFPS.Count > 2 && supportedFPS[2] == "60");
             }
         }
@@ -1131,9 +1140,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 //    else if (WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 2 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][2] == "60")
                 //        SetFPS_Selected(1);
                 //}
-                if (value && WebcamSettings?.SupportedFPSs != null && WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+                if (value && WebcamSettings?.SupportedFPSs != null && WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.Selected_Resolution))
                 {
-                    var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution];
+                    var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution];
                     if (supportedFPS.Count > 1 && supportedFPS[1] == "60")
                         SetFPS_Selected(0);
                     else if (supportedFPS.Count > 2 && supportedFPS[2] == "60")

@@ -173,6 +173,16 @@ namespace DDPM.SA.Common.UpdateProgressPage
             Close();
         }
 
+        public void HideWindow()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(HideWindow);
+                return;
+            }
+            Hide();
+        }
+
         private void UXWindow_Loaded(object sender, RoutedEventArgs e)
         {
             this.Width = 800;
@@ -202,7 +212,8 @@ namespace DDPM.SA.Common.UpdateProgressPage
             }
             else
             {
-                UpdateTitle = $"{LangHelper.Instance["Firmware_Update"]} - {e.DeviceName}";
+
+                UpdateTitle = $"{LangHelper.Instance["Firmware_Update"]} - {e.DeviceName} {e.Model}";
                 UpdateSubTitle = LangHelper.Instance["Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed"];
             }
             UpdateVersion = $"{LangHelper.Instance["Version"]} {e.TheLatestVersion}";

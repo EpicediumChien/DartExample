@@ -3462,4 +3462,7 @@
   <data name="Brightness.21" xml:space="preserve">
     <value>Applies brightness/luminance, contrast, schedule settings\nand color presets to the connected monitors</value>
   </data>
+  <data name="slot" xml:space="preserve">
+    <value>slots available</value>
+  </data>
 </root>

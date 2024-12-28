@@ -6419,6 +6419,32 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
 
         /////////////////////////Get////////////////////////////////
+        public async Task<string> GetProfileNameAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "ProfileName");
+                    writelog($"[Speaker] GetProfileNameAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[Speaker] GetProfileNameAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetProfileNameAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
 
         public async Task<string> GetProfileAsync(string item)
         {
@@ -6659,6 +6685,189 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             catch (Exception ex)
             {
                 writelog($"[Speaker] GetMuteStatusAsyncForSpeaker failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsIMicNSSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsIMicNSSupported");
+                    writelog($"[Speaker] GetIsIMicNSSupportedAsync succeeded for {guid}");
+                    return value != null && (bool)value;
+                }
+
+                writelog($"[Speaker] GetIsIMicNSSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetIsIMicNSSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> GetIsVolumeAdjustmentToneSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsVolumeAdjustmentToneSupported");
+                    writelog($"[Speaker] GetIsVolumeAdjustmentToneSupportedAsync succeeded for {guid}");
+                    return value != null && (bool)value;
+                }
+
+                writelog($"[Speaker] GetIsVolumeAdjustmentToneSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetIsVolumeAdjustmentToneSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> GetIsMicMuteSoundSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsMicMuteSoundSupported");
+                    writelog($"[Speaker] GetIsMicMuteSoundSupportedAsync succeeded for {guid}");
+                    return value != null && (bool)value;
+                }
+
+                writelog($"[Speaker] GetIsMicMuteSoundSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetIsMicMuteSoundSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> GetPresetProfilesAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "PresetProfiles");
+                    writelog($"[Speaker] GetPresetProfilesAsync succeeded for {guid}");
+                    return value != null && (bool)value;
+                }
+
+                writelog($"[Speaker] GetPresetProfilesAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetPresetProfilesAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> GetIsBassEqualizerSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsBassEqualizerSupported");
+                    writelog($"[Speaker] GetIsBassEqualizerSupportedAsync succeeded for {guid}");
+                    return value != null && (bool)value;
+                }
+
+                writelog($"[Speaker] GetIsBassEqualizerSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetIsBassEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> GetIsMidRangeEqualizerSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsMidRangeEqualizerSupported");
+                    writelog($"[Speaker] GetIsMidRangeEqualizerSupportedAsync succeeded for {guid}");
+                    return value != null && (bool)value;
+                }
+
+                writelog($"[Speaker] GetIsMidRangeEqualizerSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetIsMidRangeEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> GetIsTrebleEqualizerSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsTrebleEqualizerSupported");
+                    writelog($"[Speaker] GetIsTrebleEqualizerSupportedAsync succeeded for {guid}");
+                    return value != null && (bool)value;
+                }
+
+                writelog($"[Speaker] GetIsTrebleEqualizerSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetIsTrebleEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }

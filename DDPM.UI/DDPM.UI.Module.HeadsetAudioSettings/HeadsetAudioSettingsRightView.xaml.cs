@@ -39,15 +39,18 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             converter.ViewModel = _vm;
 
             InitializeAsync();
-
+            _vm!.HeadsetSettingChanged += HeadsetSettingChanged;
         }
-
+        private void HeadsetSettingChanged(object? sender, EventArgs e)
+        {
+            InitializeAsync();
+        }
         private async void InitializeAsync()
         {
             //await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
             _vm._log!.Info("[HeadsetAudioSettingsRightView] Before Invoke_PleaseWaitAsync");
             //await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
-            _vm._log!.Info("[HeadsetAudioSettingsRightView] After Invoke_PleaseWaitAsync");
+            //_vm._log!.Info("[HeadsetAudioSettingsRightView] After Invoke_PleaseWaitAsync");
             if (_vm.DeviceInfoDTP!.IsPresetsSupported)
             {
                 if (_vm.DeviceInfoDTP!.Band1Gain > 4 || _vm.DeviceInfoDTP!.Band1Gain < -6)
@@ -147,6 +150,8 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
                 SystemParameters.StaticPropertyChanged -= SystemParameters_StaticPropertyChanged;
+                _vm!.HeadsetSettingChanged -= HeadsetSettingChanged;
+                _vm._log!.Info("[HeadsetAudioSettingsRightView] ~HeadsetAudioSettingsRightView()\r\n ~~~~~~~~~~");
             }
         }
 
@@ -270,6 +275,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
         /// <param name="e">EventArgs</param>
         private void Node_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            _vm._isRestoreEnable = false;
             isDragging = false;
             if (currentNode != null)
             {
