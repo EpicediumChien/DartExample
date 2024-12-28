@@ -470,7 +470,7 @@ namespace DDPM.UI.Module.Kvm
                 if (bpxp)
                 {
                     bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "PIP-Small").Result;
-                    vm.PxPCode = 0x11;
+                    vm.PxPCode = 0x21;
                     Thread.Sleep(1000);
                 }
             }
@@ -481,7 +481,7 @@ namespace DDPM.UI.Module.Kvm
                 if (bpxp)
                 {
                     bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "PIP-Large").Result;
-                    vm.PxPCode = 0x12;
+                    vm.PxPCode = 0x22;
                     Thread.Sleep(1000);
                 }
             }
