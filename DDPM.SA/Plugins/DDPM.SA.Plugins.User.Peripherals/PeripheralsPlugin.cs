@@ -35,8 +35,10 @@ using System.Windows.Forms;
 using System.Windows.Media.Media3D;
 using VcpCore.Common;
 using Windows.ApplicationModel;
+using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 using IDeviceManager = IndiLogic.DPeM.Broker.IDeviceManager;
 using IDs = DDPM.SA.Common.IDs;
+using Task = System.Threading.Tasks.Task;
 
 namespace DDPM.SA.Plugins.PeripheralsPlugin
 {
@@ -84,11 +86,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private static List<Guid> PhysicalDevices = new();
         private static List<Guid> PhysicalDevices1 = new();
         private static List<Guid> PhysicalDevices2 = new();
-        private static List<Guid> LogicalDevices1 = new();
+        private static List<Guid> LogicalDevices = new();
         private static List<Guid> LogicalDevices2 = new();
         private static List<Guid> LogicalDevices3 = new();
-        private static List<Guid> LogicalDevices4 = new();
         private static List<Guid> LogicalDevicesPen = new();
+        private static List<Guid> IDevices = new();
 
         //private IDeviceManagerSA _DeviceManagerPlugin;
         //private readonly object _PluginConditionLock_DeviceManager = new object();
@@ -149,7 +151,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
             if (_isClientConnected && _deviceHelper != null)
             {
-                return await Task.Run(() =>
+                return await System.Threading.Tasks.Task.Run(() =>
                 {
                     lock (_lock)
                     {
@@ -1537,10 +1539,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.TotalNumberOfPairedHostName = _logicalDevice2.TotalNumberOfPaiedHostName;
                                 info.IsDPILevelSupported = _logicalDevice2.IsDPILevelSupported;
 
-                                if (!LogicalDevices1.Contains(_logicalDevice2.Id))
+                                if (!LogicalDevices2.Contains(_logicalDevice2.Id))
                                 {
                                     _logicalDevice2.DpiLevelChanged += ILogicalDevice_DpiLevelChanged;
-                                    LogicalDevices1.Add(_logicalDevice2.Id);
+                                    LogicalDevices2.Add(_logicalDevice2.Id);
                                 }
                             }
 
@@ -1577,7 +1579,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.MousePrimaryButton = _logicalDevice3.MousePrimaryButton;
                                 //info.PairedHostNames = _logicalDevice3.PairedHostNames;
 
-                                if (!LogicalDevices2.Contains(_logicalDevice3.Id))
+                                if (!LogicalDevices3.Contains(_logicalDevice3.Id))
                                 {
                                     _logicalDevice3.MousePrimaryButtonChanged += ILogicalDevice_MousePrimaryButtonChanged;
                                     _logicalDevice3.DPIValueChanged += ILogicalDevice_DpiValueChanged;
@@ -1587,20 +1589,30 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     _logicalDevice3.PairedHostNameChanged += ILogicalDevice_PairedHostNameChanged;
                                     _logicalDevice3.IsDPILevelChangePendingChanged += ILogicalDevice_IsDPILevelChangePendingChanged;
                                     _logicalDevice3.IsDPIValueChangePendingChanged += ILogicalDevice_IsDPIValueChangePendingChanged;
-                                    LogicalDevices2.Add(_logicalDevice3.Id);
+                                    LogicalDevices3.Add(_logicalDevice3.Id);
                                 }
                             }
 
                             // << 241206 by Hess fix no event issue
                             if (item is ILogicalDevice _logicalDevice)
                             {
-                                if (!LogicalDevices4.Contains(_logicalDevice.Id))
+                                if (!LogicalDevices.Contains(_logicalDevice.Id))
                                 {
                                     _logicalDevice.BatteryStatusChanged += ILogicalDevice_BatteryStatusChanged;
                                     _logicalDevice.BatteryLevelChanged += ILogicalDevice_BatteryLevelChanged;
-                                    LogicalDevices4.Add(_logicalDevice.Id);
+                                    LogicalDevices.Add(_logicalDevice.Id);
 
                                     CheckLowBatteryOSD(info);
+                                }
+                            }
+                            // >>
+                            // << 241228 by Hess add new event
+                            if (item is IDevice _IDevice)
+                            {
+                                if (!IDevices.Contains(_IDevice.Id))
+                                {
+                                    device.NameChanged += (name) => OnDeviceNameChanged(device, name);
+                                    IDevices.Add(_IDevice.Id);
                                 }
                             }
                             // >>
@@ -1949,6 +1961,33 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 //Console.WriteLine(_deviceHelper.ToString());
                 writelog(_deviceHelper.ToString());
             }
+        }
+
+        private void OnDeviceNameChanged(IDevice device, string newValue)
+        {
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == device.Id.ToString());
+                if (deviceInfo != null)
+                {
+                    deviceInfo.Name = newValue;
+
+                    DeviceChangedEventArgs _EventArgs = new()
+                    {
+                        type = DeviceChangedType.Peripherals_SettingsChange,
+                        device_peripherals = deviceInfo,
+                        changedProperty = "DeviceNameChanged"
+                    };
+                    OnNotify(_EventArgs);
+                    Debug.WriteLine($"DeviceNameChanged: ID: {device.Id} Name: {newValue}");
+                    writelog($"DeviceNameChanged: ID: {device.Id} Name: {newValue}");
+                }
+            }
+        }
+
+
+        private void _logicalDevice_NameChanged(string name)
+        {
         }
 
         private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle arg1, AudioDonglePairingStatus arg2)
@@ -2532,24 +2571,40 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         };
                         OnNotify(_EventArgs);
                     });
-                    if (LogicalDevices1.Contains(iLogicalDevice.Id))
+                    if (IDevices.Contains(iLogicalDevice.Id) && iLogicalDevice is IDevice _IDevice)
                     {
-                        LogicalDevices1.Remove(iLogicalDevice.Id);
+                        _IDevice.NameChanged -= (name) => OnDeviceNameChanged(_IDevice, name);
+                        IDevices.Remove(iLogicalDevice.Id);
                     }
-                    if (LogicalDevices2.Contains(iLogicalDevice.Id))
+                    if (LogicalDevices.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevice _logicalDevice)
                     {
+                        _logicalDevice.BatteryStatusChanged -= ILogicalDevice_BatteryStatusChanged;
+                        _logicalDevice.BatteryLevelChanged -= ILogicalDevice_BatteryLevelChanged;
+                        LogicalDevices.Remove(iLogicalDevice.Id);
+                    }
+                    if (LogicalDevices2.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevice2 _logicalDevice2)
+                    {
+                        _logicalDevice2.DpiLevelChanged -= ILogicalDevice_DpiLevelChanged;
                         LogicalDevices2.Remove(iLogicalDevice.Id);
                     }
-                    if (LogicalDevices3.Contains(iLogicalDevice.Id))
+                    if (LogicalDevices3.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevice3 _logicalDevice3)
                     {
+                        _logicalDevice3.MousePrimaryButtonChanged -= ILogicalDevice_MousePrimaryButtonChanged;
+                        _logicalDevice3.DPIValueChanged -= ILogicalDevice_DpiValueChanged;
+                        _logicalDevice3.TouchScrollSensitivityLevelChanged -= ILogicalDevice_TouchScrollSensitivityLevelChanged;
+                        _logicalDevice3.BackLightingControlsChanged -= ILogicalDevice_BackLightingControlsChanged;
+                        _logicalDevice3.BackLightingLevelChanged -= ILogicalDevice_BackLightingLevelChanged;
+                        _logicalDevice3.PairedHostNameChanged -= ILogicalDevice_PairedHostNameChanged;
+                        _logicalDevice3.IsDPILevelChangePendingChanged -= ILogicalDevice_IsDPILevelChangePendingChanged;
+                        _logicalDevice3.IsDPIValueChangePendingChanged -= ILogicalDevice_IsDPIValueChangePendingChanged;
                         LogicalDevices3.Remove(iLogicalDevice.Id);
                     }
-                    if (LogicalDevices4.Contains(iLogicalDevice.Id))
+                    if (LogicalDevicesPen.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevicePen _logicalDevicePen)
                     {
-                        LogicalDevices4.Remove(iLogicalDevice.Id);
-                    }
-                    if (LogicalDevicesPen.Contains(iLogicalDevice.Id))
-                    {
+                        _logicalDevicePen.PenSettingChanged -= Pen_PenSettingChanged;
+                        _logicalDevicePen.KeyCaptureStarted -= Pen_KeyCaptureStarted;
+                        _logicalDevicePen.KeyCaptureDataChanged -= Pen_KeyCaptureDataChanged;
+                        _logicalDevicePen.KeyCaptureProgressDataChanged -= Pen_KeyCaptureProgressDataChanged;
                         LogicalDevicesPen.Remove(iLogicalDevice.Id);
                     }
                     ScanDevices();
