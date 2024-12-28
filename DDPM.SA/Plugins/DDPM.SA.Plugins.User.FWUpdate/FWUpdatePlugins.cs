@@ -433,7 +433,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 {
                                     if (strBackup.Length < 4) // 長度不足4,就補0在字首到長度為4
                                         strBackup = strBackup.PadLeft(4, '0');
-                                    newVer = Regex.Replace(updateHelper.UpdateItems[i].NewVersion, ".{1}", "$0.").Substring(0, (updateHelper.UpdateItems[i].NewVersion.Length * 2) - 1);
+                                    newVer = Regex.Replace(strBackup, ".{1}", "$0.").Substring(0, (strBackup.Length * 2) - 1);
 
                                 }
                                 else if (strBackup.Length > 4) // 長度大於4
