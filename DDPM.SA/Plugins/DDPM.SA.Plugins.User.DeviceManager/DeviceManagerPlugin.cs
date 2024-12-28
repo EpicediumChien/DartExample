@@ -10885,8 +10885,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 writelog($"Try to run QAMClose");
+                //Derek 1228 move to here for issue
+                //OSD should not be seen on set Widget setting- Activae Quick Access widget during Zoom conference calls" = Off (uncheck)
+                isOpenOSDWhenQAMClosed = openQAMOSD; 
                 _QAM?.Dispatcher.Invoke(DispatcherPriority.Normal, () => _QAM?.Close());
-                isOpenOSDWhenQAMClosed = openQAMOSD;
             }
             catch (Exception e)
             {
