@@ -480,8 +480,8 @@ namespace DDPM.Win32Lib
             uint uiStyles = (uint)Win32._GetWindowLong(hWnd, (int)Win32.WindowLongFlags.GWL_STYLE);
             uint uiMinimizeStyle = (uint)Win32.WindowStyles.WS_MINIMIZE;
             bool isMinimized = ((uiStyles & uiMinimizeStyle) == uiMinimizeStyle);
-            if (isMinimized)
-                return false;
+            //if (isMinimized) // 最小化視窗 也要找
+            //    return false;
 
             //Check if the window across screen boundary
             //It need Screen rect, will be check after returned
