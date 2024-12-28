@@ -944,12 +944,12 @@ namespace DDPM.UI.Module.Kvm
                         if (pcsList == null)
                         {
                             _log?.Debug("No value return from `DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList` for pcsList.");
-                            throw new ExternalException($"[KVM View Model] Cannot get USB KVM PCs list from monitor.\n");
+                            return;
                         }
                         if (usbsList == null)
                         {
                             _log?.Debug("No value return from `DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList` for pcsList.");
-                            throw new ExternalException($"[KVM View Model] Cannot get USB KVM USBs List from monitor.\n");
+                            return;
                         }
                         if (pcsList != null)
                         {
