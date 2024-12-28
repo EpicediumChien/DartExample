@@ -452,7 +452,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     else
                                     {
                                         string pattern = @"(.{2})(.{2})(.{2})(.{2})";
-                                        string replacement = "$1:$2:$3:$4";
+                                        string replacement = "$1.$2.$3.$4";
                                         newVer = Regex.Replace(strBackup, pattern, replacement);
                                     }
 
