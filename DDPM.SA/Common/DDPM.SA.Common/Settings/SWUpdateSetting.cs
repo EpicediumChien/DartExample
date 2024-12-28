@@ -50,14 +50,11 @@ namespace DDPM.SA.Common.Settings
             SWUpdateHelper data = new SWUpdateHelper();
             string SW_URL = GetSWUServer();
             CertificateCheck certificateCheck = new CertificateCheck(logs);
-            if (!isSkipCA)
+            if (!isSkipCA && !certificateCheck.CheckURLCACertificate(SW_URL))
             {
-                if (!certificateCheck.CheckURLCACertificate(SW_URL))
-                {
-                    info = $"{nameof(GetSWMetadata)} URL CA check fail";
-                    logs?.DebugMsg_1(info);
-                    return data;
-                }
+                info = $"{nameof(GetSWMetadata)} URL CA check fail";
+                logs?.DebugMsg_1(info);
+                return data;                
             }
             try
             {
@@ -196,14 +193,11 @@ namespace DDPM.SA.Common.Settings
             logs?.DebugMsg_1("[InterruptScreen_Metadata], start.");
             string SW_URL = GetSWUServer();
             CertificateCheck certificateCheck = new CertificateCheck(logs);
-            if (!isSkipCA)
+            if (!isSkipCA && !certificateCheck.CheckURLCACertificate(SW_URL))
             {
-                if (!certificateCheck.CheckURLCACertificate(SW_URL))
-                {
-                    info = $"{nameof(GetSWMetadata)} URL CA check fail";
-                    logs?.DebugMsg_1(info);
-                    return result;
-                }
+                info = $"{nameof(GetSWMetadata)} URL CA check fail";
+                logs?.DebugMsg_1(info);
+                return result;
             }
             try
             {

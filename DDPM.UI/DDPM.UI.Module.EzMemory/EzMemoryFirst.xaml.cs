@@ -266,6 +266,7 @@ namespace DDPM.UI.Module.EzMemory
             // Need to Re-set Edit Profile status
             _vm.IsEditProfile = false;
             _vm.ClearTextBlockAppName();
+            _vm.RightViewDataClear();
             if (_vm._currentPageIndex == 0)
             {
                 DdpmCommonHelper.ModuleOwner?.CloseFullView();
@@ -322,6 +323,7 @@ namespace DDPM.UI.Module.EzMemory
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             _vm.ProgressValue = 1;
+            _vm.RightViewDataClear();
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
             return;
         }

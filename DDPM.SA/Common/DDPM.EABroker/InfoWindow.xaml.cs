@@ -113,24 +113,21 @@ namespace DDPM.EABroker
                 //Try to get the PathName of the process
                 try
                 {
-                    if (process.MainModule != null)
+                    if (process.MainModule != null && !String.IsNullOrEmpty(process.MainModule.FileName))
                     {
-                        if (!String.IsNullOrEmpty(process.MainModule.FileName))
-                        {
-                            string pathName = process.MainModule.FileName;
-                            _vm.PathNameForeground = pathName;
+                        string pathName = process.MainModule.FileName;
+                        _vm.PathNameForeground = pathName;
 
-                            if (ArrangeVM.IsEAExcludedPathName(pathName))
-                            {
-                                _vm.StartMovingMsg = "Moving window is in EAExcluded list";
-                                _vm.IsMoving = false;
-                                return;
-                            }
-                            else
-                            {
-                                _vm.StartMovingMsg = "OK";
-                                _vm.IsMoving = true;
-                            }
+                        if (ArrangeVM.IsEAExcludedPathName(pathName))
+                        {
+                            _vm.StartMovingMsg = "Moving window is in EAExcluded list";
+                            _vm.IsMoving = false;
+                            return;
+                        }
+                        else
+                        {
+                            _vm.StartMovingMsg = "OK";
+                            _vm.IsMoving = true;
                         }
                     }
                 }

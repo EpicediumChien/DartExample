@@ -54,15 +54,16 @@ namespace DDPM.UI.Module.Kvm.Tests
             moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
-            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
-            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>() { { "AA", new List<string>() }, { "EE", new List<string>() } };
-            deviceManagerMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new ValueTuple<HotkeySettings, List<HotkeyData>>(new HotkeySettings() { HotkeyInfo = new List<HotkeyInfo>() { new HotkeyInfo() { Hotkey = new List<VirtualKey>() { VirtualKey.Q, VirtualKey.M } } } }, new List<HotkeyData>())));
+            //DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
+            //DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>() { { "AA", new List<string>() }, { "EE", new List<string>() } };
+            //deviceManagerMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new ValueTuple<HotkeySettings, List<HotkeyData>>(new HotkeySettings() { HotkeyInfo = new List<HotkeyInfo>() { new HotkeyInfo() { Hotkey = new List<VirtualKey>() { VirtualKey.Q, VirtualKey.M } } } }, new List<HotkeyData>())));
             kvmModule = new KvmModule(moduleOwner);
             kvmViewModel = new KvmViewModel();
-            kvmViewModel.KvmModule = kvmModule;
-            kvmViewModel.KvmModule.SelectedHomeDevice = new HomeDevice();
-            kvmViewModel.KvmModule.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
+            //kvmViewModel.KvmModule = kvmModule;
+            //kvmViewModel.KvmModule.SelectedHomeDevice = new HomeDevice();
+            //kvmViewModel.KvmModule.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
             privateObject = new PrivateObject(kvmViewModel);
+            inputSourceList = new InputSourceList();
         }
 
 
@@ -118,7 +119,7 @@ namespace DDPM.UI.Module.Kvm.Tests
 
         //class PCInput
         [Test]
-        public void TestPCInputinputSource()
+        public void TestPCInputkvmModule()
         {
             var pCInput = new PCInput();
             pCInput.kvmModule = kvmModule;
@@ -145,8 +146,9 @@ namespace DDPM.UI.Module.Kvm.Tests
         [Test]
         public void TestkvmModule()
         {
-            inputSourceList.kvmModule = kvmModule;
-            Assert.That(inputSourceList.kvmModule, Is.EqualTo(kvmModule));
+            var kvmModule = new KvmModule(moduleOwner);
+            kvmViewModel.KvmModule = kvmModule;
+            Assert.That(kvmViewModel.KvmModule, Is.EqualTo(kvmModule));
         }
 
         [Test]
