@@ -726,15 +726,19 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string str = RunSerializeObject_MonitorSettings(modelname, monitorSettings);
             if (string.IsNullOrEmpty(str))
             {
+                WriteLog("[WriteMonitorSettings] fail with empty serialized string");
                 return Task<bool>.FromResult(false);
             }
-            //string info;
-            //if (!DDPMFileSecurity.SetJsonContentFromSerializedString(jArray.ToString(), monitorSettings_path, out info))//, false))
-            //{
-            //    WriteLog(info);
-            //    return Task.FromResult(false);
-            //}
-            _AllMonitorSettings[modelname] = monitorSettings;
+            string info;
+            if (!DDPMFileSecurity.SetJsonContentFromSerializedString(str, monitorSettings_path, out info))//, false))
+            {
+                WriteLog($"[WriteMonitorSettings] fail with ({info})");
+                return Task.FromResult(false);
+            }
+            if(_AllMonitorSettings != null && _AllMonitorSettings.ContainsKey(modelname) )
+                _AllMonitorSettings[modelname] = monitorSettings;
+            else
+                WriteLog($"[WriteMonitorSettings] can't update data back to _AllMonitorSettings due to no exist key or null cache");
 
             return Task.FromResult(true);
         }
