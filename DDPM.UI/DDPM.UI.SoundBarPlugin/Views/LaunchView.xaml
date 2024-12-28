@@ -8,6 +8,7 @@
              xmlns:DDPMUserControls="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
+             xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              xmlns:plugin="clr-namespace:DDPM.UI.Plugin.ViewModels;assembly=DDPM.UI.Plugin.Common"
              d:DataContext="{d:DesignInstance Type=plugin:SoundBarViewModel}"
              d:DesignHeight="671" d:DesignWidth="1374">
@@ -29,6 +30,7 @@
                 <!--<DoubleAnimation Storyboard.TargetName="BottomGrid" Storyboard.TargetProperty="MaxHeight" Duration="0:0:0.4" From="500" To="540" />-->
             </Storyboard>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -168,7 +170,7 @@
                         <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" MouseEnter="BatteryIndicator_MouseEnter"
                                                            BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}" MouseLeave="BatteryIndicator_MouseLeave"
                                                            ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
-                        <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore"
+                        <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" x:Name="btnRestore" Visibility="{Binding IsRestoreEnable, Converter={StaticResource BoolToVisibilityConverter}}"
                                 BorderBrush="{DynamicResource SecondaryButton_DefaultBdColor}">
                             <Grid>
                                 <Border BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" Background="Transparent" BorderThickness="1"  >
