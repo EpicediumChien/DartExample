@@ -51,7 +51,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
             _vm._log!.Info("[SpeakerAudioPresetRightView] Before Invoke_PleaseWaitAsync");
             //await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
             //_vm._log!.Info("[SpeakerAudioPresetRightView] After Invoke_PleaseWaitAsync");
-            if (_vm.SpeakerInfoValueDTP.SpeakerProfile == _vm._default)
+            if (_vm.SpeakerInfoValueDTP.SpeakerProfile == _vm._default)// || _vm.SpeakerInfoValueDTP.SpeakerProfile == "")
             {
                 if (_vm.SpeakerInfoValueDTP.SpeakerBass > 2 || _vm.SpeakerInfoValueDTP.SpeakerBass < -2)
                 {
