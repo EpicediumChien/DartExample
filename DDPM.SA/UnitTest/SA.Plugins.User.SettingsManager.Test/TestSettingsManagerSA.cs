@@ -430,7 +430,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             if (globalSettingParam != null)
             {
                 Mock<ISettingsManagerSA> mock_SysSettingsPlugin = new Mock<ISettingsManagerSA>();
-                mock_SysSettingsPlugin.Setup(x => x.WriteGlobalSettingsToITConfig(It.IsAny<GlobalSettingParam>())).Returns(Task.FromResult(true));
+                mock_SysSettingsPlugin.Setup(x => x.WriteGlobalSettingsToITConfig(It.IsAny<GlobalSettingParam>(), false)).Returns(Task.FromResult(true));
                 var mock_SysSettingsPluginObj = mock_SysSettingsPlugin.Object;
                 privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", mock_SysSettingsPluginObj);
                 privateSettingsManagerObject.SetFieldOrProperty("_GlobalSettingParam", globalSettingParam);
@@ -490,7 +490,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Assert.That(InitPowerNapSetting, Is.EqualTo(result));
         }
 
-        [Test]
+        /*[Test]
         public void TestReadPowerNapSettings()
         {
             string ReadPowerNapSettings_path1_ = "test_ReadPowerNapSettingsPath.json";
@@ -514,9 +514,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Assert.That(powerNap_settings, Is.EqualTo(ReadPowerNapSettingsResult2));
                 File.Delete(ReadPowerNapSettings_path1_);
             }
-        }
+        }*/
 
-        [Test]
+        /*[Test]
         public void TestWritePowerNapSettings()
         {
             bool WritePowerNapSettings_ = false;
@@ -545,7 +545,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Assert.That(WritePowerNapSettings_succeed, Is.EqualTo(WritePowerNapSettingsResult2));
                 File.Delete(WritePowerNapSettings_path1_);
             }
-        }
+        }*/
 
         [Test]
         public void TestRunPowerNapDeserializeObject()
@@ -578,7 +578,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             File.Delete(DeserialPowerNapSettings_path1_);
         }
 
-        [Test]
+        /*[Test]
         public void TestImportPowerNapSettings()
         {
             //string ImportPowerNapSettings_path = "C:\\Users\\win1020231116\\AppData\\Local\\Dell\\Dell Display and Peripheral Manager";
@@ -591,9 +591,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             var ImportPowerNapSettingsResult1 = SettingsManagerSAPlugin.ImportPowerNapSettings(ImportPowerNapSettings_path1_).Result;
             Assert.Greater(ImportPowerNapSettingsResult1.Count, 0);
             File.Delete(ImportPowerNapSettings_path1_);
-        }
+        }*/
 
-        [Test]
+        /*[Test]
         public void TestExportPowerNapSettings()
         {
             bool ExportPowerNapSettings_ = false;
@@ -618,7 +618,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Assert.That(ExportPowerNapSettings_succeed, Is.EqualTo(ExportPowerNapSettings_Result2));
                 File.Delete(ExportPowerNapSettings_path1_);
             }
-        }
+        }*/
 
         //Robert_Lin, 2024-10-10, SettingsManagerSAPlugin.ReadEasyArrangeSettings() has been removed,
         //please use DeviceManagerPlugin.ReadEAMonitorSettings() instead.

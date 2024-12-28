@@ -24,6 +24,8 @@ using System.Collections.ObjectModel;
 using DDPM.UI.Plugin.DdpmHomePlugin;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft.VisualBasic.Logging;
+using CommunityToolkit.Mvvm.Input;
+using System.Windows.Input;
 
 namespace DDPM.UI.Module.Kvm
 {
@@ -165,6 +167,7 @@ namespace DDPM.UI.Module.Kvm
         private ImageSource? _PCImage;
         #endregion
 
+        #region Win32
         [DllImport("user32.dll", EntryPoint = "SetParent", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
@@ -180,6 +183,8 @@ namespace DDPM.UI.Module.Kvm
         {
             return EnableWindow(hWnd, bEnable);
         }
+        #endregion Win32
+
         //[DllImport("user32.dll", SetLastError = true)]
         //public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         public readonly ILog _log;
@@ -201,10 +206,46 @@ namespace DDPM.UI.Module.Kvm
         public Visibility EditPXP { get; set; } = Visibility.Collapsed;
         public Visibility DisenableUSBKVM { get; set; } = Visibility.Visible;
         public Visibility EnableUSBKVM { get; set; } = Visibility.Collapsed;
-        public string PC1_Input { get; set; }
-        public string PC2_Input { get; set; }
-        public string PC3_Input { get; set; }
-        public string PC4_Input { get; set; }
+        private string _pc1_Input { get; set; }
+        public string PC1_Input 
+        { 
+            get => _pc1_Input;
+            set 
+            {
+                _pc1_Input = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _pc2_Input { get; set; }
+        public string PC2_Input
+        {
+            get => _pc2_Input;
+            set
+            {
+                _pc2_Input = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _pc3_Input { get; set; }
+        public string PC3_Input 
+        { 
+            get => _pc3_Input; 
+            set
+            {
+                _pc3_Input = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _pc4_Input { get; set; }
+        public string PC4_Input 
+        { 
+            get => _pc4_Input;
+            set
+            {
+                _pc4_Input = value;
+                OnPropertyChanged();
+            }
+        }
 
         public bool IsMoreThanPC2
         {
@@ -217,8 +258,8 @@ namespace DDPM.UI.Module.Kvm
         public Dictionary<UInt16, System.Windows.Controls.UserControl> PxPcodeDictionary = new Dictionary<UInt16, System.Windows.Controls.UserControl>()
         {
             [0x0] = null,
-            [0x11] = null,
-            [0x12] = null
+            [0x21] = null,
+            [0x22] = null
             //    [0x24] = new PBPSplitCtrl2A(),
             //    [0x2F] = new PBPSplitCtrl2B(),
             //    [0x26] = new PBPSplitCtrl2C(),
@@ -738,6 +779,10 @@ namespace DDPM.UI.Module.Kvm
                 //OSD/VCP control back event
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
             }
+
+            //Robert_Lin, 2024-12-26, to handle Pip toggle positions click commnd handling
+            PipTogglePositionClickCommand = new RelayCommand(OnPipTogglePositionClicked);
+
         }
 
         ~KvmViewModel()
@@ -905,7 +950,17 @@ namespace DDPM.UI.Module.Kvm
                         string currentinput = KvmModule.SelectedHomeDevice.MonitorInfo.inputSource;
                         pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
                         usbsList = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstreamList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
-                        original_pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
+                        if (pcsList == null)
+                        {
+                            _log?.Debug("No value return from `DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList` for pcsList.");
+                            return;
+                        }
+                        if (usbsList == null)
+                        {
+                            _log?.Debug("No value return from `DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList` for pcsList.");
+                            return;
+                        }
+                        original_pcsList = pcsList.ToDictionary(entry => entry.Key, entry => entry.Value);
                         if (pcsList != null && pcsList.Count > 1)   // 2024-06-19 Elie, fix exception.
                         {
                             if (inputList.Count != _inputsList.Count && usbsList.Count != _usbsList.Count)
@@ -1063,13 +1118,13 @@ namespace DDPM.UI.Module.Kvm
                                         //}
                                         switch (_curPxpMode)
                                         {
-                                            case 0x11:
+                                            case 0x21:
                                                 isPipSmall = true;
                                                 isPipLarge = false;
                                                 isPBP = false;
                                                 break;
 
-                                            case 0x12:
+                                            case 0x22:
                                                 isPipSmall = true;
                                                 isPipLarge = false;
                                                 isPBP = false;
@@ -1303,6 +1358,8 @@ namespace DDPM.UI.Module.Kvm
                 //if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
                 //{
                 bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(KvmModule.SelectedHomeDevice.MonitorInfo, "Input Select", pcsList["PC1"].InputType).Result;
+                string result = b ? "Success" : "Failed";
+                _log.Debug($"[KvmViewModel] MainInput PC1-{pcsList["PC1"].InputType} Done with {result}.");
                 if (b)
                 {
                     KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = pcsList["PC1"].InputType;
@@ -1387,6 +1444,8 @@ namespace DDPM.UI.Module.Kvm
                     _selectedSplitItem.IsSelected = true;
                     //To determine if "Toggle between position" button should be enabled
                     OnPropertyChanged("IsPipListItemSelected");
+                    //Robert_Lin, 2024-12-25 added to refresh toggle button state
+                    OnPropertyChanged("IsTogglePositionEnabled");
                 }
                 else
                 {
@@ -1394,10 +1453,27 @@ namespace DDPM.UI.Module.Kvm
                     SetProperty(ref _selectedSplitItem, value);
                     //To determine if "Toggle between position" button should be enabled
                     OnPropertyChanged("IsPipListItemSelected");
+                    //Robert_Lin, 2024-12-25 added to refresh toggle button state
+                    OnPropertyChanged("IsTogglePositionEnabled");
                 }
             }
         }
 
+        /// <summary>
+        /// Return the PxpMode code of SelectedSplitItem
+        /// </summary>
+        /// <returns>0x00 ~ 0xFF : The PxpMode
+        /// 0xFFFF : unknown mode
+        /// </returns>
+        public UInt16 GetSelectedItemPxpMode()
+        {
+            if (SelectedSplitItem == null)
+                return 0xffff;
+            ISplit? isp = SelectedSplitItem.ISplit;
+            if (isp == null)
+                return 0xffff;
+            return isp.PbpCapabilityCode;
+        }
         #endregion Selected SplitItems
 
         #region Main Input Source
@@ -1483,10 +1559,56 @@ namespace DDPM.UI.Module.Kvm
         {
             get
             {
-                return IsPipListItemSelected && HasCap_PipTogglePosition;
+                //Robert_Lin, 2024-12-26, return true only when selected item is the same with current Pxp mode
+                if (IsPipListItemSelected)
+                {
+                    //Get selected mode
+                    UInt16 selectedMode = GetSelectedItemPxpMode();
+                    if (selectedMode != 0xffff)
+                    {
+                        return CurPxpMode == selectedMode;
+                    }
+                    //if (CurPxpMode == PipMode_Large || CurPxpMode == PipMode_Small)
+                    //    return true;
+                }
+                return false ;
             }
         }
 
+        //Robert_Lin, 2024-12-26, to handle PIP toggle positions command
+        /// <summary>
+        /// The Command when 'Toggle position' is clicked
+        /// </summary>
+        private ICommand? _pipTogglePositionClickCommand;
+
+        public ICommand? PipTogglePositionClickCommand
+        {
+            get => _pipTogglePositionClickCommand;
+            set => SetProperty(ref _pipTogglePositionClickCommand, value);
+        }
+
+        private void OnPipTogglePositionClicked()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += delegate
+            {
+                //UInt16 capCode = SelectedSplitItem.ISplit.PbpCapabilityCode;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    DdpmCommonHelper.DeviceManagerSA.TogglePipPosition(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+                }
+            };
+            bw.RunWorkerCompleted += delegate
+            {
+                IsBusy = false;
+            };
+            IsBusy = true;
+            bw.RunWorkerAsync();
+        }
         #endregion Determine if Toggle between positons button enabled/disabled
 
         #region VideoSwap control and content
@@ -1785,8 +1907,12 @@ namespace DDPM.UI.Module.Kvm
             //set input source
             if (pcsList != null)
             {
-                if (pcsList != original_pcsList)
-                {
+                // Since Profile issue PCs will be inconsistent need to rewrite each change,
+                // Monitor info is only updated by monitor info updated. Originally get from profile not real monitor status
+                // if (!isPCsListSame(pcsList,  original_pcsList))
+                // {
+                    CurrentInputChange();
+
                     if (pcsList.TryGetValue("PC1", out var pc1) && pcsList.TryGetValue("PC2", out var pc2))
                     {
                         InputSourceObj pc1input = new InputSourceObj((UInt16)pcsList["PC1"].Code, pcsList["PC1"].InputType);
@@ -1808,6 +1934,8 @@ namespace DDPM.UI.Module.Kvm
                                         bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
                                             DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                                             pc2input, pc3input, pc4input).Result;
+                                        string result = res ? "Success" : "Failed";
+                                        _log.Debug($"[KvmViewModel] SubInputs PC2-{pc2input.Name}, PC3-{pc3input.Name}, PC4-{pc4input.Name} Done with {result}.");
                                         if (res)
                                         {
                                             Thread.Sleep(1000);
@@ -1823,6 +1951,8 @@ namespace DDPM.UI.Module.Kvm
                                     bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
                                         DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                                         pc2input, pc3input, null).Result;
+                                    string result = res ? "Success" : "Failed";
+                                    _log.Debug($"[KvmViewModel] SubInputs PC2-{pc2input.Name}, PC3-{pc3input.Name} Done with {result}.");
                                     if (res)
                                     {
                                         Thread.Sleep(1000);
@@ -1839,6 +1969,8 @@ namespace DDPM.UI.Module.Kvm
                             bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
                                     DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                                     pc2input, null, null).Result;
+                            string result = res ? "Success" : "Failed";
+                            _log.Debug($"[KvmViewModel] SubInputs PC2-{pc2input.Name} Done with {result}.");
                             if (res)
                             {
                                 Thread.Sleep(1000);
@@ -1858,6 +1990,7 @@ namespace DDPM.UI.Module.Kvm
                             if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
                             {
                                 bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
+                                _log.Debug($"[KvmViewModel] SetUSBUpstream {pcs.Key}-{pcs.Value.InputType}: {pcs.Value.USBUpstream} Done");
                                 if (bUSBuptream)
                                 {
                                     Thread.Sleep(1000);
@@ -1867,17 +2000,17 @@ namespace DDPM.UI.Module.Kvm
 
                         //if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
                         //{
-                        CurrentInputChange();
                         //}
                         bool bin = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo, inputList).Result;
                         bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
+                        original_pcsList = pcsList.ToDictionary(entry => entry.Key, entry => entry.Value);
                         //isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
                     }
                     else
                     {
                         _log?.Debug("PC1 or PC2 not found in pcsList.");
                     }
-                }
+                // }
             }
             else
             {
@@ -1908,10 +2041,10 @@ namespace DDPM.UI.Module.Kvm
                 case 0x0:
                     PxPcodeDictionary[code] = new PxPSplitCtrl0A();
                     break;
-                case 0x11:
+                case 0x21:
                     PxPcodeDictionary[code] = new PIPSplitCtrl1A();
                     break;
-                case 0x12:
+                case 0x22:
                     PxPcodeDictionary[code] = new PIPSplitCtrl1B();
                     break;
                 case 0x24:
@@ -2096,5 +2229,24 @@ namespace DDPM.UI.Module.Kvm
             }
         }
         #endregion
+
+        private bool isPCsListSame(Dictionary<string, PCsInfo> sourceDict, Dictionary<string, PCsInfo> targetDict)
+        {
+            bool isSame = true;
+            if (sourceDict == null && targetDict == null) return true;
+            else {
+                if (sourceDict == null || targetDict == null) return false; 
+                else if (sourceDict.Count != targetDict.Count) return false; 
+                else {
+                    foreach (var kvp in sourceDict) {
+                        if (targetDict[kvp.Key].Code != kvp.Value.Code) return false;
+                        if (targetDict[kvp.Key].InputName != kvp.Value.InputName) return false;
+                        if (targetDict[kvp.Key].InputType != kvp.Value.InputType) return false;
+                        if (targetDict[kvp.Key].USBUpstream != kvp.Value.USBUpstream) return false;
+                    }
+                    return true;
+                }
+            }
+        }
     }
 }

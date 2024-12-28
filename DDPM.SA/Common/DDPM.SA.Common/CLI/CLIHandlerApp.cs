@@ -203,15 +203,13 @@ namespace DDPM.SA.Common.CLI
             }
 
             bool status = false;
-            if (_SettingsPluginIT != null)
+            if (_SettingsPluginIT != null && data_IT != null)
             {
-                if (data_IT != null)
-                    status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Settings_Updates" }).Result;
+                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Settings_Updates" }).Result;
             }
-            if (_DeviceManagerPlugin != null)
+            if (_DeviceManagerPlugin != null && data_user != null)
             {
-                if (data_user != null)
-                    status = _DeviceManagerPlugin.SetAppConfigData(data_user).Result;
+                status = _DeviceManagerPlugin.SetAppConfigData(data_user).Result;
             }
 
             if (!status)
@@ -661,10 +659,9 @@ namespace DDPM.SA.Common.CLI
                 }
                 Debug.WriteLine($"{status}");
             }
-            if (_DeviceManagerPlugin != null)
+            if (_DeviceManagerPlugin != null && data_user != null)
             {
-                if (data_user != null)
-                    status = _DeviceManagerPlugin.SetAppConfigData(data_user).Result;
+                status = _DeviceManagerPlugin.SetAppConfigData(data_user).Result;
             }
 
             if (!status)
@@ -1058,65 +1055,63 @@ namespace DDPM.SA.Common.CLI
                     // continue; // 20240827 Refactor the containing loop
                 }
                 bool status = false;
-                if (_SettingsPluginIT != null)
+                if (_SettingsPluginIT != null && data_IT != null)
                 {
-                    if (data_IT != null)
+                    switch (commandLineInput.TargetFeature)
                     {
-                        switch (commandLineInput.TargetFeature)
-                        {
-                            case "TELEMETRYCONSENT":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Settings_TelemetryConsent" }).Result;
-                                break;
-                            case "POWERNAP":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_PowerNap" }).Result;
-                                break;
-                            case "RESOLUTIONREFRESHRATE":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_ResolutionRefreshRate" }).Result;
-                                break;
-                            case "USBCPRIORITIZATION":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_USBCPrioritization" }).Result;
-                                break;
-                            case "ACTIVEINPUTSOURCE":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_ActiveInputSource" }).Result;
-                                break;
-                            case "COLLABSCREENSHARE":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Keyboard_CollabScreenShare" }).Result;
-                                break;
-                            case "INAPPUSBKVM":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_USBKVM" }).Result;
-                                break;
-                            case "EASYARRANGELAYOUT":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_EasyArrangeLayout" }).Result;
-                                break;
-                            case "ANCMODE":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Audio_ancMode" }).Result;
-                                break;
-                            case "MICNOISECANCELLATION":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Audio_micNoiseCancellation" }).Result;
-                                break;
-                            case "WEARDETECTION":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Audio_wearDetection" }).Result;
-                                break;
-                            case "SCREENNOTIFICATION":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Setting_ScreenNotification" }).Result;
-                                break;
-                            case "HDR":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Webcam_hdr" }).Result;
-                                break;
-                            case "ANTIFLICKER":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Webcam_AntiFlicker" }).Result;
-                                break;
-                            case "AIAUTOFRAMING":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Webcam_AIAutoFraming" }).Result;
-                                break;
-                            case "MICSWITCH":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Webcam_MicSwitch" }).Result;
-                                break;
-                            case "PRESENCEDETECTION":
-                                status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Webcam_PresenceDetection" }).Result;
-                                break;
-                        }
+                        case "TELEMETRYCONSENT":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Settings_TelemetryConsent" }).Result;
+                            break;
+                        case "POWERNAP":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_PowerNap" }).Result;
+                            break;
+                        case "RESOLUTIONREFRESHRATE":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_ResolutionRefreshRate" }).Result;
+                            break;
+                        case "USBCPRIORITIZATION":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_USBCPrioritization" }).Result;
+                            break;
+                        case "ACTIVEINPUTSOURCE":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_ActiveInputSource" }).Result;
+                            break;
+                        case "COLLABSCREENSHARE":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Keyboard_CollabScreenShare" }).Result;
+                            break;
+                        case "INAPPUSBKVM":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_USBKVM" }).Result;
+                            break;
+                        case "EASYARRANGELAYOUT":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Display_EasyArrangeLayout" }).Result;
+                            break;
+                        case "ANCMODE":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Audio_ancMode" }).Result;
+                            break;
+                        case "MICNOISECANCELLATION":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Audio_micNoiseCancellation" }).Result;
+                            break;
+                        case "WEARDETECTION":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Audio_wearDetection" }).Result;
+                            break;
+                        case "SCREENNOTIFICATION":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Setting_ScreenNotification" }).Result;
+                            break;
+                        case "HDR":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Webcam_hdr" }).Result;
+                            break;
+                        case "ANTIFLICKER":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Webcam_AntiFlicker" }).Result;
+                            break;
+                        case "AIAUTOFRAMING":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Webcam_AIAutoFraming" }).Result;
+                            break;
+                        case "MICSWITCH":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Webcam_MicSwitch" }).Result;
+                            break;
+                        case "PRESENCEDETECTION":
+                            status = _SettingsPluginIT.WriteITConfigData(data_IT, new List<string>() { "Lock_Webcam_PresenceDetection" }).Result;
+                            break;
                     }
+                    
                 }
                 if (_DeviceManagerPlugin != null)
                 {

@@ -266,7 +266,10 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_PositionToggle);
+                bool ret = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_PositionToggle).Result;
+                //ObjGetVCP objVcp = GetPxpMode(monitorInfo).Result;
+                //Trace.WriteLine($"Toggle.Result={ret}, GetPxpMode({objVcp.result}, {objVcp.value})");
+                return Task.FromResult( ret );
             }
             _lastError = $"TogglePipPosition({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
             _logs.DebugMsg($"[{pluginName}] {_lastError}");
@@ -324,9 +327,11 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.GetVCPCapability(monitorInfo, 0xE9);
+                ObjGetVCP ret = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, 0xE9).Result;
+                Trace.WriteLine($"GetPxpMode, Result={ret.result}, Value={ret.value}");
+                return Task.FromResult<ObjGetVCP>(ret);
             }
-            _lastError = $"SetPbpMode({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
+            _lastError = $"GetPxpMode({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
             _logs.DebugMsg($"[{pluginName}] {_lastError}");
             return Task.FromResult<ObjGetVCP>(new ObjGetVCP() { result = false, value = 0xff });
         }

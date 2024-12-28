@@ -177,24 +177,40 @@ namespace DDPM.SA.Plugins.SettingsManager
             return Task.FromResult(_settings);
         }
 
-        public Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam)
+        public Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam, bool needExceptionString = false)
         {
+            string info = string.Empty;
             if (globalSettingParam == null)
             {
-                WriteLog($"WriteGlobalSettingsToITConfig: null data, failed");
+                info = "WriteGlobalSettingsToITConfig: null data, failed";
+                WriteLog(info);
+                if(needExceptionString)
+                {
+                    throw new Exception(info);
+                }
                 return Task.FromResult(false);
             }
             if (_settings == null || _settings.global_setting == null)
             {
-                WriteLog($"WriteGlobalSettingsToITConfig: null cache, failed");
+                info = "WriteGlobalSettingsToITConfig: null cache, failed";
+                WriteLog(info);
+                if (needExceptionString)
+                {
+                    throw new Exception(info);
+                }
                 return Task.FromResult(false);
             }
             _settings.global_setting = globalSettingParam;
-            string info = string.Empty;
+
             bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(_settings).ToString(), _settings_path, out info);
             if (!result)
             {
-                WriteLog($"WriteGlobalSettingsToITConfig: write failed, reason: {info}");
+                info = $"WriteGlobalSettingsToITConfig: write failed, reason: {info}";
+                WriteLog(info);
+                if (needExceptionString)
+                {
+                    throw new Exception(info);
+                }
             }
             return Task.FromResult(result);
         }
