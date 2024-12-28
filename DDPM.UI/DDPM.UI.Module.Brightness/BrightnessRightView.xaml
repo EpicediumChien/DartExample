@@ -143,15 +143,21 @@
                                                     <ColumnDefinition Width="Auto" />
                                                 </Grid.ColumnDefinitions>
 
-                                                <Image
+                                                <!--<Image
                                                     Grid.Column="0"
                                                     Width="20"
                                                     Height="20"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
                                                     Source="{DynamicResource BrightnessImage}"
-                                                    Stretch="UniformToFill" />
-
+                                                    Stretch="UniformToFill" />-->
+                                                <ContentControl Grid.Column="0"
+                                                                Width="20"
+                                                                Height="20"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"
+                                                                Template="{StaticResource icon_Brightness}"
+                                                                Foreground="{DynamicResource DefaultTheme_PathColor}" />
                                                 <UXControls:UXSlider
                                                     Name="B_slider"
                                                     Grid.Column="1"
@@ -195,15 +201,21 @@
                                                     <ColumnDefinition Width="Auto" />
                                                 </Grid.ColumnDefinitions>
 
-                                                <Image
+                                                <!--<Image
                                                     Grid.Column="0"
                                                     Width="20"
                                                     Height="20"
                                                     HorizontalAlignment="Center"
                                                     VerticalAlignment="Center"
                                                     Source="{DynamicResource ContrastImage}"
-                                                    Stretch="UniformToFill" />
-
+                                                    Stretch="UniformToFill" />-->
+                                                <ContentControl Grid.Column="0"
+                                                                Width="20"
+                                                                Height="20"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"
+                                                                Template="{StaticResource icon_Contrast}"
+                                                                Foreground="{DynamicResource DefaultTheme_PathColor}" />
                                                 <UXControls:UXSlider
                                                     Name="C_slider"
                                                     Grid.Column="1"

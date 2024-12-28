@@ -71,9 +71,15 @@ namespace DDPM.UI.Module.Kvm
             if (vm.CurPxpMode == KvmViewModel.PipMode_Off)
                 vm.SelectedSplitItem = pipOff;
             else if (vm.CurPxpMode == KvmViewModel.PipMode_Small)
+            {
                 vm.SelectedSplitItem = pipSmall;
+                isPipSmall = true;
+            }
             else if (vm.CurPxpMode == KvmViewModel.PipMode_Large)
+            {
                 vm.SelectedSplitItem = pipLarge;
+                isPipLarge = true;
+            }
 
             //Rebuild splitListView based on vm.PipPbpCaps
             //It will also set IsSelected if the adding SplitItem is current PxpMode
@@ -366,6 +372,7 @@ namespace DDPM.UI.Module.Kvm
             if (vm != null)
             {
                 vm._log!.Info("[KVMPIPPBPFullView]SavePxP");
+                vm.FinishtoSetPCs();
                 SetPxP();
                 //bool bt = false;
                 //if (vm.isPipSmall)
