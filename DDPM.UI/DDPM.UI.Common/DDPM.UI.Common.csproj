@@ -162,6 +162,7 @@
 		<None Remove="Resources\VertNavBar.png" />
 		<None Remove="Resources\Warring.png" />
 		<None Remove="Resources\WD19DCS.png" />
+		<None Remove="Resources\WD19S.png" />
 		<None Remove="Resources\WD19S_130W.png" />
 		<None Remove="Resources\WD19S_180W.png" />
 		<None Remove="Resources\WD22TB4.png" />
@@ -325,6 +326,9 @@
 		</Resource>
 		<Resource Include="Resources\Speaker_VectorRight.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+		<Resource Include="Resources\WD19S.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>
 		<Resource Include="Resources\WD25.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
