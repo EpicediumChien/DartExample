@@ -258,8 +258,8 @@ namespace DDPM.UI.Module.Kvm
         public Dictionary<UInt16, System.Windows.Controls.UserControl> PxPcodeDictionary = new Dictionary<UInt16, System.Windows.Controls.UserControl>()
         {
             [0x0] = null,
-            [0x11] = null,
-            [0x12] = null
+            [0x21] = null,
+            [0x22] = null
             //    [0x24] = new PBPSplitCtrl2A(),
             //    [0x2F] = new PBPSplitCtrl2B(),
             //    [0x26] = new PBPSplitCtrl2C(),
@@ -2041,10 +2041,10 @@ namespace DDPM.UI.Module.Kvm
                 case 0x0:
                     PxPcodeDictionary[code] = new PxPSplitCtrl0A();
                     break;
-                case 0x11:
+                case 0x21:
                     PxPcodeDictionary[code] = new PIPSplitCtrl1A();
                     break;
-                case 0x12:
+                case 0x22:
                     PxPcodeDictionary[code] = new PIPSplitCtrl1B();
                     break;
                 case 0x24:
