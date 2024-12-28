@@ -62,7 +62,7 @@
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="BorderBrush" Value="#F5F6F7" />
   </Style>-->
-  <Style x:Key="Border1" TargetType="Border">
+  <!--<Style x:Key="Border1" TargetType="Border">
     <Setter Property="Background" Value="{StaticResource Border1Brush}" />
     <Setter Property="CornerRadius" Value="1.5" />
     <Setter Property="Width" Value="3" />
@@ -77,7 +77,7 @@
     <Setter Property="VerticalAlignment" Value="Top" />
     <Setter Property="HorizontalAlignment" Value="Left" />
     <Setter Property="Cursor" Value="Hand" />
-  </Style>
+  </Style>-->
   <Style x:Key="ConnectionStyle1" TargetType="UXControls:UXTextBlock">
     <Setter Property="Foreground" Value="#FFFFFF" />
     <Setter Property="FontFamily" Value="Roboto" />
