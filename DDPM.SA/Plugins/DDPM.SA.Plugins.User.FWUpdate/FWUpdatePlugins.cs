@@ -422,7 +422,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             // Jim 20241227 add to  PIMS-329393 DDPM is sending smart dock version as f.f.f.f.f.f.f.f
                             string strBackup = string.Empty;
                             string strTemp = string.Empty;
-                            
+
                             strBackup = newVer;
                             _logs.DebugMsg_1($" CheckUpdate(), newVer (original input) = {newVer}");
                             _logs.DebugMsg_1($" CheckUpdate(), strBackup = {strBackup}");
@@ -431,6 +431,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             {
                                 if (strBackup.Length < 5) //長度小於5
                                 {
+                                    if (strBackup.Length < 4) // 長度不足4,就補0在字首到長度為4
+                                        strBackup = strBackup.PadLeft(4, '0');
                                     newVer = Regex.Replace(updateHelper.UpdateItems[i].NewVersion, ".{1}", "$0.").Substring(0, (updateHelper.UpdateItems[i].NewVersion.Length * 2) - 1);
 
                                 }
@@ -629,7 +631,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 else
                 {
-                    _ForceFWUpdateInfoPackage=new FWUpdateInfoPackage();
+                    _ForceFWUpdateInfoPackage = new FWUpdateInfoPackage();
                     _ForceFWUpdateInfoPackage.FWUpdateInfo = new List<FWUpdateInfo>();
                 }
                 if (_forCLI_FWUpdateInfoPackage.FWUpdateInfo.Count <= 0)
@@ -2599,11 +2601,16 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     _logs.DebugMsg_1($"BuildArgs DeviceType done");
                 }
-                _logs.DebugMsg_1($"BuildArgs devicePath go");
-                arguments += $" /devicePath:" + fwUpdateInfo.DevicePath;
-                _logs.DebugMsg_1($"BuildArgs devicePath done");
+
+                if (fwUpdateInfo.DeviceType != DeviceType.LogicalDock &&
+                    fwUpdateInfo.DeviceType != DeviceType.PhysicalWiredDock)
+                {
+                    _logs.DebugMsg_1($"BuildArgs devicePath go");
+                    arguments += $" /devicePath:" + fwUpdateInfo.DevicePath;
+                    _logs.DebugMsg_1($"BuildArgs devicePath done");
+                }
                 _logs.DebugMsg_1($"BuildArgs Log go");
-                //Log commandLine
+                //Log or devicePathcommandLine
                 switch (fwUpdateInfo.DeviceType)
                 {
                     case DeviceType.LogicalDock:
