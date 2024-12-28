@@ -24,6 +24,8 @@ using System.Collections.ObjectModel;
 using DDPM.UI.Plugin.DdpmHomePlugin;
 using Dell.Client.Framework.UX.WPF;
 using Microsoft.VisualBasic.Logging;
+using CommunityToolkit.Mvvm.Input;
+using System.Windows.Input;
 
 namespace DDPM.UI.Module.Kvm
 {
@@ -165,6 +167,7 @@ namespace DDPM.UI.Module.Kvm
         private ImageSource? _PCImage;
         #endregion
 
+        #region Win32
         [DllImport("user32.dll", EntryPoint = "SetParent", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
@@ -180,6 +183,8 @@ namespace DDPM.UI.Module.Kvm
         {
             return EnableWindow(hWnd, bEnable);
         }
+        #endregion Win32
+
         //[DllImport("user32.dll", SetLastError = true)]
         //public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         public readonly ILog _log;
@@ -738,6 +743,10 @@ namespace DDPM.UI.Module.Kvm
                 //OSD/VCP control back event
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
             }
+
+            //Robert_Lin, 2024-12-26, to handle Pip toggle positions click commnd handling
+            PipTogglePositionClickCommand = new RelayCommand(OnPipTogglePositionClicked);
+
         }
 
         ~KvmViewModel()
@@ -1387,6 +1396,8 @@ namespace DDPM.UI.Module.Kvm
                     _selectedSplitItem.IsSelected = true;
                     //To determine if "Toggle between position" button should be enabled
                     OnPropertyChanged("IsPipListItemSelected");
+                    //Robert_Lin, 2024-12-25 added to refresh toggle button state
+                    OnPropertyChanged("IsTogglePositionEnabled");
                 }
                 else
                 {
@@ -1394,10 +1405,27 @@ namespace DDPM.UI.Module.Kvm
                     SetProperty(ref _selectedSplitItem, value);
                     //To determine if "Toggle between position" button should be enabled
                     OnPropertyChanged("IsPipListItemSelected");
+                    //Robert_Lin, 2024-12-25 added to refresh toggle button state
+                    OnPropertyChanged("IsTogglePositionEnabled");
                 }
             }
         }
 
+        /// <summary>
+        /// Return the PxpMode code of SelectedSplitItem
+        /// </summary>
+        /// <returns>0x00 ~ 0xFF : The PxpMode
+        /// 0xFFFF : unknown mode
+        /// </returns>
+        public UInt16 GetSelectedItemPxpMode()
+        {
+            if (SelectedSplitItem == null)
+                return 0xffff;
+            ISplit? isp = SelectedSplitItem.ISplit;
+            if (isp == null)
+                return 0xffff;
+            return isp.PbpCapabilityCode;
+        }
         #endregion Selected SplitItems
 
         #region Main Input Source
@@ -1483,10 +1511,56 @@ namespace DDPM.UI.Module.Kvm
         {
             get
             {
-                return IsPipListItemSelected && HasCap_PipTogglePosition;
+                //Robert_Lin, 2024-12-26, return true only when selected item is the same with current Pxp mode
+                if (IsPipListItemSelected)
+                {
+                    //Get selected mode
+                    UInt16 selectedMode = GetSelectedItemPxpMode();
+                    if (selectedMode != 0xffff)
+                    {
+                        return CurPxpMode == selectedMode;
+                    }
+                    //if (CurPxpMode == PipMode_Large || CurPxpMode == PipMode_Small)
+                    //    return true;
+                }
+                return false ;
             }
         }
 
+        //Robert_Lin, 2024-12-26, to handle PIP toggle positions command
+        /// <summary>
+        /// The Command when 'Toggle position' is clicked
+        /// </summary>
+        private ICommand? _pipTogglePositionClickCommand;
+
+        public ICommand? PipTogglePositionClickCommand
+        {
+            get => _pipTogglePositionClickCommand;
+            set => SetProperty(ref _pipTogglePositionClickCommand, value);
+        }
+
+        private void OnPipTogglePositionClicked()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += delegate
+            {
+                //UInt16 capCode = SelectedSplitItem.ISplit.PbpCapabilityCode;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    DdpmCommonHelper.DeviceManagerSA.TogglePipPosition(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+                }
+            };
+            bw.RunWorkerCompleted += delegate
+            {
+                IsBusy = false;
+            };
+            IsBusy = true;
+            bw.RunWorkerAsync();
+        }
         #endregion Determine if Toggle between positons button enabled/disabled
 
         #region VideoSwap control and content

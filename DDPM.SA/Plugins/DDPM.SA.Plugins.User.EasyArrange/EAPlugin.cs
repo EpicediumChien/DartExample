@@ -1183,13 +1183,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             }
 
             //Check if current selected layout is the same
-            if (eaSettings.SelectedSplit != null)
+            if (eaSettings.SelectedSplit != null &&
+                eaSettings.SelectedSplit.EAID == eaId)
             {
-                if (eaSettings.SelectedSplit.EAID == eaId)
-                {
-                    WriteLog($"SetEASelectedLayout({eaId}) return true: Current selected layout is the same, nothing to do.");
-                    return Task.FromResult(true);
-                }
+                WriteLog($"SetEASelectedLayout({eaId}) return true: Current selected layout is the same, nothing to do.");
+                return Task.FromResult(true);
             }
 
             //Launch the major function in UI Thread

@@ -9,10 +9,9 @@
             if (string.IsNullOrEmpty(strAppDir))
                 return string.Empty;
 
-            if (blEndWithBkSlash)
+            if (blEndWithBkSlash && !strAppDir.EndsWith("\\"))
             {
-                if (!strAppDir.EndsWith("\\"))
-                    strAppDir += "\\";
+                strAppDir += "\\";
             }
             return strAppDir;
         }

@@ -4684,15 +4684,33 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //////////////////////////////////Get///////////////////////////////////
 
+        public async Task<string> GetProfileNameAsync(string item)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetProfileNameAsync(item);
+                if (result != null)
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetProfileNameAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetProfileNameAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Speaker] GetProfileNameAsync failed for {item} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
         public async Task<string> GetProfileAsync(string item)
         {
             try
             {
                 var result = await _DTPProxyPlugin.GetProfileAsync(item);
                 if (result != null)
-                    writelog($"[DeviceManagerPlugin] [Headset] GetProfileAsync Success");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetProfileAsync Success");
                 else
-                    writelog($"[DeviceManagerPlugin] [Headset] GetProfileAsync Fail");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetProfileAsync Fail");
                 return result;
             }
             catch (Exception ex)
@@ -4708,9 +4726,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 var result = await _DTPProxyPlugin.GetBassAsync(Guid);
                 if (result != -1)
-                    writelog($"[DeviceManagerPlugin] [Headset] GetBassAsync Success");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetBassAsync Success");
                 else
-                    writelog($"[DeviceManagerPlugin] [Headset] GetBassAsync Fail");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetBassAsync Fail");
                 return result;
             }
             catch (Exception ex)
@@ -4726,9 +4744,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 var result = await _DTPProxyPlugin.GetMidRangeAsync(Guid);
                 if (result != -1)
-                    writelog($"[DeviceManagerPlugin] [Headset] GetMidRangeAsync Success");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetMidRangeAsync Success");
                 else
-                    writelog($"[DeviceManagerPlugin] [Headset] GetMidRangeAsync Fail");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetMidRangeAsync Fail");
                 return result;
             }
             catch (Exception ex)
@@ -4744,9 +4762,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 var result = await _DTPProxyPlugin.GetTrebleAsync(Guid);
                 if (result != -1)
-                    writelog($"[DeviceManagerPlugin] [Headset] GetTrebleAsync Success");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetTrebleAsync Success");
                 else
-                    writelog($"[DeviceManagerPlugin] [Headset] GetTrebleAsync Fail");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetTrebleAsync Fail");
                 return result;
             }
             catch (Exception ex)
@@ -4762,9 +4780,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 var result = await _DTPProxyPlugin.GetIsWiredAudioMicMuteSoundEnableAsync(Guid);
                 if (result)
-                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWiredAudioMicMuteSoundEnableAsync Success");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioMicMuteSoundEnableAsync Success");
                 else
-                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWiredAudioMicMuteSoundEnableAsync Fail");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioMicMuteSoundEnableAsync Fail");
                 return result;
             }
             catch (Exception ex)
@@ -4780,9 +4798,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 var result = await _DTPProxyPlugin.GetWiredAudioVolumeAdjustmentToneAsync(Guid);
                 if (result != -1)
-                    writelog($"[DeviceManagerPlugin] [Headset] GetWiredAudioVolumeAdjustmentToneAsync Success");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioVolumeAdjustmentToneAsync Success");
                 else
-                    writelog($"[DeviceManagerPlugin] [Headset] GetWiredAudioVolumeAdjustmentToneAsync Fail");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetWiredAudioVolumeAdjustmentToneAsync Fail");
                 return result;
             }
             catch (Exception ex)
@@ -4798,9 +4816,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 var result = await _DTPProxyPlugin.GetIsWiredAudioIMicNSEnableAsync(Guid);
                 if (result)
-                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWiredAudioIMicNSEnableAsync Success");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioIMicNSEnableAsync Success");
                 else
-                    writelog($"[DeviceManagerPlugin] [Headset] GetIsWiredAudioIMicNSEnableAsync Fail");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsWiredAudioIMicNSEnableAsync Fail");
                 return result;
             }
             catch (Exception ex)
@@ -4816,9 +4834,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 var result = await _DTPProxyPlugin.GetIsAudioEqualizerSupportedAsync(Guid);
                 if (result)
-                    writelog($"[DeviceManagerPlugin] [Headset] GetIsAudioEqualizerSupportedAsync Success");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsAudioEqualizerSupportedAsync Success");
                 else
-                    writelog($"[DeviceManagerPlugin] [Headset] GetIsAudioEqualizerSupportedAsync Fail");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsAudioEqualizerSupportedAsync Fail");
                 return result;
             }
             catch (Exception ex)
@@ -4834,14 +4852,140 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 var result = await _DTPProxyPlugin.GetMuteStatusAsyncForSpeaker(guid);
                 if (result)
-                    writelog($"[DeviceManagerPlugin] [Headset] GetMuteStatusAsyncForSpeaker Success");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetMuteStatusAsyncForSpeaker Success");
                 else
-                    writelog($"[DeviceManagerPlugin] [Headset] GetMuteStatusAsyncForSpeaker Fail");
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetMuteStatusAsyncForSpeaker Fail");
                 return result;
             }
             catch (Exception ex)
             {
                 writelog($"[DeviceManagerPlugin] [Speaker] GetMuteStatusAsyncForSpeaker failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsIMicNSSupportedAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsIMicNSSupportedAsync(guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsIMicNSSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsIMicNSSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsIMicNSSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsVolumeAdjustmentToneSupportedAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsVolumeAdjustmentToneSupportedAsync(guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsVolumeAdjustmentToneSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsVolumeAdjustmentToneSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsVolumeAdjustmentToneSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsMicMuteSoundSupportedAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsMicMuteSoundSupportedAsync(guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsMicMuteSoundSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsMicMuteSoundSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsMicMuteSoundSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetPresetProfilesAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetPresetProfilesAsync(guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetPresetProfilesAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetPresetProfilesAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Speaker] GetPresetProfilesAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsBassEqualizerSupportedAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsBassEqualizerSupportedAsync(guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsBassEqualizerSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsBassEqualizerSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsBassEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsMidRangeEqualizerSupportedAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsMidRangeEqualizerSupportedAsync(guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsMidRangeEqualizerSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsMidRangeEqualizerSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsMidRangeEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsTrebleEqualizerSupportedAsync(string guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetIsTrebleEqualizerSupportedAsync(guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsTrebleEqualizerSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Speaker] GetIsTrebleEqualizerSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsTrebleEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -14981,7 +15125,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<List<PowerNapSetting>> ReadPowerNapSettings()
         {
-            List<PowerNapSetting> allSettings = _SettingsPlugin.ReadPowerNapSettings().Result;
+            //Dean 1227 do not use original settings file since data come from display modelname.json currently
+            /*List<PowerNapSetting> allSettings = _SettingsPlugin.ReadPowerNapSettings().Result;
             List<PowerNapSetting> saveList = new List<PowerNapSetting>();
             //update old place powerNap settings
             if (allSettings != null && allSettings.Count > 0)
@@ -15008,7 +15153,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                 }
                 WritePowerNapSettings(saveList);
-            }
+            }*/
             //return all
             List<PowerNapSetting> retList = new List<PowerNapSetting>();
             foreach (var mo in _AllInfoMonitors)
@@ -15206,7 +15351,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult((new HotkeySettings(), list));
         }
 
-        public Task<bool> WritePowerNapSettings(List<PowerNapSetting> powerNapSettings)
+        /*public Task<bool> WritePowerNapSettings(List<PowerNapSetting> powerNapSettings)
         {
             bool r = false;
 
@@ -15219,7 +15364,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Thread.Sleep(100);
             //}
             return Task.FromResult(r);
-        }
+        }*/
 
         #region USBKVM
 
