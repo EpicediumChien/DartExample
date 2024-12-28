@@ -951,10 +951,7 @@ namespace DDPM.UI.Module.Kvm
                             _log?.Debug("No value return from `DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList` for pcsList.");
                             return;
                         }
-                        if (pcsList != null)
-                        {
-                            original_pcsList = pcsList.ToDictionary(entry => entry.Key, entry => entry.Value);
-                        }
+                        original_pcsList = pcsList.ToDictionary(entry => entry.Key, entry => entry.Value);
                         if (pcsList != null && pcsList.Count > 1)   // 2024-06-19 Elie, fix exception.
                         {
                             if (inputList.Count != _inputsList.Count && usbsList.Count != _usbsList.Count)
