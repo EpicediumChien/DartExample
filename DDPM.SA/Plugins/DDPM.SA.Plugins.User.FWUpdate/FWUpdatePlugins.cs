@@ -2611,8 +2611,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         arguments += $" /f";
                         if (!string.IsNullOrEmpty(logPath))
                         {
-                            arguments += $" /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"";
-                            _logs.DebugMsg_1($"BuildArgs Add : /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\"");
+                            arguments += $" /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\" /dp";
+                            _logs.DebugMsg_1($"BuildArgs Add : /debuglog /l=\"{logPath}\\{DateTime.Now.ToString("yyyy-MM-dd_HH_mm_ss")}\" /dp");
                         }
                         break;
                 }
