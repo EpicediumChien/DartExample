@@ -2041,10 +2041,10 @@ namespace DDPM.UI.Module.Kvm
                 case 0x0:
                     PxPcodeDictionary[code] = new PxPSplitCtrl0A();
                     break;
-                case 0x11:
+                case 0x21:
                     PxPcodeDictionary[code] = new PIPSplitCtrl1A();
                     break;
-                case 0x12:
+                case 0x22:
                     PxPcodeDictionary[code] = new PIPSplitCtrl1B();
                     break;
                 case 0x24:
