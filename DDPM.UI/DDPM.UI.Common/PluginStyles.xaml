@@ -78,7 +78,7 @@
     <Setter Property="HorizontalAlignment" Value="Left" />
     <Setter Property="Cursor" Value="Hand" />
   </Style>-->
-  <Style x:Key="ConnectionStyle1" TargetType="UXControls:UXTextBlock">
+  <!--<Style x:Key="ConnectionStyle1" TargetType="UXControls:UXTextBlock">
     <Setter Property="Foreground" Value="#FFFFFF" />
     <Setter Property="FontFamily" Value="Roboto" />
     <Setter Property="FontSize" Value="14" />
@@ -89,7 +89,7 @@
     <Setter Property="FontFamily" Value="Roboto" />
     <Setter Property="FontSize" Value="14" />
     <Setter Property="FontWeight" Value="Normal" />
-  </Style>
+  </Style>-->
   <!--<Style x:Key="ModuleCaptionStyle" TargetType="UXControls:UXTextBlock">
     <Setter Property="Foreground" Value="#FFFFFF" />
     <Setter Property="FontFamily" Value="Roboto" />
