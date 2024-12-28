@@ -2601,7 +2601,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     _logs.DebugMsg_1($"BuildArgs DeviceType done");
                 }
-
+                //devicePath commandLine
                 if (fwUpdateInfo.DeviceType != DeviceType.LogicalDock &&
                     fwUpdateInfo.DeviceType != DeviceType.PhysicalWiredDock)
                 {
@@ -2610,7 +2610,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _logs.DebugMsg_1($"BuildArgs devicePath done");
                 }
                 _logs.DebugMsg_1($"BuildArgs Log go");
-                //Log or devicePathcommandLine
+                //Log commandLine
                 switch (fwUpdateInfo.DeviceType)
                 {
                     case DeviceType.LogicalDock:
