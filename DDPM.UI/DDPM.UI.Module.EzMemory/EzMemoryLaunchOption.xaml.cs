@@ -210,28 +210,28 @@ namespace DDPM.UI.Module.EzMemory
                         else
                         {
                             _log.Info("[EzMemoryLaunchOption] AutoLunchTime_Checked ... chooice Yes");
+                            return;
+                            //EasyArrangementDDPM clickedeasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
 
-                            EasyArrangementDDPM clickedeasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
-
-                            if (clickedeasyArrangementDDPM != null && clickedeasyArrangementDDPM.Desktops.Count > 0)
-                            {
-                                foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
-                                {
-                                    if (ps.AutoStartTime == GetAutoLaunchTime())
-                                    {
-                                        ps.Auto = false;
-                                        ps.AutoStartTime = 0;
-                                        if (DdpmCommonHelper.DeviceManagerSA.UpdateMonitorEzProfileSettingDDPM(_selecthomeDevice.MonitorInfo, ps).Result)
-                                        {
-                                            _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup update success ");
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                _log.Info($"@{nameof(EzMemoryLaunchOption)} CheckedAutoLunchTime update error ");
-                            }
+                            //if (clickedeasyArrangementDDPM != null && clickedeasyArrangementDDPM.Desktops.Count > 0)
+                            //{
+                            //    foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
+                            //    {
+                            //        if (ps.AutoStartTime == GetAutoLaunchTime())
+                            //        {
+                            //            ps.Auto = false;
+                            //            ps.AutoStartTime = 0;
+                            //            if (DdpmCommonHelper.DeviceManagerSA.UpdateMonitorEzProfileSettingDDPM(_selecthomeDevice.MonitorInfo, ps).Result)
+                            //            {
+                            //                _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup update success ");
+                            //            }
+                            //        }
+                            //    }
+                            //}
+                            //else
+                            //{
+                            //    _log.Info($"@{nameof(EzMemoryLaunchOption)} CheckedAutoLunchTime update error ");
+                            //}
 
 
                         }
@@ -323,7 +323,7 @@ namespace DDPM.UI.Module.EzMemory
                 // Clear UI and close view
                 _vm.ClearTextBlockAppName();
                 _vm.IsEditProfile = false;
-
+                _vm.RightViewDataClear();
                 DdpmCommonHelper.ModuleOwner?.CloseFullView();
             }
             catch (Exception ex)
@@ -343,16 +343,19 @@ namespace DDPM.UI.Module.EzMemory
 
         private long GetAutoLaunchTime()
         {
+            string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+            string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
+
             int hour = int.TryParse(_vm.SelectedHour, out var h) ? h : 0;
             int minute = int.TryParse(_vm.SelectedMinute, out var m) ? m : 0;
 
             // PM
-            if (_vm.SelectedAMPM == "PM")
+            if (_vm.SelectedAMPM == pmDesignator)
             {
                 hour += 12;
             }
             // AM
-            else if (_vm.SelectedAMPM == "AM" && hour == 12)
+            else if (_vm.SelectedAMPM == amDesignator && hour == 12)
             {
                 hour = 0;
             }
@@ -465,6 +468,7 @@ namespace DDPM.UI.Module.EzMemory
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             _vm.ClearTextBlockAppName();
+            _vm.RightViewDataClear();
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
         }
 

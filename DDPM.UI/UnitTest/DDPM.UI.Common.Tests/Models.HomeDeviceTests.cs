@@ -199,11 +199,11 @@ namespace DDPM.UI.Common.Tests
             Assert.That(result, Is.EqualTo("WD19 "));
 
             // Act
-            deviceInfo = new DeviceInfo() { Name = "_WD19S" };
+            deviceInfo = new DeviceInfo() { Name = " WD19S" };
             homeDevice.DeviceInfo = deviceInfo;
             result = homeDevice.TooltipModelName;
             // Assert
-            Assert.That(result, Is.EqualTo(" WD19S"));
+            Assert.That(result, Is.EqualTo(" WD19S "));
         }
 
 
@@ -608,18 +608,43 @@ namespace DDPM.UI.Common.Tests
         }
 
         [Test]
-        public void TestHasCapability_UsbKvm()
+        public void TestHasCapability_UsbKvma()
         {
             // Act
             var result = homeDevice.HasCapability_UsbKvm;
             // Assert
             Assert.That(result, Is.EqualTo(false));
+        }
 
+        [Test]
+        public void TestHasCapability_UsbKvmb()
+        {
+            // Act
+            homeDevice.MonitorInfo = new MonitorInfo() { CapabilityDic = null};
+            var result = homeDevice.HasCapability_UsbKvm;
+            // Assert
+            Assert.That(result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestHasCapability_UsbKvmc()
+        {
             // Act
             var dictionary = new Dictionary<string, List<string>>();
-            dictionary.Add("EE",new List<string>());
-            homeDevice.MonitorInfo = new MonitorInfo() { CapabilityDic = dictionary } ;
-            result = homeDevice.HasCapability_UsbKvm;
+            homeDevice.MonitorInfo = new MonitorInfo() { CapabilityDic = dictionary };
+            var result = homeDevice.HasCapability_UsbKvm;
+            // Assert
+            Assert.That(result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestHasCapability_UsbKvmd()
+        {
+            // Act
+            var dictionary = new Dictionary<string, List<string>>();
+            dictionary.Add("E7", new List<string>());
+            homeDevice.MonitorInfo = new MonitorInfo() { CapabilityDic = dictionary };
+            var result = homeDevice.HasCapability_UsbKvm;
             // Assert
             Assert.That(result, Is.EqualTo(true));
         }

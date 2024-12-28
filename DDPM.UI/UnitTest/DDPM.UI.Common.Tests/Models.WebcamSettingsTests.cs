@@ -57,7 +57,7 @@ namespace DDPM.UI.Common.Tests
             var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
             DdpmCommonHelper.DeviceManagerSA = DeviceManagerSAMock.Object;
             DeviceManagerSAMock.Setup(x => x.WriteSerializedContentToFile(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
-            webcamSettings.SelectedResolution = "1";
+            webcamSettings.Selected_Resolution = "1";
             var result = WebcamSettings.ExportWebcamSettings(webcamSettings, "model");
             // Assert
             Assert.That(result, Is.EqualTo(true));

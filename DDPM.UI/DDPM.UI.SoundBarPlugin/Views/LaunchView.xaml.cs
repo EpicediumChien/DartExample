@@ -78,7 +78,42 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
                     txtFirmware.Text = string.Format(Strings.DockDongle1, _vm.PhysicalDeviceFWVersion);
                     txtSlot.Text = string.Format(Strings.DockDongle0, _vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount, _vm.CurrentDeviceInfo.MaxPairingSlots);
                     DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+                    Loaded += LaunchView_LoadedStatus;
                 }
+            }
+        }
+
+        ~LaunchView()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+                Loaded -= LaunchView_LoadedStatus;
+                DdpmCommonHelper.WriteUILog($"[SoundBar] ~LaunchView");
+            }
+        }
+
+        private async void LaunchView_LoadedStatus(object sender, RoutedEventArgs e)
+        {
+            if (_vm == null) return;
+
+            try
+            {
+                await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
+                DdpmCommonHelper.WriteUILog($"[SoundBar] LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
+                if (!_vm.IsRestoreEnable)
+                {
+                    btnRestore.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    btnRestore.Visibility = Visibility.Collapsed;
+                }
+                DdpmCommonHelper.WriteUILog($"[SoundBar] LaunchView_LoadedStatus IsRestoreEnable Check Done");
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[SoundBar] LaunchView_LoadedStatus Exception = {ex.Message}");
             }
         }
 
@@ -293,7 +328,14 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         {
             if (_vm!.VbarSelectedIndex == -1) { return; }
 
-            btnRestore.Visibility = Visibility.Visible;
+            if (!_vm.IsRestoreEnable)
+            {
+                btnRestore.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                btnRestore.Visibility = Visibility.Collapsed;
+            }
             _vm.ChangeImage(_vm.Model, "Default");
             _vm.RightFrameWidthTo = 0;
             _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
@@ -317,6 +359,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
             if (dialogResult == true)
             {
                 _vm!.RestoreToDefault();
+                btnRestore.Visibility = Visibility.Collapsed;
                 //((Border)sender).Visibility = Visibility.Collapsed;
             }
         }
