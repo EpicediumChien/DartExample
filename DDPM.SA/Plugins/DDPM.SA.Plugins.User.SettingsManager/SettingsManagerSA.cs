@@ -17,8 +17,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using DdmLibrary;
-using DdmLibrary.Utility;
 using System.Linq.Expressions;
 using Windows.Devices.Bluetooth.Background;
 using Windows.Web.Http;
@@ -27,6 +25,7 @@ using System.Security.Cryptography;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Windows.Media.AppBroadcasting;
+using DdmLibrary.Utility;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -724,18 +723,22 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string monitorSettings_path = _display_path + "\\" + modelname + ".json";
             //JArray jArray = new JArray();
             //jArray.Add(JObject.FromObject(monitorSettings));
-            string str = RunSerializeObject(modelname, monitorSettings);
+            string str = RunSerializeObject_MonitorSettings(modelname, monitorSettings);
             if (string.IsNullOrEmpty(str))
             {
+                WriteLog("[WriteMonitorSettings] fail with empty serialized string");
                 return Task<bool>.FromResult(false);
             }
-            //string info;
-            //if (!DDPMFileSecurity.SetJsonContentFromSerializedString(jArray.ToString(), monitorSettings_path, out info))//, false))
-            //{
-            //    WriteLog(info);
-            //    return Task.FromResult(false);
-            //}
-            _AllMonitorSettings[modelname] = monitorSettings;
+            string info;
+            if (!DDPMFileSecurity.SetJsonContentFromSerializedString(str, monitorSettings_path, out info))//, false))
+            {
+                WriteLog($"[WriteMonitorSettings] fail with ({info})");
+                return Task.FromResult(false);
+            }
+            if(_AllMonitorSettings != null && _AllMonitorSettings.ContainsKey(modelname) )
+                _AllMonitorSettings[modelname] = monitorSettings;
+            else
+                WriteLog($"[WriteMonitorSettings] can't update data back to _AllMonitorSettings due to no exist key or null cache");
 
             return Task.FromResult(true);
         }
@@ -1718,23 +1721,24 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return _AllMonitorSettings;
         }
 
-        private string RunSerializeObject(string modelname, List<DDPMMonitorSettings> monitorSettings)
+        private string RunSerializeObject_MonitorSettings(string modelname, List<DDPMMonitorSettings> monitorSettings)
         {
             string jsonString = string.Empty;
             string monitorSettings_path = _display_path + "\\" + modelname + ".json";
-            jsonString = JsonConvert.SerializeObject(monitorSettings);
-            //[Dean 0912] file could be not exist at here, avoid settings fail
-            //Elsa Add Security
-            //string FileInfo;
-            //if (!DDPMFileSecurity.IsFilePathValid(monitorSettings_path, out FileInfo))
-            //{
-            //    _log.Info($"{nameof(RunSerializeObject)} {FileInfo}");
-            //    return string.Empty;
-            //}
-            using (StreamWriter writer = new StreamWriter(monitorSettings_path))
+
+            try
             {
-                writer.Write(jsonString);
+                jsonString = JsonConvert.SerializeObject(monitorSettings);
             }
+            catch (Exception e)
+            {
+                jsonString = string.Empty;
+                WriteLog($"[RunSerializeObject_MonitorSettings] exception: {e.Message}");
+            }
+            //using (StreamWriter writer = new StreamWriter(monitorSettings_path))
+            //{
+            //    writer.Write(jsonString);
+            //}
 
             return jsonString;
         }
