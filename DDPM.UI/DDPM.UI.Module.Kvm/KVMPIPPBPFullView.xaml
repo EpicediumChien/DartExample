@@ -7,6 +7,7 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:commonCtrls="clr-namespace:DDPM.UI.Common.UserControls;assembly=DDPM.UI.Common"
              xmlns:eaem="clr-namespace:DDPM.UI.Common.EAEM;assembly=DDPM.UI.Common"
+             xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
              d:DesignHeight="671" d:DesignWidth="1378"
@@ -25,6 +26,9 @@
             <SolidColorBrush x:Key="ToolipBkColor" Color="#FF1D2C3B" />
             <SolidColorBrush x:Key="ToolipBdColor" Color="#FF293B4D" />
             <SolidColorBrush x:Key="ToolipTextColor" Color="#FFF5F6F7" />
+
+            <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -166,7 +170,8 @@
                                 </Style>
                             </Grid.Style>
                             <commonCtrls:SplitItem Name="pipOff" Width="88" Height="68" HorizontalAlignment="Left">
-                                <eaem:SplitCtrl0A />
+                                <!-- Robert_Lin, 2024-12-25 change to runtime creation -->
+                                <!--<eaem:SplitCtrl0A />-->
                             </commonCtrls:SplitItem>
                         </Grid>
 
@@ -183,19 +188,33 @@
                                 </Style>
                             </Grid.Style>
                             <StackPanel Orientation="Horizontal">
-                                <commonCtrls:SplitItem Width="88" Height="68" Name="pipSmall">
-                                    <eaem:SplitCtrl1A />
+                                <!-- Robert_Lin, 2024-12-26 for Pip Small/Large items, if monitor has no the capabiliy, the item will be collapsed. -->
+                                <commonCtrls:SplitItem Width="88" Height="68" Name="pipSmall"
+                                                       Visibility="{Binding DataContext.HasCap_PipSmall, Converter={StaticResource BoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=UserControl}}">
+
+                                    <!-- Robert_Lin, 2024-12-25 change to runtime creation -->
+                                    <!--<eaem:SplitCtrl1A />-->
                                 </commonCtrls:SplitItem>
 
                                 <commonCtrls:SplitItem Width="88" Height="68" Margin="8,0" Name="pipLarge"
-                                                       IsEnabled="{Binding PipPbp.HasCap_PipLarge}">
-                                    <eaem:SplitCtrl1B />
+                                                       Visibility="{Binding DataContext.HasCap_PipLarge, Converter={StaticResource BoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                                <!-- Robert_Lin, 2024-12-25 change to runtime creation -->
+                                    <!--<eaem:SplitCtrl1B />-->
                                 </commonCtrls:SplitItem>
 
+                                <!-- #region Toggle positions button -->
+                                <!-- OLD: Can be removed -->
                                 <UXControls:UXButton Content="{Binding [Kvm.15], Source={x:Static lang:LangHelper.Instance}}" Height="40" CornerRadius="2" Padding="12,8"
                                                      Margin="4,0" IsEnabled="{Binding PipPbp.IsTogglePositionEnabled}"
-                                                     ButtonType="Secondary" ButtonSemanticColorType="Neutral" Foreground="Gray"
+                                                     ButtonType="Secondary" ButtonSemanticColorType="Neutral" Foreground="Gray" Visibility="Collapsed"
                                                      Command="{Binding PipTogglePositionClickCommand}" />
+                                <!-- NEW by Robert_Lin, 2024-12-25 -->
+                                <Button Style="{StaticResource SecondaryButtonStyle}" Height="40" Margin="4,0"
+                                        Content="{Binding [Kvm.15], Source={x:Static lang:LangHelper.Instance}}" 
+                                        IsEnabled="{Binding IsTogglePositionEnabled}"
+                                        Visibility="{Binding HasCap_PipTogglePosition, Converter={StaticResource BoolToVisibilityConverter}}"
+                                        Command="{Binding PipTogglePositionClickCommand}" />
+                                <!-- #endregion Toggle positions button -->
                             </StackPanel>
                         </Grid>
 

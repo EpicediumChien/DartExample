@@ -11,14 +11,22 @@ namespace DDPM.UI.Module.Kvm
     /// </summary>
     public partial class KvmRightView : UserControl
     {
+        //Robert_Lin, 2024-12-26, ViewModel is required for KvmRightView, keep is as a data member.
+        private readonly KvmViewModel _vm;
         private KvmViewModel vm
         {
-            get => (KvmViewModel)DataContext != null ? (KvmViewModel)DataContext : null;
+            //Robert_Lin, 2024-12-26
+            //NEW:
+            get => _vm;
+            //OLD:
+            //get => (KvmViewModel)DataContext != null ? (KvmViewModel)DataContext : null;
         }
 
         public KvmRightView(KvmViewModel vm)
         {
             InitializeComponent();
+            //Robert_Lin, 2024-12-26
+            _vm = vm;
             //DataContext = new KvmViewModel();
             DataContext = vm;
             vm.Invoke_RefreshData();

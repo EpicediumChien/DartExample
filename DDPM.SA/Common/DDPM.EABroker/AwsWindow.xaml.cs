@@ -1006,12 +1006,9 @@ namespace DDPM.EABroker
                 _areCellRectsRefreshed = false;
             }
 
-            if (!_areCellRectsRefreshed)
+            if (!_areCellRectsRefreshed && flag == 0)
             {
-                if (flag == 0)
-                {
-                    System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(0); }, null, 100, Timeout.Infinite);
-                }
+                System.Threading.Timer timer1 = new System.Threading.Timer((obj) => { RefreshCellRects(0); }, null, 100, Timeout.Infinite);
             }
             _vm.OnPropertyChanged_AwsIconInfos();
         }

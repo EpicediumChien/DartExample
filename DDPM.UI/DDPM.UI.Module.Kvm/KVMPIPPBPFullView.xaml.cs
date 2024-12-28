@@ -44,6 +44,10 @@ namespace DDPM.UI.Module.Kvm
                 new TabHeader() { Text = "PBP" }
             };
 
+            pipOff.InnerContent = new SplitCtrl0A(null) { Description = "Full screen" };
+            pipSmall.InnerContent = new SplitCtrl1A(null) { Description = "PIP Small" };
+            pipLarge.InnerContent = new SplitCtrl1B(null) { Description = "PIP Large" };
+
             //Assign SplitOwner to all SplitItems
             //  pipOff : PxpOff group
             //  pipSmall and pipLarge : PipList group
