@@ -11,7 +11,6 @@
 #endregion
 
 using DDPM.SA.Common;
-using DDPM.SA.Common.Settings;
 using DDPM.SA.Common.UI;
 using DDPM.SA.Resources.Helper;
 using Dell.Client.Framework.Common;
@@ -20,22 +19,17 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
-using MS.WindowsAPICodePack.Internal;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Media.Media3D;
 using VcpCore.Common;
-using Windows.ApplicationModel;
-using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 using IDeviceManager = IndiLogic.DPeM.Broker.IDeviceManager;
 using IDs = DDPM.SA.Common.IDs;
 using Task = System.Threading.Tasks.Task;
@@ -1990,11 +1984,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         {
         }
 
-        private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle arg1, AudioDonglePairingStatus arg2)
-        {
-            throw new NotImplementedException();
-        }
-
         private void ILogicalDevice_IsDPIValueChangePendingChanged(ILogicalDevice3 arg1, bool arg2)
         {
             if (_deviceHelper is { deviceInfo: not null })
@@ -3363,29 +3352,30 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
-        //private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle physicalAudioDeviceDongle, int newPairingStatus, int dongleDeviceType, string requestDeviceName)//(IPhysicalAudioDeviceDongle arg1, AudioDonglePairingStatus arg2)
-        //{
-        //    if (_deviceHelper is { deviceInfo: not null })
-        //    {
-        //        var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.PhyscialDeviceID.ToString() == physicalAudioDeviceDongle.Id.ToString());
-        //        // << 240712 fix empty dongle issue by Hess
-        //        if (deviceInfo == null)
-        //            deviceInfo = new DeviceInfo();
-        //        // >>
-        //        {
-        //            deviceInfo.PairingStatusName = UpdateParingStausText((AudioDonglePairingStatus)newPairingStatus);
+        private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle physicalDeviceDongle, AudioDonglePairingStatus newPairingStatus)
+        {
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.PhyscialDeviceID.ToString() == physicalDeviceDongle.Id.ToString());
+                // << 240712 fix empty dongle issue by Hess
+                if (deviceInfo == null)
+                    deviceInfo = new DeviceInfo();
+                // >>
 
-        //            DeviceChangedEventArgs _EventArgs = new();
-        //            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-        //            _EventArgs.device_peripherals = deviceInfo;
-        //            _EventArgs.changedProperty = $"AudioDonglePairingStatusChanged|{requestDeviceName}";
-        //            Debug.WriteLine($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
-        //            writelog($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
-        //            OnNotify(_EventArgs);
-        //        }
-        //    }
-        //    //throw new NotImplementedException();
-        //}
+                deviceInfo.PairingStatusName = UpdateParingStausText((AudioDonglePairingStatus)newPairingStatus);
+                deviceInfo.Message = "";
+
+                DeviceChangedEventArgs _EventArgs = new()
+                {
+                    type = DeviceChangedType.Peripherals_SettingsChange,
+                    device_peripherals = deviceInfo,
+                    changedProperty = $"DonglePairingStatusChanged"
+                };
+                Debug.WriteLine($"AudioPairingStatusChanged: {deviceInfo.PairingStatusName}");
+                writelog($"AudioPairingStatusChanged: {deviceInfo.PairingStatusName}");
+                OnNotify(_EventArgs);
+            }
+        }
 
         private void PhysicalAudioDeviceDongle_PairedDeviceCountChanged(IPhysicalAudioDeviceDongle arg1, int arg2)
         {
