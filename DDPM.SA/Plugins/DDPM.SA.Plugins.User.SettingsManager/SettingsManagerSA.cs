@@ -2383,8 +2383,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         case "hotkey":
                             List<HotkeySettings> hotkey = ReadHotkeySettings().Result;
                             new_obj = hotkey;
-                            if (hotkey != null && hotkey.Count == 0)
-                                need_new = true;
+                        //    if (hotkey != null && hotkey.Count == 0)
+                        //        need_new = true;
                             break;
                         //case "powernap":
                         //    List<PowerNapSetting> pnap = ReadPowerNapSettings().Result;
@@ -2407,7 +2407,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (new_obj == null || need_new == true)
             {
                 //create new setting file then save it
-                WriteLog("$[InitDDPMUserSettings_Common] {config_type} settings object is null, new an object");
+                WriteLog($"[InitDDPMUserSettings_Common] {config_type} settings object is null, new an object");
                 //init data to file
                 switch (config_type)
                 {
