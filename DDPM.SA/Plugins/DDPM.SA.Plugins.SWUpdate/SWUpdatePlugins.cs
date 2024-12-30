@@ -498,7 +498,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     }
                     string exeFilePath;
                     using (FileLock fileLock = new FileLock(_installationFileStoragePath, PathCheckOption.None, lockNow: true))
-                    {                        
+                    {
                         if (!Unzip(_installationFileStoragePath, extractPath, out exeFilePath))
                         {
                             _SWUpdateInfo.SWUErrorCode = SWUErrorCode.FileCheckFail;
@@ -610,7 +610,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                         _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _checkUpdateScheduleTimer stop");
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} exception: {ex.Message}");
                 }
@@ -812,13 +812,15 @@ namespace DDPM.SA.Plugins.SWUpdate
                 if (!string.IsNullOrEmpty(workingDirectory))
                 {
                     _logs.DebugMsg_1($"{nameof(Install)} workingDirectory is not null");
-                    WTSFunction.StartProcessAndBypassUACWithAdmin(miniInstallPath, workingDirectory, out procInfo);
+                    string arguments_Final = miniInstallPath + " /fromddpm";
+                    _logs.DebugMsg_1($"arguments_Final : {arguments_Final}");
+                    WTSFunction.StartProcessAndBypassUACWithAdmin(arguments_Final, workingDirectory, out procInfo);
                 }
                 else
                 {
                     _logs.DebugMsg_1($"{nameof(Install)} workingDirectory is null, info : {info}");
                 }
-                    
+
                 //var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
                 //if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
                 //IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
