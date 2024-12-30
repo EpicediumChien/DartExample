@@ -4732,10 +4732,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     firmwares_item.id = model;
                                     if (firmwares_item.url.Contains("%2"))
                                     {
-                                        if (!string.IsNullOrEmpty(testServer))
-                                        {
-                                            firmwares_item.url = firmwares_item.url.Replace("%2", testServer);
-                                        }
+                                        firmwares_item.url = firmwares_item.url.Replace("%2", "https://downloads.dell.com");
                                     }
                                     else
                                     {

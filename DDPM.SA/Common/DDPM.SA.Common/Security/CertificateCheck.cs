@@ -22,7 +22,8 @@ namespace DDPM.SA.Common.Security
             "www.dell.com",
             "downloads.dell.com",
             "ftp.dell.com",
-            "clientperipherals.dell.com"
+            "clientperipherals.dell.com",
+            "dell.com"
         };//change from *.dell.com to www.dell.com
         public CertificateCheck(Logs logs)
         {
