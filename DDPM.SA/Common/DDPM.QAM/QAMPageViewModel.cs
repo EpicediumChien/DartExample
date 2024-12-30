@@ -95,6 +95,7 @@ namespace DDPM.QAM
 
                 LogMsg($"Add event QAMPageViewModel_UIUpdateNotify, isQAMPageViewModel_UIUpdateNotifyExist={isQAMPageViewModel_UIUpdateNotifyExist}");                
             }
+
             LoadCurrentStatus();
         }
 
@@ -124,14 +125,14 @@ namespace DDPM.QAM
 
                 FieldOfView = DdpmCommonHelper.DeviceManagerSA!.GetFieldOfView(CurrentDeviceInfo!.ID.ToString()).Result;
 
-                LogMsg($"ZoomValue = {ZoomValue}, AutoFramingStatus = {AutoFramingStatus}, selFOVIdx = {FieldOfView}");
+                LogMsg($"ZoomValue = {ZoomValue}, AutoFramingStatus = {AutoFramingStatus}, selFOV = {FieldOfView}");
 
                 if (FieldOfView != -1)
                     FOV_Selected(ChangeFOVToSelectIndex(FieldOfView));
             }
             catch (Exception e)
             {
-                LogMsg($"Catch exception[{e.Message}]");
+                LogMsg($"LoadCurrentStatus Catch exception [{e.Message}]");
             }
 
             isStatusChagneByDDPM = false;
@@ -211,6 +212,8 @@ namespace DDPM.QAM
 
                     if (null != msgs && msgs.Length == 2)
                     {
+                        isStatusChagneByDDPM = true; //Derek 1227
+
                         if (SetProfile(msgs[1]))
                             LogMsg($"QAMPageViewModel_UIUpdateNotify: set webcam profile:{msgs[1]} successfully.");
                         else
@@ -362,30 +365,36 @@ namespace DDPM.QAM
 
                     if (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
                     {
-                        bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingOn).Result;
-                        LogMsg($"SetProfile --> SetIsAutoFramingOn result is {result}");
                         _AutoFramingStatus = CurrentProfile.IsAutoFramingOn;
 
-                        if (CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
+                        if (!isStatusChagneByDDPM) //Derek 1227 to improve performance
                         {
-                            result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingTransitionOn).Result;
+                            bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingOn).Result;
+                            LogMsg($"SetProfile --> SetIsAutoFramingOn result is {result}");
 
-                            LogMsg($"SetProfile --> SetIsAutoFramingTransitionOn result is {result}");
+                            if (CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
+                            {
+                                result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingTransitionOn).Result;
+
+                                LogMsg($"SetProfile --> SetIsAutoFramingTransitionOn result is {result}");
+                            }
+
+                            if (CurrentDeviceInfo.IsPropertyAutoFramingSensitivitySupported)
+                            {
+                                result = DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingSensitivity(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingSensitivity).Result;
+
+                                LogMsg($"SetProfile --> SetAutoFramingSensitivity result is {result}");
+                            }
+
+                            if (CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported)
+                            {
+                                result = DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingFrameSize).Result;
+
+                                LogMsg($"SetProfile --> SetAutoFramingFrameSize result is {result}");
+                            }
                         }
-
-                        if (CurrentDeviceInfo.IsPropertyAutoFramingSensitivitySupported)
-                        {
-                            result = DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingSensitivity(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingSensitivity).Result;
-                            
-                            LogMsg($"SetProfile --> SetAutoFramingSensitivity result is {result}");
-                        }
-
-                        if (CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported)
-                        {
-                            result = DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingFrameSize).Result;
-
-                            LogMsg($"SetProfile --> SetAutoFramingFrameSize result is {result}");
-                        }
+                        else
+                            LogMsg($"SetProfile SetIsAutoFramingOn/SetIsAutoFramingTransitionOn... has modified by UI");
                     }
 
                     if (CurrentDeviceInfo.IsPropertyFOVSupported)
@@ -402,45 +411,74 @@ namespace DDPM.QAM
                         {
                             FOV_Selected(2);
                         }
+
+                        //Derek 1227 should set FOV
+                        FieldOfView = CurrentProfile.FieldOfView;
+                        LogMsg($"SetProfile change FieldOfView to {FieldOfView}");
                     }
 
                     if (CurrentDeviceInfo.IsPropertyZoomSupported)
                     {
-                        bool result = DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom).Result;
-                        _ZoomValue = CurrentProfile.Zoom;
+                        //1227
+                        //bool result = DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom).Result;
+                        //_ZoomValue = CurrentProfile.Zoom;
 
-                        LogMsg($"SetProfile --> SetZoom result is {result}");
+                        //LogMsg($"SetProfile --> SetZoom result is {result}");
+
+                        //Derek 1227
+                        ZoomValue = CurrentProfile.Zoom;
+                        SetZoom();
                     }
 
                     if (CurrentDeviceInfo.IsPropertyFocusSupported)
                     {
-                        bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn).Result;
-                        LogMsg($"SetProfile --> SetIsFocusOn result is {result}");
+                        if (!isStatusChagneByDDPM)
+                        {
+                            bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn).Result;
+                            LogMsg($"SetProfile --> SetIsFocusOn result is {result}");
 
-                        result = DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Focus).Result;
-                        LogMsg($"SetProfile --> SetFocus result is {result}");
+                            result = DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Focus).Result;
+                            LogMsg($"SetProfile --> SetFocus result is {result}");
+                        }
+                        else
+                            LogMsg($"SetProfile --> SetIsFocusOn/SetFocus has modified by UI");
                     }
 
                     if (CurrentDeviceInfo.IsPropertyPrioritySupported)
                     {
-                        bool result = DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Priority).Result;
-                        LogMsg($"SetProfile --> SetPriority result is {result}");
+                        if (!isStatusChagneByDDPM)
+                        {
+                            bool result = DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Priority).Result;
+                            LogMsg($"SetProfile --> SetPriority result is {result}");
+                        }
+                        else
+                            LogMsg($"SetProfile --> SetPriority has modified by UI");
                     }
 
                     if (CurrentDeviceInfo.IsPropertyHDRSupported)
                     {
-                        bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsHDROn).Result;
+                        if (!isStatusChagneByDDPM)
+                        {
+                            bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsHDROn).Result;
 
-                        LogMsg($"SetProfile --> SetIsHDROn result is {result}");
+                            LogMsg($"SetProfile --> SetIsHDROn result is {result}");
+                        }
+                        else
+                            LogMsg($"SetProfile --> SetIsHDROn has modified by UI");
                     }
 
                     if (CurrentDeviceInfo.IsPropertyWhiteBalanceSupported)
                     {
-                        bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoWhiteBalanceOn).Result;
-                        LogMsg($"SetProfile --> SetIsAutoWhiteBalanceOn result is {result}");
+                        if (!isStatusChagneByDDPM)
+                        {
+                            bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoWhiteBalanceOn).Result;
+                            LogMsg($"SetProfile --> SetIsAutoWhiteBalanceOn result is {result}");
 
-                        result = DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoWhiteBalance).Result;
-                        LogMsg($"SetProfile --> SetAutoWhiteBalance result is {result}");
+                            result = DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoWhiteBalance).Result;
+                            LogMsg($"SetProfile --> SetAutoWhiteBalance result is {result}");
+                        }
+                        else
+                            LogMsg($"SetProfile --> SetIsAutoWhiteBalanceOn/SetAutoWhiteBalance has modified by UI");
                     }
 
                     List<UI_Profile> temp = UI_ProfileList.ToList();
