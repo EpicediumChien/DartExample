@@ -100,7 +100,7 @@ namespace DDPM.SA.Common.Settings
         /// <param name="target_file">Describe your target file to save</param>
         /// <param name="info">Read this param for detail info if return false</param>
         /// <returns>true or false as result</returns>
-        public static bool SetJsonContentFromSerializedString(string serialized_string, string target_file, out string info)//, bool isEncrypt = false)
+        public static bool SetJsonContentFromSerializedString(string serialized_string, string target_file, out string info)
         {
             info = "Success";
             if (string.IsNullOrEmpty(serialized_string))

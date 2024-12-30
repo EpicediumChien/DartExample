@@ -13874,7 +13874,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case HotkeyType.FavoriteInputSource:
                     HotkeyInfo hotkeyInfoIs = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.FavoriteInputSource));
                     List<HotkeyData> list = GetInputSourceHotKeyData(monitorInfo);
-                    HotkeyData hotkeyData = list.SingleOrDefault(x => x.hotkeyType == HotkeyType.FavoriteInputSource);
+                    HotkeyData hotkeyData = null;
+                    if(list != null)
+                        hotkeyData = list.SingleOrDefault(x => x.hotkeyType == HotkeyType.FavoriteInputSource);
                     Debug.WriteLine($"FavoriteInputSource: {hotkeyData?.inputSource.Count}");
                     if (hotkeyInfoIs != null && hotkeyData != null)// hotkeyInfoIs.InputSource != null)
                     {
@@ -13882,6 +13884,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
+                        if (list == null)
+                            writelog("[HotkeyType.FavoriteInputSource] list is null, no action");
+                        if (list != null && list.Count == 0)
+                            writelog("[HotkeyType.FavoriteInputSource] list is empty, no action");
                         if (hotkeyInfoIs == null)
                             writelog("[HotkeyType.FavoriteInputSource] info is empty, no action");
                         if (hotkeyData == null)
@@ -13892,7 +13898,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case HotkeyType.SwitchInputSource:
                     HotkeyInfo hotkeyInfo = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.SwitchInputSource));
                     List<HotkeyData> list2 = GetInputSourceHotKeyData(monitorInfo);
-                    HotkeyData hotkeyData2 = list2.SingleOrDefault(x => x.hotkeyType == HotkeyType.SwitchInputSource);
+                    HotkeyData hotkeyData2 = null;
+                    if(list2 != null)
+                        hotkeyData2 = list2.SingleOrDefault(x => x.hotkeyType == HotkeyType.SwitchInputSource);
                     if (hotkeyInfo != null && hotkeyData2 != null)// hotkeyInfo.InputSource != null)
                     {
                         _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { hotkeyInfo, hotkeyData2.inputSource }, Switch_InputSource));
@@ -13929,13 +13937,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case HotkeyType.KvmSwitchInputSource:
                     HotkeyInfo kvmhotkeyInfo = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.KvmSwitchInputSource));
                     List<HotkeyData> list3 = GetInputSourceHotKeyData(monitorInfo);
-                    HotkeyData hotkeyData3 = list3.SingleOrDefault(x => x.hotkeyType == HotkeyType.KvmSwitchInputSource);
+                    HotkeyData hotkeyData3 = null;
+                    if(list3 != null)
+                        hotkeyData3 = list3.SingleOrDefault(x => x.hotkeyType == HotkeyType.KvmSwitchInputSource);
                     if (kvmhotkeyInfo != null && hotkeyData3 != null)// kvmhotkeyInfo.InputSource != null)
                     {
                         _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { kvmhotkeyInfo, hotkeyData3.inputSource }, Kvm_SwitchInputSource));
                     }
                     else
                     {
+                        if (list3 == null)
+                            writelog("[HotkeyType.KvmSwitchInputSource] list3 is null, no action");
+                        if (list3 != null && list3.Count == 0)
+                            writelog("[HotkeyType.KvmSwitchInputSource] list3 is empty, no action");
                         if (kvmhotkeyInfo == null)
                             writelog("[HotkeyType.KvmSwitchInputSource] info is empty, no action");
                         if (hotkeyData3 == null)
