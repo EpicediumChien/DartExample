@@ -5568,15 +5568,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<bool> VideoSwap(MonitorInfo monitorInfo, UInt16 x, UInt16 y)
         {
             bool b = _DisplayManagerPlugin.VideoSwap(monitorInfo, x, y).Result;
-            if (b && _NKVMPlugin != null)
-            {
-                ObjGetVCP obj = new ObjGetVCP();
-                obj = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, 0xE5).Result;
-                if (obj.result)
-                {
-                    _NKVMPlugin.SetVCPNotify(monitorInfo, 0xE5, (int)(uint)obj.value).Wait();
-                }
-            }
+            //if (b && _NKVMPlugin != null)
+            //{
+            //    ObjGetVCP obj = new ObjGetVCP();
+            //    obj = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, 0xE5).Result;
+            //    if (obj.result)
+            //    {
+            //        _NKVMPlugin.SetVCPNotify(monitorInfo, 0xE5, (int)(uint)obj.value).Wait();
+            //    }
+            //}
             return Task.FromResult(b);
         }
 
@@ -10885,8 +10885,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 writelog($"Try to run QAMClose");
+                //Derek 1228 move to here for issue
+                //OSD should not be seen on set Widget setting- Activae Quick Access widget during Zoom conference calls" = Off (uncheck)
+                isOpenOSDWhenQAMClosed = openQAMOSD; 
                 _QAM?.Dispatcher.Invoke(DispatcherPriority.Normal, () => _QAM?.Close());
-                isOpenOSDWhenQAMClosed = openQAMOSD;
             }
             catch (Exception e)
             {

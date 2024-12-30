@@ -336,7 +336,6 @@
           Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
         </Canvas>
     </ControlTemplate>
-
     <!-- Icon Pen -->
     <ControlTemplate x:Key="icon_Pen" TargetType="ContentControl">
         <Canvas Width="17" Height="16">
@@ -344,7 +343,40 @@
           Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
         </Canvas>
     </ControlTemplate>
-
+    <!-- Icon Brightness -->
+    <ControlTemplate x:Key="icon_Brightness"
+                     TargetType="ContentControl">
+        <Canvas Width="17"
+                Height="17">
+            <Path Data="M2.5 13.78L5.24 11.03L6 11.79L3.22 14.5L2.5 13.78Z M11.03 5.21L13.78 2.5L14.53 3.25L11.79 5.97L11.03 5.21Z M0.5 7.97H4.38V9.03H0.5V7.97Z M12.62 7.97H16.5V9.03H12.62V7.97Z M2.5 3.22L3.22 2.5L5.97 5.21L5.21 5.97L2.5 3.22Z M11.03 11.79L11.79 11.03L14.5 13.78L13.75 14.53L11.03 11.79Z M7.97 0.5H9.03V4.38H7.97V0.5Z M7.97 12.62H9.03V16.5H7.97V12.62Z M8.5 5.15C7.83743 5.15 7.18974 5.34647 6.63884 5.71458C6.08793 6.08268 5.65856 6.60588 5.405 7.21801C5.15145 7.83014 5.08511 8.50372 5.21437 9.15355C5.34363 9.80339 5.66269 10.4003 6.13119 10.8688C6.5997 11.3373 7.19661 11.6564 7.84645 11.7856C8.49628 11.9149 9.16986 11.8485 9.78199 11.595C10.3941 11.3414 10.9173 10.9121 11.2854 10.3612C11.6535 9.81026 11.85 9.16257 11.85 8.5C11.85 7.61152 11.4971 6.75944 10.8688 6.13119C10.2406 5.50295 9.38848 5.15 8.5 5.15ZM8.5 10.78C8.04906 10.78 7.60824 10.6463 7.2333 10.3958C6.85836 10.1452 6.56612 9.78913 6.39355 9.37252C6.22099 8.9559 6.17584 8.49747 6.26381 8.05519C6.35178 7.61292 6.56893 7.20666 6.8878 6.8878C7.20666 6.56893 7.61292 6.35178 8.05519 6.26381C8.49747 6.17584 8.9559 6.22099 9.37252 6.39355C9.78913 6.56612 10.1452 6.85836 10.3958 7.2333C10.6463 7.60824 10.78 8.04906 10.78 8.5C10.78 9.10469 10.5398 9.68462 10.1122 10.1122C9.68462 10.5398 9.10469 10.78 8.5 10.78Z"
+                  Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
+        </Canvas>
+    </ControlTemplate>
+    <!-- Icon Contrast -->
+    <ControlTemplate x:Key="icon_Contrast"
+                     TargetType="ContentControl">
+        <Canvas Width="12"
+                Height="12">
+            <Ellipse Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}"
+                     StrokeThickness="1" 
+                     Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}"
+                     Width="12"
+                     Height="12">
+                <Ellipse.Clip>
+                    <RectangleGeometry Rect="0,0,6,12" />
+                </Ellipse.Clip>
+            </Ellipse>
+            <Ellipse Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}"
+                     StrokeThickness="1"
+                     Fill="Transparent"
+                     Width="12"
+                     Height="12">
+                <Ellipse.Clip>
+                    <RectangleGeometry Rect="6,0,6,12" />
+                </Ellipse.Clip>
+            </Ellipse>
+        </Canvas>
+    </ControlTemplate>
     <!-- endregion -->
 
     <!-- endregion -->
