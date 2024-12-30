@@ -43,7 +43,7 @@
                                     Dock_FirmwareVersion ="Dock Firmware Version 1.3.4.6"
             -->
 
-            <commonModel:HomeDevice x:Key="vmDesign" IsConnectionHoverViewShow="True" ConnectionHoverMode="Dock"
+            <commonModel:HomeDevice x:Key="vmDesign" IsConnectionHoverViewShow="True" ConnectionHoverMode="IO_BLE"
                                     DongleFwVersion="Receiver Firmware Version 2.3.4.5"
                                     DongleSlot ="4 of 6 slots available"
                                     
@@ -79,11 +79,11 @@
             <Style x:Key="ConnHover_BleHost2Style" TargetType="TextBlock" BasedOn="{StaticResource ConnHoverTextBaseStyle}">
                 <!-- Default is Active  -->
                 <Setter Property="Foreground" Value="{DynamicResource ConnHover_ActiveTextColor}" />
-                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="FontWeight" Value="Normal"/>
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding BleHost2Style}" Value="1">
                         <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}" />
-                        <Setter Property="FontWeight" Value="Normal"/>
+                        <Setter Property="FontWeight" Value="Bold"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -145,7 +145,7 @@
 
         <!-- Robert_Lin, 2024-11-13 fix PIMS-319659 Add MaxWidth to fix UI too large issue -->
         <!-- #region IO BLE -->
-        <Viewbox Stretch="Uniform" MaxHeight="120" MaxWidth="200">
+        <Viewbox Stretch="Uniform" MaxHeight="120" MaxWidth="240">
             <!--
             1 {BLE_Icon} Windows Machine A
             2 {BLE_Icon} Windows Machine B
