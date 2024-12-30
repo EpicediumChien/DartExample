@@ -1761,24 +1761,21 @@ namespace DDPM.SA.Common.Settings
                     return false;
                 }
             }
-            if (needCheckThumbprintInbox)
-            {
-                //if (!VerifyFileCertWithoutThumbprint(filePath, out info))
-                if (!VerifyFileCertWithInboxThumbprint(filePath, out info))
-                {
-                    if (log != null)
-                        log.Error($"[IsProcessInfoValid] VerifyFileCertWithThumbprint: {info}");
-                    return false;
-                }
+
+            //if (!VerifyFileCertWithoutThumbprint(filePath, out info))
+            if (needCheckThumbprintInbox && !VerifyFileCertWithInboxThumbprint(filePath, out info))
+            {          
+                if (log != null)
+                    log.Error($"[IsProcessInfoValid] VerifyFileCertWithThumbprint: {info}");
+                return false;
             }
-            if (!string.IsNullOrEmpty(givenThumbprintCheck) && givenThumbprintCheck.Length > 0)
+
+            if (!string.IsNullOrEmpty(givenThumbprintCheck) && givenThumbprintCheck.Length > 0 &&
+                !VerifyFileCertWithThumbprint(filePath, givenThumbprintCheck, out info))
             {
-                if (!VerifyFileCertWithThumbprint(filePath, givenThumbprintCheck, out info))
-                {
-                    if (log != null)
-                        log.Error($"[IsProcessInfoValid] VerifyFileCertWithThumbprint: {info}");
-                    return false;
-                }
+                if (log != null)
+                    log.Error($"[IsProcessInfoValid] VerifyFileCertWithThumbprint: {info}");
+                return false;                
             }
             return true;
         }
