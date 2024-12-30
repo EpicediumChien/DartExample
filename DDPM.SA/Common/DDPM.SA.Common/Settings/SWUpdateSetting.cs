@@ -152,35 +152,34 @@ namespace DDPM.SA.Common.Settings
                 {
                     logs?.DebugMsg_1($"{nameof(CompareVersions)} oldVersion_Array.Length : {oldVersion_Array.Length}");
                     logs?.DebugMsg_1($"{nameof(CompareVersions)} newVersion_Array.Length : {newVersion_Array.Length}");
-                    if (oldVersion_Array.Length == 4 && newVersion_Array.Length == 4)
-                    {
-                        if (oldVersion_Array.Length == newVersion_Array.Length)
+                    if (oldVersion_Array.Length == 4 && 
+                        newVersion_Array.Length == 4 &&
+                        oldVersion_Array.Length == newVersion_Array.Length)
+                    {                        
+                        for (int i = 0; i < oldVersion_Array.Length; i++)
                         {
-                            for (int i = 0; i < oldVersion_Array.Length; i++)
+                            if (int.TryParse(newVersion_Array[i], out int newVersion_int) && int.TryParse(oldVersion_Array[i], out int oldVersion_int))
                             {
-                                if (int.TryParse(newVersion_Array[i], out int newVersion_int) && int.TryParse(oldVersion_Array[i], out int oldVersion_int))
+                                logs?.DebugMsg_1($"{nameof(CompareVersions)} oldVersion_int : {oldVersion_int}");
+                                logs?.DebugMsg_1($"{nameof(CompareVersions)} newVersion_int : {newVersion_int}");
+                                if (newVersion_int > oldVersion_int)
                                 {
-                                    logs?.DebugMsg_1($"{nameof(CompareVersions)} oldVersion_int : {oldVersion_int}");
-                                    logs?.DebugMsg_1($"{nameof(CompareVersions)} newVersion_int : {newVersion_int}");
-                                    if (newVersion_int > oldVersion_int)
-                                    {
-                                        isNeedUpdate = true;
-                                        break;
-                                    }
-                                    else if (oldVersion_int > newVersion_int)
-                                    {
-                                        break;
-                                    }
+                                    isNeedUpdate = true;
+                                    break;
                                 }
-                                else
+                                else if (oldVersion_int > newVersion_int)
                                 {
-                                    logs?.DebugMsg_1($"{nameof(CompareVersions)} int.TryParse Error");
-                                    logs?.DebugMsg_1($"{nameof(CompareVersions)} int.TryParse oldVersion_Array[i] : {oldVersion_Array[i]}");
-                                    logs?.DebugMsg_1($"{nameof(CompareVersions)} int.TryParse newVersion_Array[i] : {newVersion_Array[i]}");
                                     break;
                                 }
                             }
-                        }
+                            else
+                            {
+                                logs?.DebugMsg_1($"{nameof(CompareVersions)} int.TryParse Error");
+                                logs?.DebugMsg_1($"{nameof(CompareVersions)} int.TryParse oldVersion_Array[i] : {oldVersion_Array[i]}");
+                                logs?.DebugMsg_1($"{nameof(CompareVersions)} int.TryParse newVersion_Array[i] : {newVersion_Array[i]}");
+                                break;
+                            }
+                        }                        
                     }
                 }
             }
