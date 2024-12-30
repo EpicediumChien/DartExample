@@ -23,6 +23,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -1976,6 +1977,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     Debug.WriteLine($"DeviceNameChanged: ID: {device.Id} Name: {newValue}");
                     writelog($"DeviceNameChanged: ID: {device.Id} Name: {newValue}");
                 }
+                else
+                {
+                    writelog($"DeviceNameChanged: Error: deviceInfo is null");
+                }
             }
         }
 
@@ -2039,11 +2044,18 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                DeviceChangedEventArgs _EventArgs = new();
-                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                _EventArgs.device_peripherals = deviceInfo;
-                _EventArgs.changedProperty = $"PenKeyCaptureProgressDataChanged|{arg2}";
-                OnNotify(_EventArgs);
+                if(deviceInfo != null)
+                {
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                    _EventArgs.device_peripherals = deviceInfo;
+                    _EventArgs.changedProperty = $"PenKeyCaptureProgressDataChanged|{arg2}";
+                    OnNotify(_EventArgs);
+                }
+                else
+                {
+                    writelog($"PenKeyCaptureProgressDataChanged: Error: deviceInfo is null");
+                }
             }
         }
 
@@ -2054,11 +2066,18 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                DeviceChangedEventArgs _EventArgs = new();
-                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                _EventArgs.device_peripherals = deviceInfo;
-                _EventArgs.changedProperty = "PenKeyCaptureDataChanged";
-                OnNotify(_EventArgs);
+                if (deviceInfo != null)
+                {
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                    _EventArgs.device_peripherals = deviceInfo;
+                    _EventArgs.changedProperty = "PenKeyCaptureDataChanged";
+                    OnNotify(_EventArgs);
+                }
+                else
+                {
+                    writelog($"PenKeyCaptureDataChanged: Error: deviceInfo is null");
+                }
             }
         }
 
@@ -2069,11 +2088,18 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == obj.Id.ToString());
-                DeviceChangedEventArgs _EventArgs = new();
-                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                _EventArgs.device_peripherals = deviceInfo;
-                _EventArgs.changedProperty = "PenKeyCaptureStarted";
-                OnNotify(_EventArgs);
+                if (deviceInfo != null)
+                {
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                    _EventArgs.device_peripherals = deviceInfo;
+                    _EventArgs.changedProperty = "PenKeyCaptureStarted";
+                    OnNotify(_EventArgs);
+                }
+                else
+                {
+                    writelog($"PenKeyCaptureStarted: Error: deviceInfo is null");
+                }
             }
         }
 
@@ -2084,13 +2110,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
                 if (deviceInfo != null)
                 {
-                    //Debug.WriteLine($"Guid:{deviceInfo.ID} PairedHostNameChanged {arg2}:{arg3}");
+                    Debug.WriteLine($"Guid:{deviceInfo.ID} PairedHostNameChanged {arg2}:{arg3}");
                     writelog($"Guid:{deviceInfo.ID} PairedHostNameChanged {arg2}:{arg3}");
                     DeviceChangedEventArgs _EventArgs = new();
                     _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = "PairedHostNameChanged";
                     OnNotify(_EventArgs);
+                }
+                else
+                {
+                    writelog($"PairedHostNameChanged: Error: deviceInfo is null");
                 }
             }
         }
@@ -2102,11 +2132,18 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                DeviceChangedEventArgs _EventArgs = new();
-                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                _EventArgs.device_peripherals = deviceInfo;
-                _EventArgs.changedProperty = "PenSettingChanged";
-                OnNotify(_EventArgs);
+                if (deviceInfo != null)
+                {
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                    _EventArgs.device_peripherals = deviceInfo;
+                    _EventArgs.changedProperty = "PenSettingChanged";
+                    OnNotify(_EventArgs);
+                }
+                else
+                {
+                    writelog($"PenSettingChanged: Error: deviceInfo is null");
+                }
             }
         }
 
@@ -2609,7 +2646,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 //Debug.WriteLine(arg2.ToString());                
                 writelog(arg2.ToString());
                 if (deviceInfo == null)
+                {
+                    writelog($"DpiLevelChanged: Error: deviceInfo is null");
                     return;
+                }
                 if (arg2 == 0)
                     return;
                 //deviceInfo.DpiLevel = arg2 - 1;
@@ -2635,12 +2675,16 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 if (deviceInfo != null)
                 {
                     deviceInfo.DpiValue = arg2.ToString();
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                    _EventArgs.device_peripherals = deviceInfo;
+                    _EventArgs.changedProperty = "DpiValueChanged";
+                    OnNotify(_EventArgs);
                 }
-                DeviceChangedEventArgs _EventArgs = new();
-                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                _EventArgs.device_peripherals = deviceInfo;
-                _EventArgs.changedProperty = "DpiValueChanged";
-                OnNotify(_EventArgs);
+                else
+                {
+                    writelog($"DpiValueChanged: Error: deviceInfo is null");
+                }
             }
         }
 
@@ -2660,12 +2704,16 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         2 => 50,
                         _ => 0
                     };
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                    _EventArgs.device_peripherals = deviceInfo;
+                    _EventArgs.changedProperty = "TouchScrollSensitivityLevelChanged";
+                    OnNotify(_EventArgs);
                 }
-                DeviceChangedEventArgs _EventArgs = new();
-                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                _EventArgs.device_peripherals = deviceInfo;
-                _EventArgs.changedProperty = "TouchScrollSensitivityLevelChanged";
-                OnNotify(_EventArgs);
+                else
+                {
+                    writelog($"TouchScrollSensitivityLevelChanged: Error: deviceInfo is null");
+                }
             }
         }
 
@@ -2686,12 +2734,16 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         6 => 1,
                         _ => 0
                     };
+                    DeviceChangedEventArgs _EventArgs = new();
+                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+                    _EventArgs.device_peripherals = deviceInfo;
+                    _EventArgs.changedProperty = "BackLightingControlsChanged";
+                    OnNotify(_EventArgs);
                 }
-                DeviceChangedEventArgs _EventArgs = new();
-                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                _EventArgs.device_peripherals = deviceInfo;
-                _EventArgs.changedProperty = "BackLightingControlsChanged";
-                OnNotify(_EventArgs);
+                else
+                {
+                    writelog($"BackLightingControlsChanged: Error: deviceInfo is null");
+                }
             }
         }
 
@@ -2711,6 +2763,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = "BackLightingLevelChanged";
                     OnNotify(_EventArgs);
+                }
+                else
+                {
+                    writelog($"BackLightingLevelChanged: Error: deviceInfo is null");
                 }
             }
         }
@@ -2733,6 +2789,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
 
                     CheckLowBatteryOSD(deviceInfo);
+                }
+                else
+                {
+                    writelog($"BatteryStatusChanged: Error: deviceInfo is null");
                 }
             }
         }
@@ -2888,6 +2948,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                     CheckLowBatteryOSD(deviceInfo);
                 }
+                else
+                {
+                    writelog($"BatteryLevelChanged: Error: deviceInfo is null");
+                }
             }
         }
 
@@ -2900,6 +2964,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
                 if (deviceInfo != null)
                     deviceInfo.MuteStatus = newMuteStatus;
+                else
+                {
+                    writelog($"MuteStatusChanged: Error: deviceInfo is null");
+                    return;
+                }
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -2962,6 +3031,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
                 if (deviceInfo != null)
                     deviceInfo.IsReady = newValue;
+                else
+                {
+                    writelog($"IsReadyChanged: Error: deviceInfo is null");
+                    return;
+                }
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -2981,6 +3055,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
                 if (deviceInfo != null)
                     deviceInfo.IsDirty = newValue;
+                else
+                {
+                    writelog($"IsDirtyChanged: Error: deviceInfo is null");
+                    return;
+                }
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -3000,6 +3079,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
                 if (deviceInfo != null)
                     deviceInfo.MicNoiseCancellation = newValue;
+                else
+                {
+                    writelog($"MicNoiseCancellationChanged: Error: deviceInfo is null");
+                    return;
+                }
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -3019,6 +3103,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
                 if (deviceInfo != null)
                     deviceInfo.MicNCIncoming = newValue;
+                else
+                {
+                    writelog($"MicNCIncomingChanged: Error: deviceInfo is null");
+                    return;
+                }
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -3038,6 +3127,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
                 if (deviceInfo != null)
                     deviceInfo.BusyLight = newValue;
+                else
+                {
+                    writelog($"BusyLightChanged: Error: deviceInfo is null");
+                    return;
+                }
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -3057,6 +3151,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
                 if (deviceInfo != null)
                     deviceInfo.VoiceGuidance = newValue;
+                else
+                {
+                    writelog($"VoiceGuidanceChanged: Error: deviceInfo is null");
+                    return;
+                }
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -3076,6 +3175,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
                 if (deviceInfo != null)
                     deviceInfo.MuteStatus = newValue;
+                else
+                {
+                    writelog($"MuteStatusChanged: Error: deviceInfo is null");
+                    return;
+                }
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -3127,6 +3231,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
                 if (deviceInfo != null)
                     deviceInfo.Sidetone = newValue;
+                else
+                {
+                    writelog($"SidetoneChanged: Error: deviceInfo is null");
+                    return;
+                }
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -3146,6 +3255,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
                 if (deviceInfo != null)
                     deviceInfo.SelectedPreset = newValue;
+                else
+                {
+                    writelog($"SelectedPresetChanged: Error: deviceInfo is null");
+                    return;
+                }
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -3165,6 +3279,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
                 if (deviceInfo != null)
                     deviceInfo.SidetoneLevel = newValue;
+                else
+                {
+                    writelog($"SidetoneLevelChanged: Error: deviceInfo is null");
+                    return;
+                }
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -3184,8 +3303,13 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
                 if (deviceInfo != null)
                     deviceInfo.BandsGain = newValue;
-                SetEqualizerValues(logicalDeviceHeadset, deviceInfo);
+                else
+                {
+                    writelog($"BandsGainChanged: Error: deviceInfo is null");
+                    return;
+                }
 
+                SetEqualizerValues(logicalDeviceHeadset, deviceInfo);
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
                 _EventArgs.device_peripherals = deviceInfo;
@@ -3204,6 +3328,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
                 if (deviceInfo != null)
                     deviceInfo.AncMode = newValue;
+                else
+                {
+                    writelog($"AncModeChanged: Error: deviceInfo is null");
+                    return;
+                }
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -3223,6 +3352,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
                 if (deviceInfo != null)
                     deviceInfo.AncGain = newValue;
+                else
+                {
+                    writelog($"AncGainChanged: Error: deviceInfo is null");
+                    return;
+                }
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -3242,6 +3376,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == logicalDeviceHeadset.Id.ToString());
                 if (deviceInfo != null)
                     deviceInfo.WearDetection = newValue;
+                else
+                {
+                    writelog($"WearDetectionChanged: Error: deviceInfo is null");
+                    return;
+                }
 
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
@@ -3324,6 +3463,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     OnNotify(_EventArgs);
                     //ScanDevices();
                 }
+                else
+                {
+                    writelog($"DonglePairedDeviceCountChanged: Error: deviceInfo is null");
+                }
+
             }
         }
 
@@ -3409,6 +3553,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.changedProperty = "PenVersionChanged";
                     OnNotify(_EventArgs);
                 }
+                else
+                {
+                    writelog($"PenVersionChanged: Error: deviceInfo is null");
+                }
             }
         }
 
@@ -3429,6 +3577,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     };
                     OnNotify(_EventArgs);
                 }
+                else
+                {
+                    writelog($"IsMicEnumerationOnChanged: Error: deviceInfo is null");
+                }
             }
         }
 
@@ -3446,6 +3598,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = "MousePrimaryButtonChanged";
                     OnNotify(_EventArgs);
+                }
+                else
+                {
+                    writelog($"MousePrimaryButtonChanged: Error: deviceInfo is null");
                 }
             }
         }
