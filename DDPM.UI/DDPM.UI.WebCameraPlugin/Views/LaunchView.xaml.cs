@@ -1024,7 +1024,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //_vm.IsHDROn = true;
 
                 _vm.is_AutoFramingVisibility = true;
-                _vm.IsAutoFramingOn = true;
+                //_vm.IsAutoFramingOn = true;
 
                 _vm.is_ProximitySensor_enable = true;
                 _vm.IsChecked_ProximitySensor = true;
