@@ -1,30 +1,13 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Dell.Client.Framework.Common;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows;
 using DDPM.SA.Common;
 using DPeMPublic.Common.Enums;
-using System.Windows.Media;
 using Newtonsoft.Json;
 using System.IO;
-using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using DDPM.SA.Resources.Helper;
-using System.Windows.Input;
-using System.Diagnostics;
-using System.Windows.Interop;
-using Windows.Data.Text;
-using System.Windows.Media.Media3D;
-using System.Linq.Expressions;
-using MS.WindowsAPICodePack.Internal;
+
 
 namespace DDPM.QAM
 {
