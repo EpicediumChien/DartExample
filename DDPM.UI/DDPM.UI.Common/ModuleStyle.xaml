@@ -28,7 +28,7 @@
     <!-- #endregion FakeTransparent: When you need a transparent color and need can response mouse click -->
     <SolidColorBrush x:Key="DefaultTheme_TxtColor" Color="#FFFFFF" />
     <SolidColorBrush x:Key="DefaultTheme_ProcessBarTxtColor" Color="#A4B8CD" />
-    <SolidColorBrush x:Key="DefaultTheme_BdBkColor" Color="#99194784" />
+    <SolidColorBrush x:Key="DefaultTheme_BdBkColor" Color="#99193457" />
     <SolidColorBrush x:Key="DefaultTheme_BdSolidBkColor" Color="#FF132F54" />
     <SolidColorBrush x:Key="DefaultTheme_BdBdColor" Color="#132F54" />
     <SolidColorBrush x:Key="DefaultTheme_BdSolidBdColor" Color="#1B385F" />
@@ -57,7 +57,6 @@
     <SolidColorBrush x:Key="DefaultTheme_DialogBoxBkColor" Color="#132F54"/>
     <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
     <SolidColorBrush x:Key="DefaultThemeRightViewAlertBkColor" Color="#364861" />
-    <SolidColorBrush x:Key="DefaultThemeToggleButtonBdColor" Color="#FFFFFF"/>
     <Style TargetType="UXControls:UXTextBlock"
            BasedOn="{StaticResource {x:Type UXControls:UXTextBlock}}">
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -274,6 +273,14 @@
             <Path Data="M5.30957 0.00012207H6.49957V16.0001H5.30957V0.00012207Z"
                   Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
             <Path Data="M10.4996 0.00012207H11.6996V16.0001H10.4996V0.00012207Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
+
+    <!-- Icon Resume -->
+    <ControlTemplate x:Key="icon_Resume" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+            <Path Data="M12 7L-6.52533e-07 13.9282L-4.68497e-08 0.0717964L12 7Z"
                   Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
         </Canvas>
     </ControlTemplate>
@@ -1626,7 +1633,7 @@
     <SolidColorBrush x:Key="EQLine_Color" Color="#1B385F" />
     <Style x:Key="RightGroupBorderStyleForAudio" TargetType="Border">
         <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Background" Value="{DynamicResource RightGroupBkColor}" />
+        <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
     </Style>
 
     <Style x:Key="ModuleCaptionStyle" TargetType="UXControls:UXTextBlock">
@@ -1677,10 +1684,10 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    <SolidColorBrush x:Key="ToggleSwitch_NormalBackground" Color="#0B1E38" />
+    <SolidColorBrush x:Key="ToggleSwitch_NormalBackground" Color="#FF0B1E38" />
+    <SolidColorBrush x:Key="ToggleSwitch_NormalBorderBrush" Color="#FF1E3F6C" />
     <SolidColorBrush x:Key="ToggleSwitch_PressedBackground" Color="#0672CB" />
     <SolidColorBrush x:Key="ToggleSwitch_PressedBorderBrush" Color="#55B4FD" />
-    <SolidColorBrush x:Key="ToggleSwitch_BorderBrush" Color="#1E3F6C" />
     <!-- #endregion -->
 
     <Style TargetType="UXControls:UXTextBlock" x:Key="ProductNameTextStyle">
@@ -1834,11 +1841,12 @@
     <SolidColorBrush x:Key="KeyToolTipText_FgColor" Color="#F5F6F7" />
     <Style x:Key="KeyToolTipTextStyle" TargetType="TextBlock">
         <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
-        <Setter Property="Background" Value="{DynamicResource KeyToolTipText_BgColor}" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="12" />
         <Setter Property="Foreground" Value="{DynamicResource KeyToolTipText_FgColor}" />
-        <Setter Property="Padding" Value="12,16,12,10" />
+        <Setter Property="Padding" Value="1" />
+        <Setter Property="Margin" Value="0" />
         <Setter Property="LineHeight" Value="20" />
         <Setter Property="VerticalAlignment" Value="center" />
         <Setter Property="HorizontalAlignment" Value="center" />
@@ -2116,5 +2124,29 @@
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdSolidBkColor}" />
     </Style>
     <!-- #endregion -->
+    <LinearGradientBrush x:Key="Border1Brush" StartPoint="0,1" EndPoint="1,0">
+        <GradientStop Color="#55B4FD" Offset="0.0" />
+        <GradientStop Color="#5051DA" Offset="1.0" />
+    </LinearGradientBrush>
 
+    <Style x:Key="Border1" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource Border1Brush}" />
+        <Setter Property="CornerRadius" Value="1.5" />
+        <Setter Property="Width" Value="3" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Margin" Value="-3,-3,18,0" />
+    </Style>
+
+    <Style x:Key="AppCaptionStyle" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="#80FFFFFF" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <!-- #endregion -->
+    <BitmapImage x:Key="InterruptScreen_Image" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_InterruptScreen.png" />
+    <SolidColorBrush x:Key="InterruptScreen_Backgroung" Color="#132F54" />
 </ResourceDictionary>
