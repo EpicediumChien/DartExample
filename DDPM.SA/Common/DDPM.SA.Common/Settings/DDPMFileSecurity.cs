@@ -829,7 +829,7 @@ namespace DDPM.SA.Common.Settings
             FileSystemAccessRule usersRule = new FileSystemAccessRule(usersSid, FileSystemRights.ReadAndExecute, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
             directorySecurity.AddAccessRule(usersRule);
 
-            // normal user - read write deny
+            // normal user - write deny
             FileSystemAccessRule denyWriteRule = new FileSystemAccessRule(usersSid, FileSystemRights.Write, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Deny);
             directorySecurity.AddAccessRule(denyWriteRule);
 

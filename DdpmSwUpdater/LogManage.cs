@@ -22,7 +22,7 @@ namespace DdpmSwUpdater
         public static void SetPath()
         {
             DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
-            string AppDataPath = DDPMFileSecurity.GetActiveUserLocalAppDataPath();
+            string AppDataPath = WTSFunction.GetActiveUserLocalAppDataPath(null);
             if (!string.IsNullOrEmpty(AppDataPath))
             {
                 string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-DdpmSwUpdater";

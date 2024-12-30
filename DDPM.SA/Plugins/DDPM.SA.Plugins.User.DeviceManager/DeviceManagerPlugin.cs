@@ -12915,6 +12915,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"@ GetInputSourceHotKeyData: ReloadMonitorSettings(model={model}) return null.");
                 return null;
             }
+            writelog($"[GetInputSourceHotKeyData] model({model}): {settings}");
 
             //Find the previous saved device settings
             DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(mo.edid.ServiceTag));
@@ -12924,6 +12925,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"@ GetInputSourceHotKeyData: Reloaded settings not contains (model={model}, serviceTage={serviceTag}).");
                 return null;
             }
+            writelog($"[GetInputSourceHotKeyData] ServiceTag({mo.edid.ServiceTag}): {monitorSettings}");
+
+            if(monitorSettings.hotkeyData == null)
+            {
+                writelog($"[GetInputSourceHotKeyData] Load hotkeyData of model({model}) serviceTag({serviceTag}): null data");
+                return null;
+            }
+            writelog($"[GetInputSourceHotKeyData] hotkeyData count {monitorSettings.hotkeyData.Count}");
+            writelog($"[GetInputSourceHotKeyData] hotkeyData data {monitorSettings.hotkeyData.ToString()}");
 
             return monitorSettings.hotkeyData;
         }
@@ -13756,6 +13766,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private Task<bool> ExecHotkeyJob(HotkeySettings settings, HotkeyType job)
         {
+            writelog("[ExecHotkeyJob] enter");
             //1001 add to tracking mouse point and its location on specific monitor
             //cursor position
             System.Drawing.Point cursorPosition = Cursor.Position;
@@ -13772,7 +13783,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 hotkeyStr = string.Join("+", hotkeyInfoTmp.Hotkey.Select(x => x + "(" + (int)x + ")").ToList());
             }
-            writelog($"ExecHotkeyJob[{job}:{hotkeyStr}] mouse cursor on Monitor [ModelName={monitorInfo?.edid.ModelName},ServiceTag={monitorInfo?.edid.ServiceTag}, SerialNumber={monitorInfo?.edid.SerialNumber}]");
+            writelog($"[ExecHotkeyJob][{job}:{hotkeyStr}] mouse cursor on Monitor [ModelName={monitorInfo?.edid.ModelName},ServiceTag={monitorInfo?.edid.ServiceTag}, SerialNumber={monitorInfo?.edid.SerialNumber}]");
 
             bool getTargetMo = false;
             if (monitorInfo == null)
@@ -13799,13 +13810,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             if (getTargetMo)
             {
-                Debug.WriteLine($"ExecHotkeyJob[{job}:{hotkeyStr}] => TargetMonitor(from Mouse crusor), Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+                Debug.WriteLine($"[ExecHotkeyJob][{job}:{hotkeyStr}] => TargetMonitor(from Mouse crusor), Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
             }
             else
             {
-                Debug.WriteLine($"ExecHotkeyJob[{job}:{hotkeyStr}] => TargetMonitor(from UI seleted), Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+                Debug.WriteLine($"[ExecHotkeyJob][{job}:{hotkeyStr}] => TargetMonitor(from UI seleted), Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
             }
-            writelog($"ExecHotkeyJob[befrore:{job}:{hotkeyStr}] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+            writelog($"[ExecHotkeyJob][befrore:{job}:{hotkeyStr}] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
             switch (job)
             {
                 case HotkeyType.BrightnessReduce:
@@ -13816,7 +13827,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //DDPMW-764
                     if (IsALSautobrightness(monitorInfo))
                     {
-                        writelog($"ExecHotkeyJob[{job}:{hotkeyStr} ,IsALSautobrightness=true,will Popup msg] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+                        writelog($"[ExecHotkeyJob][{job}:{hotkeyStr} ,IsALSautobrightness=true,will Popup msg] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
                         HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
                         HotkeyPopup(hotkeyPopWrap);
                     }
@@ -13869,6 +13880,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { hotkeyInfoIs, hotkeyData.inputSource }, Favorite_InputSource));
                     }
+                    else
+                    {
+                        if (hotkeyInfoIs == null)
+                            writelog("[HotkeyType.FavoriteInputSource] info is empty, no action");
+                        if (hotkeyData == null)
+                            writelog("[HotkeyType.FavoriteInputSource] data is empty, no action");
+                    }
                     break;
 
                 case HotkeyType.SwitchInputSource:
@@ -13879,12 +13897,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { hotkeyInfo, hotkeyData2.inputSource }, Switch_InputSource));
                     }
+                    else
+                    {
+                        if(list2 == null)
+                            writelog("[HotkeyType.SwitchInputSource] list2 is null, no action");
+                        if (list2 != null && list2.Count == 0)
+                            writelog("[HotkeyType.SwitchInputSource] list2 is empty, no action");
+                        if (hotkeyInfo == null)
+                            writelog("[HotkeyType.SwitchInputSource] info is empty, no action");
+                        if (hotkeyData2 == null)
+                            writelog("[HotkeyType.SwitchInputSource] data2 is empty, no action");
+                    }
                     break;
 
                 case HotkeyType.SwapIputPIPPBP:
                     HotkeyInfo hotkeyInfo_SwapIputPIPPBP = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.SwapIputPIPPBP));
                     if (hotkeyInfo_SwapIputPIPPBP != null)
+                    {
                         _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { hotkeyInfo_SwapIputPIPPBP }, Swap_IputPIPPBP));
+                    }
+                    else
+                    {
+                        writelog("[HotkeyType.SwapIputPIPPBP] info is empty, no action");
+                    }
                     break;
 
                 case HotkeyType.ChangePIPPosition:
@@ -13898,6 +13933,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (kvmhotkeyInfo != null && hotkeyData3 != null)// kvmhotkeyInfo.InputSource != null)
                     {
                         _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { kvmhotkeyInfo, hotkeyData3.inputSource }, Kvm_SwitchInputSource));
+                    }
+                    else
+                    {
+                        if (kvmhotkeyInfo == null)
+                            writelog("[HotkeyType.KvmSwitchInputSource] info is empty, no action");
+                        if (hotkeyData3 == null)
+                            writelog("[HotkeyType.KvmSwitchInputSource] data3 is empty, no action");
                     }
                     break;
                 //USB KVM: Switch keyboard and mouse
@@ -13925,6 +13967,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Toggle_EzRecentSetting));
                     break;
             }
+            writelog("[ExecHotkeyJob] leave");
             return Task.FromResult(true);
         }
 
