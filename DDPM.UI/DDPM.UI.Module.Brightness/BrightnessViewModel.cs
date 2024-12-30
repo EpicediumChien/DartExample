@@ -577,7 +577,7 @@ namespace DDPM.UI.Module.Brightness
 
         private void ALSFontColorUpdate(OSThemeEnum oSThemeEnum)
         {
-            if (DdpmCommonHelper.previousOsTheme == OSThemeEnum.Dark)
+            if (DdpmCommonHelper.PreviousOsTheme == OSThemeEnum.Dark)
             {
                 IsDarkTheme = true;
             }

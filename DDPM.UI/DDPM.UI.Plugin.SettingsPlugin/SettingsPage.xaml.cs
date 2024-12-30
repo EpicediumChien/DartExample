@@ -211,12 +211,12 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             //Derek 1210 use new solution -- workable
 
-            if (DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM)
+            if (DdpmCommonHelper.IsDDPMSwitchToSettingPageByQAM)
             {
                 DdpmCommonHelper.WriteUILog($"DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM == true");
 
                 WidgetSettingsButton_Click(this, null);
-                DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM = false;
+                DdpmCommonHelper.IsDDPMSwitchToSettingPageByQAM = false;
             }
             else
                 DdpmCommonHelper.WriteUILog($"DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM == false");
