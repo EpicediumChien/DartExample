@@ -525,14 +525,12 @@ namespace ColorPreset.Plugins
                 Thread.Sleep(100);
 
                 // jim modify 20240605
-                if (newWindowThread_AutoSetColorPresetForMonitorConfig != null)
+                if (newWindowThread_AutoSetColorPresetForMonitorConfig != null &&
+                    MonitorBorkerWin != null) // jim add 20240809
                 {
-                    if (MonitorBorkerWin != null) // jim add 20240809
-                    {
-                        MonitorBorkerWin.Set_AllMonitors(_AllInfoMonitors); // // jim 20241218 modify for PIMS-326072
-                        // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
-                        MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false, Is_Game_DeviceName, SmartHDR_ON, ColorPresetSupportList);
-                    }
+                    MonitorBorkerWin.Set_AllMonitors(_AllInfoMonitors); // // jim 20241218 modify for PIMS-326072
+                    // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                    MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false, Is_Game_DeviceName, SmartHDR_ON, ColorPresetSupportList);                    
                 }
 
             }
@@ -596,43 +594,41 @@ namespace ColorPreset.Plugins
                 }
                 else if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType == (int)ColorManagementRunType.Byhost)
                 {
-                    if (_ICC_Metadata.Is_Support_ICC_DeviceName)
+                    if (_ICC_Metadata.Is_Support_ICC_DeviceName &&
+                        _ICC_Metadata._match_ICC_DeviceName != null)
                     {
-                        if (_ICC_Metadata._match_ICC_DeviceName != null)
+                        int count = _ICC_Metadata._match_ICC_DeviceName.Count;
+
+                        for (int i = 0; i < count; i++)
                         {
-                            int count = _ICC_Metadata._match_ICC_DeviceName.Count;
-
-                            for (int i = 0; i < count; i++)
+                            try
                             {
-                                try
-                                {
-                                    MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
-                                }
-                                catch (Exception ex)
-                                {
-                                    writelog($"IntsallMonitorProfile Exception {ex.Message.ToString()}");
-                                }
+                                MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
                             }
-
-                            string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
-
-                            if (registryMonitor_ICC == null)
+                            catch (Exception ex)
                             {
-                                try
-                                {
-                                    writelog("Monitor ICC change initiate...");
-                                    registryMonitor_ICC = new RegistryMonitor_ICC(keyName);
-                                    registryMonitor_ICC.RegChanged += new EventHandler(OnRegChanged_ICC);
-                                    registryMonitor_ICC.Error += new System.IO.ErrorEventHandler(OnError_ICC);
-                                    registryMonitor_ICC.Start();
-                                    writelog("Monitor ICC change started");
-                                }
-                                catch(Exception ex)
-                                {
-                                    writelog($"Monitor ICC change Exception, message: {ex.Message}");
-                                }
+                                writelog($"IntsallMonitorProfile Exception {ex.Message.ToString()}");
                             }
                         }
+
+                        string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
+
+                        if (registryMonitor_ICC == null)
+                        {
+                            try
+                            {
+                                writelog("Monitor ICC change initiate...");
+                                registryMonitor_ICC = new RegistryMonitor_ICC(keyName);
+                                registryMonitor_ICC.RegChanged += new EventHandler(OnRegChanged_ICC);
+                                registryMonitor_ICC.Error += new System.IO.ErrorEventHandler(OnError_ICC);
+                                registryMonitor_ICC.Start();
+                                writelog("Monitor ICC change started");
+                            }
+                            catch(Exception ex)
+                            {
+                                writelog($"Monitor ICC change Exception, message: {ex.Message}");
+                            }
+                        }                        
                     }
 
                 }
@@ -654,20 +650,16 @@ namespace ColorPreset.Plugins
                 _SettingsPlugin.WriteColorPresetSettings(config);
                 Thread.Sleep(100);
 
-                if (_ICC_Metadata.Is_Support_ICC_DeviceName)
+                if (_ICC_Metadata.Is_Support_ICC_DeviceName &&
+                    registryMonitor_ICC != null)
                 {
+                    registryMonitor_ICC.Stop();
+                    registryMonitor_ICC.RegChanged -= new EventHandler(OnRegChanged_ICC);
+                    registryMonitor_ICC.Error -= new System.IO.ErrorEventHandler(OnError_ICC);
 
-                    if (registryMonitor_ICC != null)
-                    {
-                        registryMonitor_ICC.Stop();
-                        registryMonitor_ICC.RegChanged -= new EventHandler(OnRegChanged_ICC);
-                        registryMonitor_ICC.Error -= new System.IO.ErrorEventHandler(OnError_ICC);
-
-                        if (registryMonitor_ICC.IsMonitoring)
-                            registryMonitor_ICC.Dispose();
-                        registryMonitor_ICC = null;
-                    }
-
+                    if (registryMonitor_ICC.IsMonitoring)
+                        registryMonitor_ICC.Dispose();
+                    registryMonitor_ICC = null;                    
                 }
             }
             else if (off_bymonitor_byhost.Equals("BYMONITOR", StringComparison.OrdinalIgnoreCase))
@@ -732,42 +724,40 @@ namespace ColorPreset.Plugins
                 _SettingsPlugin.WriteColorPresetSettings(config);
                 Thread.Sleep(100);
 
-                if (_ICC_Metadata.Is_Support_ICC_DeviceName)
+                if (_ICC_Metadata.Is_Support_ICC_DeviceName &&
+                    _ICC_Metadata._match_ICC_DeviceName != null)
                 {
-                    if (_ICC_Metadata._match_ICC_DeviceName != null)
+                    int count = _ICC_Metadata._match_ICC_DeviceName.Count;
+
+                    for (int i = 0; i < count; i++)
                     {
-                        int count = _ICC_Metadata._match_ICC_DeviceName.Count;
-
-                        for (int i = 0; i < count; i++)
+                        try
                         {
-                            try
-                            {
-                                MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
-                            }
-                            catch (Exception ex)
-                            {
-                                writelog($"IntsallMonitorProfile Exception {ex.Message.ToString()}");
-                            }
+                            MonitorProfile.IntsallMonitorProfile(_ICC_Metadata.strICC_Folder + _ICC_Metadata._match_ICC_DeviceName[i].File);
                         }
+                        catch (Exception ex)
+                        {
+                            writelog($"IntsallMonitorProfile Exception {ex.Message.ToString()}");
+                        }
+                    }
 
-                        string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
+                    string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
 
-                        if (registryMonitor_ICC == null)
-                        {                            
-                            try
-                            {
-                                writelog("Monitor ICC change initiate...");
-                                registryMonitor_ICC = new RegistryMonitor_ICC(keyName);
-                                registryMonitor_ICC.RegChanged += new EventHandler(OnRegChanged_ICC);
-                                registryMonitor_ICC.Error += new System.IO.ErrorEventHandler(OnError_ICC);
-                                registryMonitor_ICC.Start();
-                                writelog("Monitor ICC change started");
+                    if (registryMonitor_ICC == null)
+                    {                            
+                        try
+                        {
+                            writelog("Monitor ICC change initiate...");
+                            registryMonitor_ICC = new RegistryMonitor_ICC(keyName);
+                            registryMonitor_ICC.RegChanged += new EventHandler(OnRegChanged_ICC);
+                            registryMonitor_ICC.Error += new System.IO.ErrorEventHandler(OnError_ICC);
+                            registryMonitor_ICC.Start();
+                            writelog("Monitor ICC change started");
 
-                            }
-                            catch (Exception ex)
-                            {
-                                writelog($"Monitor ICC change Exception, message: {ex.Message}");
-                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"Monitor ICC change Exception, message: {ex.Message}");
                         }
                     }
                 }
@@ -1635,27 +1625,25 @@ namespace ColorPreset.Plugins
                 _SettingsPlugin.WriteColorPresetSettings(config);
                 Thread.Sleep(100);
 
-                if (index >= 0)
+                if (index >= 0 &&
+                    Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status == (int)ColorManagementStatus.On &&
+                    Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType == (int)ColorManagementRunType.Bymonitor)
                 {
-                    if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status == (int)ColorManagementStatus.On &&
-                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType == (int)ColorManagementRunType.Bymonitor)
+                    writelog($"ColorPreset plugin SetMonitorProfile ColorPreset_Name = {ColorPreset_Name}");
+                    Trace.WriteLine($"ColorPreset plugin SetMonitorProfile ColorPreset_Name = {ColorPreset_Name}");
+
+                    try
                     {
-                        writelog($"ColorPreset plugin SetMonitorProfile ColorPreset_Name = {ColorPreset_Name}");
-                        Trace.WriteLine($"ColorPreset plugin SetMonitorProfile ColorPreset_Name = {ColorPreset_Name}");
+                        blRes = SetMonitorProfile(m, ColorPreset_Name).Result;
+                        Trace.WriteLine($"SetMonitorProfile() blRes={blRes}");
 
-                        try
-                        {
-                            blRes = SetMonitorProfile(m, ColorPreset_Name).Result;
-                            Trace.WriteLine($"SetMonitorProfile() blRes={blRes}");
-
-                        }
-                        catch (Exception ex)
-                        {
-                            writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
-                        }                        
                     }
+                    catch (Exception ex)
+                    {
+                        writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
+                    }                        
                 }
-
+                
             }
 
             return System.Threading.Tasks.Task.FromResult(blRes);
@@ -2911,14 +2899,13 @@ namespace ColorPreset.Plugins
 
             int index = -1;
 
-            if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
+            if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null &&
+                Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
             {
-                if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
-                {
-                    index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                    x.ModelName.Trim() == Model.Trim() &&
-                                                    x.ServiceTag.Trim() == ServiceTag.Trim());
-                }
+                index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                                x.ModelName.Trim() == Model.Trim() &&
+                                                x.ServiceTag.Trim() == ServiceTag.Trim());
+
             }
 
             if (index >= 0)
@@ -3034,14 +3021,14 @@ namespace ColorPreset.Plugins
                     ColorManagement_RunType = 0
                 });
 
-                if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
+                if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null &&
+                    Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
                 {
-                    if (Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count > 0)
-                    {
-                        index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
-                                                        x.ModelName.Trim() == Model.Trim() &&
-                                                        x.ServiceTag.Trim() == ServiceTag.Trim());
-                    }
+
+                    index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
+                                                    x.ModelName.Trim() == Model.Trim() &&
+                                                    x.ServiceTag.Trim() == ServiceTag.Trim());
+                    
                 }
 
                 if (index >= 0)
