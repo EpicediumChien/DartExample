@@ -776,6 +776,11 @@ namespace DDPM.UI.Plugin.ViewModels
             CurrentProfile.IsAutoFramingTransitionOn = _isAutoFramingTransitionOn;
             CurrentProfile.AutoFramingFrameSize = _autoFramingFrameSize;
             CurrentProfile.AutoFramingSensitivity = _autoFramingSensitivity;
+            //CurrentProfile.Brightness = _brightness;
+            //CurrentProfile.Sharpness= _sharpness;
+            //CurrentProfile.Contrast=_contrast;
+            //CurrentProfile.Saturation = _saturation;
+
             if (!IsUSB3)
                 CurrentProfile.IsHDROn = false;
 
