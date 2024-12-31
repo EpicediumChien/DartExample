@@ -29,76 +29,90 @@ namespace DDPM.UI.Common
 
         public PenActions()
         {
-            Task<string> task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserDoublePressSetting();
-            JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
-            TopButtonDoubleClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
-            if (TopButtonDoubleClickAction.AssignedAction.ID == 65)
+            try
             {
-                TopButtonDoubleClickAction.AssignedAction.ID = 64;
+                Task<string> task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserDoublePressSetting();
+                string jsonResult = task1.Result;
+                if (string.IsNullOrEmpty(jsonResult))
+                {
+                    DdpmCommonHelper.WriteUILog($"[Actions] PenActions cannot get json data from DTP!!");
+                    return;
+                }
+                JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(jsonResult)!;
+                TopButtonDoubleClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
+                if (TopButtonDoubleClickAction.AssignedAction.ID == 65)
+                {
+                    TopButtonDoubleClickAction.AssignedAction.ID = 64;
+                }
+                else if (TopButtonDoubleClickAction.AssignedAction.ID == 23)
+                {
+                    TopButtonDoubleClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
+                }
+
+                task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserSinglePressSetting();
+                jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
+                TopButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
+                if (TopButtonClickAction.AssignedAction.ID == 23)
+                {
+                    TopButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
+                }
+
+                task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserLongPressSetting();
+                jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
+                TopButtonPressHoldAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
+                if (TopButtonPressHoldAction.AssignedAction.ID == 77)
+                {
+                    TopButtonPressHoldAction.AssignedAction.ID = 64;
+                }
+                else if (TopButtonPressHoldAction.AssignedAction.ID == 23)
+                {
+                    TopButtonPressHoldAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
+                }
+
+                task1 = DdpmCommonHelper.DeviceManagerSA!.GetSideTopSwitchSinglePressSetting();
+                jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
+                TopBarrelButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
+                if (TopBarrelButtonClickAction.AssignedAction.ID == 23)
+                {
+                    TopBarrelButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
+                }
+
+                task1 = DdpmCommonHelper.DeviceManagerSA!.GetSideBottomSwitchSinglePressSetting();
+                jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
+                BottomBarrelButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
+                if (BottomBarrelButtonClickAction.AssignedAction.ID == 23)
+                {
+                    BottomBarrelButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
+                }
+
+
+                Task<bool> task2 = DdpmCommonHelper.DeviceManagerSA!.GetMenuCenterRightClickSetting();
+                IsUseCenter = task2.Result;
+                task2 = DdpmCommonHelper.DeviceManagerSA!.GetIsSideTopButtonHoverClick();
+                IsTopBarrelHoverClickOn = task2.Result;
+                task2 = DdpmCommonHelper.DeviceManagerSA!.GetIsSideBottomButtonHoverClick();
+                IsBottomBarrelHoverClickOn = task2.Result;
+
+                ResetRadialMenu();
+                //task1 = DdpmCommonHelper.DeviceManagerSA!.GetMenuSinglePressSetting();
+                //var result = task1.Result;
+                //var RadialMenus = JsonConvert.DeserializeObject<List<RadialMenuItem>>(task1.Result)!;
+                //RadialActions.Clear();
+                //RadialLabels.Clear();
+                //foreach(var rm in RadialMenus)
+                //{
+                //    if (rm.menuIndex < 8)
+                //    {
+                //        RadialLabels.Add(rm.menuIndex, rm.actionName);
+                //        RadialActions.Add(rm.menuIndex, new SelectedAction(rm.actionId, new AssignedAction(rm.actionId)));
+                //    }
+                //}
             }
-            else if (TopButtonDoubleClickAction.AssignedAction.ID == 23)
+            catch (Exception ex)
             {
-                TopButtonDoubleClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
+                DdpmCommonHelper.WriteUILog($"[Actions] PenActions throws exception: {ex.Message} StackTrace: {ex.StackTrace}");
+                return;
             }
-
-            task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserSinglePressSetting();
-            jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
-            TopButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
-            if (TopButtonClickAction.AssignedAction.ID == 23)
-            {
-                TopButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
-            }
-
-            task1 = DdpmCommonHelper.DeviceManagerSA!.GetEraserLongPressSetting();
-            jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
-            TopButtonPressHoldAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
-            if (TopButtonPressHoldAction.AssignedAction.ID == 77)
-            {
-                TopButtonPressHoldAction.AssignedAction.ID = 64;
-            }
-            else if (TopButtonPressHoldAction.AssignedAction.ID == 23)
-            {
-                TopButtonPressHoldAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
-            }
-
-            task1 = DdpmCommonHelper.DeviceManagerSA!.GetSideTopSwitchSinglePressSetting();
-            jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
-            TopBarrelButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
-            if (TopBarrelButtonClickAction.AssignedAction.ID == 23)
-            {
-                TopBarrelButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
-            }
-
-            task1 = DdpmCommonHelper.DeviceManagerSA!.GetSideBottomSwitchSinglePressSetting();
-            jsonObject = JsonSerializer.Deserialize<JsonElement>(task1.Result)!;
-            BottomBarrelButtonClickAction.AssignedAction.ID = jsonObject.GetProperty("actionId").GetInt32();
-            if (BottomBarrelButtonClickAction.AssignedAction.ID == 23)
-            {
-                BottomBarrelButtonClickAction.AssignedAction.Parameter = jsonObject.GetProperty("actionName").GetString()!;
-            }
-
-
-            Task<bool> task2 = DdpmCommonHelper.DeviceManagerSA!.GetMenuCenterRightClickSetting();
-            IsUseCenter = task2.Result;
-            task2 = DdpmCommonHelper.DeviceManagerSA!.GetIsSideTopButtonHoverClick();
-            IsTopBarrelHoverClickOn = task2.Result;
-            task2 = DdpmCommonHelper.DeviceManagerSA!.GetIsSideBottomButtonHoverClick();
-            IsBottomBarrelHoverClickOn = task2.Result;
-
-            ResetRadialMenu();
-            //task1 = DdpmCommonHelper.DeviceManagerSA!.GetMenuSinglePressSetting();
-            //var result = task1.Result;
-            //var RadialMenus = JsonConvert.DeserializeObject<List<RadialMenuItem>>(task1.Result)!;
-            //RadialActions.Clear();
-            //RadialLabels.Clear();
-            //foreach(var rm in RadialMenus)
-            //{
-            //    if (rm.menuIndex < 8)
-            //    {
-            //        RadialLabels.Add(rm.menuIndex, rm.actionName);
-            //        RadialActions.Add(rm.menuIndex, new SelectedAction(rm.actionId, new AssignedAction(rm.actionId)));
-            //    }
-            //}
         }
 
         public bool RestoreToDefault()

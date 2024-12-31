@@ -17,7 +17,7 @@ namespace DDPM.UI.Plugin.Common.Tests
         [SetUp]
         public void Setup()
         {
-            waitingModalDialog = new WaitingModalDialog("caption", "message", "alert");
+            //waitingModalDialog = new WaitingModalDialog("caption", "message", "alert");
         }
 
         [Test]

@@ -35,8 +35,10 @@ using System.Windows.Forms;
 using System.Windows.Media.Media3D;
 using VcpCore.Common;
 using Windows.ApplicationModel;
+using static Microsoft.WindowsAPICodePack.Shell.PropertySystem.SystemProperties.System;
 using IDeviceManager = IndiLogic.DPeM.Broker.IDeviceManager;
 using IDs = DDPM.SA.Common.IDs;
+using Task = System.Threading.Tasks.Task;
 
 namespace DDPM.SA.Plugins.PeripheralsPlugin
 {
@@ -84,11 +86,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private static List<Guid> PhysicalDevices = new();
         private static List<Guid> PhysicalDevices1 = new();
         private static List<Guid> PhysicalDevices2 = new();
-        private static List<Guid> LogicalDevices1 = new();
+        private static List<Guid> LogicalDevices = new();
         private static List<Guid> LogicalDevices2 = new();
         private static List<Guid> LogicalDevices3 = new();
-        private static List<Guid> LogicalDevices4 = new();
         private static List<Guid> LogicalDevicesPen = new();
+        private static List<Guid> IDevices = new();
 
         //private IDeviceManagerSA _DeviceManagerPlugin;
         //private readonly object _PluginConditionLock_DeviceManager = new object();
@@ -149,7 +151,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
             if (_isClientConnected && _deviceHelper != null)
             {
-                return await Task.Run(() =>
+                return await System.Threading.Tasks.Task.Run(() =>
                 {
                     lock (_lock)
                     {
@@ -1425,7 +1427,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         {
                             physicalAudioDeviceDongle.PairedDeviceCountChanged += PhysicalAudioDeviceDongle_PairedDeviceCountChanged;
                             // 2024-12-21, Elie R19 change that. (parameter has changed)               
-                            //physicalAudioDeviceDongle.PairingStatusChanged += PhysicalAudioDeviceDongle_PairingStatusChanged;
+                            physicalAudioDeviceDongle.PairingStatusChanged += PhysicalAudioDeviceDongle_PairingStatusChanged;
+                            ;
                             PhysicalDevices2.Add(device.Id);
                         }
                         // >>
@@ -1536,10 +1539,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.TotalNumberOfPairedHostName = _logicalDevice2.TotalNumberOfPaiedHostName;
                                 info.IsDPILevelSupported = _logicalDevice2.IsDPILevelSupported;
 
-                                if (!LogicalDevices1.Contains(_logicalDevice2.Id))
+                                if (!LogicalDevices2.Contains(_logicalDevice2.Id))
                                 {
                                     _logicalDevice2.DpiLevelChanged += ILogicalDevice_DpiLevelChanged;
-                                    LogicalDevices1.Add(_logicalDevice2.Id);
+                                    LogicalDevices2.Add(_logicalDevice2.Id);
                                 }
                             }
 
@@ -1576,7 +1579,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.MousePrimaryButton = _logicalDevice3.MousePrimaryButton;
                                 //info.PairedHostNames = _logicalDevice3.PairedHostNames;
 
-                                if (!LogicalDevices2.Contains(_logicalDevice3.Id))
+                                if (!LogicalDevices3.Contains(_logicalDevice3.Id))
                                 {
                                     _logicalDevice3.MousePrimaryButtonChanged += ILogicalDevice_MousePrimaryButtonChanged;
                                     _logicalDevice3.DPIValueChanged += ILogicalDevice_DpiValueChanged;
@@ -1586,18 +1589,30 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     _logicalDevice3.PairedHostNameChanged += ILogicalDevice_PairedHostNameChanged;
                                     _logicalDevice3.IsDPILevelChangePendingChanged += ILogicalDevice_IsDPILevelChangePendingChanged;
                                     _logicalDevice3.IsDPIValueChangePendingChanged += ILogicalDevice_IsDPIValueChangePendingChanged;
-                                    LogicalDevices2.Add(_logicalDevice3.Id);
+                                    LogicalDevices3.Add(_logicalDevice3.Id);
                                 }
                             }
 
                             // << 241206 by Hess fix no event issue
                             if (item is ILogicalDevice _logicalDevice)
                             {
-                                if (!LogicalDevices4.Contains(_logicalDevice.Id))
+                                if (!LogicalDevices.Contains(_logicalDevice.Id))
                                 {
                                     _logicalDevice.BatteryStatusChanged += ILogicalDevice_BatteryStatusChanged;
                                     _logicalDevice.BatteryLevelChanged += ILogicalDevice_BatteryLevelChanged;
-                                    LogicalDevices4.Add(_logicalDevice.Id);
+                                    LogicalDevices.Add(_logicalDevice.Id);
+
+                                    CheckLowBatteryOSD(info);
+                                }
+                            }
+                            // >>
+                            // << 241228 by Hess add new event
+                            if (item is IDevice _IDevice)
+                            {
+                                if (!IDevices.Contains(_IDevice.Id))
+                                {
+                                    device.NameChanged += (name) => OnDeviceNameChanged(device, name);
+                                    IDevices.Add(_IDevice.Id);
                                 }
                             }
                             // >>
@@ -1948,6 +1963,38 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        private void OnDeviceNameChanged(IDevice device, string newValue)
+        {
+            if (_deviceHelper is { deviceInfo: not null })
+            {
+                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == device.Id.ToString());
+                if (deviceInfo != null)
+                {
+                    deviceInfo.Name = newValue;
+
+                    DeviceChangedEventArgs _EventArgs = new()
+                    {
+                        type = DeviceChangedType.Peripherals_SettingsChange,
+                        device_peripherals = deviceInfo,
+                        changedProperty = "DeviceNameChanged"
+                    };
+                    OnNotify(_EventArgs);
+                    Debug.WriteLine($"DeviceNameChanged: ID: {device.Id} Name: {newValue}");
+                    writelog($"DeviceNameChanged: ID: {device.Id} Name: {newValue}");
+                }
+            }
+        }
+
+
+        private void _logicalDevice_NameChanged(string name)
+        {
+        }
+
+        private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle arg1, AudioDonglePairingStatus arg2)
+        {
+            throw new NotImplementedException();
+        }
+
         private void ILogicalDevice_IsDPIValueChangePendingChanged(ILogicalDevice3 arg1, bool arg2)
         {
             if (_deviceHelper is { deviceInfo: not null })
@@ -2236,8 +2283,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void OnNotify(DeviceChangedEventArgs e)
         {
-            if (Notify != null)
-                Notify(this, e);
+            Task.Run(() =>
+            {
+                if (Notify != null)
+                    Notify(this, e);
+            });
         }
 
         private void OnUpdateNotify(bool isUpdateAvailable)
@@ -2521,24 +2571,40 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         };
                         OnNotify(_EventArgs);
                     });
-                    if (LogicalDevices1.Contains(iLogicalDevice.Id))
+                    if (IDevices.Contains(iLogicalDevice.Id) && iLogicalDevice is IDevice _IDevice)
                     {
-                        LogicalDevices1.Remove(iLogicalDevice.Id);
+                        _IDevice.NameChanged -= (name) => OnDeviceNameChanged(_IDevice, name);
+                        IDevices.Remove(iLogicalDevice.Id);
                     }
-                    if (LogicalDevices2.Contains(iLogicalDevice.Id))
+                    if (LogicalDevices.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevice _logicalDevice)
                     {
+                        _logicalDevice.BatteryStatusChanged -= ILogicalDevice_BatteryStatusChanged;
+                        _logicalDevice.BatteryLevelChanged -= ILogicalDevice_BatteryLevelChanged;
+                        LogicalDevices.Remove(iLogicalDevice.Id);
+                    }
+                    if (LogicalDevices2.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevice2 _logicalDevice2)
+                    {
+                        _logicalDevice2.DpiLevelChanged -= ILogicalDevice_DpiLevelChanged;
                         LogicalDevices2.Remove(iLogicalDevice.Id);
                     }
-                    if (LogicalDevices3.Contains(iLogicalDevice.Id))
+                    if (LogicalDevices3.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevice3 _logicalDevice3)
                     {
+                        _logicalDevice3.MousePrimaryButtonChanged -= ILogicalDevice_MousePrimaryButtonChanged;
+                        _logicalDevice3.DPIValueChanged -= ILogicalDevice_DpiValueChanged;
+                        _logicalDevice3.TouchScrollSensitivityLevelChanged -= ILogicalDevice_TouchScrollSensitivityLevelChanged;
+                        _logicalDevice3.BackLightingControlsChanged -= ILogicalDevice_BackLightingControlsChanged;
+                        _logicalDevice3.BackLightingLevelChanged -= ILogicalDevice_BackLightingLevelChanged;
+                        _logicalDevice3.PairedHostNameChanged -= ILogicalDevice_PairedHostNameChanged;
+                        _logicalDevice3.IsDPILevelChangePendingChanged -= ILogicalDevice_IsDPILevelChangePendingChanged;
+                        _logicalDevice3.IsDPIValueChangePendingChanged -= ILogicalDevice_IsDPIValueChangePendingChanged;
                         LogicalDevices3.Remove(iLogicalDevice.Id);
                     }
-                    if (LogicalDevices4.Contains(iLogicalDevice.Id))
+                    if (LogicalDevicesPen.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDevicePen _logicalDevicePen)
                     {
-                        LogicalDevices4.Remove(iLogicalDevice.Id);
-                    }
-                    if (LogicalDevicesPen.Contains(iLogicalDevice.Id))
-                    {
+                        _logicalDevicePen.PenSettingChanged -= Pen_PenSettingChanged;
+                        _logicalDevicePen.KeyCaptureStarted -= Pen_KeyCaptureStarted;
+                        _logicalDevicePen.KeyCaptureDataChanged -= Pen_KeyCaptureDataChanged;
+                        _logicalDevicePen.KeyCaptureProgressDataChanged -= Pen_KeyCaptureProgressDataChanged;
                         LogicalDevicesPen.Remove(iLogicalDevice.Id);
                     }
                     ScanDevices();
@@ -2674,79 +2740,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = "BatteryStatusChanged";
                     OnNotify(_EventArgs);
-                    Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
-                    writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2}");
+                    Debug.WriteLine($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
+                    writelog($"BatteryStatusChanged: ID: {arg1.Id} Status: {arg2} Level: {deviceInfo.BatteryLevel}");
 
-                    try
-                    {
-                        //var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
-                        //if (!settings.GlobalSetting_General.Low_Battery_Level)
-                        //    return;
-                        var settings = _UserSettingsPlugin.ReadGlobalSettings().Result;
-                        if (settings == null || settings.GlobalSetting_General == null)
-                        {
-                            writelog("Retrieve global setting [Low_Battery_Level] got null data");
-                            return;
-                        }
-                        if (!settings.GlobalSetting_General.Low_Battery_Level)
-                        {
-                            writelog("Retrieve global setting [Low_Battery_Level] got disable result");
-                            return;
-                        }
-
-                        if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9)
-                        {
-                            OSDType_Device type = OSDType_Device.Unknown;
-                            var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
-                            var model = SACommonHelper.MappingModel(deviceInfo.ModelNumber);
-                            var message = $"{deviceInfo.Name.Replace(deviceInfo.ModelNumber, "").Trim()} {model}";
-                            if (deviceType.Contains("PEN"))
-                            {
-                                if (deviceInfo.ModelNumber == "PN5122W" && deviceInfo.BatteryLevel > 6)
-                                { return; }
-                                type = OSDType_Device.Pen;
-                            }
-                            else if (deviceType.Contains("KEYBOARD"))
-                            {
-                                type = OSDType_Device.Keyboard;
-                            }
-                            else if (deviceType.Contains("MOUSE"))
-                            {
-                                type = OSDType_Device.Mouse;
-                            }
-                            else if (deviceType.Contains("HEADSET"))
-                            {
-                                type = OSDType_Device.Headset;
-                            }
-                            else if (SACommonHelper.EOLKBList.Contains(deviceInfo.ModelNumber))
-                            {
-                                type = OSDType_Device.Keyboard;
-                                message = SACommonHelper.MappingEOLName(model);
-                            }
-                            else if (SACommonHelper.EOLMouseList.Contains(deviceInfo.ModelNumber))
-                            {
-                                type = OSDType_Device.Mouse;
-                                message = SACommonHelper.MappingEOLName(model);
-                            }
-
-                            //_ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
-                            OSDEventArgs args = new()
-                            {
-                                Requester = "BatteryLow",
-                                DeviceName = Screen.PrimaryScreen.DeviceName,
-                                osd_type = OSDType.BatteryLow,
-                                osd_device = type,
-                                Message = message
-                            };
-                            OnOSDNotify(args);
-                            Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
-                            writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        writelog($"Retrieve global setting [Low_Battery_Level] to show osd with exception:{e.Message}");
-                    }
+                    CheckLowBatteryOSD(deviceInfo);
                 }
             }
         }
@@ -2804,6 +2801,85 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         //    }
         //}
 
+        private void CheckLowBatteryOSD(DeviceInfo deviceInfo)
+        {
+            try
+            {
+                //var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
+                //if (!settings.GlobalSetting_General.Low_Battery_Level)
+                //    return;
+                //var settings = _UserSettingsPlugin.ReadGlobalSettings().Result;
+                if (_UserSettingsPlugin == null)
+                    return;
+
+                var settings = _UserSettingsPlugin.ReadGlobalSettings().Result;
+                if (settings == null || settings.GlobalSetting_General == null)
+                {
+                    writelog("Retrieve global setting [Low_Battery_Level] got null data");
+                    return;
+                }
+                if (!settings.GlobalSetting_General.Low_Battery_Level)
+                {
+                    writelog("Retrieve global setting [Low_Battery_Level] got disable result");
+                    return;
+                }
+
+                if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9 && deviceInfo.BatteryStatus != "Charging")
+                {
+                    OSDType_Device type = OSDType_Device.Unknown;
+                    var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
+                    var model = SACommonHelper.MappingModel(deviceInfo.ModelNumber);
+                    var message = $"{deviceInfo.Name.Replace(deviceInfo.ModelNumber, "").Trim()} {model}";
+                    if (deviceType.Contains("PEN"))
+                    {
+                        if (deviceInfo.ModelNumber == "PN5122W" && deviceInfo.BatteryLevel > 6)
+                        { return; }
+                        type = OSDType_Device.Pen;
+                    }
+                    else if (deviceType.Contains("KEYBOARD"))
+                    {
+                        type = OSDType_Device.Keyboard;
+                    }
+                    else if (deviceType.Contains("MOUSE"))
+                    {
+                        type = OSDType_Device.Mouse;
+                    }
+                    else if (deviceType.Contains("HEADSET"))
+                    {
+                        type = OSDType_Device.Headset;
+                    }
+                    else if (SACommonHelper.EOLKBList.Contains(deviceInfo.ModelNumber))
+                    {
+                        type = OSDType_Device.Keyboard;
+                        message = SACommonHelper.MappingEOLName(model);
+                    }
+                    else if (SACommonHelper.EOLMouseList.Contains(deviceInfo.ModelNumber))
+                    {
+                        type = OSDType_Device.Mouse;
+                        message = SACommonHelper.MappingEOLName(model);
+                    }
+
+                    //_ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
+                    OSDEventArgs args = new OSDEventArgs()
+                    {
+                        Requester = "BatteryLow",
+                        DeviceName = Screen.PrimaryScreen.DeviceName,
+                        osd_type = OSDType.BatteryLow,
+                        osd_device = type,
+                        Message = message
+                    };
+                    OnOSDNotify(args);
+                    Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
+                    writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Retrieve global setting [Low_Battery_Level] to show osd with exception:{e.Message}");
+            }
+        }
+
+
         private void ILogicalDevice_BatteryLevelChanged(ILogicalDevice arg1, int arg2)
         {
             if (_deviceHelper is { deviceInfo: not null })
@@ -2818,79 +2894,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     _EventArgs.device_peripherals = deviceInfo;
                     _EventArgs.changedProperty = "BatteryLevelChanged";
                     OnNotify(_EventArgs);
-                    Debug.WriteLine($"BatteryLevelChanged: ID: {arg1.Id} Level: {arg2}");
-                    writelog($"BatteryLevelChanged: ID: {arg1.Id} Level: {arg2}");
+                    Debug.WriteLine($"BatteryLevelChanged: ID: {arg1.Id} Status: {deviceInfo.BatteryStatus} Level: {arg2}");
+                    writelog($"BatteryLevelChanged: ID: {arg1.Id} Status: {deviceInfo.BatteryStatus} Level: {arg2}");
 
-                    try
-                    {
-                        //var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
-                        //if (!settings.GlobalSetting_General.Low_Battery_Level)
-                        //    return;
-                        var settings = _UserSettingsPlugin.ReadGlobalSettings().Result;
-                        if (settings == null || settings.GlobalSetting_General == null)
-                        {
-                            writelog("Retrieve global setting [Low_Battery_Level] got null data");
-                            return;
-                        }
-                        if (!settings.GlobalSetting_General.Low_Battery_Level)
-                        {
-                            writelog("Retrieve global setting [Low_Battery_Level] got disable result");
-                            return;
-                        }
-
-                        if (arg2 >= 0 && arg2 <= 9)
-                        {
-                            OSDType_Device type = OSDType_Device.Unknown;
-                            var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
-                            var model = SACommonHelper.MappingModel(deviceInfo.ModelNumber);
-                            var message = $"{deviceInfo.Name.Replace(deviceInfo.ModelNumber, "").Trim()} {model}";
-                            if (deviceType.Contains("PEN"))
-                            {
-                                if (deviceInfo.ModelNumber == "PN5122W" && arg2 > 6)
-                                { return; }
-                                type = OSDType_Device.Pen;
-                            }
-                            else if (deviceType.Contains("KEYBOARD"))
-                            {
-                                type = OSDType_Device.Keyboard;
-                            }
-                            else if (deviceType.Contains("MOUSE"))
-                            {
-                                type = OSDType_Device.Mouse;
-                            }
-                            else if (deviceType.Contains("HEADSET"))
-                            {
-                                type = OSDType_Device.Headset;
-                            }
-                            else if (SACommonHelper.EOLKBList.Contains(deviceInfo.ModelNumber))
-                            {
-                                type = OSDType_Device.Keyboard;
-                                message = SACommonHelper.MappingEOLName(model);
-                            }
-                            else if (SACommonHelper.EOLMouseList.Contains(deviceInfo.ModelNumber))
-                            {
-                                type = OSDType_Device.Mouse;
-                                message = SACommonHelper.MappingEOLName(model);
-                            }
-
-                            //_ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
-                            OSDEventArgs args = new OSDEventArgs()
-                            {
-                                Requester = "BatteryLow",
-                                DeviceName = Screen.PrimaryScreen.DeviceName,
-                                osd_type = OSDType.BatteryLow,
-                                osd_device = type,
-                                Message = message
-                            };
-                            OnOSDNotify(args);
-                            Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
-                            writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        writelog($"Retrieve global setting [Low_Battery_Level] to show osd with exception:{e.Message}");
-                    }
+                    CheckLowBatteryOSD(deviceInfo);
                 }
             }
         }
@@ -3340,43 +3347,45 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 if (deviceInfo == null)
                     deviceInfo = new DeviceInfo();
                 // >>
-                {
-                    deviceInfo.PairingStatusName = UpdateParingStausText((DonglePairingStatus)newPairingStatus);
 
-                    DeviceChangedEventArgs _EventArgs = new();
-                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                    _EventArgs.device_peripherals = deviceInfo;
-                    _EventArgs.changedProperty = $"DonglePairingStatusChanged|{requestDeviceName}";
-                    Debug.WriteLine($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
-                    writelog($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
-                    OnNotify(_EventArgs);
-                }
+                deviceInfo.PairingStatusName = UpdateParingStausText((DonglePairingStatus)newPairingStatus);
+                deviceInfo.Message = requestDeviceName;
+
+                DeviceChangedEventArgs _EventArgs = new()
+                {
+                    type = DeviceChangedType.Peripherals_SettingsChange,
+                    device_peripherals = deviceInfo,
+                    changedProperty = $"DonglePairingStatusChanged"
+                };
+                Debug.WriteLine($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
+                writelog($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
+                OnNotify(_EventArgs);
             }
         }
 
-        private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle physicalAudioDeviceDongle, int newPairingStatus, int dongleDeviceType, string requestDeviceName)//(IPhysicalAudioDeviceDongle arg1, AudioDonglePairingStatus arg2)
-        {
-            if (_deviceHelper is { deviceInfo: not null })
-            {
-                var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.PhyscialDeviceID.ToString() == physicalAudioDeviceDongle.Id.ToString());
-                // << 240712 fix empty dongle issue by Hess
-                if (deviceInfo == null)
-                    deviceInfo = new DeviceInfo();
-                // >>
-                {
-                    deviceInfo.PairingStatusName = UpdateParingStausText((AudioDonglePairingStatus)newPairingStatus);
+        //private void PhysicalAudioDeviceDongle_PairingStatusChanged(IPhysicalAudioDeviceDongle physicalAudioDeviceDongle, int newPairingStatus, int dongleDeviceType, string requestDeviceName)//(IPhysicalAudioDeviceDongle arg1, AudioDonglePairingStatus arg2)
+        //{
+        //    if (_deviceHelper is { deviceInfo: not null })
+        //    {
+        //        var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.PhyscialDeviceID.ToString() == physicalAudioDeviceDongle.Id.ToString());
+        //        // << 240712 fix empty dongle issue by Hess
+        //        if (deviceInfo == null)
+        //            deviceInfo = new DeviceInfo();
+        //        // >>
+        //        {
+        //            deviceInfo.PairingStatusName = UpdateParingStausText((AudioDonglePairingStatus)newPairingStatus);
 
-                    DeviceChangedEventArgs _EventArgs = new();
-                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                    _EventArgs.device_peripherals = deviceInfo;
-                    _EventArgs.changedProperty = $"AudioDonglePairingStatusChanged|{requestDeviceName}";
-                    Debug.WriteLine($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
-                    writelog($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
-                    OnNotify(_EventArgs);
-                }
-            }
-            //throw new NotImplementedException();
-        }
+        //            DeviceChangedEventArgs _EventArgs = new();
+        //            _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
+        //            _EventArgs.device_peripherals = deviceInfo;
+        //            _EventArgs.changedProperty = $"AudioDonglePairingStatusChanged|{requestDeviceName}";
+        //            Debug.WriteLine($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
+        //            writelog($"PairingStatusChanged: {deviceInfo.PairingStatusName}");
+        //            OnNotify(_EventArgs);
+        //        }
+        //    }
+        //    //throw new NotImplementedException();
+        //}
 
         private void PhysicalAudioDeviceDongle_PairedDeviceCountChanged(IPhysicalAudioDeviceDongle arg1, int arg2)
         {
@@ -3597,8 +3606,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 _UserSettingsPlugin = SettingsInstance;
                 writelog($"Assign instance {nameof(SettingsInstance)} to DTH peripheral plugin");
+
+                if (_deviceHelper != null && _deviceHelper.deviceInfo != null)
+                {
+                    foreach (var di in _deviceHelper.deviceInfo)
+                    {
+                        CheckLowBatteryOSD(di);
+                    }
+                }
             }
         }
+
 
         public event EventHandler<OSDEventArgs> Peripheral_OSD_Notify;
 
