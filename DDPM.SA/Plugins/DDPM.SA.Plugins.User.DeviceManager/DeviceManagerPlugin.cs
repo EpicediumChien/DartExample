@@ -6419,75 +6419,75 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //}
             if (inputList != null && subInputList != null)
             {
-                if (GetOnUSBKVM(monitorInfo).Result)
-                {
-                    //get monitor settings
-                    List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-                    if (settings != null)
-                    {
-                        //get monitor setting
-                        DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
-                        if (monitorSetting == null)
-                        {
-                            USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                            //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
-                        }
-                        else
-                        {
-                            try
-                            {
-                                if (!string.IsNullOrEmpty(monitorSetting.KVM.strUSBKVMPCsList))
-                                {
-                                    USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
-                                    if (USBKVMPCsList != null)
-                                    {
-                                        if (USBKVMPCsList.Count > 1)
-                                        {
-                                            foreach (var pc in USBKVMPCsList)
-                                            {
-                                                if (string.IsNullOrEmpty(pc.Key) || pc.Value == null)
-                                                {
-                                                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                                                    break;
-                                                }
-                                                else
-                                                {
-                                                    string usbUpstream = GetUSBUpstream(monitorInfo, pc.Value.InputType).Result;
-                                                    if (string.IsNullOrEmpty(usbUpstream))
-                                                    {
-                                                        writelog("[GetUSBKVMPCsList]usbUpstream is null or empty.");
-                                                    }
-                                                    else
-                                                    {
-                                                        pc.Value.USBUpstream = usbUpstream;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                                    //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                                //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
-                            }
-                        }
-                    }
-                }
-                else
-                {
+                //if (GetOnUSBKVM(monitorInfo).Result)
+                //{
+                //    //get monitor settings
+                //    List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+                //    if (settings != null)
+                //    {
+                //        //get monitor setting
+                //        DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
+                //        if (monitorSetting == null)
+                //        {
+                //            USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                //            //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
+                //        }
+                //        else
+                //        {
+                //            try
+                //            {
+                //                if (!string.IsNullOrEmpty(monitorSetting.KVM.strUSBKVMPCsList))
+                //                {
+                //                    USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
+                //                    if (USBKVMPCsList != null)
+                //                    {
+                //                        if (USBKVMPCsList.Count > 1)
+                //                        {
+                //                            foreach (var pc in USBKVMPCsList)
+                //                            {
+                //                                if (string.IsNullOrEmpty(pc.Key) || pc.Value == null)
+                //                                {
+                //                                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                //                                    break;
+                //                                }
+                //                                else
+                //                                {
+                //                                    string usbUpstream = GetUSBUpstream(monitorInfo, pc.Value.InputType).Result;
+                //                                    if (string.IsNullOrEmpty(usbUpstream))
+                //                                    {
+                //                                        writelog("[GetUSBKVMPCsList]usbUpstream is null or empty.");
+                //                                    }
+                //                                    else
+                //                                    {
+                //                                        pc.Value.USBUpstream = usbUpstream;
+                //                                    }
+                //                                }
+                //                            }
+                //                        }
+                //                        else
+                //                        {
+                //                            USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                //                        }
+                //                    }
+                //                }
+                //                else
+                //                {
+                //                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                //                    //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
+                //                }
+                //            }
+                //            catch (Exception e)
+                //            {
+                //                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                //                //bool b = SetUSBKVMPCsList(monitorInfo, USBKVMPCsList).Result;
+                //            }
+                //        }
+                //    }
+                //}
+                //else
+                //{
                     USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
-                }
+                //}
             }
             else
             {

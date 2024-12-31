@@ -164,16 +164,17 @@ namespace DDPM.UI.Module.Kvm
                         vm._log.Debug("[SelectUSBKVM]USBKVM is on");
                         button_USB.Visibility = Visibility.Collapsed;
                         button_OnUSB.Visibility = Visibility.Visible;
-                        if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E8"))
-                        {
-                            vm._log.Debug("[SelectUSBKVM]Have E8");
-                            button_USBHotkeys.Visibility = Visibility.Visible;
-                        }
-                        else
-                        {
-                            vm._log.Debug("[SelectUSBKVM]No E8");
-                            button_USBHotkeys.Visibility = Visibility.Collapsed;
-                        }
+                        button_USBHotkeys.Visibility = Visibility.Visible;
+                        //if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E8"))
+                        //{
+                        //    vm._log.Debug("[SelectUSBKVM]Have E8");
+                        //    button_USBHotkeys.Visibility = Visibility.Visible;
+                        //}
+                        //else
+                        //{
+                        //    vm._log.Debug("[SelectUSBKVM]No E8");
+                        //    button_USBHotkeys.Visibility = Visibility.Collapsed;
+                        //}
                     }
                     else
                     {
