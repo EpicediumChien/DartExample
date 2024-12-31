@@ -488,10 +488,10 @@ namespace DDPM.UI.Module.Kvm
             else if (vm.isPBP)
             {
                 vm._log?.Info("[KVMPIPPBPFullView]SetPbpMode");
+                vm.PxPCode = _pbpcode;
                 bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPbpMode(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, vm.PxPCode).Result;
                 if (bpxp)
                 {
-                    vm.PxPCode = _pbpcode;
                     if (_pbpcode >= 0x23 && _pbpcode <= 0x2F)
                     {
                         bt = bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "2-PBP").Result;
