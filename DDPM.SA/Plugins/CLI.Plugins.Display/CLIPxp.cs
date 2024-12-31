@@ -857,19 +857,17 @@ namespace CLI.Plugins.Display
                     response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                     response.Value = rawValue;
                     isPass = _devMgr.SetPbpMode(_AllInfoMonitors[idx], (UInt16)pxpModeObj.ModeCode).Result;
-                    if (_cmdLineInput.Options.Count == 2)
+                    if (_cmdLineInput.Options.Count == 2 &&
+                        !String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
                     {
-                        if (!String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
+                        string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
+                        if (ss.Length == 2)
                         {
-                            string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
-                            if (ss.Length == 2)
-                            {
-                                sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
-                                sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
-                                sub3 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
-                                isOK = _devMgr.SetSubInputs(_AllInfoMonitors[idx], sub2, null, null).Result;
-                            }
-                        }
+                            sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
+                            sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
+                            sub3 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
+                            isOK = _devMgr.SetSubInputs(_AllInfoMonitors[idx], sub2, null, null).Result;
+                        }                        
                     }
                 }
                 
@@ -971,31 +969,28 @@ namespace CLI.Plugins.Display
 
             ss = _cmdLineInput.Options[0].Option_Value.Split(new string[] { "," }, StringSplitOptions.None);
             //-value is specified
-            if (ss.Length >= 1 && ss.Length < 2)
+            if (ss.Length >= 1 && 
+                ss.Length < 2 &&
+                ss[0] != null)
             {
-                if (ss[0] != null)
-                {
-                    sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
-                }
+                sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
             }
 
-            if (ss.Length > 1 && ss.Length < 3)
+            if (ss.Length > 1 && 
+                ss.Length < 3 &&
+                ss[1] != null)
             {
-                if (ss[1] != null)
-                {
-                    sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
-                    sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
-                }
+                sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
+                sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
             }
 
-            if (ss.Length > 2 && ss.Length < 4)
+            if (ss.Length > 2 && 
+                ss.Length < 4 &&
+                ss[2] != null)
             {
-                if (ss[2] != null)
-                {
-                    sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
-                    sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
-                    sub3 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[2]));
-                }
+                sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
+                sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
+                sub3 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[2]));
             }
 
             //Phase 4. If no any option
@@ -1410,12 +1405,11 @@ namespace CLI.Plugins.Display
                 foreach (string idxString in cmdLineInput.DeviceIndex)
                 {
                     int idx;
-                    if (int.TryParse(idxString, out idx))
+                    if (int.TryParse(idxString, out idx) &&
+                        idx >= 0 && 
+                        idx < allMonitors.Count)
                     {
-                        if ((idx >= 0) && (idx < allMonitors.Count))
-                        {
-                            listOut.Add(idx);
-                        }
+                        listOut.Add(idx);
                     }
                 }
             }
@@ -1426,12 +1420,11 @@ namespace CLI.Plugins.Display
                 foreach (string idxString in cmdLineInput.Model)
                 {
                     int idx;
-                    if (int.TryParse(idxString, out idx))
+                    if (int.TryParse(idxString, out idx) &&
+                        idx >= 0 && 
+                        idx < allMonitors.Count)
                     {
-                        if ((idx >= 0) && (idx < allMonitors.Count))
-                        {
-                            listOut.Add(idx);
-                        }
+                        listOut.Add(idx);
                     }
                 }
             }

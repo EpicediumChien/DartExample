@@ -8,6 +8,7 @@ using Microsoft;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -187,6 +188,11 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 UpdateResetToDefault();
                 CheckSpeakerFunc();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    SoundbarSettingChanged?.Invoke(this, EventArgs.Empty);
+                });
+
             }
             catch (Exception ex)
             {

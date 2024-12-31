@@ -61,7 +61,7 @@ namespace DDPM.UI.Module.Color
 
         #endregion Log
 
-      
+
         // add jim 20240604
         //public RegistryMonitor_NightLight registryMonitor_NightLight = null;
         //public RegistryMonitor_ICC registryMonitor_ICC = null;     
@@ -84,7 +84,7 @@ namespace DDPM.UI.Module.Color
         public List<string> ColorPresets_ItemsCollection { get; set; }
 
         //private static List<ColorPresetSettings> AddAppist = new List<ColorPresetSettings>();
-      
+
         public bool Is_Game_DeviceName { get; set; } = false;
 
         //List<string> HDR_ColorPresetNameList = new List<string>() { "Standard HDR", "Movie HDR", "Game HDR", "Vivid HDR", "Desktop", "Reference", "Multiscreen Match", "DisplayHDR", "HDR10", "HLG" };
@@ -183,7 +183,7 @@ namespace DDPM.UI.Module.Color
             }
         }
 
-        private Visibility isAdvanced_Settings;
+        private Visibility isAdvanced_Settings = Visibility.Hidden;
 
         public Visibility IsisAdvanced_Settings
         {
@@ -225,7 +225,7 @@ namespace DDPM.UI.Module.Color
             set
             {
                 int temp = _colorPresetSelectedIndex;
-                if(ColorPresets_ItemsCollection != null && temp < ColorPresets_ItemsCollection.Count)//before
+                if (ColorPresets_ItemsCollection != null && temp < ColorPresets_ItemsCollection.Count)//before
                     last_selected_value = ColorPresets_ItemsCollection[temp];
                 if (CheckIfDisableALSFeature())
                 {
@@ -243,7 +243,7 @@ namespace DDPM.UI.Module.Color
         }
 
         public ColorViewModel()
-        {            
+        {
             DdpmCommonHelper.MyConsole.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
         }
 
@@ -282,7 +282,7 @@ namespace DDPM.UI.Module.Color
 
             int nSupportColorPresets_Count = SupportColorPresets.Count;
 
-            if ( idex >= 0 && idex < nSupportColorPresets_Count)
+            if (idex >= 0 && idex < nSupportColorPresets_Count)
             {
                 DDPMSettings setting = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
 
@@ -302,14 +302,14 @@ namespace DDPM.UI.Module.Color
                                 {
                                     DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
                                       MyModule.SelectedHomeDevice?.MonitorInfo,
-                                      SupportColorPresets[idex],0,Is_Game_DeviceName,SmartHDR_ON);
+                                      SupportColorPresets[idex], 0, Is_Game_DeviceName, SmartHDR_ON);
                                 }
                                 else
                                 {
                                     foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
                                     {
                                         if (hd.MonitorInfo.IsDellMonitor)
-                                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, Is_Game_DeviceName, SmartHDR_ON, null,false);
+                                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, Is_Game_DeviceName, SmartHDR_ON, null, false);
                                     }
                                 }
                             }
@@ -318,11 +318,11 @@ namespace DDPM.UI.Module.Color
                                 // 20240619 jim modify
                                 DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(
                                     MyModule.SelectedHomeDevice?.MonitorInfo,
-                                    SupportColorPresets[idex],0,Is_Game_DeviceName, SmartHDR_ON); // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                                    SupportColorPresets[idex], 0, Is_Game_DeviceName, SmartHDR_ON); // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
                         }
-                        
+
                     });
-                }               
+                }
 
                 //this.Dispatcher.Invoke((Action)(() =>
                 {
@@ -340,7 +340,7 @@ namespace DDPM.UI.Module.Color
                                 if (ICCprofile_based_Colorpreset_enable)
                                 {
                                     // add jim 20240830
-                                    DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex],0,Is_Game_DeviceName,SmartHDR_ON); // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                                    DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex], 0, Is_Game_DeviceName, SmartHDR_ON); // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
                                     //DdpmCommonHelper.DeviceManagerSA?.SetMonitorProfile(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
                                     //DdpmCommonHelper.DeviceManagerSA?.AutoColorManagementForMonitorConfig(MyModule.SelectedHomeDevice?.MonitorInfo,"BYMONITOR", SupportColorPresets[idex]);
                                 }
@@ -475,7 +475,7 @@ namespace DDPM.UI.Module.Color
             // Jim, 20240819
             if (Test_AddAppCollectionData.GetInstance()._monitorConfigs != null)
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs.Clear();
-            
+
             Test_AddAppCollectionData.GetInstance()._monitorConfigs = config;
 
             int index = get_index_of_json_config_for_cur_monitor(mo);
@@ -516,7 +516,7 @@ namespace DDPM.UI.Module.Color
                         IconName = "Assets/palette.png",
                     });
                 }
-               
+
             }
 
             if (index < 0 || Test_AddAppCollectionData.GetInstance()._monitorConfigs == null || index >= Test_AddAppCollectionData.GetInstance()._monitorConfigs.Count)
@@ -572,7 +572,7 @@ namespace DDPM.UI.Module.Color
                 startWatcher = new ManagementEventWatcher(scope, queryString);
                 startWatcher.EventArrived += startWatcher_EventArrived;
                 startWatcher.Start();
-            }           
+            }
         }
 
         // add jim 20240606
@@ -760,14 +760,14 @@ namespace DDPM.UI.Module.Color
                 //    return;
                 //if (data.LockSettings == null)
                 //    return;
-                
+
                 if (data != null)
                     PerformLockUnlockUIAction(data.LockSettings.Lock_Display_ColorPreset, data.LockSettings.Lock_Display_AutoBriTemp);
 
                 UpdateHDRStatus();
 
                 // jim 20241207 add and modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
-                if (MyModule.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("F4"))                    
+                if (MyModule.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("F4"))
                     Is_Game_DeviceName = true;
 
                 DdpmCommonHelper.WriteUILog($"[DoWork_RefreshData] Has Gaming Capability={Is_Game_DeviceName}, HDR Status = {SmartHDR_ON}");
@@ -959,13 +959,13 @@ namespace DDPM.UI.Module.Color
 
                     AppsList = Test_AddAppCollectionData.GetInstance().AppsList;
 
-                    _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo,true).Result;
+                    _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, true).Result;
 
                     MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-                    {                        
-                        update_ui_over_runtype(config);                        
+                    {
+                        update_ui_over_runtype(config);
                     }));
-                                 
+
                 }
 
                 // // if data = null, represents read setting file (ColorSetting.json) has something went wrong 
@@ -1069,10 +1069,10 @@ namespace DDPM.UI.Module.Color
         private void DoWork_DownloadICCData(object sender, DoWorkEventArgs e)
         {
             try
-            {  
+            {
                 ColorPresetSettings config = get_cur_monitor_preset_config(MyModule.SelectedHomeDevice.MonitorInfo, DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result);
 
-                _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo,true).Result;
+                _ICC_Metadata = DdpmCommonHelper.DeviceManagerSA?.DownloadICCData(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, true).Result;
 
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                 {
@@ -1092,19 +1092,19 @@ namespace DDPM.UI.Module.Color
         /// <param name="sender">object type</param>
         /// <param name="e">changed event</param>
         private void OnVCPChangedEvent(object? sender, VCPchangedEventArgs e)
-        {   
+        {
             Trace.WriteLine($"VCPchangedEventArgs e.vcpcode = {e.vcpcode}");
 
             if (e.vcpcode.Equals("DC") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("14") || e.vcpcode.Equals("E2") || e.vcpcode.Equals("F4")) // Color changes by OSD menu
             {
-                
+
                 string curPreset = DdpmCommonHelper.DeviceManagerSA?.ReadCurrentColorPreset(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo).Result;
                 string strSync_CurrentColorPreset = string.Empty;
                 //strSync_CurrentColorPreset = Sync_CurrentColorPreset(curPreset);
                 strSync_CurrentColorPreset = DdpmCommonHelper.DeviceManagerSA?.Sync_ColorPresetName(DdpmCommonHelper.ModuleOwner?.SelectedHomeDevice?.MonitorInfo, curPreset).Result;
 
                 MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-                {  
+                {
                     if (!string.IsNullOrEmpty(strSync_CurrentColorPreset))
                     {
                         int idx = ColorPresets_ItemsCollection.FindIndex(x => x.ToUpper().Equals(strSync_CurrentColorPreset.ToUpper()));
@@ -1113,9 +1113,9 @@ namespace DDPM.UI.Module.Color
                             UpdateColorPresetSelectedIndex(idx);
                         }
                     }
-                    
+
                 }));
-            }         
+            }
         }
 
         ~ColorViewModel()
@@ -1133,7 +1133,7 @@ namespace DDPM.UI.Module.Color
 
         private void OnColoresetManualChangeHandler(object sender, string e)
         {
-            int index = 0;      
+            int index = 0;
 
             MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
             {
@@ -1188,7 +1188,7 @@ namespace DDPM.UI.Module.Color
                 }
 
                 // jim modify 20240604
-                ((ComboBox)(MyModule.GetRightView().FindName("cbManualPreset"))).SelectedIndex = index;                     
+                ((ComboBox)(MyModule.GetRightView().FindName("cbManualPreset"))).SelectedIndex = index;
 
                 RefreshUI();
             }));
@@ -1251,8 +1251,8 @@ namespace DDPM.UI.Module.Color
             try
             {
                 Process[] processes = Process.GetProcessesByName("ColorManagement");
-                
-                if (processes!=null && processes.Length > 0)
+
+                if (processes != null && processes.Length > 0)
                 {
                     // Is running
                     bool blIsPass = true;
@@ -1265,12 +1265,12 @@ namespace DDPM.UI.Module.Color
                             string Info = "ColorManagement File Signature Is Null Or Empty";
                             if (!DDPMFileSecurity.VerifyExecutableFileSignature(filepath, out Info))
                             {
-                                blIsPass = false;   
+                                blIsPass = false;
                                 string log = $"[RunWorkerCompleted_RefreshData] VerifyExecutableFileSignature : {Info}\n";
                                 DdpmCommonHelper.WriteUILog(log);
                                 break;
                             }
-                       
+
                         }
                     }
 
@@ -1285,8 +1285,8 @@ namespace DDPM.UI.Module.Color
                             DCM_Visibility = Visibility.Visible;
 
                         }));
-                    }                   
-                }  
+                    }
+                }
             }
             catch (System.Exception ex)
             {
@@ -1336,14 +1336,14 @@ namespace DDPM.UI.Module.Color
                 {
                     //Result is failed.
                 }
-            }          
+            }
 
             WatchForProcessStart();
             WatchForProcessEnd();
 
             //UpdateHDRStatus();
         }
-        
+
         /*
         private void SyncNightlightStatus()
         {
@@ -1459,7 +1459,7 @@ namespace DDPM.UI.Module.Color
         }
 
         public void RefreshUI()
-        {           
+        {
             OnPropertyChanged("ColorPresets_ItemsCollection");
             OnPropertyChanged("AppsList");
             OnPropertyChanged("NightlightStatus");
@@ -1489,7 +1489,7 @@ namespace DDPM.UI.Module.Color
             }
             else
             {
-                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;                
+                ((Expander)(MyModule.GetRightView().FindName("Expander_Auto"))).IsExpanded = false;
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = false;
                 ((Expander)(MyModule.GetRightView().FindName("Expander_Manual"))).IsExpanded = true;
                 //DdpmCommonHelper.DeviceManagerSA.AutoSetColorPresetForMonitorConfig(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "OFF", IsAutoColorPreset_Lock);
@@ -1502,7 +1502,7 @@ namespace DDPM.UI.Module.Color
             {
                 if (_ICC_Metadata.Is_Support_ICC_DeviceName)
                 {
-                    vis_ad = Visibility.Visible;                    
+                    vis_ad = Visibility.Visible;
 
                     if (config.ColorManagement_Status == (int)ColorManagementStatus.Off)
                     {
@@ -1516,7 +1516,7 @@ namespace DDPM.UI.Module.Color
                             ((UXRadioButton)(MyModule.GetRightView().FindName("rb_Colorpreset_based_ICCprofile"))).IsChecked = false;
                             ((UXRadioButton)(MyModule.GetRightView().FindName("rb_ICCprofile_based_Colorpreset"))).IsEnabled = false;
                             ((UXRadioButton)(MyModule.GetRightView().FindName("rb_Colorpreset_based_ICCprofile"))).IsEnabled = false;
-                           
+
                         }
                         else if (config.ColorManagement_RunType == (int)ColorManagementRunType.Byhost)
                         {
@@ -1525,7 +1525,7 @@ namespace DDPM.UI.Module.Color
                             ((UXRadioButton)(MyModule.GetRightView().FindName("rb_Colorpreset_based_ICCprofile"))).IsChecked = true;
                             ((UXRadioButton)(MyModule.GetRightView().FindName("rb_ICCprofile_based_Colorpreset"))).IsEnabled = false;
                             ((UXRadioButton)(MyModule.GetRightView().FindName("rb_Colorpreset_based_ICCprofile"))).IsEnabled = false;
-                           
+
                         }
                         else if (config.ColorManagement_RunType == (int)ColorManagementRunType.Off)
                         {
@@ -1566,7 +1566,7 @@ namespace DDPM.UI.Module.Color
                             ((UXRadioButton)(MyModule.GetRightView().FindName("rb_ICCprofile_based_Colorpreset"))).IsEnabled = true;
                             ((UXRadioButton)(MyModule.GetRightView().FindName("rb_Colorpreset_based_ICCprofile"))).IsEnabled = true;
                         }
-                    }                    
+                    }
 
                 }
                 else
