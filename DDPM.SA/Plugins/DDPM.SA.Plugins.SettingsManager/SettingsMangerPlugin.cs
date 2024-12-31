@@ -554,7 +554,11 @@ namespace DDPM.SA.Plugins.SettingsManager
             //Apply folder ACL
             try
             {
-                DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(folder);
+                //DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(folder);
+                if (!DDPMFileSecurity.CheckFolderACL(folder, out info, true))
+                    WriteLog($"[InitSysSettingsData][CheckFolderACL] failed with: {info}");
+                else
+                    WriteLog("[InitSysSettingsData][CheckFolderACL] Success");
             }
             catch (Exception ex)
             {
