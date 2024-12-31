@@ -1853,6 +1853,11 @@ namespace DDPM.UI.Module.Kvm
             int i = 0;
             while (i < 120)
             {
+                if (i == 70 && !DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
+                {
+                    _log.Debug("Named pipe is not Connected, so CreatNewNamedpipe again.");
+                    DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
+                }
                 if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
                 {
                     isOnNKVM(true);
