@@ -14484,8 +14484,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (!IsPIPMode(monitorInfo))
                 {
                     //pxp off
-                    Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Swap_IputPIPPBP not take effect due to PXP mode is off or not supported");
-                    writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] will not take effect due to PXP mode is off");
+                    Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Change_PIPPosition not take effect due to PXP mode is off or not supported");
+                    writelog($"[hotkey]Change_PIPPosition:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] will not take effect due to PXP mode is off");
                     return;
                 }
                 else
