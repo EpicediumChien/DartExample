@@ -1759,7 +1759,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             try
             {
                 //jsonString = JsonConvert.SerializeObject(monitorSettings);
-                JToken token = JToken.FromObject(monitorSettings);
+                /*JToken token = JToken.FromObject(monitorSettings);
                 if (token.Type == JTokenType.Object)
                 {
                     JObject obj = (JObject)token;
@@ -1771,6 +1771,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     JArray array = (JArray)token;
                     // Handle array
                     jsonString = array.ToString();
+                }*/
+                jsonString = DDPMFileSecurity.ConvertObjectToSerializedString(monitorSettings, out string info);
+                if(string.IsNullOrEmpty(jsonString))
+                {
+                    WriteLog("[RunSerializeObject_MonitorSettings] got empty output");
                 }
             }
             catch (Exception e)
@@ -1902,7 +1907,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string info;
             if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(impexpSettings).ToString(), path, out info))
             {
-                WriteLog(info);
+                WriteLog($"[WriteImpExpSettings][SetJsonContentFromSerializedString] failed with {info}");
                 return false;
             }
 

@@ -265,6 +265,7 @@ namespace DDPM.UI.Module.DisplayOthers
                         }
                         catch (Exception ex)
                         {
+                            DdpmCommonHelper.WriteUILog($"[ImpExpSettings_Dowork][Imp] exception: {ex.Message}");
                             OnMessageDlgInvoke("close_loading");
                             OnMessageDlgInvoke("file_corrupted");
                             return;

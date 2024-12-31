@@ -1946,5 +1946,39 @@ namespace DDPM.SA.Common.Settings
                 return false;
             }
         }
+
+        public static string ConvertObjectToSerializedString(System.Object obj, out string info)
+        {
+            string jsonString = string.Empty;
+            System.Object data = obj;
+            if(data == null)
+            {
+                info = "Input object is null";
+                return string.Empty;
+            }
+            try
+            {
+                JToken token = JToken.FromObject(data);
+                if (token.Type == JTokenType.Object)
+                {
+                    JObject tmp_obj = (JObject)token;
+                    // Handle object
+                    jsonString = tmp_obj.ToString();
+                }
+                else if (token.Type == JTokenType.Array)
+                {
+                    JArray tmp_array = (JArray)token;
+                    // Handle array
+                    jsonString = tmp_array.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                info = ex.Message;
+                return string.Empty;
+            }
+            info = "Success";
+            return jsonString;
+        }
     }
 }
