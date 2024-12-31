@@ -953,7 +953,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 result = DDPMFileSecurity.SetJsonContentFromSerializedString(_settingsAccessInfo, array.ToString(), _hotkeysettings_path, out info);
             }*/
 
-            bool result = WriteSettings_Common(hotkeySettings, "hotkey");
+            bool result = WriteSettings_Common(hotkeySettings, "hotkey", _hotkeysettings_path);
 
             return Task.FromResult(result);
             /*if (hotkeySettings == null)
@@ -2051,7 +2051,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<bool> WriteGlobalSettings(GlobalSettingParam globalSettingParam, bool writeToSys = true)
         {
-            bool result = WriteSettings_Common(globalSettingParam, "global");
+            bool result = WriteSettings_Common(globalSettingParam, "global", _GlobalSetting_path);
             if(!result)
             {
                 WriteLog(("Call [WriteSettings_Common] to write global setting failed"));
@@ -2137,7 +2137,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         public Task<bool> WriteInterruptScreen(InterruptScreenRoot interruptScreenParam)
         {
-            bool result = WriteSettings_Common(interruptScreenParam, "interrupt");
+            bool result = WriteSettings_Common(interruptScreenParam, "interrupt", _InterruptScreen_path);
 
             //apply setting to system IT config
             if (interruptScreenParam != null && result)
@@ -2279,54 +2279,83 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return _settings;
         }
 
-        private bool WriteSettings_Common(object dataObj, string type)
+        private bool WriteSettings_Common(object dataObj, string type, string settings_path)
         {
             if (dataObj == null)
             {
+                WriteLog($"[WriteSettings_Common] type:{type}, object is null");
                 return false;
             }
-            string settings_path = string.Empty;
-            switch (type)
+            //string settings_path = string.Empty;
+            //switch (type)
+            //{
+            //    case "global":
+            //        settings_path = _GlobalSetting_path;
+            //        break;
+            //    case "hotkey":
+            //        settings_path = _hotkeysettings_path;
+            //        break;
+            //    //case "powernap":
+            //    //    settings_path = _powerNapsettings_path;
+            //    //    break;
+            //    case "interrupt":
+            //        settings_path = _InterruptScreen_path;
+            //        break;
+            //    default:
+            //        WriteLog($"[WriteSettings_Common] type:{type} is not defined in common code!");
+            //        return false;
+            //}
+
+            if(string.IsNullOrEmpty(settings_path))
             {
-                case "global":
-                    settings_path = _GlobalSetting_path;
-                    break;
-                case "hotkey":
-                    settings_path = _hotkeysettings_path;
-                    break;
-                //case "powernap":
-                //    settings_path = _powerNapsettings_path;
-                //    break;
-                case "interrupt":
-                    settings_path = _InterruptScreen_path;
-                    break;
-                default:
-                    WriteLog($"[WriteSettings_Common] type:{type} is not defined in common code!");
-                    return false;
+                WriteLog($"[WriteSettings_Common] type:{type}, path is empty");
+                return false;
+            }
+            string path_sanitized = DDPMFileSecurity.SanitizePath(settings_path, out string info);
+            if (string.IsNullOrEmpty(path_sanitized))
+            {
+                WriteLog($"[WriteSettings_Common] type:{type}, path is abnormal ({info})");
+                return false;
             }
 
-            string info = string.Empty;
             bool result = false;
-            JToken token = JToken.FromObject(dataObj);
-            if (token.Type == JTokenType.Object)
+            try
             {
-                JObject obj = (JObject)token;
-                // Handle object
-                result = DDPMFileSecurity.SetJsonContentFromSerializedString(obj.ToString(), settings_path, out info);
+                info = string.Empty;                
+                /*JToken token = JToken.FromObject(dataObj);
+                if (token.Type == JTokenType.Object)
+                {
+                    JObject obj = (JObject)token;
+                    // Handle object
+                    result = DDPMFileSecurity.SetJsonContentFromSerializedString(obj.ToString(), path_sanitized, out info);
+                }
+                else if (token.Type == JTokenType.Array)
+                {
+                    JArray array = (JArray)token;
+                    // Handle array
+                    result = DDPMFileSecurity.SetJsonContentFromSerializedString(array.ToString(), path_sanitized, out info);
+                }
+                else
+                {
+                    WriteLog($"[WriteSettings_Common] unknow json type in program: {token.Type}");
+                    return false;
+                }*/
+                string outString = DDPMFileSecurity.ConvertObjectToSerializedString(dataObj, out info);
+                if (string.IsNullOrEmpty(outString))
+                {
+                    WriteLog($"[WriteSettings_Common][ConvertObjectToSerializedString] failed with info: {info}");
+                }
+                else
+                {
+                    result = DDPMFileSecurity.SetJsonContentFromSerializedString(outString, path_sanitized, out info);
+                    if (!result)
+                        WriteLog($"[WriteSettings_Common][SetJsonContentFromSerializedString] failed with info: {info}");
+                }
             }
-            else if (token.Type == JTokenType.Array)
+            catch (Exception e)
             {
-                JArray array = (JArray)token;
-                // Handle array
-                result = DDPMFileSecurity.SetJsonContentFromSerializedString(array.ToString(), settings_path, out info);
+                WriteLog($"[WriteSettings_Common] failed with exception: {e.Message}");
             }
-            else
-            {
-                WriteLog($"[WriteSettings_Common] unknow json type in program: {token.Type}");
-                return false;
-            }
-            if (!result)
-                WriteLog($"[SetJsonContentFromSerializedString] failed with info: {info}");
 
             switch (type)
             {
