@@ -663,7 +663,45 @@ namespace DDPM.UI.Common.Models
             if (!String.IsNullOrEmpty(imageFileName))
             {
                 string assemblyName = "DDPM.UI.Resources";
-                DeviceImage = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{imageFileName}.png", assemblyName);
+                ImageSource? imgSource = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{imageFileName}.png", assemblyName);
+                //If the image can be loaded (and not LineArt) then assign to DeviceImage to show
+                if (imgSource != null)
+                {
+                    DeviceImage = imgSource;
+                    WriteLog($"@HomeDevice.DeterminePeripheralDeviceImage, Model={DeviceInfo?.ModelNumber}, ImageFileName={imageFileName}, LoadImageFromResources=OK");
+                    return;
+                }
+                else
+                {
+                    //The ImageFileName is not empty or LineArt, however it fail to load from Resources
+                    //So we will show the LineArt image
+                    WriteLog($"@HomeDevice.DeterminePeripheralDeviceImage, Model={DeviceInfo?.ModelNumber}, ImageFileName={imageFileName}, LoadImageFromResources=Error");
+                }
+            }
+            else
+            {
+                WriteLog($"@HomeDevice.DeterminePeripheralDeviceImage, Model={DeviceInfo?.ModelNumber}, ImageFileName=(empty)");
+            }
+
+            //Step_2, We will load and show the LineArt image
+            try
+            {
+                if(DeviceInfo?.Type == DeviceType.LogicalKeyboard)
+                    DeviceImage = (BitmapImage)System.Windows.Application.Current.Resources["KeyboardImage_LineArt"];
+                if (DeviceInfo?.Type == DeviceType.LogicalMouse)
+                    DeviceImage = (BitmapImage)System.Windows.Application.Current.Resources["MouseImage_LineArt"];
+                if (DeviceImage != null)
+                {
+                    WriteLog($"@HomeDevice.DeterminePeripheralDeviceImage, LoadLineArtResource: OK");
+                }
+                else
+                {
+                    WriteLog($"@HomeDevice.DeterminePeripheralDeviceImage, LoadLineArtResource: Error, image will be null");
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"@HomeDevice.DeterminePeripheralDeviceImage, LoadLineArtResource: Exception", ex);
             }
         }
 
