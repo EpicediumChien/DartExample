@@ -83,7 +83,7 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Top"
                                 FontFamily="Roboto"
-                                Width="201"
+                                Width="Auto"
                                 Height="40"
                                 FontSize="14"
                                 FontWeight="Medium"
