@@ -69,14 +69,16 @@ namespace DDPM.UI.Common
         public static ILog? Log { get; set; }
 
         //Derek 1209
-        public static bool isDDPMSwitchToSettingPageByQAM = false;
+        private static bool isDDPMSwitchToSettingPageByQAM = false;
+        public static bool IsDDPMSwitchToSettingPageByQAM { get => isDDPMSwitchToSettingPageByQAM; set => isDDPMSwitchToSettingPageByQAM = value; }
+
 
         /// <summary>
         /// Flag to switch the Light Mode Feature
         /// </summary>
         public static bool ThemeSwitchFlag { get; set; } = false;
 
-        /// <summary>
+        /// <summary>previousOsTheme
         /// Flag to turn on and off UI Test buttons
         /// </summary>
         public static bool UIDebugModeFlag { get; set; } = false;
@@ -86,8 +88,19 @@ namespace DDPM.UI.Common
         // event will be handled by DisplayPugin, or DdpmHomePlugin shoud take over.
         public static bool IsDisplayPluginActivated { get; set; } = false;
 
+        private static bool isMainWindowAtPrimaryScreen = true;
+
+        public static bool IsMainWindowAtPrimaryScreen { get => isMainWindowAtPrimaryScreen; set => isMainWindowAtPrimaryScreen = value; }
+
+        //default theme is dark
+        private static OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
+        public static OSThemeEnum PreviousOsTheme { get => previousOsTheme; set => previousOsTheme = value; }
+        
+        private static string lastShowOsdScreenDeviceName = "";
+
+        public static string LastShowOsdScreenDeviceName { get => lastShowOsdScreenDeviceName; set => lastShowOsdScreenDeviceName = value; }
+
         //The last DisplayName (DeviceName) of the screen which show the OSD.
-        public static string LastShowOsdScreenDeviceName = "";
 
         public enum log_type
         {
@@ -165,8 +178,6 @@ namespace DDPM.UI.Common
                 return false;
         }
 
-
-        public static bool IsMainWindowAtPrimaryScreen = true;
 
         /// <summary>
         ///Parsing hex value blank separated string to a WORD array
@@ -355,12 +366,12 @@ namespace DDPM.UI.Common
             }
             return Settings_Cache;
         }
-        //default theme is dark
-        public static OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
+
+        
         public static void updateMergedDictionaries(ResourceManager resourceManager)
         {
             OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
-            if (previousOsTheme == oSTheme)
+            if (PreviousOsTheme == oSTheme)
                 return;
             string darkModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml";
             ResourceDictionary? darkResourceDictionary = Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(darkModeStyle));
@@ -389,7 +400,7 @@ namespace DDPM.UI.Common
                 Application.Current.MainWindow?.InvalidateVisual();
             }, System.Windows.Threading.DispatcherPriority.Loaded);
             // Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
-            previousOsTheme = oSTheme;
+            PreviousOsTheme = oSTheme;
         }
 
         public static bool isDarkMode()

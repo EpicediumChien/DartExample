@@ -387,6 +387,9 @@ namespace DDPM.UI.Module.EzMemory
                     }
                     else
                     {
+                        // 沒有monitor setting 數值 填否 跟 _
+                        _vm.AutomaticStartupValue = Strings.No;
+                        _vm.LaunchByTimeValue = "_";
                         _log.Info($"@[EzMemoryRightView] OnListViewItemClicked, ProfileSetting with ID {matchingProfile.ID} not found in MonitorSettings.");
                     }
                 }
@@ -588,21 +591,22 @@ namespace DDPM.UI.Module.EzMemory
                 // 取得User EAProfiles
                 List<EAProfileDDPM> initListViewIEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
 
+                // 1228拿掉 monitor setting 判斷
                 // 取得Monitor EasyArrangement
-                EasyArrangementDDPM initListVieweasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_homeDevice.MonitorInfo).Result;
+                //EasyArrangementDDPM initListVieweasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_homeDevice.MonitorInfo).Result;
 
-                if (initListViewIEAProfileDDPM != null && initListVieweasyArrangementDDPM != null)
+                if (initListViewIEAProfileDDPM != null)// && initListVieweasyArrangementDDPM != null)
                 {
                     // ProfileSettings 不為 null
-                    if (initListVieweasyArrangementDDPM.Desktops.Count > 0 && initListVieweasyArrangementDDPM.Desktops[0].ProfileSettings != null)
-                    {
+                    //if (initListVieweasyArrangementDDPM.Desktops.Count > 0 && initListVieweasyArrangementDDPM.Desktops[0].ProfileSettings != null)
+                    //{
                         foreach (var profile in initListViewIEAProfileDDPM)
                         {
                             // 在 ProfileSettings 中找是否有對應的 ID
-                            EzProfileSettingDDPM profileSetting = initListVieweasyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == profile.ID);
+                            //EzProfileSettingDDPM profileSetting = initListVieweasyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == profile.ID);
 
-                            if (profileSetting != null)
-                            {
+                            //if (profileSetting != null)
+                            //{
                                 if (profile.Layout >= 1000)
                                 {
                                     SplitJson[] customList = _deviceManagerSA.ReadEACustomList().Result;
@@ -654,17 +658,17 @@ namespace DDPM.UI.Module.EzMemory
                                         item.LayoutID = profile.Layout;
                                     }
                                 }
-                            }
-                            else
-                            {
-                                _log.Info($"@[EzMemoryRightView] InitListViewItems: Profile ID {profile.ID} not found in MonitorSettings.");
-                            }
+                            //}
+                            //else
+                            //{
+                            //    _log.Info($"@[EzMemoryRightView] InitListViewItems: Profile ID {profile.ID} not found in MonitorSettings.");
+                            //}
                         }
-                    }
-                    else
-                    {
-                        _log.Info($"@[EzMemoryRightView] InitListViewItems: No valid ProfileSettings found in MonitorSettings.");
-                    }
+                    //}
+                    //else
+                    //{
+                    //    _log.Info($"@[EzMemoryRightView] InitListViewItems: No valid ProfileSettings found in MonitorSettings.");
+                    //}
                 }
                 else
                 {

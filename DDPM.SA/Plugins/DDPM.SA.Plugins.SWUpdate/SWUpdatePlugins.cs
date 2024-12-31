@@ -566,18 +566,16 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// <param name="e"></param>
         private void DownloadTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
-            if (download != null)
+            if (download != null && 
+                download.DownloadFileStream != null)
             {
-                if (download.DownloadFileStream != null)
+                UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                 {
-                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
-                    {
-                        DeviceName = _SWUpdateInfo.SoftwareName,
-                        TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                        ProcessName = LangHelper.Instance["Downloading_and_installing"],
-                        ProcessProgress = download.GetProgress(),
-                    };
-                }
+                    DeviceName = _SWUpdateInfo.SoftwareName,
+                    TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
+                    ProcessName = LangHelper.Instance["Downloading_and_installing"],
+                    ProcessProgress = download.GetProgress(),
+                };
             }
         }
         /// <summary>

@@ -20,19 +20,16 @@ namespace DDPM.SA.Common
         public bool Equals(InterruptScreenRoot other)
         {
             bool same = false;
-            if (other.featuresList != null)
+            if (other.featuresList != null && this.featuresList.Count == other.featuresList.Count)
             {
-                if (this.featuresList.Count == other.featuresList.Count)
+                for (int i = 0; i < this.featuresList.Count; i++)
                 {
-                    for (int i = 0; i < this.featuresList.Count; i++)
+                    same = this.featuresList[i].Equals(other.featuresList[i]);
+                    if (!same)
                     {
-                        same = this.featuresList[i].Equals(other.featuresList[i]);
-                        if (!same)
-                        {
-                            break;
-                        }
+                        break;
                     }
-                }
+                }                
             }
             return this.version == other.version && same;
         }
@@ -102,17 +99,15 @@ namespace DDPM.SA.Common
             {
                 same = this.productLabel.Equals(other.productLabel);
             }
-            if (this.detailsList != null)
+            if (this.detailsList != null &&
+                this.detailsList.Count == other.detailsList.Count)
             {
-                if (this.detailsList.Count == other.detailsList.Count)
+                for (int i = 0; i < this.detailsList.Count; i++)
                 {
-                    for (int i = 0; i < this.detailsList.Count; i++)
+                    same = this.detailsList[i].Equals(other.detailsList[i]);
+                    if (!same)
                     {
-                        same = this.detailsList[i].Equals(other.detailsList[i]);
-                        if (!same)
-                        {
-                            break;
-                        }
+                        break;
                     }
                 }
             }

@@ -1009,6 +1009,153 @@ namespace DDPM.SA.Plugins.User.DTPProxy.Test
             Assert.That(SetFocus_result, Is.EqualTo(false));
         }
 
+        [Test]
+        public void TestSetPriority()
+        {
+            int newValue = 2;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetPriority_result = dTPProxyPlugin.SetPriority(Guid1, newValue).Result;
+            Assert.IsNotNull(SetPriority_result);
+            Assert.That(SetPriority_result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestSetIsHDROn()
+        {
+            bool newValue = false;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetIsHDROn_result = dTPProxyPlugin.SetIsHDROn(Guid1, newValue).Result;
+            Assert.IsNotNull(SetIsHDROn_result);
+            Assert.That(SetIsHDROn_result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestSetIsAutoWhiteBalanceOn()
+        {
+            bool newValue = false;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetIsAutoWhiteBalanceOn_result = dTPProxyPlugin.SetIsAutoWhiteBalanceOn(Guid1, newValue).Result;
+            Assert.IsNotNull(SetIsAutoWhiteBalanceOn_result);
+            Assert.That(SetIsAutoWhiteBalanceOn_result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestSetAutoWhiteBalance()
+        {
+            int newValue = 2;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetAutoWhiteBalance_result = dTPProxyPlugin.SetAutoWhiteBalance(Guid1, newValue).Result;
+            Assert.IsNotNull(SetAutoWhiteBalance_result);
+            Assert.That(SetAutoWhiteBalance_result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestSetBrightness()
+        {
+            int newValue = 2;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetBrightness_result = dTPProxyPlugin.SetBrightness(Guid1, newValue);
+            Assert.IsNotNull(SetBrightness_result);
+        }
+
+        [Test]
+        public void TestSetSharpness()
+        {
+            int newValue = 2;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetSharpness_result = dTPProxyPlugin.SetSharpness(Guid1, newValue);
+            Assert.IsNotNull(SetSharpness_result);
+        }
+
+        [Test]
+        public void TestSetContrast()
+        {
+            int newValue = 1;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetContrast_result = dTPProxyPlugin.SetContrast(Guid1, newValue);
+            Assert.IsNotNull(SetContrast_result);
+        }
+
+        [Test]
+        public void TestSetSaturation()
+        {
+            int newValue = 1;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetSaturation_result = dTPProxyPlugin.SetSaturation(Guid1, newValue);
+            Assert.IsNotNull(SetSaturation_result);
+        }
+
+        [Test]
+        public void TestSetAntiFlicker()
+        {
+            int newValue = 1;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetAntiFlicker_result = dTPProxyPlugin.SetAntiFlicker(Guid1, newValue);
+            Assert.IsNotNull(SetAntiFlicker_result);
+        }
+
+        [Test]
+        public void TestSetTilt()
+        {
+            int newValue = 2;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetTilt_result = dTPProxyPlugin.SetTilt(Guid1, newValue);
+            Assert.IsNotNull(SetTilt_result);
+        }
+
+        [Test]
+        public void TestSetPan()
+        {
+            int newValue = 2;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetPan_result = dTPProxyPlugin.SetPan(Guid1, newValue);
+            Assert.IsNotNull(SetPan_result);
+        }
+
         [OneTimeTearDown]
         public void TearDown()
         {

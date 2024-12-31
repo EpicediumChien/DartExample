@@ -13,7 +13,16 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <Common:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            
+            <ControlTemplate x:Key="iconTemplate_DisplaySettings" TargetType="ContentControl">
+                <Grid>
+                    <Path Data="M24 16.125V2.625H0V16.125H9.375V19.845H5.625V21.435H18.375V19.845H14.625V16.125H24ZM13.02 16.125V19.83H10.98V16.125H13.02ZM1.605 4.125H22.395V14.52H1.605V4.125Z"
+                          Fill="{TemplateBinding Foreground}" />
+                </Grid>
+            </ControlTemplate>
+
         </ResourceDictionary>
+
     </UserControl.Resources>
 
     <!-- Robert_Lin, 2024-7-25, a new UserControl to replace VbarItem.
@@ -99,7 +108,11 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
 
-        <Border x:Name="bdOuter" Height="64" BorderThickness="2" CornerRadius="13" Focusable="True">
+        <!-- Robert_Lin, 2024-12-28, add below propery into bdOuter can see the design UI 
+        d:Width="64"    -> Non-Landing mode VarItem
+        -->
+        <Border x:Name="bdOuter" Height="64" BorderThickness="2" CornerRadius="13" Focusable="True"
+                >
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="Background" Value="{DynamicResource Vbar_BkBrush_Default}" />
@@ -170,7 +183,10 @@
                         </Style>
                     </Image.Style>
                 </Image>
-                <ContentControl x:Name="IconCanvasContent" Grid.Column="0">
+                <!-- Robert_Lin, 2024-12-28 add d:Template to view the design time UI -->
+                <!-- Robert_Lin, 2024-12-28, PIMS- -->
+                <ContentControl x:Name="IconCanvasContent" Grid.Column="0"  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                d:Template="{StaticResource iconTemplate_DisplaySettings}">
                     <ContentControl.Style>
                         <Style TargetType="ContentControl">
                             <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=UserControl}}" />
@@ -181,6 +197,7 @@
                             </Style.Triggers>
                         </Style>
                     </ContentControl.Style>
+                    
                 </ContentControl>
 
                 <!-- Text -->
@@ -206,6 +223,12 @@
                       Margin="0,0,20,0">
                     <Path Data="M12.1 6.40012V4.00012C12.2 1.80012 10.5 0.100122 8.30005 0.00012207H8.10005C5.90005 0.00012207 4.10005 1.80012 4.10005 4.00012V6.40012H1.80005V16.0001H14.1V6.40012H12.1ZM5.30005 4.00012C5.20005 2.50012 6.40005 1.30012 7.80005 1.20012H8.20005C9.80005 1.20012 11 2.50012 11 4.00012V6.40012H5.30005V4.00012ZM13.1 14.9001H3.00005V7.50012H13.1V14.9001Z M7.60005 12.5001H8.60005V9.30012H6.80005V10.3001H7.60005V12.5001Z"
                                      Fill="{DynamicResource DefaultTheme_PathColor}" />
+                </Grid>
+                
+                <!-- Robert's Test: to draw a cross '+' in Design time to see if the icon is in center of VbarItem1 -->
+                <Grid Visibility="Collapsed" d:Visibility="Visible">
+                    <Rectangle Fill="DarkGoldenrod" Width="1"/>
+                    <Rectangle Fill="DarkGoldenrod" Height="1"/>
                 </Grid>
             </Grid>
         </Border>

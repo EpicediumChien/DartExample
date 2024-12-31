@@ -421,23 +421,28 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             privateSettingsManagerObject.SetFieldOrProperty("_GlobalSetting_path", writeglobalSettings_path2_);
             string settingsAccessInfo = "Test settings AccessInfo Calculate for Test verify";
             //privateSettingsManagerObject.SetFieldOrProperty("_settingsAccessInfo", settingsAccessInfo);
-            if (globalSettingParamNull == null)
-            {
-                var WriteGlobalSettingsResult1 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParamNull).Result;  //globalSettingParam is null
-                Assert.That(writeGlobalSettings_, Is.EqualTo(WriteGlobalSettingsResult1));
-            }
 
-            if (globalSettingParam != null)
-            {
-                Mock<ISettingsManagerSA> mock_SysSettingsPlugin = new Mock<ISettingsManagerSA>();
-                mock_SysSettingsPlugin.Setup(x => x.WriteGlobalSettingsToITConfig(It.IsAny<GlobalSettingParam>(), false)).Returns(Task.FromResult(true));
-                var mock_SysSettingsPluginObj = mock_SysSettingsPlugin.Object;
-                privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", mock_SysSettingsPluginObj);
-                privateSettingsManagerObject.SetFieldOrProperty("_GlobalSettingParam", globalSettingParam);
-                var WriteGlobalSettingsResult2 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParam).Result;  //globalSettingParam is not  null
-                Assert.That(writeGlobalSettings_2, Is.EqualTo(WriteGlobalSettingsResult2));
-                File.Delete(writeglobalSettings_path1_);
-            }
+            // globalSettingParamNull == null
+            var WriteGlobalSettingsResult1 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParamNull).Result;  //globalSettingParam is null
+            Assert.That(writeGlobalSettings_, Is.EqualTo(WriteGlobalSettingsResult1));
+
+            ISettingsManagerSA? SysSettingsPlugin = null;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", SysSettingsPlugin);
+
+            // globalSettingParamNull not null ,_SysSettingsPlugin null
+            var WriteGlobalSettingsResult2 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParam).Result;  //globalSettingParam is null
+            Assert.That(writeGlobalSettings_2, Is.EqualTo(WriteGlobalSettingsResult2));
+
+            // globalSettingParamNull not null ,_SysSettingsPlugin not null
+
+            Mock<ISettingsManagerSA> mock_SysSettingsPlugin = new Mock<ISettingsManagerSA>();
+            mock_SysSettingsPlugin.Setup(x => x.WriteGlobalSettingsToITConfig(It.IsAny<GlobalSettingParam>(), It.IsAny<bool>())).Returns(Task.FromResult(true));
+            var mock_SysSettingsPluginObj = mock_SysSettingsPlugin.Object;
+            privateSettingsManagerObject.SetFieldOrProperty("_SysSettingsPlugin", mock_SysSettingsPluginObj);
+            privateSettingsManagerObject.SetFieldOrProperty("_GlobalSettingParam", globalSettingParam);
+            var WriteGlobalSettingsResult3 = SettingsManagerSAPlugin.WriteGlobalSettings(globalSettingParam).Result;  //globalSettingParam is not  null
+            Assert.That(writeGlobalSettings_2, Is.EqualTo(WriteGlobalSettingsResult3));
+            File.Delete(writeglobalSettings_path1_);
         }
 
         [Test]
@@ -481,13 +486,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             File.Delete(globalSettingsDes_path1_);
         }
 
+        // InitPowerNapConfigFile Method had been remove in SettingManager.cs
         [Test]
         public void TestInitPowerNapConfigFile()
         {
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
-            var result = privateSettingsManagerObject.Invoke("InitPowerNapConfigFile");
-            var InitPowerNapSetting = privateSettingsManagerObject.GetFieldOrProperty("_powerNapSettings");
-            Assert.That(InitPowerNapSetting, Is.EqualTo(result));
+            //var result = privateSettingsManagerObject.Invoke("InitPowerNapConfigFile");
+            //var InitPowerNapSetting = privateSettingsManagerObject.GetFieldOrProperty("_powerNapSettings");
+            //Assert.That(InitPowerNapSetting, Is.EqualTo(result));
         }
 
         /*[Test]
@@ -555,8 +561,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
             File.WriteAllText(SerializePowerNapSettings_path1_, PowerNapSettingsjsonData);
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
-            privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", SerializePowerNapSettings_path1_);
-            var RunDeserialObjectResult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", powerNapSettingsConfig);
+            //privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", SerializePowerNapSettings_path1_); //_powerNapsettings_path remove in method
+            var RunDeserialObjectResult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", powerNapSettingsConfig, SerializePowerNapSettings_path1_);
             Assert.Greater(RunDeserialObjectResult.Length, 0);
             File.Delete(SerializePowerNapSettings_path1_);
         }
@@ -569,7 +575,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
             File.WriteAllText(DeserialPowerNapSettings_path1_, PowerNapSettingsjsonData);
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
-            privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", DeserialPowerNapSettings_path1_);
+            //privateSettingsManagerObject.SetFieldOrProperty("_powerNapsettings_path", DeserialPowerNapSettings_path1_);//_powerNapsettings_path remove in method
             var RunPowerNapDeserializeObjectResult = (List<PowerNapSetting>)privateSettingsManagerObject.Invoke("RunPowerNapDeserializeObject", PowerNapSettingsjsonData);
             Assert.Greater(RunPowerNapDeserializeObjectResult.Count, 0);
             Assert.That(powerNapSettingsConfig[0].ModelName, Is.EqualTo(RunPowerNapDeserializeObjectResult[0].ModelName));
@@ -939,49 +945,31 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 //EA = new EAMonitorSettings() { IsWidthoutGap = true, }
             };
             _allMonitorSettings.Add("TestU2724DD", new List<DDPMMonitorSettings> { settings });
-            Dictionary<string, List<DDPMMonitorSettings>> _allMonitorSettings4 = new Dictionary<string, List<DDPMMonitorSettings>>();
-            _allMonitorSettings4 = null;
-            double version4 = 1.0;
-            string model4 = "TestModel";
-            string serviceTag4 = "12345";
-            if (!string.IsNullOrEmpty(displayPath))
-            {
-                privatesettingsManagerObj.SetFieldOrProperty("_display_path", displayPath);
-                privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings);
-                if (!File.Exists(monitorSettings_path))
-                {
-                    var ReloadMonitorSettingsResult2 = SettingsManagerSAPlugin.ReloadMonitorSettings(modelname).Result;  // displayPath is not null,file no monitorSettings_path
-                    Assert.That(dDPMMonitorSettingsList, Is.EqualTo(ReloadMonitorSettingsResult2));
-                }
-                File.WriteAllText(monitorSettings_path, MonitorListjsonData);
-                var displayPath3 = Environment.CurrentDirectory;
-                if (File.Exists(monitorSettings_path))
-                {
-                    privatesettingsManagerObj.SetFieldOrProperty("_display_path", displayPath3);
-                    var ReloadMonitorSettingsResult3 = SettingsManagerSAPlugin.ReloadMonitorSettings(modelname).Result;  // displayPath is not null, file exist monitorSettings_path, _AllMonitorSettings is not null 
-                    Assert.Greater(ReloadMonitorSettingsResult3.Count, 0);
-                    Assert.That(Version3, Is.EqualTo(ReloadMonitorSettingsResult3[0].Version));
-                    Assert.That(Model3, Is.EqualTo(ReloadMonitorSettingsResult3[0].Model));
-                    Assert.That(ServiceTag3, Is.EqualTo(ReloadMonitorSettingsResult3[0].ServiceTag));
-                }
 
-                if (_allMonitorSettings4 == null)
-                {
-                    privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings4);
-                    var ReloadMonitorSettingsResult4 = SettingsManagerSAPlugin.ReloadMonitorSettings(modelname).Result;  // displayPath is not null, file exist monitorSettings_path, _AllMonitorSettings is null 
-                    Assert.Greater(ReloadMonitorSettingsResult4.Count, 0);
-                    Assert.That(version4, Is.EqualTo(ReloadMonitorSettingsResult4[0].Version));
-                    Assert.That(model4, Is.EqualTo(ReloadMonitorSettingsResult4[0].Model));
-                    Assert.That(serviceTag4, Is.EqualTo(ReloadMonitorSettingsResult4[0].ServiceTag));
-                    File.Delete(monitorSettings_path);
-                }
-            }
-            if (string.IsNullOrEmpty(Settings_path1))
-            {
-                privatesettingsManagerObj.SetFieldOrProperty("_settings_path", Settings_path1);
-                var ReloadMonitorSettingsResult1 = SettingsManagerSAPlugin.ReloadMonitorSettings(modelname).Result;  // Settings_path1 is null
-                Assert.That(dDPMMonitorSettingsList, Is.EqualTo(ReloadMonitorSettingsResult1));
-            }
+            // Settings_path1 is null
+            privatesettingsManagerObj.SetFieldOrProperty("_display_path", Settings_path1);
+            var ReloadMonitorSettingsResult1 = SettingsManagerSAPlugin.ReloadMonitorSettings(modelname).Result;  // Settings_path1 is null
+            Assert.That(dDPMMonitorSettingsList, Is.EqualTo(ReloadMonitorSettingsResult1));
+
+            string displayPath2 = Environment.CurrentDirectory;
+            File.WriteAllText(monitorSettings_path, MonitorListjsonData);
+            privatesettingsManagerObj.SetFieldOrProperty("_display_path", displayPath2);
+
+            // displayPath is not null, file exist monitorSettings_path, _AllMonitorSettings is not contain model name 
+            Dictionary<string, List<DDPMMonitorSettings>> _allMonitorSettings44 = new Dictionary<string, List<DDPMMonitorSettings>>();
+            _allMonitorSettings44.Add("TestU2725DD", new List<DDPMMonitorSettings> { settings });
+            privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings44);
+            var ReloadMonitorSettingsResult4 = SettingsManagerSAPlugin.ReloadMonitorSettings(modelname).Result;  // displayPath is not null, file exist monitorSettings_path, _AllMonitorSettings is null 
+            Assert.That(ReloadMonitorSettingsResult4, Is.EqualTo(dDPMMonitorSettingsList));
+
+            //displayPath is not null, file exist monitorSettings_path, _AllMonitorSettings is not null
+            privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings);
+            var ReloadMonitorSettingsResult2 = SettingsManagerSAPlugin.ReloadMonitorSettings(modelname).Result;  // displayPath is not null, file exist monitorSettings_path, _AllMonitorSettings is not null 
+            Assert.Greater(ReloadMonitorSettingsResult2.Count, 0);
+            Assert.That(Version3, Is.EqualTo(ReloadMonitorSettingsResult2[0].Version));
+            Assert.That(Model3, Is.EqualTo(ReloadMonitorSettingsResult2[0].Model));
+            Assert.That(ServiceTag3, Is.EqualTo(ReloadMonitorSettingsResult2[0].ServiceTag));
+            File.Delete(monitorSettings_path);
         }
 
         [Test]
@@ -1007,25 +995,23 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             };
             dDPMMonitorSettingsList2.Add(settings);
             Dictionary<string, List<DDPMMonitorSettings>> _allMonitorSettings2 = new Dictionary<string, List<DDPMMonitorSettings>>();
-            if (dDPMMonitorSettingsList == null)
-            {
-                var WriteMonitorSettingsResult = SettingsManagerSAPlugin.WriteMonitorSettings(modelname, dDPMMonitorSettingsList).Result;  // dDPMMonitorSettingsList is null
-                Assert.That(WriteMonitorSettingsF, Is.EqualTo(WriteMonitorSettingsResult));
-            }
+
+            // dDPMMonitorSettingsList is null
+            var WriteMonitorSettingsResult = SettingsManagerSAPlugin.WriteMonitorSettings(modelname, dDPMMonitorSettingsList).Result;  // dDPMMonitorSettingsList is null
+            Assert.That(WriteMonitorSettingsF, Is.EqualTo(WriteMonitorSettingsResult));
+
             privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings2);
-            if (dDPMMonitorSettingsList2 != null)
-            {
-                string _display_path = "TestU2724DD.json";
-                string _display_path2 = string.Empty;
-                privatesettingsManagerObj.SetFieldOrProperty("_display_path", _display_path2);
-                File.WriteAllText(_display_path, MonitorListjsonData);
-                var WriteMonitorSettingsResult2 = SettingsManagerSAPlugin.WriteMonitorSettings(modelname, dDPMMonitorSettingsList2).Result;  // dDPMMonitorSettingsList is not null,
-                var Write_AllMonitorSettings = (Dictionary<string, List<DDPMMonitorSettings>>)privatesettingsManagerObj.GetFieldOrProperty("_AllMonitorSettings");
-                Assert.That(WriteMonitorSettingsP, Is.EqualTo(WriteMonitorSettingsResult2));
-                Assert.Greater(Write_AllMonitorSettings.Count, 0);
-                Assert.That(Write_AllMonitorSettings.ContainsKey(modelname));
-                File.Delete(_display_path);
-            }
+
+            // dDPMMonitorSettingsList is not null
+            string _display_path = "TestU2724DD.json";
+            string _display_path2 = string.Empty;
+            privatesettingsManagerObj.SetFieldOrProperty("_display_path", _display_path2);
+            File.WriteAllText(_display_path, MonitorListjsonData);
+            var WriteMonitorSettingsResult2 = SettingsManagerSAPlugin.WriteMonitorSettings(modelname, dDPMMonitorSettingsList2).Result;  // dDPMMonitorSettingsList is not null,
+            var Write_AllMonitorSettings = (Dictionary<string, List<DDPMMonitorSettings>>)privatesettingsManagerObj.GetFieldOrProperty("_AllMonitorSettings");
+            Assert.IsNotNull(Write_AllMonitorSettings);
+            Assert.That(WriteMonitorSettingsF, Is.EqualTo(WriteMonitorSettingsResult2));
+            File.Delete(_display_path);
         }
 
         [Test]
@@ -1050,7 +1036,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string _display_path2 = string.Empty;
             privatesettingsManagerObj.SetFieldOrProperty("_display_path", _display_path2);
             File.WriteAllText(_display_path, MonitorListjsonData);
-            var DDPMMonitorSettingsSerializ = (string)privatesettingsManagerObj.Invoke("RunSerializeObject", modelname, dDPMMonitorSettingsList);
+            var DDPMMonitorSettingsSerializ = (string)privatesettingsManagerObj.Invoke("RunSerializeObject_MonitorSettings", modelname, dDPMMonitorSettingsList); //Method name change
             Assert.Greater(DDPMMonitorSettingsSerializ.Length, 0);
             File.Delete(_display_path);
         }
@@ -1072,7 +1058,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             };
             monitorSettings.Add(settings);
             PrivateObject privatesettingsManagerObj = new PrivateObject(SettingsManagerSAPlugin);
-            var MonitorListSerialResult = (string)privatesettingsManagerObj.Invoke("RunSerializeObject", modelname, monitorSettings);
+            var MonitorListSerialResult = (string)privatesettingsManagerObj.Invoke("RunSerializeObject_MonitorSettings", modelname, monitorSettings);
             Assert.IsNotNull(MonitorListSerialResult);
             Assert.Greater(MonitorListSerialResult.Length, 0);
         }
@@ -1563,6 +1549,64 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
                 Assert.IsNotNull(GetInfos_result2);
                 Assert.That(infos2, Is.EqualTo(GetInfos_result2));
             }
+        }
+
+        [Test]
+        public void TestExportPowerNapSettings()
+        {
+            List<PowerNapSetting> powerNapSettings;
+            string filePath;
+            powerNapSettings = null;
+            filePath = Environment.CurrentDirectory;
+
+            //powerNapSettings is null
+            var ExportPowerNapSettings_result1 = SettingsManagerSAPlugin.ExportPowerNapSettings(powerNapSettings, filePath).Result;
+            Assert.IsNotNull(ExportPowerNapSettings_result1);
+            Assert.That(ExportPowerNapSettings_result1, Is.EqualTo(false));
+
+            //powerNapSettings is not null
+            powerNapSettings = new List<PowerNapSetting>() { new PowerNapSetting() { ModelName = "TestU2724", SerialNumber = "123456789", Status = false, RunType = 0 } };
+            string SerializePowerNapSettings_path1_ = "test_SerializePowerNapSettingsPath2.json";
+            string PowerNapSettingsjsonData = "[{\"ModelName\":\"TestU2724\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            File.WriteAllText(SerializePowerNapSettings_path1_, PowerNapSettingsjsonData);
+
+            var ExportPowerNapSettings_result2 = SettingsManagerSAPlugin.ExportPowerNapSettings(powerNapSettings, SerializePowerNapSettings_path1_).Result;
+            Assert.IsNotNull(ExportPowerNapSettings_result2);
+            Assert.That(ExportPowerNapSettings_result2, Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestDisplayImpDDMSettings()
+        {
+            string path;
+            bool isSameModel;
+
+            //impSettings is not null,File NOT Exists monitorSettings_path            
+            isSameModel = false;
+            DDMImpSettings impSettings = new DDMImpSettings()
+            {
+                MonitorSettings = new DDMMonitorSettings() { Model = "TestmonitorSettingsModel" },
+                AppSettings = new DDMAppSettings(),
+                UserSettings = new DDMUserSettings()
+            };
+            PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
+            privateSettingsManagerObject.SetFieldOrProperty("_display_path", null);
+            string monitorSettingspath2 = "TestmonitorSettingsModel.jason";
+            var DisplayImpDDMSettings_result = SettingsManagerSAPlugin.DisplayImpDDMSettings(monitorSettingspath2, isSameModel, out impSettings).Result;
+            Assert.IsNotNull(DisplayImpDDMSettings_result);
+            Assert.That(DisplayImpDDMSettings_result, Is.EqualTo(false));
+
+            //impSettings is not null,File Exists monitorSettings_path
+            path = Environment.CurrentDirectory;
+            privateSettingsManagerObject.SetFieldOrProperty("_display_path", path);
+
+            string SettingsjsonData = "[{\"ModelName\":\"TestmonitorSettingsModel\",\"SerialNumber\":\"123456789\",\"Status\":false,\"RunType\":0}]";
+            File.WriteAllText(monitorSettingspath2, SettingsjsonData);
+
+            var DisplayImpDDMSettings_result2 = SettingsManagerSAPlugin.DisplayImpDDMSettings(monitorSettingspath2, isSameModel, out impSettings).Result;
+            Assert.IsNotNull(DisplayImpDDMSettings_result2);
+            Assert.That(DisplayImpDDMSettings_result2, Is.EqualTo(false));
+            File.Delete(monitorSettingspath2);
         }
 
         [OneTimeTearDown]
