@@ -2318,11 +2318,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 return false;
             }
 
+            bool result = false;
             try
             {
-
-                info = string.Empty;
-                bool result = false;
+                info = string.Empty;                
                 /*JToken token = JToken.FromObject(dataObj);
                 if (token.Type == JTokenType.Object)
                 {
