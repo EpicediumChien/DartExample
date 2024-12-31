@@ -9,6 +9,7 @@ using Dell.Client.Framework.UX.WPF.ResourceManager;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,7 @@ using System.Windows.Data;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using VcpCore.Common;
 using Windows.Devices.PointOfService;
 using static DDPM.UI.Common.Views.DDPMMsgBox;
 using Application = System.Windows.Application;
@@ -94,6 +96,9 @@ namespace DDPM.UI.Common
             info = 0,
             error
         }
+
+        public static List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        public static List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
 
         /// <summary>
         /// 
@@ -511,13 +516,21 @@ namespace DDPM.UI.Common
         /// </summary>
         /// <param name="deviceInfo"></param>
         /// <returns></returns>
-        public static string DeterminePeripheralProductImageFileName(DeviceInfo deviceInfo)
+        public static string DeterminePeripheralProductImageFileName(DeviceInfo? deviceInfo)
         {
             string model = "";
             string colorCode = "";
 
             if (deviceInfo != null)
             {
+                // Handle EOL and non-dell peripherials return empty to show lineart
+                if (deviceInfo.Type == DPeMPublic.Common.Enums.DeviceType.LogicalKeyboard
+                    && EOLKBList.Contains(deviceInfo.ModelNumber))
+                    return string.Empty;
+                if (deviceInfo.Type == DPeMPublic.Common.Enums.DeviceType.LogicalMouse
+                    && EOLMouseList.Contains(deviceInfo.ModelNumber))
+                    return string.Empty;
+
                 //[#PeripheralModelMap] This mapping table has a duplicate code in
                 //1 DdpmCommonHelpers.cs    DeterminePeripheralProductImageFileName()
                 //2 HomeDevices             TooltipModelName property
