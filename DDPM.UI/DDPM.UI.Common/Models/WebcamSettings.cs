@@ -39,6 +39,7 @@ namespace DDPM.UI.Common
         public Dictionary<string, WebcamProfile> PresetProfiles = new();
         public Dictionary<string, WebcamProfile> CustomProfiles = new();
         public ResolutionItem resolution = null;
+        public List<string> WebcamProfileNames = new List<string>() { "Default", "Smooth", "Vibrant", "Warm" };
         public string CurrentResolution
         {
             get
@@ -146,114 +147,146 @@ namespace DDPM.UI.Common
                         CustomProfiles.Add(customProfiles[l].Name, customProfiles[l]);
                     }
                 }
-
+                
+                PresetProfiles.Clear();
                 var presetProfiles = di.PresetProfiles?.ToObject<List<WebcamProfile>>()?.ToList();
-                if (presetProfiles != null)
+
+                if (presetProfiles == null)
+                {
                     presetProfiles = new List<WebcamProfile>();
 
-                WebcamProfile profile = new();
-                profile.Name = "Default";
-                profile.Description = "default";
-                profile.IsHDROn = false;
-                profile.Brightness = 128;
-                profile.Contrast = 128;
-                profile.Saturation = 128;
-                profile.Sharpness = 128;
-                profile.IsAutoFramingOn = false;
-                profile.FieldOfView = 78;
-                profile.IsAutoWhiteBalanceOn = true;
-                profile.AutoWhiteBalance = 5000;
-                PresetProfiles.Add(profile.Name, profile);
 
-                profile = new();
-                profile.Name = "Smooth";
-                profile.Description = "Smooth";
-                profile.IsHDROn = true;
-                profile.Brightness = 160;
-                profile.Contrast = 128;
-                profile.Saturation = 128;
-                profile.Sharpness = 0;
-                profile.IsAutoFramingOn = false;
-                profile.FieldOfView = 78;
-                profile.IsAutoWhiteBalanceOn = true;
-                profile.AutoWhiteBalance = 5000;
-                PresetProfiles.Add(profile.Name, profile);
+                    WebcamProfile profile = new();
+                    profile.Name = "Default";
+                    profile.Description = "default";
+                    profile.IsHDROn = false;
+                    profile.Brightness = 128;
+                    profile.Contrast = 128;
+                    profile.Saturation = 128;
+                    profile.Sharpness = 128;
+                    profile.IsAutoFramingOn = false;
+                    profile.FieldOfView = 78;
+                    profile.IsAutoWhiteBalanceOn = true;
+                    profile.AutoWhiteBalance = 5000;
+                    PresetProfiles.Add(profile.Name, profile);
 
-                profile = new();
-                profile.Name = "Vibrant";
-                profile.Description = "Vibrant";
-                profile.IsHDROn = true;
-                profile.Brightness = 192;
-                profile.Contrast = 167;
-                profile.Saturation = 152;
-                profile.Sharpness = 181;
-                profile.IsAutoFramingOn = false;
-                profile.FieldOfView = 78;
-                profile.IsAutoWhiteBalanceOn = true;
-                profile.AutoWhiteBalance = 5000;
-                PresetProfiles.Add(profile.Name, profile);
+                    profile = new();
+                    profile.Name = "Smooth";
+                    profile.Description = "Smooth";
+                    profile.IsHDROn = true;
+                    profile.Brightness = 160;
+                    profile.Contrast = 128;
+                    profile.Saturation = 128;
+                    profile.Sharpness = 0;
+                    profile.IsAutoFramingOn = false;
+                    profile.FieldOfView = 78;
+                    profile.IsAutoWhiteBalanceOn = true;
+                    profile.AutoWhiteBalance = 5000;
+                    PresetProfiles.Add(profile.Name, profile);
 
-                profile = new();
-                profile.Name = "Warm";
-                profile.Description = "Warm";
-                profile.IsHDROn = true;
-                profile.Brightness = 169;
-                profile.Contrast = 166;
-                profile.Saturation = 134;
-                profile.Sharpness = 168;
-                profile.IsAutoFramingOn = false;
-                profile.FieldOfView = 78;
-                profile.IsAutoWhiteBalanceOn = true;
-                profile.AutoWhiteBalance = 5950;
-                PresetProfiles.Add(profile.Name, profile);
+                    profile = new();
+                    profile.Name = "Vibrant";
+                    profile.Description = "Vibrant";
+                    profile.IsHDROn = true;
+                    profile.Brightness = 192;
+                    profile.Contrast = 167;
+                    profile.Saturation = 152;
+                    profile.Sharpness = 181;
+                    profile.IsAutoFramingOn = false;
+                    profile.FieldOfView = 78;
+                    profile.IsAutoWhiteBalanceOn = true;
+                    profile.AutoWhiteBalance = 5000;
+                    PresetProfiles.Add(profile.Name, profile);
 
-                switch (di.ModelNumber.ToUpper())
-                {
-                    case "U3223QZ":
-                        PresetProfiles["Default"].FieldOfView = 90;
-                        PresetProfiles["Smooth"].IsHDROn = false;
-                        PresetProfiles["Smooth"].FieldOfView = 90;
-                        PresetProfiles["Smooth"].Sharpness = 250;
-                        PresetProfiles["Vibrant"].IsHDROn = false;
-                        PresetProfiles["Vibrant"].FieldOfView = 90;
-                        PresetProfiles["Vibrant"].Brightness = 200;
-                        PresetProfiles["Vibrant"].Contrast = 162;
-                        PresetProfiles["Vibrant"].Saturation = 128;
-                        PresetProfiles["Vibrant"].Sharpness = 180;
-                        PresetProfiles["Warm"].IsHDROn = false;
-                        PresetProfiles["Warm"].FieldOfView = 90;
-                        PresetProfiles["Warm"].Brightness = 204;
-                        PresetProfiles["Warm"].Contrast = 147;
-                        PresetProfiles["Warm"].Saturation = 155;
-                        PresetProfiles["Warm"].Sharpness = 128;
-                        break;
-                    case "U3224KB":
-                    case "U3224KBA":
-                        PresetProfiles["Default"].FieldOfView = 90;
-                        PresetProfiles["Smooth"].FieldOfView = 90;
-                        PresetProfiles["Smooth"].Sharpness = 250;
-                        PresetProfiles["Vibrant"].FieldOfView = 90;
-                        PresetProfiles["Vibrant"].Brightness = 200;
-                        PresetProfiles["Vibrant"].Contrast = 162;
-                        PresetProfiles["Vibrant"].Saturation = 128;
-                        PresetProfiles["Vibrant"].Sharpness = 180;
-                        PresetProfiles["Warm"].FieldOfView = 90;
-                        PresetProfiles["Warm"].Brightness = 204;
-                        PresetProfiles["Warm"].Contrast = 147;
-                        PresetProfiles["Warm"].Saturation = 155;
-                        PresetProfiles["Warm"].Sharpness = 128;
-                        break;
-                    case "WB7022":
-                        PresetProfiles["Default"].FieldOfView = 90;
-                        PresetProfiles["Smooth"].FieldOfView = 90;
-                        PresetProfiles["Vibrant"].FieldOfView = 90;
-                        PresetProfiles["Warm"].FieldOfView = 90;
-                        break;
-                    default:
-                        break;
+                    profile = new();
+                    profile.Name = "Warm";
+                    profile.Description = "Warm";
+                    profile.IsHDROn = true;
+                    profile.Brightness = 169;
+                    profile.Contrast = 166;
+                    profile.Saturation = 134;
+                    profile.Sharpness = 168;
+                    profile.IsAutoFramingOn = false;
+                    profile.FieldOfView = 78;
+                    profile.IsAutoWhiteBalanceOn = true;
+                    profile.AutoWhiteBalance = 5950;
+                    PresetProfiles.Add(profile.Name, profile);
+                    switch (di.ModelNumber.ToUpper())
+                    {
+                        case "U3223QZ":
+                            PresetProfiles["Default"].FieldOfView = 90;
+                            PresetProfiles["Smooth"].IsHDROn = false;
+                            PresetProfiles["Smooth"].FieldOfView = 90;
+                            PresetProfiles["Smooth"].Sharpness = 250;
+                            PresetProfiles["Vibrant"].IsHDROn = false;
+                            PresetProfiles["Vibrant"].FieldOfView = 90;
+                            PresetProfiles["Vibrant"].Brightness = 200;
+                            PresetProfiles["Vibrant"].Contrast = 162;
+                            PresetProfiles["Vibrant"].Saturation = 128;
+                            PresetProfiles["Vibrant"].Sharpness = 180;
+                            PresetProfiles["Warm"].IsHDROn = false;
+                            PresetProfiles["Warm"].FieldOfView = 90;
+                            PresetProfiles["Warm"].Brightness = 204;
+                            PresetProfiles["Warm"].Contrast = 147;
+                            PresetProfiles["Warm"].Saturation = 155;
+                            PresetProfiles["Warm"].Sharpness = 128;
+                            break;
+                        case "U3224KB":
+                        case "U3224KBA":
+                            PresetProfiles["Default"].FieldOfView = 90;
+                            PresetProfiles["Smooth"].FieldOfView = 90;
+                            PresetProfiles["Smooth"].Sharpness = 250;
+                            PresetProfiles["Vibrant"].FieldOfView = 90;
+                            PresetProfiles["Vibrant"].Brightness = 200;
+                            PresetProfiles["Vibrant"].Contrast = 162;
+                            PresetProfiles["Vibrant"].Saturation = 128;
+                            PresetProfiles["Vibrant"].Sharpness = 180;
+                            PresetProfiles["Warm"].FieldOfView = 90;
+                            PresetProfiles["Warm"].Brightness = 204;
+                            PresetProfiles["Warm"].Contrast = 147;
+                            PresetProfiles["Warm"].Saturation = 155;
+                            PresetProfiles["Warm"].Sharpness = 128;
+                            break;
+                        case "WB7022":
+                            PresetProfiles["Default"].FieldOfView = 90;
+                            PresetProfiles["Smooth"].FieldOfView = 90;
+                            PresetProfiles["Vibrant"].FieldOfView = 90;
+                            PresetProfiles["Warm"].FieldOfView = 90;
+                            break;
+                        default:
+                            break;
+                    }
+                    SelectedProfileName = "Default";
                 }
-
-                SelectedProfileName = "Default";
+                else 
+                {
+                    int i = 0;
+                    foreach (var PresetProfile in presetProfiles) 
+                    {
+                        string profileName = string.Empty;
+                        if (i < WebcamProfileNames.Count) 
+                        {
+                            profileName = WebcamProfileNames[i];
+                        }
+                        WebcamProfile profile = new();
+                        profile.Name = profileName;
+                        profile.Description = PresetProfile.Description;
+                        profile.IsHDROn = PresetProfile.IsHDROn;
+                        profile.Brightness = PresetProfile.Brightness;
+                        profile.Contrast = PresetProfile.Contrast;
+                        profile.Saturation = PresetProfile.Saturation;
+                        profile.Sharpness = PresetProfile.Sharpness;
+                        profile.IsAutoFramingOn = PresetProfile.IsAutoFramingOn;
+                        profile.FieldOfView = PresetProfile.FieldOfView;
+                        profile.IsAutoWhiteBalanceOn = PresetProfile.IsAutoWhiteBalanceOn;
+                        profile.AutoWhiteBalance = PresetProfile.AutoWhiteBalance;
+                        profile.Zoom= PresetProfile.Zoom;
+                        PresetProfiles.Add(profile.Name, profile);
+                        i++;
+                    }
+                }
+                var FindSelectedProfile = PresetProfiles.ToList().Where(x => x.Value.Description == di.ProfileDescription).FirstOrDefault();
+                SelectedProfileName = FindSelectedProfile.Value.Name;
             }
         }
 
