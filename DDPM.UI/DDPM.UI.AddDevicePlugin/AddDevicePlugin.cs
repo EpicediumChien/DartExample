@@ -109,7 +109,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         }
 
         /// <inheritdoc/>
-        public void OnShown(string parameter)
+        public void OnShown(string pluginParameter)
         {
             ConfigureServices();
             GetPeripheralsAsync();

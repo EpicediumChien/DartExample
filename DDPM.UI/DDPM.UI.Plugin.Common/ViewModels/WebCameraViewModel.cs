@@ -1035,7 +1035,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get => IsProximitySensorEnable;
 
-            set { }
+            //set { }
         }
 
         private bool _isChecked_Autofocus;
