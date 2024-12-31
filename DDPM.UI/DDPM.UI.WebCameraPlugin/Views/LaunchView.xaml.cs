@@ -1148,6 +1148,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 var frameSourceGroups = await MediaFrameSourceGroup.FindAllAsync();
 
                 // 20240626  jim add to avoid exception
+
                 if (frameSourceGroups.Count <= 0)
                 {
                     Debug.WriteLine("frameSourceGroups.Count = 0");
@@ -1192,19 +1193,21 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                     // get mic list first
                     var audioDevices = await DeviceInformation.FindAllAsync(DeviceClass.AudioCapture);
+
+                    // 2024/12/31 Elie.
+                    var captureMode = audioDevices.Count == 0 ? StreamingCaptureMode.Video : StreamingCaptureMode.AudioAndVideo;
+
                     var microphone = audioDevices.FirstOrDefault();
 
-                    string AudioDeviceId = null;
+                    string AudioDeviceId = string.Empty; // 2024/12/31 Elie.
                     if (microphone != null)
                     {
                         AudioDeviceId = microphone.Id;
                     }
 
-                    StreamingCaptureMode captureMode;
-                    if (audioDevices != null)
+                    //if (audioDevices != null)
+                    if (!string.IsNullOrEmpty(AudioDeviceId))
                     {
-                        captureMode = StreamingCaptureMode.AudioAndVideo;
-
                         await _vm.MediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
                         {
                             AudioDeviceId = AudioDeviceId,
@@ -1217,8 +1220,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     }
                     else
                     {
-                        captureMode = StreamingCaptureMode.Video;
-
                         await _vm.MediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
                         {
                             SourceGroup = selectedFrameSourceGroup,
