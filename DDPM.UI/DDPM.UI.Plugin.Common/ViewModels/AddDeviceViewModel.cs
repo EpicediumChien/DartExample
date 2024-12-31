@@ -33,6 +33,9 @@ namespace DDPM.UI.Plugin.ViewModels
         private readonly string noDongleAlertKnM = Strings.AddDeviceKnMnoDongleAlertKnM;
         private readonly string noDongleAlertHeadset = Strings.AddDeviceKnMnoDongleAlertHeadset;
 
+        public event EventHandler<EventArgs>? PairingStopped;
+        public bool IsPairingLoaded = false;
+
         public AddDeviceViewModel(IShowPluginManager showPluginManager, IConsole console, ILog log)
         {
             Requires.NotNull(console, nameof(console));
@@ -391,15 +394,8 @@ namespace DDPM.UI.Plugin.ViewModels
                             break;
 
                         case "DonglePairingStatusChanged":
-                            RequestDeviceName = properties[1];
                             switch (di.PairingStatusName)
                             {
-                                case "Request":
-                                    break;
-
-                                case "Already Paired":
-                                    break;
-
                                 case "Stopped":
                                     break;
 
@@ -421,7 +417,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        public string RequestDeviceName = "";
+        //public string RequestDeviceName = "";
 
         public bool IsPairing = false;
 
