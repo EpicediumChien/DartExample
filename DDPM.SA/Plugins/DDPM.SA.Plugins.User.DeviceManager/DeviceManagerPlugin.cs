@@ -249,7 +249,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             _USBKVMAutoSwitchTimer.Elapsed += OnUsbKvmAutoSwitchTimedRaise;
             _USBKVMAutoSwitchTimer.AutoReset = true;
-            _USBKVMAutoSwitchTimer.Enabled = true;
+            //_USBKVMAutoSwitchTimer.Enabled = true;
 
             UXSystemParameters.Instance.ParameterChangedEvent += UXSystemParametersChanged;
             writelog("DeviceManagerPlugin constructor ...");
@@ -353,6 +353,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool ret = false;
             if (monitorInfo != null)
             {
+                if (!monitorInfo.CapabilityDic.ContainsKey("E9") && !monitorInfo.CapabilityDic.ContainsKey("E7"))
+                    return ret;
                 if (GetOnUSBKVM(monitorInfo).Result)
                 {
                     //check
@@ -421,6 +423,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             else
                             {
                                 writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:KvmAutoApply OFF");
+                                Debug.WriteLine($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:KvmAutoApply OFF");
                             }
                         }
                     }
@@ -428,6 +431,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                 {
                     writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag} USBKVM OFF");
+                    Debug.WriteLine($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag} USBKVM OFF");
                 }
             }
             return ret;
@@ -483,14 +487,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             if ("E9".Equals(vcpcode, StringComparison.OrdinalIgnoreCase) || vcpcode.Equals("2"))
             {
-                if (!monitorInfo.CapabilityDic.ContainsKey("E9"))
+                if (!monitorInfo.CapabilityDic.ContainsKey("E9") && !monitorInfo.CapabilityDic.ContainsKey("E7"))
                     return;
+                /* if (!GetOnUSBKVM(monitorInfo).Result)
+                 {
+                     Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:USB KVM OFF,skip");
+                     writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:USB KVM OFF,skip");
+                     return;
+                 }*/
                 ObjGetVCP ret = GetPxpMode(monitorInfo).Result;
                 UsbKvmPBP usbKvmPBP = new UsbKvmPBP { MonitorInfo = monitorInfo, isPBPmode = false };
                 UInt16 _curPxpMode = 0;
                 if (ret != null && ret.result)
                 {
-                    _curPxpMode = Convert.ToUInt16(ret.value);
+                    //_curPxpMode = Convert.ToUInt16(ret.value);
+                    if (!ushort.TryParse(ret.value.ToString(), out _curPxpMode))
+                    {
+                        _curPxpMode = 0;
+                        writelog($"[updatePBPModeStatus]GetPxpMode,parse pxp mode value fail.");
+                    }
+
                     switch (_curPxpMode)
                     {
                         case 0x00://off
@@ -548,17 +564,37 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             usbKvmPBPs.Add(usbKvmPBP);
                         }
-                        if (usbKvmPBPs.Any(x => x.isPBPmode))
+                        HotkeySettings hotkeySettings = _hotkeySettings.SingleOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
+                        if (hotkeySettings != null)
                         {
-                            _USBKVMAutoSwitchTimer.Stop();
-                            _USBKVMAutoSwitchTimer.Start();
-                            writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, PBPmode ON");
+                            if (hotkeySettings.HotkeyOptions.Any(x => x == HotkeyOption.KvmAutoApply))
+                            {
+                                //update timer
+                                if (usbKvmPBPs.Any(x => x.isPBPmode))
+                                {
+                                    _USBKVMAutoSwitchTimer.Stop();
+                                    _USBKVMAutoSwitchTimer.Start();
+                                    Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
+                                    writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
+                                }
+                                else
+                                {
+                                    _USBKVMAutoSwitchTimer.Stop();
+                                    Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
+                                    writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
+                                }
+                            }
+                            else
+                            {
+                                Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus,the kvm auto switch option is OFF");
+                                writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,the kvm auto switch option is OFF");
+                            }
                         }
                         else
                         {
-                            _USBKVMAutoSwitchTimer.Stop();
-                            writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, PBPmode OFF");
+                            writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,hotkeysetting is null.");
                         }
+
                     }
                 }
             }
@@ -9896,7 +9932,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (!settings.UserSettings.isDisplayConsentPage)
                     {
                         writelog($"[DeviceMangerPlugin] GetFirstReadStatus");
-                        if (!CheckOnlyInstallDDPM().Result&& CheckHasInstallDPeM().Result)
+                        if (!CheckOnlyInstallDDPM().Result && CheckHasInstallDPeM().Result)
                         {
                             bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", true).Result;
                         }
@@ -9955,11 +9991,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// Confirm that DPeM has been installed
         /// </summary>
         /// <returns></returns>
-        private async Task<bool> CheckHasInstallDPeM() 
+        private async Task<bool> CheckHasInstallDPeM()
         {
             writelog($"[DeviceMangerPlugin] Check Has Installed DPeM");
             var isAnalyticsFirstLaunchDone = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Global", "isAnalyticsEnabled").Result;
-            if (isAnalyticsFirstLaunchDone == null) 
+            if (isAnalyticsFirstLaunchDone == null)
             {
                 return false;
             }
@@ -10239,7 +10275,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             LauchNightLightStatusMonitor();
             foreach (var monitor in _AllInfoMonitors)
             {
-                if (monitor.CapabilityDic.ContainsKey("E9"))
+                if (monitor.CapabilityDic.ContainsKey("E9") && monitor.CapabilityDic.ContainsKey("E7"))
                     Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
             }
             //register hotkey
@@ -10712,7 +10748,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_IsZoomScreenShareActiveChanged");
                     //}
-                    
+
                     writelog($"HandleQAMV2 launched by event Webcam_IsZoomScreenShareActiveChanged");
                     break;
 
@@ -10947,7 +10983,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 //_QAM.Left = QAM_Position.X;
 
                                 //Derek 1224
-                                _QAM?.Dispatcher.Invoke(() => {
+                                _QAM?.Dispatcher.Invoke(() =>
+                                {
                                     _QAM.Top = QAM_Position.Y;
                                     _QAM.Left = QAM_Position.X;
                                 });
@@ -10970,7 +11007,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 //_QAM.Left = 0;
 
                                 //Derek 1224 for "调用线程无法访问此对象，因为另一个线程拥有该对象。"
-                                _QAM?.Dispatcher.Invoke(() => {
+                                _QAM?.Dispatcher.Invoke(() =>
+                                {
                                     _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
                                     _QAM.Left = 0;
                                 });
@@ -11608,6 +11646,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //}
                     _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, token);
                     //SupportedNKVMMonitors();
+                }
+                //for USB KVM auto switch kb ms
+                foreach (var monitor in _AllInfoMonitors)
+                {
+                    if (monitor.CapabilityDic.ContainsKey("E9") && monitor.CapabilityDic.ContainsKey("E7"))
+                        Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
                 }
             }
         }
@@ -12892,6 +12936,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _USBKVMAutoSwitchTimer.Stop();
                 }
             }
+            Debug.WriteLine($"[SaveHotkeyOptionOnly]{string.Join("+", settings.Select(x => x.ServiceTag + "(" + x.HotkeyOptions.ElementAtOrDefault(0) + ")").ToList())}");
             WriteHotkeySettings(settings);
             //update _hotkeySettings only
             if (_hotkeySettings != null && _hotkeySettings.Count > 0)
@@ -14511,7 +14556,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog("@Swap_IputPIPPBP(), GetPxpMode() return value is null.");
                     return;
                 }
-                 UInt16 pxpMode = 0;
+                UInt16 pxpMode = 0;
                 if (!UInt16.TryParse(objVcp.value.ToString(), out pxpMode))
                 {
                     writelog("@Swap_IputPIPPBP(), GetPxpMode() return value convert to UINT16 type failed.");
