@@ -26,6 +26,7 @@ using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Windows.Media.AppBroadcasting;
 using DdmLibrary.Utility;
+using System.Globalization;
 
 namespace DDPM.SA.Plugins.User.SettingsManager
 {
@@ -455,9 +456,15 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
         }
 
+        /// <summary>
+        /// InitDDPMMonitorConfigFile: Query content of monitor settings file with model name
+        /// </summary>
+        /// <param name="modelname">IN: key item to check which model should be used to query</param>
+        /// <param name="binit">OUT: request to init a new monitor data if true, otherwise means query success</param>
+        /// <returns></returns>
         public Task<List<DDPMMonitorSettings>> InitDDPMMonitorConfigFile(string modelname, out bool binit)
         {
-            binit = false;
+            binit = false; //default: do not request to init a new data
             List<DDPMMonitorSettings> monitorSettingList = new List<DDPMMonitorSettings>();
             //if (!relay_registered && _SysSettingsPlugin != null)
             //{
@@ -480,7 +487,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 {
                     WriteLog($"CreateDirectory path check result is invalid: {_display_path}, {info}.");
                     _AllMonitorSettings = null;
-                    binit = false;
+                    binit = true; //request to create new data
                     return Task.FromResult(monitorSettingList);
                 }
             }
@@ -488,7 +495,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 WriteLog($"CreateDirectory with {_display_path} failed.");
                 _AllMonitorSettings = null;
-                binit = false;
+                binit = true; //request to create new data
                 return Task.FromResult(monitorSettingList);
             }
             try
@@ -502,7 +509,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 {
                     WriteLog($"CreateDirectory path check result is invalid: {_export_path}, {info}.");
                     _AllMonitorSettings = null;
-                    binit = false;
+                    binit = false; 
                     return Task.FromResult(monitorSettingList);
                 }
             }
@@ -510,7 +517,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 WriteLog($"CreateDirectory with {_export_path} failed.");
                 _AllMonitorSettings = null;
-                binit = false;
+                binit = false; 
                 return Task.FromResult(monitorSettingList);
             }
             //create monitor setting file if not exist
@@ -519,43 +526,52 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (File.Exists(file_monitorconfig_path))
             {
                 monitorSettingList = ReloadMonitorSettings(modelname).Result;
-                if (_AllMonitorSettings != null)
+                if (monitorSettingList != null)
                 {
+                    if (_AllMonitorSettings == null)
+                        _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
                     //find monitor settings
                     if (_AllMonitorSettings.ContainsKey(modelname))
                     {
                         _AllMonitorSettings[modelname] = monitorSettingList;
-                        binit = true;
+                        binit = false; //has data, no need to re-create
                     }
                     else
                     {
-                        _AllMonitorSettings.Add(modelname, monitorSettingList);
-                        binit = true;
-                    }
+                        if (monitorSettingList.Count > 0)
+                        {
+                            _AllMonitorSettings.Add(modelname, monitorSettingList);
+                            binit = false;
+                        }
+                        else
+                            binit = true;
+                    }                    
                 }
                 else
                 {
-                    _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
-                    _AllMonitorSettings.Add(modelname, monitorSettingList);
-                    binit = true;
+                    //Dean 1230 do not force add a empty data since there are multiple objects in it
+                    //_AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
+                    //_AllMonitorSettings.Add(modelname, monitorSettingList);
+                    binit = true; 
                 }
             }
             else
             {
-                FileInfo fileInfo = new FileInfo(file_monitorconfig_path);
-                fileInfo.Create().Close();
-                WriteLog("[InitMonitorConfigFile] settings file not exist, new an object");
-                //init data to file
-                if (WriteMonitorSettings(modelname, monitorSettingList).Result)
-                {
-                    WriteLog("[InitMonitorConfigFile] Monitor settings file create and write success");
-                    binit = true;
-                }
-                else
-                {
-                    WriteLog("[InitMonitorConfigFile] Monitor settings file create and write failed");
-                    binit = false;
-                }
+                //FileInfo fileInfo = new FileInfo(file_monitorconfig_path);
+                //fileInfo.Create().Close();
+                //WriteLog("[InitMonitorConfigFile] settings file not exist, new an object");
+                ////init data to file
+                //if (WriteMonitorSettings(modelname, monitorSettingList).Result)
+                //{
+                //    WriteLog("[InitMonitorConfigFile] Monitor settings file create and write success");
+                //}
+                //else
+                //{
+                //    WriteLog("[InitMonitorConfigFile] Monitor settings file create and write failed");                    
+                //}
+                monitorSettingList = null;
+                WriteLog("[InitMonitorConfigFile] Monitor settings file didn't exist");
+                binit = true;
             }
             //}
             return Task.FromResult(monitorSettingList);
@@ -661,7 +677,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     {
                         if (_AllMonitorSettings.ContainsKey(modelname))
                         {
-                            return Task.FromResult(_AllMonitorSettings[modelname]);
+                            monitorSettings = _AllMonitorSettings[modelname];
+                            return Task.FromResult(monitorSettings);
                         }
                     }
                     string strReadJson = string.Empty;
@@ -686,10 +703,13 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         strReadJson = DDPMFileSecurity.GetSerializedJsonString(monitorSettings_path, out info);//, false);
                         if(string.IsNullOrEmpty(strReadJson))
                         {
+                            monitorSettings = null;
                             WriteLog($"[ReloadMonitorSettings][GetSerializedJsonString] return empty data: {info}");
-                            //force write back new data to replace file which has problem
-                            bool temp = WriteMonitorSettings(modelname, monitorSettings).Result;
-                            WriteLog($"[ReloadMonitorSettings][WriteMonitorSettings] replace by default data: result({temp})");
+                            ////force write back new data to replace file which has problem
+                            //bool temp = WriteMonitorSettings(modelname, monitorSettings).Result;
+                            //WriteLog($"[ReloadMonitorSettings][WriteMonitorSettings] replace by default data: result({temp})");
+
+                            //Dean 1230 do not force write empty data since there is multiple objects should be inited before write data
                             return Task.FromResult(monitorSettings);
                         }
                         else
@@ -735,11 +755,21 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 WriteLog($"[WriteMonitorSettings] fail with ({info})");
                 return Task.FromResult(false);
             }
-            if(_AllMonitorSettings != null && _AllMonitorSettings.ContainsKey(modelname) )
+            if (_AllMonitorSettings == null)
+            {
+                _AllMonitorSettings = new Dictionary<string, List<DDPMMonitorSettings>>();
+                WriteLog($"[WriteMonitorSettings] _AllMonitorSettings object is null, create it");
+            }
+            if (_AllMonitorSettings.ContainsKey(modelname))
+            {
                 _AllMonitorSettings[modelname] = monitorSettings;
+                WriteLog($"[WriteMonitorSettings] _AllMonitorSettings has key {modelname}, update it");
+            }
             else
-                WriteLog($"[WriteMonitorSettings] can't update data back to _AllMonitorSettings due to no exist key or null cache");
-
+            {
+                _AllMonitorSettings.Add(modelname, monitorSettings);
+                WriteLog($"[WriteMonitorSettings] _AllMonitorSettings no exist key, add it");
+            }
             return Task.FromResult(true);
         }
 
@@ -1613,7 +1643,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
         #region hotkey settings
 
-        private string RunSerializeObject(List<HotkeySettings> hotkeySettings)
+        /*private string RunSerializeObject(List<HotkeySettings> hotkeySettings)
         {
             string jsonString = string.Empty;
             jsonString = JsonConvert.SerializeObject(hotkeySettings);
@@ -1632,7 +1662,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
 
             return jsonString; ;
-        }
+        }*/
 
         private List<HotkeySettings> RunHotkeyDeserializeObject(string value)
         {
@@ -1728,7 +1758,25 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             try
             {
-                jsonString = JsonConvert.SerializeObject(monitorSettings);
+                //jsonString = JsonConvert.SerializeObject(monitorSettings);
+                /*JToken token = JToken.FromObject(monitorSettings);
+                if (token.Type == JTokenType.Object)
+                {
+                    JObject obj = (JObject)token;
+                    // Handle object
+                    jsonString = obj.ToString();
+                }
+                else if (token.Type == JTokenType.Array)
+                {
+                    JArray array = (JArray)token;
+                    // Handle array
+                    jsonString = array.ToString();
+                }*/
+                jsonString = DDPMFileSecurity.ConvertObjectToSerializedString(monitorSettings, out string info);
+                if(string.IsNullOrEmpty(jsonString))
+                {
+                    WriteLog("[RunSerializeObject_MonitorSettings] got empty output");
+                }
             }
             catch (Exception e)
             {
@@ -1859,7 +1907,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             string info;
             if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JObject.FromObject(impexpSettings).ToString(), path, out info))
             {
-                WriteLog(info);
+                WriteLog($"[WriteImpExpSettings][SetJsonContentFromSerializedString] failed with {info}");
                 return false;
             }
 
@@ -1933,18 +1981,22 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     //    strReadJson = reader.ReadToEnd();
                     //}
                     //security SA
+                    strReadJson = DDPMFileSecurity.GetSerializedJsonString(path, out string info);
 
-                    if (strReadJson == string.Empty || strReadJson.Length == 0)
+                    //if (strReadJson == string.Empty || strReadJson.Length == 0)
+                    if (string.IsNullOrEmpty(strReadJson))
+                    {
+                        WriteLog($"[ReadDDMImpSettingsFile] empty output: {info}");
                         return Task.FromResult(ImpSettings);
+                    }
                     try
                     {
-
                         WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
                         ImpSettings = RunDDMImpDeserializeObject(strReadJson);
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-                        ;
+                        WriteLog($"[ReadImportSettingsFile] exception: {e.Message}");
                     }
                 }
                 else
@@ -2383,8 +2435,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         case "hotkey":
                             List<HotkeySettings> hotkey = ReadHotkeySettings().Result;
                             new_obj = hotkey;
-                            if (hotkey != null && hotkey.Count == 0)
-                                need_new = true;
+                        //    if (hotkey != null && hotkey.Count == 0)
+                        //        need_new = true;
                             break;
                         //case "powernap":
                         //    List<PowerNapSetting> pnap = ReadPowerNapSettings().Result;
@@ -2407,7 +2459,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             if (new_obj == null || need_new == true)
             {
                 //create new setting file then save it
-                WriteLog("$[InitDDPMUserSettings_Common] {config_type} settings object is null, new an object");
+                WriteLog($"[InitDDPMUserSettings_Common] {config_type} settings object is null, new an object");
                 //init data to file
                 switch (config_type)
                 {

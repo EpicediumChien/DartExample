@@ -1576,7 +1576,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_webcamInterfaceType, commodity, "SupportedResolutions");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -1603,7 +1609,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_webcamInterfaceType, commodity, "SelectedResolution");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -2863,7 +2875,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "EraserDoublePressValues");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -2889,7 +2907,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "EraserSinglePressValues");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -2915,7 +2939,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "EraserLongPressValues");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -2941,7 +2971,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "SideSwitchSinglePressValues");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -2967,7 +3003,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "MenuSinglePressValues");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -2993,7 +3035,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "LaunchableAppValues");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -3019,7 +3067,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "EraserDoublePressSetting");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -3045,7 +3099,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "EraserSinglePressSetting");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -3071,7 +3131,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "EraserLongPressSetting");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -3097,7 +3163,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "SideTopSwitchSinglePressSetting");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -3123,7 +3195,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "SideBottomSwitchSinglePressSetting");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {

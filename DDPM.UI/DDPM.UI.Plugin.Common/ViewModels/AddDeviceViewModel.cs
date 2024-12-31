@@ -33,6 +33,9 @@ namespace DDPM.UI.Plugin.ViewModels
         private readonly string noDongleAlertKnM = Strings.AddDeviceKnMnoDongleAlertKnM;
         private readonly string noDongleAlertHeadset = Strings.AddDeviceKnMnoDongleAlertHeadset;
 
+        public event EventHandler<EventArgs>? PairingStopped;
+        public bool IsPairingLoaded = false;
+
         public AddDeviceViewModel(IShowPluginManager showPluginManager, IConsole console, ILog log)
         {
             Requires.NotNull(console, nameof(console));
@@ -60,7 +63,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        public string PairingStatus { get; set; } = "";
+        //public string PairingStatus { get; set; } = "";
 
         private string _isModuleLoaded = "";
 
@@ -365,63 +368,38 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
-            switch (changeType)
-            {
-                case DeviceChangedType.Peripherals_PlugIn:
+            //switch (changeType)
+            //{
+            //    case DeviceChangedType.Peripherals_PlugIn:
 
-                    break;
+            //        break;
 
-                case DeviceChangedType.Peripherals_UnPlug:
+            //    case DeviceChangedType.Peripherals_UnPlug:
 
-                    break;
+            //        break;
 
-                case DeviceChangedType.Peripherals_SettingsChange:
-                    var properties = property.Split('|');
-                    switch (properties[0])
-                    {
-                        case "DonglePairedDeviceCountChanged":
-                            if (di.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
-                            {
-                                //GotoNewDevice();
-                                PairingStatus = "Request";
-                                IsPairing = true;
-                                OnPropertyChanged(nameof(PairingStatus));
-                                return;
-                            }
-                            break;
-
-                        case "DonglePairingStatusChanged":
-                            RequestDeviceName = properties[1];
-                            switch (di.PairingStatusName)
-                            {
-                                case "Request":
-                                    break;
-
-                                case "Already Paired":
-                                    break;
-
-                                case "Stopped":
-                                    break;
-
-                                default:
-                                    break;
-                            }
-                            PairingStatus = di.PairingStatusName;
-                            OnPropertyChanged(nameof(PairingStatus));
-                            break;
-
-                        default:
-
-                            break;
-                    }
-                    break;
-
-                default:
-                    break;
-            }
+            //    case DeviceChangedType.Peripherals_SettingsChange:
+            //        var properties = property.Split('|');
+            //        switch (properties[0])
+            //        {
+            //            case "DonglePairedDeviceCountChanged":
+            //                //if (di.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
+            //                //{
+            //                //    //GotoNewDevice();
+            //                //    PairingStatus = "Request";
+            //                //    IsPairing = true;
+            //                //    OnPropertyChanged(nameof(PairingStatus));
+            //                //    return;
+            //                //}
+            //                break;
+            //            default:
+            //                break;
+            //        }
+            //        break;
+            //    default:
+            //        break;
+            //}
         }
-
-        public string RequestDeviceName = "";
 
         public bool IsPairing = false;
 
@@ -458,8 +436,8 @@ namespace DDPM.UI.Plugin.ViewModels
         public void GotoNewDevice()
         {
             IsPairing = false;
-            PairingStatus = "Stopped";
-            OnPropertyChanged(nameof(PairingStatus));
+            //PairingStatus = "Stopped";
+            //OnPropertyChanged(nameof(PairingStatus));
             if (NewDevice == null)
             {
                 _console.ShowHomePage();

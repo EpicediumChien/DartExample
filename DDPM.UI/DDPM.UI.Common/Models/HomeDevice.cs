@@ -1025,6 +1025,11 @@ namespace DDPM.UI.Common.Models
         // {txt} PimgBL} {txtBLHost}          {IsBleHostVisible}
         // 1     {icon}  Window Machine 1      True/False     Color: ConnectionStyle=1|2|3
         private const int maxHostNameLength = 15;
+        private const string BleHostStyle_Collapsed = "0";
+        private const string BleHostStyle_White = "1"; 
+        private const string BleHostStyle_Gray = "2";
+
+        //Robert_Lin, 2024-12-30, updated from Mouse/LaunchView.xaml.cs
         private void SetBLConnectionStatus_Mouse()
         {
             try
@@ -1037,12 +1042,12 @@ namespace DDPM.UI.Common.Models
                     hostName = hostName.Substring(0, 15);
 
                 //Determine current connected host index: 1,2, or 3
-                var hostIndex = DeviceInfo.VisiblePairedHostName1.ToUpper() == "VISIBLE" ? 1 : (DeviceInfo.VisiblePairedHostName2.ToUpper() == "VISIBLE" ? 2 : 3);
+                //var hostIndex = DeviceInfo.VisiblePairedHostName1.ToUpper() == "VISIBLE" ? 1 : (DeviceInfo.VisiblePairedHostName2.ToUpper() == "VISIBLE" ? 2 : 3);
 
                 //Set default styles are "2" (gray)
-                BleHost1Style = "2";
-                BleHost2Style = "2";
-                BleHost3Style = "2";
+                BleHost1Style = BleHostStyle_Gray;// "2";
+                BleHost2Style = BleHostStyle_Gray;// "2";
+                BleHost3Style = BleHostStyle_Gray;// "2";
 
                 BleHost1Text = "";
                 BleHost2Text = "";
@@ -1054,105 +1059,167 @@ namespace DDPM.UI.Common.Models
                 switch (DeviceInfo.ModelNumber)
                 {
                     case "MS700":
+                        //@ LaunchView:
+                        //txt3.Visibility = Visibility.Visible;
+                        //Host3.Visibility = Visibility.Visible;
+                        //txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
+                        //txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                        //txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
+                        //@ HomeDevice:
                         BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName1) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName1;
                         BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
                         BleHost3Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName3) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName3;
-                        //BleHost3Style = "1";
-                        //txt3.Visibility = Visibility.Visible;
-                        //Host3.Visibility = Visibility.Visible;
+
+                        //@ LaunchView:
+                        //if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                         if (BleHost1Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                         {
-                            BleHost1Style = "1";
-                            BleHost1Text = BleHost1Text.Substring(0, maxHostNameLength);
+                            //@ LaunchView:
                             //txt1.Style = ConnectionStyle1;
-                            //imgBL1.Source = img1;
                             //txtBLHost1.Style = ConnectionStyle1;
+                            //_vm.ImgBL1 = true;
+                            //@ HomeDevice:
+                            BleHost1Style = BleHostStyle_White;// "1";
+                            //BleHost1Text = BleHost1Text.Substring(0, maxHostNameLength);
                         }
+                        //@ LaunchView:
+                        //else if (txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                         else if (BleHost2Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                         {
-                            BleHost2Style = "1";
-                            BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
+                            //@ LaunchView:
                             //txt2.Style = ConnectionStyle1;
-                            //imgBL2.Source = img1;
                             //txtBLHost2.Style = ConnectionStyle1;
+                            //_vm.ImgBL2 = true;
+                            //@ HomeDevice:
+                            BleHost2Style = BleHostStyle_White;// "1";
+                            //BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
                         }
                         else
                         {
-                            BleHost3Style = "1";
-                            BleHost3Text = BleHost3Text.Substring(0, maxHostNameLength);
+                            //@ LaunchView:
                             //txt3.Style = ConnectionStyle1;
-                            //imgBL3.Source = img1;
                             //txtBLHost3.Style = ConnectionStyle1;
+                            //_vm.ImgBL3 = true;
+                            //@ HomeDevice:
+                            BleHost3Style = BleHostStyle_White;// "1";
+                            //BleHost3Text = BleHost3Text.Substring(0, maxHostNameLength);
                         }
                         break;
 
                     case "MS5320W":
                     case "MS7421W":
-                        //Host1 unused
-                        BleHost1Style = "0";
+                        //@ LaunchView:
+                        //Host1.Visibility = Visibility.Collapsed;
+                        //txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                        //txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
+
+                        //@ HomeDevice:
+
+                        //Host1 is unused
+                        BleHost1Style = BleHostStyle_Collapsed; // "0";
 
                         //Host2 data from PairedHostName1
                         //Host3 data from PairedHostName2
-                        BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName1) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName1;
-                        BleHost3Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
+                        BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
+                        BleHost3Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName3) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName3;
 
+                        //@ LaunchView:
+                        //if (txtBLHost2.Text.Equals(hostname, StringComparison.CurrentCultureIgnoreCase))
                         if (BleHost2Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                         {
-                            BleHost2Style = "1";
-                            BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
-                            //imgBL2.Source = img1;
+                            //@ LaunchView:
+                            //txt2.Style = ConnectionStyle1;
                             //txtBLHost2.Style = ConnectionStyle1;
+                            //_vm.ImgBL2 = true;
+                            //@ HomeDevice:
+                            BleHost2Style = BleHostStyle_White;// "1";
+                            //BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
                         }
                         else
                         {
-                            BleHost3Style = "1";
-                            BleHost3Text = BleHost3Text.Substring(0, maxHostNameLength);
-                            //imgBL3.Source = img1;
+                            //@ LaunchView:
+                            //txt3.Style = ConnectionStyle1;
                             //txtBLHost3.Style = ConnectionStyle1;
+                            //_vm.ImgBL3 = true;
+
+                            //@ HomeDevice:
+                            BleHost3Style = BleHostStyle_White;// "1";
+                            //BleHost3Text = BleHost3Text.Substring(0, maxHostNameLength);
                         }
                         break;
 
                     case "MS900":
+                        //@ LaunchView:
+                        //Host3.Visibility = Visibility.Collapsed;
+                        //txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                        //txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
+
+                        //@ HomeDevice:
+
+                        //Host 3 is unused
                         BleHost3Style = "0";
+
                         BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName1) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName1;
                         BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
-                        //Host3.Visibility = Visibility.Collapsed;
 
+                        //@ LaunchView:
+                        // if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                         if (BleHost1Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                         {
-                            BleHost1Style = "1";
-                            BleHost1Text = BleHost1Text.Substring(0, maxHostNameLength);
-                            //imgBL1.Source = img1;
+                            //@ LaunchView:
+                            //txt1.Style = ConnectionStyle1;
                             //txtBLHost1.Style = ConnectionStyle1;
+                            //_vm.ImgBL1 = true;
+
+                            //@ HomeDevice:
+                            BleHost1Style = BleHostStyle_White;// "1";
+                            //BleHost1Text = BleHost1Text.Substring(0, maxHostNameLength);
                         }
                         else
                         {
-                            BleHost2Style = "1";
-                            BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
-                            //imgBL2.Source = img1;
+                            //@ LaunchView:
+                            //txt2.Style = ConnectionStyle1;
                             //txtBLHost2.Style = ConnectionStyle1;
+                            //_vm.ImgBL2 = true;
+
+                            //@ HomeDevice:
+                            BleHost2Style = BleHostStyle_White;// "1";
+                            //BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
                         }
                         break;
 
                     default:
-                        BleHost1Style = "0";
-                        BleHost3Style = "0";
+                        //@ LaunchView:
                         //Host1.Visibility = Visibility.Collapsed;
                         //Host3.Visibility = Visibility.Collapsed;
-                        BleHost2Style = "1";
-                        BleHost2Text = hostName.Substring(0, maxHostNameLength);
                         //txt2.Style = ConnectionStyle1;
-                        //imgBL2.Source = img1;
+                        //txtBLHost2.Text = hostName;
                         //txtBLHost2.Style = ConnectionStyle1;
+                        //_vm.ImgBL2 = true;
+
+                        //@ HomeDevice:
+                        BleHost1Style = BleHostStyle_Collapsed;// "0";
+                        BleHost3Style = BleHostStyle_Collapsed;// "0";
+                        BleHost2Style = BleHostStyle_White;// "1";
+                        BleHost2Text = hostName;
                         break;
-                }
-                //Trim string length to <= 15
-                //if (BleHost1Text.Length > 15)
-                //    BleHost1Text = BleHost1Text.Substring(0, 15);
-                //if (BleHost2Text.Length > 15)
-                //    BleHost2Text = BleHost2Text.Substring(0, 15);
-                //if (BleHost3Text.Length > 15)
-                //    BleHost3Text = BleHost3Text.Substring(0, 15);
+                } //switch
+
+                //@ LaunchView:
+                //if (txtBLHost1.Text.Length > 20)
+                //    txtBLHost1.Text = txtBLHost1.Text.Substring(0, 20);
+                //if (txtBLHost2.Text.Length > 20)
+                //    txtBLHost2.Text = txtBLHost2.Text.Substring(0, 20);
+                //if (txtBLHost3.Text.Length > 20)
+                //    txtBLHost3.Text = txtBLHost3.Text.Substring(0, 20);
+
+                //@ HomeDevice:
+                if (BleHost1Text.Length > 20)
+                    BleHost1Text = BleHost1Text.Substring(0, 20);
+                if (BleHost2Text.Length > 20)
+                    BleHost2Text = BleHost2Text.Substring(0, 20);
+                if (BleHost3Text.Length > 20)
+                    BleHost3Text = BleHost3Text.Substring(0, 20);
             }
             catch (Exception ex)
             {
@@ -1160,43 +1227,41 @@ namespace DDPM.UI.Common.Models
             }
         }
 
+        //Robert_Lin, 2024-12-30, updated from Keyboard/LaunchView.xaml.cs
         private void SetBLConnectionStatus_Keyboard()
         {
             if (DeviceInfo == null)
                 return;
 
-            //Hess code 2024-11-5
+            //@ LaunchView:
+            //    string hostName = Dns.GetHostName();
+            //@ HomeDevice:
             string hostName = Dns.GetHostName();
-            if (hostName.Length > 15)
-                hostName = hostName.Substring(0, 15);
+            //if (hostName.Length > 15)
+            //    hostName = hostName.Substring(0, 15);
 
+            //@ LaunchView:
             //txt1.Style = ConnectionStyle2;
-            //imgBL1.Source = img2;
             //txtBLHost1.Style = ConnectionStyle2;
             //txt2.Style = ConnectionStyle2;
-            //imgBL2.Source = img2;
             //txtBLHost2.Style = ConnectionStyle2;
             //txt3.Style = ConnectionStyle2;
-            //imgBL3.Source = img2;
             //txtBLHost3.Style = ConnectionStyle2;
+
+            //_vm.ImgBL1 = false;
+            //_vm.ImgBL2 = false;
+            //_vm.ImgBL3 = false;
+
+            //@ HomeDevice:
 
             BleHost1Text = "";
             BleHost2Text = "";
             BleHost3Text = "";
 
-            //var hostIndex = DeviceInfo.VisiblePairedHostName1.ToUpper() == "VISIBLE" ? 1 : (DeviceInfo.VisiblePairedHostName2.ToUpper() == "VISIBLE" ? 2 : 3);
             //Set all default style 2 (Gray)
-            BleHost1Style = "2";
-            //txt1.Style = ConnectionStyle2;
-            //imgBL1.Source = img2;
-            //txtBLHost1.Style = ConnectionStyle2;
-
-            BleHost2Style = "2";
-            //txt2.Style = ConnectionStyle2;
-            //imgBL2.Source = img2;
-            //txtBLHost2.Style = ConnectionStyle2;
-
-            BleHost3Style = "2";
+            BleHost1Style = BleHostStyle_Gray; // "2";
+            BleHost2Style = BleHostStyle_Gray; // "2";
+            BleHost3Style = BleHostStyle_Gray; // "2";
 
             switch (DeviceInfo.ModelNumber)
             {
@@ -1204,108 +1269,128 @@ namespace DDPM.UI.Common.Models
                 case "KB740":
                 case "KB7120W":
                 case "KB7221W":
-                    //Hess code, 2024-11-2
+                    //@ LaunchView:
                     //Host1.Visibility = Visibility.Collapsed;
-                    //txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
-                    //txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
-                    //if (txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
-                    //{
-                    //    txt2.Style = ConnectionStyle1;
-                    //    imgBL2.Source = img1;
-                    //    txtBLHost2.Style = ConnectionStyle1;
-                    //}
-                    //else
-                    //{
-                    //    txt3.Style = ConnectionStyle1;
-                    //    imgBL3.Source = img1;
-                    //    txtBLHost3.Style = ConnectionStyle1;
-                    //}
-                    //break;
+                    //txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                    //txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
+
+                    //@ HomeDevice:
 
                     //There modles has no host1
-                    BleHost1Style = "0";
-                    //BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName1;
-                    //Host2 will show paired #1
-                    BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName1) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName1;
-                    //Host3 will show paired #2
-                    BleHost3Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
-                    //txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
-                    //txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
-                    //If host2 is current host (computer name)
+                    BleHost1Style = BleHostStyle_Collapsed;// "0";
+                    BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
+                    BleHost3Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName3) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName3;
+
+                    //@ LaunchView:
+                    //if (txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     if (BleHost2Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
-                    //if (hostIndex == 2)
                     {
+                        //@ LaunchView:
+                        //txt2.Style = ConnectionStyle1;
+                        //txtBLHost2.Style = ConnectionStyle1;
+                        //_vm.ImgBL2 = true;
+
+                        //@ HomeDevice:
                         //Then show style 1 (white)
-                        BleHost2Style = "1";
-                        BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
-                        //txt1.Style = ConnectionStyle1;
-                        //imgBL1.Source = img1;
-                        //txtBLHost1.Style = ConnectionStyle1;
+                        BleHost2Style = BleHostStyle_White;// "1";
+                        //BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
                     }
                     else
                     {
+                        //@ LaunchView
+                        //txt3.Style = ConnectionStyle1;
+                        //txtBLHost3.Style = ConnectionStyle1;
+                        //_vm.ImgBL3 = true;
+
+                        //@ HomeDevice:
+
                         //Else host3 is current host
-                        BleHost3Style = "1";
-                        BleHost3Text = BleHost3Text.Substring(0, maxHostNameLength);
-                        //txt2.Style = ConnectionStyle1;
-                        //imgBL2.Source = img1;
-                        //txtBLHost2.Style = ConnectionStyle1;
+                        BleHost3Style = BleHostStyle_White;// "1";
+                        //BleHost3Text = BleHost3Text.Substring(0, maxHostNameLength);
                     }
                     break;
 
                 case "KB900":
+                    //@ LaunchView:
+                    //Host3.Visibility = Visibility.Collapsed;
+                    //txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                    //txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
+
+                    //@ HomeDevice:
                     //Host3 is not used
-                    BleHost3Style = "0";
-                    //Host 1 show the paired 1
-                    BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName1) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName1;
-                    //Host 2 show the paired 2
-                    BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
-                    //txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
-                    //txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
-                    //If host1 is current host (computer name)
+                    BleHost3Style = BleHostStyle_Collapsed;// "0";
+                    //Host 1 show the paired 2
+                    BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName2;
+                    //Host 2 show the paired 3
+                    BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName3) ? Strings.ReadyToBePaired : DeviceInfo.PairedHostName3;
+
+                    //@ LaunchView:
+                    // if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
+                    //@ HomeDevice:
                     if (BleHost1Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
                     {
-                        BleHost1Style = "1";
-                        BleHost1Text = BleHost1Text.Substring(0, maxHostNameLength);
-                        //imgBL1.Source = img1;
+                        //@ LaunchView:
+                        //txt1.Style = ConnectionStyle1;
                         //txtBLHost1.Style = ConnectionStyle1;
+                        //_vm.ImgBL1 = true;
+
+                        //@ HomeDevice:
+                        BleHost1Style = BleHostStyle_White;// "1";
+                        //BleHost1Text = BleHost1Text.Substring(0, maxHostNameLength);
                     }
                     else
                     {
-                        BleHost2Style = "1";
-                        BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
-                        //imgBL2.Source = img1;
+                        //@ LaunchView:
+                        //txt2.Style = ConnectionStyle1;
                         //txtBLHost2.Style = ConnectionStyle1;
+                        //_vm.ImgBL2 = true;
+
+                        BleHost2Style = BleHostStyle_White;// "1";
+                        //BleHost2Text = BleHost2Text.Substring(0, maxHostNameLength);
                     }
                     break;
 
                 default:
+                    //@ LaunchView:
+                    //Host1.Visibility = Visibility.Collapsed;
+                    //Host3.Visibility = Visibility.Collapsed;
+                    //txt2.Style = ConnectionStyle1;
+                    //txtBLHost2.Text = hostName;
+                    //txtBLHost2.Style = ConnectionStyle1;
+                    //_vm.ImgBL2 = true;
+                    //break;
+
+                    //@ HomeDevice:
+
                     //Host 1 and 3 is unused
-                    BleHost1Style = "0";
-                    BleHost3Style = "0";
-                    //BleHost1Text = DeviceInfo.PairedHostName2;
-                    //txtBLHost1.Text = _vm.PairedHostName2;
+                    BleHost1Style = BleHostStyle_Collapsed;// "0";
+                    BleHost3Style = BleHostStyle_Collapsed;// "0";
 
                     //Host 2 show current computer
-                    BleHost2Style = "1";
-                    BleHost2Text = hostName.Substring(0, maxHostNameLength);
-                    //txt1.Style = ConnectionStyle1;
-                    //imgBL1.Source = img1;
-                    //txtBLHost1.Style = ConnectionStyle1;
-
-                    //BleHost2Style = "0";
-                    //Host2.Visibility = Visibility.Collapsed;
+                    BleHost2Style = BleHostStyle_White;// "1";
+                    //BleHost2Text = hostName.Substring(0, maxHostNameLength);
                     break;
             } //switch
-            //Trim string length to <= 15
-            //if (BleHost1Text.Length > 15)
-            //    BleHost1Text = BleHost1Text.Substring(0, 15);
-            //if (BleHost2Text.Length > 15)
-            //    BleHost2Text = BleHost2Text.Substring(0, 15);
-            //if (BleHost3Text.Length > 15)
-            //    BleHost3Text = BleHost3Text.Substring(0, 15);
+
+            //@ LaunchView:
+            //if (txtBLHost1.Text.Length > 20)
+            //    txtBLHost1.Text = txtBLHost1.Text.Substring(0, 20);
+            //if (txtBLHost2.Text.Length > 20)
+            //    txtBLHost2.Text = txtBLHost2.Text.Substring(0, 20);
+            //if (txtBLHost3.Text.Length > 20)
+            //    txtBLHost3.Text = txtBLHost3.Text.Substring(0, 20);
+
+            //@ HomeDevice:
+            //Trim string length to > 20
+            if (BleHost1Text.Length > 20)
+                BleHost1Text = BleHost1Text.Substring(0, 20);
+            if (BleHost2Text.Length > 20)
+                BleHost2Text = BleHost2Text.Substring(0, 20);
+            if (BleHost3Text.Length > 20)
+                BleHost3Text = BleHost3Text.Substring(0, 20);
         }
 
+        //Robert_Lin, 2024-12-30, update from SoundBar/LunchView.xaml.cs
         //Need to fix: How to know Audio BLE have 1 or 2 slots?
         //Currently, we will show only one host.
         private void SetBLConnectionStatus_Audio()
@@ -1315,41 +1400,58 @@ namespace DDPM.UI.Common.Models
                 if (DeviceInfo == null)
                     return;
 
+                //@ LaunchView:
+                //string hostName = Dns.GetHostName();
+
+                //@ HomeDevice:
                 string hostName = Dns.GetHostName();
 
-                if (DeviceInfo.PairedHostName1 == hostName)
+                //@ LaunchView:
                 //if (_vm.VisiblePairedHostName1 == hostName)
+                if (DeviceInfo.PairedHostName1 == hostName)
                 {
-                    BleHost1Style = "1";
-                    BleHost2Style = "0"; //Fix, Audio BLE has no gray color state
-                                         //txt1.Style = ConnectionStyle1;
-                                         //txt2.Style = ConnectionStyle2;
-                                         //imgBL1.Source = img1;
-                                         //imgBL2.Source = img2;
-                                         //txtSystemName1.Style = ConnectionStyle1;
-                                         //txtSystemName2.Style = ConnectionStyle2;
+                    //@ LaunchView:
+                    //txt1.Style = ConnectionStyle1;
+                    //txt2.Style = ConnectionStyle2;
+                    //imgBL1.Source = img1;
+                    //imgBL2.Source = img2;
+                    //txtSystemName1.Style = ConnectionStyle1;
+                    //txtSystemName2.Style = ConnectionStyle2;
+
+                    //@ HomeDevice:
+                    BleHost1Style = BleHostStyle_White;// "1";
+                    BleHost2Style = BleHostStyle_Gray; // "2";
 
                     //Workaround, if Hostname is empty, then show {hostName}
-                    BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName1) ? hostName : DeviceInfo.PairedHostName1;
+                    //BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName1) ? hostName : DeviceInfo.PairedHostName1;
                 }
                 else
                 {
-                    BleHost1Style = "0";
-                    BleHost2Style = "1"; //Fix, Audio BLE has no gray color state
-                                         //txt1.Style = ConnectionStyle2;
-                                         //txt2.Style = ConnectionStyle1;
-                                         //imgBL1.Source = img2;
-                                         //imgBL2.Source = img1;
-                                         //txtSystemName1.Style = ConnectionStyle2;
-                                         //txtSystemName2.Style = ConnectionStyle1;
+                    //@ LaunchView:
+                    //txt1.Style = ConnectionStyle2;
+                    //txt2.Style = ConnectionStyle1;
+                    //imgBL1.Source = img2;
+                    //imgBL2.Source = img1;
+                    //txtSystemName1.Style = ConnectionStyle2;
+                    //txtSystemName2.Style = ConnectionStyle1;
+
+                    //@ HomeDevice:
+                    BleHost1Style = BleHostStyle_Gray; // "2";
+                    BleHost2Style = BleHostStyle_White;// "1";
 
                     //Workaround, if Hostname is empty, then show {hostName}
-                    BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? hostName : DeviceInfo.PairedHostName2;
+                    //BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? hostName : DeviceInfo.PairedHostName2;
                 }
-                AudioBleText = string.Format(Strings.Paired_Info, DeviceInfo.TotalNumberOfPairedHostName); //"This device can be paired with {0} hosts simultaneously";
-                                                                                                           //int totalPairedHostCount = DeviceInfo.TotalNumberOfPairedHostName;
-                                                                                                           //AudioBleText = String.Format(AudioBleConnectionTotalPairCountText, totalPairedHostCount);
-                                                                                                           //BLConnection.Visibility = Visibility.Visible;
+
+                //@ LaunchView
+                //BLConnection.Visibility = Visibility.Visible;
+
+                //@ HomeDevice:
+                AudioBleText = string.Format(Strings.Paired_Info, DeviceInfo.TotalNumberOfPairedHostName); 
+                //"This device can be paired with {0} hosts simultaneously";
+                //int totalPairedHostCount = DeviceInfo.TotalNumberOfPairedHostName;
+                //AudioBleText = String.Format(AudioBleConnectionTotalPairCountText, totalPairedHostCount);
+                //BLConnection.Visibility = Visibility.Visible;
             }
             catch (Exception ex)
             {

@@ -415,22 +415,25 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
 
                 case DeviceChangedType.Peripherals_SettingsChange:
-                    if (DeviceInfos.Keys.Contains(di.ID))
-                    {
-                        DeviceInfos.Remove(di.ID);
-                        DeviceInfos.Add(di.ID, di);
-                    }
-                    else
-                    {
-                        return;
-                    }
+                    //if (DeviceInfos.Keys.Contains(di.ID))
+                    //{
+                    //    DeviceInfos.Remove(di.ID);
+                    //    DeviceInfos.Add(di.ID, di);
+                    //}
+                    //else
+                    //{
+                    //    return;
+                    //}
                     if (di.ID == CurrentDeviceID)
                     {
-                        CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
+                        //CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
                         switch (property)
                         {
                             case "BatteryStatusChanged":
                                 BatteryStatus = di.BatteryStatus;
+                                break;
+                            case "DeviceNameChanged":
+                                Name = di.Name.Replace(Model, "").Trim();
                                 break;
 
                             case "BatteryLevelChanged":
