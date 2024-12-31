@@ -1194,10 +1194,25 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     // get mic list first
                     var audioDevices = await DeviceInformation.FindAllAsync(DeviceClass.AudioCapture);
 
-                    // 2024/12/31 Elie.
-                    var captureMode = audioDevices.Count == 0 ? StreamingCaptureMode.Video : StreamingCaptureMode.AudioAndVideo;
+                    List<DeviceInformation> devices_List = new List<DeviceInformation>();
+                    foreach (DeviceInformation device in audioDevices)
+                    {
+                        if (device.IsEnabled)
+                        {
+                            //check device enable
+                            devices_List.Add(device);
+                        }
+                    }
 
-                    var microphone = audioDevices.FirstOrDefault();
+                    DeviceInformation microphone = null;
+                    if (devices_List.Count > 0)
+                        microphone = devices_List[0];
+
+
+                    // 2024/12/31 Elie.
+                    var captureMode = devices_List.Count == 0 ? StreamingCaptureMode.Video : StreamingCaptureMode.AudioAndVideo;
+
+                    //var microphone = audioDevices.FirstOrDefault();
 
                     string AudioDeviceId = string.Empty; // 2024/12/31 Elie.
                     if (microphone != null)
