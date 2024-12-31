@@ -2153,7 +2153,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             List<string> model = null;
             List<string> guid = null;
             List<string> serviceTag = null;
-            bool isUod = true;
+            bool isUod = false;
 
             CLI_FWU_RESPONSE cLI_FWU_RESPONSE = null;
             try
@@ -2713,7 +2713,38 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 switch (commandLineInput.TargetFeature)
                                                 {
                                                     case "FIRMWAREUPDATE":
+                                                        switch (ss_2[1].ToUpper())
+                                                        {
+                                                            case "FORCEWITHNOTICE":
+                                                                isShowInfo = true;
+                                                                isForce = true;
+                                                                isDefer = false;
+                                                                break;
+
+                                                            case "FORCEWITHNONOTICE":
+                                                                isShowInfo = false;
+                                                                isForce = true;
+                                                                isDefer = false;
+                                                                break;
+
+                                                            case "DEFER":
+                                                                isShowInfo = true;
+                                                                isForce = false;
+                                                                isDefer = true;
+                                                                break;
+
+                                                            default:
+                                                                cLI_FWU_RESPONSE.Message = "Input FAIL";
+                                                                ret = false;
+                                                                break;
+                                                        }
+                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, fwUpdateDeviceInfos, isUod, installPath, isShowInfo, isForce, guid, model, miniver, isDefer, serviceTag);
+                                                        result.ExitCode = fwupdate.code;
+                                                        result.serialize_Json_response = fwupdate.result;
+                                                        ret = true;
+                                                        break;
                                                     case "SILENTFWUPDATE":
+                                                        isUod = true;
                                                         switch (ss_2[1].ToUpper())
                                                         {
                                                             case "FORCEWITHNOTICE":
@@ -2740,9 +2771,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                                 break;
 
                                                         }
-                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, fwUpdateDeviceInfos, isUod, installPath, isShowInfo, isForce, guid, model, miniver, isDefer, serviceTag);
-                                                        result.ExitCode = fwupdate.code;
-                                                        result.serialize_Json_response = fwupdate.result;
+                                                        var fwupdate2 = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, fwUpdateDeviceInfos, isUod, installPath, isShowInfo, isForce, guid, model, miniver, isDefer, serviceTag);
+                                                        result.ExitCode = fwupdate2.code;
+                                                        result.serialize_Json_response = fwupdate2.result;
                                                         ret = true;
                                                         break;
                                                     default:
