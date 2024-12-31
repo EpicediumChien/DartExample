@@ -1206,8 +1206,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                     DeviceInformation microphone = null;
                     if (devices_List.Count > 0)
+                    {
                         microphone = devices_List[0];
-
+                        foreach (DeviceInformation device in devices_List)
+                        {
+                            if ( !string.IsNullOrEmpty( _vm.Model ) &&  device.Name.Contains(_vm.Model) )
+                            {
+                                microphone = device;
+                            }
+                        }
+                    }
 
                     // 2024/12/31 Elie.
                     var captureMode = devices_List.Count == 0 ? StreamingCaptureMode.Video : StreamingCaptureMode.AudioAndVideo;
