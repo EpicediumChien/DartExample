@@ -202,15 +202,15 @@ namespace VcpCore.Plugins
             return Task.FromResult(_AllDisplays);
         }
 
-        public async Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken token)
+        public async Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken Token)
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Re-Get Monitors List requested ...");
 
             try
             {
                 bool IsFinishedAlready = false;
-                var CancelStatusCheck = Task.Run(() => CancellationCheck(token, in IsFinishedAlready));
-                var ReGetTask = Task.Run(() => InitializeMonitorsList(true, token));
+                var CancelStatusCheck = Task.Run(() => CancellationCheck(Token, in IsFinishedAlready));
+                var ReGetTask = Task.Run(() => InitializeMonitorsList(true, Token));
 
                 List<MonitorInfo> _AllDisplays = new List<MonitorInfo>();
 
@@ -4578,13 +4578,10 @@ namespace VcpCore.Plugins
                         }
                     }
 
-                    if (string.IsNullOrWhiteSpace(_TargetMonitor.series))
+                    if (string.IsNullOrWhiteSpace(_TargetMonitor.series) && CheckIsSupportDisplayByBit(in _TargetMonitor, _TargetMonitor.modelName))
                     {
-                        if (CheckIsSupportDisplayByBit(in _TargetMonitor, _TargetMonitor.modelName))
-                        {
-                            _TargetMonitor.series = ChekSeries(_TargetMonitor.modelName);
-                            rc = true;
-                        }
+                        _TargetMonitor.series = ChekSeries(_TargetMonitor.modelName);
+                        rc = true;
                     }
 
                     _logs.DebugMsg("[VcpCorePlugin] _TargetMonitor.modelName: " + _TargetMonitor.modelName);
