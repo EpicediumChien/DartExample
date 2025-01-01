@@ -323,7 +323,8 @@ namespace DDPM.UI.Module.EzArrange
                 foreach (DDPM.SA.Common.Display.SplitJson spj in eaSettings.RecentList)
                 {
                     //Robert_Lin, 2024-10-4 Check maximun items
-                    if (splitListView_Recent.ItemCount >= (EAEMConstants.MaxRecentItems+1))
+                    //since sp0A is not null,the splitListView_Recent.ItemCount init with 1.
+                    if (splitListView_Recent.ItemCount > EAEMConstants.MaxRecentItems)
                         break;
 
                     //Validate RectentList items, skip the invalid items

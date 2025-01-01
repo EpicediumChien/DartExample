@@ -1614,12 +1614,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         /// <returns>True=Enabled; False=Disabled</returns>
         public Task<bool> GetIsSpanEnabled()
         {
-            if (_eaBroker != null)
+            if (_eaBroker != null &&
+                _eaBroker.VM != null)
             {
-                if (_eaBroker.VM != null)
-                {
-                    return Task.FromResult(_eaBroker.VM.IsSpanEnabled);
-                }
+                return Task.FromResult(_eaBroker.VM.IsSpanEnabled);                
             }
             return Task.FromResult(false);
         }
@@ -1634,13 +1632,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         /// <returns></returns>
         public Task<bool> NotifyEAMessage(EAArgs eaArgs)
         {
-            if (eaArgs.Command.Equals(EAEMConstants.EACommand_LastSelectedMonitorChanged))
+            if (eaArgs.Command.Equals(EAEMConstants.EACommand_LastSelectedMonitorChanged) &&
+                _eaBroker != null && 
+                _isEaBrokerStarted)
             {
-                if ((_eaBroker != null && _isEaBrokerStarted))
-                {
-                    _eaBroker.NotifySelectedMonitorChanged();
-                    return Task.FromResult(true);
-                }
+                _eaBroker.NotifySelectedMonitorChanged();
+                return Task.FromResult(true);                
             }
             return Task.FromResult(false);
         }
@@ -1827,13 +1824,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             if (_eaBroker != null)
             {
                 bool isInit = false;
-                if (e.Tag != null)
+
+                if (e.Tag != null &&
+                    e.Tag is string &&
+                    e.Tag == "init")
                 {
-                    if (e.Tag is string)
-                    {
-                        if (e.Tag == "init")
-                            isInit = true;
-                    }
+                    isInit = true;                    
                 }
 
                 //If we are in Edit state, then cancel the editing
@@ -2287,27 +2283,24 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 retArgs.Result = true;
                 retArgs.SplitJson.Settings = _editWindow.GetSettings();
 
-                if (_saveCustomWindow != null)
-                {
-                    if (_saveCustomWindow.SelectedCustomItem != null)
+                if (_saveCustomWindow != null &&
+                    _saveCustomWindow.SelectedCustomItem != null)
+                { 
+                    //CustomName will copy from SaveCustomWindow
+                    retArgs.SplitJson.CustomName = _saveCustomWindow.SelectedCustomItem.CustomName;
+
+                    //If user has selected an existed custom layout
+                    if (_saveCustomWindow.SelectedCustomItem.EAID >= EAEMConstants.EAID_FirstCustom)
                     {
-                        //CustomName will copy from SaveCustomWindow
-                        retArgs.SplitJson.CustomName = _saveCustomWindow.SelectedCustomItem.CustomName;
+                        retArgs.SplitJson.EAID = _saveCustomWindow.SelectedCustomItem.EAID;
 
-
-                        //If user has selected an existed custom layout
-                        if (_saveCustomWindow.SelectedCustomItem.EAID >= EAEMConstants.EAID_FirstCustom)
-                        {
-                            retArgs.SplitJson.EAID = _saveCustomWindow.SelectedCustomItem.EAID;
-
-                        }
-                        else
-                        {
-                            //The SplitClass will update from SaveCustomWindow
-
-                            //retArgs.SplitJson = _saveCustomWindow.SelectedCustomItem.Clone();
-                        }
                     }
+                    else
+                    {
+                        //The SplitClass will update from SaveCustomWindow
+
+                        //retArgs.SplitJson = _saveCustomWindow.SelectedCustomItem.Clone();
+                    }                    
                 }
 
                 //Can be removed
@@ -2363,27 +2356,25 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             _editWindow = null;
 
             //10 Get the returned CustomName and Selected CustomItem from SaveCustomWindow
-            if (_saveCustomWindow != null)
+            if (_saveCustomWindow != null &&
+                _saveCustomWindow.SelectedCustomItem != null)
             {
-                if (_saveCustomWindow.SelectedCustomItem != null)
+                //CustomName will copy from SaveCustomWindow
+                retArgs.SplitJson.CustomName = _saveCustomWindow.SelectedCustomItem.CustomName;
+
+
+                //If user has selected an existed custom layout
+                if (_saveCustomWindow.SelectedCustomItem.EAID >= EAEMConstants.EAID_FirstCustom)
                 {
-                    //CustomName will copy from SaveCustomWindow
-                    retArgs.SplitJson.CustomName = _saveCustomWindow.SelectedCustomItem.CustomName;
+                    retArgs.SplitJson.EAID = _saveCustomWindow.SelectedCustomItem.EAID;
 
-
-                    //If user has selected an existed custom layout
-                    if (_saveCustomWindow.SelectedCustomItem.EAID >= EAEMConstants.EAID_FirstCustom)
-                    {
-                        retArgs.SplitJson.EAID = _saveCustomWindow.SelectedCustomItem.EAID;
-
-                    }
-                    else
-                    {
-                        //The SplitClass will update from SaveCustomWindow
-
-                        //retArgs.SplitJson = _saveCustomWindow.SelectedCustomItem.Clone();
-                    }
                 }
+                else
+                {
+                    //The SplitClass will update from SaveCustomWindow
+
+                    //retArgs.SplitJson = _saveCustomWindow.SelectedCustomItem.Clone();
+                }                
             }
 
             //11 Notify UI to get the updates

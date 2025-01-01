@@ -157,7 +157,7 @@ namespace DDPM.UI.Common.ViewModels
             if (_splitList == null) return null;
             if (_splitList.Count == 0) return null;
 
-            return _splitList[ItemCount-1];
+            return _splitList[ItemCount - 1];
         }
         /// <summary>
         /// Return the first item which Buddy is null

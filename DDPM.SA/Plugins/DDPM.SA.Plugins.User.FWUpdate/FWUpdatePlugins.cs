@@ -627,7 +627,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _logs.DebugMsg_1($"Display _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
                             _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[{i}] error : {ex.Message}");
                         }
@@ -1839,7 +1839,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
                     if (_updateErrorCode == FWUErrorCode.Unknow)
                     {
-                        _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
+                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                     }
                     _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " _updateErrorCode : " + _updateErrorCode);
 
@@ -2694,10 +2694,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             _logs.DebugMsg_1($"Check_CanBeOTAUpdate start");
             bool ret = true;
-            if (fwUpdateInfo.DeviceType == DeviceType.LogicalWebcam ||
-                fwUpdateInfo.DeviceType == DeviceType.PhysicalWebcam)
+            if ((fwUpdateInfo.DeviceType == DeviceType.LogicalWebcam ||
+                fwUpdateInfo.DeviceType == DeviceType.PhysicalWebcam) && 
+                fwUpdateInfo.Model.Contains("7022"))
             {
-                _logs.DebugMsg_1($"Check_CanBeOTAUpdate DeviceType is Webcam");
+                _logs.DebugMsg_1($"Check_CanBeOTAUpdate DeviceType is WB7022");
                 ret = false;
                 //作業系統必須是Windows10 20H2 以上
                 //或是Windows11 22H2以上

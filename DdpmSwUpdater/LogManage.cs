@@ -19,13 +19,15 @@ namespace DdpmSwUpdater
         static string logFilePath = "DdpmSwUpdater.log";
         public static Logs logs;
         public static string Version = string.Empty;
+        static string path = string.Empty;
+        public static bool fromDDPM = true;
         public static void SetPath()
         {
             DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
-            string AppDataPath = DDPMFileSecurity.GetActiveUserLocalAppDataPath();
+            string AppDataPath = WTSFunction.GetActiveUserLocalAppDataPath(null);
             if (!string.IsNullOrEmpty(AppDataPath))
             {
-                string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-DdpmSwUpdater";
+                path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-DdpmSwUpdater";
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
@@ -50,6 +52,10 @@ namespace DdpmSwUpdater
                 //{
                 //    writer.WriteLine($"{DateTime.Now}: {message}");
                 //}
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
                 if (logs != null)
                 {
                     logs.DebugMsg_1(message);

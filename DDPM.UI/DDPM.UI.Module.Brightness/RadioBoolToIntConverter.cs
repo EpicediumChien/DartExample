@@ -83,7 +83,7 @@ namespace DDPM.UI.Module.Brightness
         {
             bool isTrue = (bool)value;
 
-            if (DdpmCommonHelper.previousOsTheme == OSThemeEnum.Dark)
+            if (DdpmCommonHelper.PreviousOsTheme == OSThemeEnum.Dark)
             {
                 return isTrue ? TrueBrush : FalseBrushDarkTheme;
             }
