@@ -375,6 +375,13 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
+            if (DeviceInfo == null)
+            {
+                DdpmCommonHelper.WriteUILog($"Error: DeviceChanged Event with no device info!");
+                return;
+            }
+            DdpmCommonHelper.WriteUILog($"DeviceChanged Event: Type: {changeType} ID: {di.ID} Property: {property}");
+
             switch (changeType)
             {
                 case DeviceChangedType.Peripherals_PlugIn:
