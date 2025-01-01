@@ -8186,22 +8186,31 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
                 {
                     writelog($"[DeleteDdpmSwUpdaterFolder], o_String={o.ToString()}.");
-                    string AppDataPath = WTSFunction.GetActiveUserLocalAppDataPath(Log);
-                    if (!string.IsNullOrEmpty(AppDataPath))
+                    string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                    if (!string.IsNullOrEmpty(path_programdata))
                     {
-                        string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
+                        Method method = new Method(Log);
+                        string path = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
                         if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
                         {
-                            writelog($"[DeleteDdpmSwUpdaterFolder], Exists.");
-                            Directory.Delete(path, true);
-                            writelog($"[DeleteDdpmSwUpdaterFolder], Delete.");
+                            writelog($"[DeleteDdpmSwUpdaterFolder], path Exists.");
+                            method.DeleteFolder(path);
+                            writelog($"[DeleteDdpmSwUpdaterFolder], path Delete.");
                         }
+                        string path_2 = path_programdata + "\\Dell" + "\\" + o.ToString();
+                        if (!string.IsNullOrEmpty(path_2) && Directory.Exists(path_2))
+                        {
+                            writelog($"[DeleteDdpmSwUpdaterFolder], path_2 Exists.");
+                            method.DeleteFolder(path_2);
+                            writelog($"[DeleteDdpmSwUpdaterFolder], path_2 Delete.");
+                        }
+                        method.Dispose();
                         WriteRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater", "");
                         writelog($"[DeleteDdpmSwUpdaterFolder], WriteRegistryData.");
                     }
                     else
                     {
-                        writelog("[DeleteDdpmSwUpdaterFolder], AppDataPath get null.");
+                        writelog("[DeleteDdpmSwUpdaterFolder], path_programdata get null.");
                     }
                 }
                 writelog("[DeleteDdpmSwUpdaterFolder], done.");
