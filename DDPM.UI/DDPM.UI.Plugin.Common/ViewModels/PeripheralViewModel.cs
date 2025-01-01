@@ -254,7 +254,23 @@ namespace DDPM.UI.Plugin.ViewModels
             }
 
             var colorCode = CurrentDeviceInfo.ColorCode == 0 ? "" : $"_{CurrentDeviceInfo.ColorCode}";
-            ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}{colorCode}.png";
+            string imageFileName = DdpmCommonHelper.DeterminePeripheralProductImageFileName(CurrentDeviceInfo);
+            if (!String.IsNullOrEmpty(imageFileName))
+            {
+                ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}{colorCode}.png";
+            }
+            else if(CurrentDeviceInfo.Type == DeviceType.LogicalKeyboard || CurrentDeviceInfo.Type == DeviceType.LogicalMouse)
+            {
+                ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/";
+                if (!DdpmCommonHelper.isDarkMode()) 
+                {
+                    ImageFilePath += "LightMode/";
+                }
+                if (CurrentDeviceInfo.Type == DeviceType.LogicalKeyboard)
+                    ImageFilePath += "Lineart-kb.png";
+                else if (CurrentDeviceInfo.Type == DeviceType.LogicalMouse)
+                    ImageFilePath += "Lineart-ms.png";
+            }
             FirmwareVersion = CurrentDeviceInfo.FirmwareVersion;
             var fv = CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
             FirmwareVersion2 = $"Firmware Version {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
@@ -359,6 +375,13 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
+            if (DeviceInfo == null)
+            {
+                DdpmCommonHelper.WriteUILog($"Error: DeviceChanged Event with no device info!");
+                return;
+            }
+            DdpmCommonHelper.WriteUILog($"DeviceChanged Event: Type: {changeType} ID: {di.ID} Property: {property}");
+
             switch (changeType)
             {
                 case DeviceChangedType.Peripherals_PlugIn:
@@ -415,16 +438,18 @@ namespace DDPM.UI.Plugin.ViewModels
                         {
                             case "BatteryStatusChanged":
                                 BatteryStatus = di.BatteryStatus;
+                                CurrentDeviceInfo!.BatteryStatus = di.BatteryStatus;
                                 break;
                             case "DeviceNameChanged":
                                 Name = di.Name.Replace(Model, "").Trim();
                                 break;
 
                             case "BatteryLevelChanged":
-                                if (BatteryLevel == -1)
-                                    SetCurrentDevice(CurrentDeviceID.ToString());
-                                else
-                                    BatteryLevel = di.BatteryLevel;
+                                BatteryLevel = di.BatteryLevel;
+                                CurrentDeviceInfo!.BatteryLevel = di.BatteryLevel;
+                                //if (BatteryLevel == -1)
+                                //    SetCurrentDevice(CurrentDeviceID.ToString());
+                                //else
                                 break;
 
                             default:

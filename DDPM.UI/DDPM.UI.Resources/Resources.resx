@@ -3465,4 +3465,7 @@
   <data name="slot" xml:space="preserve">
     <value>slots available</value>
   </data>
+  <data name="Hotkey.10" xml:space="preserve">
+    <value>The hotkey conflicts with a hotkey configured in another application. Use a different hotkey combination.</value>
+  </data>
 </root>

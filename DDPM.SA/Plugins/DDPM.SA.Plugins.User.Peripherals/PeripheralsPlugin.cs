@@ -2482,7 +2482,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
         private void _iCTKMessageHelper_CollaborationMsgChanged(CollaborationMsg collaborationMsg)
         {
-            //Debug.WriteLine($"CollaborationMsgChanged: {collaborationMsg.ToString() ?? ""}");
+            Debug.WriteLine($"CollaborationMsgChanged: {collaborationMsg.ToString() ?? ""}");
             writelog($"CollaborationMsgChanged: {collaborationMsg.ToString() ?? ""}");
             //CollaborationMsgNotify?.Invoke(EventArgs.Empty, collaborationMsg);
             var di = new DeviceInfo
