@@ -4777,6 +4777,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   查詢類似 The hotkey conflicts with a hotkey configured in another application. Use a different hotkey combination. 的當地語系化字串。
+        /// </summary>
+        internal static string Hotkey_10 {
+            get {
+                return ResourceManager.GetString("Hotkey.10", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   查詢類似 Contrast - 的當地語系化字串。
         /// </summary>
         internal static string Hotkey_2 {
