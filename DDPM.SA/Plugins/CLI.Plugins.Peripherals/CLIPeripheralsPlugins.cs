@@ -2197,7 +2197,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                     if (!commandLineInput.Options[0].Option_Value.Contains(','))
                     {
-                        commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
+                        commandLineInput.Options[0].Option_Value += ",DEFER";
                     }
                     string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
 
@@ -3341,7 +3341,15 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             break;
                         }
-                        if (commandLineInput.Options.Count > 0)
+                        if (commandLineInput.Options.Count == 0)
+                        {
+                            commandLineInput.Options.Insert(0, new CommandType_Option("VALUE", "MANUAL,DEFER"));
+                        }
+                        if (!commandLineInput.Options[0].Option_Value.Contains(','))
+                        {
+                            commandLineInput.Options[0].Option_Value += "MANUAL,DEFER";
+                        }                        
+                        if (commandLineInput.Options.Count > 0 || commandLineInput.Options[0].Option_Value == "MANUAL,DEFER")
                         {
                             writelog("FWUpdate_Line 3902");
                             string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
