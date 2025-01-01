@@ -129,7 +129,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 return result;
                         }
                     }
-                    
+
 
                 }
                 if (commandLineInput.Command.Equals("SET") &&
@@ -318,7 +318,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             if (_deviceinfo == null || _deviceinfo.Count == 0)
             {
                 GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found"));
-                writelog("GetPeripheralProperty: "+ _commandLineInput.TargetFeature  + "Device not found");
+                writelog("GetPeripheralProperty: " + _commandLineInput.TargetFeature + "Device not found");
                 return (int)CLI_ExitCode.fail_GetPeripheralProperty_NoConnectDevice;
             }
 
@@ -479,7 +479,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         });
                         if (!found)
                         {
-                            writelog("SetPeripheralProperty: "+ guid + "FAIL Device not found");
+                            writelog("SetPeripheralProperty: " + guid + "FAIL Device not found");
                             SetResults.Add(new CLI_PeripheralRESPONSE($"{guid}", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found"));
                         }
                     }
@@ -710,7 +710,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                     });
                 }
-                writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS" + (retcode ? "SUCCESS" :  "FAIL"));
+                writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS" + (retcode ? "SUCCESS" : "FAIL"));
                 return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
             }
 
@@ -1581,11 +1581,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            if(val == 50 || val == 60)
+                            if (val == 50 || val == 60)
                             {
-                                if(val == 50)
+                                if (val == 50)
                                     val = 1;
-                                else if(val == 60)
+                                else if (val == 60)
                                     val = 2;
 
                                 if (_devMgr.GetIsPropertyAntiFlickerSupported(x.Guid).Result)
@@ -1611,12 +1611,12 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         break;
                                                 }
                                             }
-                                        }                                       
+                                        }
                                         else
                                         {
-                                            x.Value ="Interface return null";
+                                            x.Value = "Interface return null";
                                         }
-                                        
+
                                         //x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                                         x.Message = "N/A";
                                     }
@@ -1647,7 +1647,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 x.Message = "Wrong option value: ";
                                 x.Message += $"{val}";
                                 retcode = false;
-                                writelog("SetPeripheralProperty: Wrong option value:"+ val.ToString());
+                                writelog("SetPeripheralProperty: Wrong option value:" + val.ToString());
                             }
                         }
                     });
@@ -1665,7 +1665,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //            if (result == "0")
                 //            {
                 //                x.Result = "PASS";
-                    //                retvalue = _devMgr.GetAntiFlicker(GUID).Result;
+                //                retvalue = _devMgr.GetAntiFlicker(GUID).Result;
                 //                x.Value = retvalue.ToString();
                 //                x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                 //                x.Message = "N/A";
@@ -2197,7 +2197,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                     if (!commandLineInput.Options[0].Option_Value.Contains(','))
                     {
-                        commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
+                        commandLineInput.Options[0].Option_Value += ",DEFER";
                     }
                     string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
 
@@ -2234,21 +2234,21 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             string[] ss_tag = commandLineInput.Options[i].Option_Value.Split(",");
 
                                             if (ss_tag.Length == 2 &&
-                                                !string.IsNullOrEmpty(ss_tag[0]) && 
+                                                !string.IsNullOrEmpty(ss_tag[0]) &&
                                                 !string.IsNullOrEmpty(ss_tag[1]))
                                             {
-                                                    var findDevice = false;
-                                                    if (_AllInfoMonitors.Any(x => x.edid.ServiceTag.ToUpper().Equals(ss_tag[0].ToUpper())))
-                                                    {
-                                                        serviceTag = new List<string> { ss_tag[0] };
-                                                        fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => x.edid.ServiceTag.ToUpper().Equals(ss_tag[0].ToUpper())).ToList();
-                                                        findDevice = true;
-                                                    }
-                                                    if (!findDevice)
-                                                    {
-                                                        return NoDeviceConnectResponse(commandLineInput);
-                                                    }
-                                          
+                                                var findDevice = false;
+                                                if (_AllInfoMonitors.Any(x => x.edid.ServiceTag.ToUpper().Equals(ss_tag[0].ToUpper())))
+                                                {
+                                                    serviceTag = new List<string> { ss_tag[0] };
+                                                    fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => x.edid.ServiceTag.ToUpper().Equals(ss_tag[0].ToUpper())).ToList();
+                                                    findDevice = true;
+                                                }
+                                                if (!findDevice)
+                                                {
+                                                    return NoDeviceConnectResponse(commandLineInput);
+                                                }
+
                                             }
                                         }
                                         if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("MINIVERSION"))
@@ -2256,7 +2256,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             string[] ss_min = commandLineInput.Options[i].Option_Value.Split(",");
 
                                             if (ss_min.Length == 2 &&
-                                                !string.IsNullOrEmpty(ss_min[0]) && 
+                                                !string.IsNullOrEmpty(ss_min[0]) &&
                                                 !string.IsNullOrEmpty(ss_min[1]))
                                             {
                                                 var findDevice = false;
@@ -2270,7 +2270,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 {
                                                     return NoDeviceConnectResponse(commandLineInput);
                                                 }
-                  
+
                                             }
                                         }
                                         if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("MODEL"))
@@ -2278,7 +2278,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             string[] ss_mod = commandLineInput.Options[i].Option_Value.Split(",");
 
                                             if (ss_mod.Length == 2 &&
-                                                !string.IsNullOrEmpty(ss_mod[0]) && 
+                                                !string.IsNullOrEmpty(ss_mod[0]) &&
                                                 !string.IsNullOrEmpty(ss_mod[1]))
                                             {
                                                 var findDevice = false;
@@ -2292,7 +2292,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 {
                                                     return NoDeviceConnectResponse(commandLineInput);
                                                 }
-                                               
+
                                             }
                                         }
                                         if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("FILEPATH"))
@@ -2300,9 +2300,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             string[] ss_filepath = commandLineInput.Options[i].Option_Value.Split(",");
 
                                             if (ss_filepath.Length == 2 &&
-                                                !string.IsNullOrEmpty(ss_filepath[0]) && 
+                                                !string.IsNullOrEmpty(ss_filepath[0]) &&
                                                 !string.IsNullOrEmpty(ss_filepath[1]))
-                                            {            
+                                            {
                                                 installPath = ss_filepath[0];
                                                 Trace.WriteLine($"installPath = {installPath}");
                                             }
@@ -2426,7 +2426,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             string[] ss_guid = commandLineInput.Options[i].Option_Value.Split(",");
 
                                             if (ss_guid.Length == 2 &&
-                                                !string.IsNullOrEmpty(ss_guid[0]) && 
+                                                !string.IsNullOrEmpty(ss_guid[0]) &&
                                                 !string.IsNullOrEmpty(ss_guid[1]))
                                             {
                                                 if (ss_1[0].ToUpper() == "DOCK" && commandLineInput.TargetType == "APP") // Checking for TargetType=APP
@@ -2456,7 +2456,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 if (!findDevice)
                                                 {
                                                     return NoDeviceConnectResponse(commandLineInput);
-                                                }                                                
+                                                }
                                             }
                                         }
                                         else if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("MINIVERSION"))
@@ -2464,7 +2464,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             string[] ss_min = commandLineInput.Options[i].Option_Value.Split(",");
 
                                             if (ss_min.Length == 2 &&
-                                                !string.IsNullOrEmpty(ss_min[0]) && 
+                                                !string.IsNullOrEmpty(ss_min[0]) &&
                                                 !string.IsNullOrEmpty(ss_min[1]))
                                             {
                                                 var findDevice = false;
@@ -2480,7 +2480,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 if (!findDevice)
                                                 {
                                                     return NoDeviceConnectResponse(commandLineInput);
-                                                }                                                
+                                                }
                                             }
                                         }
                                         else if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("MODEL"))
@@ -2488,7 +2488,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             string[] ss_mod = commandLineInput.Options[i].Option_Value.Split(",");
 
                                             if (ss_mod.Length == 2 &&
-                                                !string.IsNullOrEmpty(ss_mod[0]) && 
+                                                !string.IsNullOrEmpty(ss_mod[0]) &&
                                                 !string.IsNullOrEmpty(ss_mod[1]))
                                             {
                                                 var findDevice = false;
@@ -2512,7 +2512,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             string[] serviceTaInputValues = commandLineInput.Options[i].Option_Value.Split(",");
 
                                             if (serviceTaInputValues.Length == 2 &&
-                                                !string.IsNullOrEmpty(serviceTaInputValues[0]) && 
+                                                !string.IsNullOrEmpty(serviceTaInputValues[0]) &&
                                                 !string.IsNullOrEmpty(serviceTaInputValues[1]))
                                             {
                                                 var findDevice = false;
@@ -2529,7 +2529,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 {
                                                     return NoDeviceConnectResponse(commandLineInput);
                                                 }
-                                                
+
                                             }
                                         }
                                         else if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("UOD"))
@@ -2537,7 +2537,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             string[] uodInputValues = commandLineInput.Options[i].Option_Value.Split(",");
 
                                             if (uodInputValues.Length == 2 &&
-                                                !string.IsNullOrEmpty(uodInputValues[0]) && 
+                                                !string.IsNullOrEmpty(uodInputValues[0]) &&
                                                 !string.IsNullOrEmpty(uodInputValues[1]))
                                             {
                                                 if (ss_1[0].ToUpper() == "DOCK")
@@ -2569,7 +2569,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     writelog("FAIL Only dock supports UOD update mode");
                                                     Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                                                }                                                
+                                                }
                                             }
                                         }
                                         else if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("FILEPATH"))
@@ -2577,9 +2577,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                                             string[] ss_filepath = commandLineInput.Options[i].Option_Value.Split(",");
 
                                             if (ss_filepath.Length == 2 &&
-                                                !string.IsNullOrEmpty(ss_filepath[0]) && 
+                                                !string.IsNullOrEmpty(ss_filepath[0]) &&
                                                 !string.IsNullOrEmpty(ss_filepath[1]))
-                                            {   
+                                            {
                                                 installPath = ss_filepath[0];
                                             }
                                         }
@@ -2907,7 +2907,8 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 (deviceType, deviceTypes) = SetDevice(commandLineInput);
 
-            }else if (dock_recode)
+            }
+            else if (dock_recode)
             {
                 deviceTypes.Add(DeviceType.LogicalDock);
                 deviceTypes.Add(DeviceType.PhysicalWiredDock);
@@ -3341,7 +3342,15 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             break;
                         }
-                        if (commandLineInput.Options.Count > 0)
+                        if (commandLineInput.Options.Count == 0)
+                        {
+                            commandLineInput.Options.Insert(0, new CommandType_Option("VALUE", "MANUAL,DEFER"));
+                        }
+                        if (!commandLineInput.Options[0].Option_Value.Contains(','))
+                        {
+                            commandLineInput.Options[0].Option_Value += ",DEFER"; //2025/1/1 Elie, fix Cli for SW update with Automatic command is going to add a DEFER. (Anfernee's comment)
+                        }
+                        if (commandLineInput.Options.Count > 0 || commandLineInput.Options[0].Option_Value == "MANUAL,DEFER")
                         {
                             writelog("FWUpdate_Line 3902");
                             string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
@@ -3452,13 +3461,13 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (cLI_SWU_RESPONSE != null)
                 {
                     writelog("FWUpdate_Line 4010");
-                    output =  JsonConvert.SerializeObject(cLI_SWU_RESPONSE, Formatting.Indented);
+                    output = JsonConvert.SerializeObject(cLI_SWU_RESPONSE, Formatting.Indented);
                     //output = cLI_SWU_RESPONSE.OutputLog(cLI_SWU_RESPONSE, commandLineInput);
                 }
                 else
                 {
                     writelog("FWUpdate_Line 4015");
-                    output =  JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
+                    output = JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
                     //output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
                 }
                 if (ret == true)
@@ -3466,7 +3475,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     writelog("FWUpdate_Line 4020");
                     return ((int)CLI_ExitCode.success, output);
                 }
-                else if(somethingError)
+                else if (somethingError)
                 {
                     writelog("FWUpdate_Line 4025");
                     CLI_RESPONSE rsp = new CLI_RESPONSE()

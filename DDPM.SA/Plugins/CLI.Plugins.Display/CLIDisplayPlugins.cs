@@ -1993,7 +1993,7 @@ namespace DDPM.CLI.Plugins.Display
             return result;
         }
 
-        private async Task<ObjGetVCP> GetVCPCode(IDeviceManagerSA devMgr, MonitorInfo mo, string vcpcode)
+        private async Task<ObjGetVCP> GetVCPCode(IDeviceManagerSA devMgr, MonitorInfo mo, string vcpcode, int opt = 0)
         {
             writelog($"GetVCPCode entry, vcpcode: {vcpcode}, monitor: {mo?.modelName}");
             if (devMgr == null)
@@ -2013,9 +2013,9 @@ namespace DDPM.CLI.Plugins.Display
                 byte byte_vcpcode = IsHexNumeric_vcpcode ? (Convert.ToByte(vcpcode, 16)) : (IsNumeric_vcpcode ? Convert.ToByte(vcpcode, 10) : default);
 
                 if (IsNumeric_vcpcode)
-                    result = await devMgr.GetVCPCapability(mo, byte_vcpcode, 0);
+                    result = await devMgr.GetVCPCapability(mo, byte_vcpcode, opt);
                 else
-                    result = await devMgr.GetVCPCapability(mo, vcpcode, 0);
+                    result = await devMgr.GetVCPCapability(mo, vcpcode, opt);
             }
             else
                 return new ObjGetVCP() { result = false, value = null };
@@ -9235,7 +9235,7 @@ namespace DDPM.CLI.Plugins.Display
                                 writelog($"SpeakerVolume Entry (62)");
                                 if (CheckSpeakerSupported(monitor, commandLineInput))
                                 {
-                                    rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                    rc = GetVCPCode(devMgr, monitor, "0x62", 2).Result;
                                     int getvalue = Convert.ToInt32(rc.value);
                                     get_DeviceData.SpeakerVolume = get_SpeakerVolume_status(Convert.ToInt32(rc.value));
                                 }
@@ -9509,7 +9509,7 @@ namespace DDPM.CLI.Plugins.Display
                     writelog($"SpeakerVolume Entry (62)");
                     if (CheckSpeakerSupported(monitor, commandLineInput))
                     {
-                        rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                        rc = GetVCPCode(devMgr, monitor, "0x62", 2).Result;
                         int getvalue = Convert.ToInt32(rc.value);
                         get_DeviceData.SpeakerVolume = get_SpeakerVolume_status(Convert.ToInt32(rc.value));
                     }
@@ -12115,15 +12115,14 @@ namespace DDPM.CLI.Plugins.Display
             {
                 output += "OSDDISABLE";
             }
-            else //if (value_tmp == 0xFE)
+            else if (value_tmp == 0xFE)
             {
                 output += "OSDENABLE";
             }
-
-            //if (value_tmp < 0x65)
-            //{
-            //    output = $"Volume:{value & 0xFF}";
-            //}
+            else if (value_tmp < 0x65)
+            {
+                output = $"Volume:{value & 0xFF}";
+            }
             return output;
         }
 
@@ -12661,7 +12660,7 @@ namespace DDPM.CLI.Plugins.Display
                             else if (commandLineInput.Command == "GET")
                             {
                                 writelog("SPEAKERVOLUME GET entry");
-                                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                rc = GetVCPCode(devMgr, monitor, "0x62", 2).Result;
                                 cli_Response.Value = get_SpeakerVolume_status(Convert.ToInt32(rc.value));
                                 retcode = true;
                             }
