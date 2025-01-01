@@ -431,16 +431,18 @@ namespace DDPM.UI.Plugin.ViewModels
                         {
                             case "BatteryStatusChanged":
                                 BatteryStatus = di.BatteryStatus;
+                                CurrentDeviceInfo!.BatteryStatus = di.BatteryStatus;
                                 break;
                             case "DeviceNameChanged":
                                 Name = di.Name.Replace(Model, "").Trim();
                                 break;
 
                             case "BatteryLevelChanged":
-                                if (BatteryLevel == -1)
-                                    SetCurrentDevice(CurrentDeviceID.ToString());
-                                else
-                                    BatteryLevel = di.BatteryLevel;
+                                BatteryLevel = di.BatteryLevel;
+                                CurrentDeviceInfo!.BatteryLevel = di.BatteryLevel;
+                                //if (BatteryLevel == -1)
+                                //    SetCurrentDevice(CurrentDeviceID.ToString());
+                                //else
                                 break;
 
                             default:
