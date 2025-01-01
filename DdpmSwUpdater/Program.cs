@@ -19,9 +19,18 @@ internal class Program
             if (args.Length > 0)
             {
                 LogManage.LogMessage($"args.Length > 0 go to preset process");
-                if (args[0].ToLower().Equals("/fromddpm"))
+                if (args[0].ToLower().Equals("/fromddpm") || args[0].ToLower().Equals("/fromddm"))
                 {
-                    LogManage.LogMessage($"args[0].ToLower() is Equals");
+                    if (args[0].ToLower().Equals("/fromddpm"))
+                    {
+                        LogManage.fromDDPM = true;
+                        LogManage.LogMessage($"Is DDPM call");
+                    }
+                    else
+                    {
+                        LogManage.fromDDPM = false;
+                        LogManage.LogMessage($"Is DDM call");
+                    }
                     string registryKey = @"SOFTWARE\Dell Display and Peripheral Manager";
                     try
                     {
@@ -61,11 +70,12 @@ internal class Program
                 }
                 else
                 {
-                    LogManage.LogMessage($"args[0].ToLower() is no Equals. args[0] is : {args[0]}");
+                    LogManage.LogMessage($"args is no Equals. args is : {args[0]}");
                 }
             }
             else
             {
+                LogManage.fromDDPM = false;
                 LogManage.LogMessage($"args.Length <= 0 go to copy");
                 string exeFilePath = CopyToProgram();
                 if (!string.IsNullOrEmpty(exeFilePath))
@@ -74,7 +84,7 @@ internal class Program
                     {
                         UseShellExecute = false,
                         FileName = exeFilePath,//fileFullPath,
-                        Arguments = "/fromddpm"
+                        Arguments = "/fromddm"
                     };
                     Process clientProcess = new Process();
                     clientProcess.StartInfo = startInfo;
@@ -95,7 +105,7 @@ internal class Program
         DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
         if (!string.IsNullOrEmpty(path_programdata))
         {
-            savePath = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
+            savePath = path_programdata + "\\Dell" + "\\" + saveFolderName + "\\";
             if (!Directory.Exists(savePath))
             {
                 Directory.CreateDirectory(savePath);
