@@ -1197,9 +1197,19 @@
 
     <!-- #region PrimaryButton - Copy from ButtonStyle.xaml -->
     <!-- Robert_Lin, Copy (newer) from DDPM.SA.Common, to have same resource keys in both sides. -->
-    <!-- PrimaryButton -->
-    <Color x:Key="Button.TextColor">#FFF5F6F7</Color>
-    <Color x:Key="PrimaryButton.DefaultBkColor">#FF0672CB</Color>
+    <!-- PrimaryButton Colors -->
+    <SolidColorBrush x:Key="PrimaryButton_BkColor_Default" Color="#0672CB"/>
+    <SolidColorBrush x:Key="PrimaryButton_BkColor_Hover" Color="#0063B8"/>
+    <SolidColorBrush x:Key="PrimaryButton_BkColor_Pressed" Color="#00468B"/>
+    <SolidColorBrush x:Key="PrimaryButton_BkColor_Disabled" Color="#7F2E3034"/>
+
+    <SolidColorBrush x:Key="PrimaryButton_TextColor_Default" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="PrimaryButton_TextColor_Hover" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="PrimaryButton_TextColor_Pressed" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="PrimaryButton_TextColor_Disabled" Color="#7F7C7C7C"/>
+
+    <!--<Color x:Key="Button.TextColor">#FFF5F6F7</Color>
+    <Color x:Key="PrimaryButton_DefaultBkColor">#0672CB</Color>
     <Color x:Key="PrimaryButton.HoverBkColor">#FF0063B8</Color>
     <Color x:Key="PrimaryButton.PressedBkColor">#FF00468B</Color>
     <Color x:Key="PrimaryButton.DisabledBkColor">#333436</Color>
@@ -1216,17 +1226,17 @@
 
     <SolidColorBrush x:Key="PrimaryButton.Disabled.Background" Color="{StaticResource PrimaryButton.DisabledBkColor}"/>
     <SolidColorBrush x:Key="PrimaryButton.Disabled.Border" Color="{StaticResource PrimaryButton.DisabledBkColor}"/>
-    <SolidColorBrush x:Key="PrimaryButton.Disabled.Foreground" Color="#FF6A6A6A"/>
+    <SolidColorBrush x:Key="PrimaryButton.Disabled.Foreground" Color="#FF6A6A6A"/>-->
 
     <Style x:Key="PrimaryButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
-        <Setter Property="Background" Value="{StaticResource PrimaryButton.Static.Background}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource PrimaryButton.Static.Border}"/>
-        <Setter Property="Foreground" Value="{StaticResource PrimaryButton.Text.Foreground}"/>
-        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="{DynamicResource PrimaryButton_BkColor_Default}"/>
+        <!--<Setter Property="BorderBrush" Value="{StaticResource PrimaryButton.Static.Border}"/> PrimaryButton has not Border -->
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryButton_TextColor_Default}"/>
+        <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
-        <Setter Property="Padding" Value="8,8"/>
+        <Setter Property="Padding" Value="31,8"/>
         <Setter Property="FontFamily" Value="Roboto"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Tag" Value="2"/>
@@ -1251,17 +1261,14 @@
                             <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource PrimaryButton.MouseOver.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource PrimaryButton.MouseOver.Border}"/>
+                            <Setter Property="Background" TargetName="border" Value="{DynamicResource PrimaryButton_BkColor_Hover}"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="true">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource PrimaryButton.Pressed.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource PrimaryButton.Pressed.Border}"/>
+                            <Setter Property="Background" TargetName="border" Value="{DynamicResource PrimaryButton_BkColor_Pressed}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource PrimaryButton.Disabled.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource PrimaryButton.Disabled.Border}"/>
-                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource PrimaryButton.Disabled.Foreground}"/>
+                            <Setter Property="Background" TargetName="border" Value="{DynamicResource PrimaryButton_BkColor_Disabled}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{DynamicResource PrimaryButton_TextColor_Disabled}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

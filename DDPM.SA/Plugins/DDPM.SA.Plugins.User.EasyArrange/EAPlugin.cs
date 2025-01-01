@@ -25,6 +25,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using IDs = DDPM.SA.Common.IDs;
 using DDPM.SA.Common.Telemetry;
 using static VcpCore.Common.User32;
+using System.Text;
 
 namespace DDPM.SA.Plugins.User.EasyArrange
 {
@@ -1220,6 +1221,8 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 return false;
             }
 
+            LogInfo($"@ STA_SetEASelectedLayout({monitorInfo.modelName}, {eaId})");
+
             //Read EAMonitorSettings for SelectedLayout and RecentList
             EAMonitorSettings? eaSettings = _eaBroker.VM.ReadEAMonitorSettings(monitorInfo);
             if (eaSettings == null)
@@ -1242,6 +1245,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                     EAID = eaId,
                     Settings = new List<double>(isp.Settings)
                 };
+                LogInfo($"@STA_SetEASelectedLayout, PresetLayout {isp.CellCount}{isp.SplitKey}");
             }
             //eaId is a custom layout, need to read settings from CustomList (from UserSettings)
             else if (eaId >= EAEMConstants.EAID_FirstCustom)
@@ -1260,6 +1264,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         return false;
                     }
                     eaSettings.SelectedSplit = cusSplit.Clone();
+                    LogInfo($"@STA_SetEASelectedLayout, CustomLayout {cusSplit.CellCount}{cusSplit.SplitKey} [{cusSplit.CustomName}]");
                 }
                 else
                 {
@@ -1276,12 +1281,20 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             //2 SelectedSplait is null => EAMonitorSettings default value => assume SelectedLayout is Off (EAID=0)
             if ((eaId != 0) && (eaSettings.SelectedSplit != null))
             {
-                //RecentList shold never null, even if EAMonitorSetting is default, it will contains 5 default items.
+                //RecentList should never null, even if EAMonitorSetting is default, it will contains 5 default items.
                 //In this method, we will not report error but skip to update.
                 if (eaSettings.RecentList != null)
                 {
                     //Conver array to List, in order to use List.Find
                     List<SplitJson> recentList = new List<SplitJson>(eaSettings.RecentList);
+                    string recentListString = $"[{recentList[0].EAID}";
+                    foreach (SplitJson spj in recentList.Skip(1))
+                    {
+                        recentListString += $", {spj.EAID}";
+                    }
+                    recentListString += "]";
+                    LogInfo($"@STA_SetEASelectedLayout, Original RecentList={recentListString}");
+
                     //Find the index of spJson in RecentList
                     int idxRecent = recentList.FindIndex(x => x.EAID == eaId);
                     //If found in RecentList
@@ -1293,6 +1306,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         {
                             recentList.RemoveAt(idxRecent);
                             recentList.Insert(0, eaSettings.SelectedSplit.Clone());
+                            LogInfo($"@STA_SetEASelectedLayout, Move inside RecentList to head from [{idxRecent}].");
                         }
                     }
                     else //Not found in RecentList, need to clone then add into RecentList
@@ -1302,6 +1316,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                         {
                             //Insert new(clone) item to RecentList[0]
                             recentList.Insert(0, eaSettings.SelectedSplit.Clone());
+                            LogInfo($"@STA_SetEASelectedLayout,Add new selected item to head  of RecentList.");
                         }
                         else //RecentList.Count >= 5, need to remove the latest item, then insert new (clone) item to RecentList[0]
                         {
@@ -1311,10 +1326,19 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                             //   we would like to remove [4] (MaxRecentItems-1)
                             recentList.RemoveAt(EAEMConstants.MaxRecentItems - 1);
                             recentList.Insert(0, eaSettings.SelectedSplit.Clone());
+
+                            LogInfo($"@STA_SetEASelectedLayout, Remove tail item, Add new selected item to head  of RecentList.");
                         }
                     }
                     //Convert back to array
                     eaSettings.RecentList = recentList.ToArray();
+                    recentListString = $"[{recentList[0].EAID}";
+                    foreach (SplitJson spj in recentList.Skip(1))
+                    {
+                        recentListString += $", {spj.EAID}";
+                    }
+                    recentListString += "]";
+                    LogInfo($"@STA_SetEASelectedLayout, New RecentList={recentListString}");
                 }
             }
 
