@@ -375,6 +375,13 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
+            if (DeviceInfo == null)
+            {
+                DdpmCommonHelper.WriteUILog($"Error: DeviceChanged Event with no device info!");
+                return;
+            }
+            DdpmCommonHelper.WriteUILog($"DeviceChanged Event: Type: {changeType} ID: {di.ID} Property: {property}");
+
             switch (changeType)
             {
                 case DeviceChangedType.Peripherals_PlugIn:
@@ -431,16 +438,18 @@ namespace DDPM.UI.Plugin.ViewModels
                         {
                             case "BatteryStatusChanged":
                                 BatteryStatus = di.BatteryStatus;
+                                CurrentDeviceInfo!.BatteryStatus = di.BatteryStatus;
                                 break;
                             case "DeviceNameChanged":
                                 Name = di.Name.Replace(Model, "").Trim();
                                 break;
 
                             case "BatteryLevelChanged":
-                                if (BatteryLevel == -1)
-                                    SetCurrentDevice(CurrentDeviceID.ToString());
-                                else
-                                    BatteryLevel = di.BatteryLevel;
+                                BatteryLevel = di.BatteryLevel;
+                                CurrentDeviceInfo!.BatteryLevel = di.BatteryLevel;
+                                //if (BatteryLevel == -1)
+                                //    SetCurrentDevice(CurrentDeviceID.ToString());
+                                //else
                                 break;
 
                             default:

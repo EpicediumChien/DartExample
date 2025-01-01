@@ -180,18 +180,18 @@ namespace DDPM.UI.Plugin.Common
             }
 
             btnClear.IsEnabled = true;
-            if (_deviceCat == AdvancedAction.OpenWebPage)
-            {
-                if (txt.Length < 7)
-                    return;
+            //if (_deviceCat == AdvancedAction.OpenWebPage)
+            //{
+            //    if (txt.Length < 7)
+            //        return;
 
-                var url = txt.Substring(0, 7).ToLower();
-                if (url != "http://" && url != "https:/")
-                    return;
+            //    var url = txt.Substring(0, 7).ToLower();
+            //    if (url != "http://" && url != "https:/")
+            //        return;
 
-                if (url != "http://" && txt.Substring(0, 8).ToLower() != "https://")
-                    return;
-            }
+            //    if (url != "http://" && txt.Substring(0, 8).ToLower() != "https://")
+            //        return;
+            //}
 
             btnSave.IsEnabled = true;
             Parameter = txt;
