@@ -147,8 +147,9 @@ namespace DDPM.UI.Plugin.Common
             //        return;
             //    }
             //}
+
             if (IsForPen)
-            StopPenCapture();
+                StopPenCapture();
 
             DialogResult = true;
             Close();
@@ -161,6 +162,22 @@ namespace DDPM.UI.Plugin.Common
             var txt = txtKeystroke.Text.Trim();
             if (txt == "")
                 return;
+
+            if (txtKeystroke.Text.ToUpper() == "ALT + Z")
+            {
+                MessageModalDialog messageModalDialog;
+                Window mainWindow = System.Windows.Application.Current.MainWindow;
+                messageModalDialog = new(LangHelper.Instance["hotkey.7"], LangHelper.Instance["Hotkey.10"], "", "");
+                if (mainWindow != null)
+                {
+                    messageModalDialog.Owner = mainWindow;
+                    messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                    messageModalDialog.Top = mainWindow.Top + 300;
+                }
+                messageModalDialog.ShowDialog();
+                txtKeystroke.Text = "";
+                return;
+            }
 
             btnClear.IsEnabled = true;
             if (_deviceCat == AdvancedAction.OpenWebPage)
