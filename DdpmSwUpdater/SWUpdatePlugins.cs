@@ -157,6 +157,7 @@ namespace DdpmSwUpdater
             LogManage.LogMessage($"_instanceMutex?.Dispose() go");
             _instanceMutex?.Dispose();
             LogManage.LogMessage($"_instanceMutex?.Dispose() done");
+            Method method = new Method(LogManage.logs);
             try
             {
                 string saveFolderName = Guid.NewGuid().ToString();
@@ -169,7 +170,14 @@ namespace DdpmSwUpdater
                 {
                     if (!string.IsNullOrEmpty(path_programdata))
                     {
-                        savePath = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
+                        if (LogManage.fromDDPM)
+                        {
+                            savePath = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + saveFolderName + "\\";
+                        }
+                        else
+                        {
+                            savePath = path_programdata + "\\Dell" + "\\" + saveFolderName + "\\";
+                        }
                     }
                     else
                     {
@@ -198,6 +206,7 @@ namespace DdpmSwUpdater
                         swUpdateInfo.SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
                     }
                     LogManage.LogMessage(nameof(DownloadAndInstall) + " FileIsNoSafe:" + folderInfo + "--or--" + pathSymbolicLinInfo);
+                    method.DeleteFolder(savePath);
                     return Task.FromResult(swUpdateInfos);
                 }
                 LogManage.LogMessage($"CheckFold ok");
@@ -214,6 +223,7 @@ namespace DdpmSwUpdater
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
                         LogManage.LogMessage(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + folderInfo + "--or--" + pathSymbolicLinInfo);
+                        method.DeleteFolder(savePath);
                         continue;
                     }
                     LogManage.LogMessage($"CheckFold2 ok");
@@ -251,6 +261,7 @@ namespace DdpmSwUpdater
                     if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.CAFail || string.IsNullOrEmpty(_installationFileStoragePath))
                     {
                         LogManage.LogMessage($"{swUpdateInfos[i].SoftwareName} Download File Fail retry 3 count");
+                        method.DeleteFolder(savePath);
                         continue;
                     }
                     LogManage.LogMessage($"Creat extractPath");
@@ -264,6 +275,7 @@ namespace DdpmSwUpdater
                     {
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.FolderIsNotSafe;
                         LogManage.LogMessage(swUpdateInfos[i].SoftwareName + " FolderIsNotSafe:" + folderInfo + "--or--" + pathSymbolicLinInfo);
+                        method.DeleteFolder(savePath);
                         continue;
                     }
                     LogManage.LogMessage($"CheckFold3 ok");
@@ -278,6 +290,7 @@ namespace DdpmSwUpdater
                                 LogManage.LogMessage(_SWUpdateInfo.SoftwareName + " Unzip Faile");
                                 _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
                                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                                method.DeleteFolder(savePath);
                                 continue;
                             }
                             LogManage.LogMessage($"Unzip done");
@@ -290,6 +303,7 @@ namespace DdpmSwUpdater
                                     LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} CheckThumbprint Faile");
                                     _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
                                     NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                                    method.DeleteFolder(savePath);
                                     continue;
                                 }
                                 swUpdateInfos[i].InstallPaths = exeFilePath;
@@ -311,17 +325,14 @@ namespace DdpmSwUpdater
                         LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} FileLock Error: {ex.Message}");
                     }
                 }
-                // 檢查資料夾是否存在
-                if (!string.IsNullOrEmpty(savePath) && Directory.Exists(savePath))
-                {
-                    // 刪除資料夾及其所有內容
-                    Directory.Delete(savePath, true);
-                }
+                method.DeleteFolder(savePath);
+                method.Dispose();
                 LogManage.LogMessage(nameof(DownloadAndInstall) + " done");
                 return Task.FromResult(swUpdateInfos);
             }
             catch (Exception ex)
             {
+                method.Dispose();
                 foreach (SWUpdateInfo deviceInfo in swUpdateInfos)
                 {
                     deviceInfo.SWUErrorCode = SWUErrorCode.NetworkDisconnection;

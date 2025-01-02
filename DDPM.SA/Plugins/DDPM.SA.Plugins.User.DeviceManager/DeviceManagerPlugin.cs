@@ -249,7 +249,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             _USBKVMAutoSwitchTimer.Elapsed += OnUsbKvmAutoSwitchTimedRaise;
             _USBKVMAutoSwitchTimer.AutoReset = true;
-            _USBKVMAutoSwitchTimer.Enabled = true;
+            //_USBKVMAutoSwitchTimer.Enabled = true;
 
             UXSystemParameters.Instance.ParameterChangedEvent += UXSystemParametersChanged;
             writelog("DeviceManagerPlugin constructor ...");
@@ -353,6 +353,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool ret = false;
             if (monitorInfo != null)
             {
+                if (!monitorInfo.CapabilityDic.ContainsKey("E9") && !monitorInfo.CapabilityDic.ContainsKey("E7"))
+                    return ret;
                 if (GetOnUSBKVM(monitorInfo).Result)
                 {
                     //check
@@ -421,6 +423,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             else
                             {
                                 writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:KvmAutoApply OFF");
+                                Debug.WriteLine($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:KvmAutoApply OFF");
                             }
                         }
                     }
@@ -428,6 +431,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else
                 {
                     writelog($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag} USBKVM OFF");
+                    Debug.WriteLine($"[USBKVM_Auto_Switch]isUsbKvmCursorEdge:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag} USBKVM OFF");
                 }
             }
             return ret;
@@ -483,14 +487,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             if ("E9".Equals(vcpcode, StringComparison.OrdinalIgnoreCase) || vcpcode.Equals("2"))
             {
-                if (!monitorInfo.CapabilityDic.ContainsKey("E9"))
+                if (!monitorInfo.CapabilityDic.ContainsKey("E9") && !monitorInfo.CapabilityDic.ContainsKey("E7"))
                     return;
+                /* if (!GetOnUSBKVM(monitorInfo).Result)
+                 {
+                     Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:USB KVM OFF,skip");
+                     writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:USB KVM OFF,skip");
+                     return;
+                 }*/
                 ObjGetVCP ret = GetPxpMode(monitorInfo).Result;
                 UsbKvmPBP usbKvmPBP = new UsbKvmPBP { MonitorInfo = monitorInfo, isPBPmode = false };
                 UInt16 _curPxpMode = 0;
                 if (ret != null && ret.result)
                 {
-                    _curPxpMode = Convert.ToUInt16(ret.value);
+                    //_curPxpMode = Convert.ToUInt16(ret.value);
+                    if (!ushort.TryParse(ret.value.ToString(), out _curPxpMode))
+                    {
+                        _curPxpMode = 0;
+                        writelog($"[updatePBPModeStatus]GetPxpMode,parse pxp mode value fail.");
+                    }
+
                     switch (_curPxpMode)
                     {
                         case 0x00://off
@@ -548,17 +564,37 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             usbKvmPBPs.Add(usbKvmPBP);
                         }
-                        if (usbKvmPBPs.Any(x => x.isPBPmode))
+                        HotkeySettings hotkeySettings = _hotkeySettings.SingleOrDefault(x => x.ServiceTag.Equals("DDPM") && x.SerialNumber.Equals("DDPM"));
+                        if (hotkeySettings != null)
                         {
-                            _USBKVMAutoSwitchTimer.Stop();
-                            _USBKVMAutoSwitchTimer.Start();
-                            writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, PBPmode ON");
+                            if (hotkeySettings.HotkeyOptions.Any(x => x == HotkeyOption.KvmAutoApply))
+                            {
+                                //update timer
+                                if (usbKvmPBPs.Any(x => x.isPBPmode))
+                                {
+                                    _USBKVMAutoSwitchTimer.Stop();
+                                    _USBKVMAutoSwitchTimer.Start();
+                                    Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
+                                    writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled},and start(), PBPmode ON");
+                                }
+                                else
+                                {
+                                    _USBKVMAutoSwitchTimer.Stop();
+                                    Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
+                                    writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, and stop(), PBPmode OFF");
+                                }
+                            }
+                            else
+                            {
+                                Debug.WriteLine($"[USBKVM_Auto_Switch]updatePBPModeStatus,the kvm auto switch option is OFF");
+                                writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,the kvm auto switch option is OFF");
+                            }
                         }
                         else
                         {
-                            _USBKVMAutoSwitchTimer.Stop();
-                            writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag}:Timer:{_USBKVMAutoSwitchTimer.Enabled}, PBPmode OFF");
+                            writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus,hotkeysetting is null.");
                         }
+
                     }
                 }
             }
@@ -8150,22 +8186,31 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
                 {
                     writelog($"[DeleteDdpmSwUpdaterFolder], o_String={o.ToString()}.");
-                    string AppDataPath = WTSFunction.GetActiveUserLocalAppDataPath(Log);
-                    if (!string.IsNullOrEmpty(AppDataPath))
+                    string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+                    if (!string.IsNullOrEmpty(path_programdata))
                     {
-                        string path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
+                        Method method = new Method(Log);
+                        string path = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
                         if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
                         {
-                            writelog($"[DeleteDdpmSwUpdaterFolder], Exists.");
-                            Directory.Delete(path, true);
-                            writelog($"[DeleteDdpmSwUpdaterFolder], Delete.");
+                            writelog($"[DeleteDdpmSwUpdaterFolder], path Exists.");
+                            method.DeleteFolder(path);
+                            writelog($"[DeleteDdpmSwUpdaterFolder], path Delete.");
                         }
+                        string path_2 = path_programdata + "\\Dell" + "\\" + o.ToString();
+                        if (!string.IsNullOrEmpty(path_2) && Directory.Exists(path_2))
+                        {
+                            writelog($"[DeleteDdpmSwUpdaterFolder], path_2 Exists.");
+                            method.DeleteFolder(path_2);
+                            writelog($"[DeleteDdpmSwUpdaterFolder], path_2 Delete.");
+                        }
+                        method.Dispose();
                         WriteRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater", "");
                         writelog($"[DeleteDdpmSwUpdaterFolder], WriteRegistryData.");
                     }
                     else
                     {
-                        writelog("[DeleteDdpmSwUpdaterFolder], AppDataPath get null.");
+                        writelog("[DeleteDdpmSwUpdaterFolder], path_programdata get null.");
                     }
                 }
                 writelog("[DeleteDdpmSwUpdaterFolder], done.");
@@ -9896,7 +9941,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (!settings.UserSettings.isDisplayConsentPage)
                     {
                         writelog($"[DeviceMangerPlugin] GetFirstReadStatus");
-                        if (!CheckOnlyInstallDDPM().Result&& CheckHasInstallDPeM().Result)
+                        if (!CheckOnlyInstallDDPM().Result && CheckHasInstallDPeM().Result)
                         {
                             bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", true).Result;
                         }
@@ -9955,11 +10000,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// Confirm that DPeM has been installed
         /// </summary>
         /// <returns></returns>
-        private async Task<bool> CheckHasInstallDPeM() 
+        private async Task<bool> CheckHasInstallDPeM()
         {
             writelog($"[DeviceMangerPlugin] Check Has Installed DPeM");
             var isAnalyticsFirstLaunchDone = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\Dell Peripheral Manager\UserSettings\Global", "isAnalyticsEnabled").Result;
-            if (isAnalyticsFirstLaunchDone == null) 
+            if (isAnalyticsFirstLaunchDone == null)
             {
                 return false;
             }
@@ -10239,7 +10284,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             LauchNightLightStatusMonitor();
             foreach (var monitor in _AllInfoMonitors)
             {
-                if (monitor.CapabilityDic.ContainsKey("E9"))
+                if (monitor.CapabilityDic.ContainsKey("E9") && monitor.CapabilityDic.ContainsKey("E7"))
                     Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
             }
             //register hotkey
@@ -10712,7 +10757,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                     //    writelog($"HandleQAMV2 change QAMWebcamDeviceGuid to {QAMWebcamDeviceGuid} event Webcam_IsZoomScreenShareActiveChanged");
                     //}
-                    
+
                     writelog($"HandleQAMV2 launched by event Webcam_IsZoomScreenShareActiveChanged");
                     break;
 
@@ -10947,7 +10992,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 //_QAM.Left = QAM_Position.X;
 
                                 //Derek 1224
-                                _QAM?.Dispatcher.Invoke(() => {
+                                _QAM?.Dispatcher.Invoke(() =>
+                                {
                                     _QAM.Top = QAM_Position.Y;
                                     _QAM.Left = QAM_Position.X;
                                 });
@@ -10970,7 +11016,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 //_QAM.Left = 0;
 
                                 //Derek 1224 for "调用线程无法访问此对象，因为另一个线程拥有该对象。"
-                                _QAM?.Dispatcher.Invoke(() => {
+                                _QAM?.Dispatcher.Invoke(() =>
+                                {
                                     _QAM.Top = (Screen.PrimaryScreen.Bounds.Height / scaleFactorX / 2) - (_QAM.Height / scaleFactorX / 2);
                                     _QAM.Left = 0;
                                 });
@@ -11608,6 +11655,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //}
                     _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, token);
                     //SupportedNKVMMonitors();
+                }
+                //for USB KVM auto switch kb ms
+                foreach (var monitor in _AllInfoMonitors)
+                {
+                    if (monitor.CapabilityDic.ContainsKey("E9") && monitor.CapabilityDic.ContainsKey("E7"))
+                        Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
                 }
             }
         }
@@ -12892,6 +12945,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _USBKVMAutoSwitchTimer.Stop();
                 }
             }
+            Debug.WriteLine($"[SaveHotkeyOptionOnly]{string.Join("+", settings.Select(x => x.ServiceTag + "(" + x.HotkeyOptions.ElementAtOrDefault(0) + ")").ToList())}");
             WriteHotkeySettings(settings);
             //update _hotkeySettings only
             if (_hotkeySettings != null && _hotkeySettings.Count > 0)
@@ -12915,6 +12969,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"@ GetInputSourceHotKeyData: ReloadMonitorSettings(model={model}) return null.");
                 return null;
             }
+            writelog($"[GetInputSourceHotKeyData] model({model}): {settings}");
 
             //Find the previous saved device settings
             DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(mo.edid.ServiceTag));
@@ -12924,6 +12979,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"@ GetInputSourceHotKeyData: Reloaded settings not contains (model={model}, serviceTage={serviceTag}).");
                 return null;
             }
+            writelog($"[GetInputSourceHotKeyData] ServiceTag({mo.edid.ServiceTag}): {monitorSettings}");
+
+            if(monitorSettings.hotkeyData == null)
+            {
+                writelog($"[GetInputSourceHotKeyData] Load hotkeyData of model({model}) serviceTag({serviceTag}): null data");
+                return null;
+            }
+            writelog($"[GetInputSourceHotKeyData] hotkeyData count {monitorSettings.hotkeyData.Count}");
+            writelog($"[GetInputSourceHotKeyData] hotkeyData data {monitorSettings.hotkeyData.ToString()}");
 
             return monitorSettings.hotkeyData;
         }
@@ -13756,6 +13820,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private Task<bool> ExecHotkeyJob(HotkeySettings settings, HotkeyType job)
         {
+            writelog("[ExecHotkeyJob] enter");
             //1001 add to tracking mouse point and its location on specific monitor
             //cursor position
             System.Drawing.Point cursorPosition = Cursor.Position;
@@ -13772,7 +13837,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 hotkeyStr = string.Join("+", hotkeyInfoTmp.Hotkey.Select(x => x + "(" + (int)x + ")").ToList());
             }
-            writelog($"ExecHotkeyJob[{job}:{hotkeyStr}] mouse cursor on Monitor [ModelName={monitorInfo?.edid.ModelName},ServiceTag={monitorInfo?.edid.ServiceTag}, SerialNumber={monitorInfo?.edid.SerialNumber}]");
+            writelog($"[ExecHotkeyJob][{job}:{hotkeyStr}] mouse cursor on Monitor [ModelName={monitorInfo?.edid.ModelName},ServiceTag={monitorInfo?.edid.ServiceTag}, SerialNumber={monitorInfo?.edid.SerialNumber}]");
 
             bool getTargetMo = false;
             if (monitorInfo == null)
@@ -13799,13 +13864,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             if (getTargetMo)
             {
-                Debug.WriteLine($"ExecHotkeyJob[{job}:{hotkeyStr}] => TargetMonitor(from Mouse crusor), Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+                Debug.WriteLine($"[ExecHotkeyJob][{job}:{hotkeyStr}] => TargetMonitor(from Mouse crusor), Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
             }
             else
             {
-                Debug.WriteLine($"ExecHotkeyJob[{job}:{hotkeyStr}] => TargetMonitor(from UI seleted), Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+                Debug.WriteLine($"[ExecHotkeyJob][{job}:{hotkeyStr}] => TargetMonitor(from UI seleted), Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
             }
-            writelog($"ExecHotkeyJob[befrore:{job}:{hotkeyStr}] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+            writelog($"[ExecHotkeyJob][befrore:{job}:{hotkeyStr}] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
             switch (job)
             {
                 case HotkeyType.BrightnessReduce:
@@ -13816,7 +13881,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     //DDPMW-764
                     if (IsALSautobrightness(monitorInfo))
                     {
-                        writelog($"ExecHotkeyJob[{job}:{hotkeyStr} ,IsALSautobrightness=true,will Popup msg] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
+                        writelog($"[ExecHotkeyJob][{job}:{hotkeyStr} ,IsALSautobrightness=true,will Popup msg] => getTargetMonitor: {getTargetMo}, Monitor [ModelName={monitorInfo.edid.ModelName},ServiceTag={monitorInfo.edid.ServiceTag}, SerialNumber={monitorInfo.edid.SerialNumber}]");
                         HotkeyPopWrap hotkeyPopWrap = new HotkeyPopWrap() { monitorInfo = monitorInfo, hotkeyType = job };
                         HotkeyPopup(hotkeyPopWrap);
                     }
@@ -13863,28 +13928,60 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case HotkeyType.FavoriteInputSource:
                     HotkeyInfo hotkeyInfoIs = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.FavoriteInputSource));
                     List<HotkeyData> list = GetInputSourceHotKeyData(monitorInfo);
-                    HotkeyData hotkeyData = list.SingleOrDefault(x => x.hotkeyType == HotkeyType.FavoriteInputSource);
+                    HotkeyData hotkeyData = null;
+                    if(list != null)
+                        hotkeyData = list.SingleOrDefault(x => x.hotkeyType == HotkeyType.FavoriteInputSource);
                     Debug.WriteLine($"FavoriteInputSource: {hotkeyData?.inputSource.Count}");
                     if (hotkeyInfoIs != null && hotkeyData != null)// hotkeyInfoIs.InputSource != null)
                     {
                         _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { hotkeyInfoIs, hotkeyData.inputSource }, Favorite_InputSource));
+                    }
+                    else
+                    {
+                        if (list == null)
+                            writelog("[HotkeyType.FavoriteInputSource] list is null, no action");
+                        if (list != null && list.Count == 0)
+                            writelog("[HotkeyType.FavoriteInputSource] list is empty, no action");
+                        if (hotkeyInfoIs == null)
+                            writelog("[HotkeyType.FavoriteInputSource] info is empty, no action");
+                        if (hotkeyData == null)
+                            writelog("[HotkeyType.FavoriteInputSource] data is empty, no action");
                     }
                     break;
 
                 case HotkeyType.SwitchInputSource:
                     HotkeyInfo hotkeyInfo = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.SwitchInputSource));
                     List<HotkeyData> list2 = GetInputSourceHotKeyData(monitorInfo);
-                    HotkeyData hotkeyData2 = list2.SingleOrDefault(x => x.hotkeyType == HotkeyType.SwitchInputSource);
+                    HotkeyData hotkeyData2 = null;
+                    if(list2 != null)
+                        hotkeyData2 = list2.SingleOrDefault(x => x.hotkeyType == HotkeyType.SwitchInputSource);
                     if (hotkeyInfo != null && hotkeyData2 != null)// hotkeyInfo.InputSource != null)
                     {
                         _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { hotkeyInfo, hotkeyData2.inputSource }, Switch_InputSource));
+                    }
+                    else
+                    {
+                        if(list2 == null)
+                            writelog("[HotkeyType.SwitchInputSource] list2 is null, no action");
+                        if (list2 != null && list2.Count == 0)
+                            writelog("[HotkeyType.SwitchInputSource] list2 is empty, no action");
+                        if (hotkeyInfo == null)
+                            writelog("[HotkeyType.SwitchInputSource] info is empty, no action");
+                        if (hotkeyData2 == null)
+                            writelog("[HotkeyType.SwitchInputSource] data2 is empty, no action");
                     }
                     break;
 
                 case HotkeyType.SwapIputPIPPBP:
                     HotkeyInfo hotkeyInfo_SwapIputPIPPBP = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.SwapIputPIPPBP));
                     if (hotkeyInfo_SwapIputPIPPBP != null)
+                    {
                         _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { hotkeyInfo_SwapIputPIPPBP }, Swap_IputPIPPBP));
+                    }
+                    else
+                    {
+                        writelog("[HotkeyType.SwapIputPIPPBP] info is empty, no action");
+                    }
                     break;
 
                 case HotkeyType.ChangePIPPosition:
@@ -13894,10 +13991,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 case HotkeyType.KvmSwitchInputSource:
                     HotkeyInfo kvmhotkeyInfo = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.KvmSwitchInputSource));
                     List<HotkeyData> list3 = GetInputSourceHotKeyData(monitorInfo);
-                    HotkeyData hotkeyData3 = list3.SingleOrDefault(x => x.hotkeyType == HotkeyType.KvmSwitchInputSource);
+                    HotkeyData hotkeyData3 = null;
+                    if(list3 != null)
+                        hotkeyData3 = list3.SingleOrDefault(x => x.hotkeyType == HotkeyType.KvmSwitchInputSource);
                     if (kvmhotkeyInfo != null && hotkeyData3 != null)// kvmhotkeyInfo.InputSource != null)
                     {
                         _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, new object[] { kvmhotkeyInfo, hotkeyData3.inputSource }, Kvm_SwitchInputSource));
+                    }
+                    else
+                    {
+                        if (list3 == null)
+                            writelog("[HotkeyType.KvmSwitchInputSource] list3 is null, no action");
+                        if (list3 != null && list3.Count == 0)
+                            writelog("[HotkeyType.KvmSwitchInputSource] list3 is empty, no action");
+                        if (kvmhotkeyInfo == null)
+                            writelog("[HotkeyType.KvmSwitchInputSource] info is empty, no action");
+                        if (hotkeyData3 == null)
+                            writelog("[HotkeyType.KvmSwitchInputSource] data3 is empty, no action");
                     }
                     break;
                 //USB KVM: Switch keyboard and mouse
@@ -13925,6 +14035,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _hotkeyJobQueue.Enqueue(new JobInfo(1000, monitorInfo, null, Toggle_EzRecentSetting));
                     break;
             }
+            writelog("[ExecHotkeyJob] leave");
             return Task.FromResult(true);
         }
 
@@ -14382,8 +14493,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (!IsPIPMode(monitorInfo))
                 {
                     //pxp off
-                    Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Swap_IputPIPPBP not take effect due to PXP mode is off or not supported");
-                    writelog($"[hotkey]Swap_IputPIPPBP:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] will not take effect due to PXP mode is off");
+                    Debug.WriteLine($"Monitor: {monitorInfo.edid.ServiceTag} Change_PIPPosition not take effect due to PXP mode is off or not supported");
+                    writelog($"[hotkey]Change_PIPPosition:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] will not take effect due to PXP mode is off");
                     return;
                 }
                 else
@@ -14511,7 +14622,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog("@Swap_IputPIPPBP(), GetPxpMode() return value is null.");
                     return;
                 }
-                 UInt16 pxpMode = 0;
+                UInt16 pxpMode = 0;
                 if (!UInt16.TryParse(objVcp.value.ToString(), out pxpMode))
                 {
                     writelog("@Swap_IputPIPPBP(), GetPxpMode() return value convert to UINT16 type failed.");

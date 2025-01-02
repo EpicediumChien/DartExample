@@ -130,6 +130,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             HomeDevice? homeDev = GetSelectedHomeDevice();
             if (homeDev != null)
             {
+                _ivm.SelectedHomeDevice.IsRestoreBtnVisible = Visibility.Visible;
                 if (!homeDev.MonitorInfo.DDCisON)
                 {
                     HandleDdcCiOnOffEvent(homeDev.MonitorInfo, homeDev.MonitorInfo.DDCisON);
@@ -845,6 +846,12 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             console?.ShowHomePage();
 
             //console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+        }
+
+        private void leftView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // For hiding restore to default button.
+            _ivm.SelectedHomeDevice.IsRestoreBtnVisible = Visibility.Collapsed;
         }
 
         #endregion Nav

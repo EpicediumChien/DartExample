@@ -714,7 +714,7 @@ namespace DDPM.UI.Module.Kvm
                     if (ret_PxP != null && ret_PxP.result)
                     {
                         //pxpModeValue = Convert.ToUInt16(ret_PxP.value);
-                        if (!ushort.TryParse((string?)ret_PxP.value, out pxpModeValue))
+                        if (!ushort.TryParse(ret_PxP.value.ToString(), out pxpModeValue))
                         {
                             pxpModeValue = curPxpMode;
                         }
@@ -1577,7 +1577,7 @@ namespace DDPM.UI.Module.Kvm
                     //if (CurPxpMode == PipMode_Large || CurPxpMode == PipMode_Small)
                     //    return true;
                 }
-                return false ;
+                return false;
             }
         }
 
@@ -1855,6 +1855,11 @@ namespace DDPM.UI.Module.Kvm
             int i = 0;
             while (i < 120)
             {
+                if (i == 70 && !DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
+                {
+                    _log.Debug("Named pipe is not Connected, so CreatNewNamedpipe again.");
+                    DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
+                }
                 if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
                 {
                     isOnNKVM(true);

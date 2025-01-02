@@ -405,121 +405,113 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 if (updateHelper != null && updateHelper.UpdateItems != null && updateHelper.UpdateItems.Count > 0 &&
                     deviceInfos != null && deviceInfos.Count > 0)
                 {
-                    _logs.DebugMsg_1($"{nameof(updateHelper.UpdateItems.Count)} = {updateHelper.UpdateItems.Count}");
+                    _logs.DebugMsg_1($"updateHelper.UpdateItems.Count = {updateHelper.UpdateItems.Count}");
                     for (int i = 0; i < updateHelper.UpdateItems.Count; i++)
                     {
-                        _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].DeviceName = {updateHelper.UpdateItems[i].DeviceName}");
-                        _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].DeviceModelNumber = {updateHelper.UpdateItems[i].DeviceModelNumber}");
-                        _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].NewVersion = {updateHelper.UpdateItems[i].NewVersion}");
-                        _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].CurrentVersion = {updateHelper.UpdateItems[i].CurrentVersion}");
-                        string newVer = updateHelper.UpdateItems[i].NewVersion;
-                        string oldVer = updateHelper.UpdateItems[i].CurrentVersion;
-                        if (!string.IsNullOrEmpty(newVer))
+                        try
                         {
-                            // Jim 20241227 Comment out
-                            //newVer = Regex.Replace(updateHelper.UpdateItems[i].NewVersion, ".{1}", "$0.").Substring(0, (updateHelper.UpdateItems[i].NewVersion.Length * 2) - 1);
-
-                            // Jim 20241227 add to  PIMS-329393 DDPM is sending smart dock version as f.f.f.f.f.f.f.f
-                            string strBackup = string.Empty;
-                            string strTemp = string.Empty;
-                            
-                            strBackup = newVer;
-                            _logs.DebugMsg_1($" CheckUpdate(), newVer (original input) = {newVer}");
-                            _logs.DebugMsg_1($" CheckUpdate(), strBackup = {strBackup}");
-
-                            if (!string.IsNullOrEmpty(strBackup))
+                            _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].DeviceName = {updateHelper.UpdateItems[i].DeviceName}");
+                            _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].DeviceModelNumber = {updateHelper.UpdateItems[i].DeviceModelNumber}");
+                            DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.ToString().Equals(updateHelper.UpdateItems[i].DeviceId.Replace("{", "").Replace("}", "")));
+                            string deviceConnectivity = string.Empty;
+                            string deviceSupplierID = string.Empty;
+                            string oldVer = updateHelper.UpdateItems[i].CurrentVersion;
+                            if (deviceInfo != null)
                             {
-                                if (strBackup.Length < 5) //長度小於5
-                                {
-                                    newVer = Regex.Replace(updateHelper.UpdateItems[i].NewVersion, ".{1}", "$0.").Substring(0, (updateHelper.UpdateItems[i].NewVersion.Length * 2) - 1);
+                                _logs.DebugMsg_1($"{nameof(CheckUpdate)} {nameof(deviceInfo)} is no null");
+                                deviceConnectivity = GetConnected(deviceInfo.PhysicalDeviceType);
+                                deviceSupplierID = GetODM(deviceInfo.OdmId);
+                                oldVer = deviceInfo.FirmwareVersion;
+                            }
+                            _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].NewVersion = {updateHelper.UpdateItems[i].NewVersion}");
+                            string newVer = updateHelper.UpdateItems[i].NewVersion;
+                            if (!string.IsNullOrEmpty(newVer))
+                            {
+                                // Jim 20241227 Comment out
+                                //newVer = Regex.Replace(updateHelper.UpdateItems[i].NewVersion, ".{1}", "$0.").Substring(0, (updateHelper.UpdateItems[i].NewVersion.Length * 2) - 1);
 
+                                // Jim 20241227 add to  PIMS-329393 DDPM is sending smart dock version as f.f.f.f.f.f.f.f
+                                string strBackup = string.Empty;
+                                string strTemp = string.Empty;
+
+                                strBackup = newVer;
+                                _logs.DebugMsg_1($" CheckUpdate(), newVer (original input) = {newVer}");
+                                _logs.DebugMsg_1($" CheckUpdate(), strBackup = {strBackup}");
+
+                                if (!string.IsNullOrEmpty(strBackup))
+                                {
+                                    if (strBackup.Length < 5) //長度小於5
+                                    {
+                                        if (strBackup.Length < 4) // 長度不足4,就補0在字首到長度為4
+                                            strBackup = strBackup.PadLeft(4, '0');
+                                        newVer = Regex.Replace(strBackup, ".{1}", "$0.").Substring(0, (strBackup.Length * 2) - 1);
+
+                                    }
+                                    else if (strBackup.Length > 4) // 長度大於4
+                                    {
+                                        //FF.FF.FF.FF(testing) or
+                                        //01004501 => 01.00.45.01 / 00011600 => 00.01.16.00(production)
+
+                                        if (strBackup.Length < 8) // 長度不足8,就補0在字首到長度為8
+                                            strBackup = strBackup.PadLeft(8, '0');
+
+                                        //FF.FF.FF.FF(testing) or
+                                        //00001541 => 1.5.4.1; 00001064 => 1.0.6.4(production)
+                                        if (strBackup.StartsWith("0000")) // 檢查前4個字元是否都為0
+                                        {
+                                            strTemp = strBackup.Substring(4);
+                                            newVer = Regex.Replace(strTemp, ".{1}", "$0.").Substring(0, (strTemp.Length * 2) - 1);
+                                        }
+                                        else
+                                        {
+                                            string pattern = @"(.{2})(.{2})(.{2})(.{2})";
+                                            string replacement = "$1.$2.$3.$4";
+                                            newVer = Regex.Replace(strBackup, pattern, replacement);
+                                        }
+                                    }
                                 }
-                                else if (strBackup.Length > 4) // 長度大於4
+                                _logs.DebugMsg_1($" CheckUpdate(), newVer (production output) = {newVer}");
+                            }
+                            _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].oldVer = {oldVer}");
+                            if (!string.IsNullOrEmpty(oldVer))
+                            {
+                                if (!oldVer.Contains("."))
                                 {
-                                    //FF.FF.FF.FF(testing) or
-                                    //01004501 => 01.00.45.01 / 00011600 => 00.01.16.00(production)
-
-                                    if (strBackup.Length < 8) // 長度不足8,就補0在字首到長度為8
-                                        strBackup = strBackup.PadLeft(8, '0');
-
-                                    //FF.FF.FF.FF(testing) or
-                                    //00001541 => 1.5.4.1; 00001064 => 1.0.6.4(production)
-                                    if (strBackup.StartsWith("0000")) // 檢查前4個字元是否都為0
+                                    if (oldVer.Length < 5) //長度小於5
                                     {
-                                        strTemp = strBackup.Substring(4);
-                                        newVer = Regex.Replace(strTemp, ".{1}", "$0.").Substring(0, (strTemp.Length * 2) - 1);
+                                        if (oldVer.Length < 4) // 長度不足4,就補0在字首到長度為4
+                                            oldVer = oldVer.PadLeft(4, '0');
+                                        oldVer = Regex.Replace(oldVer, ".{1}", "$0.").Substring(0, (oldVer.Length * 2) - 1);
                                     }
-                                    else
+                                    else if (oldVer.Length > 4) // 長度大於4
                                     {
-                                        string pattern = @"(.{2})(.{2})(.{2})(.{2})";
-                                        string replacement = "$1.$2.$3.$4";
-                                        newVer = Regex.Replace(strBackup, pattern, replacement);
-                                    }
+                                        //FF.FF.FF.FF(testing) or
+                                        //01004501 => 01.00.45.01 / 00011600 => 00.01.16.00(production)
 
+                                        if (oldVer.Length < 8) // 長度不足8,就補0在字首到長度為8
+                                            oldVer = oldVer.PadLeft(8, '0');
+
+                                        //FF.FF.FF.FF(testing) or
+                                        //00001541 => 1.5.4.1; 00001064 => 1.0.6.4(production)
+                                        if (oldVer.StartsWith("0000")) // 檢查前4個字元是否都為0
+                                        {
+                                            oldVer = oldVer.Substring(4);
+                                            oldVer = Regex.Replace(oldVer, ".{1}", "$0.").Substring(0, (oldVer.Length * 2) - 1);
+                                        }
+                                        else
+                                        {
+                                            string pattern = @"(.{2})(.{2})(.{2})(.{2})";
+                                            string replacement = "$1.$2.$3.$4";
+                                            oldVer = Regex.Replace(oldVer, pattern, replacement);
+                                        }
+                                    }
+                                    _logs.DebugMsg_1($" CheckUpdate(), oldVer (production output) = {oldVer}");
                                 }
                             }
-
-                            _logs.DebugMsg_1($" CheckUpdate(), newVer (production output) = {newVer}");
-
-                        }
-                        if (!string.IsNullOrEmpty(oldVer))
-                        {
-                            oldVer = Regex.Replace(updateHelper.UpdateItems[i].CurrentVersion, ".{1}", "$0.").Substring(0, (updateHelper.UpdateItems[i].CurrentVersion.Length * 2) - 1);
-                        }
-                        DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.ToString().Equals(updateHelper.UpdateItems[i].DeviceId.Replace("{", "").Replace("}", "")));
-                        string deviceConnectivity = string.Empty;
-                        string deviceSupplierID = string.Empty;
-                        if (deviceInfo != null)
-                        {
-                            _logs.DebugMsg_1($"{nameof(CheckUpdate)} {nameof(deviceInfo)} is no null");
-                            deviceConnectivity = GetConnected(deviceInfo.PhysicalDeviceType);
-                            deviceSupplierID = GetODM(deviceInfo.OdmId);
-                        }
-                        if (deviceTypeList == null && !isOnlyDisplay)
-                        {
-                            _logs.DebugMsg_1($"{nameof(deviceTypeList)} = null");
-                            FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                            _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}] go add list");
+                            if (deviceTypeList == null && !isOnlyDisplay)
                             {
-                                TheLatestVersion = newVer,
-                                DeviceVersion = oldVer,
-                                NeedUpdated = true,
-                                ServerPath = updateHelper.UpdateItems[i].ServerPath,
-                                FileSavepath = updateHelper.UpdateItems[i].InstallPath,
-                                Model = updateHelper.UpdateItems[i].DeviceModelNumber,
-                                DeviceName = updateHelper.UpdateItems[i].DeviceName,
-                                DeviceType = updateHelper.UpdateItems[i].DeviceType,
-                                DeviceId = updateHelper.UpdateItems[i].DeviceId,
-                                DevicePath = updateHelper.UpdateItems[i].DevicePath,
-                                SHA256 = updateHelper.UpdateItems[i].SHA256,
-                                //SHA512 = updateHelper.UpdateItems[i].SHA512,
-                                Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
-                                IsUOD = (isUODMode &&
-                                (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
-                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)),
-                                IsDisplay = false,
-                                SupplierID = deviceSupplierID,
-                                Connectivity = deviceConnectivity,
-                                Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
-                                ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
-                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : "",
-                                IsESISupported = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWebcam ||
-                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalWebcam) && deviceInfo != null) ? deviceInfo.IsESISupported : false,
-
-                            };
-                            if (Check_CanBeOTAUpdate(fWUpdateInfo))
-                            {
-                                _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
-                                _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
-                            }
-                        }
-                        else if (deviceTypeList != null && !isOnlyDisplay)
-                        {
-                            _logs.DebugMsg_1($"{nameof(deviceTypeList)} in no null");
-                            _logs.DebugMsg_1($"{nameof(deviceTypeList)} updateHelper.UpdateItems.DeviceType : {updateHelper.UpdateItems[i].DeviceType}");
-                            bool isExists = deviceTypeList.Exists(device => device.Equals(updateHelper.UpdateItems[i].DeviceType));
-                            _logs.DebugMsg_1($"{nameof(deviceTypeList)} deviceTypeList.Exists : {isExists}");
-                            if (isExists)
-                            {
+                                _logs.DebugMsg_1($"{nameof(deviceTypeList)} = null");
                                 FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
                                 {
                                     TheLatestVersion = newVer,
@@ -543,51 +535,105 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     Connectivity = deviceConnectivity,
                                     Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
                                     ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
-                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : "",
+                                    updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : "",
                                     IsESISupported = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWebcam ||
-                                updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalWebcam) && deviceInfo != null) ? deviceInfo.IsESISupported : false,
+                                    updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalWebcam) && deviceInfo != null) ? deviceInfo.IsESISupported : false,
+
                                 };
                                 if (Check_CanBeOTAUpdate(fWUpdateInfo))
                                 {
-                                    _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
+                                    _logs.DebugMsg_1($"Peripheral _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
                                     _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
                                 }
                             }
+                            else if (deviceTypeList != null && !isOnlyDisplay)
+                            {
+                                _logs.DebugMsg_1($"Peripheral {nameof(deviceTypeList)} in no null");
+                                _logs.DebugMsg_1($"Peripheral updateHelper.UpdateItems.DeviceType : {updateHelper.UpdateItems[i].DeviceType}");
+                                bool isExists = deviceTypeList.Exists(device => device.Equals(updateHelper.UpdateItems[i].DeviceType));
+                                _logs.DebugMsg_1($"Peripheral deviceTypeList.Exists : {isExists}");
+                                if (isExists)
+                                {
+                                    FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                                    {
+                                        TheLatestVersion = newVer,
+                                        DeviceVersion = oldVer,
+                                        NeedUpdated = true,
+                                        ServerPath = updateHelper.UpdateItems[i].ServerPath,
+                                        FileSavepath = updateHelper.UpdateItems[i].InstallPath,
+                                        Model = updateHelper.UpdateItems[i].DeviceModelNumber,
+                                        DeviceName = updateHelper.UpdateItems[i].DeviceName,
+                                        DeviceType = updateHelper.UpdateItems[i].DeviceType,
+                                        DeviceId = updateHelper.UpdateItems[i].DeviceId,
+                                        DevicePath = updateHelper.UpdateItems[i].DevicePath,
+                                        SHA256 = updateHelper.UpdateItems[i].SHA256,
+                                        //SHA512 = updateHelper.UpdateItems[i].SHA512,
+                                        Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
+                                        IsUOD = (isUODMode &&
+                                        (updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
+                                        updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)),
+                                        IsDisplay = false,
+                                        SupplierID = deviceSupplierID,
+                                        Connectivity = deviceConnectivity,
+                                        Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
+                                        ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
+                                    updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock) && deviceInfo != null) ? deviceInfo.DockServiceTag : "",
+                                        IsESISupported = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWebcam ||
+                                    updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalWebcam) && deviceInfo != null) ? deviceInfo.IsESISupported : false,
+                                    };
+                                    if (Check_CanBeOTAUpdate(fWUpdateInfo))
+                                    {
+                                        _logs.DebugMsg_1($"Peripheral _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
+                                        _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            _logs.Error($"updateHelper.UpdateItems[{i}] Error : {ex.Message}");
                         }
                     }
                 }
                 if (displayUpdateHelper != null && displayUpdateHelper.Firmwares != null && displayUpdateHelper.Firmwares.Count > 0 && deviceTypeList == null)
                 {
-                    _logs.DebugMsg_1($"{nameof(displayUpdateHelper.Firmwares.Count)} = {displayUpdateHelper.Firmwares.Count}");
+                    _logs.DebugMsg_1($"displayUpdateHelper.Firmwares.Count = {displayUpdateHelper.Firmwares.Count}");
                     for (int i = 0; i < displayUpdateHelper.Firmwares.Count; i++)
                     {
-                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[{i}].id(DeviceName) = {displayUpdateHelper.Firmwares[i].id}");
-                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[{i}].TheLastVersion = {displayUpdateHelper.Firmwares[i].TheLastVersion}");
-                        _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[{i}].CurrentVersion = {displayUpdateHelper.Firmwares[i].CurrentVersion}");
-                        FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                        try
                         {
-                            TheLatestVersion = displayUpdateHelper.Firmwares[i].TheLastVersion,
-                            DeviceVersion = displayUpdateHelper.Firmwares[i].CurrentVersion,
-                            NeedUpdated = true,
-                            DeviceType = DeviceType.Unknown,
-                            ServerPath = displayUpdateHelper.Firmwares[i].url,
-                            Model = "",
-                            DeviceName = displayUpdateHelper.Firmwares[i].id,
-                            SHA256 = displayUpdateHelper.Firmwares[i].SHA256,
-                            //SHA512 = displayUpdateHelper.Firmwares[i].SHA512,
-                            Thumbprint = displayUpdateHelper.Firmwares[i].Thumbprint,
-                            ServiceTag = displayUpdateHelper.Firmwares[i].ServiceTag,
-                            IsUOD = false,
-                            IsDisplay = true,
-                            SupplierID = displayUpdateHelper.Firmwares[i].SupplierID,
-                            D_Ctrl = displayUpdateHelper.Firmwares[i].D_Ctrl,
-                            Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss")
-                        };
-                        _logs.DebugMsg_1($"{nameof(deviceTypeList)} _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
-                        _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                            _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[{i}].id(DeviceName) = {displayUpdateHelper.Firmwares[i].id}");
+                            _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[{i}].TheLastVersion = {displayUpdateHelper.Firmwares[i].TheLastVersion}");
+                            _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[{i}].CurrentVersion = {displayUpdateHelper.Firmwares[i].CurrentVersion}");
+                            FWUpdateInfo fWUpdateInfo = new FWUpdateInfo()
+                            {
+                                TheLatestVersion = displayUpdateHelper.Firmwares[i].TheLastVersion,
+                                DeviceVersion = displayUpdateHelper.Firmwares[i].CurrentVersion,
+                                NeedUpdated = true,
+                                DeviceType = DeviceType.Unknown,
+                                ServerPath = displayUpdateHelper.Firmwares[i].url,
+                                Model = "",
+                                DeviceName = displayUpdateHelper.Firmwares[i].id,
+                                SHA256 = displayUpdateHelper.Firmwares[i].SHA256,
+                                //SHA512 = displayUpdateHelper.Firmwares[i].SHA512,
+                                Thumbprint = displayUpdateHelper.Firmwares[i].Thumbprint,
+                                ServiceTag = displayUpdateHelper.Firmwares[i].ServiceTag,
+                                IsUOD = false,
+                                IsDisplay = true,
+                                SupplierID = displayUpdateHelper.Firmwares[i].SupplierID,
+                                D_Ctrl = displayUpdateHelper.Firmwares[i].D_Ctrl,
+                                Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss")
+                            };
+                            _logs.DebugMsg_1($"Display _fWUpdateInfoPackage.FWUpdateInfo.Add : {fWUpdateInfo.Model}");
+                            _fWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logs.DebugMsg_1($"displayUpdateHelper.Firmwares[{i}] error : {ex.Message}");
+                        }
                     }
                 }
-                _logs.DebugMsg_1($"{nameof(_fWUpdateInfoPackage.FWUpdateInfo.Count)} : {_fWUpdateInfoPackage.FWUpdateInfo.Count}");
+                _logs.DebugMsg_1($"_fWUpdateInfoPackage.FWUpdateInfo.Count : {_fWUpdateInfoPackage.FWUpdateInfo.Count}");
                 if (_fWUpdateInfoPackage.FWUpdateInfo.Count > 0)
                 {
                     if (!_IsUITrigger)
@@ -629,7 +675,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 else
                 {
-                    _ForceFWUpdateInfoPackage=new FWUpdateInfoPackage();
+                    _ForceFWUpdateInfoPackage = new FWUpdateInfoPackage();
                     _ForceFWUpdateInfoPackage.FWUpdateInfo = new List<FWUpdateInfo>();
                 }
                 if (_forCLI_FWUpdateInfoPackage.FWUpdateInfo.Count <= 0)
@@ -1793,7 +1839,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
                     if (_updateErrorCode == FWUErrorCode.Unknow)
                     {
-                        _notificationStr = LangHelper.Instance["Service_not_running_Try_again"];
+                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                     }
                     _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " _updateErrorCode : " + _updateErrorCode);
 
@@ -2599,9 +2645,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     _logs.DebugMsg_1($"BuildArgs DeviceType done");
                 }
-                _logs.DebugMsg_1($"BuildArgs devicePath go");
-                arguments += $" /devicePath:" + fwUpdateInfo.DevicePath;
-                _logs.DebugMsg_1($"BuildArgs devicePath done");
+                //devicePath commandLine
+                if (fwUpdateInfo.DeviceType != DeviceType.LogicalDock &&
+                    fwUpdateInfo.DeviceType != DeviceType.PhysicalWiredDock)
+                {
+                    _logs.DebugMsg_1($"BuildArgs devicePath go");
+                    arguments += $" /devicePath:" + fwUpdateInfo.DevicePath;
+                    _logs.DebugMsg_1($"BuildArgs devicePath done");
+                }
                 _logs.DebugMsg_1($"BuildArgs Log go");
                 //Log commandLine
                 switch (fwUpdateInfo.DeviceType)
@@ -2643,10 +2694,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             _logs.DebugMsg_1($"Check_CanBeOTAUpdate start");
             bool ret = true;
-            if (fwUpdateInfo.DeviceType == DeviceType.LogicalWebcam ||
-                fwUpdateInfo.DeviceType == DeviceType.PhysicalWebcam)
+            if ((fwUpdateInfo.DeviceType == DeviceType.LogicalWebcam ||
+                fwUpdateInfo.DeviceType == DeviceType.PhysicalWebcam) && 
+                fwUpdateInfo.Model.Contains("7022"))
             {
-                _logs.DebugMsg_1($"Check_CanBeOTAUpdate DeviceType is Webcam");
+                _logs.DebugMsg_1($"Check_CanBeOTAUpdate DeviceType is WB7022");
                 ret = false;
                 //作業系統必須是Windows10 20H2 以上
                 //或是Windows11 22H2以上

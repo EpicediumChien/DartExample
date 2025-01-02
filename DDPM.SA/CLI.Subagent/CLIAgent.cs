@@ -178,31 +178,31 @@ namespace CLI.Subagent
                 }
 
                 // add start @ 20241223 stephen: check defer
-                bool hasDefer = false;
-                string cmds = string.Empty;
+                //bool hasDefer = false;
+                //string cmds = string.Empty;
 
 
-                foreach (string arg in args)
-                {
-                    //Console.WriteLine("@@@@stephen RunManagement arg = " + arg);
+                //foreach (string arg in args)
+                //{
+                //    //Console.WriteLine("@@@@stephen RunManagement arg = " + arg);
 
-                    cmds = cmds + arg + " ";
-                    if (arg.ToLower().Contains("defer"))
-                    {
-                        hasDefer = true;
-                    }
-                }
+                //    cmds = cmds + arg + " ";
+                //    if (arg.ToLower().Contains("defer"))
+                //    {
+                //        hasDefer = true;
+                //    }
+                //}
 
-                if (hasDefer)
-                {
-                    //Console.WriteLine("@@@@stephen check Defer Result ");
+                //if (hasDefer)
+                //{
+                //    //Console.WriteLine("@@@@stephen check Defer Result ");
 
-                    if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds.Trim()).Result)
-                    {
-                        //Console.WriteLine("@@@@stephen check Defer Result = true ");
-                        return;
-                    }
-                }
+                //    if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds.Trim()).Result)
+                //    {
+                //        //Console.WriteLine("@@@@stephen check Defer Result = true ");
+                //        return;
+                //    }
+                //}
                 // add end @ 20241223
 
 

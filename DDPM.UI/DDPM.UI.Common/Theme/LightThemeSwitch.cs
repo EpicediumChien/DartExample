@@ -381,9 +381,11 @@ namespace DDPM.UI.Common
                 UpdateFreezable("ConsentPage_Background", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#D8E5F5"));
                 #endregion
 
-                //#region HomeDevice LineArt image [Robert_Lin, 2024-11-26]
+                #region HomeDevice LineArt image [Robert_Lin, 2024-11-26]
                 UpdateBitmapImage("MonitorImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart-w.png", UriKind.RelativeOrAbsolute));
-                //#endregion HomeDevice LineArt image
+                #endregion HomeDevice LineArt image
+                UpdateBitmapImage("KeyboardImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/LightMode/Lineart-kb.png", UriKind.RelativeOrAbsolute));
+                UpdateBitmapImage("MouseImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/LightMode/Lineart-ms.png", UriKind.RelativeOrAbsolute));
 
                 UpdateFreezable("DefaultThemeFullPageBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E5ECF9"));
 

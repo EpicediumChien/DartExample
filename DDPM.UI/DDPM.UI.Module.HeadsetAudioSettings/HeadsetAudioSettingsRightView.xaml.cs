@@ -157,7 +157,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
 
         private void SystemParameters_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (DdpmCommonHelper.previousOsTheme == OSThemeEnum.Dark)
+            if (DdpmCommonHelper.PreviousOsTheme == OSThemeEnum.Dark)
             {
                 _vm.IsDarkTheme = true;
             }
