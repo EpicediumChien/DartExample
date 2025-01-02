@@ -2057,8 +2057,8 @@
     <BitmapImage x:Key="Close_img" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Close.png" />
     <BitmapImage x:Key="left_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Left.png" />
     <BitmapImage x:Key="MonitorImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png" />
-    <BitmapImage x:Key="KeyboardImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/LightMode/Lineart-kb.png" />
-    <BitmapImage x:Key="MouseImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/LightMode/Lineart-ms.png" />
+    <BitmapImage x:Key="KeyboardImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Lineart-kb.png" />
+    <BitmapImage x:Key="MouseImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Lineart-ms.png" />
 
     <!-- #region Webcam -->
     <SolidColorBrush x:Key="Webcam_TextBox_BkColor" Color="#141D28"/>
