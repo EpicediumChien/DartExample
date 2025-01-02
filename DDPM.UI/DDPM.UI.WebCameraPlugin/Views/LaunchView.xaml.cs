@@ -424,6 +424,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             _vm.brdHello_show = Visibility.Collapsed;
                             _vm.MPS_Setting_Visibility = Visibility.Collapsed;
                             _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+
+                            //2025/01/02 fixed
+                            noPresenceFunction = true;
+
                         }
 
                         //dell 7 韌體升級畫面需要在 usb 3.0下,如果在2.0模式整個分頁關閉
