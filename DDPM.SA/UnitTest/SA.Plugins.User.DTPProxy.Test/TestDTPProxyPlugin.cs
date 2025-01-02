@@ -1156,6 +1156,395 @@ namespace DDPM.SA.Plugins.User.DTPProxy.Test
             Assert.IsNotNull(SetPan_result);
         }
 
+        [Test]
+        public void TestSetIsMicEnumerationOn()
+        {
+            bool newValue = false;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetIsMicEnumerationOn_result = dTPProxyPlugin.SetIsMicEnumerationOn(Guid1, newValue);
+            Assert.IsNotNull(SetIsMicEnumerationOn_result);
+        }
+
+        [Test]
+        public void TestSetWALTime()
+        {
+            int newValue = 1;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetWALTime_result = dTPProxyPlugin.SetWALTime(Guid1, newValue);
+            Assert.IsNotNull(SetWALTime_result);
+        }
+
+        [Test]
+        public void TestSetSnooze()
+        {
+            int newValue = 2;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetSnooze_result = dTPProxyPlugin.SetSnooze(Guid1, newValue);
+            Assert.IsNotNull(SetSnooze_result);
+        }
+
+        [Test]
+        public void TestSetSnoozeLength()
+        {
+            int newValue = 2;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetSnoozeLength_result = dTPProxyPlugin.SetSnoozeLength(Guid1, newValue);
+            Assert.IsNotNull(SetSnoozeLength_result);
+        }
+
+        [Test]
+        public void TestSetIsProximitySensorEnable()
+        {
+            bool newValue = false;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetIsProximitySensorEnable_result = dTPProxyPlugin.SetIsProximitySensorEnable(Guid1, newValue);
+            Assert.IsNotNull(SetIsProximitySensorEnable_result);
+        }
+
+        [Test]
+        public void TestSetIsWakeonApproachEnable()
+        {
+            bool newValue = false;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetIsWakeonApproachEnable_result = dTPProxyPlugin.SetIsWakeonApproachEnable(Guid1, newValue);
+            Assert.IsNotNull(SetIsWakeonApproachEnable_result);
+        }
+
+        [Test]
+        public void TestSetIsWalkAwayLockEnable()
+        {
+            bool newValue = false;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetIsWalkAwayLockEnable_result = dTPProxyPlugin.SetIsWalkAwayLockEnable(Guid1, newValue);
+            Assert.IsNotNull(SetIsWalkAwayLockEnable_result);
+        }
+
+        [Test]
+        public void TestSetIsPrioritizeExternalWebcam()
+        {
+            bool newValue = false;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var SetIsPrioritizeExternalWebcam_result = dTPProxyPlugin.SetIsPrioritizeExternalWebcam(Guid1, newValue);
+            Assert.IsNotNull(SetIsPrioritizeExternalWebcam_result);
+        }
+
+        [Test]
+        public void TestResetToDefault_webcam()
+        {
+            bool newValue = false;
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var ResetToDefault_webcam_result = dTPProxyPlugin.ResetToDefault_webcam(Guid1, newValue);
+            Assert.IsNotNull(ResetToDefault_webcam_result);
+        }
+
+        [Test]
+        public void TestGetWALTime()
+        {
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var GetWALTime_result = dTPProxyPlugin.GetWALTime(Guid1).Result;
+            Assert.IsNotNull(GetWALTime_result);
+            Assert.That(GetWALTime_result, Is.EqualTo(-1));
+        }
+
+        [Test]
+        public void TestGetSnooze()
+        {
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var GetSnooze_result = dTPProxyPlugin.GetSnooze(Guid1).Result;
+            Assert.IsNotNull(GetSnooze_result);
+            Assert.That(GetSnooze_result, Is.EqualTo(-1));
+        }
+
+        [Test]
+        public void TestGetSnoozeLength()
+        {
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var GetSnoozeLength_result = dTPProxyPlugin.GetSnoozeLength(Guid1).Result;
+            Assert.IsNotNull(GetSnoozeLength_result);
+            Assert.That(GetSnoozeLength_result, Is.EqualTo(-1));
+        }
+
+        [Test]
+        public void TestGetIsProximitySensorEnable()
+        {
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var GetIsProximitySensorEnable_result = dTPProxyPlugin.GetIsProximitySensorEnable(Guid1).Result;
+            Assert.IsNotNull(GetIsProximitySensorEnable_result);
+            Assert.That(GetIsProximitySensorEnable_result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestGetIsWakeonApproachEnable()
+        {
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var GetIsWakeonApproachEnable_result = dTPProxyPlugin.GetIsWakeonApproachEnable(Guid1).Result;
+            Assert.IsNotNull(GetIsWakeonApproachEnable_result);
+            Assert.That(GetIsWakeonApproachEnable_result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestGetIsWalkAwayLockEnable()
+        {
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var GetIsWalkAwayLockEnable_result = dTPProxyPlugin.GetIsWalkAwayLockEnable(Guid1).Result;
+            Assert.IsNotNull(GetIsWalkAwayLockEnable_result);
+            Assert.That(GetIsWalkAwayLockEnable_result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestGetIsPrioritizeExternalWebcam()
+        {
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var GetIsPrioritizeExternalWebcam_result = dTPProxyPlugin.GetIsPrioritizeExternalWebcam(Guid1).Result;
+            Assert.IsNull(GetIsPrioritizeExternalWebcam_result);
+        }
+
+        [Test]
+        public void TestGetIsZoomMeetingActive()
+        {
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var GetIsZoomMeetingActive_result = dTPProxyPlugin.GetIsZoomMeetingActive(Guid1).Result;
+            Assert.IsNotNull(GetIsZoomMeetingActive_result);
+            Assert.That(GetIsZoomMeetingActive_result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestGetZoomMeetingType()
+        {
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var GetZoomMeetingTypeAsync_result = dTPProxyPlugin.GetZoomMeetingTypeAsync(Guid1).Result;
+            Assert.IsNotNull(GetZoomMeetingTypeAsync_result);
+            Assert.That(GetZoomMeetingTypeAsync_result, Is.EqualTo(4));
+        }
+
+        [Test]
+        public void TestGetIsZoomScreenShareActive()
+        {
+            Guid WebcamGuid = Guid.NewGuid();
+            string Guid1 = WebcamGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_webcamMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var GetIsZoomScreenShareActive_result = dTPProxyPlugin.GetIsZoomScreenShareActive(Guid1).Result;
+            Assert.IsNotNull(GetIsZoomScreenShareActive_result);
+            Assert.That(GetIsZoomScreenShareActive_result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestPairingPen()
+        {
+            Guid PenGuid = Guid.NewGuid();
+            string Guid1 = PenGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var PairingPen_result = dTPProxyPlugin.PairingPen();
+            Assert.IsNotNull(PairingPen_result);
+        }
+
+        [Test]
+        public void TestUnPairPen()
+        {
+            Guid PenGuid = Guid.NewGuid();
+            string Guid1 = PenGuid.ToString();
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+
+            var UnPairPen_result = dTPProxyPlugin.UnPairPen(Guid1);
+            Assert.IsNotNull(UnPairPen_result);
+        }
+
+        [Test]
+        public void TestGetPenDeviceItemsEx()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var UnPairPen_result = dTPProxyPlugin.GetPenDeviceItemsEx().Result;   //_penMethodInfo null
+            Assert.IsNotNull(UnPairPen_result);
+            Assert.That(UnPairPen_result, Is.EqualTo(new JArray()));
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var UnPairPen_result2 = dTPProxyPlugin.GetPenDeviceItemsEx().Result;
+            Assert.IsNotNull(UnPairPen_result2);
+            Assert.That(UnPairPen_result, Is.EqualTo(new JArray()));
+        }
+
+        [Test]
+        public void TestGetEraserDoublePressValues()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var GetEraserDoublePressValues_result = dTPProxyPlugin.GetEraserDoublePressValues().Result;   //_penMethodInfo null
+            Assert.IsNotNull(GetEraserDoublePressValues_result);
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetEraserDoublePressValues_result2 = dTPProxyPlugin.GetEraserDoublePressValues().Result;
+            Assert.IsNotNull(GetEraserDoublePressValues_result2);
+        }
+
+        [Test]
+        public void TestGetEraserSinglePressValues()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var GetEraserSinglePressValues_result = dTPProxyPlugin.GetEraserSinglePressValues().Result;   //_penMethodInfo null
+            Assert.IsNotNull(GetEraserSinglePressValues_result);
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetEraserSinglePressValues_result2 = dTPProxyPlugin.GetEraserSinglePressValues().Result;
+            Assert.IsNotNull(GetEraserSinglePressValues_result2);
+        }
+
+        [Test]
+        public void TestGetEraserLongPressValues()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var GetEraserLongPressValues_result = dTPProxyPlugin.GetEraserLongPressValues().Result;   //_penMethodInfo null
+            Assert.IsNotNull(GetEraserLongPressValues_result);
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetEraserLongPressValues_result2 = dTPProxyPlugin.GetEraserLongPressValues().Result;
+            Assert.IsNotNull(GetEraserLongPressValues_result2);
+        }
+
+        [Test]
+        public void TestGetSideSwitchSinglePressValues()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var GetSideSwitchSinglePressValues_result = dTPProxyPlugin.GetSideSwitchSinglePressValues().Result;   //_penMethodInfo null
+            Assert.IsNotNull(GetSideSwitchSinglePressValues_result);
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetSideSwitchSinglePressValues_result2 = dTPProxyPlugin.GetSideSwitchSinglePressValues().Result;
+            Assert.IsNotNull(GetSideSwitchSinglePressValues_result2);
+        }
+
+        [Test]
+        public void TestGetMenuSinglePressValues()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var GetMenuSinglePressValues_result = dTPProxyPlugin.GetMenuSinglePressValues().Result;   //_penMethodInfo null
+            Assert.IsNotNull(GetMenuSinglePressValues_result);
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetMenuSinglePressValues_result2 = dTPProxyPlugin.GetMenuSinglePressValues().Result;
+            Assert.IsNotNull(GetMenuSinglePressValues_result2);
+        }
+
+        [Test]
+        public void TestGetLaunchableAppValues()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var GetLaunchableAppValues_result = dTPProxyPlugin.GetLaunchableAppValues().Result;   //_penMethodInfo null
+            Assert.IsNotNull(GetLaunchableAppValues_result);
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetLaunchableAppValues_result2 = dTPProxyPlugin.GetLaunchableAppValues().Result;
+            Assert.IsNotNull(GetLaunchableAppValues_result2);
+        }
+
+        [Test]
+        public void TestGetEraserDoublePressSetting()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var GetEraserDoublePressSetting_result = dTPProxyPlugin.GetEraserDoublePressSetting().Result;   //_penMethodInfo null
+            Assert.IsNotNull(GetEraserDoublePressSetting_result);
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetEraserDoublePressSetting_result2 = dTPProxyPlugin.GetEraserDoublePressSetting().Result;
+            Assert.IsNotNull(GetEraserDoublePressSetting_result2);
+        }
+
+        [Test]
+        public void TestGetEraserSinglePressSetting()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var GetEraserSinglePressSetting_result = dTPProxyPlugin.GetEraserSinglePressSetting().Result;   //_penMethodInfo null
+            Assert.IsNotNull(GetEraserSinglePressSetting_result);
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetEraserSinglePressSetting_result2 = dTPProxyPlugin.GetEraserSinglePressSetting().Result;
+            Assert.IsNotNull(GetEraserSinglePressSetting_result2);
+        }
+
         [OneTimeTearDown]
         public void TearDown()
         {

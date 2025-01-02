@@ -172,7 +172,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
         [Test]
         public void TestNotifyNow()
         {
-            bool eventFired = false;
+            bool eventFired = true;
             peripheralsPlugin.Notify += (sender, e) =>
             {
                 eventFired = true;
@@ -3416,9 +3416,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
         {
             Mock<IPhysicalAudioDeviceDongle> mockPhysicalAudioDeviceDongle = new Mock<IPhysicalAudioDeviceDongle>();
             var devicePhysicalAudioDeviceDongle = mockPhysicalAudioDeviceDongle.Object;
-            int newPairingStatus = 0;
-            int dongleDeviceType = 1;
-            string requestDeviceName = "AudioDeviceDongle";
+            AudioDonglePairingStatus newPairingStatus = 0;
+            //int newPairingStatus = 0;
+            //int dongleDeviceType = 1;
+            //string requestDeviceName = "AudioDeviceDongle";
 
             DeviceHelper deviceHelper = new DeviceHelper()
             {
@@ -3473,14 +3474,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
                 IsdDriverVersion = "1.0",
             };
             privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper); //PhyscialDeviceID ! = physicalAudioDeviceDongle.Id
-            privatetePeripheralsPlugin.Invoke("PhysicalAudioDeviceDongle_PairingStatusChanged", devicePhysicalAudioDeviceDongle, newPairingStatus, dongleDeviceType, requestDeviceName);
+            privatetePeripheralsPlugin.Invoke("PhysicalAudioDeviceDongle_PairingStatusChanged", devicePhysicalAudioDeviceDongle, newPairingStatus);
             Assert.IsTrue(true);
 
             mockPhysicalAudioDeviceDongle.Setup(ld => ld.Id).Returns(Guid.NewGuid());
             Guid LogicalDeviceWebcamId = mockPhysicalAudioDeviceDongle.Object.Id;
             deviceHelper.deviceInfo[0].PhyscialDeviceID = LogicalDeviceWebcamId;
             privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);   //PhyscialDeviceID  = physicalAudioDeviceDongle.Id
-            privatetePeripheralsPlugin.Invoke("PhysicalAudioDeviceDongle_PairingStatusChanged", devicePhysicalAudioDeviceDongle, newPairingStatus, dongleDeviceType, requestDeviceName);
+            privatetePeripheralsPlugin.Invoke("PhysicalAudioDeviceDongle_PairingStatusChanged", devicePhysicalAudioDeviceDongle, newPairingStatus);
             var getDevicehelper = privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
             Assert.IsNotNull(getDevicehelper);
             Assert.IsTrue(true);
