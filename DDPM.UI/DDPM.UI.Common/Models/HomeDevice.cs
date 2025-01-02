@@ -42,7 +42,7 @@ namespace DDPM.UI.Common.Models
         /// </summary>
 
         //Robert_Lin, 2024-12-27 add an additional ctor with ILog to let it can write log
-        public HomeDevice(ILog? log=null)
+        public HomeDevice(ILog? log = null)
         {
             NormalWidth = 400;
             _log = log;
@@ -288,8 +288,7 @@ namespace DDPM.UI.Common.Models
                                 break;
                         } //switch(deviceInfo.ModelNumber)
 
-                        return DeviceInfo.Name + $" {model}";
-
+                        return DdpmCommonHelper.MappingName(model, DeviceInfo.Name) + $" {model}";
                     }
 
                     //OLD Code:
@@ -686,7 +685,7 @@ namespace DDPM.UI.Common.Models
             //Step_2, We will load and show the LineArt image
             try
             {
-                if(DeviceInfo?.Type == DeviceType.LogicalKeyboard)
+                if (DeviceInfo?.Type == DeviceType.LogicalKeyboard)
                     DeviceImage = (BitmapImage)System.Windows.Application.Current.Resources["KeyboardImage_LineArt"];
                 if (DeviceInfo?.Type == DeviceType.LogicalMouse)
                     DeviceImage = (BitmapImage)System.Windows.Application.Current.Resources["MouseImage_LineArt"];
@@ -1026,7 +1025,7 @@ namespace DDPM.UI.Common.Models
         // 1     {icon}  Window Machine 1      True/False     Color: ConnectionStyle=1|2|3
         private const int maxHostNameLength = 15;
         private const string BleHostStyle_Collapsed = "0";
-        private const string BleHostStyle_White = "1"; 
+        private const string BleHostStyle_White = "1";
         private const string BleHostStyle_Gray = "2";
 
         //Robert_Lin, 2024-12-30, updated from Mouse/LaunchView.xaml.cs
@@ -1447,7 +1446,7 @@ namespace DDPM.UI.Common.Models
                 //BLConnection.Visibility = Visibility.Visible;
 
                 //@ HomeDevice:
-                AudioBleText = string.Format(Strings.Paired_Info, DeviceInfo.TotalNumberOfPairedHostName); 
+                AudioBleText = string.Format(Strings.Paired_Info, DeviceInfo.TotalNumberOfPairedHostName);
                 //"This device can be paired with {0} hosts simultaneously";
                 //int totalPairedHostCount = DeviceInfo.TotalNumberOfPairedHostName;
                 //AudioBleText = String.Format(AudioBleConnectionTotalPairCountText, totalPairedHostCount);
@@ -1943,7 +1942,7 @@ namespace DDPM.UI.Common.Models
         #endregion
 
         #region WriteLog
-        private void WriteLog(string msg, Exception? ex=null)
+        private void WriteLog(string msg, Exception? ex = null)
         {
             if (_log != null)
             {

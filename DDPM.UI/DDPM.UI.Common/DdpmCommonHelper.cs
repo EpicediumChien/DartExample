@@ -17,6 +17,7 @@ using System.Windows.Data;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Xml.Linq;
 using VcpCore.Common;
 using Windows.Devices.PointOfService;
 using static DDPM.UI.Common.Views.DDPMMsgBox;
@@ -97,7 +98,7 @@ namespace DDPM.UI.Common
         //default theme is dark
         private static OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
         public static OSThemeEnum PreviousOsTheme { get => previousOsTheme; set => previousOsTheme = value; }
-        
+
         private static string lastShowOsdScreenDeviceName = "";
 
         public static string LastShowOsdScreenDeviceName { get => lastShowOsdScreenDeviceName; set => lastShowOsdScreenDeviceName = value; }
@@ -372,7 +373,7 @@ namespace DDPM.UI.Common
             return Settings_Cache;
         }
 
-        
+
         public static void updateMergedDictionaries(ResourceManager resourceManager)
         {
             OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
@@ -604,6 +605,19 @@ namespace DDPM.UI.Common
             }
         }
 
+        public static string MappingName(string model, string name)
+        {
+            name = name.Replace(model, "").Trim() + $" {model}";
+            switch (CultureInfo.InstalledUICulture.Name)
+            {
+                case "ja-JP":
+                    if (model == "WB7022")
+                        return "Dell Digital Hi-Resolution Webcam";
+                    return name;
+                default:
+                    return name;
+            }
+        }
         /// <summary>
         /// Check if the specifc peripheral model is EOL model.
         /// Based on "Copy of Peripheral-SupportedDeviceList_20241224.xlsx"
