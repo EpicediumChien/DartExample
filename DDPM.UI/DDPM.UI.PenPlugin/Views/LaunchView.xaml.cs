@@ -284,7 +284,7 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         #endregion Mode Change
 
-        private void Unpair_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Unpair_Click(object sender, RoutedEventArgs e)
         {
             if (_vm!.Model == "PN5122W")
             {
@@ -349,7 +349,7 @@ namespace DDPM.UI.Plugin.PenPlugin
             _vm.SelectedBehavior = "";
         }
 
-        private void Restore_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Restore_Click(object sender, RoutedEventArgs e)
         {
             RestoreModalDialog restoreModalDialog = new();
             Window parentWindow = Window.GetWindow(this);

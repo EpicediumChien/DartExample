@@ -107,10 +107,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
                 SetProperty(ref _isMoving, value);
                 OnPropertyChanged("IsWorkUIShowing");
                 OnPropertyChanged("IsAwsWindowVisible");
-                if (isChanged)
+                if (isChanged &&
+                    IsMovingChanged != null)
                 {
-                    if (IsMovingChanged != null)
-                        IsMovingChanged(this, IsMoving);
+                    IsMovingChanged(this, IsMoving);
                 }
                 if (value)
                 {
@@ -239,42 +239,42 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             CellObj? hoveringCell = null;
 
-            if (IsAwsWindowVisible)
+            if (IsAwsWindowVisible &&
+                AwsWindow != null)
             {
-                if (AwsWindow !=null)
-                {
-                    CellObj? cellObj = AwsWindow.DetermineHoveringCellObj(x, y);
-                    if (cellObj != null)
-                    {
-                        HoveringScreen = AwsWindow.ScreenDeviceName;
-                        HoveringWindow = "aws";
-                        HoveringCellObj = cellObj;
-                        HoveringSplit = AwsWindow.HoveringSplit;
 
-                        hoveringCell = cellObj;
-                        foreach (EAWorkWindow workWin in _workWindows2)
+                CellObj? cellObj = AwsWindow.DetermineHoveringCellObj(x, y);
+                if (cellObj != null)
+                {
+                    HoveringScreen = AwsWindow.ScreenDeviceName;
+                    HoveringWindow = "aws";
+                    HoveringCellObj = cellObj;
+                    HoveringSplit = AwsWindow.HoveringSplit;
+
+                    hoveringCell = cellObj;
+                    foreach (EAWorkWindow workWin in _workWindows2)
+                    {
+                        if (!workWin.IsUsed)
+                            continue;
+                        if (workWin.ScreenDeviceName.Equals(HoveringScreen))
                         {
-                            if (!workWin.IsUsed)
-                                continue;
-                            if (workWin.ScreenDeviceName.Equals(HoveringScreen))
+                            if (workWin.IsSameWorkSplit(HoveringSplit))
                             {
-                                if (workWin.IsSameWorkSplit(HoveringSplit))
-                                {
-                                    workWin.SetWorkSplitHoveringCellName(hoveringCell.Name);
-                                }
-                                else
-                                {
-                                    workWin.SetWorkSplitHoveringCellName("");
-                                }
+                                workWin.SetWorkSplitHoveringCellName(hoveringCell.Name);
                             }
                             else
                             {
                                 workWin.SetWorkSplitHoveringCellName("");
                             }
                         }
-                        return cellObj;
+                        else
+                        {
+                            workWin.SetWorkSplitHoveringCellName("");
+                        }
                     }
+                    return cellObj;
                 }
+                
             }
 
             int idxWorkWin = -1;
@@ -639,14 +639,12 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             foreach (EAWorkWindow workWin in _workWindows2)
             {
-                if (workWin != null)
+                if (workWin != null &&
+                    workWin.IsUsed)
                 {
-                    if (workWin.IsUsed)
-                    {
-                        //Robert_Lin, 2024-10-3 don't close the window, we need to reused it
-                        //workWin.DispatcherClose();
-                        workWin.IsUsed = false;
-                    }
+                    //Robert_Lin, 2024-10-3 don't close the window, we need to reused it
+                    //workWin.DispatcherClose();
+                    workWin.IsUsed = false;                    
                 }
             }
         }
@@ -655,9 +653,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange
         {
             foreach (EAWorkWindow workWin in _workWindows2)
             {
-                if (workWin != null)
-                    if (!workWin.IsUsed)
-                        return workWin;
+                if (workWin != null &&
+                    !workWin.IsUsed)
+                    return workWin;
             }
             return null;
         }
@@ -835,13 +833,11 @@ namespace DDPM.SA.Plugins.User.EasyArrange
             Trace.WriteLine($"WorkWindows Count={_workWindows2.Count}");
             foreach (EAWorkWindow workWin in _workWindows2)
             {
-                if (workWin.IsUsed)
+                if (workWin.IsUsed &&
+                    !String.IsNullOrWhiteSpace(workWin.ScreenDeviceName) &&
+                    workWin.ScreenDeviceName.Equals(displayName))
                 {
-                    if (!String.IsNullOrWhiteSpace(workWin.ScreenDeviceName))
-                    {
-                        if (workWin.ScreenDeviceName.Equals(displayName))
-                            return workWin;
-                    }
+                    return workWin;                    
                 }
             }
             return null;
@@ -943,12 +939,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
 
         public void RefreshCellRects()
         {
-            if (IsAwsWindowVisible)
+            if (IsAwsWindowVisible &&
+                AwsWindow != null)
             {
-                if (AwsWindow != null)
-                {
-                    AwsWindow.RefreshCellRects();
-                }
+                AwsWindow.RefreshCellRects();
             }
             //foreach (KeyValuePair<string, EAWorkWindow> keyValuePair in _workWindows)
             //{

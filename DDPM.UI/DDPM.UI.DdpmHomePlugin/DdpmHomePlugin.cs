@@ -610,7 +610,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             else if (e.UI_Field_Name.StartsWith("QAMEvent_NavigateToWidgetSettingPage"))
             {
                 _console.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId);
-                DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM = true;
+                DdpmCommonHelper.IsDDPMSwitchToSettingPageByQAM = true;
             }
         }
 
@@ -1456,7 +1456,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             string regPathForConsent = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Global\Consent";
             string regKeyForConsent = $"IsFirstTimeLaunchDDPM_com.dell.DPM.Plugin.LogicalDevice.Consent";
 
-            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.previousOsTheme);
+            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
 
             try
             {

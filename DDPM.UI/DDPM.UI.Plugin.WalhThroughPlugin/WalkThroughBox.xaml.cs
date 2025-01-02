@@ -97,7 +97,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             InitializeComponent();
             ViewModel = viewModel;
-            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.previousOsTheme);
+            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
             _viewModel = new WalkThroughBoxViewModel
             {
                 strTitle = devicePages["DDPM"][_currentPage].MainText,
@@ -180,7 +180,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void UpdateText(int page)
         {
-            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.previousOsTheme);
+            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
 
             _viewModel.strTitle = devicePages["DDPM"][page].MainText;
             _viewModel.strContent = devicePages["DDPM"][page].SubText;

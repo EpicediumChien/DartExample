@@ -848,34 +848,54 @@ namespace DDPM.SA.Plugin.User.CLIManager
             };
         }
 
+        /*
+	Header - Update will be applied
+	Body - There is a required firmware update for [Device Marketing Name with Model in parenthesis]. During update, device may be intermittently available. Do not disconnect the device during the update.
+	Button Option - “Ok”
+*/
+
+
+        /*
+        	Header - Update available
+        	Body - [Device Marketing Name with Model in parenthesis] has a pending firmware update. During update, device may be intermittently available. Do not disconnect the device during the update. This update can be deferred [x] times before it is required.
+        	Button Options - “Update now” / “Defer”
+        */
+
+        private const string NOTIFICATION_MSG_HEADER = @"Update available";
+        private const string NOTIFICATION_MSG_BODY = @"There is a required firmware update for [Device Marketing Name with Model in parenthesis]. During update, device may be intermittently available. Do not disconnect the device during the update.";
+
+        private const string DEFER_MSG_HEADER = @"Update available";
+        private const string DEFER_MSG_BODY = @"[Device Marketing Name with Model in parenthesis] has a pending firmware update. During update, device may be intermittently available. Do not disconnect the device during the update. This update can be deferred [x] times before it is required.";
+
         public void showNotification(string id, string msg)
         {
 
             new ToastContentBuilder()
                 .AddArgument("deferid", id)
-                .AddText(msg)
+                .AddText(NOTIFICATION_MSG_HEADER)
+                .AddText(NOTIFICATION_MSG_BODY)
                 .AddButton(new ToastButton()
-                    .SetContent("OK " + id)
+                    .SetContent("Ok")
                 //.AddArgument("action", "OK")
                 )
                 .Show();
         }
-
-
         public void showToast(string id, string msg)
         {
 
             new ToastContentBuilder()
                 .AddArgument("deferid", id)
-                .AddText(msg)
+                .AddText(DEFER_MSG_HEADER)
+                .AddText(DEFER_MSG_BODY)
                 .AddButton(new ToastButton()
-                    .SetContent("Defer " + id)
-                    .AddArgument("action", "defer")
-                )
-                .AddButton(new ToastButton()
-                    .SetContent("Run Now")
+                    .SetContent("Update now")
                     .AddArgument("action", "runnow")
                 )
+                .AddButton(new ToastButton()
+                    .SetContent("Defer")
+                    .AddArgument("action", "defer")
+                )
+
                 .Show();
 
         }

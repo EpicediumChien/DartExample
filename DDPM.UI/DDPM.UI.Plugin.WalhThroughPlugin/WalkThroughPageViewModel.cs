@@ -23,7 +23,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         public int _currentTotalPage = 0;// Control button Visibility.Collapsed 
         public int _currentPageIndex = 0;
         public string _currentDeviceModel = string.Empty;
-        private Dictionary<string, List<WalkThroughPageData>> _devicePages = DDPM.UI.WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.previousOsTheme);
+        private Dictionary<string, List<WalkThroughPageData>> _devicePages = DDPM.UI.WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
         public object _currentDeviceinfo = string.Empty;
         public string last_logicalDeviceType = string.Empty;
 
@@ -35,7 +35,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 IsDDPMVisibility = true;
                 //IsOtherVisibility = false;
                 //初始頁固定
-                if (DdpmCommonHelper.previousOsTheme == (OSThemeEnum)1)
+                if (DdpmCommonHelper.PreviousOsTheme == (OSThemeEnum)1)
                 {
                     Img1Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/DDPM1-1.png", "DDPM.UI.WalkThroughData");
                     Img2Source = DdpmCommonHelper.GetImageSourceFromCommonResource("WalkThrough/DDPM/DDPM1-2.png", "DDPM.UI.WalkThroughData");
@@ -107,7 +107,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         /// </summary>
         private void UpdatePageContent()
         {
-            _devicePages = DDPM.UI.WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.previousOsTheme);
+            _devicePages = DDPM.UI.WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
             if (_devicePages.ContainsKey(_currentDeviceModel) && _currentPageIndex < _devicePages[_currentDeviceModel].Count)
             {
                 var pageData = _devicePages[_currentDeviceModel][_currentPageIndex];

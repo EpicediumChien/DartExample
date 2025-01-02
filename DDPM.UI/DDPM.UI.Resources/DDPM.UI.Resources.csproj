@@ -111,6 +111,8 @@
 		<None Remove="Resources\Images\KnM_light.png" />
 		<None Remove="Resources\Images\Left.png" />
 		<None Remove="Resources\Images\Left_light.png" />
+		<None Remove="Resources\Images\Lineart-kb.png" />
+		<None Remove="Resources\Images\Lineart-ms.png" />
 		<None Remove="Resources\Images\Link.png" />
 		<None Remove="Resources\Images\Loading.png" />
 		<None Remove="Resources\Images\MButton11.png" />
@@ -474,6 +476,10 @@
 		<Resource Include="Resources\Images\KM717.png" />
 		<Resource Include="Resources\Images\KnM_light.png" />
 		<Resource Include="Resources\Images\Left_light.png" />
+		<Resource Include="Resources\Images\LightMode\Lineart-kb.png" />
+		<Resource Include="Resources\Images\LightMode\Lineart-ms.png" />
+		<Resource Include="Resources\Images\Lineart-kb.png" />
+		<Resource Include="Resources\Images\Lineart-ms.png" />
 		<Resource Include="Resources\Images\Monitor_light.png" />
 		<Resource Include="Resources\Images\MS3320W_1.png" />
 		<Resource Include="Resources\Images\PanD.png" />
