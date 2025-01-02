@@ -10584,10 +10584,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"HandleQAM receive QAMClose event");
 
-                        QAMClose(true);
+                        QAMClose(false);
                     }
-
-                    isOpenOSDWhenQAMClosed = true;
                 }
                 else
                 {
@@ -10941,6 +10939,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             writelog($"QAMClose done");
+
+            return Task.CompletedTask;
+        }
+
+        public Task SetQAMOSDVisable(bool visable)
+        {
+            isOpenOSDWhenQAMClosed = visable;
 
             return Task.CompletedTask;
         }
@@ -13508,30 +13513,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         //Derek 1205 for Debug
-        private void CreateWebcamEventForDebug_ShowUI()
-        {
-            writelog($"HandleQAMV2 launch by event CreateWebcamEventForDebug_ShowUI");
+        //private void CreateWebcamEventForDebug_ShowUI()
+        //{
+        //    writelog($"HandleQAMV2 launch by event CreateWebcamEventForDebug_ShowUI");
 
-            _IsZoomMeetingActive = true;
-            _IsZoomScreenShareActive = false;
-            _ZoomMeetingType = ZoomMeetingType.CONF_3RD_EVENT_MEETING;
+        //    _IsZoomMeetingActive = true;
+        //    _IsZoomScreenShareActive = false;
+        //    _ZoomMeetingType = ZoomMeetingType.CONF_3RD_EVENT_MEETING;
 
-            writelog($"HandleQAMV2 launched by event CreateWebcamEventForDebug_ShowUI");
-            HandleQAMV2();
-            //_IsZoomMeetingActive = false;
-            //_ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
-        }
+        //    writelog($"HandleQAMV2 launched by event CreateWebcamEventForDebug_ShowUI");
+        //    HandleQAMV2();
+        //    //_IsZoomMeetingActive = false;
+        //    //_ZoomMeetingType = ZoomMeetingType.ZOOM_MEETING_TYPE_UNKNOW;
+        //}
 
-        private void CreateWebcamEventForDebug_HideUI()
-        {
-            writelog($"HandleQAMV2 launch by event CreateWebcamEventForDebug_HideUI");
+        //private void CreateWebcamEventForDebug_HideUI()
+        //{
+        //    writelog($"HandleQAMV2 launch by event CreateWebcamEventForDebug_HideUI");
 
-            _IsZoomScreenShareActive = true;
-            _IsZoomMeetingActive = true;
+        //    _IsZoomScreenShareActive = true;
+        //    _IsZoomMeetingActive = true;
 
-            writelog($"HandleQAMV2 launched by event CreateWebcamEventForDebug_HideUI");
-            HandleQAMV2();
-        }
+        //    writelog($"HandleQAMV2 launched by event CreateWebcamEventForDebug_HideUI");
+        //    HandleQAMV2();
+        //}
 
         //Derek 1217 add Debounce for Keyboard_KeyUpProc
         private System.Timers.Timer _timerDebounce;
