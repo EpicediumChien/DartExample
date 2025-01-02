@@ -6522,7 +6522,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //}
                 //else
                 //{
-                    USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
+                USBKVMPCsList = _DisplayManagerPlugin.GetUSBKVMPCsList(monitorInfo, inputList, subInputList).Result;
                 //}
             }
             else
@@ -10932,7 +10932,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"Try to run QAMClose");
                 //Derek 1228 move to here for issue
                 //OSD should not be seen on set Widget setting- Activae Quick Access widget during Zoom conference calls" = Off (uncheck)
-                isOpenOSDWhenQAMClosed = openQAMOSD; 
+                isOpenOSDWhenQAMClosed = openQAMOSD;
                 _QAM?.Dispatcher.Invoke(DispatcherPriority.Normal, () => _QAM?.Close());
             }
             catch (Exception e)
@@ -12981,7 +12981,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"[GetInputSourceHotKeyData] ServiceTag({mo.edid.ServiceTag}): {monitorSettings}");
 
-            if(monitorSettings.hotkeyData == null)
+            if (monitorSettings.hotkeyData == null)
             {
                 writelog($"[GetInputSourceHotKeyData] Load hotkeyData of model({model}) serviceTag({serviceTag}): null data");
                 return null;
@@ -13929,7 +13929,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     HotkeyInfo hotkeyInfoIs = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.FavoriteInputSource));
                     List<HotkeyData> list = GetInputSourceHotKeyData(monitorInfo);
                     HotkeyData hotkeyData = null;
-                    if(list != null)
+                    if (list != null)
                         hotkeyData = list.SingleOrDefault(x => x.hotkeyType == HotkeyType.FavoriteInputSource);
                     Debug.WriteLine($"FavoriteInputSource: {hotkeyData?.inputSource.Count}");
                     if (hotkeyInfoIs != null && hotkeyData != null)// hotkeyInfoIs.InputSource != null)
@@ -13953,7 +13953,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     HotkeyInfo hotkeyInfo = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.SwitchInputSource));
                     List<HotkeyData> list2 = GetInputSourceHotKeyData(monitorInfo);
                     HotkeyData hotkeyData2 = null;
-                    if(list2 != null)
+                    if (list2 != null)
                         hotkeyData2 = list2.SingleOrDefault(x => x.hotkeyType == HotkeyType.SwitchInputSource);
                     if (hotkeyInfo != null && hotkeyData2 != null)// hotkeyInfo.InputSource != null)
                     {
@@ -13961,7 +13961,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     }
                     else
                     {
-                        if(list2 == null)
+                        if (list2 == null)
                             writelog("[HotkeyType.SwitchInputSource] list2 is null, no action");
                         if (list2 != null && list2.Count == 0)
                             writelog("[HotkeyType.SwitchInputSource] list2 is empty, no action");
@@ -13992,7 +13992,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     HotkeyInfo kvmhotkeyInfo = settings.HotkeyInfo.SingleOrDefault(x => x.Job.Equals(HotkeyType.KvmSwitchInputSource));
                     List<HotkeyData> list3 = GetInputSourceHotKeyData(monitorInfo);
                     HotkeyData hotkeyData3 = null;
-                    if(list3 != null)
+                    if (list3 != null)
                         hotkeyData3 = list3.SingleOrDefault(x => x.hotkeyType == HotkeyType.KvmSwitchInputSource);
                     if (kvmhotkeyInfo != null && hotkeyData3 != null)// kvmhotkeyInfo.InputSource != null)
                     {
@@ -14506,16 +14506,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         private bool IsPxPModeOFF(MonitorInfo mo)
         {
-            bool ret = false;
+            UInt16 pxpModeValue = 0xff;
             if (!mo.CapabilityDic.ContainsKey("E9"))
-                return ret;
-            ObjGetVCP pxpMode = GetPxpMode(mo).Result;
-            Debug.WriteLine($"GetPxpMode result={pxpMode?.result}, value={(UInt32)pxpMode.value}");
-            if (pxpMode != null && pxpMode.result == true)
             {
-                ret = Convert.ToUInt16(pxpMode.value) == 0;
+                writelog($"[IsPxPModeOFF] monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],has no E9.");
+                return false;
             }
-            return ret;
+            ObjGetVCP pxpMode = GetPxpMode(mo).Result;
+            if (pxpMode != null && pxpMode.result)
+            {
+                if (!ushort.TryParse(pxpMode.value.ToString(), out pxpModeValue))
+                {
+                    writelog($"[IsPxPModeOFF]GetPxpMode,monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],parse pxpMode value[{pxpMode.value.ToString()}] fail.");
+                    Debug.WriteLine($"[IsPxPModeOFF]GetPxpMode parse pxpMode value[{pxpMode.value.ToString()}] fail.");
+                }
+            }
+            Debug.WriteLine($"[IsPxPModeOFF]GetPxpMode,monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],result={pxpMode.result},value=[{pxpMode.value.ToString()}],pxpModeValue={pxpModeValue},ret={pxpModeValue == 0}");
+            writelog($"[IsPxPModeOFF]GetPxpMode,monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],result={pxpMode.result},value=[{pxpMode.value.ToString()}],pxpModeValue={pxpModeValue},ret={pxpModeValue == 0}");
+            return pxpModeValue == 0;
         }
 
         //Robert_Lin, 2024-12-21 for PIMS-332780 [DDPM Win 2.0.0] - R18 : In PBP 3 window & 4 window mode,
@@ -14529,13 +14537,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             bool ret = false;
             if (!mo.CapabilityDic.ContainsKey("E9"))
-                return ret;
-            ObjGetVCP pxpMode = GetPxpMode(mo).Result;
-            Debug.WriteLine($"GetPxpMode result={pxpMode?.result}, value={(UInt32)pxpMode.value}");
-            if (pxpMode != null && pxpMode.result == true)
             {
-                ushort _curPxpMode = Convert.ToUInt16(pxpMode.value);
-                switch (_curPxpMode)
+                writelog($"[IsPIPMode] monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],has no E9.");
+                return ret;
+            }
+            UInt16 pxpModeValue = 0xff;
+            ObjGetVCP pxpMode = GetPxpMode(mo).Result;
+            //Debug.WriteLine($"GetPxpMode result={pxpMode?.result}, value={(UInt32)pxpMode.value}");
+            if (pxpMode != null && pxpMode.result)
+            {
+                //ushort _curPxpMode = Convert.ToUInt16(pxpMode.value);
+                if (!ushort.TryParse(pxpMode.value.ToString(), out pxpModeValue))
+                {
+                    writelog($"[IsPIPMode]monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],GetPxpMode parse pxpMode value[{pxpMode.value.ToString()}] fail.");
+                    Debug.WriteLine($"[IsPIPMode]GetPxpMode parse pxpMode value[{pxpMode.value.ToString()}] fail.");
+                }
+                switch (pxpModeValue)
                 {
                     case 0x00://off
                         ret = false;
@@ -14580,6 +14597,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         break;
                 }
             }
+            Debug.WriteLine($"[IsPIPMode]GetPxpMode,monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],result={pxpMode.result},value=[{pxpMode.value.ToString()}],pxpModeValue={pxpModeValue},ret={ret}");
+            writelog($"[IsPIPMode]GetPxpMode,monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],result={pxpMode.result},value=[{pxpMode.value.ToString()}],pxpModeValue={pxpModeValue},ret={ret}");
             return ret;
         }
 
