@@ -62,6 +62,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
         //public ICommand? OpenFullViewCommand { get; set; }
         //public ICommand? CloseFullViewCommand { get; set; }
+        Settings_General settings_General = null;
+        UpdatesPage updatesPage = null;
+        AnalyticsPage analyticsPage = null;
+        Settings_WidgetSettings settings_WidgetSettings = null;
+        Settings_About settings_About = null;
         public void SetSelected(int index)
         {
             for (int j = 0; j < IsSelected.Length; j++)
@@ -69,28 +74,49 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 IsSelected[j] = false;
             }
             IsSelected[index] = true;
+            dynamic vm = null;
             switch (index)
             {
                 case 0:
                 default:
-                    Settings_General settings_General = new Settings_General();
-                    OpenFullView(settings_General);
+                    if (settings_General == null)
+                    {
+                        settings_General = new Settings_General();
+                    }
+                    vm = settings_General;
                     break;
                 case 1:
-                    UpdatesPage updatesPage = new UpdatesPage();
-                    OpenFullView(updatesPage);
+                    if (updatesPage == null)
+                    {
+                        updatesPage = new UpdatesPage();
+                    }
+                    vm = updatesPage;
                     break;
                 case 2:
-                    FullView = new AnalyticsPage();
+                    if (analyticsPage == null)
+                    {
+                        analyticsPage = new AnalyticsPage();
+                    }
+                    vm = analyticsPage;
                     break;
                 case 3:
-                    Settings_WidgetSettings settings_WidgetSettings = new Settings_WidgetSettings();
-                    OpenFullView(settings_WidgetSettings);
+                    if (settings_WidgetSettings == null)
+                    {
+                        settings_WidgetSettings = new Settings_WidgetSettings();
+                    }
+                    vm = settings_WidgetSettings;
                     break;
                 case 4:
-                    Settings_About settings_About = new Settings_About();
-                    OpenFullView(settings_About);
+                    if (settings_About == null)
+                    {
+                        settings_About = new Settings_About();
+                    }
+                    vm = settings_About;
                     break;
+            }
+            if (vm != null) 
+            {
+                OpenFullView(vm);
             }
             OnPropertyChanged("IsSelected");
         }

@@ -133,6 +133,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 if (vm != null)
                 {
                     //vm.GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                    Global.SettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
                     vm.GlobalSettingParam = Global.SettingParam;
                     vm.RefreshUI();
                 }
