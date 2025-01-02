@@ -613,6 +613,10 @@ namespace DDPM.UI.Common
                 case "ja-JP":
                     if (model == "WB7022")
                         return "Dell Digital Hi-Resolution Webcam";
+                    if (model == "U3223QZ")
+                        return "Dell Digital Hi-End 32 4K Video Conferencing Monitor";
+                    if (model == "U3224KB")
+                        return "Dell Digital Hi-End 32 6K Monitor";
                     return name;
                 default:
                     return name;
