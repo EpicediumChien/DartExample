@@ -562,6 +562,15 @@ namespace DDPM.SA.Plugin.User.CLIManager
 
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
                     {
+                        if (commandLineInput.Command == "SET" && commandLineInput.TargetFeature == "NETWORKKVM" && commandLineInput.Options.Count > 0 && commandLineInput.Options[0].Option_Value == "ON")
+                        {
+                            WriteLog("_DevManagerPlugin.CreatNewNamedpipe() entry");
+                            _DevManagerPlugin.CreatNewNamedpipe();
+                            WriteLog("_DevManagerPlugin.CreatNewNamedpipe() exit");
+                            _CliManagerPlugin.WriteCommandResult(Response_NKVMOn(commandLineInput, e.command_guid_string));
+                            return;
+                        }
+
                         if (_CLIDisplay != null)
                         {
                             if (Display_Lock_WithoutAction.FindIndex(x => x.Equals(commandLineInput.TargetFeature)) >= 0)
