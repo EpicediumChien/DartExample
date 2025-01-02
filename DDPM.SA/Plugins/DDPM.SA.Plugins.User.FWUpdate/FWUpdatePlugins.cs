@@ -2478,7 +2478,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File is zip.");
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} ExecuteUnzip go.");
-                    if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
+                    if (unzip.ExecuteUnzip(filePath, extractPath, false, out exeFilePath))
                     {
                         if (string.IsNullOrEmpty(exeFilePath))
                         {
