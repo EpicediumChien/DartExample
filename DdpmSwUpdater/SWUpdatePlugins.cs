@@ -825,7 +825,7 @@ namespace DdpmSwUpdater
                 {
                     LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} File is zip.");
                     LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} ExecuteUnzip go.");
-                    if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
+                    if (unzip.ExecuteUnzip(filePath, extractPath, true, out exeFilePath))
                     {
                         if (string.IsNullOrEmpty(exeFilePath))
                         {
