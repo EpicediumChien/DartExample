@@ -642,6 +642,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         #endregion
         public void RefreshUI()
         {
+            OnPropertyChanged("Lock_GeneralPage");
+            OnPropertyChanged("UpdatesPageUI_IsEnable");
             OnPropertyChanged("Critical_UpdateList_UI");
             OnPropertyChanged("Recommended_UpdateList_UI");
             OnPropertyChanged("Optional_UpdateList_UI");
