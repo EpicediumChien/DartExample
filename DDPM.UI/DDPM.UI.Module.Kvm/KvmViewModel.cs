@@ -465,6 +465,8 @@ namespace DDPM.UI.Module.Kvm
         public Visibility isPxP { get; set; } = Visibility.Collapsed;
         public Visibility NoPxP { get; set; } = Visibility.Collapsed;
 
+        public bool isPxPFullView { get; set; } = false;
+
         #region Hotkey
 
         private string _kvmHotkeyTooltip = LangHelper.Instance["None"];
@@ -1996,13 +1998,20 @@ namespace DDPM.UI.Module.Kvm
                             //{
                             //    bool binputname = DdpmCommonHelper.DeviceManagerSA.SetInputName(pcs.Value.InputType, pcs.Value.InputName).Result;
                             //}
-                            if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
+                            if (string.IsNullOrEmpty(pcs.Value.USBUpstream))
                             {
-                                bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
-                                _log.Debug($"[KvmViewModel] SetUSBUpstream {pcs.Key}-{pcs.Value.InputType}: {pcs.Value.USBUpstream} Done");
-                                if (bUSBuptream)
+                                pcs.Value.USBUpstream = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType).Result;
+                            }
+                            else
+                            {
+                                if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
                                 {
-                                    Thread.Sleep(1000);
+                                    bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
+                                    _log.Debug($"[KvmViewModel] SetUSBUpstream {pcs.Key}-{pcs.Value.InputType}: {pcs.Value.USBUpstream} Done");
+                                    if (bUSBuptream)
+                                    {
+                                        Thread.Sleep(1000);
+                                    }
                                 }
                             }
                         }
@@ -2159,6 +2168,20 @@ namespace DDPM.UI.Module.Kvm
                 return ret;
             }
         }
+
+        public void ShowPxPView(ushort PbpCapabilityCode)
+        {
+            if (PxPcodeDictionary.ContainsKey(PbpCapabilityCode))
+            {
+                VideoSwapContent = PxPcodeDictionary[PbpCapabilityCode];
+                VideoSwapContent_Left = PxPcodeDictionary[PbpCapabilityCode];
+            }
+            else
+            {
+                _log.Debug("[PBP_MouseLeftDown]PxPcodeDictionary not find key " + PbpCapabilityCode);
+            }
+        }
+
         #region Event
         /// <summary>
         /// Catch OSD menu event
