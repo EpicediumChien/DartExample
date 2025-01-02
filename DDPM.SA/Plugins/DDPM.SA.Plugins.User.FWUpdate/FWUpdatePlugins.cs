@@ -1298,6 +1298,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} start");
             bool ret = false;
+            fWUErrorCode = FWUErrorCode.NoError;
             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} currentFWInfo.DeviceType: {currentFWInfo.DeviceType}");
             if (_DeviceInfos != null)
             {
@@ -1360,7 +1361,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} ret : {ret}");
             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} done");
-            fWUErrorCode = FWUErrorCode.NoError;
             return ret;
         }
 
