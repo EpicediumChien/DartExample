@@ -607,7 +607,7 @@ namespace DDPM.UI.Common
 
         public static string MappingName(string model, string name)
         {
-            name = name.Replace(model, "").Trim() + $" {model}";
+            name = name.Replace(model, "").Trim();
             switch (CultureInfo.InstalledUICulture.Name)
             {
                 case "ja-JP":
