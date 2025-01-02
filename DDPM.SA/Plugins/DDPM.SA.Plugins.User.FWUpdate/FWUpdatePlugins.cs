@@ -2474,7 +2474,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File is zip.");
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} ExecuteUnzip go.");
-                    if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
+                    if (unzip.ExecuteUnzip(filePath, extractPath, false, out exeFilePath))
                     {
                         if (string.IsNullOrEmpty(exeFilePath))
                         {
@@ -2695,7 +2695,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _logs.DebugMsg_1($"Check_CanBeOTAUpdate start");
             bool ret = true;
             if ((fwUpdateInfo.DeviceType == DeviceType.LogicalWebcam ||
-                fwUpdateInfo.DeviceType == DeviceType.PhysicalWebcam) && 
+                fwUpdateInfo.DeviceType == DeviceType.PhysicalWebcam) &&
                 fwUpdateInfo.Model.Contains("7022"))
             {
                 _logs.DebugMsg_1($"Check_CanBeOTAUpdate DeviceType is WB7022");

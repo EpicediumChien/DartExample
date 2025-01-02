@@ -566,7 +566,7 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// <param name="e"></param>
         private void DownloadTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
-            if (download != null && 
+            if (download != null &&
                 download.DownloadFileStream != null)
             {
                 UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
@@ -960,7 +960,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 {
                     _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File is zip.");
                     _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} ExecuteUnzip go.");
-                    if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
+                    if (unzip.ExecuteUnzip(filePath, extractPath, true, out exeFilePath))
                     {
                         if (string.IsNullOrEmpty(exeFilePath))
                         {

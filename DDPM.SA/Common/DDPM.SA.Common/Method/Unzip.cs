@@ -41,7 +41,7 @@ namespace DDPM.SA.Common.Method
         /// <param name="extractPath">解壓縮資料夾路徑</param>
         /// <param name="exeFilePath">回傳解壓縮後資料夾中的exe檔案</param>
         /// <returns></returns>
-        public bool ExecuteUnzip(string zipFilePath, string extractPath, out string exeFilePath)
+        public bool ExecuteUnzip(string zipFilePath, string extractPath, bool recursive, out string exeFilePath)
         {
             //Elsa Add Security
             string FileInfo;
@@ -65,7 +65,7 @@ namespace DDPM.SA.Common.Method
                     }
                     ZipFile.ExtractToDirectory(zipFilePath, extractPath, true);
                     _logs?.DebugMsg_1(nameof(Unzip) + " done");
-                    exeFilePath = GetExeFilePath(extractPath);
+                    exeFilePath = GetExeFilePath(extractPath, recursive);
                     //Dean 1223 check output
                     if (string.IsNullOrEmpty(exeFilePath) || exeFilePath.Length == 0)
                     {
@@ -83,7 +83,7 @@ namespace DDPM.SA.Common.Method
             }
         }
 
-        private static List<string> SearchExeFileFromDirectory(DirectoryInfo directoryInfo, Logs _logs = null, bool recursive = true)
+        private static List<string> SearchExeFileFromDirectory(DirectoryInfo directoryInfo, Logs _logs, bool recursive)
         {
             List<string> output = new List<string>();
             // Get all files in the directory
@@ -93,7 +93,10 @@ namespace DDPM.SA.Common.Method
             {
                 if (file.Extension.Equals(".exe", StringComparison.OrdinalIgnoreCase))
                 {
-                    recursive = false;
+                    if (recursive)
+                    {
+                        recursive = false;
+                    }
                     string fileTemp = DDPMFileSecurity.SanitizePath(file.FullName, out string info);
                     if (string.IsNullOrEmpty(fileTemp))
                     {
@@ -123,7 +126,7 @@ namespace DDPM.SA.Common.Method
             return output;
         }
 
-        private string GetExeFilePath(string directory)
+        private string GetExeFilePath(string directory, bool recursive)
         {
             // 列舉資料夾中的所有 .exe 檔案
             string[] exeFiles = default;
@@ -166,7 +169,7 @@ namespace DDPM.SA.Common.Method
                     //}
 
                     //for checkmarx check [code part4]
-                    List<string> files = SearchExeFileFromDirectory(new DirectoryInfo(directory), _logs);
+                    List<string> files = SearchExeFileFromDirectory(new DirectoryInfo(directory), _logs, recursive);
                     if (files != null && files.Count > 0)
                     {
                         exeFiles = files.ToArray();
