@@ -551,6 +551,7 @@ namespace DDPM.UI.Plugin.ViewModels
             CheckVoiceGuidanceUI(false);
             CheckANCUI(false);
             CheckAnswerCallUI(false);
+            HeadsetSettingChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void CheckSidetoneUI(bool PropertyChange)
