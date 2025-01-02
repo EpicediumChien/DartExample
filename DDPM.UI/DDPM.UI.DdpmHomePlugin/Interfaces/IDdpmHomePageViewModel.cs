@@ -13,7 +13,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.Interfaces
         /// <param name="monitorInfos"></param>
         public void PrepareMonitorInfos(List<MonitorInfo> monitorInfos);
 
-        public void PrepareDeviceInfos(List<DeviceInfo> deiceInfos);
+        public void PrepareDeviceInfos(List<DeviceInfo> deviceInfos);
 
         public void ResetDevices();
 

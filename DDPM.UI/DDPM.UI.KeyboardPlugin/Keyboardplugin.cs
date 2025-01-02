@@ -160,7 +160,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
         }
 
         /// <inheritdoc/>
-        public void OnShown(string parameter)
+        public void OnShown(string pluginParameter)
         {
             if (!IsEventRegistered)
             {
@@ -169,7 +169,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
             }
             ConfigureServices();
             GetPeripheralsAsync();
-            if (_viewModel != null && _viewModel.SetCurrentDevice(parameter))
+            if (_viewModel != null && _viewModel.SetCurrentDevice(pluginParameter))
             {
                 if (_viewModel.CurrentDeviceInfo!.IsCollabsKeysSupported)
                 {

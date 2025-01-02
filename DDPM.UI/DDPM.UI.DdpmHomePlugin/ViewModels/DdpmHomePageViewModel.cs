@@ -618,9 +618,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             info.edid.VideoInputType = "digital singal";
             return info;
         }
-        public void AddDemoHomeDevice(HomeDevice device)
+        public void AddDemoHomeDevice(HomeDevice dev)
         {
-            HomeDevices.Add(device);
+            HomeDevices.Add(dev);
         }
 
         private double _cxItem;

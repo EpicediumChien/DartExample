@@ -223,11 +223,11 @@ namespace DDPM.UI.Plugin.DockPlugin
         }
 
         /// <inheritdoc/>
-        public void OnShown(string parameter)
+        public void OnShown(string pluginParameter)
         {
             ConfigureServices();
             GetPeripheralsAsync();
-            if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter)) { }
+            if (_viewModel != null && !_viewModel.SetCurrentDevice(pluginParameter)) { }
         }
 
         #endregion Interface IConsolePluginSupportsActivations
