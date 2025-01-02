@@ -1405,8 +1405,16 @@ namespace DDPM.UI.Common.Models
 
                 //@ HomeDevice:
                 //string hostName = Dns.GetHostName();
-                string PairedHostName1 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(DeviceInfo.ID.ToString()).Result;
-                string PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(DeviceInfo.ID.ToString()).Result;
+                string PairedHostName1 = string.Empty;
+                string PairedHostName2 = string.Empty;
+                if (string.IsNullOrEmpty(DeviceInfo.PairedHostName2))
+                    PairedHostName1 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(DeviceInfo.ID.ToString()).Result; //DTP
+                else
+                    PairedHostName1 = DeviceInfo.PairedHostName2; //DTH
+                if (string.IsNullOrEmpty(DeviceInfo.PairedHostName3))
+                    PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(DeviceInfo.ID.ToString()).Result; //DTP
+                else
+                    PairedHostName1 = DeviceInfo.PairedHostName3;  //DTH
                 BleHost1Text = string.IsNullOrEmpty(PairedHostName1) ? Strings.ReadyToBePaired : PairedHostName1;
                 BleHost2Text = string.IsNullOrEmpty(PairedHostName2) ? Strings.ReadyToBePaired : PairedHostName2;
                 //@ LaunchView:
