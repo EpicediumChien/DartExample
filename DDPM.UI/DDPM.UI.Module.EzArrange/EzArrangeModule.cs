@@ -139,6 +139,14 @@ namespace DDPM.UI.Module.EzArrange
                 isSelectChanged = false;
                 InitNewViewModel();
             }
+            else
+            {
+                EzArrangeRightVierw? rightView = (EzArrangeRightVierw?) GetRightView();
+                if (rightView != null)
+                {
+                    rightView.RefreshScreenOrientation();
+                }
+            }
         }
 
         public void OnDeactivated()

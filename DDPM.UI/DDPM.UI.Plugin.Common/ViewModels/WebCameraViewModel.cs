@@ -151,8 +151,8 @@ namespace DDPM.UI.Plugin.ViewModels
             get { return _isChecked_ProximitySensor; }
             set
             {
-                if (value != _isChecked_ProximitySensor) //Add by Derek 11/12
-                {
+                //if (value != _isChecked_ProximitySensor) //Add by Derek 11/12
+                //{
                     _isChecked_ProximitySensor = value;
                     DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
                     //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
@@ -160,19 +160,23 @@ namespace DDPM.UI.Plugin.ViewModels
                     // jim add for PIMS-328195
                     _isEnable_WalkAwayLock = _isChecked_WalkAwayLock && _isChecked_ProximitySensor;
 
+                    _isEnable_Snooze =  _isChecked_ProximitySensor;
+                   
                     _isEnable_SnoozeLength = _isChecked_Snooze && _isChecked_ProximitySensor;
+                   
 
                     OnPropertyChanged("IsChecked_ProximitySensor");
                     OnPropertyChanged("ProximitySensorStatus_String");
                     OnPropertyChanged("IsEnable_WalkAwayLock");
+                    OnPropertyChanged("IsEnable_Snooze");
                     OnPropertyChanged("IsEnable_SnoozeLength");
-
+                    
                     //Derek 11/12
                     //PIMS - 319099
                     //Find Presence Detection Setting is available, when SUT does not support HPD_MPS and
                     //Internal Presence Sensor. DUT is with HPD_MPS FW
                     ChangeUPDStatus();
-                }
+                //}
             }
         }
 
@@ -284,6 +288,18 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
+        // jim 20250102 add for PIMS-328195 - [DDPM WIN 2.0][R17_ Webcam] Delay and Snooze still selectable when Proximity Sensor is off and WAL is on.
+        private bool _isEnable_Snooze = false;
+        public bool IsEnable_Snooze
+        {
+            get { return _isEnable_Snooze; }
+            set
+            {
+                _isEnable_Snooze = value;
+                OnPropertyChanged("IsEnable_Snooze");
+            }
+        }
+
         // jim add for PIMS-328195
         private bool _isEnable_SnoozeLength = false;
         public bool IsEnable_SnoozeLength
@@ -314,7 +330,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 // jim add for PIMS-328195
                 _isEnable_SnoozeLength = _isChecked_Snooze && _isChecked_ProximitySensor;
-
+               
                 if (_isChecked_Snooze)
                 {
                     if (_SelectedSnoozeLength != null)
@@ -574,7 +590,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public override bool SetCurrentDevice(string deviceID)
         {
-            _log.Error("WebCameraViewModel SetCurrentDevice");
+            _log.Info("WebCameraViewModel SetCurrentDevice");
             deviceID ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
 
             if (!base.SetCurrentDevice(deviceID))
@@ -600,7 +616,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsChecked_ProximitySensor = false;
                 WebcamSettings.IsFirstTime = false;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
-                _log.Error("WebCameraViewModel ExportWebcamSettings Finish");
+                _log.Info("WebCameraViewModel ExportWebcamSettings Finish");
             }
 
             IsMicEnumerationOnEnabled = true;
@@ -612,8 +628,8 @@ namespace DDPM.UI.Plugin.ViewModels
         private void InitializeWebcam()
         {
             WebcamSettings = WebcamSettings.ImportWebcamSettings(Model, CurrentDeviceInfo!);
-            WebcamSettings.SetJsonToResolution(WebcamSettings,CurrentDeviceInfo!);
-            
+            WebcamSettings.SetJsonToResolution(WebcamSettings, CurrentDeviceInfo!);
+
             //if (WebcamSettings.SelectedProfileName == "")
             //{
             //    IsDTPReady = false;
@@ -731,8 +747,8 @@ namespace DDPM.UI.Plugin.ViewModels
             _log.Info($"DTP (WebcamSettings.Selected_Resolution:{WebcamSettings.Selected_Resolution}!");
             _log.Info($"DTP i:{i}!");
             SetResolution_Selected(i);
-            _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(WebcamSettings.SupportedFPSs)}!");          
-            var j = string.IsNullOrEmpty(WebcamSettings.Selected_FPS)?WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.Selected_Resolution]): WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution].IndexOf(WebcamSettings.Selected_FPS);
+            _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(WebcamSettings.SupportedFPSs)}!");
+            var j = string.IsNullOrEmpty(WebcamSettings.Selected_FPS) ? WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.Selected_Resolution]) : WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution].IndexOf(WebcamSettings.Selected_FPS);
             _log.Info($"DTP j:{j}!");
             SetFPS_Selected(j);
             foreach (var sf in WebcamSettings.SelectedFPSs)

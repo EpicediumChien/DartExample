@@ -42,7 +42,7 @@ namespace DDPM.UI.Common.Models
         /// </summary>
 
         //Robert_Lin, 2024-12-27 add an additional ctor with ILog to let it can write log
-        public HomeDevice(ILog? log=null)
+        public HomeDevice(ILog? log = null)
         {
             NormalWidth = 400;
             _log = log;
@@ -288,8 +288,7 @@ namespace DDPM.UI.Common.Models
                                 break;
                         } //switch(deviceInfo.ModelNumber)
 
-                        return DeviceInfo.Name + $" {model}";
-
+                        return DdpmCommonHelper.MappingName(model, DeviceInfo.Name) + $" {model}";
                     }
 
                     //OLD Code:
@@ -686,7 +685,7 @@ namespace DDPM.UI.Common.Models
             //Step_2, We will load and show the LineArt image
             try
             {
-                if(DeviceInfo?.Type == DeviceType.LogicalKeyboard)
+                if (DeviceInfo?.Type == DeviceType.LogicalKeyboard)
                     DeviceImage = (BitmapImage)System.Windows.Application.Current.Resources["KeyboardImage_LineArt"];
                 if (DeviceInfo?.Type == DeviceType.LogicalMouse)
                     DeviceImage = (BitmapImage)System.Windows.Application.Current.Resources["MouseImage_LineArt"];
@@ -1026,7 +1025,7 @@ namespace DDPM.UI.Common.Models
         // 1     {icon}  Window Machine 1      True/False     Color: ConnectionStyle=1|2|3
         private const int maxHostNameLength = 15;
         private const string BleHostStyle_Collapsed = "0";
-        private const string BleHostStyle_White = "1"; 
+        private const string BleHostStyle_White = "1";
         private const string BleHostStyle_Gray = "2";
 
         //Robert_Lin, 2024-12-30, updated from Mouse/LaunchView.xaml.cs
@@ -1404,50 +1403,40 @@ namespace DDPM.UI.Common.Models
                 //string hostName = Dns.GetHostName();
 
                 //@ HomeDevice:
-                string hostName = Dns.GetHostName();
-
+                //string hostName = Dns.GetHostName();
+                string PairedHostName1 = string.Empty;
+                string PairedHostName2 = string.Empty;
+                if (string.IsNullOrEmpty(DeviceInfo.PairedHostName2))
+                    PairedHostName1 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(DeviceInfo.ID.ToString()).Result; //DTP
+                else
+                    PairedHostName1 = DeviceInfo.PairedHostName2; //DTH
+                if (string.IsNullOrEmpty(DeviceInfo.PairedHostName3))
+                    PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(DeviceInfo.ID.ToString()).Result; //DTP
+                else
+                    PairedHostName1 = DeviceInfo.PairedHostName3;  //DTH
+                BleHost1Text = string.IsNullOrEmpty(PairedHostName1) ? Strings.ReadyToBePaired : PairedHostName1;
+                BleHost2Text = string.IsNullOrEmpty(PairedHostName2) ? Strings.ReadyToBePaired : PairedHostName2;
                 //@ LaunchView:
                 //if (_vm.VisiblePairedHostName1 == hostName)
-                if (DeviceInfo.PairedHostName1 == hostName)
+                if (!string.IsNullOrEmpty(PairedHostName1))
                 {
-                    //@ LaunchView:
-                    //txt1.Style = ConnectionStyle1;
-                    //txt2.Style = ConnectionStyle2;
-                    //imgBL1.Source = img1;
-                    //imgBL2.Source = img2;
-                    //txtSystemName1.Style = ConnectionStyle1;
-                    //txtSystemName2.Style = ConnectionStyle2;
-
-                    //@ HomeDevice:
                     BleHost1Style = BleHostStyle_White;// "1";
-                    BleHost2Style = BleHostStyle_Gray; // "2";
-
-                    //Workaround, if Hostname is empty, then show {hostName}
-                    //BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName1) ? hostName : DeviceInfo.PairedHostName1;
                 }
                 else
                 {
-                    //@ LaunchView:
-                    //txt1.Style = ConnectionStyle2;
-                    //txt2.Style = ConnectionStyle1;
-                    //imgBL1.Source = img2;
-                    //imgBL2.Source = img1;
-                    //txtSystemName1.Style = ConnectionStyle2;
-                    //txtSystemName2.Style = ConnectionStyle1;
-
-                    //@ HomeDevice:
-                    BleHost1Style = BleHostStyle_Gray; // "2";
-                    BleHost2Style = BleHostStyle_White;// "1";
-
-                    //Workaround, if Hostname is empty, then show {hostName}
-                    //BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? hostName : DeviceInfo.PairedHostName2;
+                    BleHost1Style = BleHostStyle_Gray;
+                }
+                if(!string.IsNullOrEmpty(PairedHostName2))
+                {
+                    BleHost2Style = BleHostStyle_White; // "2";
+                }
+                else
+                {
+                    BleHost2Style = BleHostStyle_Gray;
                 }
 
-                //@ LaunchView
-                //BLConnection.Visibility = Visibility.Visible;
-
                 //@ HomeDevice:
-                AudioBleText = string.Format(Strings.Paired_Info, DeviceInfo.TotalNumberOfPairedHostName); 
+                AudioBleText = string.Format(Strings.Paired_Info, DeviceInfo.TotalNumberOfPairedHostName);
                 //"This device can be paired with {0} hosts simultaneously";
                 //int totalPairedHostCount = DeviceInfo.TotalNumberOfPairedHostName;
                 //AudioBleText = String.Format(AudioBleConnectionTotalPairCountText, totalPairedHostCount);
@@ -1943,7 +1932,7 @@ namespace DDPM.UI.Common.Models
         #endregion
 
         #region WriteLog
-        private void WriteLog(string msg, Exception? ex=null)
+        private void WriteLog(string msg, Exception? ex = null)
         {
             if (_log != null)
             {

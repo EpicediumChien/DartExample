@@ -775,20 +775,21 @@ namespace DDPM.SA.Plugin.CLIManager
                 }
                 else
                 {
-                    command = $"/{command} {_commandLineInput.Options[0].Option_Value}";
-                    var commandResult = RunDDMCommand(command);
+                    var cmds = new List<string> { $"{command} {_commandLineInput.Options[0].Option_Value}", "exit" };
+                    retcode = true;
+                    response.Result = "PASS";
 
-                    if (commandResult.exitCode == 0)
+                    foreach (var cmd in cmds)
                     {
-                        retcode = true;
-                        response.Result = "PASS";
-                    }
-                    else
-                    {
-                        retcode = false;
-                        response.Result = "FAIL";
-                        response.Message = commandResult.message;
-                        response.Value = commandResult.value;
+                        var commandResult = RunDDMCommand($"/{cmd}");
+
+                        if (commandResult.exitCode != 0)
+                        {
+                            retcode = false;
+                            response.Result = "FAIL";
+                            response.Message = commandResult.message;
+                            response.Value = commandResult.value;
+                        }
                     }
                 }
             }
@@ -849,20 +850,21 @@ namespace DDPM.SA.Plugin.CLIManager
 
                 if (int.TryParse(_commandLineInput.Options[0].Option_Value, out int port))
                 {
-                    command = $"/{command} {_commandLineInput.Options[0].Option_Value}";
-                    var commandResult = RunDDMCommand(command);
+                    var cmds = new List<string> { $"{command} {_commandLineInput.Options[0].Option_Value}", "exit" };
+                    retcode = true;
+                    response.Result = "PASS";
 
-                    if (commandResult.exitCode == 0)
+                    foreach (var cmd in cmds)
                     {
-                        retcode = true;
-                        response.Result = "PASS";
-                    }
-                    else
-                    {
-                        retcode = false;
-                        response.Result = "FAIL";
-                        response.Message = commandResult.message;
-                        response.Value = commandResult.value;
+                        var commandResult = RunDDMCommand($"/{cmd}");
+
+                        if (commandResult.exitCode != 0)
+                        {
+                            retcode = false;
+                            response.Result = "FAIL";
+                            response.Message = commandResult.message;
+                            response.Value = commandResult.value;
+                        }
                     }
                 }
                 else

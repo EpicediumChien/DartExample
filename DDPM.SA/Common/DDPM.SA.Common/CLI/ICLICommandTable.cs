@@ -714,6 +714,10 @@ namespace DDPM.SA.Common
                 if (commandInput.TargetFeature.Contains("NETWORKKVM"))
                 {
                     commandInput.isITCommands = true;
+                    if (commandInput.Command == "SET" && commandInput.TargetFeature == "NETWORKKVM" && commandInput.Options.Count > 0 && commandInput.Options[0].Option_Value == "ON")
+                    {
+                        commandInput.isNormalCommands = true;
+                    }
                     return;
                 }
                 if (commandInput.Options.Count == 0)//recognized only normal command -> CLIProxy
@@ -957,6 +961,23 @@ namespace DDPM.SA.Common
                 command_guid_string = action_guid
             };
             return arg;
+        }
+
+        public static CLIEventResult Response_NKVMOn(CommandLineInput commandLineInput, string action_guid)
+        {
+            return new CLIEventResult
+            {
+                ticket = DateTime.Now,
+                ExitCode = (int)CLI_ExitCode.success,
+                command_guid_string = action_guid,
+                serialize_Json_response = JsonConvert.SerializeObject(new NKVM_RESPONSE
+                {
+                    Command = commandLineInput.Command,
+                    TargetFeature = commandLineInput.TargetFeature,
+                    Result = "PASS",
+                    Value = "On"
+                }, Formatting.Indented)
+            };
         }
 
         public static string change_0base_to_1base(string value)
