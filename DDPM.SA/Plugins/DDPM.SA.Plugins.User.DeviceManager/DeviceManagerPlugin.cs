@@ -10584,6 +10584,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"HandleQAM receive QAMClose event");
 
+                        CloseQAMOSD(); //QAM PIMS-332041
                         QAMClose(false);
                     }
                 }
