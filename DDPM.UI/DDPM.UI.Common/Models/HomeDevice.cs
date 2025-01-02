@@ -1403,47 +1403,37 @@ namespace DDPM.UI.Common.Models
                 //string hostName = Dns.GetHostName();
 
                 //@ HomeDevice:
-                string hostName = Dns.GetHostName();
-
+                //string hostName = Dns.GetHostName();
+                string PairedHostName1 = string.Empty;
+                string PairedHostName2 = string.Empty;
+                if (string.IsNullOrEmpty(DeviceInfo.PairedHostName2))
+                    PairedHostName1 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(DeviceInfo.ID.ToString()).Result; //DTP
+                else
+                    PairedHostName1 = DeviceInfo.PairedHostName2; //DTH
+                if (string.IsNullOrEmpty(DeviceInfo.PairedHostName3))
+                    PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(DeviceInfo.ID.ToString()).Result; //DTP
+                else
+                    PairedHostName1 = DeviceInfo.PairedHostName3;  //DTH
+                BleHost1Text = string.IsNullOrEmpty(PairedHostName1) ? Strings.ReadyToBePaired : PairedHostName1;
+                BleHost2Text = string.IsNullOrEmpty(PairedHostName2) ? Strings.ReadyToBePaired : PairedHostName2;
                 //@ LaunchView:
                 //if (_vm.VisiblePairedHostName1 == hostName)
-                if (DeviceInfo.PairedHostName1 == hostName)
+                if (!string.IsNullOrEmpty(PairedHostName1))
                 {
-                    //@ LaunchView:
-                    //txt1.Style = ConnectionStyle1;
-                    //txt2.Style = ConnectionStyle2;
-                    //imgBL1.Source = img1;
-                    //imgBL2.Source = img2;
-                    //txtSystemName1.Style = ConnectionStyle1;
-                    //txtSystemName2.Style = ConnectionStyle2;
-
-                    //@ HomeDevice:
                     BleHost1Style = BleHostStyle_White;// "1";
-                    BleHost2Style = BleHostStyle_Gray; // "2";
-
-                    //Workaround, if Hostname is empty, then show {hostName}
-                    //BleHost1Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName1) ? hostName : DeviceInfo.PairedHostName1;
                 }
                 else
                 {
-                    //@ LaunchView:
-                    //txt1.Style = ConnectionStyle2;
-                    //txt2.Style = ConnectionStyle1;
-                    //imgBL1.Source = img2;
-                    //imgBL2.Source = img1;
-                    //txtSystemName1.Style = ConnectionStyle2;
-                    //txtSystemName2.Style = ConnectionStyle1;
-
-                    //@ HomeDevice:
-                    BleHost1Style = BleHostStyle_Gray; // "2";
-                    BleHost2Style = BleHostStyle_White;// "1";
-
-                    //Workaround, if Hostname is empty, then show {hostName}
-                    //BleHost2Text = string.IsNullOrEmpty(DeviceInfo.PairedHostName2) ? hostName : DeviceInfo.PairedHostName2;
+                    BleHost1Style = BleHostStyle_Gray;
                 }
-
-                //@ LaunchView
-                //BLConnection.Visibility = Visibility.Visible;
+                if(!string.IsNullOrEmpty(PairedHostName2))
+                {
+                    BleHost2Style = BleHostStyle_White; // "2";
+                }
+                else
+                {
+                    BleHost2Style = BleHostStyle_Gray;
+                }
 
                 //@ HomeDevice:
                 AudioBleText = string.Format(Strings.Paired_Info, DeviceInfo.TotalNumberOfPairedHostName);
