@@ -11,7 +11,6 @@ using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using DPeMPublic.Common.Enums;
-using Microsoft.VisualBasic.Logging;
 using Microsoft.Win32;
 using System.ComponentModel;
 using System.Diagnostics;
