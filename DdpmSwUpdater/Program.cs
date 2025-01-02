@@ -77,19 +77,21 @@ internal class Program
             {
                 LogManage.fromDDPM = false;
                 LogManage.LogMessage($"args.Length <= 0 go to copy");
-                string exeFilePath = CopyToProgram();
-                if (!string.IsNullOrEmpty(exeFilePath))
-                {
-                    ProcessStartInfo startInfo = new ProcessStartInfo()
-                    {
-                        UseShellExecute = false,
-                        FileName = exeFilePath,//fileFullPath,
-                        Arguments = "/fromddm"
-                    };
-                    Process clientProcess = new Process();
-                    clientProcess.StartInfo = startInfo;
-                    clientProcess.Start();
-                }
+                SWUpdatePlugins swUpdatePlugins = new SWUpdatePlugins();
+                swUpdatePlugins.DownloadAndExecutionSwUpdater();
+                //string exeFilePath = CopyToProgram();
+                //if (!string.IsNullOrEmpty(exeFilePath))
+                //{
+                //    ProcessStartInfo startInfo = new ProcessStartInfo()
+                //    {
+                //        UseShellExecute = false,
+                //        FileName = exeFilePath,//fileFullPath,
+                //        Arguments = "/fromddm"
+                //    };
+                //    Process clientProcess = new Process();
+                //    clientProcess.StartInfo = startInfo;
+                //    clientProcess.Start();
+                //}
             }
         }
         else

@@ -62,7 +62,7 @@ namespace DDPM.SA.Common.Method
                     if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
                     {
                         throw new SecurityException($"File ACLs for {zipFilePath} contained unprivileged write access for one or more identity");
-                    }    
+                    }
                     ZipFile.ExtractToDirectory(zipFilePath, extractPath, true);
                     _logs?.DebugMsg_1(nameof(Unzip) + " done");
                     exeFilePath = GetExeFilePath(extractPath);
@@ -81,20 +81,21 @@ namespace DDPM.SA.Common.Method
                 exeFilePath = "";
                 return false;
             }
-        }        
+        }
 
-        private static List<string> SearchExeFileFromDirectory(DirectoryInfo directoryInfo, Logs _logs = null, bool recursive = false)
+        private static List<string> SearchExeFileFromDirectory(DirectoryInfo directoryInfo, Logs _logs = null, bool recursive = true)
         {
             List<string> output = new List<string>();
             // Get all files in the directory
             FileInfo[] files = directoryInfo.GetFiles();
             _logs?.DebugMsg_1(nameof(SearchExeFileFromDirectory) + $": Folder [{directoryInfo.Name}]");
-            foreach (FileInfo file in files) 
-            { 
-                if (file.Extension.Equals(".exe", StringComparison.OrdinalIgnoreCase)) 
-                { 
-                    string fileTemp = DDPMFileSecurity.SanitizePath(file.FullName, out string info); 
-                    if(string.IsNullOrEmpty(fileTemp))
+            foreach (FileInfo file in files)
+            {
+                if (file.Extension.Equals(".exe", StringComparison.OrdinalIgnoreCase))
+                {
+                    recursive = false;
+                    string fileTemp = DDPMFileSecurity.SanitizePath(file.FullName, out string info);
+                    if (string.IsNullOrEmpty(fileTemp))
                     {
                         _logs?.DebugMsg_1(nameof(SearchExeFileFromDirectory) + $": Abnormal File is {file.Name}");
                     }
@@ -104,7 +105,7 @@ namespace DDPM.SA.Common.Method
                         _logs?.DebugMsg_1(nameof(SearchExeFileFromDirectory) + $": Add file to list - {fi.Name}");
                         output.Add(fileTemp);
                     }
-                } 
+                }
             }
             if (recursive)
             {
@@ -166,15 +167,15 @@ namespace DDPM.SA.Common.Method
 
                     //for checkmarx check [code part4]
                     List<string> files = SearchExeFileFromDirectory(new DirectoryInfo(directory), _logs);
-                    if(files != null && files.Count > 0)
+                    if (files != null && files.Count > 0)
                     {
                         exeFiles = files.ToArray();
                         _logs?.DebugMsg_1(nameof(GetExeFilePath) + $": Got {exeFiles.Length} executable file(s)");
                     }
                 }
             }
-            catch  (Exception ex)
-            { 
+            catch (Exception ex)
+            {
                 _logs?.DebugMsg_1(nameof(GetExeFilePath) + "Get exe files in folder fail: " + ex.Message);
             }
 
@@ -182,9 +183,9 @@ namespace DDPM.SA.Common.Method
             {
                 return string.Empty;
             }
-            
+
             //Add white list comparison, Dean 1227
-            if(exeFiles.Length > 1)
+            if (exeFiles.Length > 1)
             {
                 //white list
                 List<string> whitelist = new List<string> {
@@ -196,10 +197,11 @@ namespace DDPM.SA.Common.Method
                     "OTATestServer",
                     "PriFWUpdate",
                     "BLE_RF_OTA",
-                    "FWUpdateTool"
+                    "FWUpdateTool",
+                    "DdpmSwUpdater",
                 };
-                                
-                string[] comparedList = exeFiles.Where( x => whitelist.Any(y => x.Contains(y, StringComparison.OrdinalIgnoreCase))).ToArray();
+
+                string[] comparedList = exeFiles.Where(x => whitelist.Any(y => x.Contains(y, StringComparison.OrdinalIgnoreCase))).ToArray();
                 if (comparedList != null && comparedList.Length > 0)
                 {
                     _logs?.DebugMsg_1(nameof(GetExeFilePath) + $": Matching {comparedList.Length} executable file(s), return first one");
