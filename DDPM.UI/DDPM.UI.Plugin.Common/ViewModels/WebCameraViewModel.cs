@@ -590,7 +590,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public override bool SetCurrentDevice(string deviceID)
         {
-            _log.Error("WebCameraViewModel SetCurrentDevice");
+            _log.Info("WebCameraViewModel SetCurrentDevice");
             deviceID ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
 
             if (!base.SetCurrentDevice(deviceID))
@@ -616,7 +616,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsChecked_ProximitySensor = false;
                 WebcamSettings.IsFirstTime = false;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
-                _log.Error("WebCameraViewModel ExportWebcamSettings Finish");
+                _log.Info("WebCameraViewModel ExportWebcamSettings Finish");
             }
 
             IsMicEnumerationOnEnabled = true;
@@ -628,8 +628,8 @@ namespace DDPM.UI.Plugin.ViewModels
         private void InitializeWebcam()
         {
             WebcamSettings = WebcamSettings.ImportWebcamSettings(Model, CurrentDeviceInfo!);
-            WebcamSettings.SetJsonToResolution(WebcamSettings,CurrentDeviceInfo!);
-            
+            WebcamSettings.SetJsonToResolution(WebcamSettings, CurrentDeviceInfo!);
+
             //if (WebcamSettings.SelectedProfileName == "")
             //{
             //    IsDTPReady = false;
@@ -747,8 +747,8 @@ namespace DDPM.UI.Plugin.ViewModels
             _log.Info($"DTP (WebcamSettings.Selected_Resolution:{WebcamSettings.Selected_Resolution}!");
             _log.Info($"DTP i:{i}!");
             SetResolution_Selected(i);
-            _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(WebcamSettings.SupportedFPSs)}!");          
-            var j = string.IsNullOrEmpty(WebcamSettings.Selected_FPS)?WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.Selected_Resolution]): WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution].IndexOf(WebcamSettings.Selected_FPS);
+            _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(WebcamSettings.SupportedFPSs)}!");
+            var j = string.IsNullOrEmpty(WebcamSettings.Selected_FPS) ? WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.Selected_Resolution]) : WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution].IndexOf(WebcamSettings.Selected_FPS);
             _log.Info($"DTP j:{j}!");
             SetFPS_Selected(j);
             foreach (var sf in WebcamSettings.SelectedFPSs)
