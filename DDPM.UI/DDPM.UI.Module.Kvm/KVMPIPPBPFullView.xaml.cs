@@ -67,23 +67,28 @@ namespace DDPM.UI.Module.Kvm
         //Everytime when show this view will call to this method
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            //Determine the selected SplitItem depend on current PxP mode
-            if (vm.CurPxpMode == KvmViewModel.PipMode_Off)
-                vm.SelectedSplitItem = pipOff;
-            else if (vm.CurPxpMode == KvmViewModel.PipMode_Small)
+            if (vm != null)
             {
-                vm.SelectedSplitItem = pipSmall;
-                isPipSmall = true;
-            }
-            else if (vm.CurPxpMode == KvmViewModel.PipMode_Large)
-            {
-                vm.SelectedSplitItem = pipLarge;
-                isPipLarge = true;
-            }
+                //Use PxP page
+                vm.isPxPFullView = true;
+                //Determine the selected SplitItem depend on current PxP mode
+                if (vm.CurPxpMode == KvmViewModel.PipMode_Off)
+                    vm.SelectedSplitItem = pipOff;
+                else if (vm.CurPxpMode == KvmViewModel.PipMode_Small)
+                {
+                    vm.SelectedSplitItem = pipSmall;
+                    isPipSmall = true;
+                }
+                else if (vm.CurPxpMode == KvmViewModel.PipMode_Large)
+                {
+                    vm.SelectedSplitItem = pipLarge;
+                    isPipLarge = true;
+                }
 
-            //Rebuild splitListView based on vm.PipPbpCaps
-            //It will also set IsSelected if the adding SplitItem is current PxpMode
-            RefreshPbpSplitListView();
+                //Rebuild splitListView based on vm.PipPbpCaps
+                //It will also set IsSelected if the adding SplitItem is current PxpMode
+                RefreshPbpSplitListView();
+            }
         }
 
         //Rebuild splitListView based on vm.PipPbpCaps
@@ -137,6 +142,7 @@ namespace DDPM.UI.Module.Kvm
                 }
                 vm.FromProgressValue = vm.ToProgressValue;
                 vm.ToProgressValue = vm.ToProgressValue - 1;
+                vm.isPxPFullView = false;
             }
         }
 
@@ -188,6 +194,7 @@ namespace DDPM.UI.Module.Kvm
                     vm.NKVMisON = false;
                     vm.FromProgressValue = 0;
                     vm.ToProgressValue = 1;
+                    vm.isPxPFullView = false;
                 }
                 //Return to DdpmHomePage              
                 IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
@@ -374,6 +381,7 @@ namespace DDPM.UI.Module.Kvm
                 vm._log!.Info("[KVMPIPPBPFullView]SavePxP");
                 vm.FinishtoSetPCs();
                 SetPxP();
+                vm.isPxPFullView = false;
                 //bool bt = false;
                 //if (vm.isPipSmall)
                 //{
@@ -454,6 +462,7 @@ namespace DDPM.UI.Module.Kvm
                 {
                     vm._log?.Debug("[CloseUSBKVM]PxPcodeDictionary is null or PxPCode not found.");
                 }
+                vm.isPxPFullView = false;
                 //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[vm.PxPCode];
                 //vm.OnPipPbpCapsChanged();
             }

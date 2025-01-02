@@ -465,6 +465,8 @@ namespace DDPM.UI.Module.Kvm
         public Visibility isPxP { get; set; } = Visibility.Collapsed;
         public Visibility NoPxP { get; set; } = Visibility.Collapsed;
 
+        public bool isPxPFullView { get; set; } = false;
+
         #region Hotkey
 
         private string _kvmHotkeyTooltip = LangHelper.Instance["None"];
