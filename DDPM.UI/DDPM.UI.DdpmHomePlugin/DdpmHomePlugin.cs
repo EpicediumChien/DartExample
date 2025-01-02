@@ -1232,7 +1232,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         b = interruptScreen.ShowDialog();
                         if (b == true)
                         {
-                            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
+                            _log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall go");
+                            List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(sWUpdateInfoPackage.SWUpdateInfo, true).Result;
+                            _log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall finish");
+                            //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
                         }
                     }));
                 }

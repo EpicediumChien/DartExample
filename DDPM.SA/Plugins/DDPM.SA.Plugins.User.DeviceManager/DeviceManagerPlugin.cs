@@ -8046,6 +8046,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 if (swUpdateInfos != null && swUpdateInfos.Count > 0)
                 {
+                    MiniMizeDDPMUI().Wait();
                     writelog("[SW_DownloadAndInstall], WriteRegistryData go.");
                     string registryKey = @"SOFTWARE\Dell Display and Peripheral Manager";
                     string SW_Available_date = swUpdateInfos[0].Available_date;
