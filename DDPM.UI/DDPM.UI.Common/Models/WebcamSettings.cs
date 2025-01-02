@@ -147,14 +147,13 @@ namespace DDPM.UI.Common
                         CustomProfiles.Add(customProfiles[l].Name, customProfiles[l]);
                     }
                 }
-                
+
                 PresetProfiles.Clear();
-                var presetProfiles = di.PresetProfiles?.ToObject<List<WebcamProfile>>()?.ToList();
+                //var presetProfiles = di.PresetProfiles?.ToObject<List<WebcamProfile>>()?.ToList();
 
-                if (presetProfiles == null)
+                //if (presetProfiles == null)
                 {
-                    presetProfiles = new List<WebcamProfile>();
-
+                    var presetProfiles = new List<WebcamProfile>();
 
                     WebcamProfile profile = new();
                     profile.Name = "Default";
@@ -258,35 +257,35 @@ namespace DDPM.UI.Common
                     }
                     SelectedProfileName = "Default";
                 }
-                else 
-                {
-                    int i = 0;
-                    foreach (var PresetProfile in presetProfiles) 
-                    {
-                        string profileName = string.Empty;
-                        if (i < WebcamProfileNames.Count) 
-                        {
-                            profileName = WebcamProfileNames[i];
-                        }
-                        WebcamProfile profile = new();
-                        profile.Name = profileName;
-                        profile.Description = PresetProfile.Description;
-                        profile.IsHDROn = PresetProfile.IsHDROn;
-                        profile.Brightness = PresetProfile.Brightness;
-                        profile.Contrast = PresetProfile.Contrast;
-                        profile.Saturation = PresetProfile.Saturation;
-                        profile.Sharpness = PresetProfile.Sharpness;
-                        profile.IsAutoFramingOn = PresetProfile.IsAutoFramingOn;
-                        profile.FieldOfView = PresetProfile.FieldOfView;
-                        profile.IsAutoWhiteBalanceOn = PresetProfile.IsAutoWhiteBalanceOn;
-                        profile.AutoWhiteBalance = PresetProfile.AutoWhiteBalance;
-                        profile.Zoom= PresetProfile.Zoom;
-                        PresetProfiles.Add(profile.Name, profile);
-                        i++;
-                    }
-                }
-                var FindSelectedProfile = PresetProfiles.ToList().Where(x => x.Value.Description == di.ProfileDescription).FirstOrDefault();
-                SelectedProfileName = FindSelectedProfile.Value.Name;
+                //else 
+                //{
+                //    int i = 0;
+                //    foreach (var PresetProfile in presetProfiles) 
+                //    {
+                //        string profileName = string.Empty;
+                //        if (i < WebcamProfileNames.Count) 
+                //        {
+                //            profileName = WebcamProfileNames[i];
+                //        }
+                //        WebcamProfile profile = new();
+                //        profile.Name = profileName;
+                //        profile.Description = PresetProfile.Description;
+                //        profile.IsHDROn = PresetProfile.IsHDROn;
+                //        profile.Brightness = PresetProfile.Brightness;
+                //        profile.Contrast = PresetProfile.Contrast;
+                //        profile.Saturation = PresetProfile.Saturation;
+                //        profile.Sharpness = PresetProfile.Sharpness;
+                //        profile.IsAutoFramingOn = PresetProfile.IsAutoFramingOn;
+                //        profile.FieldOfView = PresetProfile.FieldOfView;
+                //        profile.IsAutoWhiteBalanceOn = PresetProfile.IsAutoWhiteBalanceOn;
+                //        profile.AutoWhiteBalance = PresetProfile.AutoWhiteBalance;
+                //        profile.Zoom= PresetProfile.Zoom;
+                //        PresetProfiles.Add(profile.Name, profile);
+                //        i++;
+                //    }
+                //var FindSelectedProfile = PresetProfiles.ToList().Where(x => x.Value.Description == di.ProfileDescription).FirstOrDefault();
+                //SelectedProfileName = FindSelectedProfile.Value.Name;
+                //}
             }
         }
 
