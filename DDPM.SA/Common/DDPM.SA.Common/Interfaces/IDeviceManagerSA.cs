@@ -1563,6 +1563,8 @@ namespace DDPM.SA.Common
 
         Task<string> GetWebcamDeviceID(); //Derek 1225
 
+        Task SetQAMOSDVisable(bool visable); //Derek 2025/01/02
+
         #endregion QAM
 
         #region System Suspend & Resume & SessionEnd

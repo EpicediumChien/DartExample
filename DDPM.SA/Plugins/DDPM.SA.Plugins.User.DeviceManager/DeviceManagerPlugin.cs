@@ -10584,10 +10584,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog($"HandleQAM receive QAMClose event");
 
-                        QAMClose(true);
+                        CloseQAMOSD(); //QAM PIMS-332041
+                        QAMClose(false);
                     }
-
-                    isOpenOSDWhenQAMClosed = true;
                 }
                 else
                 {
@@ -10941,6 +10940,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             writelog($"QAMClose done");
+
+            return Task.CompletedTask;
+        }
+
+        public Task SetQAMOSDVisable(bool visable)
+        {
+            isOpenOSDWhenQAMClosed = visable;
 
             return Task.CompletedTask;
         }
@@ -13510,7 +13516,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //Derek 1205 for Debug
         private void CreateWebcamEventForDebug_ShowUI()
         {
-            writelog($"HandleQAMV2 launch by event CreateWebcamEventForDebug_ShowUI");
+            //writelog($"HandleQAMV2 launch by event CreateWebcamEventForDebug_ShowUI");
 
             _IsZoomMeetingActive = true;
             _IsZoomScreenShareActive = false;
@@ -13524,12 +13530,23 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void CreateWebcamEventForDebug_HideUI()
         {
-            writelog($"HandleQAMV2 launch by event CreateWebcamEventForDebug_HideUI");
+            //writelog($"HandleQAMV2 launch by event CreateWebcamEventForDebug_HideUI");
 
             _IsZoomScreenShareActive = true;
             _IsZoomMeetingActive = true;
 
             writelog($"HandleQAMV2 launched by event CreateWebcamEventForDebug_HideUI");
+            HandleQAMV2();
+        }
+
+        private void CreateWebcamEventForDebug_CloseUI()
+        {
+            //writelog($"HandleQAMV2 launch by event CreateWebcamEventForDebug_CloseUI");
+
+            _IsZoomScreenShareActive = false;
+            _IsZoomMeetingActive = false;
+
+            writelog($"HandleQAMV2 launched by event CreateWebcamEventForDebug_CloseUI");
             HandleQAMV2();
         }
 
@@ -13634,6 +13651,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //else if (_altPressed && strKey.Equals("H"))
             //{
             //    CreateWebcamEventForDebug_HideUI();
+
+            //    return;
+            //}
+            //else if (_altPressed && strKey.Equals("C"))
+            //{
+            //    CreateWebcamEventForDebug_CloseUI();
 
             //    return;
             //}
