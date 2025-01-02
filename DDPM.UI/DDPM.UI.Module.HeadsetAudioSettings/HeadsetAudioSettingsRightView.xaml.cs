@@ -38,7 +38,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             _vm = vm;
             converter.ViewModel = _vm;
 
-            InitializeAsync();
+            //InitializeAsync();
             _vm!.HeadsetSettingChanged += HeadsetSettingChanged;
         }
         private void HeadsetSettingChanged(object? sender, EventArgs e)
@@ -536,9 +536,15 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
 
             double newY = minValue + (maxValue - minValue) * (maxOutput - value) / (maxOutput - minOutput);
 
-            Canvas.SetTop(node, newY);
-            UpdateNodeValuePosition(node);
-            UpdateCurve();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Canvas.SetTop(node, newY);
+                UpdateNodeValuePosition(node);
+                UpdateCurve();
+            });
+            //Canvas.SetTop(node, newY);
+            //UpdateNodeValuePosition(node);
+            //UpdateCurve();
             //UpdateShadowVisibility();
         }
     }
