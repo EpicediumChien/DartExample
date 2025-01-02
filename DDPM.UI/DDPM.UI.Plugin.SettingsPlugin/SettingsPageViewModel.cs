@@ -242,7 +242,10 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                         b = interruptScreen.ShowDialog();
                         if (b == true)
                         {
-                            SetSelected(1);
+                            Log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall go");
+                            List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(SWUpdateInfoPackage.SWUpdateInfo, true).Result;
+                            Log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall finish");
+                            //SetSelected(1);
                         }
                     }));
                 }

@@ -8046,6 +8046,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 if (swUpdateInfos != null && swUpdateInfos.Count > 0)
                 {
+                    MiniMizeDDPMUI().Wait();
                     writelog("[SW_DownloadAndInstall], WriteRegistryData go.");
                     string registryKey = @"SOFTWARE\Dell Display and Peripheral Manager";
                     string SW_Available_date = swUpdateInfos[0].Available_date;
@@ -8057,7 +8058,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 writelog($"[SW_DownloadAndInstall], Error : {ex.Message}");
             }
-            return Task.FromResult(_SWUpdatePlugin.DownloadAndInstall(swUpdateInfos, isUITrigger, installPath).Result);
+            List<SWUpdateInfo> retSWUpdateInfos = _SWUpdatePlugin.DownloadAndInstall(swUpdateInfos, isUITrigger, installPath).Result;
+            bool isRestoreDDPM = false;
+            if (retSWUpdateInfos != null)
+            {
+                foreach (SWUpdateInfo swUpdateInfo in retSWUpdateInfos)
+                {
+                    if (swUpdateInfo.SWUErrorCode != SWUErrorCode.NoError)
+                    {
+                        isRestoreDDPM = true; 
+                        break;
+                    }
+                }
+            }
+            if (isRestoreDDPM)
+            {
+                RestoreDDPMUI();
+            }
+            return Task.FromResult(retSWUpdateInfos);
         }
 
         public Task<InterruptScreenRoot> InterruptScreen_Metadata()
