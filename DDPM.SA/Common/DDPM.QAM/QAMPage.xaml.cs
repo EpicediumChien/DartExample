@@ -126,6 +126,7 @@ namespace DDPM.QAM
 
         private void Close_Click(object sender, MouseButtonEventArgs e)
         {
+            DdpmCommonHelper.DeviceManagerSA?.SetQAMOSDVisable(true);
             CloseMyself(true);
         }
 
