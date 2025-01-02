@@ -467,7 +467,18 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 //_vm.PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result;
                 //_deviceManager.GetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
                 //string hostName = Dns.GetHostName();
-                if(string.IsNullOrEmpty(_vm.PairedHostName1))
+                string PairedHostName1 = string.Empty;
+                string PairedHostName2 = string.Empty;
+                if (string.IsNullOrEmpty(_vm.PairedHostName1))
+                    PairedHostName1 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
+                else
+                    PairedHostName1 = _vm.PairedHostName1; //DTH
+                if (string.IsNullOrEmpty(_vm.PairedHostName2))
+                    PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
+                else
+                    PairedHostName1 = _vm.PairedHostName2;  //DTH
+
+                if (string.IsNullOrEmpty(PairedHostName1))
                 {
                     txt1.Style = ConnectionStyle2;
                     txtBLHost1.Style = ConnectionStyle2;
@@ -479,7 +490,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     txtBLHost1.Style = ConnectionStyle1;
                     //imgBL1.Source = img2;
                 }
-                if (string.IsNullOrEmpty(_vm.PairedHostName2))
+                if (string.IsNullOrEmpty(PairedHostName2))
                 {
                     txt2.Style = ConnectionStyle2;
                     txtBLHost2.Style = ConnectionStyle2;
@@ -491,8 +502,8 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                     txtBLHost2.Style = ConnectionStyle1;
                     //imgBL2.Source = img2;
                 }
-                txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
-                txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                txtBLHost1.Text = string.IsNullOrEmpty(PairedHostName1) ? Strings.ReadyToBePaired : PairedHostName1;
+                txtBLHost2.Text = string.IsNullOrEmpty(PairedHostName2) ? Strings.ReadyToBePaired : PairedHostName2;
                 BLConnection.Visibility = Visibility.Visible;
             }
         }
