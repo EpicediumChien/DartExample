@@ -60,7 +60,7 @@
                             </StackPanel>
                         </Border>
                         <Border Background="#132F54"
-                                Opacity="0.6"
+                                Opacity="0.2"
                                 CornerRadius="13"
                                 Visibility="{Binding GeneralUI_LockTooltip}" />
                     </Grid>
@@ -115,7 +115,7 @@
                             </StackPanel>
                         </Border>
                         <Border Background="#132F54"
-                                Opacity="0.6"
+                                Opacity="0.2"
                                 CornerRadius="13"
                                 Visibility="{Binding GeneralUI_LockTooltip}" />
                     </Grid>
