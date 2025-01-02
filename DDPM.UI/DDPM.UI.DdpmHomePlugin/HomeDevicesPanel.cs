@@ -61,7 +61,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             return panelSize;
         }
 
-        protected override Size ArrangeOverride(Size arrangeBounds)
+        protected override Size ArrangeOverride(Size finalSize)
         {
             int firstInLine = 0;
             Size curLineSize = new Size();
@@ -72,16 +72,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 Size sz = children[i].DesiredSize;
 
-                if (curLineSize.Width + sz.Width > arrangeBounds.Width) //need to switch to another line
+                if (curLineSize.Width + sz.Width > finalSize.Width) //need to switch to another line
                 {
-                    ArrangeLine(accumulatedHeight, curLineSize, arrangeBounds.Width, firstInLine, i);
+                    ArrangeLine(accumulatedHeight, curLineSize, finalSize.Width, firstInLine, i);
 
                     accumulatedHeight += curLineSize.Height;
                     curLineSize = sz;
 
-                    if (sz.Width > arrangeBounds.Width) //the element is wider then the constraint - give it a separate line
+                    if (sz.Width > finalSize.Width) //the element is wider then the constraint - give it a separate line
                     {
-                        ArrangeLine(accumulatedHeight, sz, arrangeBounds.Width, i, ++i);
+                        ArrangeLine(accumulatedHeight, sz, finalSize.Width, i, ++i);
                         accumulatedHeight += sz.Height;
                         curLineSize = new Size();
                     }
@@ -95,9 +95,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             }
 
             if (firstInLine < children.Count)
-                ArrangeLine(accumulatedHeight, curLineSize, arrangeBounds.Width, firstInLine, children.Count);
+                ArrangeLine(accumulatedHeight, curLineSize, finalSize.Width, firstInLine, children.Count);
 
-            return arrangeBounds;
+            return finalSize;
         }
 
         private void ArrangeLine(double y, Size lineSize, double boundsWidth, int start, int end)

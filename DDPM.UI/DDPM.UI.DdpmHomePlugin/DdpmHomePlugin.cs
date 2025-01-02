@@ -864,9 +864,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         }
 
         /// <inheritdoc/>
-        public void OnShown(string param = "")
+        public void OnShown(string pluginParameter = "")
         {
-            if (!string.IsNullOrEmpty(param))
+            if (!string.IsNullOrEmpty(pluginParameter))
             {
                 IDdpmHomePageViewModel? viewModel = PluginIoc.GetService<IDdpmHomePageViewModel>();
                 if (viewModel != null)
