@@ -62,8 +62,7 @@ namespace DDPM.UI.Module.Kvm
             if (vm != null)
             {
                 vm.PC1Click();
-                vm.VideoSwapContent = vm.PxPcodeDictionary[PbpCapabilityCode]/*new PBPSplitCtrl2A()*/;
-                vm.VideoSwapContent_Left = vm.PxPcodeDictionary[PbpCapabilityCode];
+                vm.ShowPxPView(PbpCapabilityCode);
             }
         }
 
@@ -72,8 +71,7 @@ namespace DDPM.UI.Module.Kvm
             if (vm != null)
             {
                 vm.PC2Click();
-                vm.VideoSwapContent = vm.PxPcodeDictionary[PbpCapabilityCode];
-                vm.VideoSwapContent_Left = vm.PxPcodeDictionary[PbpCapabilityCode];
+                vm.ShowPxPView(PbpCapabilityCode);
             }
         }
 
@@ -82,8 +80,7 @@ namespace DDPM.UI.Module.Kvm
             if (vm != null)
             {
                 vm.PC3Click();
-                vm.VideoSwapContent = vm.PxPcodeDictionary[PbpCapabilityCode];
-                vm.VideoSwapContent_Left = vm.PxPcodeDictionary[PbpCapabilityCode];
+                vm.ShowPxPView(PbpCapabilityCode);
             }
         }
 

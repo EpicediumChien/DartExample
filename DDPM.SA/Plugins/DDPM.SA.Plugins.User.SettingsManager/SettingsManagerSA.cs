@@ -1339,6 +1339,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                                         settings.VCPs = monitorSettings.VCPs;
                                         settings.EA = monitorSettings.EA;
                                         settings.DisplayPropertiesInfo = monitorSettings.DisplayPropertiesInfo;
+                                        settings.hotkeyData = monitorSettings.hotkeyData;
                                         settings.scheduleInfo = monitorSettings.scheduleInfo;
                                         if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
                                         {
