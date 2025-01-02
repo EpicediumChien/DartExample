@@ -1063,6 +1063,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} Unzip Fail");
                                 _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                                fileLock.Unlock();
                                 method.DeleteFolder(savePath);
                                 continue;
                             }
@@ -1075,6 +1076,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                                     NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                                     method.DeleteFolder(savePath);
+                                    fileLock_2.Unlock();
+                                    fileLock.Unlock();
                                     continue;
                                 }
                                 fwUpdateInfos[i].InstallPaths = exeFilePath;
