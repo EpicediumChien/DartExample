@@ -425,7 +425,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             _vm.MPS_Setting_Visibility = Visibility.Collapsed;
                             _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
 
-                            //2025/01/02 fixed
+                            //2025/01/02 Leo fixed
                             noPresenceFunction = true;
 
                         }
@@ -599,7 +599,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //都不需要顯示韌體升級提示
             }
 
-            print_debug("check_PresenceFunction() s22-20241219 17:11 update ver step");
+            print_debug("check_PresenceFunction() s22-20250102 14:43 update ver step");
 
             print_debug("check_PresenceFunction() end");
         }
