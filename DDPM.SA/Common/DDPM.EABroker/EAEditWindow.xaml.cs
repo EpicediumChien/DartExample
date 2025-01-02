@@ -57,15 +57,12 @@ namespace DDPM.EABroker
             System.Windows.Interop.WindowInteropHelper wndHelper = new System.Windows.Interop.WindowInteropHelper(this);
             Win32Lib.Win32.HideWinFromAltTab(wndHelper.Handle);
 
-            if (_inputArgs != null)
+            if (_inputArgs != null && _inputArgs.SplitJson.IsOverlapLayout)
             {
-                if (_inputArgs.SplitJson.IsOverlapLayout)
-                {
-                    DispatcherTimer timer = new DispatcherTimer();
-                    timer.Tick += Timer_Tick;
-                    timer.Interval = TimeSpan.FromSeconds(5);
-                    timer.Start();
-                }
+                DispatcherTimer timer = new DispatcherTimer();
+                timer.Tick += Timer_Tick;
+                timer.Interval = TimeSpan.FromSeconds(5);
+                timer.Start();                
             }
         }
         #endregion ctor & Init
@@ -487,13 +484,10 @@ namespace DDPM.EABroker
                 string pathName = "";
                 try
                 {
-                    if (process.MainModule != null)
+                    if (process.MainModule != null && !String.IsNullOrEmpty(process.MainModule.FileName))
                     {
-                        if (!String.IsNullOrEmpty(process.MainModule.FileName))
-                        {
-                            pathName = process.MainModule.FileName;
-                            WriteLog($"    [{idx}] PathName=[{pathName}]");
-                        }
+                        pathName = process.MainModule.FileName;
+                        WriteLog($"    [{idx}] PathName=[{pathName}]");
                     }
                 }
                 catch (Exception e1)
@@ -668,13 +662,10 @@ namespace DDPM.EABroker
                 string pathName = "";
                 try
                 {
-                    if (process.MainModule != null)
+                    if (process.MainModule != null && !String.IsNullOrEmpty(process.MainModule.FileName))
                     {
-                        if (!String.IsNullOrEmpty(process.MainModule.FileName))
-                        {
-                            pathName = process.MainModule.FileName;
-                            WriteLog($"    [{idx}] PathName=[{pathName}]");
-                        }
+                        pathName = process.MainModule.FileName;
+                        WriteLog($"    [{idx}] PathName=[{pathName}]");
                     }
                 }
                 catch (Exception e1)

@@ -93,16 +93,14 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         foreach (var path in paths)
                         {
                             EDID edid;
-                            if (GetDisplayConfigEdidByDisplayConfigPath(path, out edid))
+                            if (GetDisplayConfigEdidByDisplayConfigPath(path, out edid) &&
+                                monitorEdid.VendorID == edid.VendorID &&
+                                monitorEdid.SerialNumber == edid.SerialNumber &&
+                                monitorEdid.ManufactureID == edid.ManufactureID)
                             {
-                                if (monitorEdid.VendorID == edid.VendorID &&
-                                    monitorEdid.SerialNumber == edid.SerialNumber &&
-                                    monitorEdid.ManufactureID == edid.ManufactureID)
-                                {
-                                    outPath = path;
-                                    result = true;
-                                    break;
-                                }
+                                outPath = path;
+                                result = true;
+                                break;                                
                             }
                         }
                     }
@@ -154,10 +152,10 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                     getDispName[0] = Regex.Replace(getDispName[0], "[@,\\.\";'\\\\;?]", string.Empty);
                     string regPath = $"{getDispName[0]}\\{getDispName[1]}\\{getDispName[2]}";
                     string getMonitorIdPath;
-                    if (GetMontitorIdPathForWMI(regPath, out getMonitorIdPath))
+                    if (GetMontitorIdPathForWMI(regPath, out getMonitorIdPath) &&
+                        CommonFun.getEDID(getMonitorIdPath, ref outEdid))
                     {
-                        if (CommonFun.getEDID(getMonitorIdPath, ref outEdid))
-                            result = true;
+                        result = true;
                     }
                 }
             }

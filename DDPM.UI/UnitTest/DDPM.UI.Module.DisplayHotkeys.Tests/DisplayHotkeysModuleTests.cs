@@ -125,12 +125,18 @@ namespace DDPM.UI.Module.DisplayHotkeys.Tests
         }
 
         [Test]
-        [Apartment(ApartmentState.STA)]
         public void TestOnSelectedHomeDeviceChanged()
         {
-            var displayHotkeysModule = new DisplayHotkeysModule();
             displayHotkeysModule.OnSelectedHomeDeviceChanged();
-            Assert.Pass();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChangeda()
+        {
+            displayHotkeysModule.IsModuleActive = true;
+            displayHotkeysModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
         }
 
         [Test]

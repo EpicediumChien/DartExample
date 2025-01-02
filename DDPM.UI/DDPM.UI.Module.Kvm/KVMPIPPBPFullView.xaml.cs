@@ -44,6 +44,10 @@ namespace DDPM.UI.Module.Kvm
                 new TabHeader() { Text = "PBP" }
             };
 
+            pipOff.InnerContent = new SplitCtrl0A(null) { Description = "Full screen" };
+            pipSmall.InnerContent = new SplitCtrl1A(null) { Description = "PIP Small" };
+            pipLarge.InnerContent = new SplitCtrl1B(null) { Description = "PIP Large" };
+
             //Assign SplitOwner to all SplitItems
             //  pipOff : PxpOff group
             //  pipSmall and pipLarge : PipList group
@@ -67,9 +71,15 @@ namespace DDPM.UI.Module.Kvm
             if (vm.CurPxpMode == KvmViewModel.PipMode_Off)
                 vm.SelectedSplitItem = pipOff;
             else if (vm.CurPxpMode == KvmViewModel.PipMode_Small)
+            {
                 vm.SelectedSplitItem = pipSmall;
+                isPipSmall = true;
+            }
             else if (vm.CurPxpMode == KvmViewModel.PipMode_Large)
+            {
                 vm.SelectedSplitItem = pipLarge;
+                isPipLarge = true;
+            }
 
             //Rebuild splitListView based on vm.PipPbpCaps
             //It will also set IsSelected if the adding SplitItem is current PxpMode
@@ -269,14 +279,14 @@ namespace DDPM.UI.Module.Kvm
                     //vm.PxPCode = 0x11;
                     //vm.VideoSwapContent = vm.PxPcodeDictionary[0x11];
                     //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[0x11];
-                    if (vm.PxPcodeDictionary[0x11] != null)
+                    if (vm.PxPcodeDictionary[0x21] != null)
                     {
-                        vm.VideoSwapContent = vm.PxPcodeDictionary[0x11];
+                        vm.VideoSwapContent = vm.PxPcodeDictionary[0x21];
                     }
                     else
                     {
-                        vm.PxpModeaddDic(0x11);
-                        vm.VideoSwapContent = vm.PxPcodeDictionary[0x11];
+                        vm.PxpModeaddDic(0x21);
+                        vm.VideoSwapContent = vm.PxPcodeDictionary[0x21];
 
                     }
                 }
@@ -306,14 +316,14 @@ namespace DDPM.UI.Module.Kvm
                     //vm.PxPCode = 0x12;
                     //vm.VideoSwapContent = vm.PxPcodeDictionary[0x12];
                     //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[0x12];
-                    if (vm.PxPcodeDictionary[0x12] != null)
+                    if (vm.PxPcodeDictionary[0x22] != null)
                     {
-                        vm.VideoSwapContent = vm.PxPcodeDictionary[0x12];
+                        vm.VideoSwapContent = vm.PxPcodeDictionary[0x22];
                     }
                     else
                     {
-                        vm.PxpModeaddDic(0x12);
-                        vm.VideoSwapContent = vm.PxPcodeDictionary[0x12];
+                        vm.PxpModeaddDic(0x22);
+                        vm.VideoSwapContent = vm.PxPcodeDictionary[0x22];
 
                     }
                 }
@@ -362,6 +372,7 @@ namespace DDPM.UI.Module.Kvm
             if (vm != null)
             {
                 vm._log!.Info("[KVMPIPPBPFullView]SavePxP");
+                vm.FinishtoSetPCs();
                 SetPxP();
                 //bool bt = false;
                 //if (vm.isPipSmall)
@@ -459,7 +470,7 @@ namespace DDPM.UI.Module.Kvm
                 if (bpxp)
                 {
                     bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "PIP-Small").Result;
-                    vm.PxPCode = 0x11;
+                    vm.PxPCode = 0x21;
                     Thread.Sleep(1000);
                 }
             }
@@ -470,17 +481,17 @@ namespace DDPM.UI.Module.Kvm
                 if (bpxp)
                 {
                     bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "PIP-Large").Result;
-                    vm.PxPCode = 0x12;
+                    vm.PxPCode = 0x22;
                     Thread.Sleep(1000);
                 }
             }
             else if (vm.isPBP)
             {
                 vm._log?.Info("[KVMPIPPBPFullView]SetPbpMode");
+                vm.PxPCode = _pbpcode;
                 bool bpxp = DdpmCommonHelper.DeviceManagerSA.SetPbpMode(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, vm.PxPCode).Result;
                 if (bpxp)
                 {
-                    vm.PxPCode = _pbpcode;
                     if (_pbpcode >= 0x23 && _pbpcode <= 0x2F)
                     {
                         bt = bt = DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "USBKVMMode", "2-PBP").Result;

@@ -109,52 +109,48 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                 }
 
-                if (commandLineInput.Command.Equals("SET"))
+                if (commandLineInput.Command.Equals("SET") &&
+                    commandLineInput.TargetType.Equals("APP"))
                 {
-                    if (commandLineInput.TargetType.Equals("APP"))
+                    //if (commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE") || commandLineInput.TargetFeature.Equals("UODFWUPDATE") || commandLineInput.TargetFeature.Equals("LOCKUIUPDATE") || commandLineInput.TargetFeature.Equals("UNLOCKUIUPDATE"))// for firmware update.
+                    if (commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE"))// for firmware update.
                     {
-                        //if (commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE") || commandLineInput.TargetFeature.Equals("UODFWUPDATE") || commandLineInput.TargetFeature.Equals("LOCKUIUPDATE") || commandLineInput.TargetFeature.Equals("UNLOCKUIUPDATE"))// for firmware update.
-                        if (commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE"))// for firmware update.
+                        switch (commandLineInput.TargetFeature)
                         {
-                            switch (commandLineInput.TargetFeature)
-                            {
-                                case "FIRMWAREUPDATE":
-                                    //case "UODFWUPDATE":
-                                    //case "LOCKUIUPDATE":
-                                    //case "UNLOCKUIUPDATE":
-                                    writelog("FIRMWAREUPDATE Entry");
-                                    var ret = FWUpdate(commandLineInput);
-                                    writelog("FIRMWAREUPDATE Done");
-                                    result.ExitCode = ret.code;
-                                    result.serialize_Json_response = ret.json;
-                                    return result;
-                            }
+                            case "FIRMWAREUPDATE":
+                                //case "UODFWUPDATE":
+                                //case "LOCKUIUPDATE":
+                                //case "UNLOCKUIUPDATE":
+                                writelog("FIRMWAREUPDATE Entry");
+                                var ret = FWUpdate(commandLineInput);
+                                writelog("FIRMWAREUPDATE Done");
+                                result.ExitCode = ret.code;
+                                result.serialize_Json_response = ret.json;
+                                return result;
                         }
                     }
+
 
                 }
-                if (commandLineInput.Command.Equals("SET"))
+                if (commandLineInput.Command.Equals("SET") &&
+                    commandLineInput.TargetType.Equals("DOCK"))
                 {
-                    if (commandLineInput.TargetType.Equals("DOCK"))
+                    if (commandLineInput.TargetFeature.Equals("SILENTFWUPDATE"))// for dock firmware update.
                     {
-                        if (commandLineInput.TargetFeature.Equals("SILENTFWUPDATE"))// for dock firmware update.
-                        {
-                            //switch (commandLineInput.TargetFeature)
-                            //{
-                            //    case "FIRMWAREUPDATE":
-                            //    case "UODFWUPDATE":
-                            //    case "LOCKUIUPDATE":
-                            //    case "UNLOCKUIUPDATE":
-                            writelog("FIRMWAREUPDATE SET DOCK SILENTFWUPDATE Entry");
-                            var ret = FWUpdate(commandLineInput);
-                            writelog("FIRMWAREUPDATE SET DOCK SILENTFWUPDATE DONE");
-                            result.ExitCode = ret.code;
-                            result.serialize_Json_response = ret.json;
-                            return result;
-                            //}
-                        }
+                        //switch (commandLineInput.TargetFeature)
+                        //{
+                        //    case "FIRMWAREUPDATE":
+                        //    case "UODFWUPDATE":
+                        //    case "LOCKUIUPDATE":
+                        //    case "UNLOCKUIUPDATE":
+                        writelog("FIRMWAREUPDATE SET DOCK SILENTFWUPDATE Entry");
+                        var ret = FWUpdate(commandLineInput);
+                        writelog("FIRMWAREUPDATE SET DOCK SILENTFWUPDATE DONE");
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.json;
+                        return result;
+                        //}
                     }
-
                 }
 
                 if (commandLineInput.Command.Equals("SET"))
@@ -202,50 +198,43 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                     }
                 }
-                if (commandLineInput.Command.Equals("GET"))
+                if (commandLineInput.Command.Equals("GET") && commandLineInput.TargetType.Equals("APP"))
                 {
-                    if (commandLineInput.TargetType.Equals("APP"))
+                    if (commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))// for dock firmware update.
                     {
-                        if (commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))// for dock firmware update.
-                        {
-                            //switch (commandLineInput.TargetFeature)
-                            //{
-                            //    case "FIRMWAREUPDATE":
-                            //    case "UODFWUPDATE":
-                            //    case "LOCKUIUPDATE":
-                            //    case "UNLOCKUIUPDATE":
-                            writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION Entry");
-                            var ret = SWAPPUpdate_get(commandLineInput);
-                            writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION DONE");
-                            result.ExitCode = ret.code;
-                            result.serialize_Json_response = ret.json;
-                            return result;
-                            //}
-                        }
+                        //switch (commandLineInput.TargetFeature)
+                        //{
+                        //    case "FIRMWAREUPDATE":
+                        //    case "UODFWUPDATE":
+                        //    case "LOCKUIUPDATE":
+                        //    case "UNLOCKUIUPDATE":
+                        writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION Entry");
+                        var ret = SWAPPUpdate_get(commandLineInput);
+                        writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION DONE");
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.json;
+                        return result;
+                        //}
                     }
                 }
-                if (commandLineInput.Command.Equals("SET"))
+                if (commandLineInput.Command.Equals("SET") && commandLineInput.TargetType.Equals("APP"))
                 {
-                    if (commandLineInput.TargetType.Equals("APP"))
+                    if (commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))// for dock firmware update.
                     {
-                        if (commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))// for dock firmware update.
-                        {
-                            //switch (commandLineInput.TargetFeature)
-                            //{
-                            //    case "FIRMWAREUPDATE":
-                            //    case "UODFWUPDATE":
-                            //    case "LOCKUIUPDATE":
-                            //    case "UNLOCKUIUPDATE":
-                            writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION Entry");
-                            var ret = SWAPPUpdate(commandLineInput);
-                            writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION DONE");
-                            result.ExitCode = ret.code;
-                            result.serialize_Json_response = ret.json;
-                            return result;
-                            //}
-                        }
+                        //switch (commandLineInput.TargetFeature)
+                        //{
+                        //    case "FIRMWAREUPDATE":
+                        //    case "UODFWUPDATE":
+                        //    case "LOCKUIUPDATE":
+                        //    case "UNLOCKUIUPDATE":
+                        writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION Entry");
+                        var ret = SWAPPUpdate(commandLineInput);
+                        writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION DONE");
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.json;
+                        return result;
+                        //}
                     }
-
                 }
                 if (commandLineInput.Command.Equals("SET"))
                 {
@@ -329,7 +318,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             if (_deviceinfo == null || _deviceinfo.Count == 0)
             {
                 GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found"));
-                writelog("GetPeripheralProperty: "+ _commandLineInput.TargetFeature  + "Device not found");
+                writelog("GetPeripheralProperty: " + _commandLineInput.TargetFeature + "Device not found");
                 return (int)CLI_ExitCode.fail_GetPeripheralProperty_NoConnectDevice;
             }
 
@@ -490,7 +479,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         });
                         if (!found)
                         {
-                            writelog("SetPeripheralProperty: "+ guid + "FAIL Device not found");
+                            writelog("SetPeripheralProperty: " + guid + "FAIL Device not found");
                             SetResults.Add(new CLI_PeripheralRESPONSE($"{guid}", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found"));
                         }
                     }
@@ -721,7 +710,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                     });
                 }
-                writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS" + (retcode ? "SUCCESS" :  "FAIL"));
+                writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS" + (retcode ? "SUCCESS" : "FAIL"));
                 return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
             }
 
@@ -1592,11 +1581,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            if(val == 50 || val == 60)
+                            if (val == 50 || val == 60)
                             {
-                                if(val == 50)
+                                if (val == 50)
                                     val = 1;
-                                else if(val == 60)
+                                else if (val == 60)
                                     val = 2;
 
                                 if (_devMgr.GetIsPropertyAntiFlickerSupported(x.Guid).Result)
@@ -1622,12 +1611,12 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                         break;
                                                 }
                                             }
-                                        }                                       
+                                        }
                                         else
                                         {
-                                            x.Value ="Interface return null";
+                                            x.Value = "Interface return null";
                                         }
-                                        
+
                                         //x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                                         x.Message = "N/A";
                                     }
@@ -1658,7 +1647,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 x.Message = "Wrong option value: ";
                                 x.Message += $"{val}";
                                 retcode = false;
-                                writelog("SetPeripheralProperty: Wrong option value:"+ val.ToString());
+                                writelog("SetPeripheralProperty: Wrong option value:" + val.ToString());
                             }
                         }
                     });
@@ -1676,7 +1665,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //            if (result == "0")
                 //            {
                 //                x.Result = "PASS";
-                    //                retvalue = _devMgr.GetAntiFlicker(GUID).Result;
+                //                retvalue = _devMgr.GetAntiFlicker(GUID).Result;
                 //                x.Value = retvalue.ToString();
                 //                x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                 //                x.Message = "N/A";
@@ -2164,7 +2153,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             List<string> model = null;
             List<string> guid = null;
             List<string> serviceTag = null;
-            bool isUod = true;
+            bool isUod = false;
 
             CLI_FWU_RESPONSE cLI_FWU_RESPONSE = null;
             try
@@ -2208,7 +2197,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                     if (!commandLineInput.Options[0].Option_Value.Contains(','))
                     {
-                        commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
+                        commandLineInput.Options[0].Option_Value += ",DEFER";
                     }
                     string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
 
@@ -2244,79 +2233,78 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         {
                                             string[] ss_tag = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_tag.Length == 2)
+                                            if (ss_tag.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_tag[0]) &&
+                                                !string.IsNullOrEmpty(ss_tag[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_tag[0]) && !string.IsNullOrEmpty(ss_tag[1]))
+                                                var findDevice = false;
+                                                if (_AllInfoMonitors.Any(x => x.edid.ServiceTag.ToUpper().Equals(ss_tag[0].ToUpper())))
                                                 {
-                                                    var findDevice = false;
-                                                    if (_AllInfoMonitors.Any(x => x.edid.ServiceTag.ToUpper().Equals(ss_tag[0].ToUpper())))
-                                                    {
-                                                        serviceTag = new List<string> { ss_tag[0] };
-                                                        fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => x.edid.ServiceTag.ToUpper().Equals(ss_tag[0].ToUpper())).ToList();
-                                                        findDevice = true;
-                                                    }
-                                                    if (!findDevice)
-                                                    {
-                                                        return NoDeviceConnectResponse(commandLineInput);
-                                                    }
+                                                    serviceTag = new List<string> { ss_tag[0] };
+                                                    fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => x.edid.ServiceTag.ToUpper().Equals(ss_tag[0].ToUpper())).ToList();
+                                                    findDevice = true;
                                                 }
+                                                if (!findDevice)
+                                                {
+                                                    return NoDeviceConnectResponse(commandLineInput);
+                                                }
+
                                             }
                                         }
                                         if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("MINIVERSION"))
                                         {
                                             string[] ss_min = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_min.Length == 2)
+                                            if (ss_min.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_min[0]) &&
+                                                !string.IsNullOrEmpty(ss_min[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_min[0]) && !string.IsNullOrEmpty(ss_min[1]))
+                                                var findDevice = false;
+                                                if (_AllInfoMonitors.Any(x => x.FwVersion.ToUpper().Equals(ss_min[0].ToUpper())))
                                                 {
-                                                    var findDevice = false;
-                                                    if (_AllInfoMonitors.Any(x => x.FwVersion.ToUpper().Equals(ss_min[0].ToUpper())))
-                                                    {
-                                                        miniver = ss_min[0];
-                                                        fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => x.FwVersion.ToUpper().Equals(ss_min[0].ToUpper())).ToList();
-                                                        findDevice = true;
-                                                    }
-                                                    if (!findDevice)
-                                                    {
-                                                        return NoDeviceConnectResponse(commandLineInput);
-                                                    }
+                                                    miniver = ss_min[0];
+                                                    fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => x.FwVersion.ToUpper().Equals(ss_min[0].ToUpper())).ToList();
+                                                    findDevice = true;
                                                 }
+                                                if (!findDevice)
+                                                {
+                                                    return NoDeviceConnectResponse(commandLineInput);
+                                                }
+
                                             }
                                         }
                                         if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("MODEL"))
                                         {
                                             string[] ss_mod = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_mod.Length == 2)
+                                            if (ss_mod.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_mod[0]) &&
+                                                !string.IsNullOrEmpty(ss_mod[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_mod[0]) && !string.IsNullOrEmpty(ss_mod[1]))
+                                                var findDevice = false;
+                                                if (_AllInfoMonitors.Any(x => x.modelName.ToUpper().Equals(ss_mod[0].ToUpper())))
                                                 {
-                                                    var findDevice = false;
-                                                    if (_AllInfoMonitors.Any(x => x.modelName.ToUpper().Equals(ss_mod[0].ToUpper())))
-                                                    {
-                                                        model = new List<string> { ss_mod[0] };
-                                                        fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => x.modelName.ToUpper().Equals(ss_mod[0].ToUpper())).ToList();
-                                                        findDevice = true;
-                                                    }
-                                                    if (!findDevice)
-                                                    {
-                                                        return NoDeviceConnectResponse(commandLineInput);
-                                                    }
+                                                    model = new List<string> { ss_mod[0] };
+                                                    fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => x.modelName.ToUpper().Equals(ss_mod[0].ToUpper())).ToList();
+                                                    findDevice = true;
                                                 }
+                                                if (!findDevice)
+                                                {
+                                                    return NoDeviceConnectResponse(commandLineInput);
+                                                }
+
                                             }
                                         }
                                         if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("FILEPATH"))
                                         {
                                             string[] ss_filepath = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_filepath.Length == 2)
+                                            if (ss_filepath.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_filepath[0]) &&
+                                                !string.IsNullOrEmpty(ss_filepath[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_filepath[0]) && !string.IsNullOrEmpty(ss_filepath[1]))
-                                                {
-                                                    installPath = ss_filepath[0];
-                                                    Trace.WriteLine($"installPath = {installPath}");
-                                                }
+                                                installPath = ss_filepath[0];
+                                                Trace.WriteLine($"installPath = {installPath}");
                                             }
                                         }
                                     }
@@ -2437,38 +2425,37 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         {
                                             string[] ss_guid = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_guid.Length == 2)
+                                            if (ss_guid.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_guid[0]) &&
+                                                !string.IsNullOrEmpty(ss_guid[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_guid[0]) && !string.IsNullOrEmpty(ss_guid[1]))
+                                                if (ss_1[0].ToUpper() == "DOCK" && commandLineInput.TargetType == "APP") // Checking for TargetType=APP
                                                 {
-                                                    if (ss_1[0].ToUpper() == "DOCK" && commandLineInput.TargetType == "APP") // Checking for TargetType=APP
+                                                    CLI_RESPONSE rsp = new CLI_RESPONSE()
                                                     {
-                                                        CLI_RESPONSE rsp = new CLI_RESPONSE()
-                                                        {
-                                                            Command = commandLineInput.Command,
-                                                            TargetFeature = commandLineInput.TargetFeature,
-                                                            Result = "FAIL",
-                                                            Message = "Dock not support GUID option",
-                                                        };
-                                                        writelog("FAIL Dock not support GUID option");
-                                                        Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                                                        return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                                                    }
+                                                        Command = commandLineInput.Command,
+                                                        TargetFeature = commandLineInput.TargetFeature,
+                                                        Result = "FAIL",
+                                                        Message = "Dock not support GUID option",
+                                                    };
+                                                    writelog("FAIL Dock not support GUID option");
+                                                    Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
+                                                    return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
+                                                }
 
-                                                    var findDevice = false;
-                                                    foreach (var g in deviceInfoList)
+                                                var findDevice = false;
+                                                foreach (var g in deviceInfoList)
+                                                {
+                                                    if (g.ID.ToString().ToUpper() == ss_guid[0].ToUpper())
                                                     {
-                                                        if (g.ID.ToString().ToUpper() == ss_guid[0].ToUpper())
-                                                        {
-                                                            guid = new List<string>() { ss_guid[0] };
-                                                            fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.ID.ToString().Equals(ss_guid[0], StringComparison.OrdinalIgnoreCase)).ToList();
-                                                            findDevice = true;
-                                                        }
+                                                        guid = new List<string>() { ss_guid[0] };
+                                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.ID.ToString().Equals(ss_guid[0], StringComparison.OrdinalIgnoreCase)).ToList();
+                                                        findDevice = true;
                                                     }
-                                                    if (!findDevice)
-                                                    {
-                                                        return NoDeviceConnectResponse(commandLineInput);
-                                                    }
+                                                }
+                                                if (!findDevice)
+                                                {
+                                                    return NoDeviceConnectResponse(commandLineInput);
                                                 }
                                             }
                                         }
@@ -2476,24 +2463,23 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         {
                                             string[] ss_min = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_min.Length == 2)
+                                            if (ss_min.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_min[0]) &&
+                                                !string.IsNullOrEmpty(ss_min[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_min[0]) && !string.IsNullOrEmpty(ss_min[1]))
+                                                var findDevice = false;
+                                                foreach (var g in deviceInfoList)
                                                 {
-                                                    var findDevice = false;
-                                                    foreach (var g in deviceInfoList)
+                                                    if (g.FirmwareVersion.ToUpper() == ss_min[0].ToUpper())
                                                     {
-                                                        if (g.FirmwareVersion.ToUpper() == ss_min[0].ToUpper())
-                                                        {
-                                                            miniver = ss_min[0];
-                                                            fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.FirmwareVersion.Equals(ss_min[0], StringComparison.OrdinalIgnoreCase)).ToList();
-                                                            findDevice = true;
-                                                        }
+                                                        miniver = ss_min[0];
+                                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.FirmwareVersion.Equals(ss_min[0], StringComparison.OrdinalIgnoreCase)).ToList();
+                                                        findDevice = true;
                                                     }
-                                                    if (!findDevice)
-                                                    {
-                                                        return NoDeviceConnectResponse(commandLineInput);
-                                                    }
+                                                }
+                                                if (!findDevice)
+                                                {
+                                                    return NoDeviceConnectResponse(commandLineInput);
                                                 }
                                             }
                                         }
@@ -2501,91 +2487,88 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         {
                                             string[] ss_mod = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_mod.Length == 2)
+                                            if (ss_mod.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_mod[0]) &&
+                                                !string.IsNullOrEmpty(ss_mod[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_mod[0]) && !string.IsNullOrEmpty(ss_mod[1]))
+                                                var findDevice = false;
+                                                foreach (var g in deviceInfoList)
                                                 {
-                                                    var findDevice = false;
-                                                    foreach (var g in deviceInfoList)
+                                                    if (g.ModelNumber.ToUpper() == ss_mod[0].ToUpper())
                                                     {
-                                                        if (g.ModelNumber.ToUpper() == ss_mod[0].ToUpper())
-                                                        {
-                                                            model = new List<string> { ss_mod[0] };
-                                                            fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.ModelNumber.Equals(ss_mod[0], StringComparison.OrdinalIgnoreCase)).ToList();
-                                                            findDevice = true;
-                                                        }
-                                                    }
-                                                    if (!findDevice)
-                                                    {
-                                                        return NoDeviceConnectResponse(commandLineInput);
+                                                        model = new List<string> { ss_mod[0] };
+                                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.ModelNumber.Equals(ss_mod[0], StringComparison.OrdinalIgnoreCase)).ToList();
+                                                        findDevice = true;
                                                     }
                                                 }
-
+                                                if (!findDevice)
+                                                {
+                                                    return NoDeviceConnectResponse(commandLineInput);
+                                                }
                                             }
                                         }
                                         else if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("SERVICETAG"))
                                         {
                                             string[] serviceTaInputValues = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (serviceTaInputValues.Length == 2)
+                                            if (serviceTaInputValues.Length == 2 &&
+                                                !string.IsNullOrEmpty(serviceTaInputValues[0]) &&
+                                                !string.IsNullOrEmpty(serviceTaInputValues[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(serviceTaInputValues[0]) && !string.IsNullOrEmpty(serviceTaInputValues[1]))
+                                                var findDevice = false;
+                                                foreach (var g in deviceInfoList)
                                                 {
-                                                    var findDevice = false;
-                                                    foreach (var g in deviceInfoList)
+                                                    if (!string.IsNullOrWhiteSpace(g.DockServiceTag) && g.DockServiceTag.ToUpper() == serviceTaInputValues[0].ToUpper())
                                                     {
-                                                        if (!string.IsNullOrWhiteSpace(g.DockServiceTag) && g.DockServiceTag.ToUpper() == serviceTaInputValues[0].ToUpper())
-                                                        {
-                                                            serviceTag = new List<string> { serviceTaInputValues[0] };
-                                                            fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.DockServiceTag.Equals(serviceTaInputValues[0], StringComparison.OrdinalIgnoreCase)).ToList();
-                                                            findDevice = true;
-                                                        }
-                                                    }
-                                                    if (!findDevice)
-                                                    {
-                                                        return NoDeviceConnectResponse(commandLineInput);
+                                                        serviceTag = new List<string> { serviceTaInputValues[0] };
+                                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.DockServiceTag.Equals(serviceTaInputValues[0], StringComparison.OrdinalIgnoreCase)).ToList();
+                                                        findDevice = true;
                                                     }
                                                 }
+                                                if (!findDevice)
+                                                {
+                                                    return NoDeviceConnectResponse(commandLineInput);
+                                                }
+
                                             }
                                         }
                                         else if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("UOD"))
                                         {
                                             string[] uodInputValues = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (uodInputValues.Length == 2)
+                                            if (uodInputValues.Length == 2 &&
+                                                !string.IsNullOrEmpty(uodInputValues[0]) &&
+                                                !string.IsNullOrEmpty(uodInputValues[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(uodInputValues[0]) && !string.IsNullOrEmpty(uodInputValues[1]))
+                                                if (ss_1[0].ToUpper() == "DOCK")
                                                 {
-                                                    if (ss_1[0].ToUpper() == "DOCK")
-                                                    {
-                                                        if (uodInputValues[0].ToUpper() != "TRUE" && uodInputValues[0].ToUpper() != "FALSE")
-                                                        {
-                                                            CLI_RESPONSE rsp = new CLI_RESPONSE()
-                                                            {
-                                                                Command = commandLineInput.Command,
-                                                                TargetFeature = commandLineInput.TargetFeature,
-                                                                Result = "FAIL",
-                                                                Message = "Not correct UOD option",
-                                                            };
-                                                            writelog("FAIL Not correct UOD option");
-                                                            Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                                                            return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                                                        }
-                                                        isUod = uodInputValues[0].ToUpper() == "TRUE";
-                                                    }
-                                                    else
+                                                    if (uodInputValues[0].ToUpper() != "TRUE" && uodInputValues[0].ToUpper() != "FALSE")
                                                     {
                                                         CLI_RESPONSE rsp = new CLI_RESPONSE()
                                                         {
                                                             Command = commandLineInput.Command,
                                                             TargetFeature = commandLineInput.TargetFeature,
                                                             Result = "FAIL",
-                                                            Message = "Only dock supports UOD update mode",
+                                                            Message = "Not correct UOD option",
                                                         };
-                                                        writelog("FAIL Only dock supports UOD update mode");
+                                                        writelog("FAIL Not correct UOD option");
                                                         Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                         return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     }
+                                                    isUod = uodInputValues[0].ToUpper() == "TRUE";
+                                                }
+                                                else
+                                                {
+                                                    CLI_RESPONSE rsp = new CLI_RESPONSE()
+                                                    {
+                                                        Command = commandLineInput.Command,
+                                                        TargetFeature = commandLineInput.TargetFeature,
+                                                        Result = "FAIL",
+                                                        Message = "Only dock supports UOD update mode",
+                                                    };
+                                                    writelog("FAIL Only dock supports UOD update mode");
+                                                    Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
+                                                    return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                 }
                                             }
                                         }
@@ -2593,12 +2576,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         {
                                             string[] ss_filepath = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_filepath.Length == 2)
+                                            if (ss_filepath.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_filepath[0]) &&
+                                                !string.IsNullOrEmpty(ss_filepath[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_filepath[0]) && !string.IsNullOrEmpty(ss_filepath[1]))
-                                                {
-                                                    installPath = ss_filepath[0];
-                                                }
+                                                installPath = ss_filepath[0];
                                             }
                                         }
                                     }
@@ -2731,7 +2713,38 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 switch (commandLineInput.TargetFeature)
                                                 {
                                                     case "FIRMWAREUPDATE":
+                                                        switch (ss_2[1].ToUpper())
+                                                        {
+                                                            case "FORCEWITHNOTICE":
+                                                                isShowInfo = true;
+                                                                isForce = true;
+                                                                isDefer = false;
+                                                                break;
+
+                                                            case "FORCEWITHNONOTICE":
+                                                                isShowInfo = false;
+                                                                isForce = true;
+                                                                isDefer = false;
+                                                                break;
+
+                                                            case "DEFER":
+                                                                isShowInfo = true;
+                                                                isForce = false;
+                                                                isDefer = true;
+                                                                break;
+
+                                                            default:
+                                                                cLI_FWU_RESPONSE.Message = "Input FAIL";
+                                                                ret = false;
+                                                                break;
+                                                        }
+                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, fwUpdateDeviceInfos, isUod, installPath, isShowInfo, isForce, guid, model, miniver, isDefer, serviceTag);
+                                                        result.ExitCode = fwupdate.code;
+                                                        result.serialize_Json_response = fwupdate.result;
+                                                        ret = true;
+                                                        break;
                                                     case "SILENTFWUPDATE":
+                                                        isUod = true;
                                                         switch (ss_2[1].ToUpper())
                                                         {
                                                             case "FORCEWITHNOTICE":
@@ -2758,9 +2771,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                                 break;
 
                                                         }
-                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, fwUpdateDeviceInfos, isUod, installPath, isShowInfo, isForce, guid, model, miniver, isDefer, serviceTag);
-                                                        result.ExitCode = fwupdate.code;
-                                                        result.serialize_Json_response = fwupdate.result;
+                                                        var fwupdate2 = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, fwUpdateDeviceInfos, isUod, installPath, isShowInfo, isForce, guid, model, miniver, isDefer, serviceTag);
+                                                        result.ExitCode = fwupdate2.code;
+                                                        result.serialize_Json_response = fwupdate2.result;
                                                         ret = true;
                                                         break;
                                                     default:
@@ -2894,7 +2907,8 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 (deviceType, deviceTypes) = SetDevice(commandLineInput);
 
-            }else if (dock_recode)
+            }
+            else if (dock_recode)
             {
                 deviceTypes.Add(DeviceType.LogicalDock);
                 deviceTypes.Add(DeviceType.PhysicalWiredDock);
@@ -3328,7 +3342,15 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             break;
                         }
-                        if (commandLineInput.Options.Count > 0)
+                        if (commandLineInput.Options.Count == 0)
+                        {
+                            commandLineInput.Options.Insert(0, new CommandType_Option("VALUE", "MANUAL,DEFER"));
+                        }
+                        if (!commandLineInput.Options[0].Option_Value.Contains(','))
+                        {
+                            commandLineInput.Options[0].Option_Value += ",DEFER"; //2025/1/1 Elie, fix Cli for SW update with Automatic command is going to add a DEFER. (Anfernee's comment)
+                        }
+                        if (commandLineInput.Options.Count > 0 || commandLineInput.Options[0].Option_Value == "MANUAL,DEFER")
                         {
                             writelog("FWUpdate_Line 3902");
                             string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
@@ -3439,13 +3461,13 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (cLI_SWU_RESPONSE != null)
                 {
                     writelog("FWUpdate_Line 4010");
-                    output =  JsonConvert.SerializeObject(cLI_SWU_RESPONSE, Formatting.Indented);
+                    output = JsonConvert.SerializeObject(cLI_SWU_RESPONSE, Formatting.Indented);
                     //output = cLI_SWU_RESPONSE.OutputLog(cLI_SWU_RESPONSE, commandLineInput);
                 }
                 else
                 {
                     writelog("FWUpdate_Line 4015");
-                    output =  JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
+                    output = JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
                     //output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
                 }
                 if (ret == true)
@@ -3453,7 +3475,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     writelog("FWUpdate_Line 4020");
                     return ((int)CLI_ExitCode.success, output);
                 }
-                else if(somethingError)
+                else if (somethingError)
                 {
                     writelog("FWUpdate_Line 4025");
                     CLI_RESPONSE rsp = new CLI_RESPONSE()

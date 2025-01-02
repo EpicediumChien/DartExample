@@ -321,13 +321,10 @@ namespace DDPM.ColorApp
 
                     //MonitorInfo actived_mi = Mi;
 
-                    if (actived_mi != null)
+                    if (actived_mi != null && !actived_mi.IsDellMonitor)
                     {
-                        if (!actived_mi.IsDellMonitor)
-                        {
                             writelog("actived_mi.IsDellMonitor is False");
                             return;
-                        }
                     }
                     else // Jim 20241223 add check if null to avoid Exception
                     {

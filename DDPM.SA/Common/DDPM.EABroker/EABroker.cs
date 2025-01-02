@@ -220,15 +220,12 @@ namespace DDPM.EABroker
                 bool newSpanEnabled = _vm.IsSpanEnabled;
 
                 //4 Notify to UI if it's changed
-                if (newSpanEnabled != orgSpanEnabled)
+                if (newSpanEnabled != orgSpanEnabled && _deviceManagerSA != null)
                 {
-                    if (_deviceManagerSA != null)
-                    {
-                        EAArgs eAArgs = new EAArgs();
-                        eAArgs.Command = EAEMConstants.EACommand_SetIsSpanEnabled;
-                        eAArgs.Result = newSpanEnabled;
-                        _deviceManagerSA.SendEANotify(eAArgs);
-                    }
+                    EAArgs eAArgs = new EAArgs();
+                    eAArgs.Command = EAEMConstants.EACommand_SetIsSpanEnabled;
+                    eAArgs.Result = newSpanEnabled;
+                    _deviceManagerSA.SendEANotify(eAArgs);                    
                 }
 
                 _vm.RefreshWorkWindows(isInit);
@@ -251,15 +248,13 @@ namespace DDPM.EABroker
                 bool newSpanEnabled = _vm.IsSpanEnabled;
 
                 //4 Notify to UI if it's changed
-                if (newSpanEnabled != orgSpanEnabled)
+                if (newSpanEnabled != orgSpanEnabled &&
+                    _deviceManagerSA != null)
                 {
-                    if (_deviceManagerSA != null)
-                    {
-                        EAArgs eAArgs = new EAArgs();
-                        eAArgs.Command = EAEMConstants.EACommand_SetIsSpanEnabled;
-                        eAArgs.Result = newSpanEnabled;
-                        _deviceManagerSA.SendEANotify(eAArgs);
-                    }
+                    EAArgs eAArgs = new EAArgs();
+                    eAArgs.Command = EAEMConstants.EACommand_SetIsSpanEnabled;
+                    eAArgs.Result = newSpanEnabled;
+                    _deviceManagerSA.SendEANotify(eAArgs);
                 }
 
                 _vm.RefreshWorkWindows(isInit);

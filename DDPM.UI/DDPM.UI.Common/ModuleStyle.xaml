@@ -28,7 +28,7 @@
     <!-- #endregion FakeTransparent: When you need a transparent color and need can response mouse click -->
     <SolidColorBrush x:Key="DefaultTheme_TxtColor" Color="#FFFFFF" />
     <SolidColorBrush x:Key="DefaultTheme_ProcessBarTxtColor" Color="#A4B8CD" />
-    <SolidColorBrush x:Key="DefaultTheme_BdBkColor" Color="#99194784" />
+    <SolidColorBrush x:Key="DefaultTheme_BdBkColor" Color="#99193457" />
     <SolidColorBrush x:Key="DefaultTheme_BdSolidBkColor" Color="#FF132F54" />
     <SolidColorBrush x:Key="DefaultTheme_BdBdColor" Color="#132F54" />
     <SolidColorBrush x:Key="DefaultTheme_BdSolidBdColor" Color="#1B385F" />
@@ -57,7 +57,6 @@
     <SolidColorBrush x:Key="DefaultTheme_DialogBoxBkColor" Color="#132F54"/>
     <SolidColorBrush x:Key="DefaultThemeFullPageBkColor" Color="#FF0D121A"/>
     <SolidColorBrush x:Key="DefaultThemeRightViewAlertBkColor" Color="#364861" />
-    <SolidColorBrush x:Key="DefaultThemeToggleButtonBdColor" Color="#FFFFFF"/>
     <Style TargetType="UXControls:UXTextBlock"
            BasedOn="{StaticResource {x:Type UXControls:UXTextBlock}}">
         <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
@@ -278,6 +277,14 @@
         </Canvas>
     </ControlTemplate>
 
+    <!-- Icon Resume -->
+    <ControlTemplate x:Key="icon_Resume" TargetType="ContentControl">
+        <Canvas Tag="{DynamicResource DefaultTheme_PathColor}" Width="16" Height="16">
+            <Path Data="M12 7L-6.52533e-07 13.9282L-4.68497e-08 0.0717964L12 7Z"
+                  Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
+        </Canvas>
+    </ControlTemplate>
+
     <!-- Icon Undo -->
     <ControlTemplate x:Key="icon_Undo" TargetType="ContentControl">
         <Canvas Width="40" Height="40">
@@ -329,7 +336,6 @@
           Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
         </Canvas>
     </ControlTemplate>
-
     <!-- Icon Pen -->
     <ControlTemplate x:Key="icon_Pen" TargetType="ContentControl">
         <Canvas Width="17" Height="16">
@@ -337,7 +343,40 @@
           Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
         </Canvas>
     </ControlTemplate>
-
+    <!-- Icon Brightness -->
+    <ControlTemplate x:Key="icon_Brightness"
+                     TargetType="ContentControl">
+        <Canvas Width="17"
+                Height="17">
+            <Path Data="M2.5 13.78L5.24 11.03L6 11.79L3.22 14.5L2.5 13.78Z M11.03 5.21L13.78 2.5L14.53 3.25L11.79 5.97L11.03 5.21Z M0.5 7.97H4.38V9.03H0.5V7.97Z M12.62 7.97H16.5V9.03H12.62V7.97Z M2.5 3.22L3.22 2.5L5.97 5.21L5.21 5.97L2.5 3.22Z M11.03 11.79L11.79 11.03L14.5 13.78L13.75 14.53L11.03 11.79Z M7.97 0.5H9.03V4.38H7.97V0.5Z M7.97 12.62H9.03V16.5H7.97V12.62Z M8.5 5.15C7.83743 5.15 7.18974 5.34647 6.63884 5.71458C6.08793 6.08268 5.65856 6.60588 5.405 7.21801C5.15145 7.83014 5.08511 8.50372 5.21437 9.15355C5.34363 9.80339 5.66269 10.4003 6.13119 10.8688C6.5997 11.3373 7.19661 11.6564 7.84645 11.7856C8.49628 11.9149 9.16986 11.8485 9.78199 11.595C10.3941 11.3414 10.9173 10.9121 11.2854 10.3612C11.6535 9.81026 11.85 9.16257 11.85 8.5C11.85 7.61152 11.4971 6.75944 10.8688 6.13119C10.2406 5.50295 9.38848 5.15 8.5 5.15ZM8.5 10.78C8.04906 10.78 7.60824 10.6463 7.2333 10.3958C6.85836 10.1452 6.56612 9.78913 6.39355 9.37252C6.22099 8.9559 6.17584 8.49747 6.26381 8.05519C6.35178 7.61292 6.56893 7.20666 6.8878 6.8878C7.20666 6.56893 7.61292 6.35178 8.05519 6.26381C8.49747 6.17584 8.9559 6.22099 9.37252 6.39355C9.78913 6.56612 10.1452 6.85836 10.3958 7.2333C10.6463 7.60824 10.78 8.04906 10.78 8.5C10.78 9.10469 10.5398 9.68462 10.1122 10.1122C9.68462 10.5398 9.10469 10.78 8.5 10.78Z"
+                  Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}" />
+        </Canvas>
+    </ControlTemplate>
+    <!-- Icon Contrast -->
+    <ControlTemplate x:Key="icon_Contrast"
+                     TargetType="ContentControl">
+        <Canvas Width="12"
+                Height="12">
+            <Ellipse Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}"
+                     StrokeThickness="1" 
+                     Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}"
+                     Width="12"
+                     Height="12">
+                <Ellipse.Clip>
+                    <RectangleGeometry Rect="0,0,6,12" />
+                </Ellipse.Clip>
+            </Ellipse>
+            <Ellipse Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ContentControl}}"
+                     StrokeThickness="1"
+                     Fill="Transparent"
+                     Width="12"
+                     Height="12">
+                <Ellipse.Clip>
+                    <RectangleGeometry Rect="6,0,6,12" />
+                </Ellipse.Clip>
+            </Ellipse>
+        </Canvas>
+    </ControlTemplate>
     <!-- endregion -->
 
     <!-- endregion -->
@@ -1594,7 +1633,7 @@
     <SolidColorBrush x:Key="EQLine_Color" Color="#1B385F" />
     <Style x:Key="RightGroupBorderStyleForAudio" TargetType="Border">
         <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Background" Value="{DynamicResource RightGroupBkColor}" />
+        <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdBkColor}" />
     </Style>
 
     <Style x:Key="ModuleCaptionStyle" TargetType="UXControls:UXTextBlock">
@@ -1645,10 +1684,10 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    <SolidColorBrush x:Key="ToggleSwitch_NormalBackground" Color="#0B1E38" />
+    <SolidColorBrush x:Key="ToggleSwitch_NormalBackground" Color="#FF0B1E38" />
+    <SolidColorBrush x:Key="ToggleSwitch_NormalBorderBrush" Color="#FF1E3F6C" />
     <SolidColorBrush x:Key="ToggleSwitch_PressedBackground" Color="#0672CB" />
     <SolidColorBrush x:Key="ToggleSwitch_PressedBorderBrush" Color="#55B4FD" />
-    <SolidColorBrush x:Key="ToggleSwitch_BorderBrush" Color="#1E3F6C" />
     <!-- #endregion -->
 
     <Style TargetType="UXControls:UXTextBlock" x:Key="ProductNameTextStyle">
@@ -1802,11 +1841,12 @@
     <SolidColorBrush x:Key="KeyToolTipText_FgColor" Color="#F5F6F7" />
     <Style x:Key="KeyToolTipTextStyle" TargetType="TextBlock">
         <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
-        <Setter Property="Background" Value="{DynamicResource KeyToolTipText_BgColor}" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="FontFamily" Value="Roboto" />
         <Setter Property="FontSize" Value="12" />
         <Setter Property="Foreground" Value="{DynamicResource KeyToolTipText_FgColor}" />
-        <Setter Property="Padding" Value="12,16,12,10" />
+        <Setter Property="Padding" Value="1" />
+        <Setter Property="Margin" Value="0" />
         <Setter Property="LineHeight" Value="20" />
         <Setter Property="VerticalAlignment" Value="center" />
         <Setter Property="HorizontalAlignment" Value="center" />
@@ -2010,6 +2050,8 @@
     <BitmapImage x:Key="Close_img" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Close.png" />
     <BitmapImage x:Key="left_img" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Left.png" />
     <BitmapImage x:Key="MonitorImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png" />
+    <BitmapImage x:Key="KeyboardImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/LightMode/Lineart-kb.png" />
+    <BitmapImage x:Key="MouseImage_LineArt" UriSource="pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/LightMode/Lineart-ms.png" />
 
     <!-- #region Webcam -->
     <SolidColorBrush x:Key="Webcam_TextBox_BkColor" Color="#141D28"/>
@@ -2084,5 +2126,29 @@
         <Setter Property="Background" Value="{DynamicResource DefaultTheme_BdSolidBkColor}" />
     </Style>
     <!-- #endregion -->
+    <LinearGradientBrush x:Key="Border1Brush" StartPoint="0,1" EndPoint="1,0">
+        <GradientStop Color="#55B4FD" Offset="0.0" />
+        <GradientStop Color="#5051DA" Offset="1.0" />
+    </LinearGradientBrush>
 
+    <Style x:Key="Border1" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource Border1Brush}" />
+        <Setter Property="CornerRadius" Value="1.5" />
+        <Setter Property="Width" Value="3" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Margin" Value="-3,-3,18,0" />
+    </Style>
+
+    <Style x:Key="AppCaptionStyle" TargetType="UXControls:UXTextBlock">
+        <Setter Property="Foreground" Value="#80FFFFFF" />
+        <Setter Property="FontFamily" Value="Roboto" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <!-- #endregion -->
+    <BitmapImage x:Key="InterruptScreen_Image" UriSource="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_InterruptScreen.png" />
+    <SolidColorBrush x:Key="InterruptScreen_Backgroung" Color="#132F54" />
 </ResourceDictionary>

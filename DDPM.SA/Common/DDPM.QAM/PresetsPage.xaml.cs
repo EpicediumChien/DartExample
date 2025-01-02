@@ -35,6 +35,7 @@ namespace DDPM.QAM
             {
                 if (DataContext is QAMPageViewModel vm)
                 {
+                    vm.isStatusChagneByDDPM = false;
                     vm.SetProfile(selectedProfile);
                     vm.SendSelectProfileToDDPM();
                 }

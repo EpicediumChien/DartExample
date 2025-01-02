@@ -442,6 +442,52 @@ namespace DDPM.Win32Lib
         #endregion Actions (Wayn)
 
         #region EnumWindows
+
+        public static List<IntPtr> GetAltTabWindows()
+        {
+            List<IntPtr> hWnds = Win32.GetWindowHandles(IsAltTabWindow);
+            return hWnds;
+        }
+
+        //Reference: https://stackoverflow.com/questions/210504/enumerate-windows-like-alt-tab-does
+        //Try to get the Windows like [Alt]+[Tab] key
+        private static bool IsAltTabWindow(IntPtr hWnd, IntPtr lParam)
+        {
+            //1 The window must be visible
+            if (!Win32._IsWindowVisible(hWnd))
+                return false;
+
+            //2 The window must not be a toolwindow
+            uint winStyle = (uint)Win32._GetWindowLong(hWnd, (int)Win32.WindowLongFlags.GWL_EXSTYLE);
+            if ((winStyle & (uint)Win32.WindowStylesEx.WS_EX_TOOLWINDOW) != 0)
+            {
+                return false;
+            }
+
+            if (Win32._GetAncestor(hWnd, Win32.eGaFlags.GA_ROOTOWNER) != hWnd)
+            {
+                return false;
+            }
+
+            uint cloaked;
+            Win32._DwmGetWindowAttribute(hWnd, Win32.eDwmWindowAttribute.Cloaked, out cloaked, sizeof(uint));
+            if (cloaked == Win32.DWM_CLOAKED_SHELL)
+            {
+                return false;
+            }
+
+            //Check if the window is minimized
+            uint uiStyles = (uint)Win32._GetWindowLong(hWnd, (int)Win32.WindowLongFlags.GWL_STYLE);
+            uint uiMinimizeStyle = (uint)Win32.WindowStyles.WS_MINIMIZE;
+            bool isMinimized = ((uiStyles & uiMinimizeStyle) == uiMinimizeStyle);
+            //if (isMinimized) //Remove by pass Minimized 
+            //    return false;
+
+            //Check if the window across screen boundary
+            //It need Screen rect, will be check after returned
+
+            return true;
+        }
         //The major (high-level) method to Enumerate Windows is GetWindowHandles()
 
         /// <summary>

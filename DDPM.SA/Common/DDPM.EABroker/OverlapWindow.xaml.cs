@@ -215,13 +215,10 @@ namespace DDPM.EABroker
                 string pathName = "";
                 try
                 {
-                    if (process.MainModule != null)
+                    if (process.MainModule != null && !String.IsNullOrEmpty(process.MainModule.FileName))
                     {
-                        if (!String.IsNullOrEmpty(process.MainModule.FileName))
-                        {
-                            pathName = process.MainModule.FileName;
-                            WriteLog($"    [{idx}] PathName=[{pathName}]");
-                        }
+                        pathName = process.MainModule.FileName;
+                        WriteLog($"    [{idx}] PathName=[{pathName}]");
                     }
                 }
                 catch (Exception e1)
@@ -423,13 +420,10 @@ namespace DDPM.EABroker
                 string pathName = "";
                 try
                 {
-                    if (process.MainModule != null)
+                    if (process.MainModule != null && !String.IsNullOrEmpty(process.MainModule.FileName))
                     {
-                        if (!String.IsNullOrEmpty(process.MainModule.FileName))
-                        {
-                            pathName = process.MainModule.FileName;
-                            WriteLog($"    [{idx}] PathName=[{pathName}]");
-                        }
+                        pathName = process.MainModule.FileName;
+                        WriteLog($"    [{idx}] PathName=[{pathName}]");                        
                     }
                 }
                 catch (Exception e1)

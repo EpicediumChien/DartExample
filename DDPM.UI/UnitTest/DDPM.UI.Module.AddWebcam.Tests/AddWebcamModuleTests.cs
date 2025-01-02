@@ -12,7 +12,7 @@ using System.Windows.Controls;
 namespace DDPM.UI.Module.AddWebcam.Tests
 {
     [Apartment(ApartmentState.STA)]
-    public class Tests
+    public class AddWebcamModuleTests
     {
         private AddWebcamModule? addWebcamModule;
         private PrivateObject? privateObject;
@@ -122,15 +122,17 @@ namespace DDPM.UI.Module.AddWebcam.Tests
         [Test]
         public void TestOnSelectedHomeDeviceChanged()
         {
-            try
-            {
-                addWebcamModule.OnSelectedHomeDeviceChanged();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
+            addWebcamModule.IsModuleActive = false;
+            addWebcamModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChangeda()
+        {
+            addWebcamModule.IsModuleActive = true;
+            addWebcamModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
         }
 
         [Test]
