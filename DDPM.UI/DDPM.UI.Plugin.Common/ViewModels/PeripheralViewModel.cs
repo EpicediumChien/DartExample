@@ -229,7 +229,7 @@ namespace DDPM.UI.Plugin.ViewModels
             if (EOLKBList.Contains(Model) || EOLMouseList.Contains(Model))
                 Name = DdpmCommonHelper.MappingEOLName(Model);
             else
-                Name = CurrentDeviceInfo.Name.Replace(Model, "").Trim();
+                Name = DdpmCommonHelper.MappingName(Model, CurrentDeviceInfo.Name.Trim());
 
             if (CurrentDeviceInfo.Type == DeviceType.PhysicalWiredDock || CurrentDeviceInfo.Type == DeviceType.LogicalDock)
             {
@@ -259,10 +259,10 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}{colorCode}.png";
             }
-            else if(CurrentDeviceInfo.Type == DeviceType.LogicalKeyboard || CurrentDeviceInfo.Type == DeviceType.LogicalMouse)
+            else if (CurrentDeviceInfo.Type == DeviceType.LogicalKeyboard || CurrentDeviceInfo.Type == DeviceType.LogicalMouse)
             {
                 ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/";
-                if (!DdpmCommonHelper.isDarkMode()) 
+                if (!DdpmCommonHelper.isDarkMode())
                 {
                     ImageFilePath += "LightMode/";
                 }
