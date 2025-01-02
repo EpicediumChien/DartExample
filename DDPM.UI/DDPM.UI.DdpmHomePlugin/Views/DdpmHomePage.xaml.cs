@@ -59,60 +59,80 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
         private void ImportNotifyEventHandler(object sender, MonitorInfo mo)
         {
-            if (mo != null)
+            try
             {
-                Dispatcher.Invoke(() =>
+                if (mo != null)
                 {
-                    string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
-                    string path = localAppDataPath + "\\Dell Display and Peripheral Manager\\Export";
-                    string model = mo.modelName;//"U2724DE";
-                    string exportpath = path + "\\" + model + ".json";
-
-                    DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
-                    ImpExpSettings = DdpmCommonHelper.DeviceManagerSA.ReadImportSettingsFile(exportpath).Result;
-
-                    if (ImpExpSettings != null)
+                    Dispatcher.Invoke(() =>
                     {
-                        if (ImpExpSettings.MonitorSettings != null
-                        && ImpExpSettings.MonitorSettings.ServiceTag != mo.edid.ServiceTag)
-                        {
-                            if (ImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
-                            {
-                                DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Wait();
-                            }
-                            else
-                            {
-                                Window parentWindow = Window.GetWindow(this);
-                                double windowLeft = 0;
-                                double windowTop = 0;
-                                ImportModalDialog modalDialog = new(mo.modelName, parentWindow.ActualWidth, parentWindow.ActualHeight - 40);
-                                if (parentWindow != null)
-                                {
-                                    modalDialog.Owner = parentWindow;
-                                    windowLeft = parentWindow.Left;
-                                    windowTop = parentWindow.Top + 40;
-                                }
-                                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-                                modalDialog.Left = windowLeft;
-                                modalDialog.Top = windowTop;
-                                modalDialog.ShowDialog();
+                        string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
+                        string path = localAppDataPath + "\\Dell Display and Peripheral Manager\\Export";
+                        string model = mo.modelName;//"U2724DE";
+                        string exportpath = path + "\\" + model + ".json";
 
-                                if (modalDialog.DialogResult != null && modalDialog.DialogResult == true)
+                        DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
+                        ImpExpSettings = DdpmCommonHelper.DeviceManagerSA.ReadImportSettingsFile(exportpath).Result;
+
+                        if (ImpExpSettings != null)
+                        {
+                            if (ImpExpSettings.MonitorSettings != null
+                            && ImpExpSettings.MonitorSettings.ServiceTag != mo.edid.ServiceTag)
+                            {
+                                if (ImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
                                 {
-                                    //For jason to do import
-                                    if((int)DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result > 0)
+                                    DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Wait();
+                                }
+                                else
+                                {
+                                    Window parentWindow = Window.GetWindow(this);
+                                    double windowLeft = 0;
+                                    double windowTop = 0;
+                                    double actualWidth = 0;
+                                    double actualHeight = 0;
+                                    if (parentWindow == null)
                                     {
-                                        //ignore next check for this model
-                                        if (modalDialog.isChecked)
+                                        actualWidth = System.Windows.Application.Current.MainWindow.ActualWidth;
+                                        actualHeight = System.Windows.Application.Current.MainWindow.ActualHeight;
+                                    }
+                                    else
+                                    {
+                                        actualWidth = parentWindow.ActualWidth;
+                                        actualHeight = parentWindow.ActualHeight;
+                                    }
+                                    ImportModalDialog modalDialog = new(mo.modelName, actualWidth, actualHeight - 40);
+                                    if (parentWindow != null)
+                                    {
+                                        modalDialog.Owner = parentWindow;
+                                        windowLeft = parentWindow.Left;
+                                        windowTop = parentWindow.Top + 40;
+                                    }
+                                    modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                                    modalDialog.Left = windowLeft;
+                                    modalDialog.Top = windowTop;
+                                    modalDialog.ShowDialog();
+
+                                    if (modalDialog.DialogResult != null && modalDialog.DialogResult == true)
+                                    {
+                                        //For jason to do import
+                                        if ((int)DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result > 0)
                                         {
-                                            DdpmCommonHelper.DeviceManagerSA.SetSameModel(mo, true);
+                                            //ignore next check for this model
+                                            if (modalDialog.isChecked)
+                                            {
+                                                DdpmCommonHelper.DeviceManagerSA.SetSameModel(mo, true);
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
-                });
+                    });
+                }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog($"[DdpmHomePage.] throws exception: {ex.Message}; StackTrace: {ex.StackTrace}", log_type: DdpmCommonHelper.log_type.error, memberName: nameof(ImportNotifyEventHandler));
+                return;
             }
         }
 
