@@ -153,29 +153,29 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 //if (value != _isChecked_ProximitySensor) //Add by Derek 11/12
                 //{
-                    _isChecked_ProximitySensor = value;
-                    DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
-                    //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
+                _isChecked_ProximitySensor = value;
+                DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
+                //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
 
-                    // jim add for PIMS-328195
-                    _isEnable_WalkAwayLock = _isChecked_WalkAwayLock && _isChecked_ProximitySensor;
+                // jim add for PIMS-328195
+                _isEnable_WalkAwayLock = _isChecked_WalkAwayLock && _isChecked_ProximitySensor;
 
-                    _isEnable_Snooze =  _isChecked_ProximitySensor;
-                   
-                    _isEnable_SnoozeLength = _isChecked_Snooze && _isChecked_ProximitySensor;
-                   
+                _isEnable_Snooze = _isChecked_ProximitySensor;
 
-                    OnPropertyChanged("IsChecked_ProximitySensor");
-                    OnPropertyChanged("ProximitySensorStatus_String");
-                    OnPropertyChanged("IsEnable_WalkAwayLock");
-                    OnPropertyChanged("IsEnable_Snooze");
-                    OnPropertyChanged("IsEnable_SnoozeLength");
-                    
-                    //Derek 11/12
-                    //PIMS - 319099
-                    //Find Presence Detection Setting is available, when SUT does not support HPD_MPS and
-                    //Internal Presence Sensor. DUT is with HPD_MPS FW
-                    ChangeUPDStatus();
+                _isEnable_SnoozeLength = _isChecked_Snooze && _isChecked_ProximitySensor;
+
+
+                OnPropertyChanged("IsChecked_ProximitySensor");
+                OnPropertyChanged("ProximitySensorStatus_String");
+                OnPropertyChanged("IsEnable_WalkAwayLock");
+                OnPropertyChanged("IsEnable_Snooze");
+                OnPropertyChanged("IsEnable_SnoozeLength");
+
+                //Derek 11/12
+                //PIMS - 319099
+                //Find Presence Detection Setting is available, when SUT does not support HPD_MPS and
+                //Internal Presence Sensor. DUT is with HPD_MPS FW
+                ChangeUPDStatus();
                 //}
             }
         }
@@ -330,7 +330,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 // jim add for PIMS-328195
                 _isEnable_SnoozeLength = _isChecked_Snooze && _isChecked_ProximitySensor;
-               
+
                 if (_isChecked_Snooze)
                 {
                     if (_SelectedSnoozeLength != null)
@@ -539,8 +539,8 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             Resolution_IsSelected[index] = true;
             WebcamSettings.Selected_Resolution = _resolutions[index];
-            //if (!WebcamSettings.SelectedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
-            //    WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, "30");
+            if (!WebcamSettings.SelectedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+                WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, "30");
             WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             OnPropertyChanged(nameof(Resolution_IsSelected));
         }
