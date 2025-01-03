@@ -54,6 +54,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Shapes;
 using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
@@ -16083,7 +16084,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                         if (CopyFile(migrationPath, migration + "\\" + "CopyMigrationFile"))
                         {
-                            Directory.Delete(migrationPath, true);
+                            try
+                            {
+                                Directory.Delete(migrationPath, true);
+                                writelog("[DDMMigration] delete temp folder success");
+                            }
+                            catch(Exception ex)
+                            {
+                                writelog($"[DDMMigration] delete temp folder exception: {migrationPath}");
+                            }
                         }
                     }
                     else
