@@ -114,6 +114,7 @@ namespace DDPM.UI.Common
                 if (currentRes != null)
                 {
                     SelectedResolution = Resolutions.FirstOrDefault(x => x.Value == currentRes.Resolution).Key;
+                    SelectedFPSs[SelectedResolution] = currentRes.FPS?.Count > 0 ? currentRes.FPS[0] : "30";
                 }
 
                 var customProfiles = di.CustomProfiles.ToObject<List<WebcamProfile>>()?.ToList();
