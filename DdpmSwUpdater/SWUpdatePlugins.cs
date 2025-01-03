@@ -853,6 +853,10 @@ namespace DdpmSwUpdater
             LogManage.LogMessage($"{title} Message:{info}");
         }
         ManagementEventWatcher watcher;
+        /// <summary>
+        /// Bruce added test
+        /// </summary>
+        ManagementEventWatcher watcher_Test;
         private void RegEvent()
         {
             LogManage.LogMessage($"RegEvent start");
@@ -863,11 +867,19 @@ namespace DdpmSwUpdater
                 WqlEventQuery query = new WqlEventQuery(
                          "SELECT * FROM RegistryValueChangeEvent WHERE " +
                          "Hive = 'HKEY_LOCAL_MACHINE'" +
+                         @"AND KeyPath = 'SOFTWARE\\Dell\\Dell Display and Peripheral Manager' AND ValueName='NextProcess'");
+                /// Bruce added test
+                WqlEventQuery query_Test = new WqlEventQuery(
+                         "SELECT * FROM RegistryValueChangeEvent WHERE " +
+                         "Hive = 'HKEY_LOCAL_MACHINE'" +
                          @"AND KeyPath = 'SOFTWARE\\Dell Display and Peripheral Manager' AND ValueName='NextProcess'");
                 watcher = new ManagementEventWatcher(query);
+                watcher_Test = new ManagementEventWatcher(query_Test);
                 LogManage.LogMessage("Waiting for an event...");
                 watcher.EventArrived += new EventArrivedEventHandler(OnRegistryValueChanged);
                 watcher.Start();
+                watcher_Test.EventArrived += new EventArrivedEventHandler(OnRegistryValueChanged);
+                watcher_Test.Start();
                 LogManage.LogMessage($"RegEvent watcher done");
             }
             catch (ManagementException ex)
@@ -883,12 +895,14 @@ namespace DdpmSwUpdater
         private void CancelRegEvent()
         {
             LogManage.LogMessage($"CancelRegEvent start");
-            if (watcher != null)
+            if (watcher != null && watcher_Test != null)
             {
                 LogManage.LogMessage($"CancelRegEvent watcher is not null");
                 LogManage.LogMessage($"CancelRegEvent stop watcher go");
                 watcher.Stop();
                 watcher.EventArrived -= new EventArrivedEventHandler(OnRegistryValueChanged);
+                watcher_Test.Stop();
+                watcher_Test.EventArrived -= new EventArrivedEventHandler(OnRegistryValueChanged);
                 LogManage.LogMessage($"CancelRegEvent stop watcher done");
             }
             LogManage.LogMessage($"CancelRegEvent done");
