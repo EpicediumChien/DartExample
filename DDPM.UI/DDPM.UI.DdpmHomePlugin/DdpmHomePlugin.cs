@@ -517,11 +517,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             if (!_monitorCache.Contains(monitor))
                             {
                                 newPlugIn = monitor;
-                                _monitorCache = _monitorInfos;
                                 break;
                             }
                         }
                     }
+                    // Always save cache for monitor when event launched
+                    _monitorCache = _monitorInfos;
                     if (newPlugIn != null) CheckIfNeedImportSetting_Display(new List<MonitorInfo>() { newPlugIn });
                 }
                 else
