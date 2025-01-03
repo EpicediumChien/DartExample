@@ -57,7 +57,7 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
             webcamSettings = new WebcamSettings();
             webcamSettings.SupportedFPSs = new Dictionary<string, List<string>>();
             webcamSettings.SupportedFPSs.Add("a", new List<string> { "a" });
-            webcamSettings.Selected_Resolution = "a";
+            webcamSettings.SelectedResolution = "a";
             webcamSettings.SelectedFPSs = new Dictionary<string, string>();
             webcamSettings.SelectedFPSs.Add("a", "a");
             webcamSettings.Resolutions = new Dictionary<string, string>();

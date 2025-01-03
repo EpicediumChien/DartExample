@@ -538,9 +538,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 Resolution_IsSelected[j] = false;
             }
             Resolution_IsSelected[index] = true;
-            WebcamSettings.Selected_Resolution = _resolutions[index];
-            if (!WebcamSettings.SelectedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
-                WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, "30");
+            WebcamSettings.SelectedResolution = _resolutions[index];
+            //if (!WebcamSettings.SelectedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+            //    WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, "30");
             WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             OnPropertyChanged(nameof(Resolution_IsSelected));
         }
@@ -552,7 +552,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 FPS_IsSelected[j] = false;
             }
             FPS_IsSelected[index] = true;
-            WebcamSettings.SelectedFPSs[WebcamSettings.Selected_Resolution] = WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution][index];
+            WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution] = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][index];
             WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             OnPropertyChanged(nameof(FPS_IsSelected));
         }
@@ -628,7 +628,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private void InitializeWebcam()
         {
             WebcamSettings = WebcamSettings.ImportWebcamSettings(Model, CurrentDeviceInfo!);
-            WebcamSettings.SetJsonToResolution(WebcamSettings, CurrentDeviceInfo!);
+            //WebcamSettings.SetJsonToResolution(WebcamSettings, CurrentDeviceInfo!);
 
             //if (WebcamSettings.SelectedProfileName == "")
             //{
@@ -742,18 +742,18 @@ namespace DDPM.UI.Plugin.ViewModels
             //    return;
 
             _resolutions = WebcamSettings.Resolutions.Keys.ToList();
-            var i = WebcamSettings.Resolutions.Keys.ToList().IndexOf(WebcamSettings.Selected_Resolution);
+            var i = WebcamSettings.Resolutions.Keys.ToList().IndexOf(WebcamSettings.SelectedResolution);
             _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(_resolutions)}!");
-            _log.Info($"DTP (WebcamSettings.Selected_Resolution:{WebcamSettings.Selected_Resolution}!");
+            _log.Info($"DTP (WebcamSettings.Selected_Resolution:{WebcamSettings.SelectedResolution}!");
             _log.Info($"DTP i:{i}!");
             SetResolution_Selected(i);
             _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(WebcamSettings.SupportedFPSs)}!");
-            var j = string.IsNullOrEmpty(WebcamSettings.Selected_FPS) ? WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.Selected_Resolution]) : WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution].IndexOf(WebcamSettings.Selected_FPS);
+            var j = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution]);
             _log.Info($"DTP j:{j}!");
             SetFPS_Selected(j);
             foreach (var sf in WebcamSettings.SelectedFPSs)
             {
-                if (sf.Key != WebcamSettings.Selected_Resolution)
+                if (sf.Key != WebcamSettings.SelectedResolution)
                     WebcamSettings.SelectedFPSs[sf.Key] = "30";
             }
             IsResolutionSectionEnable = true;
@@ -792,10 +792,6 @@ namespace DDPM.UI.Plugin.ViewModels
             CurrentProfile.IsAutoFramingTransitionOn = _isAutoFramingTransitionOn;
             CurrentProfile.AutoFramingFrameSize = _autoFramingFrameSize;
             CurrentProfile.AutoFramingSensitivity = _autoFramingSensitivity;
-            //CurrentProfile.Brightness = _brightness;
-            //CurrentProfile.Sharpness= _sharpness;
-            //CurrentProfile.Contrast=_contrast;
-            //CurrentProfile.Saturation = _saturation;
 
             if (!IsUSB3)
                 CurrentProfile.IsHDROn = false;
@@ -970,12 +966,12 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if (WebcamSettings?.SupportedFPSs == null || !WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.Selected_Resolution))
+                if (WebcamSettings?.SupportedFPSs == null || !WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
                 {
                     return false;
                 }
 
-                var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution];
+                var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution];
                 return !IsRecording && !(IsAutoFramingOn && supportedFPS.Count > 1 && supportedFPS[1] == "60");
             }
         }
@@ -984,12 +980,12 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if (WebcamSettings?.SupportedFPSs == null || !WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.Selected_Resolution))
+                if (WebcamSettings?.SupportedFPSs == null || !WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
                 {
                     return false;
                 }
 
-                var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution];
+                var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution];
                 return !IsRecording && !(IsAutoFramingOn && supportedFPS.Count > 2 && supportedFPS[2] == "60");
             }
         }
@@ -1047,12 +1043,12 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         public bool is_ProximitySensor_enable = true;
-        public bool IsProximitySensorEnable
-        {
-            get => IsProximitySensorEnable;
+        //public bool IsProximitySensorEnable
+        //{
+        //    get => IsProximitySensorEnable;
 
-            //set { }
-        }
+        //    //set { }
+        //}
 
         private bool _isChecked_Autofocus;
 
@@ -1161,9 +1157,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 //    else if (WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 2 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][2] == "60")
                 //        SetFPS_Selected(1);
                 //}
-                if (value && WebcamSettings?.SupportedFPSs != null && WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.Selected_Resolution))
+                if (value && WebcamSettings?.SupportedFPSs != null && WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
                 {
-                    var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.Selected_Resolution];
+                    var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution];
                     if (supportedFPS.Count > 1 && supportedFPS[1] == "60")
                         SetFPS_Selected(0);
                     else if (supportedFPS.Count > 2 && supportedFPS[2] == "60")

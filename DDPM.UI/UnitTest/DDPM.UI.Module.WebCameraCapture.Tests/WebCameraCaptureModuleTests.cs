@@ -59,12 +59,12 @@ namespace DDPM.UI.Module.WebCameraCapture.Tests
             vm = new WebCameraViewModel(console, log);
             webcamSettings = new WebcamSettings();
             webcamSettings.SupportedFPSs = new Dictionary<string, List<string>>();
-            webcamSettings.SupportedFPSs.Add("a",new List<string> { "a"});
-            webcamSettings.Selected_Resolution = "a";
+            webcamSettings.SupportedFPSs.Add("a", new List<string> { "a" });
+            webcamSettings.SelectedResolution = "a";
             webcamSettings.SelectedFPSs = new Dictionary<string, string>();
             webcamSettings.SelectedFPSs.Add("a", "a");
             webcamSettings.Resolutions = new Dictionary<string, string>();
-            webcamSettings.Resolutions.Add("a", "a");           
+            webcamSettings.Resolutions.Add("a", "a");
             vm.WebcamSettings = webcamSettings;
             webCameraCaptureRightView = new WebCameraCaptureRightView(vm);
             webCameraCaptureModule = new WebCameraCaptureModule(vm);

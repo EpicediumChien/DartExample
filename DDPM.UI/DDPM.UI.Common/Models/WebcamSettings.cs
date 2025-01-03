@@ -245,7 +245,7 @@ namespace DDPM.UI.Common
         {
             try
             {
-                DdpmCommonHelper.WriteUILog($"[ExportWebcamSettings] SelectedResolution :{WebcamSettings.Selected_Resolution}");
+                DdpmCommonHelper.WriteUILog($"[ExportWebcamSettings] SelectedResolution :{WebcamSettings.SelectedResolution}");
                 string json = JsonConvert.SerializeObject(WebcamSettings, Formatting.Indented);
                 DdpmCommonHelper.WriteUILog($"[ExportWebcamSettings] json json:{json}");
                 var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
