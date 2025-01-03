@@ -102,7 +102,10 @@ namespace DDPM.UI.Common
                 //Derek 2025/01/03 to check ALT+Z hotkey for QAM
                 if (hotkeyInfo.Alt && hotkeyInfo.Hotkey.Contains(VirtualKey.Z))
                 {
-                    DdpmCommonHelper.DDPMPureMesssageBox("QAM", $"KB/mouse assignable action will not allow 'Alt+Z' hotkey combination as webcam uses this 'Alt+Z' hotkey combination for reenabling QAM widget", true, null);
+                    DdpmCommonHelper.DDPMPureMesssageBox(LangHelper.Instance["hotkey.7"],
+                        LangHelper.Instance["Hotkey.10"],
+                        true, 
+                        null);
 
                     return false;
                 }
