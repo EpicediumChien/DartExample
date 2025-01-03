@@ -88,22 +88,48 @@ namespace DDPM.UI.Common
 
         public static bool hotKeyConflictsCheck(HotkeyInfo hotkeyInfo)
         {
-            HotkeyWarning hotkeyWarning = DdpmCommonHelper.DeviceManagerSA.GetHotkeyConflicts(hotkeyInfo).Result;
-            bool result = false;
-            switch (hotkeyWarning)
+            if (hotkeyInfo == null)
             {
-                case HotkeyWarning.None:
-                    result = true;
-                    break;
+                DdpmCommonHelper.WriteUILog($"hotkeyInfo == null when run hotKeyConflictsCheck");
 
-                case HotkeyWarning.SingleKey:
-                    result = DdpmCommonHelper.DDPMMesssageBox(LangHelper.Instance["hotkey.7"], LangHelper.Instance["hotkey.8"]);
-                    break;
-
-                case HotkeyWarning.ConflictInbox:
-                    result = DdpmCommonHelper.DDPMMesssageBox(LangHelper.Instance["hotkey.7"], LangHelper.Instance["hotkey.9"]);
-                    break;
+                return false;
             }
+
+            bool result = false;
+
+            try
+            {
+                //Derek 2025/01/03 to check ALT+Z hotkey for QAM
+                if (hotkeyInfo.Alt && hotkeyInfo.Hotkey.Contains(VirtualKey.Z))
+                {
+                    DdpmCommonHelper.DDPMPureMesssageBox("QAM", $"KB/mouse assignable action will not allow 'Alt+Z' hotkey combination as webcam uses this 'Alt+Z' hotkey combination for reenabling QAM widget", true, null);
+
+                    return false;
+                }
+
+                HotkeyWarning hotkeyWarning = DdpmCommonHelper.DeviceManagerSA!.GetHotkeyConflicts(hotkeyInfo).Result;
+                
+                switch (hotkeyWarning)
+                {
+                    case HotkeyWarning.None:
+                        result = true;
+                        break;
+
+                    case HotkeyWarning.SingleKey:
+                        result = DdpmCommonHelper.DDPMMesssageBox(LangHelper.Instance["hotkey.7"], LangHelper.Instance["hotkey.8"]);
+                        break;
+
+                    case HotkeyWarning.ConflictInbox:
+                        result = DdpmCommonHelper.DDPMMesssageBox(LangHelper.Instance["hotkey.7"], LangHelper.Instance["hotkey.9"]);
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                result = false;
+                DdpmCommonHelper.WriteUILog($"Catch exception[{e.Message}] when run hotKeyConflictsCheck");
+            }
+
             return result;
         }
         public static HotkeyInfo getUXTextBoxHotkeyInfo(object sender, System.Windows.Input.KeyEventArgs e, ref List<VirtualKey> newKeys, HotkeyType hotkeyType)
@@ -227,7 +253,7 @@ namespace DDPM.UI.Common
             //bypass
             if (!DdpmCommonHelper.isHotkeyBypass)
             {
-                DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(true).Result;
+                DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA!.ByPassHotkey(true).Result;
                 bool v = DdpmCommonHelper.DeviceManagerSA.UnRegistAllHotkey().Result;
             }
             e.Handled = true;
