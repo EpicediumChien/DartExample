@@ -54,7 +54,6 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.System;
