@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Method;
 using DDPM.UI.Common;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
@@ -298,7 +299,7 @@ namespace DDPM.UI.Plugin.ViewModels
             ReportRate = CurrentDeviceInfo.ReportRate;
 
             //PrimaryButtonIndex = CurrentDeviceInfo.MousePrimaryButton == MouseButton.Left ? 0 : 1;
-            PrimaryButtonIndex = User32.IsPrimaryButtonLeft() ? 0 : 1;
+            PrimaryButtonIndex = CallUser32dll.IsPrimaryButtonLeft() ? 0 : 1;
             OnPropertyChanged(nameof(ButtonCollection));
 
             InitializeButton();
@@ -539,7 +540,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged();
                     //MouseButton button = _primaryButtonIndex == 0 ? MouseButton.Left : MouseButton.Right;
                     //DdpmCommonHelper.DeviceManagerSA!.SetPrimaryMouseButton(button, CurrentDeviceInfo!.ID);
-                    User32.SetPrimaryButtonToLeft(_primaryButtonIndex == 0);
+                    CallUser32dll.SetPrimaryButtonToLeft(_primaryButtonIndex == 0);
                 }
             }
         }
