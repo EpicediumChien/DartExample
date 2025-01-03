@@ -84,22 +84,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 }
                                 else
                                 {
-                                    Window parentWindow = Window.GetWindow(this);
+                                    Window parentWindow = System.Windows.Application.Current.MainWindow;
                                     double windowLeft = 0;
                                     double windowTop = 0;
                                     double actualWidth = 0;
                                     double actualHeight = 0;
-                                    if (parentWindow == null)
-                                    {
-                                        actualWidth = System.Windows.Application.Current.MainWindow.ActualWidth;
-                                        actualHeight = System.Windows.Application.Current.MainWindow.ActualHeight;
-                                    }
-                                    else
-                                    {
-                                        actualWidth = parentWindow.ActualWidth;
-                                        actualHeight = parentWindow.ActualHeight;
-                                    }
-                                    ImportModalDialog modalDialog = new(mo.modelName, actualWidth, actualHeight - 40);
+                                    ImportModalDialog modalDialog = new(mo.modelName, parentWindow.ActualWidth, parentWindow.ActualHeight - 40);
                                     if (parentWindow != null)
                                     {
                                         modalDialog.Owner = parentWindow;
