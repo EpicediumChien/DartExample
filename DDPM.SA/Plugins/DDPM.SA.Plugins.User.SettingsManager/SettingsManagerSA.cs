@@ -541,7 +541,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         if (monitorSettingList.Count > 0)
                         {
                             _AllMonitorSettings.Add(modelname, monitorSettingList);
-                            binit = false;//true;
+                            binit = false;
                         }
                         else
                             binit = true;
