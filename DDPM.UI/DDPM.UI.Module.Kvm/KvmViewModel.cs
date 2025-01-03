@@ -1366,10 +1366,10 @@ namespace DDPM.UI.Module.Kvm
                 bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(KvmModule.SelectedHomeDevice.MonitorInfo, "Input Select", pcsList["PC1"].InputType).Result;
                 string result = b ? "Success" : "Failed";
                 _log.Debug($"[KvmViewModel] MainInput PC1-{pcsList["PC1"].InputType} Done with {result}.");
-                //if (b)
-                //{
-                //    KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = pcsList["PC1"].InputType;
-                //}
+                if (b)
+                {
+                    KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = pcsList["PC1"].InputType;
+                }
                 //}
             }
             else
@@ -1925,11 +1925,17 @@ namespace DDPM.UI.Module.Kvm
 
                 if (pcsList.TryGetValue("PC1", out var pc1) && pcsList.TryGetValue("PC2", out var pc2))
                 {
-                    CurrentInputChange();
                     //Jason by U3824DW input source greyed out
-                    if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
+                    if (pcsList["PC1"].InputType == original_pcsList["PC2"].InputType &&
+                    pcsList["PC2"].InputType == original_pcsList["PC1"].InputType &&
+                    (isPipSmall || isPipLarge) &&
+                    _curPxpMode != 0x0)
                     {
                         DdpmCommonHelper.DeviceManagerSA.VideoSwap(KvmModule.SelectedHomeDevice.MonitorInfo, 0, 1);
+                    }
+                    else
+                    {
+                        CurrentInputChange();
                     }
                     InputSourceObj pc1input = new InputSourceObj((UInt16)pcsList["PC1"].Code, pcsList["PC1"].InputType);
                     InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);

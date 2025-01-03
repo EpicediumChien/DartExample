@@ -30,8 +30,11 @@ namespace DDPM.UI.Module.Kvm
                 {
                     DdpmCommonHelper.DeviceManagerSA.VideoSwap(vm.KvmModule.SelectedHomeDevice.MonitorInfo, 0, 1);
                 }
-                vm.VideoSwapContent = new PIPSplitCtrl1B();
-                vm.VideoSwapContent_Left = new PIPSplitCtrl1B();
+                else
+                {
+                    vm.VideoSwapContent = new PIPSplitCtrl1B();
+                    vm.VideoSwapContent_Left = new PIPSplitCtrl1B();
+                }
             }
         }
     }
