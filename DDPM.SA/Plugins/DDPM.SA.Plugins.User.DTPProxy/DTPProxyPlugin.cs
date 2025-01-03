@@ -6133,6 +6133,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
                 {
+                    _Headsetcom.BandsGainChanged += Headset_BandsGainChanged;
                     _Headsetcom.WearDetectionChanged += Headset_WearDetectionChanged;
                     _Headsetcom.WearDetectionSensitivityChanged += Headset_WearDetectionSensitivityChanged;
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged += Headset_IsWearDetectionPauseMusicEnabledChanged;
@@ -6163,6 +6164,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
                 {
+                    _Headsetcom.BandsGainChanged -= Headset_BandsGainChanged;
                     _Headsetcom.WearDetectionChanged -= Headset_WearDetectionChanged;
                     _Headsetcom.WearDetectionSensitivityChanged -= Headset_WearDetectionSensitivityChanged;
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged -= Headset_IsWearDetectionPauseMusicEnabledChanged;
@@ -6200,6 +6202,17 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Connected", e.DeviceId));
 
             writelog($"[Headset] Catch event _Headset_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_BandsGainChanged(object sender, BandsGainChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_BandsGainChanged", e.DeviceId,
+                                      "Headset_Band1Gain:" + e.Band1Gain.ToString() + ";" +
+                                      "Headset_Band2Gain:" + e.Band2Gain.ToString() + ";" +
+                                      "Headset_Band3Gain:" + e.Band3Gain.ToString() + ";" +
+                                      "Headset_Band4Gain:" + e.Band4Gain.ToString() + ";" +
+                                      "Headset_Band5Gain:" + e.Band5Gain.ToString()));
+            writelog($"[Headset] Catch event Headset_BandsGainChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Headset_WearDetectionChanged(object sender, WearDetectionChangedArgs e)
