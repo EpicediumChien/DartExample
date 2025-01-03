@@ -31,7 +31,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         [Test]
         public void TestHeaderText()
         {
-            Assert.That(settingsPlugin.HeaderText, Is.EqualTo("DDPM Settingspage"));
+            Assert.That(settingsPlugin.HeaderText, Is.EqualTo("Settings Page"));
         }
 
         [Test]

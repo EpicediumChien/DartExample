@@ -18,6 +18,16 @@ using System.Threading.Tasks;
 
 namespace DDPM.SA.Common
 {
+    public class OSDEventArgs
+    {
+        public string Requester { get; set; } = string.Empty;
+        public string DeviceName { get; set; } = string.Empty;
+        public OSDType osd_type;
+        public OSDType_Device osd_device;
+        public string Message { get; set; } = string.Empty;
+        public bool Status { get; set; } = false;
+    }
+
     public interface IDPeMPlugin : IFrameworkPlugin
     {
         Task<PluginCondition> GetDPeMPluginConditionAsync();
@@ -59,7 +69,7 @@ namespace DDPM.SA.Common
 
         void SetDPILevel(int newDPILevel, Guid deviceId);
 
-        void SetPrimaryMouseButton(MouseButton newMouseButton, Guid deviceId);
+        //void SetPrimaryMouseButton(MouseButton newMouseButton, Guid deviceId);
 
         void SetTouchScrollSensitivityLevel(int newTouchScrollSensitivityLevel, Guid deviceId);
 
@@ -136,6 +146,10 @@ namespace DDPM.SA.Common
 
         int GetSnooze(Guid deviceId);
         int GetSnoozeLength(Guid deviceId);
+
+        void UpdateDTPInstance(IDTPProxyPlugin DTPInstance);
+        void UpdateSettingsInstance(ISettingsManagerDev SettingsInstance);
+        event EventHandler<OSDEventArgs> Peripheral_OSD_Notify;
     }
 
     public interface IDPeMServiceRegPlugin : IFrameworkPlugin

@@ -3,6 +3,7 @@ using System.Resources;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 
@@ -30,7 +31,8 @@ namespace DDPM.UI.Common
 
                 #region Default Text Color
                 UpdateFreezable("DefaultTheme_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFFF"));
-                UpdateFreezable("DefaultTheme_BdBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99194784"));
+                UpdateFreezable("DefaultTheme_ProcessBarTxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#A4B8CD"));
+                UpdateFreezable("DefaultTheme_BdBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99193457"));
                 UpdateFreezable("DefaultTheme_BdSolidBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF132F54"));
                 UpdateFreezable("DefaultTheme_BdBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#132F54"));
                 UpdateFreezable("DefaultTheme_BdSolidBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#1B385F"));
@@ -47,6 +49,7 @@ namespace DDPM.UI.Common
                 UpdateFreezable("DefaultTheme_TbBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#7E7E7E"));
                 UpdateFreezable("DefaultTheme_ListBoxBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#80141D27"));
                 UpdateFreezable("DefaultTheme_DialogBoxBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#132F54"));
+                UpdateFreezable("DefaultThemeRightViewAlertBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#364861"));
                 #endregion
 
                 #region Add Device
@@ -268,6 +271,19 @@ namespace DDPM.UI.Common
                 UpdateFreezable("Button1TextDisColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#828E9C"));
                 #endregion
 
+                #region PrimaryButton
+                UpdateFreezable("PrimaryButton_BkColor_Default", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0672CB"));
+                UpdateFreezable("PrimaryButton_BkColor_Hover", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0063B8"));
+                UpdateFreezable("PrimaryButton_BkColor_Pressed", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#00468B"));
+                UpdateFreezable("PrimaryButton_BkColor_Disabled", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#7F2E3034"));
+
+                UpdateFreezable("PrimaryButton_TextColor_Default", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
+                UpdateFreezable("PrimaryButton_TextColor_Hover", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
+                UpdateFreezable("PrimaryButton_TextColor_Pressed", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
+                UpdateFreezable("PrimaryButton_TextColor_Disabled", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#7F7C7C7C"));
+                #endregion PrimaryButton
+
+
                 #region SecondaryButton
                 UpdateFreezable("SecondaryButton_BkColor_Default", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#01FFFFFF"));
                 UpdateFreezable("SecondaryButton_BkColor_Hover", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#1D2C3B"));
@@ -362,15 +378,18 @@ namespace DDPM.UI.Common
 
                 #region Headset
                 UpdateFreezable("ToggleSwitch_NormalBackground", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0B1E38"));
+                UpdateFreezable("ToggleSwitch_NormalBorderBrush", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#1E3F6C"));
                 #endregion
 
                 #region Consent page
                 UpdateFreezable("ConsentPage_Background", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#13172A"));
                 #endregion
 
-                //#region HomeDevice LineArt image [Robert_Lin, 2024-11-26]
+                #region HomeDevice LineArt image [Robert_Lin, 2024-11-26]
                 UpdateBitmapImage("MonitorImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart.png", UriKind.RelativeOrAbsolute));
-                //#endregion HomeDevice LineArt image
+                #endregion HomeDevice LineArt image
+                UpdateBitmapImage("KeyboardImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Lineart-kb.png", UriKind.RelativeOrAbsolute));
+                UpdateBitmapImage("MouseImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/Lineart-ms.png", UriKind.RelativeOrAbsolute));
 
                 UpdateFreezable("DefaultThemeFullPageBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0D121A"));
 
@@ -379,6 +398,19 @@ namespace DDPM.UI.Common
                 UpdateFreezable("Webcam_TextBox_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#7E7E7E"));
                 UpdateFreezable("Webcam_UndoRedo_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99193457"));
                 #endregion
+
+                #region EzArrange
+                UpdateFreezable("EzArrange_ShadowEffect", (ref DropShadowEffect shadow) => { 
+                    shadow.Color = (Color)ColorConverter.ConvertFromString("#7F000000");
+                    shadow.ShadowDepth = 0;
+                    shadow.BlurRadius = 12;
+                    shadow.Opacity = 1;
+                    shadow.Direction = 0;
+                });
+                #endregion
+
+                UpdateBitmapImage("InterruptScreen_Image", new Uri($"pack://application:,,,/DDPM.UI.Common;component/Resources/Background_InterruptScreen.png", UriKind.RelativeOrAbsolute));
+                UpdateFreezable("InterruptScreen_Backgroung", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#132F54"));
 
                 BitmapImageUpdated?.Invoke(OSThemeEnum.Dark);
             }

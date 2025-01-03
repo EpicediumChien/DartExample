@@ -2,7 +2,9 @@
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.Common;
+using DDPM.UI.Plugin.DdpmHomePlugin;
 using DDPM.UI.Resources.Helper;
+using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Policy;
@@ -236,13 +238,17 @@ namespace DDPM.UI.Module.DisplayOthers
             loadDialog.ShowDialog();
         }
 
-        private bool? DisplayMsgBox(string title, string content, string left_btn = "", string right_btn = "")
+        private bool? DisplayMsgBox(string title, string content, string left_btn = "", string right_btn = "", bool returnToHomepage = false)
         {
             MessageModalDialog dlg = new MessageModalDialog(title, content, left_btn, right_btn);
             Window parentWindow = Window.GetWindow(this);
             if (parentWindow != null)
             {
                 dlg.Owner = parentWindow;
+            }
+            if (returnToHomepage)
+            {
+                dlg.Closed += ReturnToHomepage;
             }
             return dlg.ShowDialog();
         }
@@ -308,7 +314,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 case "result_success":
                     Dispatcher.Invoke(new Action(() =>
                     {
-                        DisplayMsgBox(Strings.ImpExp_Success, Strings.ImpExp_SuccessMsg0);
+                        DisplayMsgBox(Strings.ImpExp_Success, Strings.ImpExp_SuccessMsg0, returnToHomepage: true);
                     }));
                     break;
                 case "result_success_model":
@@ -316,7 +322,7 @@ namespace DDPM.UI.Module.DisplayOthers
                     {
                         string temp = LangHelper.Instance["ImpExp_SuccessMsg.1"];
                         temp = temp.Replace("%1", model); 
-                        DisplayMsgBox(LangHelper.Instance["Success"], temp);
+                        DisplayMsgBox(LangHelper.Instance["Success"], temp, returnToHomepage: true);
                     }));
                     break;
                 case "result_success_model_em":
@@ -324,7 +330,7 @@ namespace DDPM.UI.Module.DisplayOthers
                     {
                         string temp = LangHelper.Instance["ImpExp_SuccessMsg.2"];
                         temp = temp.Replace("%1", model);
-                        DisplayMsgBox(LangHelper.Instance["Success"], temp);
+                        DisplayMsgBox(LangHelper.Instance["Success"], temp, returnToHomepage: true);
                     }));
                     break;
                 case "restart":
@@ -351,6 +357,13 @@ namespace DDPM.UI.Module.DisplayOthers
                 default:
                     break;
             }
+        }
+
+        private void ReturnToHomepage(object sender, EventArgs e)
+        {
+            //Return to DdpmHomePage
+            IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
+            console?.ShowHomePage();
         }
     }
 }

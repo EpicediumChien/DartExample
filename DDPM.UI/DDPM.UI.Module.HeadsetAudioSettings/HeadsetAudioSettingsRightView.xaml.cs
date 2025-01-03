@@ -39,15 +39,16 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             converter.ViewModel = _vm;
 
             InitializeAsync();
-
+            _vm!.HeadsetSettingChanged += HeadsetSettingChanged;
+        }
+        private void HeadsetSettingChanged(object? sender, EventArgs e)
+        {
+            InitializeNodeValue();
         }
 
-        private async void InitializeAsync()
+        private async void InitializeNodeValue()
         {
-            //await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
             _vm._log!.Info("[HeadsetAudioSettingsRightView] Before Invoke_PleaseWaitAsync");
-            await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
-            _vm._log!.Info("[HeadsetAudioSettingsRightView] After Invoke_PleaseWaitAsync");
             if (_vm.DeviceInfoDTP!.IsPresetsSupported)
             {
                 if (_vm.DeviceInfoDTP!.Band1Gain > 4 || _vm.DeviceInfoDTP!.Band1Gain < -6)
@@ -105,8 +106,10 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
                     _vm._log!.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band5Gain {_vm.DeviceInfoDTP!.Band5Gain.ToString()}");
                 }
             }
-            //_vm.Invoke_PleaseWait(_vm.Model);
+        }
 
+        private async void InitializeAsync()
+        {
             //lock/unlock init, 9/23 add
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
@@ -147,12 +150,14 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
                 SystemParameters.StaticPropertyChanged -= SystemParameters_StaticPropertyChanged;
+                _vm!.HeadsetSettingChanged -= HeadsetSettingChanged;
+                _vm._log!.Info("[HeadsetAudioSettingsRightView] ~HeadsetAudioSettingsRightView()\r\n ~~~~~~~~~~");
             }
         }
 
         private void SystemParameters_StaticPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (DdpmCommonHelper.previousOsTheme == OSThemeEnum.Dark)
+            if (DdpmCommonHelper.PreviousOsTheme == OSThemeEnum.Dark)
             {
                 _vm.IsDarkTheme = true;
             }
@@ -270,6 +275,7 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
         /// <param name="e">EventArgs</param>
         private void Node_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            _vm._isRestoreEnable = false;
             isDragging = false;
             if (currentNode != null)
             {
@@ -530,9 +536,15 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
 
             double newY = minValue + (maxValue - minValue) * (maxOutput - value) / (maxOutput - minOutput);
 
-            Canvas.SetTop(node, newY);
-            UpdateNodeValuePosition(node);
-            UpdateCurve();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Canvas.SetTop(node, newY);
+                UpdateNodeValuePosition(node);
+                UpdateCurve();
+            });
+            //Canvas.SetTop(node, newY);
+            //UpdateNodeValuePosition(node);
+            //UpdateCurve();
             //UpdateShadowVisibility();
         }
     }

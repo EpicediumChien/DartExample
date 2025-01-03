@@ -20,7 +20,7 @@ namespace VcpCore.Common
             try
             {
                 ManagementObjectSearcher searcher = new ManagementObjectSearcher("Root\\WMI", "SELECT * FROM WmiMonitorDescriptorMethods");
-                foreach (ManagementObject TempMonitor in searcher.Get())
+                foreach (ManagementObject TempMonitor in searcher.Get().Cast<ManagementObject>())
                 {
                     string InstanceName = TempMonitor.GetPropertyValue("InstanceName").ToString();
                     string[] InstanceName_spilit = InstanceName.Split("\\");
@@ -105,8 +105,11 @@ namespace VcpCore.Common
                                         }
                                         finally
                                         {
-                                            registryKeyII.Close();
-                                            registryKeyII.Dispose();
+                                            if (registryKeyII != null)
+                                            {
+                                                registryKeyII.Close();
+                                                registryKeyII.Dispose();
+                                            }
                                         }
                                     }
                                 }
@@ -123,8 +126,11 @@ namespace VcpCore.Common
                             }
                             finally
                             {
-                                registryKey.Close();
-                                registryKey.Dispose();
+                                if (registryKey != null)
+                                {
+                                    registryKey.Close();
+                                    registryKey.Dispose();
+                                }
                             }
                         }
                     }

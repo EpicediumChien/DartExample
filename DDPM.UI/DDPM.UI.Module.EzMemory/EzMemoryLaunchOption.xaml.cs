@@ -31,6 +31,8 @@ using DDPM.Easy.Common;
 using DDPM.UI.Common.ViewModels;
 using static System.Reflection.Metadata.BlobBuilder;
 using System.Globalization;
+using Window = System.Windows.Window;
+using Dell.Client.Framework.Security;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -188,8 +190,51 @@ namespace DDPM.UI.Module.EzMemory
                 {
                     if (!CheckedAutoLunchTime())
                     {
-                        DdpmCommonHelper.DDPMPureMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryAutoLaunchErrorStringForLaunchOptionPage, true, System.Windows.Window.GetWindow(this));
-                        return;
+                        DDPM.SA.Common.Popup.PopupBase popBase = new DDPM.SA.Common.Popup.PopupBase(
+                            Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage,
+                            Strings.ezMemoryAutoLaunchErrorStringForLaunchOptionPage,
+                            "",
+                            Strings.OK,
+                            null, 
+                            false, 
+                            0,
+                            "C");
+                        popBase.Owner = System.Windows.Application.Current.MainWindow;
+                        bool? popResult = popBase.ShowDialog();
+                        //popResult: Close=null; LeftButton=false; RightButton=true
+                        if (popResult != true)
+                        {
+                            _log.Info("[EzMemoryLaunchOption] AutoLunchTime_Checked ... chooice No");
+                            return;
+                        }
+                        else
+                        {
+                            _log.Info("[EzMemoryLaunchOption] AutoLunchTime_Checked ... chooice Yes");
+                            return;
+                            //EasyArrangementDDPM clickedeasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
+
+                            //if (clickedeasyArrangementDDPM != null && clickedeasyArrangementDDPM.Desktops.Count > 0)
+                            //{
+                            //    foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
+                            //    {
+                            //        if (ps.AutoStartTime == GetAutoLaunchTime())
+                            //        {
+                            //            ps.Auto = false;
+                            //            ps.AutoStartTime = 0;
+                            //            if (DdpmCommonHelper.DeviceManagerSA.UpdateMonitorEzProfileSettingDDPM(_selecthomeDevice.MonitorInfo, ps).Result)
+                            //            {
+                            //                _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup update success ");
+                            //            }
+                            //        }
+                            //    }
+                            //}
+                            //else
+                            //{
+                            //    _log.Info($"@{nameof(EzMemoryLaunchOption)} CheckedAutoLunchTime update error ");
+                            //}
+
+
+                        }
                     }
                 }
 
@@ -278,7 +323,7 @@ namespace DDPM.UI.Module.EzMemory
                 // Clear UI and close view
                 _vm.ClearTextBlockAppName();
                 _vm.IsEditProfile = false;
-
+                _vm.RightViewDataClear();
                 DdpmCommonHelper.ModuleOwner?.CloseFullView();
             }
             catch (Exception ex)
@@ -298,16 +343,19 @@ namespace DDPM.UI.Module.EzMemory
 
         private long GetAutoLaunchTime()
         {
+            string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+            string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
+
             int hour = int.TryParse(_vm.SelectedHour, out var h) ? h : 0;
             int minute = int.TryParse(_vm.SelectedMinute, out var m) ? m : 0;
 
             // PM
-            if (_vm.SelectedAMPM == "PM")
+            if (_vm.SelectedAMPM == pmDesignator)
             {
                 hour += 12;
             }
             // AM
-            else if (_vm.SelectedAMPM == "AM" && hour == 12)
+            else if (_vm.SelectedAMPM == amDesignator && hour == 12)
             {
                 hour = 0;
             }
@@ -420,6 +468,7 @@ namespace DDPM.UI.Module.EzMemory
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             _vm.ClearTextBlockAppName();
+            _vm.RightViewDataClear();
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
         }
 
@@ -444,16 +493,27 @@ namespace DDPM.UI.Module.EzMemory
                         {
                             if (_vm.currentEditprofileSetting == null || _vm.currentEditprofileSetting.ID != ps.ID)
                             {
-                                if (DdpmCommonHelper.DDPMMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryStartupErrorStringForLaunchOptionPage))
-                                {
-                                    _log.Info("[EzMemoryLaunchOption] StartupCB_Checked ... choice Yes");
-                                    _vm.IsLaunchAtStartup = true;
-                                    //break;
-                                }
-                                else
+                                DDPM.SA.Common.Popup.PopupBase popBase = new DDPM.SA.Common.Popup.PopupBase(
+                                    Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage,
+                                    Strings.ezMemoryStartupErrorStringForLaunchOptionPage,
+                                    Strings.No,
+                                    Strings.Yes,
+                                    null, 
+                                    false, 
+                                    0);
+                                popBase.Owner = System.Windows.Application.Current.MainWindow;
+                                bool? popResult = popBase.ShowDialog();
+
+                                //if (DdpmCommonHelper.DDPMMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryStartupErrorStringForLaunchOptionPage))
+                                if(popResult != true)
                                 {
                                     _log.Info("[EzMemoryLaunchOption] StartupCB_Checked ... choice No");
                                     _vm.IsLaunchAtStartup = false;
+                                }
+                                else
+                                {
+                                    _log.Info("[EzMemoryLaunchOption] StartupCB_Checked ... choice Yes");
+                                    _vm.IsLaunchAtStartup = true;
                                 }
                             }
                         }

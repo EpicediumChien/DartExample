@@ -9,7 +9,8 @@ using Moq;
 using NGA.UnitTest.PrivateObject;
 using NUnit.Framework;
 using System.Windows.Controls;
-
+using Dell.Client.Framework.UX.WPF.ResourceManager;
+using System.Windows;
 namespace DDPM.UI.Module.Collaboration.Test
 {
     [TestFixture, Apartment(ApartmentState.STA)]
@@ -25,6 +26,14 @@ namespace DDPM.UI.Module.Collaboration.Test
         [SetUp]
         public void SetUp()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
+            ResourceManager res = new ResourceManager();
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
+            System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             consoleMock = new Mock<IConsole>();
             logMock = new Mock<ILog>();
             deviceManagerMock = new Mock<IDeviceManagerSA>();
@@ -91,6 +100,37 @@ namespace DDPM.UI.Module.Collaboration.Test
 
             // Assert
             Assert.That(moduleOwner, Is.EqualTo(moduleOwnerMock.Object));
+        }
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChanged()
+        {
+            collaborationModule.IsModuleActive = false;
+            collaborationModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChangeda()
+        {
+            collaborationModule.IsModuleActive = true;
+            collaborationModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestOnActivated()
+        {
+            privateObject.SetFieldOrProperty("isSelectChanged", true);
+            collaborationModule.OnActivated();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestOnDeactivated()
+        {
+            collaborationModule.OnDeactivated();
+            Assert.Pass();
         }
     }
 }

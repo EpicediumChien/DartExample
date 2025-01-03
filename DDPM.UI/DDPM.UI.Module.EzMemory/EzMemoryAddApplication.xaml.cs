@@ -42,6 +42,8 @@ namespace DDPM.UI.Module.EzMemory
         private readonly IConsole _console;
         private readonly ILog _log;
         private HomeDevice _selecthomeDevice;
+        private bool SortbyNameDescenAscen = false;
+        private bool SortbyDateDescenAscen = false;
         #endregion Private Members
 
         public EzMemoryAddApplication(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
@@ -63,6 +65,7 @@ namespace DDPM.UI.Module.EzMemory
             DataContext = vm;
             
             InitializeComponent();
+            edFilter_TextChanged(edFilter, new TextChangedEventArgs(TextBox.TextChangedEvent, UndoAction.None));
         }
 
         /// <summary>
@@ -100,19 +103,26 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void btnSortbyName_Ascending_Click(object sender, EventArgs e)
         {
-            List<Bind_AddFullPage_AppCollectionData> TempSorted;
-
-            TempSorted = _vm._bind_apps.OrderBy(x => x.AppName).ToList();
-
-            _vm._bind_apps.Clear();
-
-            foreach (var item in TempSorted)
+            if (!SortbyNameDescenAscen)
             {
-                if (!_vm._bind_apps.Contains(item))
+                List<Bind_AddFullPage_AppCollectionData> TempSorted;
+
+                TempSorted = _vm._bind_apps.OrderBy(x => x.AppName).ToList();
+
+                _vm._bind_apps.Clear();
+
+                foreach (var item in TempSorted)
                 {
-                    _vm._bind_apps.Add(item);
+                    if (!_vm._bind_apps.Contains(item))
+                    {
+                        _vm._bind_apps.Add(item);
+                    }
                 }
+                SortbyNameDescenAscen = true;
             }
+            else
+                btnSortbyName_Descending_Click(sender, e);
+
         }
 
         /// <summary>
@@ -135,6 +145,7 @@ namespace DDPM.UI.Module.EzMemory
                     _vm._bind_apps.Add(item);
                 }
             }
+            SortbyNameDescenAscen = false;
         }
 
         /// <summary>
@@ -144,19 +155,25 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void btnSortbyDate_Ascending_Click(object sender, EventArgs e)
         {
-            List<Bind_AddFullPage_AppCollectionData> TempSorted;
-
-            TempSorted = _vm._bind_apps.OrderBy(x => x.InstalledDate).ToList();
-
-            _vm._bind_apps.Clear();
-
-            foreach (var item in TempSorted)
+            if (!SortbyDateDescenAscen)
             {
-                if (!_vm._bind_apps.Contains(item))
+                List<Bind_AddFullPage_AppCollectionData> TempSorted;
+
+                TempSorted = _vm._bind_apps.OrderBy(x => x.InstalledDate).ToList();
+
+                _vm._bind_apps.Clear();
+
+                foreach (var item in TempSorted)
                 {
-                    _vm._bind_apps.Add(item);
+                    if (!_vm._bind_apps.Contains(item))
+                    {
+                        _vm._bind_apps.Add(item);
+                    }
                 }
+                SortbyDateDescenAscen = true;
             }
+            else
+                btnSortbyDate_Descending_Click(sender, e);
         }
 
         /// <summary>
@@ -180,6 +197,7 @@ namespace DDPM.UI.Module.EzMemory
                     _vm._bind_apps.Add(item);
                 }
             }
+            SortbyDateDescenAscen = false;
         }
 
         /// <summary>

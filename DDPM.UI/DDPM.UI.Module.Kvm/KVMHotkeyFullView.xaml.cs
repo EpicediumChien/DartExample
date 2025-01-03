@@ -65,6 +65,7 @@ namespace DDPM.UI.Module.Kvm
         }
         private void tbSwitchPCsKey_PreviewKeyUp(object sender, KeyEventArgs e)
         {
+            e.Handled = true;
             HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.KvmSwitchInputSource);
             if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
             {
@@ -110,6 +111,10 @@ namespace DDPM.UI.Module.Kvm
                     else
                     {
                         vm.SwitchPCsKey = _strPreviousKey;
+                        var texBox = (sender as UXTextBox);
+                        if (texBox == null) return;
+                        texBox.Text = vm.SwitchPCsKey;
+                        texBox.Select(vm.SwitchPCsKey.Length, 1);
                     }
 
                     BundleNewKeys.Clear();
@@ -121,7 +126,6 @@ namespace DDPM.UI.Module.Kvm
 
         private void tbSwitchPCsKey_GotFocus(object sender, RoutedEventArgs e)
         {
-
             alphabetKey = false;
             newKeys.Clear();
             _strPreviousKey = vm.SwitchPCsKey;
@@ -149,6 +153,7 @@ namespace DDPM.UI.Module.Kvm
 
         private void tbSwitchKbMsKey_PreviewKeyUp(object sender, KeyEventArgs e)
         {
+            e.Handled = true;
             HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.KvmSwitchKbMsKey);
             if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
             {
@@ -174,13 +179,16 @@ namespace DDPM.UI.Module.Kvm
                     else
                     {
                         vm.SwitchKbMsKey = _strPreviousKey;
+                        var texBox = (sender as UXTextBox);
+                        if (texBox == null) return;
+                        texBox.Text = vm.SwitchKbMsKey;
+                        texBox.Select(vm.SwitchKbMsKey.Length, 1);
                     }
 
                     BundleNewKeys.Clear();
 
                 }
             }
-            e.Handled = true;
         }
 
         private void tbSwitchKbMsKey_GotFocus(object sender, RoutedEventArgs e)
@@ -211,6 +219,7 @@ namespace DDPM.UI.Module.Kvm
 
         private void tbChangePipKey_PreviewKeyUp(object sender, KeyEventArgs e)
         {
+            e.Handled = true;
             HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.KvmChangePIPPosition);
             if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
             {
@@ -236,13 +245,17 @@ namespace DDPM.UI.Module.Kvm
                     else
                     {
                         vm.ChangePipKey = _strPreviousKey;
+                        var texBox = (sender as UXTextBox);
+                        if (texBox == null) return;
+                        texBox.Text = vm.ChangePipKey;
+                        texBox.Select(vm.ChangePipKey.Length, 1);
                     }
 
                     BundleNewKeys.Clear();
 
                 }
             }
-            e.Handled = true;
+
         }
 
         private void tbChangePipKey_GotFocus(object sender, RoutedEventArgs e)
@@ -285,36 +298,6 @@ namespace DDPM.UI.Module.Kvm
                 DdpmCommonHelper.ModuleOwner.CloseFullView();
                 DdpmCommonHelper.ModuleOwner.ShowSpecificModule(Constants.GroupName_InputSource, Constants.ModuleName_DisplayHotkeys);
             }
-        }
-
-
-        private void doLostFocus(HotkeyInfo hotkeyInfo, string prStr, string crStr, ref List<VirtualKey> keys)
-        {
-            if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
-            {
-                //save hotkey
-                // SaveHotkeysSetting(_strTbBrightnessMinsPreviousKey, vm.BrightnessMinsKey, HotkeyType.BrightnessReduce, ref BrightnessMinsNewKeys, "Brightness-");
-                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.KvmModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                vm.Invoke_RefreshHotkeySettings();
-            }
-            else
-            {
-                switch (hotkeyInfo.Job)
-                {
-                    case HotkeyType.KvmSwitchInputSource:
-                        vm.SwitchPCsKey = prStr;
-                        break;
-
-                    case HotkeyType.KvmChangePIPPosition:
-                        vm.ChangePipKey = prStr;
-                        break;
-
-                    case HotkeyType.KvmSwitchKbMsKey:
-                        vm.SwitchKbMsKey = prStr;
-                        break;
-                }
-            }
-            keys.Clear();
         }
     }
 }

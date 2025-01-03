@@ -46,5 +46,16 @@ namespace DDPM.UI.Module.MouseSettings
             _vm.IsTouchScrollHilighted = Visibility.Collapsed;
             _vm.OnPropertyChanged(nameof(_vm.IsTouchScrollHilighted));
         }
+
+        private void DPISlider_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            _vm.IsSliderDragging = false;
+            _vm.SetDPIValue();
+        }
+
+        private void DPISlider_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            _vm.IsSliderDragging = true;
+        }
     }
 }

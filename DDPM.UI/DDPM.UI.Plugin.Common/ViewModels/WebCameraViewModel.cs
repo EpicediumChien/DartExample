@@ -22,6 +22,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Media3D;
 using System.Windows.Threading;
 using Windows.Media.Capture;
 using Windows.Media.Capture.Frames;
@@ -84,7 +85,6 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public WebcamSettings WebcamSettings = new();
         public WebcamProfile CurrentProfile = new();
-        public List<string> FPSs = new();
         public List<WebcamOperation> WCOperations = new();
         private int OPIndex = -1;
         const int MaxOPs = 30;
@@ -151,28 +151,32 @@ namespace DDPM.UI.Plugin.ViewModels
             get { return _isChecked_ProximitySensor; }
             set
             {
-                if (value != _isChecked_ProximitySensor) //Add by Derek 11/12
-                {
-                    _isChecked_ProximitySensor = value;
-                    DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
-                    //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
+                //if (value != _isChecked_ProximitySensor) //Add by Derek 11/12
+                //{
+                _isChecked_ProximitySensor = value;
+                DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
+                //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
 
-                    // jim add for PIMS-328195
-                    _isEnable_WalkAwayLock = _isChecked_WalkAwayLock && _isChecked_ProximitySensor;
+                // jim add for PIMS-328195
+                _isEnable_WalkAwayLock = _isChecked_WalkAwayLock && _isChecked_ProximitySensor;
 
-                    _isEnable_SnoozeLength = _isChecked_Snooze && _isChecked_ProximitySensor;
+                _isEnable_Snooze = _isChecked_ProximitySensor;
 
-                    OnPropertyChanged("IsChecked_ProximitySensor");
-                    OnPropertyChanged("ProximitySensorStatus_String");
-                    OnPropertyChanged("IsEnable_WalkAwayLock");
-                    OnPropertyChanged("IsEnable_SnoozeLength");
+                _isEnable_SnoozeLength = _isChecked_Snooze && _isChecked_ProximitySensor;
 
-                    //Derek 11/12
-                    //PIMS - 319099
-                    //Find Presence Detection Setting is available, when SUT does not support HPD_MPS and
-                    //Internal Presence Sensor. DUT is with HPD_MPS FW
-                    ChangeUPDStatus();
-                }
+
+                OnPropertyChanged("IsChecked_ProximitySensor");
+                OnPropertyChanged("ProximitySensorStatus_String");
+                OnPropertyChanged("IsEnable_WalkAwayLock");
+                OnPropertyChanged("IsEnable_Snooze");
+                OnPropertyChanged("IsEnable_SnoozeLength");
+
+                //Derek 11/12
+                //PIMS - 319099
+                //Find Presence Detection Setting is available, when SUT does not support HPD_MPS and
+                //Internal Presence Sensor. DUT is with HPD_MPS FW
+                ChangeUPDStatus();
+                //}
             }
         }
 
@@ -284,6 +288,18 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
+        // jim 20250102 add for PIMS-328195 - [DDPM WIN 2.0][R17_ Webcam] Delay and Snooze still selectable when Proximity Sensor is off and WAL is on.
+        private bool _isEnable_Snooze = false;
+        public bool IsEnable_Snooze
+        {
+            get { return _isEnable_Snooze; }
+            set
+            {
+                _isEnable_Snooze = value;
+                OnPropertyChanged("IsEnable_Snooze");
+            }
+        }
+
         // jim add for PIMS-328195
         private bool _isEnable_SnoozeLength = false;
         public bool IsEnable_SnoozeLength
@@ -321,7 +337,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         if (_SelectedSnoozeLength.SnoozeLength == 30)
                         {
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
                             DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 1800;
@@ -329,7 +345,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         }
                         else if (_SelectedSnoozeLength.SnoozeLength == 60)
                         {
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
                             DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 3600;
@@ -337,7 +353,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         }
                         else if (_SelectedSnoozeLength.SnoozeLength == 90)
                         {
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
                             DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 2);
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(2, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 5400;
@@ -345,14 +361,12 @@ namespace DDPM.UI.Plugin.ViewModels
                         }
                         else if (_SelectedSnoozeLength.SnoozeLength == 120)
                         {
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1);
+                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
                             DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 3);
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(3, CurrentDeviceInfo!.ID);
                             //_SelectedSnoozeLength.SnoozeLength = 7200;
                             //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                         }
-
-
 
                     }
                 }
@@ -410,29 +424,33 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 if (_SelectedSnoozeLength.SnoozeLength == 30)
                 {
-                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
-                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
+                    if (_isChecked_Snooze) // Jim 20241223 add a judgment condition to set snoozewhen SnoozeLength is selected. 
+                        DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
                     //_SelectedSnoozeLength.SnoozeLength = 1800;
                     //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                 }
                 else if (_SelectedSnoozeLength.SnoozeLength == 60)
                 {
-                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
-                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
+                    if (_isChecked_Snooze) // Jim 20241223 add a judgment condition to set snoozewhen SnoozeLength is selected. 
+                        DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
                     //_SelectedSnoozeLength.SnoozeLength = 3600;
                     //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                 }
                 else if (_SelectedSnoozeLength.SnoozeLength == 90)
                 {
-                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 2);
-                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(2, CurrentDeviceInfo!.ID);
+                    if (_isChecked_Snooze) // Jim 20241223 add a judgment condition to set snoozewhen SnoozeLength is selected. 
+                        DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 2);
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(2, CurrentDeviceInfo!.ID);
                     //_SelectedSnoozeLength.SnoozeLength = 5400;
                     //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                 }
                 else if (_SelectedSnoozeLength.SnoozeLength == 120)
                 {
-                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 3);
-                    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(3, CurrentDeviceInfo!.ID);
+                    if (_isChecked_Snooze) // Jim 20241223 add a judgment condition to set snoozewhen SnoozeLength is selected. 
+                        DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 3);
+                    //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(3, CurrentDeviceInfo!.ID);
                     //_SelectedSnoozeLength.SnoozeLength = 7200;
                     //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                 }
@@ -521,8 +539,8 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             Resolution_IsSelected[index] = true;
             WebcamSettings.SelectedResolution = _resolutions[index];
-            if (!WebcamSettings.SelectedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
-            { WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][0]); }
+            //if (!WebcamSettings.SelectedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+            //    WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, "30");
             WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
             OnPropertyChanged(nameof(Resolution_IsSelected));
         }
@@ -572,6 +590,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public override bool SetCurrentDevice(string deviceID)
         {
+            _log.Info("WebCameraViewModel SetCurrentDevice");
             deviceID ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
 
             if (!base.SetCurrentDevice(deviceID))
@@ -589,8 +608,6 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(IsMicEnumerationOn));
             OnPropertyChanged(nameof(IsMicEnumerationOnText));
 
-            FPSs.Clear();
-
             WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
 
             _isChecked_ProximitySensor = CurrentDeviceInfo!.IsProximitySensorEnable;
@@ -599,6 +616,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsChecked_ProximitySensor = false;
                 WebcamSettings.IsFirstTime = false;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+                _log.Info("WebCameraViewModel ExportWebcamSettings Finish");
             }
 
             IsMicEnumerationOnEnabled = true;
@@ -606,9 +624,12 @@ namespace DDPM.UI.Plugin.ViewModels
             return true;
         }
 
+        public bool IsUSB3 = false;
         private void InitializeWebcam()
         {
             WebcamSettings = WebcamSettings.ImportWebcamSettings(Model, CurrentDeviceInfo!);
+            //WebcamSettings.SetJsonToResolution(WebcamSettings, CurrentDeviceInfo!);
+
             //if (WebcamSettings.SelectedProfileName == "")
             //{
             //    IsDTPReady = false;
@@ -699,7 +720,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (autoFramingFrameSize == -1)
                 {
                     _log.Error("DTP GetAutoFramingFrameSize fail!");
-                    _autoFramingFrameSize = 0;
+                    _autoFramingFrameSize = 1;
                 }
                 else
                     _autoFramingFrameSize = autoFramingFrameSize;
@@ -710,15 +731,32 @@ namespace DDPM.UI.Plugin.ViewModels
                 _fOVs[k] = int.Parse(CurrentDeviceInfo!.FOVValues[k]);
             }
 
+            IsUSB3 = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(CurrentDeviceInfo!.ID.ToString()).Result;
+            if (!IsUSB3)
+            {
+                _ = DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), false);
+                OnPropertyChanged(nameof(IsHDROn));
+            }
             SetProfile();
             //if (!IsDTPReady)
             //    return;
 
             _resolutions = WebcamSettings.Resolutions.Keys.ToList();
             var i = WebcamSettings.Resolutions.Keys.ToList().IndexOf(WebcamSettings.SelectedResolution);
+            _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(_resolutions)}!");
+            _log.Info($"DTP (WebcamSettings.Selected_Resolution:{WebcamSettings.SelectedResolution}!");
+            _log.Info($"DTP i:{i}!");
             SetResolution_Selected(i);
+            _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(WebcamSettings.SupportedFPSs)}!");
             var j = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution]);
+            _log.Info($"DTP j:{j}!");
             SetFPS_Selected(j);
+            foreach (var sf in WebcamSettings.SelectedFPSs)
+            {
+                if (sf.Key != WebcamSettings.SelectedResolution)
+                    WebcamSettings.SelectedFPSs[sf.Key] = "30";
+            }
+            IsResolutionSectionEnable = true;
 
             if (CurrentDeviceInfo.IsWindowsHelloSupported)
             {
@@ -726,7 +764,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 var result = task.Result;
                 if (result == null)
                 {
-                    _log.Error("DTP GetAutoFramingFrameSize fail!");
+                    _log.Error("DTP GetIsPrioritizeExternalWebcam fail!");
                     _isPrioritizeExternalWebcam = CurrentDeviceInfo.IsPrioritizeExternalWebcam;
                     //IsDTPReady = false;
                 }
@@ -754,6 +792,9 @@ namespace DDPM.UI.Plugin.ViewModels
             CurrentProfile.IsAutoFramingTransitionOn = _isAutoFramingTransitionOn;
             CurrentProfile.AutoFramingFrameSize = _autoFramingFrameSize;
             CurrentProfile.AutoFramingSensitivity = _autoFramingSensitivity;
+
+            if (!IsUSB3)
+                CurrentProfile.IsHDROn = false;
 
             //var IsNormalProfile = CurrentProfileName != "Smooth" && CurrentProfileName != "Vibrant" && CurrentProfileName != "Warm";
             Task<bool> task;
@@ -792,7 +833,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
 
-            if (CurrentDeviceInfo.IsPropertyHDRSupported)
+            if (CurrentDeviceInfo.IsPropertyHDRSupported && IsUSB3)
             {
                 task = DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsHDROn);
                 if (!task.Result)
@@ -912,17 +953,51 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 _isRecording = value;
                 OnPropertyChanged(nameof(IsNotRecording));
+                OnPropertyChanged(nameof(IsFPS1Enable));
+                OnPropertyChanged(nameof(IsFPS2Enable));
                 OnPropertyChanged(nameof(hdr_enable));
             }
         }
-        public bool IsNotRecording { get => !IsRecording; }
 
+        public bool IsNotAutoFramingOn { get => !IsAutoFramingOn; }
+        public bool IsNotRecording { get => !IsRecording; }
+        //public bool IsFPS1Enable { get => !IsRecording && !(IsAutoFramingOn && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 1 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][1] == "60"); }
+        public bool IsFPS1Enable
+        {
+            get
+            {
+                if (WebcamSettings?.SupportedFPSs == null || !WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+                {
+                    return false;
+                }
+
+                var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution];
+                return !IsRecording && !(IsAutoFramingOn && supportedFPS.Count > 1 && supportedFPS[1] == "60");
+            }
+        }
+        //public bool IsFPS2Enable { get => !IsRecording && !(IsAutoFramingOn && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 2 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][2] == "60"); }
+        public bool IsFPS2Enable
+        {
+            get
+            {
+                if (WebcamSettings?.SupportedFPSs == null || !WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+                {
+                    return false;
+                }
+
+                var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution];
+                return !IsRecording && !(IsAutoFramingOn && supportedFPS.Count > 2 && supportedFPS[2] == "60");
+            }
+        }
         public int btnRes0_width { get; set; }
         public int btnRes1_width { get; set; }
         public int btnRes2_width { get; set; }
         public int btnRes3_width { get; set; }
+        public bool IsResolutionSectionEnable { get; set; } = true;
 
 
+        public CornerRadius btnRes0_radius { get => btnRes0_radius_v; }
+        public CornerRadius btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
         public CornerRadius btnRes1_radius { get => btnRes1_radius_v; }
         public CornerRadius btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
 
@@ -932,7 +1007,21 @@ namespace DDPM.UI.Plugin.ViewModels
         public Visibility btnRes3_show { get; set; } = Visibility.Visible;
 
 
-        public Visibility bdrPrioritize_show { get; set; } = Visibility.Visible;
+        public Visibility bdrPrioritize_show_value = Visibility.Visible;
+        public Visibility bdrPrioritize_show
+        {
+            get => bdrPrioritize_show_value;
+            set
+            {
+                bdrPrioritize_show_value = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(bdrPrioritize_show));
+            }
+        }
+
+
+
+
         public Visibility brdHello_show { get; set; } = Visibility.Visible;
         public Visibility brdHello_show_control { get; set; } = Visibility.Visible;
 
@@ -946,18 +1035,20 @@ namespace DDPM.UI.Plugin.ViewModels
                 is_hdr_enable = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsNotRecording));
+                OnPropertyChanged(nameof(IsFPS1Enable));
+                OnPropertyChanged(nameof(IsFPS2Enable));
                 //OnPropertyChanged(nameof(is_hdr_enable));
                 OnPropertyChanged(nameof(hdr_enable));
             }
         }
 
         public bool is_ProximitySensor_enable = true;
-        public bool IsProximitySensorEnable
-        {
-            get => IsProximitySensorEnable;
+        //public bool IsProximitySensorEnable
+        //{
+        //    get => IsProximitySensorEnable;
 
-            set { }
-        }
+        //    //set { }
+        //}
 
         private bool _isChecked_Autofocus;
 
@@ -1032,11 +1123,17 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentDeviceInfo!.IsMicEnumerationOn;
             set
             {
+                DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 2 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                 if (value == IsMicEnumerationOn)
                     return;
+                DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 3 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 
                 if (!isIsMicEnumerationOnChanged_event)
+                {
+                    DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 4 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                     DdpmCommonHelper.DeviceManagerSA!.SetIsMicEnumerationOn(value, CurrentDeviceInfo!.ID);
+                }
+                DdpmCommonHelper.WriteUILog("WebCameraMicrophone Action 5 : " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsMicEnumerationOnText));
             }
@@ -1053,6 +1150,25 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentProfile.IsAutoFramingOn;
             set
             {
+                //if (value && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 1)
+                //{
+                //    if (WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][1] == "60")
+                //        SetFPS_Selected(0);
+                //    else if (WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].Count > 2 && WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][2] == "60")
+                //        SetFPS_Selected(1);
+                //}
+                if (value && WebcamSettings?.SupportedFPSs != null && WebcamSettings.SupportedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
+                {
+                    var supportedFPS = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution];
+                    if (supportedFPS.Count > 1 && supportedFPS[1] == "60")
+                        SetFPS_Selected(0);
+                    else if (supportedFPS.Count > 2 && supportedFPS[2] == "60")
+                        SetFPS_Selected(1);
+                }
+                OnPropertyChanged(nameof(IsNotAutoFramingOn));
+                OnPropertyChanged(nameof(IsFPS1Enable));
+                OnPropertyChanged(nameof(IsFPS2Enable));
+
                 if (value == CurrentProfile.IsAutoFramingOn)
                     return;
 
@@ -1339,7 +1455,9 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(AutoWhiteBalance), _autoWhiteBalance, OperationModule.ColorAndImage);
         }
 
-        private int _brightness = 0;
+        public string BrightnessText { get; set; } = "";
+        public double[] BrightnessMargin { get; set; } = { 0 };
+        private int _brightness = -1;
         public int Brightness
         {
             get => _brightness;
@@ -1352,8 +1470,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetBrightness();
                     }
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.BrightnessMin) / (CurrentDeviceInfo.BrightnessMax - CurrentDeviceInfo!.BrightnessMin);
+                    BrightnessMargin = GetTextmargin(value, CurrentDeviceInfo?.BrightnessMax, CurrentDeviceInfo?.BrightnessMin, out string text);
+                    BrightnessText = text;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(BrightnessText));
+                    OnPropertyChanged(nameof(BrightnessMargin));
                 }
-                OnPropertyChanged();
             }
         }
         public void SetBrightness()
@@ -1362,7 +1485,9 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(Brightness), _brightness, OperationModule.ColorAndImage);
         }
 
-        private int _sharpness = 0;
+        public string SharpnessText { get; set; } = "";
+        public double[] SharpnessMargin { get; set; } = { 0 };
+        private int _sharpness = -1;
         public int Sharpness
         {
             get => _sharpness;
@@ -1375,8 +1500,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetSharpness();
                     }
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.SharpnessMin) / (CurrentDeviceInfo.SharpnessMax - CurrentDeviceInfo!.SharpnessMin);
+                    SharpnessMargin = GetTextmargin(value, CurrentDeviceInfo?.SharpnessMax, CurrentDeviceInfo?.SharpnessMin, out string text);
+                    SharpnessText = text;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SharpnessText));
+                    OnPropertyChanged(nameof(SharpnessMargin));
                 }
-                OnPropertyChanged();
             }
         }
         public void SetSharpness()
@@ -1385,7 +1515,9 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(Sharpness), _sharpness, OperationModule.ColorAndImage);
         }
 
-        private int _contrast = 0;
+        public string ContrastText { get; set; } = "";
+        public double[] ContrastMargin { get; set; } = { 0 };
+        private int _contrast = -1;
         public int Contrast
         {
             get => _contrast;
@@ -1398,8 +1530,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetContrast();
                     }
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.ContrastMin) / (CurrentDeviceInfo.ContrastMax - CurrentDeviceInfo!.ContrastMin);
+                    ContrastMargin = GetTextmargin(value, CurrentDeviceInfo?.ContrastMax, CurrentDeviceInfo?.ContrastMin, out string text);
+                    ContrastText = text;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ContrastText));
+                    OnPropertyChanged(nameof(ContrastMargin));
                 }
-                OnPropertyChanged();
             }
         }
         public void SetContrast()
@@ -1408,13 +1545,12 @@ namespace DDPM.UI.Plugin.ViewModels
             SetProfileProperty(nameof(Contrast), _contrast, OperationModule.ColorAndImage);
         }
 
-        private int _saturation = 0;
+        private int _saturation = -1;
         public int Saturation
         {
             get => _saturation;
             set
             {
-                _saturation = value;
                 if (value != _saturation)
                 {
                     _saturation = value;
@@ -1422,10 +1558,33 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetSaturation();
                     }
+                    //var v = (value * 1.0 - CurrentDeviceInfo!.SaturationMin) / (CurrentDeviceInfo.SaturationMax - CurrentDeviceInfo!.SaturationMin);
+                    SaturationMargin = GetTextmargin(value, CurrentDeviceInfo?.SaturationMax, CurrentDeviceInfo?.SaturationMin, out string text);
+                    SaturationText = text;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(SaturationText));
+                    OnPropertyChanged(nameof(SaturationMargin));
                 }
-                OnPropertyChanged();
             }
         }
+
+        private static double[] GetTextmargin(double value, double? max, double? min, out string text)
+        {
+            if (max == null || min == null || max.Value == min.Value)
+            {
+                text = "0%";
+                return new double[] { 0, 2, 0, 0 };
+            }
+
+            var v = (value - min.Value) / (max.Value - min.Value);
+            text = v.ToString("##0%");
+            var width = Utility.GetTextWidth(text, 14);
+            var m = 380 * v - width / 2 + 10;
+            return new double[] { m, 2, 0, 0 };
+        }
+
+        public string SaturationText { get; set; } = "";
+        public double[] SaturationMargin { get; set; } = { 0 };
         public void SetSaturation()
         {
             DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), _saturation);

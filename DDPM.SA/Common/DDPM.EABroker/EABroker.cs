@@ -28,6 +28,7 @@ namespace DDPM.EABroker
 
         #region Public Properties
         public ArrangeVM VM { get { return _vm; } }
+        public eEARunningStates RunningState { get; set; } = eEARunningStates.NotAvailable;
         #endregion  Public Properties
 
         #region ctor
@@ -55,7 +56,7 @@ namespace DDPM.EABroker
             //Init AwsWindow
             _vm.InitAwsWindow();
             _isEaBrokerStarted = true;
-
+            RunningState = eEARunningStates.Waiting;
         }
         private void InitAllWindows()
         {
@@ -137,7 +138,7 @@ namespace DDPM.EABroker
         #region Exiting
         public void Stop()
         {
-
+            RunningState = eEARunningStates.NotAvailable;
         }
         #endregion
 
@@ -202,27 +203,29 @@ namespace DDPM.EABroker
             if (_vm != null)
             {
                 _vm.WriteLog("@EABroker.Handle_DisplaySettingsChanged()");
+
+                //Cancel EditProcess 
+                if (RunningState == eEARunningStates.Edit)
+                {
+                }
+
                 //Check for Span across multiple monitors
                 //
                 //1 Save original settings
                 bool orgSpanEnabled = _vm.IsSpanEnabled;
-                bool newSpanEnabled = orgSpanEnabled;
  
                 //2 Refresh settings
                 _vm.DetectSpanCondition();
                 //3 Check if changed
-                newSpanEnabled = _vm.IsSpanEnabled;
+                bool newSpanEnabled = _vm.IsSpanEnabled;
 
                 //4 Notify to UI if it's changed
-                if (newSpanEnabled != orgSpanEnabled)
+                if (newSpanEnabled != orgSpanEnabled && _deviceManagerSA != null)
                 {
-                    if (_deviceManagerSA != null)
-                    {
-                        EAArgs eAArgs = new EAArgs();
-                        eAArgs.Command = EAEMConstants.EACommand_SetIsSpanEnabled;
-                        eAArgs.Result = newSpanEnabled;
-                        _deviceManagerSA.SendEANotify(eAArgs);
-                    }
+                    EAArgs eAArgs = new EAArgs();
+                    eAArgs.Command = EAEMConstants.EACommand_SetIsSpanEnabled;
+                    eAArgs.Result = newSpanEnabled;
+                    _deviceManagerSA.SendEANotify(eAArgs);                    
                 }
 
                 _vm.RefreshWorkWindows(isInit);
@@ -237,24 +240,21 @@ namespace DDPM.EABroker
                 //Check for Span across multiple monitors
                 //
                 //1 Save original settings
-                bool orgSpanEnabled = _vm.IsSpanEnabled;
-                bool newSpanEnabled = orgSpanEnabled;
+                bool orgSpanEnabled = _vm.IsSpanEnabled;                
 
                 //2 Refresh settings
                 _vm.DetectSpanCondition();
                 //3 Check if changed
-                newSpanEnabled = _vm.IsSpanEnabled;
+                bool newSpanEnabled = _vm.IsSpanEnabled;
 
                 //4 Notify to UI if it's changed
-                if (newSpanEnabled != orgSpanEnabled)
+                if (newSpanEnabled != orgSpanEnabled &&
+                    _deviceManagerSA != null)
                 {
-                    if (_deviceManagerSA != null)
-                    {
-                        EAArgs eAArgs = new EAArgs();
-                        eAArgs.Command = EAEMConstants.EACommand_SetIsSpanEnabled;
-                        eAArgs.Result = newSpanEnabled;
-                        _deviceManagerSA.SendEANotify(eAArgs);
-                    }
+                    EAArgs eAArgs = new EAArgs();
+                    eAArgs.Command = EAEMConstants.EACommand_SetIsSpanEnabled;
+                    eAArgs.Result = newSpanEnabled;
+                    _deviceManagerSA.SendEANotify(eAArgs);
                 }
 
                 _vm.RefreshWorkWindows(isInit);
@@ -273,6 +273,7 @@ namespace DDPM.EABroker
                 return false;
             }
 
+
             //Phase A. Determine the WorkingArea of the arrange
             Rectangle workingArea = Rectangle.Empty;
             // 1 If it's under SpanScreen working mode
@@ -283,6 +284,11 @@ namespace DDPM.EABroker
                 {
                     //The WorkingArea is the SpanScren rect
                     workingArea = _vm.SpanScreen.WorkingArea;
+                    WriteLog($"@LaunchAndArrange, SpanScreenEnabled=True, IncludeTargetMonitor=Yes, WorkingArea={CommonFunctions.FormatRectangle(workingArea)}");
+                }
+                else
+                {
+                    WriteLog("@LaunchAndArrange, SpanScreenEnabled=True, IncludeTargetMonitor=No");
                 }
             }
             //2 (not) in SpanScreen workng mode, then use the workingArea of moInfo
@@ -296,8 +302,12 @@ namespace DDPM.EABroker
                     return false;
                 }
                 workingArea = scr.WorkingArea;
+                WriteLog($"@LaunchAndArrange, SpanScreenEnabled={_vm.IsSpanScreenWorking}, WorkingArea={CommonFunctions.FormatRectangle(workingArea)}");
             }
+
             bool _isVertical = workingArea.Width < workingArea.Height;
+            WriteLog($"@LaunchAndArrange, IsVertical={_isVertical}");
+            
             //Phase B. Create EA Layout and determine the cellBorderCount
             ISplitCtrl? ispLayout = null;
             int cellBorderCount = 0;
@@ -361,18 +371,47 @@ namespace DDPM.EABroker
             WriteLog($"LaunchAndArrangeAppsWithEzArrange: Layout={ispLayout.CtrlClass} CellBorderCount={cellBorderCount}, AppCount={appCount} => ArrangeCount={arrangeCount}");
 
             //Phase C. Show EzMemLauncherWindow
-            EzMemLauncherWindow emWin = new EzMemLauncherWindow(ispLayout, workingArea, arrangeCount, _log);
+            EzMemLauncherWindow emWin = new EzMemLauncherWindow(ispLayout, workingArea, arrangeCount, VM);
+
+            //Wayn's v1
+            ///*
             emWin.LayoutReady += delegate
             {
                 //Phase D. 
-                var sortedApps = sortApps.OrderBy(x => x.Key).Select(x => x.Value).ToList();
+                //var sortedApps = sortApps.OrderBy(x => x.Key).Select(x => x.Value).ToList();
+                //int idxCell = 0;
+                //for (int i=0; i< arrangeCount; i++)
+                //{
+                //    var sortedApps = sortApps.OrderBy(x => i).Select(x => x.Value).ToList();
+                //    var app = sortedApps[i];
+                //    Task.Delay(500);
+                //    emWin.LaunchAndArrange(app, i);
+
+                //}
+
                 int idxCell = 0;
-                for (int i=0; i< arrangeCount; i++)
-                {
-                    var app = sortedApps[i];
-                    emWin.LaunchAndArrange(app, i);
-                }
+                emWin.LaunchAndArrange(sortApps, idxCell++, VM);
             };
+            //*/
+            //Robert's v2
+            //emWin.LayoutReady += delegate
+            //{
+            //    //Phase D. 
+            //    var sortedApps = sortApps.OrderBy(x => x.Key).Select(x => x.Value).ToList();
+            //    int idxCell = 0;
+            //    for (int i = 0; i < arrangeCount; i++)
+            //    {
+            //        //var sortedApps = sortApps.OrderBy(x => i).Select(x => x.Value).ToList();
+            //        var app = sortedApps[i];
+            //        //Task.Delay(500);
+            //        emWin.LaunchAndArrange_v2(app, i, _vm);
+
+            //    }
+
+            //    //int idxCell = 0;
+            //    //emWin.LaunchAndArrange(sortApps, idxCell++, VM);
+            //};
+
 
             emWin.ArrangeDone += delegate
             {

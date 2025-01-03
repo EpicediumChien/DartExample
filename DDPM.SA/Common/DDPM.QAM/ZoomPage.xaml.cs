@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DDPM.QAM
 {
@@ -31,8 +19,7 @@ namespace DDPM.QAM
         }
         private void ZoomSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
-            QAMPageViewModel vm = DataContext as QAMPageViewModel;
-            if (vm != null)
+            if (DataContext is QAMPageViewModel vm)
             {
                 vm.IsSliderDragging = true;
             }
@@ -40,10 +27,10 @@ namespace DDPM.QAM
 
         private void ZoomSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
-            QAMPageViewModel vm = DataContext as QAMPageViewModel;
-            if (vm != null)
+            if (DataContext is QAMPageViewModel vm)
             {
                 vm.IsSliderDragging = false;
+                vm.isStatusChagneByDDPM = false;
                 vm.SetZoom();
             }
         }
@@ -52,12 +39,9 @@ namespace DDPM.QAM
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is double sliderValue)
+            if (value is double sliderValue && DdpmCommonHelper.QAMPageViewModel != null)
             {
-                if (DdpmCommonHelper.QAMPageViewModel != null)
-                {
-                    return (DdpmCommonHelper.QAMPageViewModel.ZoomMin - sliderValue) / (DdpmCommonHelper.QAMPageViewModel.ZoomMin - DdpmCommonHelper.QAMPageViewModel.ZoomMax) * 200;
-                }
+                return (DdpmCommonHelper.QAMPageViewModel.ZoomMin - sliderValue) / (DdpmCommonHelper.QAMPageViewModel.ZoomMin - DdpmCommonHelper.QAMPageViewModel.ZoomMax) * 200;
             }
             return 0;
         }

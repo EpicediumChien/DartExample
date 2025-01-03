@@ -28,7 +28,7 @@ namespace DDPM.SA.Common.UI
         {
             if (!UriParser.IsKnownScheme("pack"))
                 application = new System.Windows.Application();
-            if (application.Resources != null && application.Resources.MergedDictionaries.Count() == 0)
+            if (application.Resources != null && application.Resources.MergedDictionaries.Count == 0)
             {
                 // Get the current running assembly
                 Assembly assembly = Assembly.GetExecutingAssembly();
@@ -95,5 +95,28 @@ namespace DDPM.SA.Common.UI
                     return modelNumber;
             }
         }
+
+        public static string MappingEOLName(string model)
+        {
+            switch (model)
+            {
+                case "WK636":
+                case "KM713":
+                    return $"Dell {model} Wireless Keyboard";
+                case "WK717":
+                    return $"Dell Premier Wireless Keyboard WK717";
+                case "WM116":
+                case "WM514":
+                case "UV514":
+                case "WM126":
+                case "WM326":
+                case "WM527":
+                    return $"Dell {model} Wireless Mouse";
+                default:
+                    return model;
+            }
+        }
+        public static readonly List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        public static readonly List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
     }
 }

@@ -97,7 +97,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             InitializeComponent();
             ViewModel = viewModel;
-            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.previousOsTheme);
+            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
             _viewModel = new WalkThroughBoxViewModel
             {
                 strTitle = devicePages["DDPM"][_currentPage].MainText,
@@ -114,6 +114,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             //_currentPage++;
             //UpdatePage(devicePages["DDPM"][1].MainImageSource);
             base.Owner = owner;
+            UpdatePosition("Top_Right");
         }
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -123,6 +124,10 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 UpdateText(_currentPage);
                 UpdateProgressBar(true);
                 //_currentPage++;
+                if(_currentPage != _totalPages)
+                    UpdatePosition("Left");
+                else
+                    UpdatePosition("Top_Right");
             }
             else
             {
@@ -175,13 +180,14 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void UpdateText(int page)
         {
-            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.previousOsTheme);
+            var devicePages = WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
 
             _viewModel.strTitle = devicePages["DDPM"][page].MainText;
             _viewModel.strContent = devicePages["DDPM"][page].SubText;
 
             UpdatePage(devicePages["DDPM"][page].MainImageSource);
         }
+
         private void UpdatePage(string page)
         {
             //ViewModel.IsPeripheralVisible = false;
@@ -191,13 +197,28 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             ViewModel.Img3Source = DdpmCommonHelper.GetImageSourceFromCommonResource(page, "DDPM.UI.WalkThroughData");
         }
 
+        private void UpdatePosition(string position)
+        {
+            switch (position.ToLower()) 
+            {
+                case "top_right":
+                    this.Left = base.Owner.Left + base.Owner.Width - this.Width - 122;
+                    this.Top = base.Owner.Top + 64;
+                    break;
+                case "left":
+                    this.Left = base.Owner.Left + 164; // Align with the left edge of the owner
+                    this.Top = base.Owner.Top + (base.Owner.Height - this.Height) / 2; // Center vertically
+                    break;
+            }
+        }
+
         private void EndProgress()
         {
             DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
             if(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
-                DdpmHomePlugin.DdpmHomePlugin._showPluginById = false;
-            string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin._userId}";
-            string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
+                DdpmHomePlugin.DdpmHomePlugin.ShowPluginById = false;
+            //string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin._userId}";
+            //string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
 
             this.Close();
         }

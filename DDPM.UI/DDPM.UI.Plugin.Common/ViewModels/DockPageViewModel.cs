@@ -60,9 +60,9 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        public override bool SetCurrentDevice(string instanceID)
+        public override bool SetCurrentDevice(string deviceID)
         {
-            if (!base.SetCurrentDevice(instanceID))
+            if (!base.SetCurrentDevice(deviceID))
                 return false;
             //0821 Bruce Add show Dock Fw Version
             Model = Model.Replace("_", " ");
@@ -82,7 +82,7 @@ namespace DDPM.UI.Plugin.ViewModels
             _isEnableUpdate = false;
             foreach (FWUpdateInfo fWUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
             {
-                if (fWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "").Equals(instanceID))
+                if (fWUpdateInfo.DeviceId.Replace("{", "").Replace("}", "").Equals(deviceID))
                 {
                     _isEnableUpdate = true;
                     break;

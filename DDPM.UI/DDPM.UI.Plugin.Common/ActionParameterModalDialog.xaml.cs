@@ -147,8 +147,11 @@ namespace DDPM.UI.Plugin.Common
             //        return;
             //    }
             //}
+
             if (IsForPen)
-            StopPenCapture();
+            {
+                StopPenCapture();
+            }
 
             DialogResult = true;
             Close();
@@ -156,17 +159,44 @@ namespace DDPM.UI.Plugin.Common
 
         private void KeystrokeTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (txtKeystroke.Text == "")
+            btnClear.IsEnabled = false;
+            btnSave.IsEnabled = false;
+            var txt = txtKeystroke.Text.Trim();
+            if (txt == "")
+                return;
+
+            if (txtKeystroke.Text.ToUpper() == "ALT + Z")
             {
-                btnClear.IsEnabled = false;
-                btnSave.IsEnabled = false;
+                MessageModalDialog messageModalDialog;
+                Window mainWindow = System.Windows.Application.Current.MainWindow;
+                messageModalDialog = new(LangHelper.Instance["hotkey.7"], LangHelper.Instance["Hotkey.10"], "", "");
+                if (mainWindow != null)
+                {
+                    messageModalDialog.Owner = mainWindow;
+                    messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                    messageModalDialog.Top = mainWindow.Top + 300;
+                }
+                messageModalDialog.ShowDialog();
+                txtKeystroke.Text = "";
+                return;
             }
-            else
-            {
-                btnClear.IsEnabled = true;
-                btnSave.IsEnabled = true;
-                Parameter = txtKeystroke.Text;
-            }
+
+            btnClear.IsEnabled = true;
+            //if (_deviceCat == AdvancedAction.OpenWebPage)
+            //{
+            //    if (txt.Length < 7)
+            //        return;
+
+            //    var url = txt.Substring(0, 7).ToLower();
+            //    if (url != "http://" && url != "https:/")
+            //        return;
+
+            //    if (url != "http://" && txt.Substring(0, 8).ToLower() != "https://")
+            //        return;
+            //}
+
+            btnSave.IsEnabled = true;
+            Parameter = txt;
         }
 
         private void Keystroke_PreviewKeyUp(object sender, KeyEventArgs e)

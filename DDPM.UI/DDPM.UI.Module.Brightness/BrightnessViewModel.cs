@@ -131,11 +131,11 @@ namespace DDPM.UI.Module.Brightness
         public bool IsPR1_Luminance_Preview_ = false;
         public bool IsPR2_Luminance_Preview_ = false;
 
-        public string PR1ButtonContent { get; set; } = "Preview Changes";
-        public string PR2ButtonContent { get; set; } = "Preview Changes";
+        public string PR1ButtonContent { get; set; } = LangHelper.Instance["Preview_Changes"];// "Preview Changes";
+        public string PR2ButtonContent { get; set; } = LangHelper.Instance["Preview_Changes"];//"Preview Changes";
 
-        public string PR1_Luminance_ButtonContent { get; set; } = "Preview Changes";
-        public string PR2_Luminance_ButtonContent { get; set; } = "Preview Changes";
+        public string PR1_Luminance_ButtonContent { get; set; } = LangHelper.Instance["Preview_Changes"];//"Preview Changes";
+        public string PR2_Luminance_ButtonContent { get; set; } = LangHelper.Instance["Preview_Changes"];//"Preview Changes";
 
         public CancellationTokenSource PreviewToken = new CancellationTokenSource();
 
@@ -247,7 +247,7 @@ namespace DDPM.UI.Module.Brightness
 
         #region hotkey property
 
-        private string _brightnessMinsKey = "None";
+        private string _brightnessMinsKey = LangHelper.Instance["None"];
 
         public string BrightnessMinsKey
         {
@@ -260,7 +260,7 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private string _brightnessAddKey = "None";
+        private string _brightnessAddKey = LangHelper.Instance["None"];
 
         public string BrightnessAddKey
         {
@@ -273,7 +273,7 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private string _contrastMinsKey = "None";
+        private string _contrastMinsKey = LangHelper.Instance["None"];
 
         public string ContrastMinsKey
         {
@@ -286,7 +286,7 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private string _contrastAddKey = "None";
+        private string _contrastAddKey = LangHelper.Instance["None"];
 
         public string ContrastAddKey
         {
@@ -299,7 +299,7 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private string _luminanceMinsKey = "None";
+        private string _luminanceMinsKey = LangHelper.Instance["None"];
 
         public string LuminanceMinsKey
         {
@@ -312,7 +312,7 @@ namespace DDPM.UI.Module.Brightness
             }
         }
 
-        private string _luminanceAddKey = "None";
+        private string _luminanceAddKey = LangHelper.Instance["None"];
 
         public string LuminanceAddKey
         {
@@ -465,21 +465,21 @@ namespace DDPM.UI.Module.Brightness
                 //if (!SelectedHomeDevice.MonitorInfo.DisplayName.Equals(mo.DisplayName))//0614 add
                 //    return;
 
-				try
-				{
-                	List<ALSConfig> tmp = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
-                	if (tmp == null || tmp.Count == 0)
-                    	return;
+                try
+                {
+                    List<ALSConfig> tmp = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
+                    if (tmp == null || tmp.Count == 0)
+                        return;
 
-                	int idx = tmp.FindIndex(x => x.Edid.Equals(mo.edid));
-                	if (idx < 0)
-                    	return;
+                    int idx = tmp.FindIndex(x => x.Edid.Equals(mo.edid));
+                    if (idx < 0)
+                        return;
 
-                	Start_ALSConfig = tmp[idx];
+                    Start_ALSConfig = tmp[idx];
 
-                	//2.if yes, then update the vcp value to each option
-                	GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
-				}
+                    //2.if yes, then update the vcp value to each option
+                    GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
+                }
                 catch (Exception ex)
                 {
                     DdpmCommonHelper.WriteUILog($"[OnVCPChangedEvent][BrightnessViewModel] exception with {ex.Message}");
@@ -535,6 +535,7 @@ namespace DDPM.UI.Module.Brightness
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged -= OnVCPChangedEvent;
                 DdpmCommonHelper.BitmapImageUpdated -= ALSFontColorUpdate;
             }
+            DdpmCommonHelper.MyConsole.UnregisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
         }
 
         public BrightnessViewModel()
@@ -565,7 +566,7 @@ namespace DDPM.UI.Module.Brightness
             PR1Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
             PR2Luminance_Debouncer = new Debouncer(2000, Set_Luminance_Value);
 
-            DdpmCommonHelper.MyConsole.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
+            DdpmCommonHelper.MyConsole?.RegisterForEvent("DisplayHDRStatusChanged", OnHDRChangedEvent);
             DdpmCommonHelper.BitmapImageUpdated += ALSFontColorUpdate;
 
             syncUIvalue_bw.DoWork += new DoWorkEventHandler(SyncUI_Value);
@@ -576,7 +577,7 @@ namespace DDPM.UI.Module.Brightness
 
         private void ALSFontColorUpdate(OSThemeEnum oSThemeEnum)
         {
-            if (DdpmCommonHelper.previousOsTheme == OSThemeEnum.Dark)
+            if (DdpmCommonHelper.PreviousOsTheme == OSThemeEnum.Dark)
             {
                 IsDarkTheme = true;
             }
@@ -692,7 +693,7 @@ namespace DDPM.UI.Module.Brightness
                         {
                             for (int i = 0; i < alsList.Count; i++)
                             {
-                                if (alsList[i].Edid == SelectedHomeDevice.MonitorInfo.edid )
+                                if (alsList[i].Edid == SelectedHomeDevice.MonitorInfo.edid)
                                 {
                                     Start_ALSConfig = alsList[i];
                                 }
@@ -1906,7 +1907,7 @@ namespace DDPM.UI.Module.Brightness
             else
                 ScheduleMap.IsEnable = false;
 
-            DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(SelectedHomeDevice.MonitorInfo, ScheduleMap);
+            DdpmCommonHelper.DeviceManagerSA?.WriteScheduleMonitorSettings(SelectedHomeDevice.MonitorInfo, ScheduleMap);
         }
 
         public bool CheckIsTimeOverlap()
@@ -2561,11 +2562,11 @@ namespace DDPM.UI.Module.Brightness
 
         public void UpdateLuminance()
         {
-            if (Luminance_Value < 0)
-                Get_Luminance_Value(); //0703 fix update luminance issue
-            //NotifyPropertyChanged("LuminanceValue");
-            if (LuminanceMax_Value < 0)
-                Get_LuminanceMax_Value();
+            //if (Luminance_Value < 0)
+            Get_Luminance_Value(); //0703 fix update luminance issue
+                                   //NotifyPropertyChanged("LuminanceValue");
+                                   //if (LuminanceMax_Value < 0)
+            Get_LuminanceMax_Value();
             //NotifyPropertyChanged("LuminanceMaxValue");
         }
 
@@ -3127,6 +3128,7 @@ namespace DDPM.UI.Module.Brightness
 
         private bool _autoBrightnessStatus = false;
         public bool ManualBCHotkeyBtn { get; set; } = true;
+
         //brightness/contrast/luminance hotkey is setup or not
         public void updateHotkeyBtn()
         {
@@ -3137,7 +3139,6 @@ namespace DDPM.UI.Module.Brightness
                 //disable hotkey btn
                 //btnManualBrightnessContrast.IsEnabled = false;
                 ManualBCHotkeyBtn = false;
-
             }
             else
             {
@@ -3146,6 +3147,7 @@ namespace DDPM.UI.Module.Brightness
             }
             NotifyPropertyChanged("ManualBCHotkeyBtn");
         }
+
         public bool isBCHotkeyNotSet()
         {
             //DDPMW-764
@@ -3160,6 +3162,7 @@ namespace DDPM.UI.Module.Brightness
                 $"_contrastMinsKey=[{_contrastMinsKey.Trim()}],_contrastAddKey=[{_contrastAddKey.Trim()}]");
             return ret;
         }
+
         /// <summary>
         /// Binding Auto Brightness element
         /// </summary>
@@ -3206,7 +3209,6 @@ namespace DDPM.UI.Module.Brightness
                     IsBusy = false;
                     NotifyPropertyChanged("IsBusy");
                 }));
-                
             }
         }
 
@@ -3259,7 +3261,6 @@ namespace DDPM.UI.Module.Brightness
                     IsBusy = false;
                     NotifyPropertyChanged("IsBusy");
                 }));
-                
             }
         }
 
@@ -3390,6 +3391,7 @@ namespace DDPM.UI.Module.Brightness
         }
 
         public int AutoBrightnessSelectedIndex { get; set; } = 0;
+
         public List<string> AutoBrightnessRangeLevel { get; set; } =
             new List<string>() { Strings.ALSRangeLevelLow, Strings.ALSRangeLevelMid, Strings.ALSRangeLevelHigh };//{ "Low", "Mid", "High" }; //mapping to 40%, 60%, 100%
 
@@ -3403,11 +3405,11 @@ namespace DDPM.UI.Module.Brightness
                 if (Start_ALSConfig.AutoBrightnessRangeLevel.Count == 0)
                     return "";
                 if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 0)
-                    return "Brightness level: " + BrightnessValue.ToString() + "%";//40%";
+                    return LangHelper.Instance["BrightnessLevel"] + ": " + BrightnessValue.ToString() + "%";//40%";
                 else if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 1)
-                    return "Brightness level: " + BrightnessValue.ToString() + "%";//60%";
+                    return LangHelper.Instance["BrightnessLevel"] + ": " + BrightnessValue.ToString() + "%";//60%";
                 else
-                    return "Brightness level: " + BrightnessValue.ToString() + "%";//100%";
+                    return LangHelper.Instance["BrightnessLevel"] + ": " + BrightnessValue.ToString() + "%";//100%";
             }
         }
 
@@ -3446,7 +3448,7 @@ namespace DDPM.UI.Module.Brightness
                     NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
                     IsBusy = false;
                     NotifyPropertyChanged("IsBusy");
-                }));                
+                }));
             }
         }
 
@@ -3593,7 +3595,7 @@ namespace DDPM.UI.Module.Brightness
                         syncUIvalue_bw.ReportProgress(100, Convert.ToDouble(t.value));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog($"[BrightnessViewModel][SyncUI_Value] exception: {ex.Message}");
             }

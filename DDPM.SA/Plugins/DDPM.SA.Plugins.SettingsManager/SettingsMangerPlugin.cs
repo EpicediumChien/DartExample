@@ -177,24 +177,40 @@ namespace DDPM.SA.Plugins.SettingsManager
             return Task.FromResult(_settings);
         }
 
-        public Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam)
+        public Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam, bool needExceptionString = false)
         {
+            string info = string.Empty;
             if (globalSettingParam == null)
             {
-                WriteLog($"WriteGlobalSettingsToITConfig: null data, failed");
+                info = "WriteGlobalSettingsToITConfig: null data, failed";
+                WriteLog(info);
+                if(needExceptionString)
+                {
+                    throw new Exception(info);
+                }
                 return Task.FromResult(false);
             }
             if (_settings == null || _settings.global_setting == null)
             {
-                WriteLog($"WriteGlobalSettingsToITConfig: null cache, failed");
+                info = "WriteGlobalSettingsToITConfig: null cache, failed";
+                WriteLog(info);
+                if (needExceptionString)
+                {
+                    throw new Exception(info);
+                }
                 return Task.FromResult(false);
             }
             _settings.global_setting = globalSettingParam;
-            string info = string.Empty;
+
             bool result = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(_settings).ToString(), _settings_path, out info);
             if (!result)
             {
-                WriteLog($"WriteGlobalSettingsToITConfig: write failed, reason: {info}");
+                info = $"WriteGlobalSettingsToITConfig: write failed, reason: {info}";
+                WriteLog(info);
+                if (needExceptionString)
+                {
+                    throw new Exception(info);
+                }
             }
             return Task.FromResult(result);
         }
@@ -384,7 +400,8 @@ namespace DDPM.SA.Plugins.SettingsManager
             string filePath = Path.Combine(folder, filename_appsettings_Info);
             InitSysSettingsData("InfoConfig", filePath);
 
-            AddInfo(InfoHash.Info_Hash.Trim());
+            foreach(string info in InfoHash.Info_Hash)
+                AddInfo(info.Trim());
             return _infos;
         }
         private void InitRegUpdateLock()
@@ -423,8 +440,8 @@ namespace DDPM.SA.Plugins.SettingsManager
                 _infos = new InfoObject();
                 if (_infos.Infos == null)
                 {
-                    _infos.Infos = new List<string>();
-                    _infos.Infos.Add(InfoHash.Info_Hash.Trim());
+                    _infos.Infos = new List<string>(InfoHash.Info_Hash);
+                    //_infos.Infos.Add(InfoHash.Info_Hash.Trim());
                     string msg = string.Empty;
                     if (!DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(_infos).ToString(), _info_path, out msg))
                     {
@@ -512,24 +529,27 @@ namespace DDPM.SA.Plugins.SettingsManager
                 {
                     directoryInfo = new DirectoryInfo(folder);
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     WriteLog($"[{type}]System config: retrieve Directory got null return");
-                    Directory.Delete(folder, true);
-                    directoryInfo = System.IO.Directory.CreateDirectory(folder);
-                    WriteLog($"[{type}]re-create system settings folder success");
+                    try
+                    {
+                        Directory.Delete(folder, true);
+                        directoryInfo = System.IO.Directory.CreateDirectory(folder);
+                        WriteLog($"[{type}]re-create system settings folder success");
+                    }
+                    catch(Exception ex2)
+                    {
+                        WriteLog($"[{type}]re-create system settings folder failed: {ex2.Message}");
+                        return null;
+                    }
                 }
-                                                 
+
                 string info2 = string.Empty;
-                //if (DDPMFileSecurity.IsPathSymbolicLinked(folder, out info2))
                 if (!DDPMFileSecurity.IsFolderPathValid(folder, out info2))
                 {
                     //WriteLog($"[{type}]Directory ACLs for system setting contained unprivileged write access for one or more identity");
                     WriteLog($"[{type}] *** Directory path and symbolic check GOT ISSUE *** ({info2})");
-                    /*Directory.Delete(folder, true);
-                    WriteLog($"[{type}]Exist folder deleted.");
-                    directoryInfo = System.IO.Directory.CreateDirectory(folder);
-                    WriteLog($"[{type}]re-create system settings folder success");*/
                     return null;
                 }
             }
@@ -537,7 +557,11 @@ namespace DDPM.SA.Plugins.SettingsManager
             //Apply folder ACL
             try
             {
-                DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(folder);
+                //DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(folder);
+                if (!DDPMFileSecurity.CheckFolderACL(folder, out info, true))
+                    WriteLog($"[InitSysSettingsData][CheckFolderACL] failed with: {info}");
+                else
+                    WriteLog("[InitSysSettingsData][CheckFolderACL] Success");
             }
             catch (Exception ex)
             {
@@ -561,7 +585,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             if (File.Exists(filePath))
             {
                 FileInfo fileInfo = null;
-                try
+                /*try
                 {
                     fileInfo = new FileInfo(filePath);
                 }
@@ -570,10 +594,10 @@ namespace DDPM.SA.Plugins.SettingsManager
                     WriteLog($"[{type}]System config: retrieve FileInfo got null return");
                     File.Delete(filePath);
                     WriteLog($"[{type}]Exist file deleted.");
-                }
+                }*/
 
                 if (fileInfo != null)
-                {                
+                {
                     AclChecker aclChecker = new AclChecker();
                     if (aclChecker.ContainsUnprivilegedWriteAccess(fileInfo))
                     {
@@ -581,6 +605,11 @@ namespace DDPM.SA.Plugins.SettingsManager
                         File.Delete(filePath);
                         WriteLog($"[{type}]Exist file deleted.");
                     }
+                }
+                else
+                {
+                    WriteLog($"[InitSysSettingsData] type({type}) using file info got null object");
+                    return null;
                 }
             }
 
@@ -696,6 +725,22 @@ namespace DDPM.SA.Plugins.SettingsManager
                 WriteLog($"[System settings plugin] WriteRegistryData exception ({e.Message})");
                 return Task.FromResult(false);
             }
+        }
+        public Task<bool> SaveLog(string saveFolderPath)
+        {
+            bool ret = false;
+            try
+            {
+                ret = DiagnosticReport.SaveLogFile(saveFolderPath, Log);
+                WriteLog($"[System setting plugin] DiagnosticReport.SaveLogFile finish");
+            }
+            catch (Exception e)
+            {
+                WriteLog($"[System settings plugin] SaveLog exception ({e.Message})");
+            }
+            WriteLog($"[System setting plugin] SaveLog {(ret ? "success" : "failed")}");
+            WriteLog($"[System setting plugin] SaveLog end");
+            return Task.FromResult(ret);
         }
 
         #endregion

@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
+             xmlns:SAAlert="clr-namespace:DDPM.SA.Common.Alert;assembly=DDPM.SA.Common"
              xmlns:local="clr-namespace:DDPM.UI.Module.Brightness"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -69,7 +70,7 @@
 
             <!-- Hotkey text -->
             <UXControls:UXTextBlock Grid.Row="0" Grid.Column="1" Text="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}"
-                                    HorizontalAlignment="Left" TextBlockType="Header2"
+                                    HorizontalAlignment="Left" TextBlockType="Header2" VerticalAlignment="Center"
                                     TextBlockSemanticColorType="DefaultHeader"
                                     Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                     FontSize="24" />
@@ -86,13 +87,13 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Grid HorizontalAlignment="Right" Margin="0,0,4,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
-                <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
+            <Grid HorizontalAlignment="Left" Margin="0,0,6,12" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
+                <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
                     <Label  Content="{Binding [Hotkey.0], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                     <UXControls:UXTextBox
                         Text="{Binding BrightnessMinsKey,Mode=TwoWay}"
                         Name="tbBrightnessMins"
-                        Width="472" Height="30"
+                        Width="400" Height="40"
                         BorderThickness="1" FontSize="14"
                         HorizontalAlignment="Center"
                         AcceptsReturn="True"
@@ -106,13 +107,13 @@
                         InputLanguageManager.RestoreInputLanguage="True"/>
                 </StackPanel>
             </Grid>
-            <Grid Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
-                <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
+            <Grid Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" Margin="6,0,0,12" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
+                <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
                     <Label  Content="{Binding [Hotkey.1], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                     <UXControls:UXTextBox
                         Text="{Binding BrightnessAddKey,Mode=TwoWay}"
                         Name="tbBrightnessAdd"
-                        Width="472" Height="30"
+                        Width="400" Height="40"
                         BorderThickness="1" FontSize="14"
                         HorizontalAlignment="Center"
                         AcceptsReturn="True"
@@ -126,13 +127,13 @@
                         InputLanguageManager.RestoreInputLanguage="True"/>
                 </StackPanel>
             </Grid>
-            <Grid Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,4,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
-                <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
+            <Grid Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" Margin="0,12,6,12" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
+                <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
                     <Label  Content="{Binding [Hotkey.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                     <UXControls:UXTextBox
                         Text="{Binding ContrastMinsKey,Mode=TwoWay}"
                         Name="tbContrastMins"
-                        Width="472" Height="30"
+                        Width="400" Height="40"
                         BorderThickness="1" FontSize="14"
                         HorizontalAlignment="Center"
                         AcceptsReturn="True"
@@ -146,12 +147,12 @@
                         InputLanguageManager.RestoreInputLanguage="True"/>
                 </StackPanel>
             </Grid>
-            <Grid Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
-                <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
+            <Grid Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Margin="6,12,0,12" Visibility="{Binding isLuminanceSupport,Converter={StaticResource BoolReverseToVisibilityConverter}}">
+                <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
                     <Label  Content="{Binding [Hotkey.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                     <UXControls:UXTextBox
                         Text="{Binding ContrastAddKey,Mode=TwoWay}"
-                        Width="472" Height="30"
+                        Width="400" Height="40"
                         Name="tbContrastAdd"
                         BorderThickness="1" FontSize="14"
                         HorizontalAlignment="Center"
@@ -166,12 +167,12 @@
                         InputLanguageManager.RestoreInputLanguage="True"/>
                 </StackPanel>
             </Grid>
-            <Grid Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport}">
-                <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
+            <Grid Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" Margin="0,12,6,12" Visibility="{Binding isLuminanceSupport}">
+                <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
                     <Label  Content="{Binding [Hotkey.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                     <UXControls:UXTextBox
                         Text="{Binding LuminanceMinsKey,Mode=TwoWay}"
-                        Width="472" Height="30"
+                        Width="400" Height="40"
                         Name="tbLuminanceMins"
                         BorderThickness="1" FontSize="14"
                         HorizontalAlignment="Center"
@@ -186,14 +187,14 @@
                         InputLanguageManager.RestoreInputLanguage="True"/>
                 </StackPanel>
             </Grid>
-            <Grid Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="4,0,0,10" Visibility="{Binding isLuminanceSupport}">
-                <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Width="480" Grid.RowSpan="2">
+            <Grid Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="6,12,0,12" Visibility="{Binding isLuminanceSupport}">
+                <StackPanel Grid.Column="0"  Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2">
                     <Label  Content="{Binding [Hotkey.5], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                     <UXControls:UXTextBox
                         Text="{Binding LuminanceAddKey,Mode=TwoWay}"
-                        Background="#141D28" Foreground="White" Width="472" Height="30"
+                        Width="400" Height="40"
                         Name="tbLuminanceAdd"
-                        BorderBrush="#7E7E7E" BorderThickness="1" FontSize="14"
+                        BorderThickness="1" FontSize="14"
                         HorizontalAlignment="Center"
                         AcceptsReturn="True"
                         PreviewKeyDown="tbLuminanceAdd_PreviewKeyDown"
@@ -206,11 +207,14 @@
                         InputLanguageManager.RestoreInputLanguage="True"/>
                 </StackPanel>
             </Grid>
-            <Grid Grid.Row="3" Grid.ColumnSpan="2" Width="954" Margin="0,30,0,0">
-                <UXControls:UXAlert>
+            <Grid Grid.Row="3" Grid.ColumnSpan="2" Margin="0,20,0,0">
+                <!--  <UXControls:UXAlert>
                     <UXControls:UXAlertItem AlertItemType="Info" Label="" Background="#364861" Margin="8,8,8,8"
                                             Message="{Binding [Hotkey.6], Source={x:Static lang:LangHelper.Instance}}" />
-                </UXControls:UXAlert>
+                </UXControls:UXAlert> -->
+                <StackPanel x:Name="spSAAlert">
+                    <SAAlert:AlertBase Height="73" Width="812" x:Name="alertBase" Margin="0,0,0,0" AlertType="Info" Message="{Binding [Hotkey.6], Source={x:Static lang:LangHelper.Instance}}"/>
+                </StackPanel>
                 <TextBox Width="1" Height="1" Name="tbCleanFocus" Panel.ZIndex="-99" />
             </Grid>
         </Grid>

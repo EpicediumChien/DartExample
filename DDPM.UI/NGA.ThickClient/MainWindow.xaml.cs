@@ -24,6 +24,7 @@ using System.Windows.Interop;
 using Screen = System.Windows.Forms.Screen;
 using ResourceManager = Dell.Client.Framework.UX.WPF.ResourceManager.ResourceManager;
 using System.Reflection.Metadata;
+using System.Windows.Forms;
 
 namespace NGA.ThickClient
 {
@@ -174,6 +175,7 @@ namespace NGA.ThickClient
                 (e.KeyboardDevice.Modifiers & ModifierKeys.Shift | ModifierKeys.Windows) > 0) && Screen.AllScreens.Length > 1)
             {
                 AdjustWindowSizeBasedOnMonitor();
+                RaiseEvent_MoveToNewPosition(true);
             }
         }
 
@@ -197,6 +199,11 @@ namespace NGA.ThickClient
         /// <param name="isCenterOfScreen">boolean value to make window appear center of screen</param>
         private void AdjustWindowSizeBasedOnMonitor(bool isCenterOfScreen = false)
         {
+            if (WindowState == WindowState.Maximized)
+            {
+                SetMainWindowSizeToMaximized();
+                return;
+            }
             Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
             DdpmCommonHelper.IsMainWindowAtPrimaryScreen = screen.Primary;
 
@@ -230,6 +237,7 @@ namespace NGA.ThickClient
                     MoveWindowToCenter(screenLeft, screenTop, screenWidth, screenHeight);
                 }
             }
+
         }
 
         /// <summary>
@@ -242,7 +250,7 @@ namespace NGA.ThickClient
         /// <param name="screenWidth">Usable screenWidth</param>
         private void AdjustWindowSize(double screenHeight, double screenWidth)
         {
-            //2024-5-8 Robert_Lin, to support resizeable MainWindow,
+             //2024-5-8 Robert_Lin, to support resizeable MainWindow,
             //Sharap Viswanathan, Karthik suggest to comment out the method
             if (_isMainWindowResizable)
             {
@@ -330,7 +338,10 @@ namespace NGA.ThickClient
                 case WM_EXITSIZEMOVE: // Occurs when Dragging of Window using mouse is completed
                                       //Robert_Lin, 2024-5-7 remark it for supporting resize Window
                     if (Screen.AllScreens.Length > 1)
+                    {
                         AdjustWindowSizeBasedOnMonitor();
+                        RaiseEvent_MoveToNewPosition();
+                    }
                     break;
 
                 case WM_QUERYENDSESSION: // Temporary fix: base class sets handled to true
@@ -410,18 +421,6 @@ namespace NGA.ThickClient
             }));
         }
 
-        [DllImport("user32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
-        public static bool _SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags)
-        {
-            return SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
-        }
-        private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
-        private const UInt32 SWP_NOSIZE = 0x0001;
-        private const UInt32 SWP_NOMOVE = 0x0002;
-        private const UInt32 SWP_NOACTIVATE = 0x0010;
-
         #endregion
 
         private void ConsoleWindow_Closed(object sender, EventArgs e)
@@ -450,11 +449,17 @@ namespace NGA.ThickClient
         {
             if (WindowState == WindowState.Maximized)
             {
-                Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
+                //Robert_Lin, 2024-12-30 Using Win32.SetWindowsPos solution to fit MainWindow to current screen.WorkingArea
+                //IntPtr hWnd = new WindowInteropHelper(this).Handle;
+                //_SetWindowPos(hWnd, HWND_TOP, (int)screen.WorkingArea.Left, (int)screen.WorkingArea.Top,
+                //     (int)screen.WorkingArea.Width, (int)screen.WorkingArea.Height, SWP_SHOWWINDOW | SWP_ASYNCWINDOWPOS);
+                SetMainWindowSizeToMaximized();
+
+                //Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
                 // PrimaryScreen Scaling info required because screen workarea when app launched in Secondary montior
                 // gives resolution of Secondary monitor by multiplying the PrimaryScreenScaling ratio
-                if (Screen.PrimaryScreen == null) return;
-
+                //if (Screen.PrimaryScreen == null) return;
+                /*
                 // this logic is required for secondary monitor scaling ratio calculation
                 var primaryScreenScalingRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
                 double screenHeight;
@@ -472,6 +477,7 @@ namespace NGA.ThickClient
 
                 this.MaxWidth = screenWidth;
                 this.MaxHeight = screenHeight;
+                */
 
 
                 //RefreshWindowTaskbar();
@@ -491,6 +497,32 @@ namespace NGA.ThickClient
                 //DoMouseClick();
             }
         }
+
+        //Robert_Lin, 2024-12-31, Win32.SetWindowPos() solution for 
+        //PIMS-291471 Maximize DDPM app will cover windows taskbar
+        private void SetMainWindowSizeToMaximized()
+        {
+            IntPtr hWnd = new WindowInteropHelper(this).Handle;
+            Screen screen = Screen.FromHandle(hWnd);
+            _SetWindowPos(hWnd, HWND_TOP, (int)screen.WorkingArea.Left, (int)screen.WorkingArea.Top,
+                 (int)screen.WorkingArea.Width, (int)screen.WorkingArea.Height, SWP_SHOWWINDOW | SWP_ASYNCWINDOWPOS);
+        }
+        #region Move to new position event
+        private void RaiseEvent_MoveToNewPosition(bool isMovedByHotkey = false)
+        {
+            //Robert_Lin, 2024-12-20 To show ProductName OSD on the target screen
+            if (_Console != null)
+            {
+                EventManagerArgs args = new EventManagerArgs();
+                if (isMovedByHotkey)
+                {
+                    Screen screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle);
+                    args.Tag = screen.DeviceName;
+                }
+                _Console.RaiseEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, this, args);
+            }
+        }
+        #endregion  Move to new position event
 
         #region Workaround solution - Robert_Lin 2024-12-03, can be removed
         private void RefreshWindowTaskbar()
@@ -526,7 +558,42 @@ namespace NGA.ThickClient
         {
             SetCursorPos(x, y);
         }
+
+        //public const short SWP_NOMOVE = 0X2;
+        //public const short SWP_NOSIZE = 1;
+        //public const short SWP_NOZORDER = 0X4;
+        //public const int SWP_SHOWWINDOW = 0x0040;
+
+        //[DllImport("user32.dll", EntryPoint = "SetWindowPos", SetLastError = true)]
+        //[DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        //private static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
+
+        //public static IntPtr _SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags)
+        //{
+        //    return SetWindowPos(hWnd, hWndInsertAfter, x, Y, cx, cy, wFlags);
+        //}
+
         #endregion
 
+
+        #region Win32
+        const int HWND_TOP = 0;
+        private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
+
+        private const UInt32 SWP_NOSIZE = 0x0001;
+        private const UInt32 SWP_NOMOVE = 0x0002;
+        private const UInt32 SWP_NOACTIVATE = 0x0010;
+        private const UInt32 SWP_SHOWWINDOW = 0x0040;
+        private const UInt32 SWP_ASYNCWINDOWPOS = 0x4000;
+
+        //SetWindowPos()
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+        private static bool _SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags)
+        {
+            return SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
+        }
+        #endregion Win32
     }
 }

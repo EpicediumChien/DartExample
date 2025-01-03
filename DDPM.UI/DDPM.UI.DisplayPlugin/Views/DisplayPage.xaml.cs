@@ -105,7 +105,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 _deviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
 
                 //[Dean 1001]for hotkey to set current selected display device to SA
-                if(_ivm.SelectedHomeDevice != null && _ivm.SelectedHomeDevice.MonitorInfo != null)
+                if (_ivm.SelectedHomeDevice != null && _ivm.SelectedHomeDevice.MonitorInfo != null)
                     _deviceManagerSA.SetLastSelectedMonitorFromUI(_ivm.SelectedHomeDevice.MonitorInfo);
             }
         }
@@ -130,6 +130,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             HomeDevice? homeDev = GetSelectedHomeDevice();
             if (homeDev != null)
             {
+                _ivm.SelectedHomeDevice.IsRestoreBtnVisible = Visibility.Visible;
                 if (!homeDev.MonitorInfo.DDCisON)
                 {
                     HandleDdcCiOnOffEvent(homeDev.MonitorInfo, homeDev.MonitorInfo.DDCisON);
@@ -325,7 +326,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             }
 
             //If this ModuleGroup has any item, then add into moduleGroups
-            if (moduleGroup.HeaderCount > 0) 
+            if (moduleGroup.HeaderCount > 0)
             {
                 groups.Add(moduleGroup);
             }
@@ -845,6 +846,12 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             console?.ShowHomePage();
 
             //console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
+        }
+
+        private void leftView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // For hiding restore to default button.
+            _ivm.SelectedHomeDevice.IsRestoreBtnVisible = Visibility.Collapsed;
         }
 
         #endregion Nav

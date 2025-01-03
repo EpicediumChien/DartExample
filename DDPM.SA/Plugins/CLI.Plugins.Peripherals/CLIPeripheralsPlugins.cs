@@ -109,52 +109,48 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                 }
 
-                if (commandLineInput.Command.Equals("SET"))
+                if (commandLineInput.Command.Equals("SET") &&
+                    commandLineInput.TargetType.Equals("APP"))
                 {
-                    if (commandLineInput.TargetType.Equals("APP"))
+                    //if (commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE") || commandLineInput.TargetFeature.Equals("UODFWUPDATE") || commandLineInput.TargetFeature.Equals("LOCKUIUPDATE") || commandLineInput.TargetFeature.Equals("UNLOCKUIUPDATE"))// for firmware update.
+                    if (commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE"))// for firmware update.
                     {
-                        //if (commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE") || commandLineInput.TargetFeature.Equals("UODFWUPDATE") || commandLineInput.TargetFeature.Equals("LOCKUIUPDATE") || commandLineInput.TargetFeature.Equals("UNLOCKUIUPDATE"))// for firmware update.
-                        if (commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE"))// for firmware update.
+                        switch (commandLineInput.TargetFeature)
                         {
-                            switch (commandLineInput.TargetFeature)
-                            {
-                                case "FIRMWAREUPDATE":
-                                    //case "UODFWUPDATE":
-                                    //case "LOCKUIUPDATE":
-                                    //case "UNLOCKUIUPDATE":
-                                    writelog("FIRMWAREUPDATE Entry");
-                                    var ret = FWUpdate(commandLineInput);
-                                    writelog("FIRMWAREUPDATE Done");
-                                    result.ExitCode = ret.code;
-                                    result.serialize_Json_response = ret.json;
-                                    return result;
-                            }
+                            case "FIRMWAREUPDATE":
+                                //case "UODFWUPDATE":
+                                //case "LOCKUIUPDATE":
+                                //case "UNLOCKUIUPDATE":
+                                writelog("FIRMWAREUPDATE Entry");
+                                var ret = FWUpdate(commandLineInput);
+                                writelog("FIRMWAREUPDATE Done");
+                                result.ExitCode = ret.code;
+                                result.serialize_Json_response = ret.json;
+                                return result;
                         }
                     }
+
 
                 }
-                if (commandLineInput.Command.Equals("SET"))
+                if (commandLineInput.Command.Equals("SET") &&
+                    commandLineInput.TargetType.Equals("DOCK"))
                 {
-                    if (commandLineInput.TargetType.Equals("DOCK"))
+                    if (commandLineInput.TargetFeature.Equals("SILENTFWUPDATE"))// for dock firmware update.
                     {
-                        if (commandLineInput.TargetFeature.Equals("SILENTFWUPDATE"))// for dock firmware update.
-                        {
-                            //switch (commandLineInput.TargetFeature)
-                            //{
-                            //    case "FIRMWAREUPDATE":
-                            //    case "UODFWUPDATE":
-                            //    case "LOCKUIUPDATE":
-                            //    case "UNLOCKUIUPDATE":
-                            writelog("FIRMWAREUPDATE SET DOCK SILENTFWUPDATE Entry");
-                            var ret = FWUpdate(commandLineInput);
-                            writelog("FIRMWAREUPDATE SET DOCK SILENTFWUPDATE DONE");
-                            result.ExitCode = ret.code;
-                            result.serialize_Json_response = ret.json;
-                            return result;
-                            //}
-                        }
+                        //switch (commandLineInput.TargetFeature)
+                        //{
+                        //    case "FIRMWAREUPDATE":
+                        //    case "UODFWUPDATE":
+                        //    case "LOCKUIUPDATE":
+                        //    case "UNLOCKUIUPDATE":
+                        writelog("FIRMWAREUPDATE SET DOCK SILENTFWUPDATE Entry");
+                        var ret = FWUpdate(commandLineInput);
+                        writelog("FIRMWAREUPDATE SET DOCK SILENTFWUPDATE DONE");
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.json;
+                        return result;
+                        //}
                     }
-
                 }
 
                 if (commandLineInput.Command.Equals("SET"))
@@ -202,50 +198,43 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                     }
                 }
-                if (commandLineInput.Command.Equals("GET"))
+                if (commandLineInput.Command.Equals("GET") && commandLineInput.TargetType.Equals("APP"))
                 {
-                    if (commandLineInput.TargetType.Equals("APP"))
+                    if (commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))// for dock firmware update.
                     {
-                        if (commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))// for dock firmware update.
-                        {
-                            //switch (commandLineInput.TargetFeature)
-                            //{
-                            //    case "FIRMWAREUPDATE":
-                            //    case "UODFWUPDATE":
-                            //    case "LOCKUIUPDATE":
-                            //    case "UNLOCKUIUPDATE":
-                            writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION Entry");
-                            var ret = SWAPPUpdate_get(commandLineInput);
-                            writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION DONE");
-                            result.ExitCode = ret.code;
-                            result.serialize_Json_response = ret.json;
-                            return result;
-                            //}
-                        }
+                        //switch (commandLineInput.TargetFeature)
+                        //{
+                        //    case "FIRMWAREUPDATE":
+                        //    case "UODFWUPDATE":
+                        //    case "LOCKUIUPDATE":
+                        //    case "UNLOCKUIUPDATE":
+                        writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION Entry");
+                        var ret = SWAPPUpdate_get(commandLineInput);
+                        writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION DONE");
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.json;
+                        return result;
+                        //}
                     }
                 }
-                if (commandLineInput.Command.Equals("SET"))
+                if (commandLineInput.Command.Equals("SET") && commandLineInput.TargetType.Equals("APP"))
                 {
-                    if (commandLineInput.TargetType.Equals("APP"))
+                    if (commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))// for dock firmware update.
                     {
-                        if (commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))// for dock firmware update.
-                        {
-                            //switch (commandLineInput.TargetFeature)
-                            //{
-                            //    case "FIRMWAREUPDATE":
-                            //    case "UODFWUPDATE":
-                            //    case "LOCKUIUPDATE":
-                            //    case "UNLOCKUIUPDATE":
-                            writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION Entry");
-                            var ret = SWAPPUpdate(commandLineInput);
-                            writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION DONE");
-                            result.ExitCode = ret.code;
-                            result.serialize_Json_response = ret.json;
-                            return result;
-                            //}
-                        }
+                        //switch (commandLineInput.TargetFeature)
+                        //{
+                        //    case "FIRMWAREUPDATE":
+                        //    case "UODFWUPDATE":
+                        //    case "LOCKUIUPDATE":
+                        //    case "UNLOCKUIUPDATE":
+                        writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION Entry");
+                        var ret = SWAPPUpdate(commandLineInput);
+                        writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION DONE");
+                        result.ExitCode = ret.code;
+                        result.serialize_Json_response = ret.json;
+                        return result;
+                        //}
                     }
-
                 }
                 if (commandLineInput.Command.Equals("SET"))
                 {
@@ -329,7 +318,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             if (_deviceinfo == null || _deviceinfo.Count == 0)
             {
                 GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found"));
-                writelog("GetPeripheralProperty: "+ _commandLineInput.TargetFeature  + "Device not found");
+                writelog("GetPeripheralProperty: " + _commandLineInput.TargetFeature + "Device not found");
                 return (int)CLI_ExitCode.fail_GetPeripheralProperty_NoConnectDevice;
             }
 
@@ -360,7 +349,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 {
                     if (Guid.TryParse(x, out Guid guid))
                     {
-                        var di = _deviceinfo.Where(x => x.ID == guid && x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                        var di = _deviceinfo.FirstOrDefault(x => x.ID == guid && x.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType));
                         if (di == null)
                         {
                             GetResults.Add(new CLI_PeripheralRESPONSE(x, "GET", _commandLineInput.TargetFeature, "Fail", "Device not found"));
@@ -382,7 +371,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 _commandLineInput.Model.ForEach(model =>
                 {
-                    var di = _deviceinfo.Where(_ => _.ModelNumber == model && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                    var di = _deviceinfo.FirstOrDefault(_ => _.ModelNumber == model && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType));
                     if (di == null)
                     {
                         GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", null, model));
@@ -398,7 +387,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 _commandLineInput.ServiceTag.ForEach(serviceTag =>
                 {
-                    var di = _deviceinfo.Where(_ => _.DockServiceTag == serviceTag && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                    var di = _deviceinfo.FirstOrDefault(_ => _.DockServiceTag == serviceTag && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType));
                     if (di == null)
                     {
                         GetResults.Add(new CLI_PeripheralRESPONSE("N/A", "GET", _commandLineInput.TargetFeature, "Fail", "Device not found", null, null, serviceTag));
@@ -490,7 +479,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         });
                         if (!found)
                         {
-                            writelog("SetPeripheralProperty: "+ guid + "FAIL Device not found");
+                            writelog("SetPeripheralProperty: " + guid + "FAIL Device not found");
                             SetResults.Add(new CLI_PeripheralRESPONSE($"{guid}", _commandLineInput.Command, _commandLineInput.TargetFeature, "FAIL", "Device not found"));
                         }
                     }
@@ -721,7 +710,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                     });
                 }
-                writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS" + (retcode ? "SUCCESS" :  "FAIL"));
+                writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS" + (retcode ? "SUCCESS" : "FAIL"));
                 return (retcode) ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
             }
 
@@ -866,22 +855,22 @@ namespace DDPM.CLI.Plugins.Peripherals
                     //op.Option_Value.Replace(".", ",");
                     List<string> op_value = op.Option_Value.Replace(".", ",").Split(",").ToList();
                     //value = op_value[0];
-                    foreach (var value in op_value)
+                    foreach (string stringValue in op_value)
                     {
-                        Debug.WriteLine($"{value}, {_commandLineInput.Options[0].Option_Value}");
-                        if (value == null) // if there is no option value
+                        Debug.WriteLine($"{stringValue}, {_commandLineInput.Options[0].Option_Value}");
+                        if (stringValue == null) // if there is no option value
                         {
                             SetFailResults("no setting value");
                             writelog("SetPeripheralProperty: no setting value");
                             return (int)CLI_ExitCode.fail_SetPeripheralProperty_Value;
                         }
-                        else if (int.TryParse(value, out int tmp)) // for the function argument is number
+                        else if (int.TryParse(stringValue, out int tmp)) // for the function argument is number
                         {
                             val = tmp;
                         }
                         else //for the function argument is int(0/1) or bool
                         {
-                            switch (value)
+                            switch (stringValue)
                             {
                                 //case "ENABLE": //spec is only defined enable/disable, on/off
                                 case "ON":
@@ -895,7 +884,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     break;
                                 case "LOCK":
                                 case "UNLOCK":
-                                    if (value.ToUpper().Equals("LOCK"))
+                                    if (stringValue.ToUpper().Equals("LOCK"))
                                     {
                                         switch (_commandLineInput.TargetFeature.ToUpper())
                                         {
@@ -916,7 +905,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 break;
                                         }
                                     }
-                                    if (value.ToUpper().Equals("UNLOCK"))
+                                    if (stringValue.ToUpper().Equals("UNLOCK"))
                                     {
                                         switch (_commandLineInput.TargetFeature.ToUpper())
                                         {
@@ -940,7 +929,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     _devMgr.SetAppConfigData(data);
                                     break;
                                 default: // currently, CLI peripheral didn't accept others setting type
-                                    if (int.TryParse(value, out val))
+                                    if (int.TryParse(stringValue, out val))
                                         break;
                                     else
                                     {
@@ -982,14 +971,88 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //    return (int)CLI_ExitCode.success;
                 case "COLLABCAMERAENABLE":
                     writelog("SetPeripheralProperty: COLLABCAMERAENABLE Entry");
-                    taskB = _devMgr.SetCollaborationCameraEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            if (di.IsCollabsKeysSupported)
+                            {
+                                var result = RunAsyncTimeout(_devMgr.SetCollaborationCameraEnable(bl, Guid.Parse(x.Guid))).Result;
+                                if (result == "0")
+                                {
+                                    x.Result = "PASS";
+                                    retcode = di.IsCollaborationCameraEnable;
+                                    x.Value = (retcode) ? "ON" : "OFF";
+                                    x.Message = "N/A";
+                                }
+                                else if (result == "1")
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = "Timeout";
+                                }
+                                else
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = result;
+                                }
+                                retcode = (result == "0") ? true : false;
+                            }
+                            else
+                            {
+                                x.Value = "Not supported";
+                                x.Result = "FAIL";
+                                x.Message = "Keyboard not support COLLABCAMERAENABLE";
+                                retcode = false;
+                                writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABCAMERAENABLE");
+                            }
+                        }
+                    });
+                    writelog("SetPeripheralProperty: COLLABCAMERAENABLE" + (retcode ? "SUCCESS" : "FAIL"));
+                    return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                 case "COLLABCHATENABLE":
                     writelog("SetPeripheralProperty: COLLABCHATENABLE Entry");
-                    taskB = _devMgr.SetCollaborationChatEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            if (di.IsCollabsKeysSupported)
+                            {
+                                var result = RunAsyncTimeout(_devMgr.SetCollaborationChatEnable(bl, Guid.Parse(x.Guid))).Result;
+                                if (result == "0")
+                                {
+                                    x.Result = "PASS";
+                                    retcode = di.IsCollaborationChatEnable;
+                                    x.Value = (retcode) ? "ON" : "OFF";
+                                    x.Message = "N/A";
+                                }
+                                else if (result == "1")
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = "Timeout";
+                                }
+                                else
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = result;
+                                }
+                                retcode = (result == "0") ? true : false;
+                            }
+                            else
+                            {
+                                x.Value = "Not supported";
+                                x.Result = "FAIL";
+                                x.Message = "Keyboard not support COLLABCHATENABLE";
+                                retcode = false;
+                                writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABCHATENABLE");
+                            }
+                        }
+                    });
+                    writelog("SetPeripheralProperty: COLLABCHATENABLE" + (retcode ? "SUCCESS" : "FAIL"));
+                    return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                 //case "COLLABORATIONDOUBLETAPENABLE":
                 //    taskB = _devMgr.SetCollaborationDoubleTapEnable;
                 //    RunTaskB(bl);
@@ -1000,14 +1063,88 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //    return (int)CLI_ExitCode.success;
                 case "COLLABMICMUTE":
                     writelog("SetPeripheralProperty: COLLABMICMUTE Entry");
-                    taskB = _devMgr.SetCollaborationMicEnable;
-                    RunTaskB(!bl);
-                    return (int)CLI_ExitCode.success;
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            if (di.IsCollabsKeysSupported)
+                            {
+                                var result = RunAsyncTimeout(_devMgr.SetCollaborationMicEnable(bl, Guid.Parse(x.Guid))).Result;
+                                if (result == "0")
+                                {
+                                    x.Result = "PASS";
+                                    retcode = di.IsCollaborationMicEnable;
+                                    x.Value = (retcode) ? "ON" : "OFF";
+                                    x.Message = "N/A";
+                                }
+                                else if (result == "1")
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = "Timeout";
+                                }
+                                else
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = result;
+                                }
+                                retcode = (result == "0") ? true : false;
+                            }
+                            else
+                            {
+                                x.Value = "Not supported";
+                                x.Result = "FAIL";
+                                x.Message = "Keyboard not support COLLABMICMUTE";
+                                retcode = false;
+                                writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABMICMUTE");
+                            }
+                        }
+                    });
+                    writelog("SetPeripheralProperty: COLLABMICMUTE" + (retcode ? "SUCCESS" : "FAIL"));
+                    return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                 case "COLLABSCREENSHARE":
                     writelog("SetPeripheralProperty: COLLABSCREENSHARE Entry");
-                    taskB = _devMgr.SetCollaborationScreenShareEnable;
-                    RunTaskB(bl);
-                    return (int)CLI_ExitCode.success;
+                    SetResults.ForEach(x =>
+                    {
+                        x.Value = "";
+                        if (x.Result == "")
+                        {
+                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            if (di.IsCollabsKeysSupported)
+                            {
+                                var result = RunAsyncTimeout(_devMgr.SetCollaborationScreenShareEnable(bl, Guid.Parse(x.Guid))).Result;
+                                if (result == "0")
+                                {
+                                    x.Result = "PASS";
+                                    retcode = di.IsCollaborationScreenShareEnable;
+                                    x.Value = (retcode) ? "ON" : "OFF";
+                                    x.Message = "N/A";
+                                }
+                                else if (result == "1")
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = "Timeout";
+                                }
+                                else
+                                {
+                                    x.Result = "FAIL";
+                                    x.Message = result;
+                                }
+                                retcode = (result == "0") ? true : false;
+                            }
+                            else
+                            {
+                                x.Value = "Not supported";
+                                x.Result = "FAIL";
+                                x.Message = "Keyboard not support COLLABSCREENSHARE";
+                                retcode = false;
+                                writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABSCREENSHARE");
+                            }
+                        }
+                    });
+                    writelog("SetPeripheralProperty: COLLABSCREENSHARE" + (retcode ? "SUCCESS" : "FAIL"));
+                    return retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error;
                 //case "DPILEVEL":
                 //    taskA = _devMgr.SetDPILevel;
                 //    RunTaskA(val);
@@ -1444,16 +1581,42 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            if(val == 50 || val == 60)
+                            if (val == 50 || val == 60)
                             {
+                                if (val == 50)
+                                    val = 1;
+                                else if (val == 60)
+                                    val = 2;
+
                                 if (_devMgr.GetIsPropertyAntiFlickerSupported(x.Guid).Result)
                                 {
                                     var result = RunAsyncTimeout(_devMgr.SetAntiFlicker(x.Guid, val)).Result;
                                     if (result == "0")
                                     {
                                         x.Result = "PASS";
-                                        retvalue = _devMgr.GetAntiFlicker(x.Guid).Result;
-                                        x.Value = retvalue.ToString();
+                                        var retvalue = _devMgr.GetAntiFlicker(x.Guid).Result;
+                                        if (retvalue != null)
+                                        {
+                                            if (!string.IsNullOrEmpty(retvalue.ToString()))
+                                            {
+                                                switch (retvalue.ToString())
+                                                {
+                                                    case "1":
+                                                        x.Value = "50";
+                                                        break;
+                                                    case "2":
+                                                        x.Value = "60";
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            x.Value = "Interface return null";
+                                        }
+
                                         //x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                                         x.Message = "N/A";
                                     }
@@ -1484,7 +1647,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 x.Message = "Wrong option value: ";
                                 x.Message += $"{val}";
                                 retcode = false;
-                                writelog("SetPeripheralProperty: Wrong option value:"+ val.ToString());
+                                writelog("SetPeripheralProperty: Wrong option value:" + val.ToString());
                             }
                         }
                     });
@@ -1502,7 +1665,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 //            if (result == "0")
                 //            {
                 //                x.Result = "PASS";
-                    //                retvalue = _devMgr.GetAntiFlicker(GUID).Result;
+                //                retvalue = _devMgr.GetAntiFlicker(GUID).Result;
                 //                x.Value = retvalue.ToString();
                 //                x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                 //                x.Message = "N/A";
@@ -1928,1957 +2091,6 @@ namespace DDPM.CLI.Plugins.Peripherals
         public event EventHandler<(List<FWUpdateInfo>, string)> FWResultReceived_List;
         public event EventHandler<(FWUErrorCode, string)> FWResultReceived;
         private DeviceHelper _deviceHelper;
-        private (int code, string json) FWUpdate_v1(CommandLineInput commandLineInput)
-        {
-            string output = string.Empty;
-            List<List<string>> report = new List<List<string>>();
-            List<string> tmpReport = new List<string>();
-            CLI_RESPONSE cLI_RESPONSE = new CLI_RESPONSE();
-            cLI_RESPONSE.Command = commandLineInput.Command;
-            cLI_RESPONSE.TargetFeature = commandLineInput.TargetFeature;
-            CLIEventResult result = new CLIEventResult();
-
-            _deviceHelper = new DeviceHelper
-            {
-                deviceInfo = new List<DeviceInfo>()
-            };
-
-            List<DeviceInfo> _deviceinfo = null;
-            _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
-
-            if (!commandLineInput.isCliRunAdmin)
-            {
-                cLI_RESPONSE.Result = "FAIL";
-                cLI_RESPONSE.Message = "Not Admin";
-                System.Console.WriteLine(JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented));
-                return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented));
-            }
-            bool? ret = null;
-            bool isShowInfo = true;
-            string installPath = "";
-            bool somethingError = false;
-
-            CLI_FWU_RESPONSE cLI_FWU_RESPONSE = null;
-            try
-            {
-                switch (commandLineInput.TargetFeature)
-                {
-                    case "FIRMWAREUPDATE":
-                        cLI_FWU_RESPONSE = new CLI_FWU_RESPONSE(cLI_RESPONSE);
-                        bool _recode = false;
-                        if (commandLineInput.Options.Count > 5)
-                        {
-                            cLI_FWU_RESPONSE.Result = "FAIL";
-                            cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                            for (int i = 0; i < commandLineInput.Options.Count; i++)
-                            {
-                                cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                            }
-                            break;
-                        }
-                        for (int i = 0; i < commandLineInput.Options.Count; i++)
-                        {
-                            Trace.WriteLine($"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n");
-                        }
-                        if (commandLineInput.Options.Count > 0)
-                        {
-                            cLI_FWU_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
-                            string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-
-                            if (ss_1.Length == 2)
-                            {
-                                writelog("FWUpdate_Line 1460");
-                                if (!string.IsNullOrEmpty(ss_1[0]) && !string.IsNullOrEmpty(ss_1[1]))
-                                {
-                                    writelog("FWUpdate_Line 1463");
-                                    if (ss_1[0].ToUpper().Equals("DISPLAY"))
-                                    {
-                                        writelog("FWUpdate_Line 1466");
-                                        //Check Display is exist
-                                        _AllInfoMonitors = _devMgr.GetMonitors().Result;
-                                        if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0))
-                                        {
-                                            writelog("FWUpdate_Line 1471");
-                                            CLI_RESPONSE rsp = new CLI_RESPONSE()
-                                            {
-                                                Command = commandLineInput.Command,
-                                                TargetFeature = commandLineInput.TargetFeature,
-                                                Result = "FAIL",
-                                                Message = "No monitor connected",
-                                            };
-                                            System.Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                                            return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                                        }
-                                        else
-                                        {
-                                            writelog("FWUpdate_Line 1484");
-                                            //display servicetag & miniver & model
-                                            if (commandLineInput.Options.Count == 4)
-                                            {
-                                                string[] ss_2 = commandLineInput.Options[1].Option_Value.Split(",");
-                                                string[] ss_3 = commandLineInput.Options[2].Option_Value.Split(",");
-                                                string[] ss_4 = commandLineInput.Options[3].Option_Value.Split(",");
-                                                writelog("FWUpdate_Line 1491");
-                                                if (ss_2.Length == 2 && ss_3.Length == 2 && ss_4.Length == 2)
-                                                {
-                                                    writelog("FWUpdate_Line 1494");
-                                                    if (!string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1]))
-                                                    {
-                                                        writelog("FWUpdate_Line 1494");
-                                                        if (!string.IsNullOrEmpty(ss_3[0]) && !string.IsNullOrEmpty(ss_3[1]))
-                                                        {
-                                                            writelog("FWUpdate_Line 1500");
-                                                            if (!string.IsNullOrEmpty(ss_4[0]) && !string.IsNullOrEmpty(ss_4[1]))
-                                                            {
-                                                                writelog("FWUpdate_Line 1503");
-                                                                if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MINIVERSION") && ss_4[1].ToUpper().Equals("MODEL"))
-                                                                {
-                                                                    writelog("FWUpdate_Line 1504");
-                                                                    List<string> stag = new List<string> { ss_2[0] };
-                                                                    string min = ss_3[0];
-                                                                    List<string> model = new List<string> { ss_4[0] };
-                                                                    isShowInfo = true;
-
-                                                                    var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, model, min);
-
-                                                                    result.ExitCode = fwupdate.code;
-                                                                    result.serialize_Json_response = fwupdate.result;
-                                                                    ret = true;
-                                                                }
-                                                                else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MINIVERSION") && ss_4[1].ToUpper().Equals("MODEL"))
-                                                                {
-                                                                    writelog("FWUpdate_Line 1520");
-                                                                    List<string> stag = new List<string> { ss_2[0] };
-                                                                    string min = ss_3[0];
-                                                                    List<string> model = new List<string> { ss_4[0] };
-                                                                    isShowInfo = false;
-                                                                    var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, model, min);
-                                                                    FWResultReceived_List += Download_Event_2;
-                                                                    result.ExitCode = fwupdate.code;
-                                                                    result.serialize_Json_response = fwupdate.result;
-                                                                    ret = true;
-                                                                }
-                                                                else if (ss_1[1].ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MINIVERSION") && ss_4[1].ToUpper().Equals("MODEL"))
-                                                                {
-                                                                    writelog("FWUpdate_Line 1533");
-                                                                    List<string> stag = new List<string> { ss_2[0] };
-                                                                    string min = ss_3[0];
-                                                                    List<string> model = new List<string> { ss_4[0] };
-                                                                    installPath = Path.GetFullPath(ss_1[1]);
-                                                                    Trace.WriteLine($"installPath = {installPath}");
-                                                                    isShowInfo = true;
-                                                                    var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, model, min);
-
-                                                                    result.ExitCode = fwupdate.code;
-                                                                    result.serialize_Json_response = fwupdate.result;
-                                                                    ret = true;
-
-                                                                }
-                                                            }
-                                                            else
-                                                            {
-                                                                writelog("FWUpdate_Line 1550");
-                                                                somethingError = true;
-                                                            }
-
-                                                        }
-                                                        else
-                                                        {
-                                                            writelog("FWUpdate_Line 1557");
-                                                            somethingError = true;
-                                                        }
-
-                                                    }
-                                                    else
-                                                    {
-                                                        writelog("FWUpdate_Line 1564");
-                                                        somethingError = true;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    writelog("FWUpdate_Line 1570");
-                                                    somethingError = true;
-                                                }
-
-
-                                            }
-                                            //display (servicetag  && miniver) or (servicetag  && model) or (miniver  && model)
-                                            else if (commandLineInput.Options.Count == 3)
-                                            {
-                                                writelog("FWUpdate_Line 1579");
-                                                string[] ss_2 = commandLineInput.Options[1].Option_Value.Split(",");
-                                                string[] ss_3 = commandLineInput.Options[2].Option_Value.Split(",");
-
-                                                if (ss_2.Length == 2 && ss_3.Length == 2)
-                                                {
-                                                    writelog("FWUpdate_Line 1585");
-                                                    if (!string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1]))
-                                                    {
-                                                        writelog("FWUpdate_Line 1588");
-                                                        if (!string.IsNullOrEmpty(ss_3[0]) && !string.IsNullOrEmpty(ss_3[1]))
-                                                        {
-                                                            writelog("FWUpdate_Line 1591");
-                                                            //display servicetag & miniver 
-                                                            if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MINIVERSION"))
-                                                            {
-                                                                writelog("FWUpdate_Line 1595");
-                                                                List<string> stag = new List<string> { ss_2[0] };
-                                                                string min = ss_3[0];
-                                                                isShowInfo = true;
-
-                                                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, null, min);
-
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-                                                            }
-                                                            //display servicetag & miniver 
-                                                            else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MINIVERSION"))
-                                                            {
-                                                                writelog("FWUpdate_Line 1609");
-                                                                List<string> stag = new List<string> { ss_2[0] };
-                                                                string min = ss_3[0];
-                                                                isShowInfo = false;
-                                                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, null, min);
-                                                                FWResultReceived_List += Download_Event_2;
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-                                                            }
-                                                            //display servicetag &  miniver 
-                                                            else if (ss_1[1].ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MINIVERSION"))
-                                                            {
-                                                                writelog("FWUpdate_Line 1622");
-                                                                string min = ss_2[0];
-                                                                List<string> stag = new List<string> { ss_2[0] };
-                                                                installPath = Path.GetFullPath(ss_1[1]);
-                                                                Trace.WriteLine($"installPath = {installPath}");
-                                                                isShowInfo = true;
-                                                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, null, min);
-
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-
-                                                            }
-                                                            //display servicetag & model
-                                                            if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MODEL"))
-                                                            {
-                                                                writelog("FWUpdate_Line 1638");
-                                                                List<string> stag = new List<string> { ss_2[0] };
-                                                                List<string> model = new List<string> { ss_3[0] };
-                                                                isShowInfo = true;
-
-                                                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, model, null);
-
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-                                                            }
-                                                            //display servicetag & model
-                                                            else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MODEL"))
-                                                            {
-                                                                writelog("FWUpdate_Line 1652");
-                                                                List<string> stag = new List<string> { ss_2[0] };
-                                                                List<string> model = new List<string> { ss_3[0] };
-                                                                isShowInfo = false;
-                                                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, model, null);
-                                                                FWResultReceived_List += Download_Event_2;
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-                                                            }
-                                                            //display servicetag & model
-                                                            else if (ss_1[1].ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("SERVICETAG") && ss_3[1].ToUpper().Equals("MODEL"))
-                                                            {
-                                                                writelog("FWUpdate_Line 1665");
-                                                                List<string> stag = new List<string> { ss_2[0] };
-                                                                List<string> model = new List<string> { ss_3[0] };
-                                                                installPath = Path.GetFullPath(ss_1[1]);
-                                                                Trace.WriteLine($"installPath = {installPath}");
-                                                                isShowInfo = true;
-                                                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, model, null);
-
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-
-                                                            }
-                                                            //display miniver  && model
-                                                            if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_3[1].ToUpper().Equals("MODEL"))
-                                                            {
-                                                                writelog("FWUpdate_Line 1681");
-                                                                List<string> model = new List<string> { ss_3[0] };
-                                                                string min = ss_3[0];
-                                                                isShowInfo = true;
-
-                                                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, model, min);
-
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-                                                            }
-                                                            //display miniver  && model
-                                                            else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_3[1].ToUpper().Equals("MODEL"))
-                                                            {
-                                                                writelog("FWUpdate_Line 1695");
-                                                                string min = ss_3[0];
-                                                                List<string> model = new List<string> { ss_3[0] };
-                                                                isShowInfo = false;
-                                                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, model, min);
-                                                                FWResultReceived_List += Download_Event_2;
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-                                                            }
-                                                            //display miniver  && model
-                                                            else if (ss_1[1].ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_3[1].ToUpper().Equals("MODEL"))
-                                                            {
-
-                                                                writelog("FWUpdate_Line 1709");
-                                                                string min = ss_2[0];
-                                                                List<string> model = new List<string> { ss_3[0] };
-                                                                installPath = Path.GetFullPath(ss_1[1]);
-                                                                Trace.WriteLine($"installPath = {installPath}");
-                                                                isShowInfo = true;
-                                                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, model, min);
-
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            writelog("FWUpdate_Line 1725");
-                                                            somethingError = true;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        writelog("FWUpdate_Line 1731");
-                                                        somethingError = true;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    writelog("FWUpdate_Line 1737");
-                                                    somethingError = true;
-                                                }
-                                            }
-
-                                            //display servicetag  or  miniver or model
-                                            else if (commandLineInput.Options.Count == 2)
-                                            {
-                                                writelog("FWUpdate_Line 1745");
-                                                string[] ss_2 = commandLineInput.Options[1].Option_Value.Split(",");
-                                                if (ss_2.Length == 2)
-                                                {
-                                                    writelog("FWUpdate_Line 1749");
-                                                    if (!string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1]))
-                                                    {
-                                                        writelog("FWUpdate_Line 1752");
-                                                        //display   only servicetag
-                                                        if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("SERVICETAG"))
-                                                        {
-                                                            writelog("FWUpdate_Line 1756");
-                                                            List<string> stag = new List<string> { ss_2[0] };
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, null, null);
-
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-                                                        }
-                                                        //display   only servicetag
-                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("SERVICETAG"))
-                                                        {
-                                                            writelog("FWUpdate_Line 1768");
-                                                            List<string> stag = new List<string> { ss_2[0] };
-                                                            isShowInfo = false;
-                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, null, null);
-                                                            FWResultReceived_List += Download_Event_2;
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-                                                        }
-                                                        //display   only servicetag
-                                                        else if (ss_1[1].ToUpper().Contains(":\\") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("SERVICETAG"))
-                                                        {
-                                                            writelog("FWUpdate_Line 1780");
-                                                            List<string> stag = new List<string> { ss_2[0] };
-                                                            installPath = Path.GetFullPath(ss_1[1]);
-                                                            Trace.WriteLine($"installPath = {installPath}");
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, stag, null, null);
-
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-
-                                                        }
-                                                        //display  only miniver
-                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MINIVERSION"))
-                                                        {
-                                                            writelog("FWUpdate_Line 1795");
-                                                            string min = ss_2[0];
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, null, min);
-
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-                                                        }
-                                                        //display  only miniver
-                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MINIVERSION"))
-                                                        {
-                                                            writelog("FWUpdate_Line 1807");
-                                                            string min = ss_2[0];
-                                                            isShowInfo = false;
-                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, null, min);
-                                                            FWResultReceived_List += Download_Event_2;
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-                                                        }
-                                                        //display  only miniver
-                                                        else if (ss_1[1].ToUpper().Contains(":\\") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MINIVERSION"))
-                                                        {
-                                                            writelog("FWUpdate_Line 1819");
-                                                            string min = ss_2[0];
-                                                            installPath = Path.GetFullPath(ss_1[1]);
-                                                            Trace.WriteLine($"installPath = {installPath}");
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, null, min);
-
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-
-                                                        }
-                                                        //display  only model
-                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MODEL"))
-                                                        {
-
-                                                            writelog("FWUpdate_Line 1835");
-                                                            List<string> model = new List<string> { ss_2[0] };
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, model, null);
-
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-                                                        }
-                                                        //display  only model
-                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MODEL"))
-                                                        {
-                                                            writelog("FWUpdate_Line 1847");
-                                                            List<string> model = new List<string> { ss_2[0] };
-                                                            isShowInfo = false;
-                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, model, null);
-                                                            FWResultReceived_List += Download_Event_2;
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-                                                        }
-                                                        //display  only model
-                                                        else if (ss_1[1].ToUpper().Contains(":\\") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MODEL"))
-                                                        {
-                                                            writelog("FWUpdate_Line 1859");
-                                                            List<string> model = new List<string> { ss_2[0] };
-                                                            installPath = Path.GetFullPath(ss_1[1]);
-                                                            Trace.WriteLine($"installPath = {installPath}");
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, model, null);
-
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        writelog("FWUpdate_Line 1874");
-                                                        somethingError = true;
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    writelog("FWUpdate_Line 1880");
-                                                    somethingError = true;
-                                                }
-
-                                            }
-
-                                            //display  no servicetag miniver model
-                                            else if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 1)
-                                            {
-
-                                                writelog("FWUpdate_Line 1890");
-                                                isShowInfo = true;
-                                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, null, null);
-
-                                                result.ExitCode = fwupdate.code;
-                                                result.serialize_Json_response = fwupdate.result;
-                                                ret = true;
-                                            }
-                                            //display  no servicetag miniver model
-                                            else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 1)
-                                            {
-
-                                                writelog("FWUpdate_Line 1902");
-                                                isShowInfo = false;
-                                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, null, null);
-                                                FWResultReceived_List += Download_Event_2;
-                                                result.ExitCode = fwupdate.code;
-                                                result.serialize_Json_response = fwupdate.result;
-                                                ret = true;
-                                            }
-                                            //display  no servicetag miniver model
-                                            else if (ss_1[1].ToUpper().Contains(":\\") && commandLineInput.Options.Count == 1)
-                                            {
-                                                writelog("FWUpdate_Line 1913");
-                                                installPath = Path.GetFullPath(ss_1[1]);
-                                                Trace.WriteLine($"installPath = {installPath}");
-                                                isShowInfo = true;
-                                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, true, null, null, null);
-
-                                                result.ExitCode = fwupdate.code;
-                                                result.serialize_Json_response = fwupdate.result;
-                                                ret = true;
-
-                                            }
-                                            else if (ss_1[1].ToUpper().Equals("DEFER") && commandLineInput.Options.Count == 1)
-                                            {
-                                                writelog("FWUpdate_Line 1926");
-                                                if (commandLineInput.Options.Count > 2)
-                                                {
-                                                    writelog("FWUpdate_Line 1929");
-                                                    cLI_FWU_RESPONSE.Result = "FAIL";
-                                                    cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                                                    for (int i = 0; i < commandLineInput.Options.Count; i++)
-                                                    {
-                                                        writelog("FWUpdate_Line 1934");
-                                                        cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                                                    }
-                                                    break;
-                                                }
-                                                ret = GetFWUpdateList(commandLineInput, cLI_FWU_RESPONSE, isShowInfo, true);
-                                            }
-                                            else
-                                            {
-                                                writelog("FWUpdate_Line 1943");
-                                                somethingError = true;
-                                            }
-                                        }
-                                    }
-                                    else if (!ss_1[0].ToUpper().Equals("DISPLAY"))
-                                    {
-
-                                        writelog("FWUpdate_Line 1951");
-                                        _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
-                                        foreach (var g in _deviceinfo)
-                                        {
-                                            writelog("FWUpdate_Line 1955");
-                                            if (g.LogicalDeviceType == "LogicalMouse" && ss_1[0].ToUpper().Equals("MOUSE"))
-                                            {
-                                                writelog("FWUpdate_Line 1958");
-                                                _recode = true;
-                                            }
-                                            if (g.LogicalDeviceType == "LogicalKeyboard" && ss_1[0].ToUpper().Equals("KEYBOARD"))
-                                            {
-                                                writelog("FWUpdate_Line 1963");
-                                                _recode = true;
-                                            }
-                                            if (g.LogicalDeviceType == "LogicalHeadset" && ss_1[0].ToUpper().Equals("HEADSET"))
-                                            {
-                                                writelog("FWUpdate_Line 1963_1");
-                                                _recode = true;
-                                            }
-                                            if (g.LogicalDeviceType == "LogicalWebcam" && ss_1[0].ToUpper().Equals("WEBCAM"))
-                                            {
-                                                writelog("FWUpdate_Line 1963_2");
-                                                _recode = true;
-                                            }
-                                            if (g.LogicalDeviceType == "LogicalWiredAudio" && ss_1[0].ToUpper().Equals("SPEAKER"))
-                                            {
-                                                writelog("FWUpdate_Line 1963_2");
-                                                _recode = true;
-                                            }
-                                            if (g.LogicalDeviceType == "LogicalPen" && ss_1[0].ToUpper().Equals("PEN"))
-                                            {
-                                                writelog("FWUpdate_Line 1963_2");
-                                                _recode = true;
-                                            }
-                                            if (ss_1[0].ToUpper().Equals("DONGLE"))
-                                            {
-                                                writelog("FWUpdate_Line 1963_2");
-                                                _recode = true;
-                                            }
-                                        }
-
-                                        if (_recode)
-                                        {
-                                            writelog("FWUpdate_Line 1970");
-                                            if (commandLineInput.Options.Count == 4)
-                                            {
-                                                writelog("FWUpdate_Line 1973");
-                                                string[] ss_2 = commandLineInput.Options[1].Option_Value.Split(",");
-                                                string[] ss_3 = commandLineInput.Options[2].Option_Value.Split(",");
-                                                string[] ss_4 = commandLineInput.Options[3].Option_Value.Split(",");
-                                                if (ss_2.Length == 2 && ss_3.Length == 2 && ss_4.Length == 2)
-                                                {
-                                                    writelog("FWUpdate_Line 1979");
-                                                    if (!string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1]))
-                                                    {
-                                                        writelog("FWUpdate_Line 1982");
-                                                        if (!string.IsNullOrEmpty(ss_3[0]) && !string.IsNullOrEmpty(ss_3[1]))
-                                                        {
-                                                            writelog("FWUpdate_Line 1985");
-                                                            if (!string.IsNullOrEmpty(ss_4[0]) && !string.IsNullOrEmpty(ss_4[1]))
-                                                            {
-                                                                writelog("FWUpdate_Line 1988");
-                                                                //peripherals guid & miniver & model
-                                                                if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MINIVERSION") && ss_4[1].ToUpper().Equals("MODEL"))
-                                                                {
-                                                                    writelog("FWUpdate_Line 1992");
-                                                                    List<string> guid = new List<string>();
-                                                                    string min = ss_3[0];
-                                                                    List<string> model = new List<string> { ss_4[0] };
-
-                                                                    foreach (var g in _deviceinfo)
-                                                                    {
-                                                                        writelog("FWUpdate_Line 1999");
-                                                                        if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                                        {
-                                                                            writelog("FWUpdate_Line 2002");
-                                                                            Trace.WriteLine($"IN ============");
-                                                                            guid = new List<string>() { commandLineInput.Options[1].Option_Value };
-                                                                        }
-                                                                    }
-
-                                                                    isShowInfo = true;
-                                                                    var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, model, min);
-
-                                                                    result.ExitCode = fwupdate.code;
-                                                                    result.serialize_Json_response = fwupdate.result;
-                                                                    ret = true;
-                                                                }
-                                                                //peripherals guid & miniver& model
-                                                                else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MINIVERSION") && ss_4[1].ToUpper().Equals("MODEL"))
-                                                                {
-                                                                    writelog("FWUpdate_Line 2018");
-                                                                    List<string> guid = new List<string>();
-                                                                    string min = ss_3[0];
-                                                                    List<string> model = new List<string> { ss_4[0] };
-                                                                    foreach (var g in _deviceinfo)
-                                                                    {
-                                                                        writelog("FWUpdate_Line 2024");
-                                                                        if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                                        {
-                                                                            writelog("FWUpdate_Line 2027");
-                                                                            Trace.WriteLine($"IN ============");
-                                                                            guid = new List<string>() { commandLineInput.Options[1].Option_Value };
-                                                                        }
-                                                                    }
-
-                                                                    isShowInfo = true;
-                                                                    var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, model, min);
-                                                                    FWResultReceived_List += Download_Event_2;
-                                                                    result.ExitCode = fwupdate.code;
-                                                                    result.serialize_Json_response = fwupdate.result;
-                                                                    ret = true;
-                                                                }
-                                                                //peripherals guid & miniver& model
-                                                                else if (ss_1[1].ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("GUID") && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_4[1].ToUpper().Equals("MODEL"))
-                                                                {
-                                                                    writelog("FWUpdate_Line 2043");
-                                                                    List<string> guid = new List<string>();
-                                                                    string min = ss_3[0];
-                                                                    List<string> model = new List<string> { ss_4[0] };
-                                                                    foreach (var g in _deviceinfo)
-                                                                    {
-                                                                        writelog("FWUpdate_Line 2049");
-                                                                        if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                                        {
-                                                                            writelog("FWUpdate_Line 2052");
-                                                                            Trace.WriteLine($"IN ============");
-                                                                            guid = new List<string>() { commandLineInput.Options[1].Option_Value };
-                                                                        }
-                                                                    }
-                                                                    installPath = Path.GetFullPath(ss_1[1]);
-                                                                    Trace.WriteLine($"installPath = {installPath}");
-                                                                    isShowInfo = true;
-                                                                    var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, model, min);
-
-                                                                    result.ExitCode = fwupdate.code;
-                                                                    result.serialize_Json_response = fwupdate.result;
-                                                                    ret = true;
-
-                                                                }
-                                                            }
-                                                            writelog("FWUpdate_Line !string.IsNullOrEmpty(ss_4[0]) && !string.IsNullOrEmpty(ss_4[1])");
-                                                        }
-                                                        writelog("FWUpdate_Line !string.IsNullOrEmpty(ss_3[0]) && !string.IsNullOrEmpty(ss_3[1])");
-                                                    }
-                                                    writelog("FWUpdate_Line !string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1])");
-                                                }
-                                                writelog("ss_2.Length == 2 && ss_3.Length == 2 && ss_4.Length == 2");
-                                            }
-                                            //peripherals (guid  && miniver) or (guid  && model) or (miniver  && model)
-                                            if (commandLineInput.Options.Count == 3)
-                                            {
-                                                writelog("FWUpdate_Line 2076");
-                                                string[] ss_2 = commandLineInput.Options[1].Option_Value.Split(",");
-                                                string[] ss_3 = commandLineInput.Options[2].Option_Value.Split(",");
-
-                                                if (ss_2.Length == 2 && ss_3.Length == 2)
-                                                {
-                                                    writelog("FWUpdate_Line 2082");
-                                                    if (!string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1]))
-                                                    {
-                                                        writelog("FWUpdate_Line 2085");
-                                                        if (!string.IsNullOrEmpty(ss_3[0]) && !string.IsNullOrEmpty(ss_3[1]))
-                                                        {
-                                                            writelog("FWUpdate_Line 2088");
-                                                            //peripherals guid  && miniver
-                                                            if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MINIVERSION"))
-                                                            {
-
-                                                                writelog("FWUpdate_Line 2093");
-                                                                List<string> guid = new List<string>();
-                                                                string min = ss_3[0];
-                                                                foreach (var g in _deviceinfo)
-                                                                {
-                                                                    writelog("FWUpdate_Line 2098");
-                                                                    if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                                    {
-                                                                        writelog("FWUpdate_Line 2101");
-                                                                        Trace.WriteLine($"IN ============");
-                                                                        guid = new List<string>() { commandLineInput.Options[1].Option_Value };
-                                                                    }
-                                                                }
-
-                                                                isShowInfo = true;
-                                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, null, min);
-
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-                                                            }
-                                                            //peripherals guid  && miniver
-                                                            else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MINIVERSION"))
-                                                            {
-                                                                writelog("FWUpdate_Line 2117");
-                                                                List<string> guid = new List<string>();
-                                                                string min = ss_3[0];
-                                                                foreach (var g in _deviceinfo)
-                                                                {
-                                                                    writelog("FWUpdate_Line 2122");
-                                                                    if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                                    {
-                                                                        writelog("FWUpdate_Line 2125");
-                                                                        Trace.WriteLine($"IN ============");
-                                                                        guid = new List<string>() { commandLineInput.Options[1].Option_Value };
-                                                                    }
-                                                                }
-
-                                                                isShowInfo = true;
-                                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, null, min);
-                                                                FWResultReceived_List += Download_Event_2;
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-                                                            }
-                                                            //peripherals guid  && miniver
-                                                            else if (ss_1[1].ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MINIVERSION"))
-                                                            {
-                                                                writelog("FWUpdate_Line 2141");
-                                                                List<string> guid = new List<string>();
-                                                                string min = ss_3[0];
-                                                                foreach (var g in _deviceinfo)
-                                                                {
-                                                                    writelog("FWUpdate_Line 2146");
-                                                                    if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                                    {
-                                                                        writelog("FWUpdate_Line 2149");
-                                                                        Trace.WriteLine($"IN ============");
-                                                                        guid = new List<string>() { commandLineInput.Options[1].Option_Value };
-                                                                    }
-                                                                }
-                                                                installPath = Path.GetFullPath(ss_1[1]);
-                                                                Trace.WriteLine($"installPath = {installPath}");
-                                                                isShowInfo = true;
-                                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, null, min);
-
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-
-                                                            }
-                                                            //peripherals guid  && model
-                                                            else if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MODEL"))
-                                                            {
-
-                                                                writelog("FWUpdate_Line 2168");
-                                                                List<string> model = new List<string> { ss_3[0] };
-                                                                List<string> guid = new List<string>();
-
-                                                                foreach (var g in _deviceinfo)
-                                                                {
-                                                                    writelog("FWUpdate_Line 2174");
-                                                                    if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                                    {
-                                                                        writelog("FWUpdate_Line 2177");
-                                                                        Trace.WriteLine($"IN ============");
-                                                                        guid = new List<string>() { commandLineInput.Options[1].Option_Value };
-                                                                    }
-                                                                }
-                                                                isShowInfo = true;
-                                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, model, null);
-
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-                                                            }
-                                                            //peripherals guid  && model
-                                                            else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MODEL"))
-                                                            {
-
-                                                                writelog("FWUpdate_Line 2193");
-                                                                List<string> model = new List<string> { ss_3[0] };
-                                                                List<string> guid = new List<string>();
-
-                                                                foreach (var g in _deviceinfo)
-                                                                {
-                                                                    writelog("FWUpdate_Line 2199");
-                                                                    if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                                    {
-                                                                        writelog("FWUpdate_Line 2202");
-                                                                        Trace.WriteLine($"IN ============");
-                                                                        guid = new List<string>() { commandLineInput.Options[1].Option_Value };
-                                                                    }
-                                                                }
-                                                                isShowInfo = true;
-                                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, model, null);
-                                                                FWResultReceived_List += Download_Event_2;
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-                                                            }
-                                                            //peripherals guid  && model
-                                                            else if (ss_1[1].ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MODEL"))
-
-
-                                                            {
-                                                                writelog("FWUpdate_Line 2219");
-                                                                List<string> model = new List<string> { ss_3[0] };
-                                                                List<string> guid = new List<string>();
-
-                                                                foreach (var g in _deviceinfo)
-                                                                {
-                                                                    writelog("FWUpdate_Line 2225");
-                                                                    if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                                    {
-                                                                        writelog("FWUpdate_Line 2228");
-                                                                        Trace.WriteLine($"IN ============");
-                                                                        guid = new List<string>() { commandLineInput.Options[1].Option_Value };
-                                                                    }
-                                                                }
-                                                                installPath = Path.GetFullPath(ss_1[1]);
-                                                                Trace.WriteLine($"installPath = {installPath}");
-                                                                isShowInfo = true;
-                                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, model, null);
-
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-
-                                                            }
-                                                            //peripherals miniver  && model
-                                                            else if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_3[1].ToUpper().Equals("MODEL"))
-                                                            {
-
-                                                                writelog("FWUpdate_Line 2247");
-                                                                string min = ss_2[0];
-                                                                List<string> model = new List<string> { ss_3[0] };
-
-                                                                isShowInfo = true;
-                                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, model, min);
-
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-                                                            }
-                                                            //peripherals miniver  && model
-                                                            else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_3[1].ToUpper().Equals("MODEL"))
-                                                            {
-
-                                                                writelog("FWUpdate_Line 2262");
-                                                                string min = ss_2[0];
-                                                                List<string> model = new List<string> { ss_3[0] };
-
-                                                                isShowInfo = true;
-                                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, model, min);
-                                                                FWResultReceived_List += Download_Event_2;
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-                                                            }
-                                                            //peripherals miniver  && model
-                                                            else if (ss_1[1].ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_3[1].ToUpper().Equals("MODEL"))
-
-
-                                                            {
-                                                                writelog("FWUpdate_Line 2278");
-                                                                string min = ss_2[0];
-                                                                List<string> model = new List<string> { ss_3[0] };
-                                                                installPath = Path.GetFullPath(ss_1[1]);
-                                                                Trace.WriteLine($"installPath = {installPath}");
-                                                                isShowInfo = true;
-                                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, model, min);
-
-                                                                result.ExitCode = fwupdate.code;
-                                                                result.serialize_Json_response = fwupdate.result;
-                                                                ret = true;
-
-                                                            }
-                                                        }
-                                                        writelog("FWUpdate_Line !string.IsNullOrEmpty(ss_3[0]) && !string.IsNullOrEmpty(ss_3[1])");
-                                                    }
-                                                    writelog("FWUpdate_Line !string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1])");
-                                                }
-                                                writelog("FWUpdate_Line ss_2.Length == 2 && ss_3.Length == 2");
-                                            }
-
-                                            if (commandLineInput.Options.Count == 2)
-                                            {
-                                                writelog("FWUpdate_Line 2298");
-                                                string[] ss_2 = commandLineInput.Options[1].Option_Value.Split(",");
-                                                if (ss_2.Length == 2)
-                                                {
-                                                    writelog("FWUpdate_Line 2302");
-                                                    if (!string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1]))
-                                                    {
-
-                                                        writelog("FWUpdate_Line 2306");
-
-                                                        //peripherals only guid
-                                                        if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("GUID"))
-                                                        {
-
-                                                            writelog("FWUpdate_Line 2312");
-                                                            List<string> guid = new List<string>();
-                                                            foreach (var g in _deviceinfo)
-                                                            {
-                                                                writelog("FWUpdate_Line 2316");
-                                                                if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                                {
-                                                                    writelog("FWUpdate_Line 2319");
-                                                                    Trace.WriteLine($"IN ============");
-                                                                    guid = new List<string>() { commandLineInput.Options[1].Option_Value };
-                                                                }
-                                                            }
-
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, null);
-
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-                                                        }
-                                                        //peripherals only guid
-                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("GUID"))
-                                                        {
-                                                            writelog("FWUpdate_Line 2335");
-                                                            List<string> guid = new List<string>();
-                                                            foreach (var g in _deviceinfo)
-                                                            {
-                                                                writelog("FWUpdate_Line 2339");
-                                                                if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                                {
-                                                                    writelog("FWUpdate_Line 2342");
-                                                                    Trace.WriteLine($"IN ============");
-                                                                    guid = new List<string>() { commandLineInput.Options[1].Option_Value };
-                                                                }
-                                                            }
-
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, null);
-                                                            FWResultReceived_List += Download_Event_2;
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-                                                        }
-                                                        //peripherals only guid
-                                                        else if (ss_1[1].ToUpper().Contains(":\\") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("GUID"))
-                                                        {
-                                                            writelog("FWUpdate_Line 2358");
-                                                            List<string> guid = new List<string>();
-                                                            foreach (var g in _deviceinfo)
-                                                            {
-                                                                writelog("FWUpdate_Line 2362");
-                                                                if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                                {
-                                                                    writelog("FWUpdate_Line 2365");
-                                                                    Trace.WriteLine($"IN ============");
-                                                                    guid = new List<string>() { commandLineInput.Options[1].Option_Value };
-                                                                }
-                                                            }
-                                                            installPath = Path.GetFullPath(ss_1[1]);
-                                                            Trace.WriteLine($"installPath = {installPath}");
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, null);
-
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-
-                                                        }
-                                                        //peripherals only minversion
-                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MINIVERSION"))
-                                                        {
-                                                            writelog("FWUpdate_Line 2383");
-                                                            string min = ss_2[0];
-
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, null, min);
-
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-                                                        }
-                                                        //peripherals only minversion
-                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MINIVERSION"))
-                                                        {
-                                                            writelog("FWUpdate_Line 2396");
-                                                            string min = ss_2[0];
-
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, null, min);
-                                                            FWResultReceived_List += Download_Event_2;
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-                                                        }
-                                                        //peripherals only minversion
-                                                        else if (ss_1[1].ToUpper().Contains(":\\") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MINIVERSION"))
-                                                        {
-                                                            writelog("FWUpdate_Line 2409");
-                                                            string min = ss_2[0];
-                                                            installPath = Path.GetFullPath(ss_1[1]);
-                                                            Trace.WriteLine($"installPath = {installPath}");
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, null, min);
-
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-
-                                                        }
-                                                        //peripherals only model
-                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MODEL"))
-                                                        {
-                                                            writelog("FWUpdate_Line 2424");
-                                                            List<string> model = new List<string> { ss_2[0] };
-
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, model, null);
-
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-                                                        }
-                                                        //peripherals only model
-                                                        else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MODEL"))
-                                                        {
-                                                            writelog("FWUpdate_Line 2437");
-                                                            List<string> model = new List<string> { ss_2[0] };
-
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, model, null);
-                                                            FWResultReceived_List += Download_Event_2;
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-                                                        }
-                                                        //peripherals only model
-                                                        else if (ss_1[1].ToUpper().Contains(":\\") && commandLineInput.Options.Count == 2 && ss_2[1].ToUpper().Equals("MODEL"))
-                                                        {
-                                                            writelog("FWUpdate_Line 2450");
-                                                            List<string> model = new List<string> { ss_2[0] };
-                                                            installPath = Path.GetFullPath(ss_1[1]);
-                                                            Trace.WriteLine($"installPath = {installPath}");
-                                                            isShowInfo = true;
-                                                            var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, model, null);
-
-                                                            result.ExitCode = fwupdate.code;
-                                                            result.serialize_Json_response = fwupdate.result;
-                                                            ret = true;
-
-                                                        }
-                                                    }
-                                                    writelog("FWUpdate_Line !string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1])");
-                                                }
-                                                writelog("FWUpdate_Line  ss_2.Length == 2");
-                                            }
-
-                                            //peripherals no guid minversion model
-                                            else if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 1)
-                                            {
-                                                writelog("FWUpdate_Line 2469");
-                                                isShowInfo = true;
-                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, null);
-
-                                                result.ExitCode = fwupdate.code;
-                                                result.serialize_Json_response = fwupdate.result;
-                                                ret = true;
-                                            }
-                                            //peripherals no guid minversion model
-                                            else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 1)
-                                            {
-                                                writelog("FWUpdate_Line 2480");
-                                                isShowInfo = false;
-                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, null);
-                                                FWResultReceived_List += Download_Event_2;
-                                                result.ExitCode = fwupdate.code;
-                                                result.serialize_Json_response = fwupdate.result;
-                                                ret = true;
-                                            }
-                                            //peripherals no guid minversion model
-                                            else if (ss_1[1].ToUpper().Contains(":\\") && commandLineInput.Options.Count == 1)
-                                            {
-                                                writelog("FWUpdate_Line 2491");
-                                                installPath = Path.GetFullPath(ss_1[1]);
-                                                Trace.WriteLine($"installPath = {installPath}");
-                                                isShowInfo = true;
-                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true);
-
-                                                result.ExitCode = fwupdate.code;
-                                                result.serialize_Json_response = fwupdate.result;
-                                                ret = true;
-
-                                            }
-                                            //peripherals no guid minversion
-                                            else if (ss_1[1].ToUpper().Equals("DEFER") && commandLineInput.Options.Count == 1)
-                                            {
-                                                writelog("FWUpdate_Line 2505");
-                                                if (commandLineInput.Options.Count > 2)
-                                                {
-                                                    writelog("FWUpdate_Line 2508");
-                                                    cLI_FWU_RESPONSE.Result = "FAIL";
-                                                    cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                                                    for (int i = 0; i < commandLineInput.Options.Count; i++)
-                                                    {
-                                                        writelog("FWUpdate_Line 2513");
-                                                        cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                                                    }
-                                                    break;
-                                                }
-                                                ret = GetFWUpdateList(commandLineInput, cLI_FWU_RESPONSE, isShowInfo, true);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            writelog("FWUpdate_Line 2523");
-                                            CLI_RESPONSE rsp = new CLI_RESPONSE()
-                                            {
-                                                Command = commandLineInput.Command,
-                                                TargetFeature = commandLineInput.TargetFeature,
-                                                Result = "FAIL",
-                                                Message = "No Device connected",
-                                            };
-                                            System.Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                                            return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                                        }
-
-                                    }
-                                    else
-                                    {
-                                        writelog("FWUpdate_Line 2538");
-                                        somethingError = true;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                writelog("FWUpdate_Line 2545");
-                                somethingError = true;
-                            }
-                            if (somethingError)
-                            {
-                                writelog("FWUpdate_Line 2550");
-                                cLI_FWU_RESPONSE.Result = "FAIL";
-                                cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                                for (int i = 0; i < commandLineInput.Options.Count; i++)
-                                {
-                                    writelog("FWUpdate_Line 2555");
-                                    cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                                }
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            writelog("FWUpdate_Line 2563");
-                            cLI_FWU_RESPONSE.Message = "Input FAIL";
-                            ret = false;
-                        }
-                        writelog("FWUpdate_Line 2567");
-
-                        cLI_FWU_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
-                        break;
-                    case "SILENTFWUPDATE":
-
-                        _recode = false;
-                        _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
-                        writelog("FWUpdate_Line 2575");
-
-                        foreach (var g in _deviceinfo)
-                        {
-                            writelog("FWUpdate_Line 2579");
-
-                            if (g.LogicalDeviceType == "LogicalDock" && commandLineInput.TargetType.ToUpper().Equals("DOCK"))
-                            {
-                                writelog("FWUpdate_Line 2583");
-
-                                _recode = true;
-                            }
-                        }
-                        if (_recode)
-                        {
-                            writelog("FWUpdate_Line 2590");
-                            cLI_FWU_RESPONSE = new CLI_FWU_RESPONSE(cLI_RESPONSE);
-                            if (commandLineInput.Options.Count > 5)
-                            {
-                                writelog("FWUpdate_Line 2594");
-                                cLI_FWU_RESPONSE.Result = "FAIL";
-                                cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                                for (int i = 0; i < commandLineInput.Options.Count; i++)
-                                {
-                                    writelog("FWUpdate_Line 2599");
-                                    cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                                }
-                                break;
-                            }
-
-                            if (commandLineInput.Options.Count == 4)
-                            {
-                                writelog("FWUpdate_Line 2607");
-                                if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
-                                {
-                                    writelog("FWUpdate_Line 2610");
-                                    cLI_FWU_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
-
-                                    //string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-                                    string[] ss_2 = commandLineInput.Options[1].Option_Value.Split(",");
-                                    string[] ss_3 = commandLineInput.Options[2].Option_Value.Split(",");
-                                    string[] ss_4 = commandLineInput.Options[3].Option_Value.Split(",");
-
-
-                                    if (ss_2.Length == 2 && ss_3.Length == 2 && ss_4.Length == 2)
-                                    {
-                                        writelog("FWUpdate_Line 2621");
-                                        if (!string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1]))
-                                        {
-                                            writelog("FWUpdate_Line 2624");
-                                            if (!string.IsNullOrEmpty(ss_3[0]) && !string.IsNullOrEmpty(ss_3[1]))
-                                            {
-                                                writelog("FWUpdate_Line 2627");
-                                                if (!string.IsNullOrEmpty(ss_4[0]) && !string.IsNullOrEmpty(ss_4[1]))
-                                                {
-                                                    writelog("FWUpdate_Line 2630");
-                                                    //dock guid & miniver & model
-                                                    if (commandLineInput.Options[0].Option_Value.ToUpper().Equals("UOD") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MINIVERSION") && ss_4[1].ToUpper().Equals("MODEL"))
-                                                    {
-                                                        writelog("FWUpdate_Line 2634");
-                                                        List<string> guid = new List<string>();
-                                                        string min = ss_3[0];
-                                                        List<string> model = new List<string> { ss_4[0] };
-
-                                                        foreach (var g in _deviceinfo)
-                                                        {
-                                                            writelog("FWUpdate_Line 2641");
-                                                            if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                            {
-                                                                writelog("FWUpdate_Line 2644");
-                                                                Trace.WriteLine($"IN ============");
-                                                                guid = new List<string>() { ss_2[0] };
-                                                            }
-                                                        }
-                                                        isShowInfo = true;
-                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true, guid, model, min);
-
-                                                        result.ExitCode = fwupdate.code;
-                                                        result.serialize_Json_response = fwupdate.result;
-                                                        ret = true;
-                                                    }
-                                                    else if (commandLineInput.Options[0].Option_Value.ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MINIVERSION") && ss_4[1].ToUpper().Equals("MODEL"))
-                                                    {
-                                                        writelog("FWUpdate_Line 2658");
-                                                        List<string> guid = new List<string>();
-                                                        string min = ss_3[0];
-                                                        List<string> model = new List<string> { ss_4[0] };
-
-                                                        foreach (var g in _deviceinfo)
-                                                        {
-                                                            writelog("FWUpdate_Line 2665");
-                                                            if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                            {
-                                                                writelog("FWUpdate_Line 2668");
-                                                                Trace.WriteLine($"IN ============");
-                                                                guid = new List<string>() { ss_2[0] };
-                                                            }
-                                                        }
-                                                        installPath = Path.GetFullPath(commandLineInput.Options[0].Option_Value);
-                                                        Trace.WriteLine($"installPath = {installPath}");
-                                                        isShowInfo = true;
-                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, model, min);
-
-                                                        result.ExitCode = fwupdate.code;
-                                                        result.serialize_Json_response = fwupdate.result;
-                                                        ret = true;
-
-                                                    }
-                                                    else
-                                                    {
-                                                        writelog("FWUpdate_Line 2685");
-                                                        somethingError = true;
-                                                    }
-
-                                                }
-                                            }
-                                            else
-                                            {
-                                                writelog("FWUpdate_Line 2693");
-                                                somethingError = true;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            writelog("FWUpdate_Line 2699");
-                                            somethingError = true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        writelog("FWUpdate_Line 2705");
-                                        somethingError = true;
-                                    }
-                                }
-                                writelog("FWUpdate_Line !string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value)");
-                            }
-                            else if (commandLineInput.Options.Count == 3)
-                            {
-                                writelog("FWUpdate_Line 2712");
-                                if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
-                                {
-                                    writelog("FWUpdate_Line 2715");
-                                    cLI_FWU_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
-
-                                    //string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-                                    string[] ss_2 = commandLineInput.Options[1].Option_Value.Split(",");
-                                    string[] ss_3 = commandLineInput.Options[2].Option_Value.Split(",");
-
-                                    if (ss_2.Length == 2 && ss_3.Length == 2)
-                                    {
-                                        writelog("FWUpdate_Line 2724");
-                                        if (!string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1]))
-                                        {
-                                            writelog("FWUpdate_Line 2727");
-                                            if (!string.IsNullOrEmpty(ss_3[0]) && !string.IsNullOrEmpty(ss_3[1]))
-                                            {
-                                                writelog("FWUpdate_Line 2730");
-                                                //dock guid  && miniver
-                                                if (commandLineInput.Options[0].Option_Value.ToUpper().Equals("UOD") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MINIVERSION"))
-                                                {
-                                                    writelog("FWUpdate_Line 2734");
-                                                    List<string> guid = new List<string>();
-                                                    string min = ss_3[0];
-                                                    foreach (var g in _deviceinfo)
-                                                    {
-                                                        writelog("FWUpdate_Line 2739");
-                                                        if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                        {
-                                                            writelog("FWUpdate_Line 2742");
-                                                            Trace.WriteLine($"IN ============");
-                                                            guid = new List<string>() { ss_2[0] };
-                                                        }
-                                                    }
-                                                    isShowInfo = true;
-                                                    var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true, guid, null, min);
-
-                                                    result.ExitCode = fwupdate.code;
-                                                    result.serialize_Json_response = fwupdate.result;
-                                                    ret = true;
-                                                }
-
-
-                                                else if (commandLineInput.Options[0].Option_Value.ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MINIVERSION"))
-                                                {
-                                                    writelog("FWUpdate_Line 2758");
-                                                    List<string> guid = new List<string>();
-                                                    string min = ss_3[0];
-                                                    foreach (var g in _deviceinfo)
-                                                    {
-                                                        writelog("FWUpdate_Line 2763");
-                                                        if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                        {
-                                                            writelog("FWUpdate_Line 2766");
-                                                            Trace.WriteLine($"IN ============");
-                                                            guid = new List<string>() { ss_2[0] };
-                                                        }
-                                                    }
-                                                    installPath = Path.GetFullPath(commandLineInput.Options[0].Option_Value);
-                                                    Trace.WriteLine($"installPath = {installPath}");
-                                                    isShowInfo = true;
-                                                    var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, null, min);
-
-                                                    result.ExitCode = fwupdate.code;
-                                                    result.serialize_Json_response = fwupdate.result;
-                                                    ret = true;
-
-                                                }
-
-
-                                                //dock guid  && model
-                                                else if (commandLineInput.Options[0].Option_Value.ToUpper().Equals("UOD") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MODEL"))
-                                                {
-                                                    writelog("FWUpdate_Line 2786");
-                                                    List<string> guid = new List<string>();
-                                                    List<string> model = new List<string> { ss_3[0] };
-                                                    foreach (var g in _deviceinfo)
-                                                    {
-                                                        writelog("FWUpdate_Line 2791");
-                                                        if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                        {
-                                                            writelog("FWUpdate_Line 2794");
-                                                            Trace.WriteLine($"IN ============");
-                                                            guid = new List<string>() { ss_2[0] };
-                                                        }
-                                                    }
-                                                    isShowInfo = true;
-                                                    var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true, guid, model, null);
-
-                                                    result.ExitCode = fwupdate.code;
-                                                    result.serialize_Json_response = fwupdate.result;
-                                                    ret = true;
-                                                }
-
-                                                else if (commandLineInput.Options[0].Option_Value.ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("GUID") && ss_3[1].ToUpper().Equals("MODEL"))
-                                                {
-                                                    writelog("FWUpdate_Line 2809");
-                                                    List<string> guid = new List<string>();
-                                                    List<string> model = new List<string> { ss_3[0] };
-                                                    foreach (var g in _deviceinfo)
-                                                    {
-                                                        writelog("FWUpdate_Line 2814");
-                                                        if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                        {
-                                                            writelog("FWUpdate_Line 2817");
-                                                            Trace.WriteLine($"IN ============");
-                                                            guid = new List<string>() { ss_2[0] };
-                                                        }
-                                                    }
-                                                    installPath = Path.GetFullPath(commandLineInput.Options[0].Option_Value);
-                                                    Trace.WriteLine($"installPath = {installPath}");
-                                                    isShowInfo = true;
-                                                    var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, model, null);
-
-                                                    result.ExitCode = fwupdate.code;
-                                                    result.serialize_Json_response = fwupdate.result;
-                                                    ret = true;
-
-                                                }
-
-                                                //dock miniver  && model
-                                                else if (commandLineInput.Options[0].Option_Value.ToUpper().Equals("UOD") && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_3[1].ToUpper().Equals("MODEL"))
-                                                {
-                                                    writelog("FWUpdate_Line 2836");
-                                                    List<string> model = new List<string> { ss_3[0] };
-                                                    string min = ss_2[0];
-
-                                                    isShowInfo = true;
-                                                    var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true, null, model, min);
-
-                                                    result.ExitCode = fwupdate.code;
-                                                    result.serialize_Json_response = fwupdate.result;
-                                                    ret = true;
-                                                }
-
-                                                else if (commandLineInput.Options[0].Option_Value.ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("MINIVERSION") && ss_3[1].ToUpper().Equals("MODEL"))
-                                                {
-                                                    writelog("FWUpdate_Line 2850");
-                                                    List<string> model = new List<string> { ss_3[0] };
-                                                    string min = ss_2[0];
-                                                    installPath = Path.GetFullPath(commandLineInput.Options[0].Option_Value);
-                                                    Trace.WriteLine($"installPath = {installPath}");
-                                                    isShowInfo = true;
-                                                    var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, model, min);
-
-                                                    result.ExitCode = fwupdate.code;
-                                                    result.serialize_Json_response = fwupdate.result;
-                                                    ret = true;
-
-                                                }
-                                                else
-                                                {
-                                                    writelog("FWUpdate_Line 2865");
-                                                    somethingError = true;
-                                                }
-
-                                            }
-                                            else
-                                            {
-                                                writelog("FWUpdate_Line 2872");
-                                                somethingError = true;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            writelog("FWUpdate_Line 2878");
-                                            somethingError = true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        writelog("FWUpdate_Line 2884");
-                                        somethingError = true;
-                                    }
-                                }
-                                else
-                                {
-                                    writelog("FWUpdate_Line 2890");
-                                    somethingError = true;
-                                }
-                            }
-                            else if (commandLineInput.Options.Count == 2)
-                            {
-                                writelog("FWUpdate_Line 2896");
-                                if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
-                                {
-                                    writelog("FWUpdate_Line 2899");
-                                    cLI_FWU_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
-
-                                    //string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-                                    string[] ss_2 = commandLineInput.Options[1].Option_Value.Split(",");
-
-
-                                    if (ss_2.Length == 2 )
-                                    {
-                                        writelog("FWUpdate_Line 2908");
-                                        if (!string.IsNullOrEmpty(ss_2[0]) && !string.IsNullOrEmpty(ss_2[1]))
-                                        {
-                                            writelog("FWUpdate_Line 2911");
-                                            //dock only guid
-                                            if (commandLineInput.Options[0].Option_Value.ToUpper().Equals("UOD") && ss_2[1].ToUpper().Equals("GUID"))
-                                            {
-                                                writelog("FWUpdate_Line 2915");
-                                                List<string> guid = new List<string>();
-
-
-
-                                                foreach (var g in _deviceinfo)
-                                                {
-                                                    writelog("FWUpdate_Line 2922");
-                                                    if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                    {
-                                                        writelog("FWUpdate_Line 2925");
-                                                        Trace.WriteLine($"IN ============");
-                                                        guid = new List<string>() { ss_2[0] };
-                                                    }
-                                                }
-                                                isShowInfo = true;
-                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true, guid, null, null);
-
-                                                result.ExitCode = fwupdate.code;
-                                                result.serialize_Json_response = fwupdate.result;
-                                                ret = true;
-                                            }
-
-                                            else if (commandLineInput.Options[0].Option_Value.ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("GUID"))
-                                            {
-                                                writelog("FWUpdate_Line 2940");
-                                                List<string> guid = new List<string>();
-
-
-                                                foreach (var g in _deviceinfo)
-                                                {
-                                                    writelog("FWUpdate_Line 2946");
-                                                    if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                    {
-                                                        writelog("FWUpdate_Line 2949");
-                                                        Trace.WriteLine($"IN ============");
-                                                        guid = new List<string>() { ss_2[0] };
-                                                    }
-                                                }
-                                                installPath = Path.GetFullPath(commandLineInput.Options[0].Option_Value);
-                                                Trace.WriteLine($"installPath = {installPath}");
-                                                isShowInfo = true;
-                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, guid, null, null);
-
-                                                result.ExitCode = fwupdate.code;
-                                                result.serialize_Json_response = fwupdate.result;
-                                                ret = true;
-
-                                            }
-
-
-                                            //dock only miniversion
-                                            else if (commandLineInput.Options[0].Option_Value.ToUpper().Equals("UOD") && ss_2[1].ToUpper().Equals("MINIVERSION"))
-                                            {
-                                                writelog("FWUpdate_Line 2969");
-                                                string min = ss_2[0];
-
-                                                isShowInfo = true;
-                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true, null, null, min);
-
-                                                result.ExitCode = fwupdate.code;
-                                                result.serialize_Json_response = fwupdate.result;
-                                                ret = true;
-                                            }
-
-                                            else if (commandLineInput.Options[0].Option_Value.ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("MINIVERSION"))
-                                            {
-                                                writelog("FWUpdate_Line 2982");
-                                                List<string> guid = new List<string>();
-                                                string min = ss_2[0];
-
-
-                                                foreach (var g in _deviceinfo)
-                                                {
-                                                    writelog("FWUpdate_Line 2989");
-                                                    if (g.ID.ToString().ToUpper() == ss_2[0])
-                                                    {
-                                                        writelog("FWUpdate_Line 2992");
-                                                        Trace.WriteLine($"IN ============");
-                                                        guid = new List<string>() { commandLineInput.Options[1].Option_Value };
-                                                    }
-                                                }
-                                                installPath = Path.GetFullPath(commandLineInput.Options[0].Option_Value);
-                                                Trace.WriteLine($"installPath = {installPath}");
-                                                isShowInfo = true;
-                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, null, min);
-
-                                                result.ExitCode = fwupdate.code;
-                                                result.serialize_Json_response = fwupdate.result;
-                                                ret = true;
-
-                                            }
-
-
-                                            //dock only model
-                                            else if (commandLineInput.Options[0].Option_Value.ToUpper().Equals("UOD") && ss_2[1].ToUpper().Equals("MODEL"))
-                                            {
-                                                writelog("FWUpdate_Line 3012");
-                                                List<string> model = new List<string> { ss_2[0] };
-
-                                                isShowInfo = true;
-                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true, null, model, null);
-
-                                                result.ExitCode = fwupdate.code;
-                                                result.serialize_Json_response = fwupdate.result;
-                                                ret = true;
-                                            }
-
-                                            else if (commandLineInput.Options[0].Option_Value.ToUpper().Contains(":\\") && ss_2[1].ToUpper().Equals("MODEL"))
-                                            {
-                                                writelog("FWUpdate_Line 3025");
-                                                List<string> model = new List<string> { ss_2[0] };
-
-
-                                                installPath = Path.GetFullPath(commandLineInput.Options[0].Option_Value);
-                                                Trace.WriteLine($"installPath = {installPath}");
-                                                isShowInfo = true;
-                                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true, null, model, null);
-
-                                                result.ExitCode = fwupdate.code;
-                                                result.serialize_Json_response = fwupdate.result;
-                                                ret = true;
-
-                                            }
-                                            else
-                                            {
-                                                writelog("FWUpdate_Line 3041");
-                                                somethingError = true;
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            writelog("FWUpdate_Line 3048");
-                                            somethingError = true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        writelog("FWUpdate_Line 3054");
-                                        somethingError = true;
-                                    }
-                                }
-                                else
-                                {
-                                    writelog("FWUpdate_Line 3060");
-                                    somethingError = true;
-                                }
-                            }
-                            else if (commandLineInput.Options.Count == 1)
-                            {
-                                writelog("FWUpdate_Line 3066");
-                                if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
-                                {
-                                    writelog("FWUpdate_Line 3069");
-                                    cLI_FWU_RESPONSE.Value = commandLineInput.Options[0].Option_Value;
-
-                                    //string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-
-                                    if (commandLineInput.Options[0].Option_Value.ToUpper().Equals("UOD"))
-                                    {
-                                        writelog("FWUpdate_Line 3076");
-                                        isShowInfo = true;
-                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true);
-
-                                        result.ExitCode = fwupdate.code;
-                                        result.serialize_Json_response = fwupdate.result;
-                                        ret = true;
-                                    }
-
-                                    else if (commandLineInput.Options[0].Option_Value.ToUpper().Contains(":\\"))
-                                    {
-                                        writelog("FWUpdate_Line 3087");
-                                        //string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-                                        Debug.WriteLine("commandLineInput.Options[0].Option_Value" + commandLineInput.Options[0].Option_Value);
-                                        installPath = commandLineInput.Options[0].Option_Value;
-
-                                        installPath = installPath.Replace("\"", "");
-
-                                        //installPath = Path.GetFullPath(commandLineInput.Options[0].Option_Value);
-                                        Trace.WriteLine($"installPath = {installPath}");
-                                        isShowInfo = true;
-                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, false, installPath, isShowInfo, true);
-
-                                        result.ExitCode = fwupdate.code;
-                                        result.serialize_Json_response = fwupdate.result;
-                                        ret = true;
-
-                                    }
-                                    else if (commandLineInput.Options[0].Option_Value.ToUpper().Equals("DEFER") )
-                                    {
-                                        writelog("FWUpdate_Line 3101");
-                                        if (commandLineInput.Options.Count > 2)
-                                        {
-                                            writelog("FWUpdate_Line 3104");
-                                            cLI_FWU_RESPONSE.Result = "FAIL";
-                                            cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                                            for (int i = 0; i < commandLineInput.Options.Count; i++)
-                                            {
-                                                writelog("FWUpdate_Line 3109");
-                                                cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                                            }
-                                            break;
-                                        }
-                                        writelog("FWUpdate_Line 3114");
-                                        ret = GetFWUpdateList(commandLineInput, cLI_FWU_RESPONSE, isShowInfo, true);
-                                    }
-                                    else
-                                    {
-                                        writelog("FWUpdate_Line 3118");
-                                        somethingError = true;
-                                    }
-                                }
-                                else
-                                {
-                                    writelog("FWUpdate_Line 3125");
-                                    somethingError = true;
-                                }
-                            }
-                            else if (commandLineInput.Options.Count == 0)
-                            {
-                                writelog("FWUpdate_Line 3131");
-                                isShowInfo = true;
-                                var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true);
-
-                                result.ExitCode = fwupdate.code;
-                                result.serialize_Json_response = fwupdate.result;
-                                ret = true;
-                            }
-                            else
-                            {
-                                writelog("FWUpdate_Line 3141");
-                                somethingError = true;
-                            }
-                            writelog("FWUpdate_Line 3144");
-                            cLI_FWU_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
-
-                            if (somethingError)
-                            {
-                                writelog("FWUpdate_Line 3149");
-                                cLI_FWU_RESPONSE.Result = "FAIL";
-                                cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                                for (int i = 0; i < commandLineInput.Options.Count; i++)
-                                {
-                                    writelog("FWUpdate_Line 3154");
-                                    cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                                }
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            writelog("FWUpdate_Line 3162");
-                            CLI_RESPONSE rsp = new CLI_RESPONSE()
-                            {
-                                Command = commandLineInput.Command,
-                                TargetFeature = commandLineInput.TargetFeature,
-                                Result = "FAIL",
-                                Message = "No Device connected",
-                            };
-                            System.Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                            return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                        }
-                        break;
-                    //case "UODFWUPDATE":
-                    //    cLI_FWU_RESPONSE = new CLI_FWU_RESPONSE(cLI_RESPONSE);
-                    //    if (commandLineInput.Options.Count > 2)
-                    //    {
-                    //        cLI_FWU_RESPONSE.Result = "FAIL";
-                    //        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                    //        for (int i = 0; i < commandLineInput.Options.Count; i++)
-                    //        {
-                    //            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                    //        }
-                    //        break;
-                    //    }
-                    //    for (int i = 1; i < commandLineInput.Options.Count; i++)
-                    //    {
-                    //        if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("ISSHOWINFO"))
-                    //        {
-                    //            isShowInfo = commandLineInput.Options[i].Option_Value.ToUpper() == "ON" ? true : false;
-                    //        }
-                    //        else if (commandLineInput.Options[i].Option_Name.ToUpper().Equals("INSTALLPATH"))
-                    //        {
-                    //            installPath = Path.GetFullPath(commandLineInput.Options[i].Option_Value);
-                    //        }
-                    //        else
-                    //        {
-                    //            somethingError = true;
-                    //        }
-                    //    }
-                    //    if (somethingError)
-                    //    {
-                    //        cLI_FWU_RESPONSE.Result = "FAIL";
-                    //        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                    //        for (int i = 0; i < commandLineInput.Options.Count; i++)
-                    //        {
-                    //            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                    //        }
-                    //        break;
-                    //    }
-                    //    ret = Auto_FWUpdate(commandLineInput, cLI_FWU_RESPONSE, true, installPath, isShowInfo, true);
-                    //    cLI_FWU_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
-                    //    break;
-
-                    //case "LOCKUIUPDATE":
-                    //    if (commandLineInput.Options.Count > 0)
-                    //    {
-                    //        cLI_FWU_RESPONSE.Result = "FAIL";
-                    //        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                    //        for (int i = 0; i < commandLineInput.Options.Count; i++)
-                    //        {
-                    //            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                    //        }
-                    //        break;
-                    //    }
-                    //    _devMgr.SetUILockStatus(true);
-                    //    ret = true;
-                    //    break;
-
-                    //case "UNLOCKUIUPDATE":
-                    //    if (commandLineInput.Options.Count > 0)
-                    //    {
-                    //        cLI_FWU_RESPONSE.Result = "FAIL";
-                    //        cLI_FWU_RESPONSE.Message = "Bring in extra strings:";
-                    //        for (int i = 0; i < commandLineInput.Options.Count; i++)
-                    //        {
-                    //            cLI_FWU_RESPONSE.Message += $"{commandLineInput.Options[i].Option_Name}={commandLineInput.Options[i].Option_Value}\n";
-                    //        }
-                    //        break;
-                    //    }
-                    //    _devMgr.SetUILockStatus(false);
-                    //    ret = true;
-                    //    break;
-
-                    default:
-                        writelog("FWUpdate_Line 3246");
-                        cLI_FWU_RESPONSE.Message = "Input FAIL";
-                        ret = false;
-                        break;
-                }
-                writelog("FWUpdate_Line 3251");
-                cLI_RESPONSE.Result = ret == true ? "PASS" : "FAIL";
-                if (cLI_FWU_RESPONSE != null)
-                {
-                    writelog("FWUpdate_Line 3255");
-                    output = JsonConvert.SerializeObject(cLI_FWU_RESPONSE, Formatting.Indented);
-                    //output = cLI_FWU_RESPONSE.OutputLog(cLI_FWU_RESPONSE, commandLineInput);
-                }
-                else
-                {
-                    writelog("FWUpdate_Line 3260");
-                    output = JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
-                    //output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
-                }
-                if (ret == true)
-                {
-                    writelog("FWUpdate_Line 3265");
-                    return ((int)CLI_ExitCode.success, output);
-                }
-                else if (somethingError)
-                {
-                    writelog("FWUpdate_Line 3270");
-                    CLI_RESPONSE rsp = new CLI_RESPONSE()
-                    {
-                        Command = commandLineInput.Command,
-                        TargetFeature = commandLineInput.TargetFeature,
-                        Result = "FAIL",
-                        Message = "FW update failure",
-                    };
-                    System.Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                    return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                }
-                else
-                {
-                    writelog("FWUpdate_Line 3283");
-                    //CLI_RESPONSE rsp = new CLI_RESPONSE()
-                    //{
-                    //    Command = commandLineInput.Command,
-                    //    TargetFeature = commandLineInput.TargetFeature,
-                    //    Result = "FAIL",
-                    //    Message = "FW update failure",
-                    //};
-                    return ((int)CLI_ExitCode.fail_FWUpdate, output);
-                    //return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(output, Formatting.Indented));
-                }
-            }
-            catch(Exception ex)
-            {
-                writelog("FWUpdate_Line 3297");
-                writelog($"FWUpdate_Line 3297 Error : {ex.Message}");
-                CLI_RESPONSE rsp = new CLI_RESPONSE()
-                {
-                    Command = commandLineInput.Command,
-                    TargetFeature = commandLineInput.TargetFeature,
-                    Result = "FAIL",
-                    Message = "FW update failure",
-                };
-                System.Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
-            }
-
-        }
 
         private (int code, string json) NoDeviceConnectResponse(CommandLineInput commandLineInput)
         {
@@ -3909,8 +2121,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                 deviceInfo = new List<DeviceInfo>()
             };
 
-            List<DeviceInfo> _deviceinfo = null;
-            _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+            List<DeviceInfo> deviceInfoList = null;
+            deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
 
             if (!commandLineInput.isCliRunAdmin)
             {
@@ -3941,7 +2153,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             List<string> model = null;
             List<string> guid = null;
             List<string> serviceTag = null;
-            bool isUod = true;
+            bool isUod = false;
 
             CLI_FWU_RESPONSE cLI_FWU_RESPONSE = null;
             try
@@ -3985,7 +2197,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                     if (!commandLineInput.Options[0].Option_Value.Contains(','))
                     {
-                        commandLineInput.Options[0].Option_Value += ",FORCEWITHNONOTICE";
+                        commandLineInput.Options[0].Option_Value += ",DEFER";
                     }
                     string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
 
@@ -3996,6 +2208,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                             if (ss_1[0].ToUpper().Equals("DISPLAY"))
                             {
                                 _AllInfoMonitors = _devMgr.GetMonitors().Result;
+
+                                var fwUpdateMonitorInfos = _AllInfoMonitors.Select(_ => _).ToList();
+
                                 if ((_AllInfoMonitors == null || _AllInfoMonitors.Count == 0))
                                 {
                                     writelog("FWUpdate_Line 1471");
@@ -4018,76 +2233,78 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         {
                                             string[] ss_tag = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_tag.Length == 2)
+                                            if (ss_tag.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_tag[0]) &&
+                                                !string.IsNullOrEmpty(ss_tag[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_tag[0]) && !string.IsNullOrEmpty(ss_tag[1]))
+                                                var findDevice = false;
+                                                if (_AllInfoMonitors.Any(x => x.edid.ServiceTag.ToUpper().Equals(ss_tag[0].ToUpper())))
                                                 {
-                                                    var findDevice = false;
-                                                    if (_AllInfoMonitors.Any(x => x.edid.ServiceTag.ToUpper().Equals(ss_tag[0].ToUpper())))
-                                                    {
-                                                        serviceTag = new List<string> { ss_tag[0] };
-                                                        findDevice = true;
-                                                    }
-                                                    if (!findDevice)
-                                                    {
-                                                        return NoDeviceConnectResponse(commandLineInput);
-                                                    }
+                                                    serviceTag = new List<string> { ss_tag[0] };
+                                                    fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => x.edid.ServiceTag.ToUpper().Equals(ss_tag[0].ToUpper())).ToList();
+                                                    findDevice = true;
                                                 }
+                                                if (!findDevice)
+                                                {
+                                                    return NoDeviceConnectResponse(commandLineInput);
+                                                }
+
                                             }
                                         }
                                         if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("MINIVERSION"))
                                         {
                                             string[] ss_min = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_min.Length == 2)
+                                            if (ss_min.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_min[0]) &&
+                                                !string.IsNullOrEmpty(ss_min[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_min[0]) && !string.IsNullOrEmpty(ss_min[1]))
+                                                var findDevice = false;
+                                                if (_AllInfoMonitors.Any(x => x.FwVersion.ToUpper().Equals(ss_min[0].ToUpper())))
                                                 {
-                                                    var findDevice = false;
-                                                    if (_AllInfoMonitors.Any(x => x.FwVersion.ToUpper().Equals(ss_min[0].ToUpper())))
-                                                    {
-                                                        miniver = ss_min[0];
-                                                        findDevice = true;
-                                                    }
-                                                    if (!findDevice)
-                                                    {
-                                                        return NoDeviceConnectResponse(commandLineInput);
-                                                    }
+                                                    miniver = ss_min[0];
+                                                    fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => x.FwVersion.ToUpper().Equals(ss_min[0].ToUpper())).ToList();
+                                                    findDevice = true;
                                                 }
+                                                if (!findDevice)
+                                                {
+                                                    return NoDeviceConnectResponse(commandLineInput);
+                                                }
+
                                             }
                                         }
                                         if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("MODEL"))
                                         {
                                             string[] ss_mod = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_mod.Length == 2)
+                                            if (ss_mod.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_mod[0]) &&
+                                                !string.IsNullOrEmpty(ss_mod[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_mod[0]) && !string.IsNullOrEmpty(ss_mod[1]))
+                                                var findDevice = false;
+                                                if (_AllInfoMonitors.Any(x => x.modelName.ToUpper().Equals(ss_mod[0].ToUpper())))
                                                 {
-                                                    var findDevice = false;
-                                                    if (_AllInfoMonitors.Any(x => x.modelName.ToUpper().Equals(ss_mod[0].ToUpper())))
-                                                    {
-                                                        model = new List<string> { ss_mod[0] };
-                                                        findDevice = true;
-                                                    }
-                                                    if (!findDevice)
-                                                    {
-                                                        return NoDeviceConnectResponse(commandLineInput);
-                                                    }
+                                                    model = new List<string> { ss_mod[0] };
+                                                    fwUpdateMonitorInfos = fwUpdateMonitorInfos.Where(x => x.modelName.ToUpper().Equals(ss_mod[0].ToUpper())).ToList();
+                                                    findDevice = true;
                                                 }
+                                                if (!findDevice)
+                                                {
+                                                    return NoDeviceConnectResponse(commandLineInput);
+                                                }
+
                                             }
                                         }
                                         if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("FILEPATH"))
                                         {
                                             string[] ss_filepath = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_filepath.Length == 2)
+                                            if (ss_filepath.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_filepath[0]) &&
+                                                !string.IsNullOrEmpty(ss_filepath[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_filepath[0]) && !string.IsNullOrEmpty(ss_filepath[1]))
-                                                {
-                                                    installPath = ss_filepath[0];
-                                                    Trace.WriteLine($"installPath = {installPath}");
-                                                }
+                                                installPath = ss_filepath[0];
+                                                Trace.WriteLine($"installPath = {installPath}");
                                             }
                                         }
                                     }
@@ -4128,43 +2345,53 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         break;
                                 }
 
-                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, installPath, isShowInfo, isForce, serviceTag, model, miniver, isDefer);
+                                var fwupdate = Auto_FWUpdate_display(commandLineInput, cLI_FWU_RESPONSE, fwUpdateMonitorInfos, installPath, isShowInfo, isForce, serviceTag, model, miniver, isDefer);
                                 result.ExitCode = fwupdate.code;
                                 result.serialize_Json_response = fwupdate.result;
                                 ret = true;
                             }
                             else if (!ss_1[0].ToUpper().Equals("DISPLAY"))
                             {
-                                _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
-                                foreach (var g in _deviceinfo)
+                                deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
+
+                                var fwUpdateDeviceInfos = deviceInfoList.Select(_ => _).ToList();
+
+                                foreach (var g in deviceInfoList)
                                 {
                                     if (g.LogicalDeviceType == "LogicalMouse" && ss_1[0].ToUpper().Equals("MOUSE"))
                                     {
                                         _recode_mouse = true;
+                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.LogicalDeviceType == "LogicalMouse").ToList();
                                     }
                                     else if (g.LogicalDeviceType == "LogicalKeyboard" && ss_1[0].ToUpper().Equals("KEYBOARD"))
                                     {
                                         _recode_kb = true;
+                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.LogicalDeviceType == "LogicalKeyboard").ToList();
                                     }
                                     else if (g.LogicalDeviceType == "LogicalHeadset" && ss_1[0].ToUpper().Equals("HEADSET"))
                                     {
                                         _recode_headset = true;
+                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.LogicalDeviceType == "LogicalHeadset").ToList();
                                     }
                                     else if (g.LogicalDeviceType == "LogicalWebcam" && ss_1[0].ToUpper().Equals("WEBCAM"))
                                     {
                                         _recode_webcam = true;
+                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.LogicalDeviceType == "LogicalWebcam").ToList();
                                     }
                                     else if (g.LogicalDeviceType == "LogicalWiredAudio" && ss_1[0].ToUpper().Equals("SPEAKER"))
                                     {
                                         _recode_speaker = true;
+                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.LogicalDeviceType == "LogicalWiredAudio").ToList();
                                     }
                                     else if (g.LogicalDeviceType == "LogicalPen" && ss_1[0].ToUpper().Equals("PEN"))
                                     {
                                         _recode_pen = true;
+                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.LogicalDeviceType == "LogicalPen").ToList();
                                     }
                                     else if (g.LogicalDeviceType == "LogicalDock" && ss_1[0].ToUpper().Equals("DOCK"))
                                     {
                                         _recode_dock = true;
+                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.LogicalDeviceType == "LogicalDock").ToList();
                                     }
                                     else if (ss_1[0].ToUpper().Equals("DONGLE"))
                                     {
@@ -4172,6 +2399,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     }
                                     else if (ss_1[0].ToUpper().Equals("AUDIO"))
                                     {
+                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.LogicalDeviceType == "LogicalHeadset" || x.LogicalDeviceType == "LogicalWiredAudio").ToList();
+
                                         switch (g.LogicalDeviceType)
                                         {
                                             case "LogicalHeadset":
@@ -4196,37 +2425,37 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         {
                                             string[] ss_guid = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_guid.Length == 2)
+                                            if (ss_guid.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_guid[0]) &&
+                                                !string.IsNullOrEmpty(ss_guid[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_guid[0]) && !string.IsNullOrEmpty(ss_guid[1]))
+                                                if (ss_1[0].ToUpper() == "DOCK" && commandLineInput.TargetType == "APP") // Checking for TargetType=APP
                                                 {
-                                                    if (ss_1[0].ToUpper() == "DOCK" && commandLineInput.TargetType == "APP") // Checking for TargetType=APP
+                                                    CLI_RESPONSE rsp = new CLI_RESPONSE()
                                                     {
-                                                        CLI_RESPONSE rsp = new CLI_RESPONSE()
-                                                        {
-                                                            Command = commandLineInput.Command,
-                                                            TargetFeature = commandLineInput.TargetFeature,
-                                                            Result = "FAIL",
-                                                            Message = "Dock not support GUID option",
-                                                        };
-                                                        writelog("FAIL Dock not support GUID option");
-                                                        Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                                                        return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                                                    }
+                                                        Command = commandLineInput.Command,
+                                                        TargetFeature = commandLineInput.TargetFeature,
+                                                        Result = "FAIL",
+                                                        Message = "Dock not support GUID option",
+                                                    };
+                                                    writelog("FAIL Dock not support GUID option");
+                                                    Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
+                                                    return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
+                                                }
 
-                                                    var findDevice = false;
-                                                    foreach (var g in _deviceinfo)
+                                                var findDevice = false;
+                                                foreach (var g in deviceInfoList)
+                                                {
+                                                    if (g.ID.ToString().ToUpper() == ss_guid[0].ToUpper())
                                                     {
-                                                        if (g.ID.ToString().ToUpper() == ss_guid[0].ToUpper())
-                                                        {
-                                                            guid = new List<string>() { ss_guid[0] };
-                                                            findDevice = true;
-                                                        }
+                                                        guid = new List<string>() { ss_guid[0] };
+                                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.ID.ToString().Equals(ss_guid[0], StringComparison.OrdinalIgnoreCase)).ToList();
+                                                        findDevice = true;
                                                     }
-                                                    if (!findDevice)
-                                                    {
-                                                        return NoDeviceConnectResponse(commandLineInput);
-                                                    }
+                                                }
+                                                if (!findDevice)
+                                                {
+                                                    return NoDeviceConnectResponse(commandLineInput);
                                                 }
                                             }
                                         }
@@ -4234,23 +2463,23 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         {
                                             string[] ss_min = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_min.Length == 2)
+                                            if (ss_min.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_min[0]) &&
+                                                !string.IsNullOrEmpty(ss_min[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_min[0]) && !string.IsNullOrEmpty(ss_min[1]))
+                                                var findDevice = false;
+                                                foreach (var g in deviceInfoList)
                                                 {
-                                                    var findDevice = false;
-                                                    foreach (var g in _deviceinfo)
+                                                    if (g.FirmwareVersion.ToUpper() == ss_min[0].ToUpper())
                                                     {
-                                                        if (g.FirmwareVersion.ToUpper() == ss_min[0].ToUpper())
-                                                        {
-                                                            miniver = ss_min[0];
-                                                            findDevice = true;
-                                                        }
+                                                        miniver = ss_min[0];
+                                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.FirmwareVersion.Equals(ss_min[0], StringComparison.OrdinalIgnoreCase)).ToList();
+                                                        findDevice = true;
                                                     }
-                                                    if (!findDevice)
-                                                    {
-                                                        return NoDeviceConnectResponse(commandLineInput);
-                                                    }
+                                                }
+                                                if (!findDevice)
+                                                {
+                                                    return NoDeviceConnectResponse(commandLineInput);
                                                 }
                                             }
                                         }
@@ -4258,89 +2487,88 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         {
                                             string[] ss_mod = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_mod.Length == 2)
+                                            if (ss_mod.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_mod[0]) &&
+                                                !string.IsNullOrEmpty(ss_mod[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_mod[0]) && !string.IsNullOrEmpty(ss_mod[1]))
+                                                var findDevice = false;
+                                                foreach (var g in deviceInfoList)
                                                 {
-                                                    var findDevice = false;
-                                                    foreach (var g in _deviceinfo)
+                                                    if (g.ModelNumber.ToUpper() == ss_mod[0].ToUpper())
                                                     {
-                                                        if (g.ModelNumber.ToUpper() == ss_mod[0].ToUpper())
-                                                        {
-                                                            model = new List<string> { ss_mod[0] };
-                                                            findDevice = true;
-                                                        }
-                                                    }
-                                                    if (!findDevice)
-                                                    {
-                                                        return NoDeviceConnectResponse(commandLineInput);
+                                                        model = new List<string> { ss_mod[0] };
+                                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.ModelNumber.Equals(ss_mod[0], StringComparison.OrdinalIgnoreCase)).ToList();
+                                                        findDevice = true;
                                                     }
                                                 }
-
+                                                if (!findDevice)
+                                                {
+                                                    return NoDeviceConnectResponse(commandLineInput);
+                                                }
                                             }
                                         }
                                         else if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("SERVICETAG"))
                                         {
                                             string[] serviceTaInputValues = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (serviceTaInputValues.Length == 2)
+                                            if (serviceTaInputValues.Length == 2 &&
+                                                !string.IsNullOrEmpty(serviceTaInputValues[0]) &&
+                                                !string.IsNullOrEmpty(serviceTaInputValues[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(serviceTaInputValues[0]) && !string.IsNullOrEmpty(serviceTaInputValues[1]))
+                                                var findDevice = false;
+                                                foreach (var g in deviceInfoList)
                                                 {
-                                                    var findDevice = false;
-                                                    foreach (var g in _deviceinfo)
+                                                    if (!string.IsNullOrWhiteSpace(g.DockServiceTag) && g.DockServiceTag.ToUpper() == serviceTaInputValues[0].ToUpper())
                                                     {
-                                                        if (!string.IsNullOrWhiteSpace(g.DockServiceTag) && g.DockServiceTag.ToUpper() == serviceTaInputValues[0].ToUpper())
-                                                        {
-                                                            serviceTag = new List<string> { serviceTaInputValues[0] };
-                                                            findDevice = true;
-                                                        }
-                                                    }
-                                                    if (!findDevice)
-                                                    {
-                                                        return NoDeviceConnectResponse(commandLineInput);
+                                                        serviceTag = new List<string> { serviceTaInputValues[0] };
+                                                        fwUpdateDeviceInfos = fwUpdateDeviceInfos.Where(x => x.DockServiceTag.Equals(serviceTaInputValues[0], StringComparison.OrdinalIgnoreCase)).ToList();
+                                                        findDevice = true;
                                                     }
                                                 }
+                                                if (!findDevice)
+                                                {
+                                                    return NoDeviceConnectResponse(commandLineInput);
+                                                }
+
                                             }
                                         }
                                         else if (commandLineInput.Options[i].Option_Value.ToUpper().Contains("UOD"))
                                         {
                                             string[] uodInputValues = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (uodInputValues.Length == 2)
+                                            if (uodInputValues.Length == 2 &&
+                                                !string.IsNullOrEmpty(uodInputValues[0]) &&
+                                                !string.IsNullOrEmpty(uodInputValues[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(uodInputValues[0]) && !string.IsNullOrEmpty(uodInputValues[1]))
+                                                if (ss_1[0].ToUpper() == "DOCK")
                                                 {
-                                                    if (ss_1[0].ToUpper() == "DOCK")
-                                                    {
-                                                        if (uodInputValues[0].ToUpper() != "TRUE" && uodInputValues[0].ToUpper() != "FALSE")
-                                                        {
-                                                            CLI_RESPONSE rsp = new CLI_RESPONSE()
-                                                            {
-                                                                Command = commandLineInput.Command,
-                                                                TargetFeature = commandLineInput.TargetFeature,
-                                                                Result = "FAIL",
-                                                                Message = "Not correct UOD option",
-                                                            };
-                                                            writelog("FAIL Not correct UOD option");
-                                                            Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                                                            return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
-                                                        }
-                                                        isUod = uodInputValues[0].ToUpper() == "TRUE";
-                                                    }
-                                                    else
+                                                    if (uodInputValues[0].ToUpper() != "TRUE" && uodInputValues[0].ToUpper() != "FALSE")
                                                     {
                                                         CLI_RESPONSE rsp = new CLI_RESPONSE()
                                                         {
                                                             Command = commandLineInput.Command,
                                                             TargetFeature = commandLineInput.TargetFeature,
                                                             Result = "FAIL",
-                                                            Message = "Only dock supports UOD update mode",
+                                                            Message = "Not correct UOD option",
                                                         };
-                                                        writelog("FAIL Only dock supports UOD update mode");
+                                                        writelog("FAIL Not correct UOD option");
                                                         Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                         return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                     }
+                                                    isUod = uodInputValues[0].ToUpper() == "TRUE";
+                                                }
+                                                else
+                                                {
+                                                    CLI_RESPONSE rsp = new CLI_RESPONSE()
+                                                    {
+                                                        Command = commandLineInput.Command,
+                                                        TargetFeature = commandLineInput.TargetFeature,
+                                                        Result = "FAIL",
+                                                        Message = "Only dock supports UOD update mode",
+                                                    };
+                                                    writelog("FAIL Only dock supports UOD update mode");
+                                                    Console.WriteLine(JsonConvert.SerializeObject(rsp, Formatting.Indented));
+                                                    return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
                                                 }
                                             }
                                         }
@@ -4348,12 +2576,11 @@ namespace DDPM.CLI.Plugins.Peripherals
                                         {
                                             string[] ss_filepath = commandLineInput.Options[i].Option_Value.Split(",");
 
-                                            if (ss_filepath.Length == 2)
+                                            if (ss_filepath.Length == 2 &&
+                                                !string.IsNullOrEmpty(ss_filepath[0]) &&
+                                                !string.IsNullOrEmpty(ss_filepath[1]))
                                             {
-                                                if (!string.IsNullOrEmpty(ss_filepath[0]) && !string.IsNullOrEmpty(ss_filepath[1]))
-                                                {
-                                                    installPath = ss_filepath[0];
-                                                }
+                                                installPath = ss_filepath[0];
                                             }
                                         }
                                     }
@@ -4486,7 +2713,38 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                 switch (commandLineInput.TargetFeature)
                                                 {
                                                     case "FIRMWAREUPDATE":
+                                                        switch (ss_2[1].ToUpper())
+                                                        {
+                                                            case "FORCEWITHNOTICE":
+                                                                isShowInfo = true;
+                                                                isForce = true;
+                                                                isDefer = false;
+                                                                break;
+
+                                                            case "FORCEWITHNONOTICE":
+                                                                isShowInfo = false;
+                                                                isForce = true;
+                                                                isDefer = false;
+                                                                break;
+
+                                                            case "DEFER":
+                                                                isShowInfo = true;
+                                                                isForce = false;
+                                                                isDefer = true;
+                                                                break;
+
+                                                            default:
+                                                                cLI_FWU_RESPONSE.Message = "Input FAIL";
+                                                                ret = false;
+                                                                break;
+                                                        }
+                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, fwUpdateDeviceInfos, isUod, installPath, isShowInfo, isForce, guid, model, miniver, isDefer, serviceTag);
+                                                        result.ExitCode = fwupdate.code;
+                                                        result.serialize_Json_response = fwupdate.result;
+                                                        ret = true;
+                                                        break;
                                                     case "SILENTFWUPDATE":
+                                                        isUod = true;
                                                         switch (ss_2[1].ToUpper())
                                                         {
                                                             case "FORCEWITHNOTICE":
@@ -4513,9 +2771,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                                 break;
 
                                                         }
-                                                        var fwupdate = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, isUod, installPath, isShowInfo, isForce, guid, model, miniver, isDefer, serviceTag);
-                                                        result.ExitCode = fwupdate.code;
-                                                        result.serialize_Json_response = fwupdate.result;
+                                                        var fwupdate2 = Auto_FWUpdate2(commandLineInput, cLI_FWU_RESPONSE, fwUpdateDeviceInfos, isUod, installPath, isShowInfo, isForce, guid, model, miniver, isDefer, serviceTag);
+                                                        result.ExitCode = fwupdate2.code;
+                                                        result.serialize_Json_response = fwupdate2.result;
                                                         ret = true;
                                                         break;
                                                     default:
@@ -4649,7 +2907,8 @@ namespace DDPM.CLI.Plugins.Peripherals
             {
                 (deviceType, deviceTypes) = SetDevice(commandLineInput);
 
-            }else if (dock_recode)
+            }
+            else if (dock_recode)
             {
                 deviceTypes.Add(DeviceType.LogicalDock);
                 deviceTypes.Add(DeviceType.PhysicalWiredDock);
@@ -4706,9 +2965,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                 {
                     _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
                     _devMgr.ProgressUpdate_Notify += _FWUpdatePlugin_ProgressUpdate;
-                    List<FWUpdateInfo> retFWUpdateInfos = _devMgr.DownloadAndInstall(fwUpdateInfo).Result;
+                    List<FWUpdateInfo> retFWUpdateInfosList = _devMgr.DownloadAndInstall(fwUpdateInfo).Result;
                     bool b = true;
-                    foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
+                    foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfosList)
                     {
                         if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
                         {
@@ -4731,84 +2990,7 @@ namespace DDPM.CLI.Plugins.Peripherals
         //0531 Bruce 因應IL的現有安裝包修改判斷，CLIPeripheralsPlugins.cs中Auto_FWUpdate方法修改回傳值型態和新增判斷
         private List<FWUpdateInfo> retFWUpdateInfos;
 
-        private bool? Auto_FWUpdate(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, bool isUODMode, string installPath, bool isShowInfo = true, bool isForce = false)
-        {
-            try
-            {
-                List<DeviceType> deviceTypes = new List<DeviceType>();
-                DeviceType deviceType = DeviceType.Unknown;
-                if (commandLineInput.Options.Count > 0)
-                {
-                    (deviceType, deviceTypes) = SetDevice(commandLineInput);
-
-                    if (isUODMode && deviceType != DeviceType.LogicalDock)
-                    {
-                        cli_FWU_RESPONSE.Message = "Only dock supports UOD update mode.";
-                        return false;
-                    }
-                }
-                _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
-                _devMgr.ProgressUpdate_Notify += _FWUpdatePlugin_ProgressUpdate;
-                _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
-                _devMgr.DownloadAndInstall_Result_Notify += Download_Event;
-                FWUpdateInfoPackage fwUpdateInfoPackage;
-                if (deviceType == DeviceType.Unknown)
-                {
-                    fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, null, false,true,true).Result;
-                }
-                else
-                {
-                    fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, false, deviceTypes, isUODMode).Result;
-                }
-                if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
-                {
-                    cli_FWU_RESPONSE.Message = "No updates available";
-                    return null;
-                }
-                if (deviceType != DeviceType.Unknown)
-                {
-                    foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
-                    {
-                        cli_FWU_RESPONSE.Model = fwUpdateInfo.Model;
-                        //cli_FWU_RESPONSE.GUID.Add(fwUpdateInfo.DeviceId);
-                        cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"Ready to start updating Device:{fwUpdateInfo.DeviceName} to Version:{fwUpdateInfo.TheLatestVersion}");
-                    }
-                    //cli_FWU_RESPONSE.OutputLog(cli_FWU_RESPONSE, commandLineInput);
-                    cli_FWU_RESPONSE.FWUpdateRESPONSE.Clear();
-                    do
-                    {
-                        Thread.Sleep(100);
-                    } while (retFWUpdateInfos == null);
-                    bool b = true;
-                    foreach (FWUpdateInfo retFWUpdateInfo in retFWUpdateInfos)
-                    {
-                        cli_FWU_RESPONSE.Model = retFWUpdateInfo.Model;
-                        if (retFWUpdateInfo.FWUErrorCode == FWUErrorCode.NoError)
-                        {
-                            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update success.");
-                        }
-                        else
-                        {
-                            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"{retFWUpdateInfo.DeviceName} update fail. Fail message:{retFWUpdateInfo.FWUErrorCode.ToString()}");
-                            b = false;
-                        }
-                    }
-                    _devMgr.ProgressUpdate_Notify -= _FWUpdatePlugin_ProgressUpdate;
-                    _devMgr.DownloadAndInstall_Result_Notify -= Download_Event;
-                    return b;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private (int code, string result) Auto_FWUpdate2(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, bool isUODMode, string installPath, bool isShowInfo = true, bool isForce = false, List<string> guid = null, List<string> model = null, string miniver = null, bool isDefer = false, List<string> serviceTag = null)
+        private (int code, string result) Auto_FWUpdate2(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, List<DeviceInfo> fwUpdateDeviceInfos, bool isUODMode, string installPath, bool isShowInfo = true, bool isForce = false, List<string> guid = null, List<string> model = null, string miniver = null, bool isDefer = false, List<string> serviceTag = null)
         {
             try
             {
@@ -4852,6 +3034,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                     {
                         cli_FWU_RESPONSE.Message = "No updates available";
                         cli_FWU_RESPONSE.Result = "PASS";
+                        cli_FWU_RESPONSE.Model = string.Join(",", fwUpdateDeviceInfos.Select(_ => _.ModelNumber));
+                        cli_FWU_RESPONSE.ServiceTag = string.Join(",", fwUpdateDeviceInfos.Select(_ => _.DockServiceTag ?? "N/A"));
+                        cli_FWU_RESPONSE.FWVersion = string.Join(",", fwUpdateDeviceInfos.Select(_ => $"[{_.FirmwareVersion}]"));
                         writelog("Auto_FWUpdate2 No updates available");
                         return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
@@ -4918,7 +3103,7 @@ namespace DDPM.CLI.Plugins.Peripherals
             }
         }
 
-        private (int code, string result) Auto_FWUpdate_display(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, string installPath, bool isShowInfo = true, bool isForce = false, List<string> serviceTags = null, List<string> model = null, string miniver = null, bool isDefer = false)
+        private (int code, string result) Auto_FWUpdate_display(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, List<MonitorInfo> fwUpdateMonitorInfos, string installPath, bool isShowInfo = true, bool isForce = false, List<string> serviceTags = null, List<string> model = null, string miniver = null, bool isDefer = false)
         {
             try
             {
@@ -4957,6 +3142,12 @@ namespace DDPM.CLI.Plugins.Peripherals
                     {
                         cli_FWU_RESPONSE.Message = "No updates available";
                         cli_FWU_RESPONSE.Result = "PASS";
+                        cli_FWU_RESPONSE.FWVersion = string.Join(",", fwUpdateMonitorInfos.Select(_ => $"[{_.FwVersion}]"));
+                        cli_FWU_RESPONSE.Model = string.Join(",", fwUpdateMonitorInfos.Select(_ => _.modelName));
+                        cli_FWU_RESPONSE.SerialNumber = string.Join(",", fwUpdateMonitorInfos.Select(_ => _.edid.SerialNumber));
+                        cli_FWU_RESPONSE.MarketingName = string.Join(",", fwUpdateMonitorInfos.Select(_ => _.MarketingName));
+                        cli_FWU_RESPONSE.Index = string.Join(",", fwUpdateMonitorInfos.Select(_ => _.Index + 1));
+                        cli_FWU_RESPONSE.ServiceTag = string.Join(",", fwUpdateMonitorInfos.Select(_ => _.edid.ServiceTag));
                         writelog("Auto_FWUpdate_display No updates available");
                         return ((int)CLI_ExitCode.NoUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
                     }
@@ -5119,8 +3310,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                 deviceInfo = new List<DeviceInfo>()
             };
 
-            List<DeviceInfo> _deviceinfo = null;
-            _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+            List<DeviceInfo> deviceInfoList = null;
+            deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
 
 
             if (!commandLineInput.isCliRunAdmin)
@@ -5151,7 +3342,15 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
                             break;
                         }
-                        if (commandLineInput.Options.Count > 0)
+                        if (commandLineInput.Options.Count == 0)
+                        {
+                            commandLineInput.Options.Insert(0, new CommandType_Option("VALUE", "MANUAL,DEFER"));
+                        }
+                        if (!commandLineInput.Options[0].Option_Value.Contains(','))
+                        {
+                            commandLineInput.Options[0].Option_Value += ",DEFER"; //2025/1/1 Elie, fix Cli for SW update with Automatic command is going to add a DEFER. (Anfernee's comment)
+                        }
+                        if (commandLineInput.Options.Count > 0 || commandLineInput.Options[0].Option_Value == "MANUAL,DEFER")
                         {
                             writelog("FWUpdate_Line 3902");
                             string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
@@ -5262,13 +3461,13 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (cLI_SWU_RESPONSE != null)
                 {
                     writelog("FWUpdate_Line 4010");
-                    output =  JsonConvert.SerializeObject(cLI_SWU_RESPONSE, Formatting.Indented);
+                    output = JsonConvert.SerializeObject(cLI_SWU_RESPONSE, Formatting.Indented);
                     //output = cLI_SWU_RESPONSE.OutputLog(cLI_SWU_RESPONSE, commandLineInput);
                 }
                 else
                 {
                     writelog("FWUpdate_Line 4015");
-                    output =  JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
+                    output = JsonConvert.SerializeObject(cLI_RESPONSE, Formatting.Indented);
                     //output = cLI_RESPONSE.OutputLog(cLI_RESPONSE, commandLineInput);
                 }
                 if (ret == true)
@@ -5276,7 +3475,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                     writelog("FWUpdate_Line 4020");
                     return ((int)CLI_ExitCode.success, output);
                 }
-                else if(somethingError)
+                else if (somethingError)
                 {
                     writelog("FWUpdate_Line 4025");
                     CLI_RESPONSE rsp = new CLI_RESPONSE()
@@ -5335,8 +3534,8 @@ namespace DDPM.CLI.Plugins.Peripherals
                 deviceInfo = new List<DeviceInfo>()
             };
 
-            List<DeviceInfo> _deviceinfo = null;
-            _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
+            List<DeviceInfo> deviceInfoList = null;
+            deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
 
 
             if (!commandLineInput.isCliRunAdmin)

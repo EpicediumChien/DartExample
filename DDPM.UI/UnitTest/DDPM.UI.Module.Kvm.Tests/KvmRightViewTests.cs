@@ -10,6 +10,7 @@ using DDPM.SA.Common.Settings;
 using VcpCore.Common;
 using Windows.System;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.Common;
 
 namespace DDPM.UI.Module.Kvm.Tests
 {
@@ -23,6 +24,7 @@ namespace DDPM.UI.Module.Kvm.Tests
         private KvmViewModel? kvmViewModel;
         private KvmRightView? kvmRightView;
         private Mock<IConsole>? MyConsoleMock;
+        private Mock<ILog>? logMock;
         [SetUp]
         public void Setup()
         {
@@ -36,6 +38,8 @@ namespace DDPM.UI.Module.Kvm.Tests
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             MyConsoleMock = new Mock<IConsole>();
             DdpmCommonHelper.MyConsole = MyConsoleMock.Object;
+            logMock=new Mock<ILog>();
+            MyConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(logMock.Object);
             kvmViewModel = new KvmViewModel();
             deviceManagerMock = new Mock<IDeviceManagerSA>();
             deviceManagerSA = deviceManagerMock.Object;
@@ -44,9 +48,9 @@ namespace DDPM.UI.Module.Kvm.Tests
             moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
-            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
-            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>() { { "AA", new List<string>() }, { "EE", new List<string>() } };
-            deviceManagerMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new ValueTuple<HotkeySettings, List<HotkeyData>>(new HotkeySettings() { HotkeyInfo = new List<HotkeyInfo>() { new HotkeyInfo() { Hotkey = new List<VirtualKey>() { VirtualKey.Q, VirtualKey.M } } } }, new List<HotkeyData>())));
+            //DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
+            //DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>() { { "AA", new List<string>() }, { "EE", new List<string>() } };
+            //deviceManagerMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new ValueTuple<HotkeySettings, List<HotkeyData>>(new HotkeySettings() { HotkeyInfo = new List<HotkeyInfo>() { new HotkeyInfo() { Hotkey = new List<VirtualKey>() { VirtualKey.Q, VirtualKey.M } } } }, new List<HotkeyData>())));
             KvmModule kvmModule = new KvmModule(moduleOwner);
             kvmViewModel.KvmModule = kvmModule;
             kvmViewModel.KvmModule.SelectedHomeDevice = new HomeDevice();

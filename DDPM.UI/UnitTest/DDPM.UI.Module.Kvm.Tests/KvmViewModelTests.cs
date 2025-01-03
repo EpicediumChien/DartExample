@@ -15,6 +15,7 @@ using Dell.Client.Framework.UX.WPF.ResourceManager;
 using DDPM.SA.Common.Settings;
 using Windows.System;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.Common;
 
 namespace DDPM.UI.Module.Kvm.Tests
 {
@@ -29,6 +30,8 @@ namespace DDPM.UI.Module.Kvm.Tests
         private Mock<IModuleOwner>? moduleOwnerMock;
         private KvmViewModel kvmViewModel;
         private Mock<IConsole>? MyConsoleMock;
+        private Mock<ILog>? _logMock;
+        private KvmModule? kvmModule;
         [SetUp]
         public void Setup()
         {
@@ -40,63 +43,84 @@ namespace DDPM.UI.Module.Kvm.Tests
             var resourceDictionary = new ResourceDictionary();
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+            _logMock=new Mock<ILog>();
             MyConsoleMock = new Mock<IConsole>();
+            MyConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(_logMock.Object);
             DdpmCommonHelper.MyConsole = MyConsoleMock.Object;
-            kvmViewModel = new KvmViewModel();
+            MyConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(_logMock.Object);
             deviceManagerMock = new Mock<IDeviceManagerSA>();
-            deviceManagerSA = deviceManagerMock.Object;
-            DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerMock.Object;
             moduleOwnerMock = new Mock<IModuleOwner>();
             moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
-            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
-            DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>() { { "AA", new List<string>() }, { "EE", new List<string>() } };
-            deviceManagerMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new ValueTuple<HotkeySettings, List<HotkeyData>>(new HotkeySettings() { HotkeyInfo = new List<HotkeyInfo>() { new HotkeyInfo() { Hotkey = new List<VirtualKey>() { VirtualKey.Q, VirtualKey.M } } } }, new List<HotkeyData>())));
-            KvmModule kvmModule = new KvmModule(moduleOwner);
-            kvmViewModel.KvmModule = kvmModule;
-            kvmViewModel.KvmModule.SelectedHomeDevice = new HomeDevice();
-            kvmViewModel.KvmModule.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
-
-            inputSourceList = new InputSourceList();
-            privateObject = new PrivateObject(inputSourceList);
+            //DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
+            //DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>() { { "AA", new List<string>() }, { "EE", new List<string>() } };
+            //deviceManagerMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new ValueTuple<HotkeySettings, List<HotkeyData>>(new HotkeySettings() { HotkeyInfo = new List<HotkeyInfo>() { new HotkeyInfo() { Hotkey = new List<VirtualKey>() { VirtualKey.Q, VirtualKey.M } } } }, new List<HotkeyData>())));
+            kvmModule = new KvmModule(moduleOwner);
             kvmViewModel = new KvmViewModel();
+            //kvmViewModel.KvmModule = kvmModule;
+            //kvmViewModel.KvmModule.SelectedHomeDevice = new HomeDevice();
+            //kvmViewModel.KvmModule.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
+            privateObject = new PrivateObject(kvmViewModel);
+            inputSourceList = new InputSourceList();
+        }
+
+
+        //class InputSourceList
+        [Test]
+        public void TestInputSourceListType()
+        {
+            inputSourceList = new InputSourceList();
+            inputSourceList.Type = "inputSourceList";
+            Assert.That(inputSourceList.Type, Is.EqualTo("inputSourceList"));
         }
 
         [Test]
-        public void TestkvmModule()
+        public void TestInputSourceListPathData()
         {
-            var kvmModule = new KvmModule(moduleOwner);
+            inputSourceList = new InputSourceList();
+            inputSourceList.PathData = "PathData";
+            Assert.That(inputSourceList.PathData, Is.EqualTo("PathData"));
+        }
+
+        [Test]
+        public void TestInputSourceListkvmModule()
+        {
+            inputSourceList = new InputSourceList();
             inputSourceList.kvmModule = kvmModule;
             Assert.That(inputSourceList.kvmModule, Is.EqualTo(kvmModule));
         }
 
+        //class USBList
         [Test]
-        public void TestinputDisplayText()
+        public void TestUSBListType()
         {
-            Assert.That(inputSourceList.Type, Is.EqualTo(""));
+            var uSBList = new USBList();
+            uSBList.Type = "uSBList";
+            Assert.That(uSBList.Type, Is.EqualTo("uSBList"));
+        }
+
+        [Test]
+        public void TestuSBListPathData()
+        {
+            var uSBList = new USBList();
+            uSBList.PathData = "uSBListPathData";
+            Assert.That(uSBList.PathData, Is.EqualTo("uSBListPathData"));
         }
 
         [Test]
         public void TestUSBListkvmModule()
         {
-            var kvmModule = new KvmModule(moduleOwner);
             var uSBList = new USBList();
             uSBList.kvmModule = kvmModule;
             Assert.That(uSBList.kvmModule, Is.EqualTo(kvmModule));
         }
 
+        //class PCInput
         [Test]
-        public void TestUSBlistinputDisplayText()
+        public void TestPCInputkvmModule()
         {
-            var uSBList = new USBList();
-            Assert.That(uSBList.Type, Is.EqualTo(""));
-        }
-
-        [Test]
-        public void TestPCInputtkvmModule()
-        {
-            var kvmModule = new KvmModule(moduleOwner);
             var pCInput = new PCInput();
             pCInput.kvmModule = kvmModule;
             Assert.That(pCInput.kvmModule, Is.EqualTo(kvmModule));
@@ -106,7 +130,25 @@ namespace DDPM.UI.Module.Kvm.Tests
         public void TestPCInputinputDisplayText()
         {
             var pCInput = new PCInput();
-            Assert.That(pCInput.inputDisplayText, Is.EqualTo(""));
+            pCInput.inputSource = "inputSource";
+            Assert.That(pCInput.inputDisplayText, Is.EqualTo("inputSource"));
+        }
+
+        //class DDPMWindowPos
+        [Test]
+        public void TestDDPMWindowPos()
+        {
+            var dDPMWindowPos = new DDPMWindowPos(new IntPtr(),new IntPtr());
+            Assert.That(dDPMWindowPos, Is.Not.Null);
+        }
+
+        //class KvmViewModel
+        [Test]
+        public void TestkvmModule()
+        {
+            var kvmModule = new KvmModule(moduleOwner);
+            kvmViewModel.KvmModule = kvmModule;
+            Assert.That(kvmViewModel.KvmModule, Is.EqualTo(kvmModule));
         }
 
         [Test]

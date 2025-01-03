@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace DDPM.QAM
 {
@@ -31,8 +20,7 @@ namespace DDPM.QAM
         }
         private void InitializeFOV()
         {
-            QAMPageViewModel vm = DataContext as QAMPageViewModel;
-            if (vm != null && vm.CurrentDeviceInfo != null)
+            if (DataContext is QAMPageViewModel vm && vm.CurrentDeviceInfo != null)
             {
                 var FOV = vm.CurrentDeviceInfo!.FOVValues;
                 btnFOV0.Visibility = Visibility.Collapsed;
@@ -64,14 +52,14 @@ namespace DDPM.QAM
         {
             if (sender is Border bdr)
             {
-                QAMPageViewModel vm = DataContext as QAMPageViewModel;
-                if (vm != null)
+                if (DataContext is QAMPageViewModel vm)
                 {
                     var index = int.Parse(bdr.Tag.ToString()!);
                     var val = vm.FOVs[index];
                     if (val == vm.FieldOfView)
                     { return; }
                     vm.FOV_Selected(index);
+                    vm.isStatusChagneByDDPM = false;
                     vm.FieldOfView = val;
                 }
             }

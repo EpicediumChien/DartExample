@@ -21,12 +21,12 @@ namespace DDPM.SA.Common.Settings
 {
     public class SWUpdateSetting
     {
-        private static string URL = $"https://clientperipherals.dell.com/DDPM/";
-        private static string URL_Folder = $"/Windows/Application/";
-        private static void SetSWUServer()
+        private static readonly string URL = @$"https://clientperipherals.dell.com/DDPM/";
+        private static readonly string URL_Folder = @$"/Windows/Application/";
+        private static string GetSWUServer()
         {
             RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
-            URL = URL + URL_Folder;
+            string ret = URL + URL_Folder;
             if (localKey64 != null)
             {
                 RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
@@ -38,25 +38,23 @@ namespace DDPM.SA.Common.Settings
                         string s = obj.ToString();
                         if (!string.IsNullOrEmpty(s))
                         {
-                            URL = obj + URL_Folder;
+                            ret = s + URL_Folder;
                         }
                     }
                 }
             }
+            return ret;
         }
         public static SWUpdateHelper GetSWMetadata(bool isSkipCA, out string info, ISettingsManagerSA settingsPlugin, List<string> InserInfoPkey, Logs logs)
         {
             SWUpdateHelper data = new SWUpdateHelper();
-            SetSWUServer();
+            string SW_URL = GetSWUServer();
             CertificateCheck certificateCheck = new CertificateCheck(logs);
-            if (!isSkipCA)
+            if (!isSkipCA && !certificateCheck.CheckURLCACertificate(SW_URL))
             {
-                if (!certificateCheck.CheckURLCACertificate(URL))
-                {
-                    info = $"{nameof(GetSWMetadata)} URL CA check fail";
-                    logs?.DebugMsg_1(info);
-                    return data;
-                }
+                info = $"{nameof(GetSWMetadata)} URL CA check fail";
+                logs?.DebugMsg_1(info);
+                return data;                
             }
             try
             {
@@ -65,7 +63,7 @@ namespace DDPM.SA.Common.Settings
                     try
                     {
                         client.Timeout = TimeSpan.FromSeconds(5);
-                        HttpResponseMessage response = client.GetAsync(URL + "SWMetaData.json").Result;
+                        HttpResponseMessage response = client.GetAsync(SW_URL + "SWMetaData.json").Result;
                         response.EnsureSuccessStatusCode();
                         string fileContent = response.Content.ReadAsStringAsync().Result;
                         List<string> InfoPkey = new List<string>();
@@ -84,7 +82,7 @@ namespace DDPM.SA.Common.Settings
                         {
                             //if read info failed, load default key as well
                             InfoPkey = new List<string>();
-                            InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                            InfoPkey.AddRange(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
                         }
                         string szInfo = string.Empty;
                         string jsonString = DDPMFileSecurity.VerifyDDPMMetadata(null, fileContent, InfoPkey, out szInfo);
@@ -94,7 +92,7 @@ namespace DDPM.SA.Common.Settings
                         }
                         if (!string.IsNullOrEmpty(jsonString))
                         {
-                            jsonString = jsonString.Replace("%1/", URL);
+                            jsonString = jsonString.Replace("%1/", SW_URL);
                             data = JsonSerializer.Deserialize<SWUpdateHelper>(jsonString);
                             if (data != null)
                             {
@@ -154,31 +152,34 @@ namespace DDPM.SA.Common.Settings
                 {
                     logs?.DebugMsg_1($"{nameof(CompareVersions)} oldVersion_Array.Length : {oldVersion_Array.Length}");
                     logs?.DebugMsg_1($"{nameof(CompareVersions)} newVersion_Array.Length : {newVersion_Array.Length}");
-                    if (oldVersion_Array.Length == 4 && newVersion_Array.Length == 4)
-                    {
-                        if (oldVersion_Array.Length == newVersion_Array.Length)
+                    if (oldVersion_Array.Length == 4 && 
+                        newVersion_Array.Length == 4 &&
+                        oldVersion_Array.Length == newVersion_Array.Length)
+                    {                        
+                        for (int i = 0; i < oldVersion_Array.Length; i++)
                         {
-                            for (int i = 0; i < oldVersion_Array.Length; i++)
+                            if (int.TryParse(newVersion_Array[i], out int newVersion_int) && int.TryParse(oldVersion_Array[i], out int oldVersion_int))
                             {
-                                if (int.TryParse(newVersion_Array[i], out int newVersion_int) && int.TryParse(oldVersion_Array[i], out int oldVersion_int))
+                                logs?.DebugMsg_1($"{nameof(CompareVersions)} oldVersion_int : {oldVersion_int}");
+                                logs?.DebugMsg_1($"{nameof(CompareVersions)} newVersion_int : {newVersion_int}");
+                                if (newVersion_int > oldVersion_int)
                                 {
-                                    logs?.DebugMsg_1($"{nameof(CompareVersions)} oldVersion_int : {oldVersion_int}");
-                                    logs?.DebugMsg_1($"{nameof(CompareVersions)} newVersion_int : {newVersion_int}");
-                                    if (newVersion_int > oldVersion_int)
-                                    {
-                                        isNeedUpdate = true;
-                                        break;
-                                    }
+                                    isNeedUpdate = true;
+                                    break;
                                 }
-                                else
+                                else if (oldVersion_int > newVersion_int)
                                 {
-                                    logs?.DebugMsg_1($"{nameof(CompareVersions)} int.TryParse Error");
-                                    logs?.DebugMsg_1($"{nameof(CompareVersions)} int.TryParse oldVersion_Array[i] : {oldVersion_Array[i]}");
-                                    logs?.DebugMsg_1($"{nameof(CompareVersions)} int.TryParse newVersion_Array[i] : {newVersion_Array[i]}");
                                     break;
                                 }
                             }
-                        }
+                            else
+                            {
+                                logs?.DebugMsg_1($"{nameof(CompareVersions)} int.TryParse Error");
+                                logs?.DebugMsg_1($"{nameof(CompareVersions)} int.TryParse oldVersion_Array[i] : {oldVersion_Array[i]}");
+                                logs?.DebugMsg_1($"{nameof(CompareVersions)} int.TryParse newVersion_Array[i] : {newVersion_Array[i]}");
+                                break;
+                            }
+                        }                        
                     }
                 }
             }
@@ -189,16 +190,13 @@ namespace DDPM.SA.Common.Settings
         {
             InterruptScreenRoot result = null;
             logs?.DebugMsg_1("[InterruptScreen_Metadata], start.");
-            SetSWUServer();
+            string SW_URL = GetSWUServer();
             CertificateCheck certificateCheck = new CertificateCheck(logs);
-            if (!isSkipCA)
+            if (!isSkipCA && !certificateCheck.CheckURLCACertificate(SW_URL))
             {
-                if (!certificateCheck.CheckURLCACertificate(URL))
-                {
-                    info = $"{nameof(GetSWMetadata)} URL CA check fail";
-                    logs?.DebugMsg_1(info);
-                    return result;
-                }
+                info = $"{nameof(GetSWMetadata)} URL CA check fail";
+                logs?.DebugMsg_1(info);
+                return result;
             }
             try
             {
@@ -207,7 +205,7 @@ namespace DDPM.SA.Common.Settings
                     try
                     {
                         client.Timeout = TimeSpan.FromSeconds(5);
-                        HttpResponseMessage response = client.GetAsync(URL + "AppUpdates.json").Result;
+                        HttpResponseMessage response = client.GetAsync(SW_URL + "AppUpdates.json").Result;
                         response.EnsureSuccessStatusCode();
                         string fileContent = response.Content.ReadAsStringAsync().Result;
                         List<string> InfoPkey = new List<string>();
@@ -226,7 +224,7 @@ namespace DDPM.SA.Common.Settings
                         {
                             //if read info failed, load default key as well
                             InfoPkey = new List<string>();
-                            InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                            InfoPkey.AddRange(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
                         }
                         string szInfo = string.Empty;
                         string jsonString = DDPMFileSecurity.VerifyDDPMMetadata(null, fileContent, InfoPkey, out szInfo);
@@ -243,7 +241,7 @@ namespace DDPM.SA.Common.Settings
                                 {
                                     if (interruptScreenRoot != null && interruptScreenRoot.content != null)
                                     {
-                                        interruptScreenRoot.content.image = DownloadImageAsByteArray($@"{URL}\{interruptScreenRoot.content.imageUrl}");
+                                        interruptScreenRoot.content.image = DownloadImageAsByteArray($@"{SW_URL}\{interruptScreenRoot.content.imageUrl}");
                                     }
                                 }
                                 info = $"{nameof(InterruptScreen_Metadata)} Pass";

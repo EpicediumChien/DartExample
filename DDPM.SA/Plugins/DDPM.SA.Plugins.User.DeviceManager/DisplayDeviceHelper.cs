@@ -126,7 +126,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             dDPMImpExpSettings = settingsManager.ReadImportSettingsFile(exportpath).Result;
                             if (dDPMImpExpSettings != null)
                             {
-                                if (dDPMImpExpSettings.MonitorSettings != null)
+                                if (dDPMImpExpSettings.MonitorSettings != null
+                                    && dDPMImpExpSettings.MonitorSettings.ServiceTag != serviceTag)
                                 {
                                     if (dDPMImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
                                     {
@@ -269,8 +270,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (devManagerSA == null)
             {
-                WriteLog("[PerformHotKeyBrightnessContrastLuminanceAction] null devManagerSA");
-                Debug.WriteLine("[PerformHotKeyBrightnessContrastLuminanceAction] null devManagerSA");
+                WriteLog("[PerformHotKeyBrightnessContrastLuminanceAction]monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] devManagerSA is null");
+                Debug.WriteLine("[PerformHotKeyBrightnessContrastLuminanceAction]monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] devManagerSA is null");
                 return;
             }
             bool doSync = isHotkeySyncBrightnessContrastToAllMonitors(job, moLists, currentMoInfo, alsSynchronizeList);
@@ -287,11 +288,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else
             {
-                WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job1: {job}");
+                WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction]monitor[{{currentMoInfo.AliasDeviceName}};{{currentMoInfo.edid.ServiceTag}}], un-supported job: {job}");
                 return;
             }
             ObjGetVCP obVCPValue = devManagerSA.GetVCPCapability(currentMoInfo, code, 0).Result;
-            Debug.WriteLine($"PerformHotKeyBrightnessContrastLuminanceAction current value={obVCPValue.value}");
+            Debug.WriteLine($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,current: code={code},value={obVCPValue.value}");
+            WriteLog($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,current: code={code},value={obVCPValue.value}");
             uint targetValue = (uint)obVCPValue.value;
             uint maxLuminace = 100;
             if (job == HotkeyType.LuminanceIncrease || job == HotkeyType.LuminanceReduce)
@@ -299,6 +301,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ObjGetVCP obMaxValue = devManagerSA.GetVCPCapability(currentMoInfo, code, 1).Result;
                 if (obMaxValue.result)
                     maxLuminace = (uint)obMaxValue.value;
+                Debug.WriteLine($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,max Luminace value={maxLuminace}");
+                WriteLog($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,max Luminace value={maxLuminace}");
             }
             if (job == HotkeyType.BrightnessIncrease || job == HotkeyType.ContrastIncrease)
                 targetValue = ((uint)obVCPValue.value) >= 95 ? 100 : ((uint)obVCPValue.value + 5);
@@ -308,7 +312,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 targetValue = ((uint)obVCPValue.value) <= 5 ? 0 : ((uint)obVCPValue.value - 5);
             else
             {
-                WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job2: {job}");
+                WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job: {job}");
                 return;
             }
             //PIMS-298672 Use UP3221Q and enter hotkey that assigned for Luminance from keyboard, the luminance value is increasing/decreasing by 15 nits per interval.
@@ -320,9 +324,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     targetValue = ((uint)obVCPValue.value) <= 15 ? 0 : ((uint)obVCPValue.value - 15);
                 else
                 {
-                    WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job2: {job}");
+                    WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job: {job}");
                     return;
                 }
+                WriteLog($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,UP3221Q Luminance targetValue={targetValue}");
             }
             //PIMS-298672 Use UP2720Q and enter hotkey that assigned for Luminance from keyboard, the luminance value is increasing/decreasing by 10 nits per interval.
             if ("UP2720Q".Equals(currentMoInfo.modelName, StringComparison.OrdinalIgnoreCase))
@@ -333,12 +338,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     targetValue = ((uint)obVCPValue.value) <= 10 ? 0 : ((uint)obVCPValue.value - 10);
                 else
                 {
-                    WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job2: {job}");
+                    WriteLog($"[PerformHotKeyBrightnessContrastLuminanceAction] un-support job: {job}");
                     return;
                 }
+                WriteLog($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,UP2720Q Luminance targetValue={targetValue}");
+
             }
+            WriteLog($"PerformHotKeyBrightnessContrastLuminanceAction,monitor[{currentMoInfo.AliasDeviceName};{currentMoInfo.edid.ServiceTag}] ,before SetVCPCapability:code={code}; targetValue={targetValue}");
             bool ret = devManagerSA.SetVCPCapability(currentMoInfo, code, targetValue).Result;
-            WriteLog($"{job}:[{currentMoInfo.edid.ModelName}:{currentMoInfo.edid.SerialNumber}] from [{(uint)obVCPValue.value}] to [{targetValue}]" + (ret ? "success" : "fail"));
+            WriteLog($"PerformHotKeyBrightnessContrastLuminanceAction;{job}:[{currentMoInfo.edid.ModelName}:{currentMoInfo.edid.SerialNumber}] from [{(uint)obVCPValue.value}] to [{targetValue}]" + (ret ? "success" : "fail"));
 
             if (doSync)
             {

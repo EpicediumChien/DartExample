@@ -482,3 +482,5 @@ testcoverage/
 /DdpmSwUpdater/CommonDll/DDPM.SA.Resources.dll
 /DDPM.CLI.AutoTest/config.json
 /DDPM.UI/CommonDll
+/DDPM.SA/dll/Dell.TechHub.Peripheral.Common.dll
+/DDPM.UI/CommonDll/DDPM.Peripherals.interface.dll

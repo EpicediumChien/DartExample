@@ -14,7 +14,7 @@
 
     public static class VcpCodeList
     {
-        public static Dictionary<string, byte> VCPDC = new Dictionary<string, byte>
+        public static readonly Dictionary<string, byte> VCPDC = new Dictionary<string, byte>
         {
             { "Standard/Native", 0x00 },
             { "Standard", 0x00 },
@@ -26,7 +26,7 @@
             { "Sport", 0x6 }
         };
 
-        public static Dictionary<string, byte> VCPF0 = new Dictionary<string, byte>
+        public static readonly Dictionary<string, byte> VCPF0 = new Dictionary<string, byte>
         {
             { "Text", 0x1 },
             { "AdobeRGB", 0x2 },
@@ -75,7 +75,7 @@
             { "HLG", 0x38 }
         };
 
-        public static Dictionary<string, byte> VCP14 = new Dictionary<string, byte>
+        public static readonly Dictionary<string, byte> VCP14 = new Dictionary<string, byte>
         {
             { "sRGB", 0x01 },
             { "5000K", 0x04 },
@@ -89,7 +89,7 @@
             { "Custom Color", 0x0C }
         };
 
-        public static Dictionary<int, string> VCPE2 = new Dictionary<int, string>
+        public static readonly Dictionary<int, string> VCPE2 = new Dictionary<int, string>
         {
             { 0x00, "Standard/Native" },
             //{ 0x00, "Standard" },

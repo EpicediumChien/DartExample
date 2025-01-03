@@ -9,6 +9,7 @@ using Dell.Client.Framework.UX.WPF.ResourceManager;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,9 @@ using System.Windows.Data;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Xml.Linq;
+using VcpCore.Common;
+using Windows.Devices.PointOfService;
 using static DDPM.UI.Common.Views.DDPMMsgBox;
 using Application = System.Windows.Application;
 using Path = System.Windows.Shapes.Path;
@@ -68,23 +72,47 @@ namespace DDPM.UI.Common
         public static ILog? Log { get; set; }
 
         //Derek 1209
-        public static bool isDDPMSwitchToSettingPageByQAM = false;
+        private static bool isDDPMSwitchToSettingPageByQAM = false;
+        public static bool IsDDPMSwitchToSettingPageByQAM { get => isDDPMSwitchToSettingPageByQAM; set => isDDPMSwitchToSettingPageByQAM = value; }
+
 
         /// <summary>
         /// Flag to switch the Light Mode Feature
         /// </summary>
         public static bool ThemeSwitchFlag { get; set; } = false;
 
-        /// <summary>
+        /// <summary>previousOsTheme
         /// Flag to turn on and off UI Test buttons
         /// </summary>
         public static bool UIDebugModeFlag { get; set; } = false;
+
+        //Robert_Lin, 2024-12-21 added, DdpmHomePLugin must know whether DisplayPlugin is
+        // activated or not. When DisplayPlugin is activate, the MainWindow_MoveToNewPosition
+        // event will be handled by DisplayPugin, or DdpmHomePlugin shoud take over.
+        public static bool IsDisplayPluginActivated { get; set; } = false;
+
+        private static bool isMainWindowAtPrimaryScreen = true;
+
+        public static bool IsMainWindowAtPrimaryScreen { get => isMainWindowAtPrimaryScreen; set => isMainWindowAtPrimaryScreen = value; }
+
+        //default theme is dark
+        private static OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
+        public static OSThemeEnum PreviousOsTheme { get => previousOsTheme; set => previousOsTheme = value; }
+
+        private static string lastShowOsdScreenDeviceName = "";
+
+        public static string LastShowOsdScreenDeviceName { get => lastShowOsdScreenDeviceName; set => lastShowOsdScreenDeviceName = value; }
+
+        //The last DisplayName (DeviceName) of the screen which show the OSD.
 
         public enum log_type
         {
             info = 0,
             error
         }
+
+        public static List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        public static List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
 
         /// <summary>
         /// 
@@ -124,7 +152,7 @@ namespace DDPM.UI.Common
                 }
             }
             DDPMMsgBox msgBox = new DDPMMsgBox(title, text, hwnd);
-            
+
             msgBox.ShowDialog();
 
             //if (result == MessageBoxResult.Yes)
@@ -146,7 +174,16 @@ namespace DDPM.UI.Common
             msgBox.ShowDialog();
         }
 
-        public static bool IsMainWindowAtPrimaryScreen = true;
+        public static bool DDPMEzMesssageChangeButtonBox(string title, string text, bool IsCloseButton, Window Owner, int width, int height, Thickness titlemargin, Thickness submargin, Thickness leftbtn, Thickness rightbtn)
+        {
+            DDPMMsgBox msgBox = new DDPMMsgBox(title, text, IsCloseButton, Owner, width, height, titlemargin, submargin, leftbtn, rightbtn);
+            msgBox.ShowDialog();
+            if (msgBox.result == DDPMMsgBox_btn_result.left)
+                return true;
+            else
+                return false;
+        }
+
 
         /// <summary>
         ///Parsing hex value blank separated string to a WORD array
@@ -335,12 +372,12 @@ namespace DDPM.UI.Common
             }
             return Settings_Cache;
         }
-        //default theme is dark
-        public static OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
+
+
         public static void updateMergedDictionaries(ResourceManager resourceManager)
         {
             OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
-            if (previousOsTheme == oSTheme)
+            if (PreviousOsTheme == oSTheme)
                 return;
             string darkModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml";
             ResourceDictionary? darkResourceDictionary = Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(darkModeStyle));
@@ -369,7 +406,7 @@ namespace DDPM.UI.Common
                 Application.Current.MainWindow?.InvalidateVisual();
             }, System.Windows.Threading.DispatcherPriority.Loaded);
             // Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
-            previousOsTheme = oSTheme;
+            PreviousOsTheme = oSTheme;
         }
 
         public static bool isDarkMode()
@@ -491,13 +528,21 @@ namespace DDPM.UI.Common
         /// </summary>
         /// <param name="deviceInfo"></param>
         /// <returns></returns>
-        public static string DeterminePeripheralProductImageFileName(DeviceInfo deviceInfo)
+        public static string DeterminePeripheralProductImageFileName(DeviceInfo? deviceInfo)
         {
             string model = "";
             string colorCode = "";
 
             if (deviceInfo != null)
             {
+                // Handle EOL and non-dell peripherials return empty to show lineart
+                if (deviceInfo.Type == DPeMPublic.Common.Enums.DeviceType.LogicalKeyboard
+                    && EOLKBList.Contains(deviceInfo.ModelNumber))
+                    return string.Empty;
+                if (deviceInfo.Type == DPeMPublic.Common.Enums.DeviceType.LogicalMouse
+                    && EOLMouseList.Contains(deviceInfo.ModelNumber))
+                    return string.Empty;
+
                 //[#PeripheralModelMap] This mapping table has a duplicate code in
                 //1 DdpmCommonHelpers.cs    DeterminePeripheralProductImageFileName()
                 //2 HomeDevices             TooltipModelName property
@@ -544,9 +589,10 @@ namespace DDPM.UI.Common
             switch (model)
             {
                 case "WK636":
+                case "KM713":
                     return $"Dell {model} Wireless Keyboard";
                 case "WK717":
-                    return $"Dell Premier Wireless Keyboard";
+                    return $"Dell Premier Wireless Keyboard WK717";
                 case "WM116":
                 case "WM514":
                 case "UV514":
@@ -556,6 +602,52 @@ namespace DDPM.UI.Common
                     return $"Dell {model} Wireless Mouse";
                 default:
                     return model;
+            }
+        }
+
+        public static string MappingName(string model, string name)
+        {
+            name = name.Replace(model, "").Trim();
+            switch (CultureInfo.InstalledUICulture.Name)
+            {
+                case "ja-JP":
+                    if (model == "WB7022")
+                        return "Dell Digital Hi-Resolution Webcam";
+                    if (model == "U3223QZ")
+                        return "Dell Digital Hi-End 32 4K Video Conferencing Monitor";
+                    if (model == "U3224KB")
+                        return "Dell Digital Hi-End 32 6K Monitor";
+                    return name;
+                default:
+                    return name;
+            }
+        }
+        /// <summary>
+        /// Check if the specifc peripheral model is EOL model.
+        /// Based on "Copy of Peripheral-SupportedDeviceList_20241224.xlsx"
+        /// Used by Homepage tooltip text.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static bool IsPeripheralEOLModel(string model)
+        {
+            switch (model)
+            {
+                //Keyboard : (Marketname)
+                case "WK636": //Dell WK636  Wireless Keyboard
+                case "WK717": //Dell Premier Wireless Keyboard WK717
+                case "KM713": //Dell KM713  Wireless Keyboard
+
+                //Mouse
+                case "WM116": //Dell WM116  Wireless Mouse
+                case "WM514": //Dell WM514  Wireless Mouse
+                case "UV514": //Dell UV514  Wireless Mouse
+                case "WM126": //(Alex 說 IL 還沒能 support, Robert_Lin, 2024-12-24)
+                case "WM326": //Dell WM326  Wireless Mouse
+                case "WM527": //Dell WM527 Wireless Mouse
+                    return true;
+                default:
+                    return false;
             }
         }
         #endregion

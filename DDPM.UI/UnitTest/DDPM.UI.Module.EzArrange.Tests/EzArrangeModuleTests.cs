@@ -95,11 +95,10 @@ namespace DDPM.UI.Module.EzArrange.Tests
         [Test]
         public void TestGetRightView()
         {
-
-
             // Act
+            var _vmDisplay = new DisplayViewModel(console, log, deviceManagerSA, easyArrange) { SelectedHomeDevice = new HomeDevice() {MonitorInfo=new MonitorInfo() { DisplayName="displayName"}, vmEzArrange = new EzArrangeViewModel(new HomeDevice()) { SelectedSplitItem =new Common.UserControls.SplitItem()} } };
+            privateObject.SetFieldOrProperty("_vmDisplay", _vmDisplay);
             var result = ezArrangeModule!.GetRightView();
-
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.InstanceOf<UserControl>());
@@ -130,31 +129,17 @@ namespace DDPM.UI.Module.EzArrange.Tests
         [Test]
         public void TestOnSelectedHomeDeviceChanged()
         {
-            //IsModuleActive==false
-            try
-            {
-                ezArrangeModule.OnSelectedHomeDeviceChanged();
-                Assert.True(true);
-                Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
-            //IsModuleActive==true
-            privateObject.SetFieldOrProperty("IsModuleActive",true);
-            try
-            {
-                ezArrangeModule.OnSelectedHomeDeviceChanged();
-                Assert.True(true);
-                Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
+            ezArrangeModule.IsModuleActive = false;
+            ezArrangeModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
+        }
 
-
+        [Test]
+        public void TestOnSelectedHomeDeviceChangeda()
+        {
+            ezArrangeModule.IsModuleActive = true;
+            ezArrangeModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
         }
 
         [Test]

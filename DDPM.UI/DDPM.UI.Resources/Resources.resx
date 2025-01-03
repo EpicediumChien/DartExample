@@ -325,7 +325,7 @@
     <value>Select 'Yes' to confirm pairing on the prompt box</value>
   </data>
   <data name="AddDevice.Headset.0" xml:space="preserve">
-    <value>For USB wireless receiver free and on-the-go connectivity</value>
+    <value>For on-the-go connectivity</value>
   </data>
   <data name="AddDevice.Headset.1" xml:space="preserve">
     <value>Power ON headset</value>
@@ -496,7 +496,7 @@
     <value>AM</value>
   </data>
   <data name="Brightness.16" xml:space="preserve">
-    <value>Transison Length</value>
+    <value>Transition Length</value>
   </data>
   <data name="Brightness.17" xml:space="preserve">
     <value>This feature enables our eyes to adapt to a desired setting</value>
@@ -895,7 +895,7 @@
     <value>Download Dell Audio now to optimize and personalize your headset settings from the convenience of your iPhone or Android device.</value>
   </data>
   <data name="HeadsetDeviceSettings.6" xml:space="preserve">
-    <value>Learnmore</value>
+    <value>Learn more</value>
   </data>
   <data name="Illumination.0" xml:space="preserve">
     <value>Illumination Control</value>
@@ -2308,13 +2308,16 @@
     <value>A new monitor %1 is detected.</value>
   </data>
   <data name="Wait_DevMgr" xml:space="preserve">
-    <value>DDPM.Subagent.DeviceManager is not ready</value>
+    <value>Connecting to DDPM Subagent...</value>
+    <comment>Robert_1218 Changed</comment>
   </data>
   <data name="Wait_DTH" xml:space="preserve">
-    <value>DellTechHub service is not running</value>
+    <value>Connecting to Dell.TechHub...</value>
+    <comment>Robert_1218 Changed</comment>
   </data>
   <data name="Wait_NoDevice" xml:space="preserve">
-    <value>No device detected</value>
+    <value>Detecting device...</value>
+    <comment>Robert_1218 Changed</comment>
   </data>
   <data name="InvalidURL" xml:space="preserve">
     <value>Invalid URL</value>
@@ -3248,5 +3251,221 @@
   </data>
   <data name="EazyMemory.42" xml:space="preserve">
     <value>The corresponding Easy Memory profile will be deleted too. Do you want to continue?</value>
+  </data>
+  <data name="DiagnosticReport_SaveFail" xml:space="preserve">
+    <value>Diagnostic report save fail</value>
+  </data>
+  <data name="MonitorAssetReport_SaveFail" xml:space="preserve">
+    <value>Monitor asset report save fail</value>
+  </data>
+  <data name="USBKVM.Tips" xml:space="preserve">
+    <value>Example: “Alt + P”; “Shift + F”; “Ctrl + Shift + F”\nNote: For multiple monitors, the mouse cursor should be on the targeted monitor screen to trigger the hotkey function.</value>
+  </data>
+  <data name="BrightnessLevel" xml:space="preserve">
+    <value>Brightness level</value>
+  </data>
+  <data name="USBKVM" xml:space="preserve">
+    <value>USB KVM</value>
+  </data>
+  <data name="Mouse" xml:space="preserve">
+    <value>Mouse</value>
+  </data>
+  <data name="Keyboard" xml:space="preserve">
+    <value>Keyboard</value>
+  </data>
+  <data name="Calendar" xml:space="preserve">
+    <value>Calendar</value>
+  </data>
+  <data name="Camera" xml:space="preserve">
+    <value>Camera</value>
+  </data>
+  <data name="Clock" xml:space="preserve">
+    <value>Clock</value>
+  </data>
+  <data name="Cortana" xml:space="preserve">
+    <value>Cortana</value>
+  </data>
+  <data name="DellCommandUpdate" xml:space="preserve">
+    <value>Dell Command Update</value>
+  </data>
+  <data name="DellDigitalDelivery" xml:space="preserve">
+    <value>Dell Digital Delivery</value>
+  </data>
+  <data name="DellOptimizer" xml:space="preserve">
+    <value>Dell Optimizer</value>
+  </data>
+  <data name="Family" xml:space="preserve">
+    <value>Family</value>
+  </data>
+  <data name="FeedbackHub" xml:space="preserve">
+    <value>Feedback Hub</value>
+  </data>
+  <data name="GameBar" xml:space="preserve">
+    <value>Game Bar</value>
+  </data>
+  <data name="GetHelp" xml:space="preserve">
+    <value>Get Help</value>
+  </data>
+  <data name="GetStarted" xml:space="preserve">
+    <value>Get Started</value>
+  </data>
+  <data name="IntelManagementAndSecurityStatus" xml:space="preserve">
+    <value>Intel (R) Management and Security Status</value>
+  </data>
+  <data name="IntelGraphicsCommandCenter" xml:space="preserve">
+    <value>Intel® Graphics Command Center</value>
+  </data>
+  <data name="IntelOptaneMemoryAndStorageManagement" xml:space="preserve">
+    <value>Intel® Optane™ Memory and Storage Management</value>
+  </data>
+  <data name="Mail" xml:space="preserve">
+    <value>Mail</value>
+  </data>
+  <data name="Maps" xml:space="preserve">
+    <value>Maps</value>
+  </data>
+  <data name="MediaPlayer" xml:space="preserve">
+    <value>Media Player</value>
+  </data>
+  <data name="Microsoft365Office" xml:space="preserve">
+    <value>Microsoft 365 (Office)</value>
+  </data>
+  <data name="MicrosoftClipchamp" xml:space="preserve">
+    <value>Microsoft Clipchamp</value>
+  </data>
+  <data name="MicrosoftDefender" xml:space="preserve">
+    <value>Microsoft Defender</value>
+  </data>
+  <data name="MicrosoftStore" xml:space="preserve">
+    <value>Microsoft Store</value>
+  </data>
+  <data name="MicrosoftTeams" xml:space="preserve">
+    <value>Microsoft Teams</value>
+  </data>
+  <data name="MicrosoftTeamsWorkSchool" xml:space="preserve">
+    <value>Microsoft Teams (work or school)</value>
+  </data>
+  <data name="MicrosoftToDo" xml:space="preserve">
+    <value>Microsoft To Do</value>
+  </data>
+  <data name="MoviesTV" xml:space="preserve">
+    <value>Movies &amp; TV</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>News</value>
+  </data>
+  <data name="Notepad" xml:space="preserve">
+    <value>Notepad</value>
+  </data>
+  <data name="Paint" xml:space="preserve">
+    <value>Paint</value>
+  </data>
+  <data name="PhoneLink" xml:space="preserve">
+    <value>Phone Link</value>
+  </data>
+  <data name="Photos" xml:space="preserve">
+    <value>Photos</value>
+  </data>
+  <data name="PowerAutomate" xml:space="preserve">
+    <value>Power Automate</value>
+  </data>
+  <data name="SnippingTool" xml:space="preserve">
+    <value>Snipping Tool</value>
+  </data>
+  <data name="SolitaireCasualGames" xml:space="preserve">
+    <value>Solitaire &amp; Casual Games</value>
+  </data>
+  <data name="SoundRecorder" xml:space="preserve">
+    <value>Sound Recorder</value>
+  </data>
+  <data name="Spotify" xml:space="preserve">
+    <value>Spotify</value>
+  </data>
+  <data name="SupportAssist" xml:space="preserve">
+    <value>SupportAssist</value>
+  </data>
+  <data name="Terminal" xml:space="preserve">
+    <value>Terminal</value>
+  </data>
+  <data name="Tips" xml:space="preserve">
+    <value>Tips</value>
+  </data>
+  <data name="Weather" xml:space="preserve">
+    <value>Weather</value>
+  </data>
+  <data name="WindowsBackup" xml:space="preserve">
+    <value>Windows backup</value>
+  </data>
+  <data name="WindowsSecurity" xml:space="preserve">
+    <value>Windows Security</value>
+  </data>
+  <data name="Xbox" xml:space="preserve">
+    <value>Xbox</value>
+  </data>
+  <data name="NextTrack" xml:space="preserve">
+    <value>Next Track</value>
+  </data>
+  <data name="PrtSc" xml:space="preserve">
+    <value>Print Screen</value>
+  </data>
+  <data name="ScrollLock" xml:space="preserve">
+    <value>Scroll Lock</value>
+  </data>
+  <data name="PauseBreak" xml:space="preserve">
+    <value>Pause Break</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="End" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="PageDown" xml:space="preserve">
+    <value>Page Down</value>
+  </data>
+  <data name="PageUp" xml:space="preserve">
+    <value>Page Up</value>
+  </data>
+  <data name="WebBrowser" xml:space="preserve">
+    <value>Web Browser</value>
+  </data>
+  <data name="DTPUnavailable" xml:space="preserve">
+    <value>DTP service is unavailable!</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>(Noname)</value>
+  </data>
+  <data name="Keyboard.20" xml:space="preserve">
+    <value>Dell Premier Wireless Keyboard</value>
+  </data>
+  <data name="Keyboard.21" xml:space="preserve">
+    <value>Dell {0} Wireless Mouse</value>
+  </data>
+  <data name="EzArrange.10" xml:space="preserve">
+    <value>Select a folder</value>
+  </data>
+  <data name="Fullscreen.1" xml:space="preserve">
+    <value>Full screen</value>
+  </data>
+  <data name="PIPSmall" xml:space="preserve">
+    <value>PIP Small</value>
+  </data>
+  <data name="PIPLarge" xml:space="preserve">
+    <value>PIP Large</value>
+  </data>
+  <data name="Learn_more_for_firmware" xml:space="preserve">
+    <value>Learn more for firmware</value>
+  </data>
+  <data name="Learn_more_for_software" xml:space="preserve">
+    <value>Learn more for software</value>
+  </data>
+  <data name="Brightness.21" xml:space="preserve">
+    <value>Applies brightness/luminance, contrast, schedule settings\nand color presets to the connected monitors</value>
+  </data>
+  <data name="slot" xml:space="preserve">
+    <value>slots available</value>
+  </data>
+  <data name="Hotkey.10" xml:space="preserve">
+    <value>The hotkey conflicts with a hotkey configured in another application. Use a different hotkey combination.</value>
   </data>
 </root>

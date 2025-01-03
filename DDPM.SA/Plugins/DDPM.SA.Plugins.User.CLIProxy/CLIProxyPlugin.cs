@@ -18,6 +18,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
 using static DDPM.SA.Common.ICLICommandTable;
 
@@ -86,6 +87,10 @@ namespace DDPM.SA.Plugin.User.CLIManager
             InitializeCLIPeripheralsPlugin();
 
             InitializeCliManagerPlugin();
+
+            // add @ 20241215 stephen
+            //initToastOnActivated();
+            initOnActivated();
         }
 
         #endregion
@@ -382,6 +387,10 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 return;
             }
             _CliManagerPlugin.CLIActionEvent += _CliManagerPlugin_CLIActionEvent;
+
+            // add @ 20241210 stephen
+            _CliManagerPlugin.CLIToastEvent += _CliManagerPlugin_CLIToastEvent;
+
             relay_registered = true;
         }
 
@@ -437,7 +446,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 List<string> Display_Lock_WithoutAction = new List<string>()
                 {
                     "INAPPBRICONT",
-                    "INAPPAUTOBRITEMP",
+                    //"INAPPAUTOBRITEMP",
                     "INAPPAUTOBRIGHTNESSCOLOR",//1004 InAppAutoBrightnessColor DDPMW1341, same as INAPPAUTOBRITEMP
                     "INAPPNETWORKKVM",
                     "INAPPCOLORPRESET",
@@ -462,11 +471,11 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         {
                             total_result += "Display :";
                             List<string> stringList = new List<string>
-                        {
-                            "RESTOREFACTORYDEFAULTS",
-                            "RESTORELEVELDEFAULTS",
-                            "RESTORECOLORDEFAULTS"
-                        };
+                            {
+                                "RESTOREFACTORYDEFAULTS",
+                                "RESTORELEVELDEFAULTS",
+                                "RESTORECOLORDEFAULTS"
+                            };
                             foreach (string str in stringList)
                             {
                                 e.commandLineInput.TargetFeature = str;
@@ -524,6 +533,22 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             Thread.Sleep(5000);
                         });
                         total_result += $"\n{JsonConvert.SerializeObject(cliPeripheralEventResults, Formatting.Indented)}";
+
+                        #region Set Telemetry Consent to Default(False)
+                        DDPMSettings data = _DevManagerPlugin.ReloadAppConfigData().Result;
+                        commandLineInput.TargetFeature = "TELEMETRYCONSENT";
+                        commandLineInput.Options = new List<CommandType_Option> { new CommandType_Option("VALUE", "FALSE") };
+                        cliEventResult = CLIHandlerApp.CLI_Analytics_Consent(Log, data, _DevManagerPlugin, commandLineInput, e.command_guid_string);
+                        total_result += $"\n{cliEventResult.serialize_Json_response}";
+                        #endregion
+
+                        #region Set ScreenNotification to Default(False)
+                        e.commandLineInput.TargetFeature = "SCREENNOTIFICATION";
+                        e.commandLineInput.Options = new List<CommandType_Option> { new CommandType_Option("VALUE", "ON") };
+                        cliEventResult = _CLIDisplay.SetCommandArgs(e, _DevManagerPlugin);
+                        total_result += $"\n{cliEventResult.serialize_Json_response}";
+                        #endregion
+
                         var result = new CLIEventResult()
                         {
                             command_guid_string = e.command_guid_string,
@@ -537,6 +562,15 @@ namespace DDPM.SA.Plugin.User.CLIManager
 
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
                     {
+                        if (commandLineInput.Command == "SET" && commandLineInput.TargetFeature == "NETWORKKVM" && commandLineInput.Options.Count > 0 && commandLineInput.Options[0].Option_Value == "ON")
+                        {
+                            WriteLog("_DevManagerPlugin.CreatNewNamedpipe() entry");
+                            _DevManagerPlugin.CreatNewNamedpipe();
+                            WriteLog("_DevManagerPlugin.CreatNewNamedpipe() exit");
+                            _CliManagerPlugin.WriteCommandResult(Response_NKVMOn(commandLineInput, e.command_guid_string));
+                            return;
+                        }
+
                         if (_CLIDisplay != null)
                         {
                             if (Display_Lock_WithoutAction.FindIndex(x => x.Equals(commandLineInput.TargetFeature)) >= 0)
@@ -753,6 +787,127 @@ namespace DDPM.SA.Plugin.User.CLIManager
         #region ICLIProxy implementation
 
         //no action need in this plugin
+
+        #endregion
+
+        #region Defer implement
+
+        // add @ 20241210 stephen
+        //private void OnEventToast(object sender, EventArgs e) { }
+        private void _CliManagerPlugin_CLIToastEvent(object? sender, CLIEventToastArgs e)
+        {
+            //throw new NotImplementedException();
+            //Console.WriteLine($"value = {CLIEventToastArgs.toast_message}");
+            if (e.is_defer)
+            {
+                showToast(e.defer_id, e.toast_message);
+            }
+            else
+            {
+                showNotification(e.defer_id, e.toast_message);
+            }
+
+
+        }
+
+        private void initOnActivated()
+        {
+
+            ToastNotificationManagerCompat.OnActivated += toastArgs =>
+            {
+                ToastArguments args = ToastArguments.Parse(toastArgs.Argument);
+
+                bool isDefer = false;
+                string derferid = string.Empty;
+
+                if (args.Contains("deferid"))
+                {
+                    Console.WriteLine("@@@stephen args[\"deferid\"] = " + args["deferid"]);
+                    derferid = args["deferid"];
+                }
+
+                if (args.Contains("action"))
+                {
+                    if (args["action"] == "defer")
+                    {
+                        Console.WriteLine("@@@stephen isDefer = true");
+                        _CliManagerPlugin.sendToastResult(derferid, true);
+                    }
+                    else
+                    {
+                        Console.WriteLine("@@@stephen isDefer = false");
+                        _CliManagerPlugin.sendToastResult(derferid, false);
+                    }
+                }
+            };
+        }
+
+        private void initToastOnActivated()
+        {
+            ToastNotificationManagerCompat.OnActivated -= toastDeferArgs => { };
+            ToastNotificationManagerCompat.OnActivated += toastDeferArgs =>
+            {
+                // Obtain the arguments from the notification
+                ToastArguments args = ToastArguments.Parse(toastDeferArgs.Argument);
+                bool isDefer = false;
+                long derferid = -1;
+
+
+
+            };
+        }
+
+        /*
+	Header - Update will be applied
+	Body - There is a required firmware update for [Device Marketing Name with Model in parenthesis]. During update, device may be intermittently available. Do not disconnect the device during the update.
+	Button Option - “Ok”
+*/
+
+
+        /*
+        	Header - Update available
+        	Body - [Device Marketing Name with Model in parenthesis] has a pending firmware update. During update, device may be intermittently available. Do not disconnect the device during the update. This update can be deferred [x] times before it is required.
+        	Button Options - “Update now” / “Defer”
+        */
+
+        private const string NOTIFICATION_MSG_HEADER = @"Update available";
+        private const string NOTIFICATION_MSG_BODY = @"There is a required firmware update for [Device Marketing Name with Model in parenthesis]. During update, device may be intermittently available. Do not disconnect the device during the update.";
+
+        private const string DEFER_MSG_HEADER = @"Update available";
+        private const string DEFER_MSG_BODY = @"[Device Marketing Name with Model in parenthesis] has a pending firmware update. During update, device may be intermittently available. Do not disconnect the device during the update. This update can be deferred [x] times before it is required.";
+
+        public void showNotification(string id, string msg)
+        {
+
+            new ToastContentBuilder()
+                .AddArgument("deferid", id)
+                .AddText(NOTIFICATION_MSG_HEADER)
+                .AddText(NOTIFICATION_MSG_BODY)
+                .AddButton(new ToastButton()
+                    .SetContent("Ok")
+                //.AddArgument("action", "OK")
+                )
+                .Show();
+        }
+        public void showToast(string id, string msg)
+        {
+
+            new ToastContentBuilder()
+                .AddArgument("deferid", id)
+                .AddText(DEFER_MSG_HEADER)
+                .AddText(DEFER_MSG_BODY)
+                .AddButton(new ToastButton()
+                    .SetContent("Update now")
+                    .AddArgument("action", "runnow")
+                )
+                .AddButton(new ToastButton()
+                    .SetContent("Defer")
+                    .AddArgument("action", "defer")
+                )
+
+                .Show();
+
+        }
 
         #endregion
     }

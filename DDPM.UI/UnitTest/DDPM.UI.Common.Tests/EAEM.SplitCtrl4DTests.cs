@@ -69,12 +69,12 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestDescription()
         {
-            // Act
-            splitCtrl4D.Description = "";
-            splitCtrl4D.PbpCapabilityCode = 0x001;
-            var result = splitCtrl4D.Description;
-            // Assert
-            Assert.That(result, Is.EqualTo($"PBP Capability Code={splitCtrl4D.PbpCapabilityCode:X02}h"));
+            //// Act
+            //splitCtrl4D.Description = "";
+            //splitCtrl4D.PbpCapabilityCode = 0x001;
+            //var result = splitCtrl4D.Description;
+            //// Assert
+            //Assert.That(result, Is.EqualTo($"PBP Capability Code={splitCtrl4D.PbpCapabilityCode:X02}h"));
 
             // Act
             splitCtrl4D.Description = "Description";

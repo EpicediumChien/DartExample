@@ -41,6 +41,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         private List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
         private List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
 
+        //Robert_Lin, 2024-12-16 added in order to let view model can get devices in PleaseWait thread
+        //It need DdpmHomePlugin set value to it.
+        private IDeviceManagerSA? _deviceManagerSA = null;
+
         /// <summary>
         /// Default constructor
         /// </summary>
@@ -53,6 +57,25 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             _console = console;
             _log = log;
             _connectButtonClickCommand = new RelayCommand(HandleConnectButtonClickCommand);
+            //_console.RegisterForEvent(ConsoleEventNames.MainWindow_MoveToNewScreen, (sender, args) =>
+            //{
+            //    if (args != null)
+            //    {
+            //        if (args.Tag != null)
+            //        {
+            //            string screenDeviceName = args.Tag as string;
+            //            if (screenDeviceName != null)
+            //            {
+            //            }
+
+            //            IShowPluginManager showPluginManager = DdpmHomePlugin.PluginIoc.GetService<IShowPluginManager>();
+            //            if (showPluginManager != null)
+            //            {
+            //            }
+            //            _console.
+            //        }
+            //    }
+            //});
         }
 
         public ILog Log => _log;
@@ -92,22 +115,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
         }
 
 
-        public double MinWidth
-        {
-            get
-            {
-                switch (HomeDevices.Count)
-                {
-                    case 1:
-                        return _pictureMinWidth + _gapMinWidth * 2;
-                    case 2:
-                    case 4:
-                        return _pictureMinWidth * 2 + _gapMinWidth * 3;
-                    case 3:
-                    default:
-                        return _pictureMinWidth * 3 + _gapMinWidth * 4;
-                }
 
+        //Robert_Lin, 2024-12-16 for PleaseWait thread to get devices
+        public IDeviceManagerSA? DeviceManagerPlugin
+        {
+            get => _deviceManagerSA;
+            set
+            {
+                SetProperty(ref _deviceManagerSA, value);
             }
         }
 
@@ -136,7 +151,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     //byte b_vcpcode = Convert.ToByte("60", 16);
                     //string currentInput = ""; //DdpmCommonHelper.DeviceManagerSA.GetCurrentInput(mi, b_vcpcode, 0).Result;
 
-                    HomeDevice dev = new HomeDevice()
+                    //Robert_Lin, 2024-12-27 provide ILog to HomeDevice, so it can write log 
+                    HomeDevice dev = new HomeDevice(_log)
                     {
                         DeviceName = mi.AliasDeviceName,
                         DeviceCategory = eDeviceCategory.Display,
@@ -240,7 +256,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     if (!di.IsConnected)
                         continue;
 
-                    HomeDevice dev = new HomeDevice()
+                    //Robert_Lin, 2024-12-27 provide ILog to HomeDevice, so it can write log 
+                    HomeDevice dev = new HomeDevice(_log)
                     {
                         DeviceName = di.DeviceName,
                         DeviceInfo = di
@@ -569,6 +586,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             int idx = HomeDevices.Count;
             MonitorInfo mi = GetFakeMonitorInfo();
             mi.Index = idx;
+            mi.ImageFileName = "S2422HGF";
             PrepareMonitorInfos(new List<MonitorInfo> { mi });
         }
         private MonitorInfo GetFakeMonitorInfo()
@@ -600,9 +618,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             info.edid.VideoInputType = "digital singal";
             return info;
         }
-        public void AddDemoHomeDevice(HomeDevice device)
+        public void AddDemoHomeDevice(HomeDevice dev)
         {
-            HomeDevices.Add(device);
+            HomeDevices.Add(dev);
         }
 
         private double _cxItem;
@@ -674,6 +692,43 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     break;
             }
             sw.Stop();
+
+            //Robert_Lin, 2024-12-16, The final action, when no device detected and Please wait time-out
+            //
+            if (HomeDeviceCount == 0)
+            {
+                _log.Info("PleaseWait-Final try to refresh device list manually:");
+                if (DeviceManagerPlugin != null) //Should be always true
+                {
+                    List<MonitorInfo> monitors = DeviceManagerPlugin.GetMonitors().Result;
+                    if (monitors.Count > 0) 
+                    {
+                        _log.Info($"PleaseWait-Monitor count={monitors.Count}");
+                        PrepareMonitorInfos(monitors);
+                    }
+                    else
+                    {
+                        _log.Info($"PleaseWait-Monitor count=0");
+                    }
+
+                    DeviceHelper deviceHelper = DeviceManagerPlugin.GetDevices().Result;
+                    if (deviceHelper == null || deviceHelper.deviceInfo.Count <= 0)
+                    {
+                        deviceHelper = DeviceManagerPlugin.GetDevices(true).Result;
+                    }
+                    List<DeviceInfo> _deviceInfos = new List<DeviceInfo>();
+                    if ((deviceHelper != null) && (deviceHelper.deviceInfo != null))
+                    {
+                        _deviceInfos = deviceHelper.deviceInfo;
+                        _log.Info($"PleaseWait-Peripheral count={_deviceInfos.Count}");
+                        PrepareDeviceInfos(_deviceInfos);
+                    }
+                    else
+                    {
+                        _log.Info("PleaseWait-Peripheral count=(null)");
+                    }
+                }
+            }
         }
 
         private void RunWorkerCompleted_PleaseWait(object sender, RunWorkerCompletedEventArgs e)

@@ -2,6 +2,7 @@
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Method;
+using DDPM.UI.Common.Models;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -166,6 +167,21 @@ namespace DDPM.UI.Module.Brightness
             {
                 _vm.IsSynchronize_Scheduled = true;
                 //SynchronizeSwitch.Content = Strings.On;
+
+                Task.Run(() =>
+                {
+                    foreach (HomeDevice hd in _vm.ModuleOwner.HomeDevices)
+                    {
+                        if (hd.MonitorInfo.IsDellMonitor)
+                        {
+                            if (hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                            {
+                                if (!hd.MonitorInfo.CapabilityDic.ContainsKey("66"))
+                                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, vm.ScheduleMap);
+                            }
+                        }
+                    }
+                });
             }
             else
             {
@@ -187,6 +203,18 @@ namespace DDPM.UI.Module.Brightness
             {
                 _vm.IsSynchronize_Scheduled = true;
                 //SynchronizeSwitch.Content = Strings.On;
+
+                Task.Run(() =>
+                {
+                    foreach (HomeDevice hd in _vm.ModuleOwner.HomeDevices)
+                    {
+                        if (hd.MonitorInfo.IsDellMonitor)
+                        {
+                            if (!hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                                DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, vm.ScheduleMap);
+                        }
+                    }
+                });
             }
             else
             {
@@ -214,14 +242,13 @@ namespace DDPM.UI.Module.Brightness
                     if (autoBrightnessStatus)
                     {
                         //disable hotkey btn
-                        btnManualBrightnessContrast.IsEnabled = false;                                          
+                        btnManualBrightnessContrast.IsEnabled = false;
                     }
                     else
                     {
                         btnManualBrightnessContrast.IsEnabled = true;
                     }*/
                     vm.updateHotkeyBtn();
-
 
                     Task.Run(() => vm.CloseSchedule());
                 }
@@ -954,7 +981,7 @@ namespace DDPM.UI.Module.Brightness
             var comboBox = sender as ComboBox;
             if (comboBox == null) return;
             BrightnessViewModel vm = (BrightnessViewModel)DataContext;
-            if (vm.Start_ALSConfig.AutoBrightnessRangeLevel.Count != 0)
+            if (vm != null && vm.Start_ALSConfig != null && vm.Start_ALSConfig.AutoBrightnessRangeLevel.Count != 0)
             {
                 _previousSelectedIndex = (int)vm.Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value;
 

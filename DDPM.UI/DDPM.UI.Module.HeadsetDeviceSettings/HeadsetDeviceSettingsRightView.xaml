@@ -10,7 +10,7 @@
              d:DataContext="{d:DesignInstance Type=plugin:HeadsetViewModel}"
              xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              mc:Ignorable="d"
-             d:DesignHeight="655" d:DesignWidth="520">
+             d:DesignHeight="655" d:DesignWidth="520" Unloaded="Leave">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -138,10 +138,11 @@
 
                                     <!-- Voice Guidance Buttons -->
                                     <StackPanel x:Name="VoiceGuidanceStackPanel" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,0">
-                                        <UXControls:UXToggleSwitch x:Name="EssentialButton" Grid.Row="1" BorderThickness="1.5" Width="224" Height="52" Margin="0,8,0,20" Padding="16"  IsChecked="{Binding IsEssentialChecked, Mode=TwoWay}">
+                                        <UXControls:UXToggleSwitch x:Name="EssentialButton" Grid.Row="1" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}" Background="{DynamicResource ToggleSwitch_NormalBackground}"
+                                                                   Width="224" Height="52" Margin="0,8,0,20" Padding="16"  IsChecked="{Binding IsEssentialChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="EssentialButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Border x:Name="EssentialButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                 <UXControls:UXTextBlock x:Name="EssentialButtonTextBlock" Text="{Binding [HeadsetDeviceSettings.2], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
@@ -152,50 +153,17 @@
                                                         <Trigger Property="IsChecked" Value="True">
                                                             <Setter TargetName="EssentialButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="EssentialButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                            <Setter TargetName="EssentialButtonTextBlock" Property="Foreground" Value="White" />
                                                         </Trigger>
-                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsEssentialChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="EssentialButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsEssentialChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="EssentialButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsEssentialChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="EssentialButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsEssentialChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="EssentialButtonTextBlock" Property="Foreground" Value="Black" />
-                                                        </MultiDataTrigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
                                         </UXControls:UXToggleSwitch>
-                                        <UXControls:UXToggleSwitch x:Name="AllButton" Width="224" Height="52" Margin="8,8,0,20" Padding="16" Background="{StaticResource SplitItem_NormalBdColor}" IsChecked="{Binding IsAllChecked, Mode=TwoWay}">
+                                        <UXControls:UXToggleSwitch x:Name="AllButton" BorderThickness="1.5" BorderBrush="{DynamicResource ToggleSwitch_NormalBorderBrush}" Background="{DynamicResource ToggleSwitch_NormalBackground}"
+                                                                   Width="224" Height="52" Margin="8,8,0,20" Padding="16" IsChecked="{Binding IsAllChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                    <Border x:Name="AllButtonBorder"  BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
+                                                    <Border x:Name="AllButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                                                 <UXControls:UXTextBlock x:Name="AllButtonTextBlock" Text="{Binding [HeadsetDeviceSettings.3], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" TextAlignment="Center" />
@@ -206,42 +174,8 @@
                                                         <Trigger Property="IsChecked" Value="True">
                                                             <Setter TargetName="AllButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
                                                             <Setter TargetName="AllButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
+                                                            <Setter TargetName="AllButtonTextBlock" Property="Foreground" Value="White" />
                                                         </Trigger>
-                                                        <!-- Dark Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsAllChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="AllButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Dark Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                                <Condition Binding="{Binding IsAllChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="AllButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch被選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsAllChecked}" Value="True" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="AllButtonTextBlock" Property="Foreground" Value="White" />
-                                                        </MultiDataTrigger>
-
-                                                        <!-- Light Mode且ToggleSwitch未選中 -->
-                                                        <MultiDataTrigger>
-                                                            <MultiDataTrigger.Conditions>
-                                                                <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                                <Condition Binding="{Binding IsAllChecked}" Value="False" />
-                                                            </MultiDataTrigger.Conditions>
-                                                            <Setter TargetName="AllButtonTextBlock" Property="Foreground" Value="Black" />
-                                                        </MultiDataTrigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
@@ -265,61 +199,13 @@
 
                                     <!-- Title -->
                                     <UXControls:UXTextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding [HeadsetDeviceSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="16" FontWeight="Bold" Margin="8,20,0,20" />
-                                    <Path Grid.Row="0" x:Name="DownDellAudioCloseIcon" Stretch="Fill" VerticalAlignment="Center" Width="20" Height="20" MouseLeftButtonDown="CloseDescription" Cursor="Hand" Margin="410,20,0,20" Data="M20 1.025L18.975 0L10 9L1.025 0.0625L0 1.0875L8.9375 10L0.0625 18.9125L1.0875 20L10 11.0625L18.9125 20L19.9375 18.975L11 10L20 1.025Z" Fill="white"/>
+                                    <Path Grid.Row="0" x:Name="DownDellAudioCloseIcon" Stretch="Fill" VerticalAlignment="Center" Width="20" Height="20" MouseLeftButtonDown="CloseDescription" Cursor="Hand" Margin="410,20,0,20" Data="M20 1.025L18.975 0L10 9L1.025 0.0625L0 1.0875L8.9375 10L0.0625 18.9125L1.0875 20L10 11.0625L18.9125 20L19.9375 18.975L11 10L20 1.025Z" 
+                                          Fill="{DynamicResource DefaultTheme_PathColor}"/>
                                     <!-- Icon and Description -->
                                     <Image Grid.Row="1" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Headset_DownDellAudio.png" Width="72" Height="72" HorizontalAlignment="Left" Margin="8,0,0,0" />
                                     <UXControls:UXTextBlock Grid.Row="1" TextWrapping="Wrap" FontSize="14" Text="{Binding [HeadsetDeviceSettings.5], Source={x:Static lang:LangHelper.Instance}}" VerticalAlignment="Center" Width="368" HorizontalAlignment="Right" Margin="0,20,0,20" />
 
-                                    <UXControls:UXToggleSwitch x:Name="LearnmoreButton" Grid.Row="2" Grid.Column="0"  Width="135" Height="40" Margin="8,8,0,0" HorizontalAlignment="Left" Background="{StaticResource SplitItem_NormalBdColor}" Click="LearnmoreButton_Click">
-                                        <UXControls:UXToggleSwitch.Template>
-                                            <ControlTemplate TargetType="UXControls:UXToggleSwitch">
-                                                <Border x:Name="AllButtonBorder"  BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4,4,4,4">
-                                                    <Grid>
-                                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                            <UXControls:UXTextBlock x:Name="AllButtonTextBlock" Text="{Binding [HeadsetDeviceSettings.6], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
-                                                        </StackPanel>
-                                                    </Grid>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsPressed" Value="True">
-                                                        <Setter TargetName="AllButtonBorder" Property="Background" Value="{StaticResource PressedBackground}" />
-                                                        <Setter TargetName="AllButtonBorder" Property="BorderBrush" Value="{StaticResource PressedBorderBrush}" />
-                                                    </Trigger>
-                                                    <!-- Dark Mode且ToggleSwitch被選中 -->
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter TargetName="AllButtonTextBlock" Property="Foreground" Value="White" />
-                                                    </MultiDataTrigger>
-
-                                                    <!-- Dark Mode且ToggleSwitch未選中 -->
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding IsDarkTheme}" Value="True" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter TargetName="AllButtonTextBlock" Property="Foreground" Value="White" />
-                                                    </MultiDataTrigger>
-
-                                                    <!-- Light Mode且ToggleSwitch被選中 -->
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter TargetName="AllButtonTextBlock" Property="Foreground" Value="White" />
-                                                    </MultiDataTrigger>
-
-                                                    <!-- Light Mode且ToggleSwitch未選中 -->
-                                                    <MultiDataTrigger>
-                                                        <MultiDataTrigger.Conditions>
-                                                            <Condition Binding="{Binding IsDarkTheme}" Value="False" />
-                                                        </MultiDataTrigger.Conditions>
-                                                        <Setter TargetName="AllButtonTextBlock" Property="Foreground" Value="Black" />
-                                                    </MultiDataTrigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </UXControls:UXToggleSwitch.Template>
-                                    </UXControls:UXToggleSwitch>
+                                    <Button x:Name="LearnmoreButton" Grid.Row="2" Grid.Column="0" Style="{StaticResource PrimaryButtonStyle}" Width="135" Height="40" Margin="8,8,0,0" HorizontalAlignment="Left" Tag="4"  Content="{Binding [HeadsetDeviceSettings.6], Source={x:Static lang:LangHelper.Instance}}" Click="LearnmoreButton_Click"/>
                                 </Grid>
                             </StackPanel>
                         </Border>

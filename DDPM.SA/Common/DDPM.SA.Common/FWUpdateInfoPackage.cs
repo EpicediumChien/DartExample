@@ -67,14 +67,16 @@ namespace DDPM.SA.Common
     /// </summary>
     public class FWUpdateInfo
     {
-        // add @ 20241201 stephen: for CMA feedback
+
+        /// <summary>
+        /// add @ 20241201 stephen: for CMA feedback
+        /// </summary>
         public string Guid { get; set; } = string.Empty;
 
         /// <summary>
         /// 韌體更新的錯誤碼，安裝時使用
         /// </summary>
         public FWUErrorCode FWUErrorCode { get; set; }
-        //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷，UI有個地方也會跟著異動
         public DeviceType DeviceType { get; set; }
         public bool IsDisplay { get; set; }
         public string DeviceName { get; set; }
@@ -88,6 +90,10 @@ namespace DDPM.SA.Common
         /// Dock專用，判斷是否斷線更新
         /// </summary>
         public bool IsUOD { get; set; }
+        /// <summary>
+        /// Only for webcam true is HPD can name pipa update, false is MPS need client update
+        /// </summary>
+        public bool IsESISupported {  get; set; }
 
         /// <summary>
         /// 裝置例項路徑，Dock專用，用於判斷UOD的Dock再次連接時是否更新完成
@@ -150,6 +156,8 @@ namespace DDPM.SA.Common
         CAFail = 12,
         NamedPipeServerIsNoSafe = 13,
         FileCheckFail = 14,
+        ConnectMultipleSameModels = 15,
+        DeviceBatteryTooLow = 16,
         Unknow = 99
     }
 

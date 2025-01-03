@@ -55,8 +55,10 @@ namespace DDPM.SA.Common
 
         Task<List<string>> GetInfos(bool force_reload = false);
 
-        Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam);
-        
+        Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam, bool needExceptionString = false);
+        Task<bool> SaveLog(string saveFolderPath);
+
+
     }
 
     /// <summary>
@@ -86,11 +88,11 @@ namespace DDPM.SA.Common
 
         Task<bool> WriteHotkeySettings(List<HotkeySettings> hotkeySettings);
 
-        Task<List<PowerNapSetting>> ReadPowerNapSettings();
+        //Task<List<PowerNapSetting>> ReadPowerNapSettings();
 
-        Task<bool> WritePowerNapSettings(List<PowerNapSetting> powerNapSettings);
+        //Task<bool> WritePowerNapSettings(List<PowerNapSetting> powerNapSettings);
 
-        Task<List<PowerNapSetting>> ImportPowerNapSettings(string filePath);
+        //Task<List<PowerNapSetting>> ImportPowerNapSettings(string filePath);
 
         Task<bool> ExportPowerNapSettings(List<PowerNapSetting> powerNapSettings, string filePath);
 
@@ -144,5 +146,6 @@ namespace DDPM.SA.Common
 
         Task<InterruptScreenRoot> ReadInterruptScreen();
         Task<bool> WriteInterruptScreen(InterruptScreenRoot interruptScreenParam);
+        Task<bool> SaveLog(string saveFolderPath);
     }
 }

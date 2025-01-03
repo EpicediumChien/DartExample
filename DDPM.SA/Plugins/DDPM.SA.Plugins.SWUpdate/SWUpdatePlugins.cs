@@ -381,6 +381,7 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// <returns>回傳裝置資訊表(在這個方法裡將原本傳入的裝置資訊表，再寫入對應裝置的下載安裝的結果碼)</returns>
         public Task<List<SWUpdateInfo>> DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUITrigger, string installPath)
         {
+            Method method = new Method(_logs);
             try
             {
                 _IsUITrigger = isUITrigger;
@@ -427,6 +428,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                     _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
                     NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                     _logs.DebugMsg_1(nameof(DownloadAndInstall) + " savePath FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
+                    method.DeleteFolder(savePath);
                     return Task.FromResult(swUpdateInfos);
                 }
                 for (int i = 0; i < swUpdateInfos.Count; i++)
@@ -443,6 +445,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                         _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
                         NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         _logs.DebugMsg_1(nameof(DownloadAndInstall) + " savePath FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
+                        method.DeleteFolder(savePath);
                         continue;
                     }
                     _downloadTimer = new Timer();
@@ -494,6 +497,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                         _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " extractPath FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
                         _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
                         NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                        method.DeleteFolder(savePath);
                         continue;
                     }
                     string exeFilePath;
@@ -505,6 +509,8 @@ namespace DDPM.SA.Plugins.SWUpdate
                             _logs.DebugMsg_1(_SWUpdateInfo.SoftwareName + " Unzip Faile");
                             _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
                             NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            fileLock.Unlock();
+                            method.DeleteFolder(savePath);
                             continue;
                         }
                         using (FileLock fileLock_2 = new FileLock(exeFilePath, PathCheckOption.None, lockNow: true))
@@ -515,6 +521,9 @@ namespace DDPM.SA.Plugins.SWUpdate
                                 _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} CheckThumbprint Faile");
                                 _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
                                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                                fileLock_2.Unlock();
+                                fileLock.Unlock();
+                                method.DeleteFolder(savePath);
                                 continue;
                             }
                             swUpdateInfos[i].InstallPaths = exeFilePath;
@@ -540,12 +549,14 @@ namespace DDPM.SA.Plugins.SWUpdate
                 {
                     CallSaveUpdateInfoPackage?.AsyncFireAndForget(this, _DelaySWUpdateInfoPackage, System.Threading.CancellationToken.None);
                 }
+                method.Dispose();
                 _isDefer = false;
                 _isForce = false;
                 return Task.FromResult(swUpdateInfos);
             }
             catch (Exception ex)
             {
+                method.Dispose();
                 foreach (SWUpdateInfo deviceInfo in swUpdateInfos)
                 {
                     deviceInfo.SWUErrorCode = SWUErrorCode.NetworkDisconnection;
@@ -566,18 +577,16 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// <param name="e"></param>
         private void DownloadTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
-            if (download != null)
+            if (download != null &&
+                download.DownloadFileStream != null)
             {
-                if (download.DownloadFileStream != null)
+                UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                 {
-                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
-                    {
-                        DeviceName = _SWUpdateInfo.SoftwareName,
-                        TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                        ProcessName = LangHelper.Instance["Downloading_and_installing"],
-                        ProcessProgress = download.GetProgress(),
-                    };
-                }
+                    DeviceName = _SWUpdateInfo.SoftwareName,
+                    TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
+                    ProcessName = LangHelper.Instance["Downloading_and_installing"],
+                    ProcessProgress = download.GetProgress(),
+                };
             }
         }
         /// <summary>
@@ -591,21 +600,28 @@ namespace DDPM.SA.Plugins.SWUpdate
             _checkUpdateScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
             if (_SettingsPlugin != null)
             {
-                DDPMITConfig data = _SettingsPlugin.GetITGlobalConfigs().Result;
-                if (!data.Lock_Settings_Updates)
+                try
                 {
-                    //TimeSpan difference = DateTime.Now - _fWUpdateInfoPackage.TheLastCheckTime;
-                    //int checkTime = 5;
-                    //if (difference.TotalMinutes > checkTime)
+                    DDPMITConfig data = _SettingsPlugin.GetITGlobalConfigs().Result;
+                    if (!data.Lock_Settings_Updates)
                     {
-                        CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+                        //TimeSpan difference = DateTime.Now - _fWUpdateInfoPackage.TheLastCheckTime;
+                        //int checkTime = 5;
+                        //if (difference.TotalMinutes > checkTime)
+                        {
+                            CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
+                        }
+                        _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} CollCheckUpdate");
                     }
-                    _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} CollCheckUpdate");
+                    else
+                    {
+                        _checkUpdateScheduleTimer.Stop();
+                        _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _checkUpdateScheduleTimer stop");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    _checkUpdateScheduleTimer.Stop();
-                    _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _checkUpdateScheduleTimer stop");
+                    _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} exception: {ex.Message}");
                 }
             }
             else
@@ -801,7 +817,19 @@ namespace DDPM.SA.Plugins.SWUpdate
                 _logs.DebugMsg_1($"{nameof(Install)} start");
                 string miniInstallPath = swUpdateInfos.InstallPaths;
                 PInvoke.PROCESS_INFORMATION procInfo;
-                WTSFunction.StartProcessAndBypassUACWithAdmin(miniInstallPath, out procInfo);
+                string workingDirectory = DDPMFileSecurity.SanitizePath(Path.GetDirectoryName(miniInstallPath), out string info);
+                if (!string.IsNullOrEmpty(workingDirectory))
+                {
+                    _logs.DebugMsg_1($"{nameof(Install)} workingDirectory is not null");
+                    string arguments_Final = miniInstallPath + " /fromddpm";
+                    _logs.DebugMsg_1($"arguments_Final : {arguments_Final}");
+                    WTSFunction.StartProcessAndBypassUACWithAdmin(arguments_Final, workingDirectory, out procInfo);
+                }
+                else
+                {
+                    _logs.DebugMsg_1($"{nameof(Install)} workingDirectory is null, info : {info}");
+                }
+
                 //var sessionId = Kernel32.WTSGetActiveConsoleSessionId();
                 //if (sessionId is Advapi32.InvalidSessionId) throw new InvalidOperationException($"Cannot get session id");
                 //IntPtr token = UserImpersonator.GetTokenFromSession(sessionId, systemUser: false);
@@ -943,7 +971,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 {
                     _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} File is zip.");
                     _logs.DebugMsg_1($"{_SWUpdateInfo.SoftwareName} ExecuteUnzip go.");
-                    if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
+                    if (unzip.ExecuteUnzip(filePath, extractPath, true, out exeFilePath))
                     {
                         if (string.IsNullOrEmpty(exeFilePath))
                         {

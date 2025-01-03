@@ -384,7 +384,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             monitorInfo1.CapabilityDic = capabilityDic;  //GetUSBUpstreamList 里面包含EE
             string inputsource1 = "HDMI-1";
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);
-            ObjGetVCP objGetVCPEE = new ObjGetVCP() { result = true, value = 48128u };//0xE7
+            ObjGetVCP objGetVCPEE = new ObjGetVCP() { result = true, value = 188u };//0xE7 48128u
             VcpCoreService.Setup(x => x.GetVCPCapability(It.IsAny<MonitorInfo>(), It.IsAny<byte>(), It.IsAny<int>())).Returns(Task.FromResult(objGetVCPEE));
             var VcpCoreServiceObject1 = VcpCoreService.Object;
             privatedispalypluginObject.SetField("_VcpCorePlugin", VcpCoreServiceObject1);
@@ -408,21 +408,24 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             privatedispalypluginObject.SetField("inputSourcelist", inputlist);
 
             //var upstream= inputlist["HDMI-1"].USBUpstream;
-            var upstream = "USB-C";
+            var upstream = "USB-C4";
+            //Dictionary<string, string> UsbUpstream = new Dictionary<string, string>() { { "USB-C", "11" }, { "USB-B1", "00" } };
+            //privatedispalypluginObject.SetField("USBUpstream", UsbUpstream);
+            Dictionary<string, string> Usbpstream = new Dictionary<string, string>();
+            Usbpstream.Add("USB-C1", "11");
+            Usbpstream.Add("Thunderbolt-1", "10");
+            Usbpstream.Add("USB-B1", "01");
+            Usbpstream.Add("USB-B2", "00");
+            privatedispalypluginObject.SetField("USBUpstream", Usbpstream);
+            string Usbpstream1 = Usbpstream.Keys.First<string>();
 
-            Dictionary<string, string> UsbUpstream = new Dictionary<string, string>() { { "USB-C", "11" }, { "USB-B1", "00" } };
-            privatedispalypluginObject.SetField("USBUpstream", UsbUpstream);
+            bool SetUSBUpstreamresult = displayPlugin.SetUSBUpstream(monitorInfo1, inputsource1, upstream).Result;  //Not monitorInfo.CapabilityDic.ContainsKey("E7")
+            Assert.IsFalse(SetUSBUpstreamresult);
 
-            if (monitorInfo1.CapabilityDic.ContainsKey("EE"))
-            {
-                bool SetUSBUpstreamresult = displayPlugin.SetUSBUpstream(monitorInfo1, inputsource1, upstream).Result;
-                Assert.IsTrue(SetUSBUpstreamresult);
-            }
-            else
-            {
-                bool SetUSBUpstreamresult = displayPlugin.SetUSBUpstream(monitorInfo1, inputsource1, upstream).Result;
-                Assert.IsFalse(SetUSBUpstreamresult);
-            }
+            capabilityDic.Add("E7", new List<string> { "value4" });
+            monitorInfo1.CapabilityDic = capabilityDic;
+            bool SetUSBUpstreamresult2 = displayPlugin.SetUSBUpstream(monitorInfo1, inputsource1, upstream).Result;  // monitorInfo.CapabilityDic.ContainsKey("E7")
+            Assert.IsTrue(SetUSBUpstreamresult2);
         }
 
         [Test]
@@ -2489,6 +2492,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
                 var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val).Result;  // vcpcode = "60"
                 Assert.IsTrue(result);
             }
+
+            vcpcode = "67";
+            if (vcpcode != "67" || vcpcode != "68")
+            {
+                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val).Result;  // aconfig == null
+                Assert.IsFalse(result);
+            }
+
+            _AllALSConfig = new List<ALSConfig>();
+            aconfig.Edid = monitorInfo1.edid;
+            _AllALSConfig.Add(aconfig);
+            DisplayMangerPlugin.AllALSConfig = _AllALSConfig;  // aconfig != null
 
             vcpcode = "68";
             PrivateObject privatedispalypluginObject = new PrivateObject(displayPlugin);

@@ -259,13 +259,9 @@ namespace DDPM.EABroker
 
         public void ArrangeWindow(IntPtr hWnd, int idxCell)
         {
-            if (_emLauncherWindow != null)
+            if (_emLauncherWindow != null && _isReadyToArrange)
             {
-                if (_isReadyToArrange)
-                {
-                    _emLauncherWindow.ArrangeWindow(hWnd, idxCell);
-
-                }
+                //_emLauncherWindow.ArrangeWindow(hWnd, idxCell);
             }
         }
 

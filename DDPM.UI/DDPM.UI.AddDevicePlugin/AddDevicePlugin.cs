@@ -109,7 +109,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         }
 
         /// <inheritdoc/>
-        public void OnShown(string parameter)
+        public void OnShown(string pluginParameter)
         {
             ConfigureServices();
             GetPeripheralsAsync();
@@ -141,7 +141,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 {
                     _viewModel.NewDevice = e.device_peripherals;
                     //if(e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
-                    //  _viewModel.GotoNewDevice();
+                    _viewModel.GotoNewDevice();
                 }
                 if (e.device_peripherals!.PhysicalDeviceType == DeviceType.PhysicalBluetooth || e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalBluetoothAudio || e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalPen)
                 {
@@ -158,7 +158,7 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             {
                 if (e.type == DeviceChangedType.Peripherals_SettingsChange)
                 {
-                    _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
+                    //_viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
                 }
                 else
                 {

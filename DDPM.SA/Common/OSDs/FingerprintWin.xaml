@@ -62,9 +62,10 @@
                     </Grid.RowDefinitions>
 
                     <!--Close-->
-                    <Canvas Width="16" Height="16" Margin="0,10,10,0" 
+                    <Canvas Width="20" Height="20" Margin="0,10,10,0" 
                             HorizontalAlignment="Right" VerticalAlignment="Top" 
-                            MouseLeftButtonDown="close_Click" 
+                            MouseLeftButtonDown="close_Click"
+                            Background="Transparent"
                             Tag="{DynamicResource Default_SA_OSD_PathColor}">
                         <Path Data="M16,0.82 L15.18,0 L8,7.2 L0.82,0.05 L0,0.87 L7.15,8 L0.05,15.13 L0.87,16 L8,8.85 L15.13,16 L15.95,15.18 L8.8,8 L16,0.82 Z" 
                             Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />

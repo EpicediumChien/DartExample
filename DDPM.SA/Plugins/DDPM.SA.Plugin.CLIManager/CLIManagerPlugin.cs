@@ -12,6 +12,7 @@
 
 using DDPM.SA.Common;
 using DDPM.SA.Common.CLI;
+using DDPM.SA.Common.Defer;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
@@ -347,7 +348,7 @@ namespace DDPM.SA.Plugin.CLIManager
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
                     //break;
-                case "INAPPAUTOBRITEMP":         //InAppAutoBriTemp          DDPMW-1341
+                //case "INAPPAUTOBRITEMP":         //InAppAutoBriTemp          DDPMW-1341
                 case "INAPPAUTOBRIGHTNESSCOLOR"://1004 InAppAutoBrightnessColor DDPMW1341
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
                         rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
@@ -665,7 +666,7 @@ namespace DDPM.SA.Plugin.CLIManager
             WriteLog($"RunDDMCommand({command}) Entry");
             string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
             int exitCode = -1;
-            string value = "N/A";
+            string value = _commandLineInput.Options.Count > 0 ? _commandLineInput.Options[0].Option_Value : "N/A";
             string message = "N/A";
 
             if (!File.Exists(filePath))
@@ -774,20 +775,21 @@ namespace DDPM.SA.Plugin.CLIManager
                 }
                 else
                 {
-                    command = $"/{command} {_commandLineInput.Options[0].Option_Value}";
-                    var commandResult = RunDDMCommand(command);
+                    var cmds = new List<string> { $"{command} {_commandLineInput.Options[0].Option_Value}", "exit" };
+                    retcode = true;
+                    response.Result = "PASS";
 
-                    if (commandResult.exitCode == 0)
+                    foreach (var cmd in cmds)
                     {
-                        retcode = true;
-                        response.Result = "PASS";
-                    }
-                    else
-                    {
-                        retcode = false;
-                        response.Result = "FAIL";
-                        response.Message = commandResult.message;
-                        response.Value = commandResult.value;
+                        var commandResult = RunDDMCommand($"/{cmd}");
+
+                        if (commandResult.exitCode != 0)
+                        {
+                            retcode = false;
+                            response.Result = "FAIL";
+                            response.Message = commandResult.message;
+                            response.Value = commandResult.value;
+                        }
                     }
                 }
             }
@@ -846,22 +848,23 @@ namespace DDPM.SA.Plugin.CLIManager
             {
                 response.Value = _commandLineInput.Options[0].Option_Value;
 
-                if (int.TryParse(_commandLineInput.Options[0].Option_Value, out int port) && port >= 1024 && port <= 49151)
+                if (int.TryParse(_commandLineInput.Options[0].Option_Value, out int port))
                 {
-                    command = $"/{command} {_commandLineInput.Options[0].Option_Value}";
-                    var commandResult = RunDDMCommand(command);
+                    var cmds = new List<string> { $"{command} {_commandLineInput.Options[0].Option_Value}", "exit" };
+                    retcode = true;
+                    response.Result = "PASS";
 
-                    if (commandResult.exitCode == 0)
+                    foreach (var cmd in cmds)
                     {
-                        retcode = true;
-                        response.Result = "PASS";
-                    }
-                    else
-                    {
-                        retcode = false;
-                        response.Result = "FAIL";
-                        response.Message = commandResult.message;
-                        response.Value = commandResult.value;
+                        var commandResult = RunDDMCommand($"/{cmd}");
+
+                        if (commandResult.exitCode != 0)
+                        {
+                            retcode = false;
+                            response.Result = "FAIL";
+                            response.Message = commandResult.message;
+                            response.Value = commandResult.value;
+                        }
                     }
                 }
                 else
@@ -916,20 +919,21 @@ namespace DDPM.SA.Plugin.CLIManager
 
             if (_commandLineInput.Command == "SET" && _commandLineInput.Options.Count == 0)
             {
-                command = $"/{command}";
-                var commandResult = RunDDMCommand(command);
+                var cmds = new List<string> { command, "exit" };
+                retcode = true;
+                response.Result = "PASS";
 
-                if (commandResult.exitCode == 0)
+                foreach (var cmd in cmds)
                 {
-                    retcode = true;
-                    response.Result = "PASS";
-                }
-                else
-                {
-                    retcode = false;
-                    response.Result = "FAIL";
-                    response.Message = commandResult.message;
-                    response.Value = commandResult.value;
+                    var commandResult = RunDDMCommand($"/{cmd}");
+
+                    if (commandResult.exitCode != 0)
+                    {
+                        retcode = false;
+                        response.Result = "FAIL";
+                        response.Message = commandResult.message;
+                        response.Value = commandResult.value;
+                    }
                 }
             }
             else
@@ -942,6 +946,131 @@ namespace DDPM.SA.Plugin.CLIManager
 
             WriteLog($"NetworkKVMAccessReset({command}) Exit");
             return (retcode ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
+        }
+        #endregion
+
+        #region Defer Implement
+        // add @ 20241210 stephen: check defer with toast notification
+
+        private List<DeferItem> DeferItems = new List<DeferItem>();
+        private const int MAX_DEFER_WAIT_TIME_SEC = 5;
+        private Dictionary<string, bool> deferResponse = new Dictionary<string, bool>();
+
+        public void sendToastResult(string _defer_id, bool isDefer)
+        {
+            WriteLog("@@stephen CLIManagerPlugin::sendToastResult _defer_id = " + _defer_id);
+            WriteLog("@@stephen CLIManagerPlugin::sendToastResult isDefer = " + isDefer);
+            if (!deferResponse.ContainsKey(_defer_id))
+            {
+                deferResponse.Add(_defer_id, isDefer);
+            }
+        }
+        public Task<bool> checkDefer(int from, string guid, string commanddata)
+        {
+
+            DeferItem item = new DeferItem(from, guid, commanddata);
+            string did = item.deferid;
+
+            onCLIToastEventNotify(new CLIEventToastArgs()
+            {
+                defer_id = did,
+                toast_message = commanddata,
+                is_defer = true
+            });
+
+            bool result = checkToastResult(did, item);
+
+            return Task.FromResult(result);
+        }
+
+        public Task<bool> checkDeferSchedule(int from, string guid, DeferItem item)
+        {
+            string did = item.deferid;
+
+            onCLIToastEventNotify(new CLIEventToastArgs()
+            {
+                defer_id = did,
+                toast_message = item.commanddata,
+                is_defer = true
+            });
+
+            bool result = checkToastResult(did, item);
+
+            return Task.FromResult(result);
+        }
+
+        private bool checkToastResult(string key, DeferItem item)
+        {
+            for (int i = 0; i <= MAX_DEFER_WAIT_TIME_SEC; i++)
+            {
+                Thread.Sleep(1000);
+                // check defer response
+                WriteLog("@@stephen CLIManagerPlugin::checkToastResult Sleep(1000)");
+                WriteLog($"@@stephen CLIManagerPlugin::checkToastResult deferResponse.ContainsKey({key}) = " + deferResponse.ContainsKey(key));
+
+                if (deferResponse.ContainsKey(key))
+                {
+                    WriteLog("@@stephen CLIManagerPlugin::checkToastResult deferResponse.ContainsKey " + key);
+                    if (deferResponse[key])
+                    {
+                        WriteLog("@@stephen CLIManagerPlugin::checkToastResult deferResponse[did] =  " + deferResponse[key]);
+                        deferResponse.Remove(key);
+                        // add deferitem to deferControlPanel
+                        DeferControlPanel.addToSchedule(item);
+                        return true;
+                    }
+                    WriteLog("@@stephen CLIManagerPlugin::checkToastResult deferResponse[did]2 =  " + deferResponse[key]);
+                    deferResponse.Remove(key);
+                    break;
+                }
+            }
+
+            return false;
+        }
+
+        public Task showNotification(int from, string guid, DeferItem item)
+        {
+            string did = item.deferid;
+
+            onCLIToastEventNotify(new CLIEventToastArgs()
+            {
+                defer_id = did,
+                toast_message = item.commanddata,
+                is_defer = false
+            });
+
+            return Task.CompletedTask;
+        }
+        /*
+                public void showNotification(int from, string guid, string args)
+                {
+                    string did = item.deferid;
+
+                    onCLIToastEventNotify(new CLIEventToastArgs()
+                    {
+                        defer_id = did,
+                        toast_message = item.commanddata,
+                        is_defer = false
+                    });
+                }*/
+
+        // add @ 20241210 stephen
+        public event EventHandler<CLIEventToastArgs> CLIToastEvent;
+
+        /*        public void regEvent(EventHandler<EventArgs> e) {
+                    eventToast += e;
+                }*/
+
+
+        private void onCLIToastEventNotify(CLIEventToastArgs e)
+        {
+            EventHandler<CLIEventToastArgs> Handler = CLIToastEvent;
+            if (Handler != null)
+            {
+                WriteLog($"@@stephen CLIManagerPlugin::onCLIToastEventNotify CLIEventToastArgs e.defer_id = {e.defer_id}");
+                WriteLog($"@@stephen CLIManagerPlugin::onCLIToastEventNotify CLIEventToastArgs e.toast_message = {e.toast_message}");
+                Handler.Invoke(this, e);
+            }
         }
         #endregion
     }

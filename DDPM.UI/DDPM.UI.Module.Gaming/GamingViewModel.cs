@@ -156,7 +156,7 @@ namespace DDPM.UI.Module.Gaming
             }
         }
         #region hotkey
-        private string _darkStabilizerToggleKey = "None";
+        private string _darkStabilizerToggleKey = LangHelper.Instance["None"];
 
         public string DarkStabilizerToggleKey
         {
@@ -169,7 +169,7 @@ namespace DDPM.UI.Module.Gaming
             }
         }
 
-        private string _dualResolutionToggleKey = "None";
+        private string _dualResolutionToggleKey = LangHelper.Instance["None"];
 
         public string DualResolutionToggleKey
         {

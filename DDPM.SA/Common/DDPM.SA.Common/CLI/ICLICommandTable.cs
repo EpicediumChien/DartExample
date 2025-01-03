@@ -44,7 +44,7 @@ namespace DDPM.SA.Common
             "TELEMETRYCONSENT",         //TelemetryConsent          DDPMW-1339
             "INAPPUPDATE",              //InAppUpdate               DDPMW-1329/1330
             "INAPPBRICONT",             //InAppBriCont              DDPMW-1342/1343
-            "INAPPAUTOBRITEMP",         //InAppAutoBriTemp          DDPMW-1341
+            //"INAPPAUTOBRITEMP",         //InAppAutoBriTemp          DDPMW-1341
             "INAPPAUTOBRIGHTNESSCOLOR",//1004 InAppAutoBrightnessColor DDPMW1341, same as InAppAutoBriTemp
             "INAPPRESTOREDEFAULTS",     //InAppRestoreDefaults      DDPMW-1333
             "INAPPRESTORE",             //InAppRestore              Same as InAppRestoreDefaults
@@ -351,11 +351,11 @@ namespace DDPM.SA.Common
                                         t = tS;
                                     if (t.Length > 1 && t.EndsWith("]"))
                                         t = t.Substring(0, t.Length - 1);
-                                    if (tmpSS[0].ToUpper().Contains("SERVICETAG"))
+                                    if (tmpSS[0].ToUpper().Contains("SERVICETAG") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DEVICEDATA") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                     {
                                         commandInput.ServiceTag.Add(t);
                                     }
-                                    else if (tmpSS[0].ToUpper().Contains("MODEL"))
+                                    else if (tmpSS[0].ToUpper().Contains("MODEL") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DEVICEDATA") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                     {
                                         commandInput.Model.Add(t);
                                     }
@@ -363,7 +363,7 @@ namespace DDPM.SA.Common
                                     {
                                         commandInput.GuidString.Add(t);
                                     }
-                                    else if (tmpSS[0].ToUpper().Contains("INDEX"))
+                                    else if (tmpSS[0].ToUpper().Contains("INDEX") && (commandInput.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (commandInput.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (commandInput.TargetFeature.ToUpper() != "DEVICEDATA") && (commandInput.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                     {
                                         int temp = int.Parse(t) - 1;
                                         commandInput.DeviceIndex.Add(temp.ToString());
@@ -599,11 +599,11 @@ namespace DDPM.SA.Common
                                                 t = tS;
                                             if (t.Length > 1 && t.EndsWith("]"))
                                                 t = t.Substring(0, t.Length - 1);
-                                            if (tmpSS[0].ToUpper().Contains("SERVICETAG"))
+                                            if (tmpSS[0].ToUpper().Contains("SERVICETAG") && (input.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (input.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (input.TargetFeature.ToUpper() != "DEVICEDATA") && (input.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                             {
                                                 input.ServiceTag.Add(t);
                                             }
-                                            else if (tmpSS[0].ToUpper().Contains("MODEL"))
+                                            else if (tmpSS[0].ToUpper().Contains("MODEL") && (input.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (input.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (input.TargetFeature.ToUpper() != "DEVICEDATA") && (input.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                             {
                                                 input.Model.Add(t);
                                             }
@@ -611,7 +611,7 @@ namespace DDPM.SA.Common
                                             {
                                                 input.GuidString.Add(t);
                                             }
-                                            else if (tmpSS[0].ToUpper().Contains("INDEX"))
+                                            else if (tmpSS[0].ToUpper().Contains("INDEX") && (input.TargetFeature.ToUpper() != "SCREENNOTIFICATION") && (input.TargetFeature.ToUpper() != "CONNECTEDDEVICES") && (input.TargetFeature.ToUpper() != "DEVICEDATA") && (input.TargetFeature.ToUpper() != "DIAGNOSTICSREPORT"))
                                             {
                                                 int temp = int.Parse(t) - 1;
                                                 input.DeviceIndex.Add(temp.ToString());
@@ -714,6 +714,10 @@ namespace DDPM.SA.Common
                 if (commandInput.TargetFeature.Contains("NETWORKKVM"))
                 {
                     commandInput.isITCommands = true;
+                    if (commandInput.Command == "SET" && commandInput.TargetFeature == "NETWORKKVM" && commandInput.Options.Count > 0 && commandInput.Options[0].Option_Value == "ON")
+                    {
+                        commandInput.isNormalCommands = true;
+                    }
                     return;
                 }
                 if (commandInput.Options.Count == 0)//recognized only normal command -> CLIProxy
@@ -796,14 +800,14 @@ namespace DDPM.SA.Common
             return (int)CLI_ExitCode.fail_FormantError;
         }
 
-        public static int Response_UnelevatedError(CommandLineInput commandLineInput)
+        public static int Response_UnelevatedError()
         {
             CLI_RESPONSE result = new CLI_RESPONSE()
             {
                 Model = "N/A",
                 SerialNumber = "N/A",
-                Command = commandLineInput.Command,
-                TargetFeature = commandLineInput.TargetFeature,
+                Command = "N/A",
+                TargetFeature = "N/A",
                 Result = "Process unelevated",
                 Index = "N/A",
                 ServiceTag = "N/A",
@@ -957,6 +961,23 @@ namespace DDPM.SA.Common
                 command_guid_string = action_guid
             };
             return arg;
+        }
+
+        public static CLIEventResult Response_NKVMOn(CommandLineInput commandLineInput, string action_guid)
+        {
+            return new CLIEventResult
+            {
+                ticket = DateTime.Now,
+                ExitCode = (int)CLI_ExitCode.success,
+                command_guid_string = action_guid,
+                serialize_Json_response = JsonConvert.SerializeObject(new NKVM_RESPONSE
+                {
+                    Command = commandLineInput.Command,
+                    TargetFeature = commandLineInput.TargetFeature,
+                    Result = "PASS",
+                    Value = "On"
+                }, Formatting.Indented)
+            };
         }
 
         public static string change_0base_to_1base(string value)

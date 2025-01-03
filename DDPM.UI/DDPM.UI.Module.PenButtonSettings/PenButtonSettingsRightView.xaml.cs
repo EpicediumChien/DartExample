@@ -292,47 +292,53 @@ namespace DDPM.UI.Module.PenButtonSettings
 
         private void ActionButtonLoaded(object sender, RoutedEventArgs e)
         {
-            int id;
+            //int id;
             if (sender is UXRadioButton rb)
             {
-                id = (int)((UXRadioButton)sender).DataContext;
-                rb.Name = $"Radio{id}";
-                //rb.Content = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.PenActions[id].Caption : Actions.KnMActions[id].Caption;
-                //rb.Content = Actions.PenActions[id].Caption;
-                rb.Content = _vm.ActionNames[id];
-                if (rb.Tag.ToString() != "search")
-                    rb.IsChecked = id == _vm.SelectedActionID;
+                if (rb.DataContext is int id)
+                {
+                    rb.Name = $"Radio{id}";
+                    //rb.Content = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.PenActions[id].Caption : Actions.KnMActions[id].Caption;
+                    rb.Content = Actions.PenActions[id].Caption;
+                    //rb.Content = _vm.ActionNames[id];
+                    if (rb.Tag.ToString() != "search")
+                        rb.IsChecked = id == _vm.SelectedActionID;
+                }
             }
             else if (sender is ActionButton btn)
             {
-                id = (int)((ActionButton)sender).DataContext;
-                if (btn.Tag.ToString() == "Edit")
+                if (btn.DataContext is int id)
                 {
-                    btn.Name = $"btn{id}";
-                    btn.Caption = Strings.Edit;
-                    if (Actions.AdvancedActionsPen.Contains(id))
+                    if (btn.Tag.ToString() == "Edit")
                     {
-                        btn.Visibility = Visibility.Visible;
-                        btn.Width = 101;
+                        btn.Name = $"btn{id}";
+                        btn.Caption = Strings.Edit;
+                        if (Actions.AdvancedActionsPen.Contains(id))
+                        {
+                            btn.Visibility = Visibility.Visible;
+                            btn.Width = 101;
+                        }
+                        else
+                        {
+                            btn.Visibility = Visibility.Collapsed;
+                        }
                     }
                     else
                     {
-                        btn.Visibility = Visibility.Collapsed;
-                    }
-                }
-                else
-                {
-                    btn.Caption = Strings.Remove;
-                    if (Actions.AdvancedActionsPen.Contains(id))
-                    {
-                        btn.Width = 101;
+                        btn.Caption = Strings.Remove;
+                        if (Actions.AdvancedActionsPen.Contains(id))
+                        {
+                            btn.Width = 101;
+                        }
                     }
                 }
             }
             else if (sender is StackPanel sp)
             {
-                id = (int)((StackPanel)sender).DataContext;
-                sp.Visibility = id == _vm.SelectedActionID && id != _vm.SelectedAction!.DefaultActionID ? Visibility.Visible : Visibility.Collapsed;
+                if (sp.DataContext is int id)
+                {
+                    sp.Visibility = id == _vm.SelectedActionID && id != _vm.SelectedAction!.DefaultActionID ? Visibility.Visible : Visibility.Collapsed;
+                }
             }
         }
 

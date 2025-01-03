@@ -61,12 +61,9 @@ namespace DDPM.EABroker
 
         public void MoveToScreen(Screen screen)
         {
-            if (_workScreen != null)
+            if (_workScreen != null && _workScreen.Equals(screen))
             {
-                if (_workScreen.Equals(screen))
-                {
-                    return;
-                }
+                return;
             }
             _workScreen = screen;
             //WorkScreen is changed
@@ -79,10 +76,9 @@ namespace DDPM.EABroker
                 Width = _workScreen.WorkingArea.Width / screenScale;
                 Height = _workScreen.WorkingArea.Height / screenScale;
 
-                if (_workSplit != null)
+                if (_workSplit != null && _workSplit.IsVertical != IsVertical)
                 {
-                    if (_workSplit.IsVertical != IsVertical)
-                        _workSplit.IsVertical = IsVertical;
+                    _workSplit.IsVertical = IsVertical;
                 }
             });
         }
@@ -373,16 +369,20 @@ namespace DDPM.EABroker
                 //}
                 //else // if (_workingSplit.CellCount==5)
                 //{
-                    foreach (CellObj objCell in localSplit.CellList)
+                foreach (CellObj objCell in localSplit.CellList)
+                {
+                    if (objCell.CellBd == null)
                     {
-                        if (objCell.CellBd == null)
-                            continue;
-
-                        objCell.rc = _vm.GetFrameworkElementRect(objCell.CellBd);
-
-                        if (objCell.rc.IsEmpty)
-                            _areCellRectsRefreshed = false;
+                        continue;
                     }
+
+                    objCell.rc = _vm.GetFrameworkElementRect(objCell.CellBd);
+
+                    if (objCell.rc.IsEmpty)
+                    {
+                        _areCellRectsRefreshed = false;
+                    }
+                }
                 //}
                 //else
                 //{

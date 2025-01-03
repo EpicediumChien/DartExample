@@ -118,7 +118,14 @@ namespace DDPM.UI.Module.EzMemory
                 SyncEditStatusForFirstPage();
             }
 
+            //splitListView_Custom Always Collapsed
             //Check Custom split List View count
+            var customList = splitListView_Custom.SplitList.ToList();
+            foreach (var custom in customList)
+            {
+                if (custom.CellCount == 0 && custom.SplitKey == 'B')
+                    splitListView_Custom.SplitList.Remove(custom);
+            }
             if (splitListView_Custom.ItemCount == 0)
             {
                 splitListView_Custom.Visibility = Visibility.Collapsed;
@@ -157,8 +164,8 @@ namespace DDPM.UI.Module.EzMemory
         {
             //Need to auto select
             _vm.InputText = _vm.currentEditprofile.Name;
-            
-            SplitItem profilwSplitItem = splitListView_Recent.FindSplitItem(_vm.CurrentSelectspItem.CellCount, _vm.CurrentSelectspItem.SplitKey);
+            //_vm.ispCtrlForEm = _vm.SelectedSplitItem.ISplitCtrl.Clone();
+            SplitItem profilwSplitItem = _vm.CurrentEditSelectspItem; //splitListView_Recent.FindSplitItem(_vm.CurrentSelectspItem.CellCount, _vm.CurrentSelectspItem.SplitKey);
             profilwSplitItem.IsSelected = true;
             OnListViewItemClicked(profilwSplitItem);
         }
@@ -265,6 +272,7 @@ namespace DDPM.UI.Module.EzMemory
             // Need to Re-set Edit Profile status
             _vm.IsEditProfile = false;
             _vm.ClearTextBlockAppName();
+            _vm.RightViewDataClear();
             if (_vm._currentPageIndex == 0)
             {
                 DdpmCommonHelper.ModuleOwner?.CloseFullView();
@@ -321,6 +329,7 @@ namespace DDPM.UI.Module.EzMemory
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             _vm.ProgressValue = 1;
+            _vm.RightViewDataClear();
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
             return;
         }

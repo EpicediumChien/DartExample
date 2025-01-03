@@ -1,5 +1,6 @@
 ﻿using DDPM.RemoteManagement.Common.Interfaces;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Defer;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
@@ -66,6 +67,9 @@ namespace DDPM.SA.Plugins.CMAManager
         {
             _agent = agent;
             deviceControlPannel = new DeviceControlPannel();
+
+            // add @ 20241213 stephen: init DeferControlPanel
+            initDeferControlPanel();
 
             WriteLog($"CMA ManagerPlugin constructor ...(Admin:{_IsAdministrator})");
         }
@@ -625,6 +629,7 @@ namespace DDPM.SA.Plugins.CMAManager
             Boolean isSuccess = false;
             string responseMsg = String.Empty;
             string responseResult = String.Empty;
+            string jsonResult = String.Empty;   // add @ 20241217 stephen
             string finalResult = String.Empty;
 
             TaskInfo taskInfo = new TaskInfo();
@@ -684,7 +689,10 @@ namespace DDPM.SA.Plugins.CMAManager
                             isSuccess = true;
                         }*/
 
-                        isSuccess = checkResult(cliResult.serialize_Json_response, out responseMsg);
+                        // add @ 20241217 stephen
+                        jsonResult = checkCliResponse(cliResult.serialize_Json_response);
+
+                        isSuccess = checkResult(jsonResult, out responseMsg);
 
                         if (resultCount > 0)
                         {
@@ -694,7 +702,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                         if (isSuccess)
                         {
-                            finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + cliResult.serialize_Json_response + "]}";
+                            finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + jsonResult + "]}";
                         }
                         else
                         {
@@ -726,6 +734,44 @@ namespace DDPM.SA.Plugins.CMAManager
             return new NotifyArgs();
         }
 
+        // add @ 20241217 stephen
+        private string checkCliResponse(string cliResponse)
+        {
+            try
+            {
+                JArray jarray;
+                jarray = JArray.Parse(cliResponse);
+            }
+            catch (Exception e)
+            {
+                WriteLog($"[CMA] Exception: checkResult src is not json array.\nException is {e.ToString()}");
+
+                // fix CLI response as json string
+                int index = cliResponse.IndexOf("{", 0);
+
+                do
+                {
+                    index = cliResponse.IndexOf("{", index + 2);
+                    if (index > 0)
+                    {
+                        cliResponse = cliResponse.Insert(index, ",");
+                    }
+                } while (index > 0);
+
+                // modified @ 20241111 stepohen
+                //src = "[" + src + "]";
+
+                if (!cliResponse.StartsWith("["))
+                {
+                    cliResponse = "[" + cliResponse + "]";
+                }
+                // modified end @ 20241111
+
+                WriteLog($"[CMA] checkResult fixed src = {cliResponse}");
+            }
+            return cliResponse;
+        }
+
         private bool checkResult(string src, out string msg)
         {
             bool isSuccess = false;
@@ -733,51 +779,20 @@ namespace DDPM.SA.Plugins.CMAManager
 
             WriteLog($"[CMA] checkResult src = {src}");
 
+            JArray jarray;
+            string strResult = string.Empty;
+
             try
             {
-                JArray jarray;
-
-                string strResult = string.Empty;
-
-                try
-                {
-                    jarray = JArray.Parse(src);
-                }
-                catch (Exception e)
-                {
-                    WriteLog($"[CMA] Exception: checkResult src is not json array.\nException is {e.ToString()}");
-
-                    // fix CLI response as json string
-                    int index = src.IndexOf("{", 0);
-
-                    do
-                    {
-                        index = src.IndexOf("{", index + 2);
-                        if (index > 0)
-                        {
-                            src = src.Insert(index, ",");
-                        }
-                    } while (index > 0);
-
-                    // modified @ 20241111 stepohen
-                    //src = "[" + src + "]";
-
-                    if (!src.StartsWith("["))
-                    {
-                        src = "[" + src + "]";
-                    }
-                    // modified end @ 20241111
-
-                    WriteLog($"[CMA] checkResult fixed src = {src}");
-
-                    jarray = JArray.Parse(src);
-                }
+                jarray = JArray.Parse(src);
 
                 // check command result is success or not
-                foreach (JObject jobj in jarray)
+                foreach (JToken item in jarray)
                 {
+                    
                     try
                     {
+                        JObject jobj = item as JObject;
                         strResult = ((string)jobj["Result"]).ToLower() ?? string.Empty;
 
                         if (strResult.Equals("success"))
@@ -809,8 +824,6 @@ namespace DDPM.SA.Plugins.CMAManager
 
                         return isSuccess;
                     }
-
-
                 }
             }
             catch (Exception e)
@@ -862,9 +875,25 @@ namespace DDPM.SA.Plugins.CMAManager
 
         public Task<RemoteManagementResult> Info(RemoteRequestArgs request)
         {
-            // 
+            
             Guid uniqueAgentGuid = Guid.NewGuid();
 
+
+            // add @ 20241210 stephen: check is defer
+            //_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request);
+            if (request.remote_request.ToLower().Contains("defer"))
+            {
+                if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request).Result)
+                {
+                    WriteLog($"[CMA] _CliManagerPlugin.checkDefer = true, do not run command");
+                    RemoteManagementResult resultDefer = new RemoteManagementResult();
+                    resultDefer.cma_request_id = uniqueAgentGuid;
+
+                    sendDeferNotify(uniqueAgentGuid.ToString(), request.remote_request);
+
+                    return Task.FromResult(resultDefer);
+                }
+            }
 
             //Assign request ID per call
             RemoteManagementResult result = new RemoteManagementResult();
@@ -1011,7 +1040,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 NotifyArgs args = new NotifyArgs();
                 args.eventType = Params.EventType.FW.ToString();
-                args.notification = "{\"sid\": \"" + "sid" + "\",\"gid\": \"" + data.Guid + "\",\"response\": [" + data.FWUErrorCode + "(" + data.DeviceName + ", " + data.Model + ")" + "]}";
+                args.notification = "{\"sid\": \"" + "sid" + "\",\"gid\": \"" + data.Guid + "\",\"response\": [" + data.FWUErrorCode + "<" + (int)data.FWUErrorCode + ">" + "(" + data.DeviceName + ", " + data.Model + ")" + "]}";
                 OnEventNotify(args);
 
             }
@@ -1110,5 +1139,179 @@ namespace DDPM.SA.Plugins.CMAManager
                 Handler.Invoke(this, e);
             }
         }
+
+        #region Defer implement
+        // add @ 20241213 stephen
+
+        /*private const long DAY_IN_SECONDS = 24 * 60 * 60;    // 24 hours
+        private const int INTERVAL_CHECK_SECONDS = 10 * 60 * 1000; // 10 mins*/
+
+        // test
+        private const long DAY_IN_SECONDS = 4 * 60;    // 4min
+        private const int INTERVAL_CHECK_SECONDS = 5 * 60 * 1000; // 5 mins
+        private System.Timers.Timer timerDefer;
+
+        private void initDeferControlPanel()
+        {
+            WriteLog($"[CMA] initDeferControlPanel()");
+            DeferControlPanel.init();
+            startDeferTimer();
+
+            int i = 0;
+            foreach (string str in (DeferControlPanel.getList()))
+            {
+                WriteLog($"[CMA] str[{i++}] = " + str);
+            }
+        }
+        private void startDeferTimer()
+        {
+            WriteLog($"[CMA] startDeferTimer()");
+            timerDefer = new System.Timers.Timer();
+            timerDefer.Interval = INTERVAL_CHECK_SECONDS;
+            timerDefer.Elapsed += Timer_Elapsed;
+
+            timerDefer.Start();
+        }
+
+        private void sendDeferNotify(string guid, string command)
+        {
+            CmaCommand cmd = new CmaCommand(guid, command);
+
+            NotifyArgs args = new NotifyArgs();
+            args.eventType = Params.EventType.DEFER.ToString();
+            args.notification = "{\"sid\": \"" + cmd.sid + "\",\"gid\": \"" + guid + "\",\"response\": [" + command + "]}";
+            OnEventNotify(args);
+        }
+
+        private void Timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            WriteLog($"[CMA] Timer_Elapsed()");
+            checkDeferSchedule(DeferControlPanel.getList());
+        }
+
+        private void checkDeferSchedule(List<string> list)
+        {
+            WriteLog($"[CMA] checkDeferSchedule()");
+
+            int i = 0;
+            foreach (string str in list)
+            {
+                WriteLog($"[CMA] str[{i++}] = " + str);
+            }
+
+            long currentDateTimeSecond = DateTimeOffset.Now.ToUnixTimeSeconds();
+            int counter = 0;
+            //List<string> newItems = new List<string>();
+            bool isRuncommand = false;
+
+            WriteLog($"[CMA] currentDateTimeSecond = {currentDateTimeSecond}");
+
+            List<string> deferlist = new List<string>();
+
+            foreach (string str in list)
+            {
+                deferlist.Add(str);
+            }
+
+
+
+            foreach (string item in deferlist)
+            {
+                WriteLog($"[CMA] item[{counter}] in list = {item}");
+
+                DeferItem data;
+
+                try
+                {
+                    data = new DeferItem(item);
+                }
+                catch (Exception e)
+                {
+                    WriteLog($"[CMA] Exception: data = new DeferItem(item); item = {item}");
+                    counter = counter + 1; ;
+                    continue;
+                }
+
+                long newDeferId = ((long)Convert.ToDouble(data.deferid)) + DAY_IN_SECONDS;
+
+                if (currentDateTimeSecond < newDeferId)
+                {
+                    WriteLog($"[CMA] {currentDateTimeSecond} < {newDeferId}");
+                    break;
+                }
+
+                WriteLog($"[CMA] list.Count = {deferlist.Count}");
+                DeferControlPanel.removeItem(item);
+                WriteLog($"[CMA] list.Count2 = {deferlist.Count}");
+
+                counter = counter + 1;
+                data.deferid = newDeferId.ToString();
+                data.count = data.count - 1;
+
+                if (data.count < 0)
+                {
+                    isRuncommand = true;
+                    _CliManagerPlugin.showNotification(data.commandfrom, data.guid, data);
+                }
+                else
+                {
+                    isRuncommand = !(_CliManagerPlugin.checkDeferSchedule(data.commandfrom, data.guid, data).Result);
+                }
+
+                WriteLog($"[CMA] checkDeferSchedule::isRuncommand = {isRuncommand}");
+
+                if (isRuncommand)
+                {
+                    //removeItems.Add(item);
+
+
+                    switch (data.commandfrom)
+                    {
+                        case DeferControlPanel.SRC_FROM_CLI:
+
+                            WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CLI");
+                            ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
+                            CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(data.commanddata.Split(' '));
+
+                            commandLineInput.isCliRunAdmin = true;
+
+                            CLIEventResult result = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
+
+                            break;
+
+                        case DeferControlPanel.SRC_FROM_CMA:
+                            WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CMA");
+                            try
+                            {
+                                initCommandTask(data.guid.ToString(), data.commanddata);
+
+                                TaskInfo taskInfo = taskInfoQueue.Peek();
+                                WriteLog($"[CMA] before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
+                                _ = Task.Run(async () => await runCommandTaskAsync(taskInfo.sid, taskInfo.gid));
+                            }
+                            catch (Exception e)
+                            {
+
+                                NotifyArgs args = new NotifyArgs();
+                                args.eventType = Params.EventType.UNKNOWN_ERROR.ToString();
+                                args.notification = e.ToString() + "; " + data.commanddata;
+                                OnEventNotify(args);
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    WriteLog($"[CMA] checkDeferSchedule::isRuncommand({isRuncommand}), sendDeferNotify({data.guid}, {data.commanddata})");
+                    sendDeferNotify(data.guid, data.commanddata);
+                    /*newItems.Add( item );
+                    //DeferControlPanel.addToSchedule(data);*/
+                }
+
+            }
+
+        }
+
+        #endregion
     }
 }

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Documents;
@@ -16,6 +17,8 @@ using static DDPM.RemoteManagement.Common.Interfaces.Params;
 using static DDPM.SA.Common.ICLICommandTable;
 using Convert = System.Convert;
 
+
+[assembly: InternalsVisibleTo("CLI.Plugins.Display.Test")]   //For internal class test
 namespace CLI.Plugins.Display
 {
     internal class CLIPxp
@@ -422,8 +425,10 @@ namespace CLI.Plugins.Display
             }
 
             string rawValue = valueOption.Option_Value;
+            Trace.WriteLine(rawValue);
             //Try for Case_2
             PxpModeObj? pxpModeObj = Array.Find(PxpModeObj.Table, x => x.Arg.Equals(rawValue, StringComparison.OrdinalIgnoreCase));
+            Trace.WriteLine(pxpModeObj.ModeCode);
             //It's Case_2. -value=pxpArg, for example: -value=pip-large
             //Not Case_2
             if (pxpModeObj == null)
@@ -502,6 +507,8 @@ namespace CLI.Plugins.Display
             bool flag = true;
             int count = 0;
             List<string> swapIsDone = new List<string>();
+            ushort[] pbp3A = [49,50,51,52,53,54];
+            ushort[] pbp4A = [65,66];
             // if command is /set -Display=PxP -value=<off, pip, pip-large & etc> -value=<HDMI, DP, USB-C & etc>
             // step1 change inputsource 
             // step2 set pxp mode
@@ -525,29 +532,56 @@ namespace CLI.Plugins.Display
                         }
                         if (!String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
                         {
-                            string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
-                            if (ss.Length == 2)
+                            CLI_RESPONSE response = new CLI_RESPONSE()
                             {
-                                List<InputSourceObj> inputSources = _devMgr.GetSubInputs(mo).Result;
-                                // "Input Select"
-                                string vcpcode = "0x60";
-                                string value = get_InputSource_code(get_inputsource_type(ss[0]).ToString());
-                                Trace.WriteLine(value);
-                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode, 16)), (Convert.ToUInt32(value, 16))).Result;
-                                if (!isOK)
-                                {
-                                    isOK = false;
-                                    _AllInfoMonitors = _devMgr.GetMonitors().Result;
-                                    break;
-                                }
-                                swapIsDone.Add(mo.edid.ServiceTag);
+                                Command = _cmdLineInput.Command,
+                                TargetFeature = _cmdLineInput.TargetFeature
+                            };
+                            response.Index = change_0base_to_1base(i.ToString());
+                            response.ServiceTag = String.Join(",", _cmdLineInput.ServiceTag.ToArray());
+                            response.Result = "ERROR";
+                            string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
+                            if (pbp3A.Contains(pxpModeObj.ModeCode) && ss.Length != 3)
+                            {
+                                response.Message = "Invalid command line syntax, format is (-value=main,sub1,sub2).";
+                                response.Value = rawValue;
+                                _responses.Add(response);
+                                return (int)CLI_ExitCode.invalide_cmdline_syntax;
                             }
+                            else if (pbp4A.Contains(pxpModeObj.ModeCode) && ss.Length != 4)
+                            {
+                                response.Message = "Invalid command line syntax, format is (-value=main,sub1,sub2,sub3).";
+                                response.Value = rawValue;
+                                _responses.Add(response);
+                                return (int)CLI_ExitCode.invalide_cmdline_syntax;
+                            }
+                            else if ((pxpModeObj.ModeCode >= 33 && pxpModeObj.ModeCode <= 47) && ss.Length != 2)
+                            {
+                                response.Message = "Invalid command line syntax, format is (-value=main,sub1).";
+                                response.Value = rawValue;
+                                _responses.Add(response);
+                                return (int)CLI_ExitCode.invalide_cmdline_syntax;
+                            }
+                            List<InputSourceObj> inputSources = _devMgr.GetSubInputs(mo).Result;
+                            // "Input Select"
+                            string vcpcode = "0x60";
+                            string value = get_InputSource_code(get_inputsource_type(ss[0]).ToString());
+                            Trace.WriteLine(value);
+                            isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode, 16)), (Convert.ToUInt32(value, 16))).Result;
+                            if (!isOK)
+                            {
+                                isOK = false;
+                                _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                                break;
+                            }
+                            swapIsDone.Add(mo.edid.ServiceTag);
                         }
                     }
                     if (serviceTagList.Count == swapIsDone.Count)
                         flag = false;
                     count++;
                 }
+                Thread.Sleep(1000);
             }
             swapIsDone = new List<string>();
             flag = true;
@@ -560,13 +594,7 @@ namespace CLI.Plugins.Display
                     string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
                     if (!String.IsNullOrWhiteSpace(stIsDone))
                         continue;
-                    Thread.Sleep(3000);
                     MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
-                    Thread.Sleep(3000);
-                    Trace.WriteLine($"serviceTagList[i] = {serviceTagList[i]}");
-                    //Trace.WriteLine($"serviceTagList[i] = {serviceTagLisi]}");
-                    Trace.WriteLine($"i = {i}");
-                    Trace.WriteLine($"serviceTagList.Count = {serviceTagList.Count}");
                     if (mo == null)
                     {
                         _AllInfoMonitors = _devMgr.GetMonitors().Result;
@@ -576,7 +604,6 @@ namespace CLI.Plugins.Display
                     if (mo.CapabilityDic.ContainsKey("E9"))
                     {
                         isPass = _devMgr.SetPbpMode(mo, (UInt16)pxpModeObj.ModeCode).Result;
-                        Thread.Sleep(8000);
                         if (!isPass)
                         {
                             _AllInfoMonitors = _devMgr.GetMonitors().Result;
@@ -588,10 +615,6 @@ namespace CLI.Plugins.Display
                         Command = _cmdLineInput.Command,
                         TargetFeature = _cmdLineInput.TargetFeature
                     };
-                    //response.Index = change_0base_to_1base(i.ToString());
-                    //response.Model = mo.modelName;
-                    //response.SerialNumber = mo.edid.SerialNumber;
-                    //response.ServiceTag = mo.edid.ServiceTag;
                     response.Value = rawValue;
                     swapIsDone.Add(mo.edid.ServiceTag);
                     if (isPass)
@@ -612,6 +635,7 @@ namespace CLI.Plugins.Display
                     flag = false;
                 count++;
             }
+            Thread.Sleep(1000);
             if (_cmdLineInput.Options.Count == 2)
             {
                 swapIsDone = new List<string>();
@@ -634,13 +658,18 @@ namespace CLI.Plugins.Display
                         if (!String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
                         {
                             string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
-                            if (ss.Length == 2)
+                            string binaryIndex = "";
+                            if (ss.Length > 1)
                             {
+                                for (int ssIndex = ss.Length - 1; ssIndex >= 1; ssIndex--)
+                                {
+                                    int intNum = Convert.ToInt32(get_InputSource_code(get_inputsource_type(ss[ssIndex]).ToString()), 16);
+                                    string strBinary = Convert.ToString(intNum, 2).PadLeft(5,'0');
+                                    binaryIndex = binaryIndex + strBinary;
+                                }
                                 //"PIP/PBP Input"
                                 string vcpcode3 = "0xE8";
-                                string value3 = get_InputSource_code(get_inputsource_type(ss[1]).ToString());
-                                Trace.WriteLine(value3);
-                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode3, 16)), (Convert.ToUInt32(value3, 16))).Result;
+                                isOK = _devMgr.SetVCPCapability(mo, (Convert.ToByte(vcpcode3, 16)), Convert.ToUInt32(binaryIndex, 2)).Result;
                                 if (!isOK)
                                 {
                                     isOK = false;
@@ -654,10 +683,6 @@ namespace CLI.Plugins.Display
                             Command = _cmdLineInput.Command,
                             TargetFeature = _cmdLineInput.TargetFeature
                         };
-                        //response.Index = change_0base_to_1base(i.ToString());
-                        //response.Model = mo.modelName;
-                        //response.SerialNumber = mo.edid.SerialNumber;
-                        //response.ServiceTag = mo.edid.ServiceTag;
                         response.Value = rawValue;
                         swapIsDone.Add(mo.edid.ServiceTag);
                         if (isOK)
@@ -832,19 +857,17 @@ namespace CLI.Plugins.Display
                     response.ServiceTag = _AllInfoMonitors[idx].edid.ServiceTag;
                     response.Value = rawValue;
                     isPass = _devMgr.SetPbpMode(_AllInfoMonitors[idx], (UInt16)pxpModeObj.ModeCode).Result;
-                    if (_cmdLineInput.Options.Count == 2)
+                    if (_cmdLineInput.Options.Count == 2 &&
+                        !String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
                     {
-                        if (!String.IsNullOrWhiteSpace(_cmdLineInput.Options[1].Option_Value))
+                        string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
+                        if (ss.Length == 2)
                         {
-                            string[] ss = _cmdLineInput.Options[1].Option_Value.Split(',');
-                            if (ss.Length == 2)
-                            {
-                                sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
-                                sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
-                                sub3 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
-                                isOK = _devMgr.SetSubInputs(_AllInfoMonitors[idx], sub2, null, null).Result;
-                            }
-                        }
+                            sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
+                            sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
+                            sub3 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
+                            isOK = _devMgr.SetSubInputs(_AllInfoMonitors[idx], sub2, null, null).Result;
+                        }                        
                     }
                 }
                 
@@ -946,31 +969,28 @@ namespace CLI.Plugins.Display
 
             ss = _cmdLineInput.Options[0].Option_Value.Split(new string[] { "," }, StringSplitOptions.None);
             //-value is specified
-            if (ss.Length >= 1 && ss.Length < 2)
+            if (ss.Length >= 1 && 
+                ss.Length < 2 &&
+                ss[0] != null)
             {
-                if (ss[0] != null)
-                {
-                    sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
-                }
+                sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
             }
 
-            if (ss.Length > 1 && ss.Length < 3)
+            if (ss.Length > 1 && 
+                ss.Length < 3 &&
+                ss[1] != null)
             {
-                if (ss[1] != null)
-                {
-                    sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
-                    sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
-                }
+                sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
+                sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
             }
 
-            if (ss.Length > 2 && ss.Length < 4)
+            if (ss.Length > 2 && 
+                ss.Length < 4 &&
+                ss[2] != null)
             {
-                if (ss[2] != null)
-                {
-                    sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
-                    sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
-                    sub3 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[2]));
-                }
+                sub1 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[0]));
+                sub2 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[1]));
+                sub3 = InputSourceObj.FindFirstByName(get_inputsource_type(ss[2]));
             }
 
             //Phase 4. If no any option
@@ -1385,12 +1405,11 @@ namespace CLI.Plugins.Display
                 foreach (string idxString in cmdLineInput.DeviceIndex)
                 {
                     int idx;
-                    if (int.TryParse(idxString, out idx))
+                    if (int.TryParse(idxString, out idx) &&
+                        idx >= 0 && 
+                        idx < allMonitors.Count)
                     {
-                        if ((idx >= 0) && (idx < allMonitors.Count))
-                        {
-                            listOut.Add(idx);
-                        }
+                        listOut.Add(idx);
                     }
                 }
             }
@@ -1401,12 +1420,11 @@ namespace CLI.Plugins.Display
                 foreach (string idxString in cmdLineInput.Model)
                 {
                     int idx;
-                    if (int.TryParse(idxString, out idx))
+                    if (int.TryParse(idxString, out idx) &&
+                        idx >= 0 && 
+                        idx < allMonitors.Count)
                     {
-                        if ((idx >= 0) && (idx < allMonitors.Count))
-                        {
-                            listOut.Add(idx);
-                        }
+                        listOut.Add(idx);
                     }
                 }
             }

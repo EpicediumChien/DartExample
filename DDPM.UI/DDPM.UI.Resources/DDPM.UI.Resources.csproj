@@ -1,3 +1,4 @@
+
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
@@ -18,6 +19,7 @@
 		<None Remove="Resources\Images\Battery02.png" />
 		<None Remove="Resources\Images\Battery03.png" />
 		<None Remove="Resources\Images\Battery04.png" />
+		<None Remove="Resources\Images\Battery10.png" />
 		<None Remove="Resources\Images\Battery11.png" />
 		<None Remove="Resources\Images\Battery12.png" />
 		<None Remove="Resources\Images\Battery13.png" />
@@ -110,6 +112,8 @@
 		<None Remove="Resources\Images\KnM_light.png" />
 		<None Remove="Resources\Images\Left.png" />
 		<None Remove="Resources\Images\Left_light.png" />
+		<None Remove="Resources\Images\Lineart-kb.png" />
+		<None Remove="Resources\Images\Lineart-ms.png" />
 		<None Remove="Resources\Images\Link.png" />
 		<None Remove="Resources\Images\Loading.png" />
 		<None Remove="Resources\Images\MButton11.png" />
@@ -271,6 +275,7 @@
 		<None Remove="Resources\Images\WB5023.png" />
 		<None Remove="Resources\Images\WB7022.png" />
 		<None Remove="Resources\Images\WD19DCS.png" />
+		<None Remove="Resources\Images\WD19S.png" />
 		<None Remove="Resources\Images\WD19S_130W.png" />
 		<None Remove="Resources\Images\WD19S_180W.png" />
 		<None Remove="Resources\Images\WD22TB4.png" />
@@ -400,6 +405,7 @@
 		<Resource Include="Resources\Images\Battery02.png" />
 		<Resource Include="Resources\Images\Battery03.png" />
 		<Resource Include="Resources\Images\Battery04.png" />
+		<Resource Include="Resources\Images\Battery10.png" />
 		<Resource Include="Resources\Images\Battery11.png" />
 		<Resource Include="Resources\Images\Battery12.png" />
 		<Resource Include="Resources\Images\Battery13.png" />
@@ -472,6 +478,10 @@
 		<Resource Include="Resources\Images\KM717.png" />
 		<Resource Include="Resources\Images\KnM_light.png" />
 		<Resource Include="Resources\Images\Left_light.png" />
+		<Resource Include="Resources\Images\LightMode\Lineart-kb.png" />
+		<Resource Include="Resources\Images\LightMode\Lineart-ms.png" />
+		<Resource Include="Resources\Images\Lineart-kb.png" />
+		<Resource Include="Resources\Images\Lineart-ms.png" />
 		<Resource Include="Resources\Images\Monitor_light.png" />
 		<Resource Include="Resources\Images\MS3320W_1.png" />
 		<Resource Include="Resources\Images\PanD.png" />
@@ -612,6 +622,9 @@
 		<Resource Include="Resources\Images\undo2.png" />
 		<Resource Include="Resources\Images\UV514.png" />
 		<Resource Include="Resources\Images\WB5023.png" />
+		<Resource Include="Resources\Images\WD19S.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
 		<Resource Include="Resources\Images\WD25.png">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Resource>

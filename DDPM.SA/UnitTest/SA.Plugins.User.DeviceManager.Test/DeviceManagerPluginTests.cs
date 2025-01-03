@@ -160,10 +160,14 @@ namespace SA.Plugins.User.DeviceManager.Test
             //MonitorBorkerWin != null
             var DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
             var DeviceManagerSA = DeviceManagerSAMock.Object;
-            var monitorBorkerWin = new MainWindow(DeviceManagerSA, monitorInfo);
-            var MainWindow = new MainWindow(DeviceManagerSA, monitorInfo);
+            var LogMock = new Mock<ILog>();
+            var MainWindowLog = LogMock.Object;
+            var monitorBorkerWin = new MainWindow(DeviceManagerSA, monitorInfo, MainWindowLog);
+            var MainWindow = new MainWindow(DeviceManagerSA, monitorInfo, MainWindowLog);
             PrivateObject privateObjecta = new PrivateObject(MainWindow);
-            privateObjecta.SetFieldOrProperty("ColorPresetWin", new MonitorWin(DeviceManagerSA, monitorInfo));
+            privateObjecta.SetFieldOrProperty("ColorPresetWin", new MonitorWin(DeviceManagerSA, monitorInfo, MainWindowLog));
+            privateObjecta.SetFieldOrProperty("ddmLib", DeviceManagerSA);
+            DeviceManagerSAMock.Setup(x => x.ReadColorPresetSettings()).Returns(Task.FromResult(new List<ColorPresetSettings>())); //DDPM.ColorApp.MonitorWin.xaml.cs
             privateObject.SetFieldOrProperty("MonitorBorkerWin", monitorBorkerWin);
             result = deviceMangerPlugin.Notify_refresh_app_list().Result;
             Assert.That(result, Is.EqualTo(true));

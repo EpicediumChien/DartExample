@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DDPM.SA.Common;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
 using DDPM.UI.Module.AddDisplay;
@@ -17,6 +18,7 @@ using DDPM.UI.Plugin.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
+using DPeMPublic.Common.Enums;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -51,6 +53,8 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         readonly string WaitingMessage = Strings.AddDeviceMsgWaitingMsg;
         readonly string WaitingAlert = Strings.AddDeviceMsgWaitingAlert;
 
+        private WaitingModalDialog? waitingModalDialog;
+
         public AddDeviceView()
         {
             InitializeComponent();
@@ -67,6 +71,130 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             }
             txtCaption.Text = Caption;
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += AddDeviceView_DeviceChanged;
+        }
+
+        bool IsRequested = false;
+        private void AddDeviceView_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
+        {
+            Task.Run(() =>
+            {
+                switch (e.type)
+                {
+                    case DeviceChangedType.Peripherals_PlugIn:
+                        if (_vm!.CurrentDongle != null && e.device_peripherals != null && e.device_peripherals.PhyscialDeviceID == _vm!.CurrentDongle.ID)
+                        {
+                            _vm.NewDevice = e.device_peripherals;
+                            //if(e.device_peripherals.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
+                            while (IsRequested && !_vm!.IsPairingLoaded)
+                            {
+                                Thread.Sleep(1000);
+                            }
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                waitingModalDialog?.Close();
+                            }));
+                            _vm.GotoNewDevice();
+                        }
+                        break;
+
+                    case DeviceChangedType.Peripherals_UnPlug:
+                        break;
+
+                    case DeviceChangedType.Peripherals_SettingsChange:
+                        var di = e.device_peripherals;
+                        switch (e.changedProperty)
+                        {
+                            case "DonglePairedDeviceCountChanged":
+                                //if (di.PhysicalDeviceType == DeviceType.PhysicalAudioDongle)
+                                //{
+                                //    //GotoNewDevice();
+                                //    PairingStatus = "Request";
+                                //    IsPairing = true;
+                                //    OnPropertyChanged(nameof(PairingStatus));
+                                //    return;
+                                //}
+                                break;
+
+                            case "DonglePairingStatusChanged":
+                                switch (di.PairingStatusName)
+                                {
+                                    case "Request":
+                                        IsRequested = true;
+                                        Dispatcher.Invoke(new Action(() =>
+                                        {
+                                            waitingModalDialog = new(WaitingCaption, $"{WaitingMessage} {di.Message}", WaitingAlert, _vm!);
+                                            Window mainWindow = System.Windows.Application.Current.MainWindow;
+                                            waitingModalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                                            if (mainWindow != null)
+                                            {
+                                                waitingModalDialog.Owner = mainWindow;
+                                                waitingModalDialog.Left = mainWindow.Left + (mainWindow.ActualWidth - 587) / 2;
+                                                waitingModalDialog.Top = mainWindow.Top + (mainWindow.ActualHeight - 349) / 2;
+                                            }
+                                            waitingModalDialog.ShowDialog();
+                                            //_vm!.GotoNewDevice();
+                                        }));
+                                        break;
+                                    case "Already Paired":
+                                        Dispatcher.Invoke(new Action(() =>
+                                        {
+                                            ShowMessage(Strings.Error, Strings.AlreadyPaired, "");
+                                            _vm!.StopPairing();
+                                            rightViewHeaderCtrl.SelectedIndex = -1;
+                                            rightViewHeaderCtrl.SelectedIndex = 1;
+                                        }));
+                                        break;
+                                    case "Old Device":
+                                        Dispatcher.Invoke(new Action(() =>
+                                        {
+                                            ShowMessage(Strings.Error, Strings.NotSupportedDevice, CancelButtonCaption);
+                                            _vm!.StopPairing();
+                                            rightViewHeaderCtrl.SelectedIndex = -1;
+                                            rightViewHeaderCtrl.SelectedIndex = 1;
+                                        }));
+                                        break;
+                                    case "Stopped":
+                                        //while (IsRequested && !_vm!.IsPairingLoaded)
+                                        //{
+                                        //    Thread.Sleep(1000);
+                                        //}
+                                        //Dispatcher.Invoke(new Action(() =>
+                                        //{
+                                        //    waitingModalDialog?.Close();
+                                        //}));
+                                        IsRequested = false;
+                                        break;
+                                    case "TimeOut":
+                                        Dispatcher.Invoke(new Action(() =>
+                                        {
+                                            waitingModalDialog?.Close();
+                                        }));
+                                        Dispatcher.Invoke(new Action(() =>
+                                        {
+                                            ShowMessage(Strings.Error, Strings.NoDeviceFound, "");
+                                            _vm!.StopPairing();
+                                            rightViewHeaderCtrl.SelectedIndex = -1;
+                                            rightViewHeaderCtrl.SelectedIndex = 1;
+                                        }));
+                                        IsRequested = false;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                break;
+
+                            default:
+
+                                break;
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+            });
+
         }
 
         private void ImageUpdate(OSThemeEnum oSThemeEnum)
@@ -212,12 +340,14 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 if (_vm.DongleInfos.Values.First().PairedDeviceCount == _vm.DongleInfos.Values.First().MaxPairingSlots)
                 {
                     ShowMessage(Strings.Error, Strings.DongleSlotFull, "");
+                    DdpmCommonHelper.WriteUILog($"Dongle Slot Full PairedDeviceCount = {_vm.DongleInfos.Values.First().PairedDeviceCount.ToString()}");
                     return;
                 }
                 else
                 {
                     _vm.CurrentDongle = _vm.DongleInfos.Values.First();
                     _vm.StartPairing(_vm.DongleInfos.Keys.First());
+                    DdpmCommonHelper.WriteUILog($"Dongle StartPairing ...");
                 }
             }
             if (_vm.DeviceBarSelectedIndex == 4 && _vm.AudioDongleInfos.Count == 1)
@@ -225,12 +355,14 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 if (_vm.AudioDongleInfos.Values.First().PairedDeviceCount == _vm.AudioDongleInfos.Values.First().MaxPairingSlots)
                 {
                     ShowMessage(Strings.Error, Strings.DongleSlotFull, "");
+                    DdpmCommonHelper.WriteUILog($"Audio Dongle Slot Full PairedDeviceCount = {_vm.AudioDongleInfos.Values.First().PairedDeviceCount.ToString()}");
                     return;
                 }
                 else
                 {
                     _vm.CurrentDongle = _vm.AudioDongleInfos.Values.First();
                     _vm.StartPairing(_vm.AudioDongleInfos.Keys.First());
+                    DdpmCommonHelper.WriteUILog($"Audio Dongle StartPairing ...");
                 }
             }
         }
@@ -246,62 +378,6 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
                 messageModalDialog.Top = mainWindow.Top + 300;
             }
             messageModalDialog.ShowDialog();
-        }
-
-        private void PairingStatusChanged(object sender, TextChangedEventArgs e)
-        {
-            if (_vm == null)
-                return;
-
-            switch (txtPairingStatus.Text)
-            {
-                case "Request":
-                    if (_vm.IsPairing)
-                    {
-                        WaitingModalDialog waitingModalDialog = new(WaitingCaption, $"{WaitingMessage} {_vm.RequestDeviceName}", WaitingAlert);
-                        Window mainWindow = System.Windows.Application.Current.MainWindow;
-                        waitingModalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-                        if (mainWindow != null)
-                        {
-                            waitingModalDialog.Owner = mainWindow;
-                            waitingModalDialog.Left = mainWindow.Left + (mainWindow.ActualWidth - 587) / 2;
-                            waitingModalDialog.Top = mainWindow.Top + (mainWindow.ActualHeight - 349) / 2;
-                        }
-                        waitingModalDialog.ShowDialog();
-                        _vm.GotoNewDevice();
-                    }
-                    break;
-
-                case "Already Paired":
-                    ShowMessage(Strings.Error, Strings.AlreadyPaired, "");
-                    _vm.StopPairing();
-                    rightViewHeaderCtrl.SelectedIndex = -1;
-                    rightViewHeaderCtrl.SelectedIndex = 1;
-                    break;
-
-                case "Old Device":
-                    ShowMessage(Strings.Error, Strings.NotSupportedDevice, CancelButtonCaption);
-                    _vm.StopPairing();
-                    rightViewHeaderCtrl.SelectedIndex = -1;
-                    rightViewHeaderCtrl.SelectedIndex = 1;
-                    break;
-
-                case "Stopped":
-                    break;
-
-                case "TimeOut":
-                    if (_vm.IsPairing)
-                    {
-                        ShowMessage(Strings.Error, Strings.NoDeviceFound, "");
-                        _vm.StopPairing();
-                    }
-                    rightViewHeaderCtrl.SelectedIndex = -1;
-                    rightViewHeaderCtrl.SelectedIndex = 1;
-                    break;
-
-                default:
-                    break;
-            }
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -331,6 +407,13 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             {
                 _vm.StartPairingPen();
             }
+        }
+
+        private void UserControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            DdpmCommonHelper.BitmapImageUpdated -= ImageUpdate;
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= AddDeviceView_DeviceChanged;
+            _vm!.StopPairing();
         }
     }
 }

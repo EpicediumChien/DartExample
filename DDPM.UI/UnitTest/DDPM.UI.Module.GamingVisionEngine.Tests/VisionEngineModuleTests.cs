@@ -123,15 +123,17 @@ namespace DDPM.UI.Module.GamingVisionEngine.Tests
         [Test]
         public void TestOnSelectedHomeDeviceChanged()
         {
-            try
-            {
-                visionEngineModule.OnSelectedHomeDeviceChanged();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
+            visionEngineModule.IsModuleActive = false;
+            visionEngineModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChangeda()
+        {
+            visionEngineModule.IsModuleActive = true;
+            visionEngineModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
         }
 
         [Test]

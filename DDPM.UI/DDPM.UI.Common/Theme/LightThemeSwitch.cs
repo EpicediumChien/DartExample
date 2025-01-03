@@ -1,5 +1,6 @@
 ﻿using Dell.Client.Framework.UX.WPF.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using Color = System.Windows.Media.Color;
 using ColorConverter = System.Windows.Media.ColorConverter;
 
@@ -27,6 +28,7 @@ namespace DDPM.UI.Common
 
                 #region Default Text Color
                 UpdateFreezable("DefaultTheme_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0E0E0E"));
+                UpdateFreezable("DefaultTheme_ProcessBarTxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FF0E0E0E"));
                 UpdateFreezable("DefaultTheme_BdBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99FFFFFF"));
                 UpdateFreezable("DefaultTheme_BdSolidBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFF8FBFE"));
                 UpdateFreezable("DefaultTheme_BdBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E5ECF9"));
@@ -44,6 +46,7 @@ namespace DDPM.UI.Common
                 UpdateFreezable("DefaultTheme_TbBdColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0063B8"));
                 UpdateFreezable("DefaultTheme_ListBoxBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99E7EAEE"));
                 UpdateFreezable("DefaultTheme_DialogBoxBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
+                UpdateFreezable("DefaultThemeRightViewAlertBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#141D28"));
                 #endregion
 
                 #region Add Device
@@ -89,9 +92,9 @@ namespace DDPM.UI.Common
                 UpdateFreezable("RightView_Header_Text_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0A2343"));
                 UpdateFreezable("RightView_Header_Text_HighlightColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0A2343"));
 
-                UpdateFreezable("bdrAlert_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
+                UpdateFreezable("bdrAlert_BgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#141D28"));
 
-                UpdateFreezable("bdrAlert_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#364861"));
+                UpdateFreezable("bdrAlert_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFF"));
 
 
                 UpdateFreezable("ModuleCaption_TxtColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#000000"));
@@ -274,6 +277,21 @@ namespace DDPM.UI.Common
                 UpdateFreezable("Button1TextDisColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#B6B6B6"));
                 #endregion
 
+                #region PrimaryButton
+                //PrimaryButton: No border, only Disabled state are different color between Dark and Light theme
+
+                UpdateFreezable("PrimaryButton_BkColor_Default", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0672CB"));
+                UpdateFreezable("PrimaryButton_BkColor_Hover", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0063B8"));
+                UpdateFreezable("PrimaryButton_BkColor_Pressed", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#00468B"));
+                UpdateFreezable("PrimaryButton_BkColor_Disabled", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#7F5C5C5C"));
+
+                UpdateFreezable("PrimaryButton_TextColor_Default", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
+                UpdateFreezable("PrimaryButton_TextColor_Hover", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
+                UpdateFreezable("PrimaryButton_TextColor_Pressed", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#F5F6F7"));
+                UpdateFreezable("PrimaryButton_TextColor_Disabled", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#7F7C7C7C"));
+                #endregion PrimaryButton
+
+
                 #region SecondaryButton
                 UpdateFreezable("SecondaryButton_BkColor_Default", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#01FFFFFF"));
                 UpdateFreezable("SecondaryButton_BkColor_Hover", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#D9F5FD"));
@@ -371,15 +389,18 @@ namespace DDPM.UI.Common
 
                 #region Headset
                 UpdateFreezable("ToggleSwitch_NormalBackground", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FBFCFE"));
+                UpdateFreezable("ToggleSwitch_NormalBorderBrush", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E5ECF9"));
                 #endregion
 
                 #region Consent page
                 UpdateFreezable("ConsentPage_Background", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#D8E5F5"));
                 #endregion
 
-                //#region HomeDevice LineArt image [Robert_Lin, 2024-11-26]
+                #region HomeDevice LineArt image [Robert_Lin, 2024-11-26]
                 UpdateBitmapImage("MonitorImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Monitors/Lineart-w.png", UriKind.RelativeOrAbsolute));
-                //#endregion HomeDevice LineArt image
+                #endregion HomeDevice LineArt image
+                UpdateBitmapImage("KeyboardImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/LightMode/Lineart-kb.png", UriKind.RelativeOrAbsolute));
+                UpdateBitmapImage("MouseImage_LineArt", new Uri($"pack://application:,,,/DDPM.UI.Resources;component/Resources/Images/LightMode/Lineart-ms.png", UriKind.RelativeOrAbsolute));
 
                 UpdateFreezable("DefaultThemeFullPageBkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#E5ECF9"));
 
@@ -388,6 +409,19 @@ namespace DDPM.UI.Common
                 UpdateFreezable("Webcam_TextBox_FgColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#0D121A"));
                 UpdateFreezable("Webcam_UndoRedo_BkColor", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#99F8FBFE"));
                 #endregion
+
+                #region EzArrange
+                UpdateFreezable("EzArrange_ShadowEffect", (ref DropShadowEffect shadow) => {
+                    shadow.Color = (Color)ColorConverter.ConvertFromString("#0A000000");
+                    shadow.ShadowDepth = 4;
+                    shadow.BlurRadius = 10;
+                    shadow.Opacity = 0.1;
+                    shadow.Direction = 270;
+                });
+                #endregion
+
+                UpdateBitmapImage("InterruptScreen_Image", new Uri($"pack://application:,,,/DDPM.UI.Common;component/Resources/Background_InterruptScreen_Light.png", UriKind.RelativeOrAbsolute));
+                UpdateFreezable("InterruptScreen_Backgroung", (ref SolidColorBrush brush) => brush.Color = (Color)ColorConverter.ConvertFromString("#FFFFFFF2"));
 
                 BitmapImageUpdated?.Invoke(OSThemeEnum.Light);
             }

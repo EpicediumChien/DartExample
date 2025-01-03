@@ -1,20 +1,10 @@
 ﻿using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
-using Dell.Client.Framework.UX.WPF.Controls;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Forms;
-using System.Windows.Media.Imaging;
 using System.Windows.Interop;
 
 namespace DDPM.QAM
@@ -78,8 +68,8 @@ namespace DDPM.QAM
                         _SetForegroundWindow(mainWindowHandle);
 
                         //info DDPM navigate to webcam preview directly
-                        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
-                        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
+                        //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
+                        //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMHomepageReadyAsync(true);
 
                         result = true;
                     }
@@ -97,7 +87,7 @@ namespace DDPM.QAM
                             });
 
                         //Info SA that new DDPM instance launched by QAM
-                        DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
+                        //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(true);
                     }
                 }
                 catch (Exception ex)
@@ -136,6 +126,7 @@ namespace DDPM.QAM
 
         private void Close_Click(object sender, MouseButtonEventArgs e)
         {
+            DdpmCommonHelper.DeviceManagerSA?.SetQAMOSDVisable(true);
             CloseMyself(true);
         }
 
@@ -214,9 +205,8 @@ namespace DDPM.QAM
                 CameraSetting.Show();
             }
 
-            QAMPageViewModel vm = DataContext as QAMPageViewModel;
 
-            if (vm != null && vm.CurrentDeviceInfo != null)
+            if (DataContext is QAMPageViewModel vm && vm.CurrentDeviceInfo != null)
                 vm.IsCameraSettingSelected = !vm.IsCameraSettingSelected;
         }
 
@@ -264,7 +254,7 @@ namespace DDPM.QAM
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                QAMPageViewModel vm = DataContext as QAMPageViewModel;
+                QAMPageViewModel? vm = DataContext as QAMPageViewModel;
                 if (vm != null && vm.CurrentDeviceInfo != null)
                 {
                     vm.IsDragging = true;
@@ -320,12 +310,23 @@ namespace DDPM.QAM
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Dispatcher.Invoke(() =>
+            try
             {
-                CameraSetting?.Close();
-            });
+                Dispatcher.Invoke(() =>
+                {
+                    CameraSetting?.Close();
+                });
 
-            CameraSetting = null;
+                CameraSetting = null;
+
+                if (DataContext is QAMPageViewModel vm)
+                    vm.RemoveQAMWebcamEvent();
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"Catch exception {ex.Message} when QAM Window_Closing");
+            }
+            
         }
     }
 }

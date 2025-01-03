@@ -79,9 +79,6 @@ namespace DDPM.UI.Module.EzMemory
                 _vm?.RegisterCellBorder(cellBorder.CellBd, _no);
                 _no++;
             }
-
-            InitializePage();
-
             //Record UXTextBox
             if (_vm.ispCtrlForEm.CellList.Count <= 2)
             {
@@ -91,6 +88,9 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _vm.currentUXTextBoxInfo = Window1TextBlock;
             }
+
+            UserControl_Loaded(null, null);
+            InitializePage();
         }
 
 
@@ -255,6 +255,8 @@ namespace DDPM.UI.Module.EzMemory
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
             _vm.ProgressValue = 1;
+            _vm.IsAddPageBack = false;
+            _vm.RightViewDataClear();
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
             return;
         }
@@ -375,7 +377,14 @@ namespace DDPM.UI.Module.EzMemory
                     return;
                 _vm._bind_apps.Clear();
                 _vm._apps_all.Clear();
+
                 Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.GetAllAppList().Result;
+
+                if (data == null)
+                {
+                    _log.Info($"@{nameof(EzMemoryAssignProgram)} GetAllAppList NULL ... in");
+                    return;
+                }
 
                 string strFolder = DdpmCommonHelper.DeviceManagerSA.GetAppIconFolderPath().Result;
                 strFolder += "\\";
@@ -385,25 +394,28 @@ namespace DDPM.UI.Module.EzMemory
 
                 foreach (KeyValuePair<string, InstalledAppInfo> kvp in data)
                 {
-                    Bind_AddFullPage_AppCollectionData new_Appdata = new Bind_AddFullPage_AppCollectionData();
+                    //if (kvp.Value.AppInstallPath.ToLower().Contains("program files"))
+                    //{
+                        Bind_AddFullPage_AppCollectionData new_Appdata = new Bind_AddFullPage_AppCollectionData();
 
-                    new_Appdata.AppName = kvp.Value.AppName;
-                    new_Appdata.InstalledDate = kvp.Value.lastModifyTime;
-                    new_Appdata.AppPath = kvp.Value.AppInstallPath;
-                    new_Appdata.AppUserModelID = kvp.Value.AppUserModelID;
-                    new_Appdata.AppType = kvp.Value.isDesktopApp.ToString();
+                        new_Appdata.AppName = kvp.Value.AppName;
+                        new_Appdata.InstalledDate = kvp.Value.lastModifyTime;
+                        new_Appdata.AppPath = kvp.Value.AppInstallPath;
+                        new_Appdata.AppUserModelID = kvp.Value.AppUserModelID;
+                        new_Appdata.AppType = kvp.Value.isDesktopApp.ToString();
 
-                    if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
-                    {
-                        new_Appdata.AppIcon = strFolder + kvp.Value.IconName + ".png";
-                    }
-                    else
-                    {
-                        new_Appdata.AppIcon = "Assets/palette.png";
-                    }
+                        if (System.IO.File.Exists(strFolder + kvp.Value.IconName + ".png"))
+                        {
+                            new_Appdata.AppIcon = strFolder + kvp.Value.IconName + ".png";
+                        }
+                        else
+                        {
+                            new_Appdata.AppIcon = "Assets/palette.png";
+                        }
 
-                    _vm._bind_apps.Add(new_Appdata);
-                    _vm._apps_all.Add(new_Appdata);
+                        _vm._bind_apps.Add(new_Appdata);
+                        _vm._apps_all.Add(new_Appdata);
+                    //}
 
                 }
             }
@@ -420,12 +432,21 @@ namespace DDPM.UI.Module.EzMemory
                 string controlName = _vm.UXTextBoxNameToUXButtonName(textBox.Name);
                 if (_vm._sortApps.ContainsKey(controlName))
                 {
-                    string apppath = _vm._sortApps[controlName].AppPath;
-
-                    var toolTipContent = new TextBlock
+                    var toolTipContent = new TextBlock();
+                    if (_vm._sortApps[controlName].AppUserModelID == "")
                     {
-                        Text = apppath,                          
-                    };
+                        toolTipContent = new TextBlock
+                        {
+                            Text = _vm._sortApps[controlName].AppPath,
+                        };
+                    }
+                    else
+                    {
+                        toolTipContent = new TextBlock
+                        {
+                            Text = _vm._sortApps[controlName].AppName,
+                        };
+                    }
 
                     toolTipContent.Style = (Style)FindResource("ToolTipTextBlockStyle");
 

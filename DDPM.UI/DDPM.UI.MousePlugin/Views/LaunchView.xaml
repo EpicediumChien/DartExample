@@ -165,8 +165,15 @@
                                 <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
                             </Image.InputBindings>
                             <Image.ToolTip>
-                                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                                    <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
+                                <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <Border.Resources>
+                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                        </Border.Resources>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding FirmwareVersion2}" />
+                                        </StackPanel>
+                                    </Border>
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>
@@ -204,11 +211,12 @@
                         <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
                             <StackPanel Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal" Margin="19,18,0,0">
-                                    <Image Margin="0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" />
+                                    <ContentControl Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
+                                    <!-- <Image Margin="0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" /> -->
                                     <UXControls:UXTextBlock Name="txtDongleHost" Foreground="{DynamicResource DefaultTheme_TxtColor}" VerticalAlignment="Center" Margin="7,0,0,0"
                                                             HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" FontWeight="Bold" Text="{Binding [USBWirelessReceiver], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
-                                <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="#1B385F" StrokeThickness="2" />
+                                <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
                                 <UXControls:UXTextBlock Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" Margin="20,13,0,0" />
                                 <UXControls:UXTextBlock Name="txtSlot" Style="{StaticResource ConnectionStyle3}" Margin="20,15,0,0" />
                             </StackPanel>
@@ -217,17 +225,53 @@
                             <StackPanel Orientation="Vertical">
                                 <StackPanel Name="Host1" Orientation="Horizontal" Margin="20,18,0,0">
                                     <UXControls:UXTextBlock Name="txt1" Text="1" />
-                                    <Image x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" />
+                                    <ContentControl x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}">
+                                        <ContentControl.Style>
+                                            <Style TargetType="ContentControl">
+                                                <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ImgBL1}" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContentControl.Style>
+                                    </ContentControl>
+                                    <!-- <Image x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" /> -->
                                     <UXControls:UXTextBlock Name="txtBLHost1" Margin="4,0,0,0" />
                                 </StackPanel>
                                 <StackPanel Name="Host2" Orientation="Horizontal" Margin="20,18,0,18">
                                     <UXControls:UXTextBlock Name="txt2" Text="2" />
-                                    <Image x:Name="imgBL2" Margin="4,0,0,0" Width="16" Height="16" />
+                                    <ContentControl x:Name="imgBL2" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}">
+                                        <ContentControl.Style>
+                                            <Style TargetType="ContentControl">
+                                                <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ImgBL2}" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContentControl.Style>
+                                    </ContentControl>
+                                    <!-- <Image x:Name="imgBL2" Margin="4,0,0,0" Width="16" Height="16" /> -->
                                     <UXControls:UXTextBlock Name="txtBLHost2" Margin="4,0,0,0" />
                                 </StackPanel>
                                 <StackPanel Name="Host3" Orientation="Horizontal" Margin="20,0,0,18">
                                     <UXControls:UXTextBlock Name="txt3" Text="3" />
-                                    <Image x:Name="imgBL3" Margin="4,0,0,0" Width="16" Height="16" />
+                                    <ContentControl x:Name="imgBL3" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}">
+                                        <ContentControl.Style>
+                                            <Style TargetType="ContentControl">
+                                                <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ImgBL3}" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContentControl.Style>
+                                    </ContentControl>
+                                    <!-- <Image x:Name="imgBL3" Margin="4,0,0,0" Width="16" Height="16" /> -->
                                     <UXControls:UXTextBlock Name="txtBLHost3" Margin="4,0,0,0" />
                                 </StackPanel>
                             </StackPanel>
@@ -243,8 +287,9 @@
                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
                         </Grid>
                         </Border>-->
-                        <Image Name="EOLDongle" Source="/DDPM.UI.Resources;component/Resources/Images/EOLDongle.png" Stretch="Fill" Visibility="Collapsed"
-                               VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="40" Height="40" />
+                        <ContentControl Name="EOLDongle" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Height="40" Visibility="Collapsed" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
+                        <!-- <Image Name="EOLDongle" Source="/DDPM.UI.Resources;component/Resources/Images/EOLDongle.png" Stretch="Fill" Visibility="Collapsed"
+                               VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="40" Height="40" /> -->
                         <Border Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair"
                     BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
                             <UXControls:UXTextBlock Name="txtUnpair" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}"/>

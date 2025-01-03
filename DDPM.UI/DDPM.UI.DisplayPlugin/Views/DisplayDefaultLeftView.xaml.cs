@@ -3,6 +3,7 @@ using DDPM.UI.Common;
 using DDPM.UI.Common.ViewModels;
 using DDPM.UI.Module.InputSource;
 using DDPM.UI.Plugin.Common;
+using DDPM.UI.Plugin.DisplayPlugin.ViewModels;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics;
@@ -95,11 +96,11 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                         txtRestore.IsEnabled = false;
                     }
                 }
-            }));            
+            }));
         }
 
         // 20240617  jim add
-        private void Restore_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Restore_Click(object sender, RoutedEventArgs e)
         {
             if (txtRestore.IsEnabled == false)
                 return;
@@ -111,7 +112,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 dlg.Owner = parentWindow;
             }
             bool? dialogResult = dlg.ShowDialog();
-           
+
             if ((dialogResult == true) && (DdpmCommonHelper.DeviceManagerSA != null) &&
                 (DdpmCommonHelper.ModuleOwner != null) && (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null))
             {
@@ -154,6 +155,12 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             }
             */
         }
+
+        public void CollapseRestoreToDefaultbtn()
+        {
+            btnRestore.Visibility = Visibility.Collapsed;
+        }
+
 
         private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {

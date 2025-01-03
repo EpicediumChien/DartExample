@@ -140,7 +140,7 @@ namespace DDPM.UI.Module.EzMemory
                     {
                         _log.Info($"@[EzMemoryRightView] EzMemoryStart_Click, Profile with ID {_vm.CurrentSelectspItem.LayoutID} not found in UserSettings.");
                     }
-                    DdpmCommonHelper.DeviceManagerSA!.ShowOSD(_homeDeviceSelect.MonitorInfo, OSDType.EasyMemory);
+                    //DdpmCommonHelper.DeviceManagerSA!.ShowOSD(_homeDeviceSelect.MonitorInfo, OSDType.EasyMemory);
                 }
             }
             catch (Exception ex)
@@ -220,10 +220,7 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _log.Error($"@[EzMemoryRightView] OnListViewItemDeleted, Error occurred while deleting from MonitorSettings: {ex.Message}");
             }
-            _vm.ProfileTitleTextBlockValue = string.Empty;
-            _vm.AutomaticStartupValue = string.Empty;
-            _vm.LaunchByTimeValue = string.Empty;
-            _vm.AppDocumentValue = string.Empty;
+            _vm.RightViewDataClear();
             return;
         }
 
@@ -390,6 +387,9 @@ namespace DDPM.UI.Module.EzMemory
                     }
                     else
                     {
+                        // 沒有monitor setting 數值 填否 跟 _
+                        _vm.AutomaticStartupValue = Strings.No;
+                        _vm.LaunchByTimeValue = "_";
                         _log.Info($"@[EzMemoryRightView] OnListViewItemClicked, ProfileSetting with ID {matchingProfile.ID} not found in MonitorSettings.");
                     }
                 }
@@ -451,7 +451,11 @@ namespace DDPM.UI.Module.EzMemory
 
             }
 
-            splitListView_RecentForEzM.MoveSelectedItemToSecondPosition();
+            if(_vm.SelectedSplitItem != null)
+            {
+                _vm.IsApplyEnabled = true;
+            }
+            //splitListView_RecentForEzM.MoveSelectedItemToSecondPosition();
             //SaveEaSettings();
         }
 
@@ -523,6 +527,7 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="spItem"></param>
         private void OnListViewItemAddClicked(SplitListView spItem)
         {
+            _vm.IsAddPageBack = true; //If add btn trigger, it is mean do not sync any profile
             List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
             if (checkEAProfileDDPM != null)
             {
@@ -581,24 +586,27 @@ namespace DDPM.UI.Module.EzMemory
                 splitListView_RecentForEzM.HasAddButton = true;
                 splitListView_RecentForEzM.IsVertical = _vm.IsVertical;
 
+                _vm.RightViewDataClear();
+
                 // 取得User EAProfiles
                 List<EAProfileDDPM> initListViewIEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
 
+                // 1228拿掉 monitor setting 判斷
                 // 取得Monitor EasyArrangement
-                EasyArrangementDDPM initListVieweasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_homeDevice.MonitorInfo).Result;
+                //EasyArrangementDDPM initListVieweasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_homeDevice.MonitorInfo).Result;
 
-                if (initListViewIEAProfileDDPM != null && initListVieweasyArrangementDDPM != null)
+                if (initListViewIEAProfileDDPM != null)// && initListVieweasyArrangementDDPM != null)
                 {
                     // ProfileSettings 不為 null
-                    if (initListVieweasyArrangementDDPM.Desktops.Count > 0 && initListVieweasyArrangementDDPM.Desktops[0].ProfileSettings != null)
-                    {
+                    //if (initListVieweasyArrangementDDPM.Desktops.Count > 0 && initListVieweasyArrangementDDPM.Desktops[0].ProfileSettings != null)
+                    //{
                         foreach (var profile in initListViewIEAProfileDDPM)
                         {
                             // 在 ProfileSettings 中找是否有對應的 ID
-                            EzProfileSettingDDPM profileSetting = initListVieweasyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == profile.ID);
+                            //EzProfileSettingDDPM profileSetting = initListVieweasyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == profile.ID);
 
-                            if (profileSetting != null)
-                            {
+                            //if (profileSetting != null)
+                            //{
                                 if (profile.Layout >= 1000)
                                 {
                                     SplitJson[] customList = _deviceManagerSA.ReadEACustomList().Result;
@@ -620,11 +628,16 @@ namespace DDPM.UI.Module.EzMemory
                                             ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
                                             if (spCtrl == null)
                                                 continue;
+
+                                            
                                             spCtrl.Settings = new List<double>(spj.Settings);
                                             spCtrl.SplitMode = eSplitModes.Icon;
                                             spCtrl.FriendlyName = spj.CustomName;
                                             spCtrl.EAID = spj.EAID;
-                                            splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                            SplitItem item = splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                            // splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                            item.IsDeleteEnabled = true;
+                                            item.IsEditEnabled = true;
                                         }
                                     }
                                 }
@@ -645,17 +658,17 @@ namespace DDPM.UI.Module.EzMemory
                                         item.LayoutID = profile.Layout;
                                     }
                                 }
-                            }
-                            else
-                            {
-                                _log.Info($"@[EzMemoryRightView] InitListViewItems: Profile ID {profile.ID} not found in MonitorSettings.");
-                            }
+                            //}
+                            //else
+                            //{
+                            //    _log.Info($"@[EzMemoryRightView] InitListViewItems: Profile ID {profile.ID} not found in MonitorSettings.");
+                            //}
                         }
-                    }
-                    else
-                    {
-                        _log.Info($"@[EzMemoryRightView] InitListViewItems: No valid ProfileSettings found in MonitorSettings.");
-                    }
+                    //}
+                    //else
+                    //{
+                    //    _log.Info($"@[EzMemoryRightView] InitListViewItems: No valid ProfileSettings found in MonitorSettings.");
+                    //}
                 }
                 else
                 {
@@ -717,12 +730,12 @@ namespace DDPM.UI.Module.EzMemory
         //    IConsole? console = DdpmCommonHelper.MyConsole;
         //    if (console != null)
         //    {
-        //        if  (ck.IsChecked != null)
-        //        {
-        //            var args = new EventManagerArgs();
-        //            args.Tag = (bool)ck.IsChecked; //true=Show, false=Hide
-        //            console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, args);
-        //        }
+        //        //if (ck.IsChecked != null)
+        //        //{
+        //        //    var args = new EventManagerArgs();
+        //        //    args.Tag = (bool)ck.IsChecked; //true=Show, false=Hide
+        //        //    console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, args);
+        //        //}
         //    }
         //}
 
@@ -731,12 +744,12 @@ namespace DDPM.UI.Module.EzMemory
         //    IConsole? console = DdpmCommonHelper.MyConsole;
         //    if (console != null)
         //    {
-        //        if (ckSettings.IsChecked != null)
-        //        {
-        //            var args = new EventManagerArgs();
-        //            args.Tag = (bool)ckSettings.IsChecked; //true=Show, false=Hide
-        //            console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, this, args);
-        //        }
+        //        //if (ckSettings.IsChecked != null)
+        //        //{
+        //        //    var args = new EventManagerArgs();
+        //        //    args.Tag = (bool)ckSettings.IsChecked; //true=Show, false=Hide
+        //        //    console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, this, args);
+        //        //}
         //    }
         //}
     }

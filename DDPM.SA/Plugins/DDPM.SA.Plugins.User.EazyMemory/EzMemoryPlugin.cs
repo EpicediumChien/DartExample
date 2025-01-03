@@ -26,6 +26,7 @@ using DPeMPublic.Common;
 using System.Threading;
 using static VcpCore.Common.User32;
 using DDPM.EABroker;
+using DDPM.SA.Common.Display;
 
 namespace DDPM.SA.Plugins.User.EzMemory
 {
@@ -171,7 +172,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
         private static DDPMSettings _DDPMSettings;
         private Timer _EzMemoryTimer;
         private bool startup_Launch_flag = false;
-        //DDPM.EABroker.EABroker _eaBroker = null;
+        DDPM.EABroker.EABroker _eaBroker = null;
         #endregion
 
         #region Constructor
@@ -608,9 +609,9 @@ namespace DDPM.SA.Plugins.User.EzMemory
                             launchApp.Add(appData.AppName, appData);
                             _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps App to launch: {appData.AppName}, Path: {appData.AppPath}, Is UWP: {appData.AppType}");
                         }
-
+                        //bool result = true;
                         //bool result = LaunchAndArrangeApps(launchApp).Result;
-                        bool result = LaunchAndArrangeAppsWithEzArrange(launchApp, monitorInfo, profile.Layout).Result;
+                        bool result = _DisplayManagerPlugin.LaunchAndArrangeAppsWithEzArrange(launchApp, monitorInfo, profile.Layout).Result;//LaunchAndArrangeAppsWithEzArrange(launchApp, monitorInfo, profile.Layout).Result;
                         if (result)
                         {
                             _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps Apps launched and arranged successfully for profile: {profile.Name}");
@@ -644,7 +645,7 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
         public Task<Dictionary<string, InstalledAppInfo>> GetAllAppList()
         {
-            AppsCollectShell appshell = new AppsCollectShell();
+            AppsCollectShell appshell = new AppsCollectShell(Log);
             string RootColorPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\Dell\\Dell Display and Peripheral Manager\\AppLibrary";
             string IconFolder = RootColorPath + "\\Icons\\";
 
@@ -655,14 +656,26 @@ namespace DDPM.SA.Plugins.User.EzMemory
 
             Dictionary<string, InstalledAppInfo> installedApp = new Dictionary<string, InstalledAppInfo>();
             string fileinfo = string.Empty, info = string.Empty;
-            
-            if (!System.IO.Directory.Exists(IconFolder))
-                System.IO.Directory.CreateDirectory(IconFolder);
-
-            if(!DDPMFileSecurity.CheckFold(IconFolder, out fileinfo, out info))
+            bool canSave = true;
+            if (!System.IO.Directory.Exists(RootColorPath))
             {
-                _logs.Info($"[EzMemoryManagerPlugin][CheckFold] folder path invalid: {info}");
-                return Task.FromResult(installedApp);
+                System.IO.Directory.CreateDirectory(RootColorPath);
+                _logs.Info($"[EzMemoryManagerPlugin][ValidateFilePath] RootColorPath isn't exist, create it");
+            }
+            if (canSave && !DDPMFileSecurity.ValidateFilePath(RootColorPath, out info))
+            {
+                _logs.Info($"[EzMemoryManagerPlugin][ValidateFilePath] RootColorPath abnormal, do not save icon: {info}");
+                canSave = false;
+            }
+            if (canSave && !System.IO.Directory.Exists(IconFolder))
+            {
+                System.IO.Directory.CreateDirectory(IconFolder);
+                _logs.Info($"[EzMemoryManagerPlugin][ValidateFilePath] IconFolder isn't exist, create it");
+            }
+            if (canSave && !DDPMFileSecurity.ValidateFilePath(IconFolder, out info))
+            {
+                _logs.Info($"[EzMemoryManagerPlugin][ValidateFilePath] IconFolder abnormal, do not save icon: {info}");
+                canSave = false;
             }
 
             Dictionary<string, List<AppItemInfo>> dictionary = new Dictionary<string, List<AppItemInfo>>();
@@ -715,7 +728,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
                         DateTime lastAccessTime = f.CreationTime;//.LastAccessTime;
                         if (!File.Exists(IconFolder + text + ".png"))
                         {
-                            System.Drawing.Icon.ExtractAssociatedIcon(value)!.ToBitmap().Save(IconFolder + text + ".png");
+                            if(canSave)
+                                System.Drawing.Icon.ExtractAssociatedIcon(value)!.ToBitmap().Save(IconFolder + text + ".png");
                         }
                         if (!dictionary.ContainsKey(value))
                         {
@@ -752,10 +766,10 @@ namespace DDPM.SA.Plugins.User.EzMemory
                     }
                     continue;
                 }
-                else
-                {
-                    //_logs.Info($"[EzMemoryManagerPlugin], not desktop app");
-                }
+                //else
+                //{
+                //    //_logs.Info($"[EzMemoryManagerPlugin], not desktop app");
+                //}
                 //
                 // UWP application parsing
                 //
@@ -779,7 +793,8 @@ namespace DDPM.SA.Plugins.User.EzMemory
                         bitmap.UnlockBits(bitmapData);
                         if (!File.Exists(IconFolder + filename + ".png"))
                         {
-                            bitmap.Save(IconFolder + filename + ".png");
+                            if(canSave)
+                                bitmap.Save(IconFolder + filename + ".png");
                         }
                         if (!installedApp.ContainsKey(text2))
                         {
@@ -897,10 +912,10 @@ namespace DDPM.SA.Plugins.User.EzMemory
         /// <param name="moInfo"></param>
         /// <param name="eAID"></param>
         /// <returns>Return 0 & 1 mean EzArrange busy, must break； Return > 1 mean EzArrange need Handl count</returns>
-        private int LaunchStart(MonitorInfo moInfo, int eAID)
-        {
-            return 2;
-        }
+        //private int LaunchStart(MonitorInfo moInfo, int eAID)
+        //{
+        //    return 2;
+        //}
 
         /// <summary>
         /// Test with EzArrange
@@ -909,241 +924,241 @@ namespace DDPM.SA.Plugins.User.EzMemory
         /// <param name="handle"></param>
         /// <param name="no"></param>
         /// <returns>Send handle to EzArrange, EzArrange will arrange app location</returns>
-        private bool HandleArrange(MonitorInfo moInfo, IntPtr handle, int no)
-        {
-            return true;
-        }
+        //private bool HandleArrange(MonitorInfo moInfo, IntPtr handle, int no)
+        //{
+        //    return true;
+        //}
 
         /// <summary>
         /// Test with EzArrange
         /// </summary>
         /// <returns>Notify EzArrange stop and end.</returns>
-        private bool LaunchEnd()
-        {
-            return true;
-        }
+        //private bool LaunchEnd()
+        //{
+        //    return true;
+        //}
 
-        public async Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
-        {
-            try
-            {
-                // Check EAID count
-                int handleCount = LaunchStart(moInfo, eAid);
-                if (handleCount == 0 || handleCount == 1)
-                {
-                    _logs.Info("[EzMemoryManagerPlugin] LaunchAndArrangeAppsWithEzArrange, EAID return 0/1. Task aborted.");
-                    return false;
-                }
+        //public async Task<bool> LaunchAndArrangeAppsWithEzArrange(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps, MonitorInfo moInfo, int eAid)
+        //{
+        //    try
+        //    {
+        //        // Check EAID count
+        //        int handleCount = LaunchStart(moInfo, eAid);
+        //        if (handleCount == 0 || handleCount == 1)
+        //        {
+        //            _logs.Info("[EzMemoryManagerPlugin] LaunchAndArrangeAppsWithEzArrange, EAID return 0/1. Task aborted.");
+        //            return false;
+        //        }
 
-                // Check applications list
-                int appCount = sortApps.Count;
-                if (appCount == 0)
-                {
-                    _logs.Info("[EzMemoryManagerPlugin] LaunchAndArrangeAppsWithEzArrange, No apps to launch and arrange.");
-                    return false;
-                }
+        //        // Check applications list
+        //        int appCount = sortApps.Count;
+        //        if (appCount == 0)
+        //        {
+        //            _logs.Info("[EzMemoryManagerPlugin] LaunchAndArrangeAppsWithEzArrange, No apps to launch and arrange.");
+        //            return false;
+        //        }
 
-                var sortedApps = sortApps.OrderBy(x => x.Key).Select(x => x.Value).ToList();
+        //        var sortedApps = sortApps.OrderBy(x => x.Key).Select(x => x.Value).ToList();
 
-                for (int i = 0; i < appCount; i++)
-                {
-                    var app = sortedApps[i];
-                    IntPtr handle = IntPtr.Zero;
+        //        for (int i = 0; i < appCount; i++)
+        //        {
+        //            var app = sortedApps[i];
+        //            IntPtr handle = IntPtr.Zero;
 
-                    // Get handle
-                    Process[] processes = GetProcessesByName(app);
-                    if (processes.Length > 0)
-                    {
-                        handle = processes[0].MainWindowHandle;
-                        EzMemorySetForegroundWindow(handle);
-                    }
-                    else
-                    {
-                        Process process = LaunchApp(app);
-                        if (process == null)
-                        {
-                            _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeAppsWithEzArrange, Failed to launch app: {app.AppName}");
-                            continue;
-                        }
+        //            // Get handle
+        //            Process[] processes = GetProcessesByName(app);
+        //            if (processes.Length > 0)
+        //            {
+        //                handle = processes[0].MainWindowHandle;
+        //                EzMemorySetForegroundWindow(handle);
+        //            }
+        //            else
+        //            {
+        //                Process process = LaunchApp(app);
+        //                if (process == null)
+        //                {
+        //                    _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeAppsWithEzArrange, Failed to launch app: {app.AppName}");
+        //                    continue;
+        //                }
 
-                        // Wait app window initialize
-                        for (int attempt = 0; attempt < 10; attempt++)
-                        {
-                            handle = app.AppType == "True" ? process.MainWindowHandle : GetWindowHandle(app);
-                            if (handle != IntPtr.Zero)
-                                break;
+        //                // Wait app window initialize
+        //                for (int attempt = 0; attempt < 10; attempt++)
+        //                {
+        //                    handle = app.AppType == "True" ? process.MainWindowHandle : GetWindowHandle(app);
+        //                    if (handle != IntPtr.Zero)
+        //                        break;
 
-                            await Task.Delay(500);
-                        }
+        //                    await Task.Delay(500);
+        //                }
 
-                        if (handle == IntPtr.Zero)
-                        {
-                            _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeAppsWithEzArrange, App {app.AppName} failed to get window handle after launch.");
-                            continue;
-                        }
-                    }
+        //                if (handle == IntPtr.Zero)
+        //                {
+        //                    _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeAppsWithEzArrange, App {app.AppName} failed to get window handle after launch.");
+        //                    continue;
+        //                }
+        //            }
 
-                    // Arrange handle with HandleArrange
-                    bool arrangeResult = HandleArrange(moInfo, handle, i);
-                    if (!arrangeResult)
-                    {
-                        _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeAppsWithEzArrange, Arrangement failed for app {app.AppName}. Task stopped.");
-                        return false;
-                    }
+        //            // Arrange handle with HandleArrange
+        //            bool arrangeResult = HandleArrange(moInfo, handle, i);
+        //            if (!arrangeResult)
+        //            {
+        //                _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeAppsWithEzArrange, Arrangement failed for app {app.AppName}. Task stopped.");
+        //                return false;
+        //            }
 
-                    _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeAppsWithEzArrange, App {app.AppName} arranged successfully.");
-                }
+        //            _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeAppsWithEzArrange, App {app.AppName} arranged successfully.");
+        //        }
 
-                // End
-                LaunchEnd();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeAppsWithEzArrange, Unexpected error: {ex}");
-                return false;
-            }
-        }
-
-
-        public Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps)
-        {
-            try
-            {
-                int appCount = sortApps.Count;
-                if (appCount == 0)
-                {
-                    _logs.Info("[EzMemoryManagerPlugin] LaunchAndArrangeApps, No apps to launch and arrange.");
-                    return Task.FromResult(false);
-                }
+        //        // End
+        //        LaunchEnd();
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeAppsWithEzArrange, Unexpected error: {ex}");
+        //        return false;
+        //    }
+        //}
 
 
-                List<Bind_AddFullPage_AppCollectionData> seletcApps = new List<Bind_AddFullPage_AppCollectionData>();
-                double screenWidth = SystemParameters.PrimaryScreenWidth;
-                double screenHeight = SystemParameters.PrimaryScreenHeight;
-                double widthPerApp = screenWidth / appCount; // 平均分配寬度
+        //public Task<bool> LaunchAndArrangeApps(Dictionary<String, Bind_AddFullPage_AppCollectionData> sortApps)
+        //{
+        //    try
+        //    {
+        //        int appCount = sortApps.Count;
+        //        if (appCount == 0)
+        //        {
+        //            _logs.Info("[EzMemoryManagerPlugin] LaunchAndArrangeApps, No apps to launch and arrange.");
+        //            return Task.FromResult(false);
+        //        }
 
-                var sortedByKey = sortApps.OrderBy(x => x.Key).ToList();
-                seletcApps = sortedByKey.Select(x => x.Value).ToList();
 
-                //Task.Run(async () =>
-                //{
-                    EzMemLauncher ezMemLauncher = new EzMemLauncher();
-                    MonitorInfo mi = _AllInfoMonitors[0];
-                    int eaId = 9;
-                    ezMemLauncher.LaunchStart(mi, eaId);
+        //        List<Bind_AddFullPage_AppCollectionData> seletcApps = new List<Bind_AddFullPage_AppCollectionData>();
+        //        double screenWidth = SystemParameters.PrimaryScreenWidth;
+        //        double screenHeight = SystemParameters.PrimaryScreenHeight;
+        //        double widthPerApp = screenWidth / appCount; // 平均分配寬度
 
-                    List<IntPtr> windowHandles = new List<IntPtr>();
+        //        var sortedByKey = sortApps.OrderBy(x => x.Key).ToList();
+        //        seletcApps = sortedByKey.Select(x => x.Value).ToList();
 
-                    //Robert_Lin, add to make sure all opened windows has been arranged
-                    int arrangeCount = 0;
-                    int addCount = 0;
+        //        //Task.Run(async () =>
+        //        //{
+        //            EzMemLauncher ezMemLauncher = new EzMemLauncher();
+        //            MonitorInfo mi = _AllInfoMonitors[0];
+        //            int eaId = 9;
+        //            ezMemLauncher.LaunchStart(mi, eaId);
 
-                    for (int i = 0; i < appCount; i++)
-                    {
-                        var app = seletcApps[i];
-                        IntPtr handle = IntPtr.Zero;
+        //            List<IntPtr> windowHandles = new List<IntPtr>();
+
+        //            //Robert_Lin, add to make sure all opened windows has been arranged
+        //            int arrangeCount = 0;
+        //            int addCount = 0;
+
+        //            for (int i = 0; i < appCount; i++)
+        //            {
+        //                var app = seletcApps[i];
+        //                IntPtr handle = IntPtr.Zero;
                         
-                        try
-                        {
-                            // 檢查應用程式是否已經存在
-                            Process[] processes = GetProcessesByName(app);
-                            _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, GetProcessesByName(app): {app.AppName}");
+        //                try
+        //                {
+        //                    // 檢查應用程式是否已經存在
+        //                    Process[] processes = GetProcessesByName(app);
+        //                    _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, GetProcessesByName(app): {app.AppName}");
 
-                            if (processes.Length > 0)
-                            {
-                                handle = processes[0].MainWindowHandle;
-                                _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, App {app.AppName} is already running, handle: {handle}");
-                                EzMemorySetForegroundWindow(handle); // 把應用程式拉到前景
-                            }
-                            else
-                            {
-                                Process process = LaunchApp(app);
+        //                    if (processes.Length > 0)
+        //                    {
+        //                        handle = processes[0].MainWindowHandle;
+        //                        _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, App {app.AppName} is already running, handle: {handle}");
+        //                        EzMemorySetForegroundWindow(handle); // 把應用程式拉到前景
+        //                    }
+        //                    else
+        //                    {
+        //                        Process process = LaunchApp(app);
 
-                                if (process == null)
-                                {
-                                    _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, Failed to launch app: {app.AppName}");
-                                    continue;
-                                }
+        //                        if (process == null)
+        //                        {
+        //                            _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, Failed to launch app: {app.AppName}");
+        //                            continue;
+        //                        }
 
-                                // 等待應用程式的窗口初始化
-                                for (int attempt = 0; attempt < 10; attempt++)
-                                {
-                                    handle = app.AppType == "True" ? process.MainWindowHandle : GetWindowHandle(app);
+        //                        // 等待應用程式的窗口初始化
+        //                        for (int attempt = 0; attempt < 10; attempt++)
+        //                        {
+        //                            handle = app.AppType == "True" ? process.MainWindowHandle : GetWindowHandle(app);
 
-                                    if (handle != IntPtr.Zero && !windowHandles.Contains(handle))
-                                        break;
+        //                            if (handle != IntPtr.Zero && !windowHandles.Contains(handle))
+        //                                break;
 
-                                    Task.Delay(500);
-                                }
+        //                            Task.Delay(500);
+        //                        }
 
-                                if (handle == IntPtr.Zero)
-                                {
-                                    _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, App {app.AppName} failed to get window handle after launch.");
-                                    continue;
-                                }
-                            }
+        //                        if (handle == IntPtr.Zero)
+        //                        {
+        //                            _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, App {app.AppName} failed to get window handle after launch.");
+        //                            continue;
+        //                        }
+        //                    }
 
-                             // 取得視窗的 DPI 設定
-                            float dpiScale = GetDpiScaleForWindow(handle);
+        //                     // 取得視窗的 DPI 設定
+        //                    float dpiScale = GetDpiScaleForWindow(handle);
 
-                            /*
-                           // 調整視窗位置與大小，考慮 DPI 比例
-                            EzMemorySetWindowPos(handle, IntPtr.Zero,
-                                (int)((i * widthPerApp) * dpiScale),
-                                0,
-                                (int)(widthPerApp * dpiScale),
-                                (int)(screenHeight * dpiScale),
-                                SWP_SHOWWINDOW);
-                            */
+        //                    /*
+        //                   // 調整視窗位置與大小，考慮 DPI 比例
+        //                    EzMemorySetWindowPos(handle, IntPtr.Zero,
+        //                        (int)((i * widthPerApp) * dpiScale),
+        //                        0,
+        //                        (int)(widthPerApp * dpiScale),
+        //                        (int)(screenHeight * dpiScale),
+        //                        SWP_SHOWWINDOW);
+        //                    */
 
-                            ezMemLauncher.ArrangeWindow(handle, i);
-                            arrangeCount++;
+        //                    ezMemLauncher.ArrangeWindow(handle, i);
+        //                    arrangeCount++;
 
 
-                            // 確認視窗是否已移動到預期的位置
-                            //for (int checkAttempt = 0; checkAttempt < 10; checkAttempt++)
-                            //{
-                            //    if (EzMemoryGetWindowRect(handle, out RECT rect))
-                            //    {
-                            //        if (rect.Left == (int)((i * widthPerApp) * dpiScale) && rect.Top == 0 &&
-                            //            rect.Right == (int)(((i + 1) * widthPerApp) * dpiScale) && rect.Bottom == (int)(screenHeight * dpiScale))
-                            //        {
-                            //            _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, App {app.AppName} positioned correctly.");
-                            //            break;
-                            //        }
-                            //    }
+        //                    // 確認視窗是否已移動到預期的位置
+        //                    //for (int checkAttempt = 0; checkAttempt < 10; checkAttempt++)
+        //                    //{
+        //                    //    if (EzMemoryGetWindowRect(handle, out RECT rect))
+        //                    //    {
+        //                    //        if (rect.Left == (int)((i * widthPerApp) * dpiScale) && rect.Top == 0 &&
+        //                    //            rect.Right == (int)(((i + 1) * widthPerApp) * dpiScale) && rect.Bottom == (int)(screenHeight * dpiScale))
+        //                    //        {
+        //                    //            _logs.Info($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, App {app.AppName} positioned correctly.");
+        //                    //            break;
+        //                    //        }
+        //                    //    }
 
-                                //Task.Delay(500);
-                            //}
+        //                        //Task.Delay(500);
+        //                    //}
 
-                            Task.Delay(1000);
+        //                    Task.Delay(1000);
                             
-                        }
-                        catch (Exception ex)
-                        {
-                            _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, Error arranging app {app.AppName}: {ex}");
-                        }
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, Error arranging app {app.AppName}: {ex}");
+        //                }
                         
 
-                    } //for
+        //            } //for
 
-                    //Robert_Lin, 2024-11-27, Wait until all opened windows are arranged
-                    while (arrangeCount < appCount)
-                    {
-                        Task.Delay(100);
-                    }
-                    ezMemLauncher.LaunchEnd();
-                //});
+        //            //Robert_Lin, 2024-11-27, Wait until all opened windows are arranged
+        //            while (arrangeCount < appCount)
+        //            {
+        //                Task.Delay(100);
+        //            }
+        //            ezMemLauncher.LaunchEnd();
+        //        //});
 
-                return Task.FromResult(true);
-            }
-            catch (Exception ex)
-            {
-                _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, Unexpected error: {ex}");
-                return Task.FromResult(false);
-            }
-        }
+        //        return Task.FromResult(true);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logs.Error($"[EzMemoryManagerPlugin] LaunchAndArrangeApps, Unexpected error: {ex}");
+        //        return Task.FromResult(false);
+        //    }
+        //}
 
         /*private static string GetExecutablePath(string executableName, out string info)
         {

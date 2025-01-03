@@ -44,7 +44,7 @@ namespace DDPM.SA.Common.Popup
         /// <param name="ob">The object returned by the button event</param>
         /// <param name="IsStayOnly"></param>
         /// <param name="autoCloseTimeInSeconds"></param>
-        public PopupBase(string HeaderText, string SubHeaderText, string LeftButtonContent, string RightButtonContent, object ob, bool IsStayOnly, int autoCloseTimeInSeconds)
+        public PopupBase(string HeaderText, string SubHeaderText, string LeftButtonContent, string RightButtonContent, object ob, bool IsStayOnly, int autoCloseTimeInSeconds, string Horizontal = "L")
         {
             InitializeComponent();
             //Header.Text = HeaderText;
@@ -70,12 +70,47 @@ namespace DDPM.SA.Common.Popup
                 RightButton1.Visibility = Visibility.Visible;
                 RightButton1.Content = RightButtonContent;
             }
+
+            if (Horizontal == "C")
+            {
+                LeftButton1.Visibility = Visibility.Collapsed;
+                RightButton1.Visibility = Visibility.Visible;
+                ButtonPanel1.HorizontalAlignment = HorizontalAlignment.Center;
+            }
             if (!IsStayOnly && autoCloseTimeInSeconds > 0)
             {
                 Task.Delay(autoCloseTimeInSeconds * 1000).ContinueWith(t => this.Dispatcher.Invoke(Close));
             }
         }
+        public void UpdateContent(string HeaderText, string SubHeaderText)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(UpdateContent);
+                return;
+            }
+            Header1.Text = HeaderText;
+            SubHeader1.Text = SubHeaderText;
+        }
+        public void ShowWindow()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(ShowWindow);
+                return;
+            }
+            Show();
+        }
 
+        public void CloseWindow()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(CloseWindow);
+                return;
+            }
+            Close();
+        }
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             //Robert_Lin, 2024-11-8, the return value of PopBase.ShowDialog()

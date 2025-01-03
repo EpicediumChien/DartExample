@@ -23,6 +23,7 @@ using System.Windows.Documents;
 using System.Windows.Media.Media3D;
 using static VcpCore.Common.User32;
 using Rect = System.Windows.Rect;
+using nsWinEventHook;
 
 namespace DDPM.EABroker
 {
@@ -38,6 +39,9 @@ namespace DDPM.EABroker
         private IDisplayService? _displayService = null;
         private IEasyArrangeService? _easyArrangeService = null;
         private ISettingsManagerDev? _settingsManager = null;
+
+        //EAPlugin
+        private string _eaPluginLastError = "";
 
         //Window Moving
         private IntPtr _hWndForeground = IntPtr.Zero;
@@ -152,6 +156,7 @@ namespace DDPM.EABroker
                 }
             }
         }
+        public ILog Log => _log;
         #endregion
 
         #region DDPM.SA Functions
@@ -270,7 +275,36 @@ namespace DDPM.EABroker
             }
             return _AllMonitors[0];
         }
+
+        public bool SetEASelectedLayout(MonitorInfo monitorInfo, int eaId)
+        {
+            if (_deviceManagerSA != null)
+            {
+                return _deviceManagerSA.SetEASelectedLayout(monitorInfo, eaId).Result;
+            }
+            return false;
+        }
+
+        public SplitJson[] ReadCustomList()
+        {
+            if (_deviceManagerSA != null)
+            {
+                return _deviceManagerSA.ReadEACustomList().Result;
+            }
+            return Array.Empty<SplitJson>();
+        }
         #endregion
+
+        #region EAPlugin
+        public string EAPluginLastError
+        {
+            get => _eaPluginLastError;
+            set
+            {
+                _eaPluginLastError = value;
+            }
+        }
+        #endregion EAPlugin
 
         #region System Event Handlers
         /// <summary>
@@ -395,10 +429,9 @@ namespace DDPM.EABroker
                 bool isEqualed = (value.Equals(_workScreen));
                 SetProperty(ref _workScreen, value);
                 OnPropertyChanged("WorkScreenName");
-                if (!isEqualed)
+                if (!isEqualed && WorkScreenChanged != null)
                 {
-                    if (WorkScreenChanged != null)
-                        Task.Run(() => WorkScreenChanged.Invoke(this, _workScreen));
+                    Task.Run(() => WorkScreenChanged.Invoke(this, _workScreen));
                 }
             }
         }
@@ -423,12 +456,9 @@ namespace DDPM.EABroker
         #region Refresh Cell Rects
         public void RefreshCellRects(bool calledByFadeFinished = false)
         {
-            if (IsAwsWindowVisible)
+            if (IsAwsWindowVisible && _awsWindow != null)
             {
-                if (_awsWindow != null)
-                {
-                    _awsWindow.RefreshCellRects();
-                }
+                _awsWindow.RefreshCellRects();
             }
             if ((IsWorkWindowVisible) || (calledByFadeFinished))
             {
@@ -559,12 +589,9 @@ namespace DDPM.EABroker
                 SetProperty(ref _hoveringCellObj, value);
                 OnPropertyChanged("HoveringCell");
 
-                if (isChanged) 
+                if (isChanged && HoveringCellObjChanged != null) 
                 {
-                    if (HoveringCellObjChanged != null)
-                    {
-                        Task.Run(() => HoveringCellObjChanged.Invoke(this, _hoveringCellObj));
-                    }
+                    Task.Run(() => HoveringCellObjChanged.Invoke(this, _hoveringCellObj));
                 }
             }
         }
@@ -804,10 +831,9 @@ namespace DDPM.EABroker
                 List<MonitorInfo> attachedMonitors = GetMonitorsFromDeviceName(scr.DeviceName);
 
                 //If screen has no Dell monitor attached, then we no need a WorkWindow for it
-                if ((attachedMonitors == null) || (attachedMonitors.Count <= 0))
+                if (!isSupportNonDellMonitors && ((attachedMonitors == null) || (attachedMonitors.Count <= 0)))
                 {
-                    if (!isSupportNonDellMonitors)
-                        continue;
+                    continue;
                 }
 
                 EAWorkWindow? workWindow = GetUnusedWorkWindow();
@@ -853,14 +879,11 @@ namespace DDPM.EABroker
             //Robert_Lin, 2024-10-18 Workaround
             //If ScreenCount>2, we assume it may have one Dell monitor, but no WorkWindow created, then we will
             //Redo this method by raise a "DisplaySettingsChanged" event
-            if (System.Windows.Forms.Screen.AllScreens.Length >= 2)
+            if (System.Windows.Forms.Screen.AllScreens.Length >= 2 && WorkWindowUsedCount == 0)
             {
-                if (WorkWindowUsedCount == 0)
-                {
-                    System.Threading.Timer timer1 = new System.Threading.Timer((obj) => {
-                        _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
-                    }, null, 2000, Timeout.Infinite);
-                }
+                System.Threading.Timer timer1 = new System.Threading.Timer((obj) => {
+                    _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
+                }, null, 2000, Timeout.Infinite);
             }
 
         }
@@ -956,16 +979,14 @@ namespace DDPM.EABroker
             foreach (EAScreen eaScr in eaScreens)
             {
                 //Check if this eaScr is included in the SpanScreen
-                if (IsSpanScreenWorking)
+                if (IsSpanScreenWorking && _spanScreen.IsExistScreen(eaScr.ScreenDeviceName))
                 {
-                    if (_spanScreen.IsExistScreen(eaScr.ScreenDeviceName))
-                        continue;
+                    continue;
                 }
                 //If the EAScreen has no a Dell monitor attached, we will not allocate a WorkWindow for it
-                if (!eaScr.HasAttachedMonitor)
+                if (!eaScr.HasAttachedMonitor && !isSupportNonDellMonitors)
                 {
-                    if (!isSupportNonDellMonitors)
-                        continue;
+                    continue;
                     //If this flag is true, then we will allow non-dell monitor to go
                 }
 
@@ -1019,14 +1040,12 @@ namespace DDPM.EABroker
             //Robert_Lin, 2024-10-18 Workaround
             //If ScreenCount>2, we assume it may have one Dell monitor, but no WorkWindow created, then we will
             //Redo this method by raise a "DisplaySettingsChanged" event
-            if (System.Windows.Forms.Screen.AllScreens.Length >= 2)
+            if (System.Windows.Forms.Screen.AllScreens.Length >= 2 &&
+                WorkWindowUsedCount == 0)
             {
-                if (WorkWindowUsedCount == 0)
-                {
-                    System.Threading.Timer timer1 = new System.Threading.Timer((obj) => {
-                        _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
-                    }, null, 2000, Timeout.Infinite);
-                }
+                System.Threading.Timer timer1 = new System.Threading.Timer((obj) => {
+                    _agent.RaiseEvent(AgentEventNames.DisplaySettingsChanged, this, new EventManagerArgs());
+                }, null, 2000, Timeout.Infinite);
             }
         }
 
@@ -1034,9 +1053,8 @@ namespace DDPM.EABroker
         {
             foreach (EAWorkWindow workWin in _workWindows)
             {
-                if (workWin != null)
-                    if (!workWin.IsUsed)
-                        return workWin;
+                if (workWin != null && !workWin.IsUsed)
+                    return workWin;
             }
             return null;
         }
@@ -1052,12 +1070,9 @@ namespace DDPM.EABroker
 
             foreach (EAWorkWindow workWin in _workWindows)
             {
-                if (workWin.IsUsed)
+                if (workWin.IsUsed && workWin.IsMyMonitor(mi))
                 {
-                    if (workWin.IsMyMonitor(mi))
-                    {
-                        return workWin;
-                    }
+                    return workWin;
                 }
             }
             return null;
@@ -1294,12 +1309,9 @@ namespace DDPM.EABroker
                 bool isChanged = (_hoveringAwsIcon != value);
                 SetProperty(ref _hoveringAwsIcon, value);
                 OnPropertyChanged("HoveringAwsIconText");
-                if (isChanged) 
+                if (isChanged && HoveringAwsIconChanged != null) 
                 {
-                    if (HoveringAwsIconChanged != null)
-                    {
-                        Task.Run(() => HoveringAwsIconChanged.Invoke(this, _hoveringAwsIcon));
-                    }
+                    Task.Run(() => HoveringAwsIconChanged.Invoke(this, _hoveringAwsIcon));
                 }
             }
         }
@@ -1323,16 +1335,14 @@ namespace DDPM.EABroker
         public bool RefreshAwsIconsFromRecentList(SplitJson[] recentList)
         {
             //Validation: recentList count >= 4
-            if (recentList != null)
+            if (recentList != null && recentList.Length >= 4)
             {
-                if (recentList.Length >= 4)
-                {
-                    AwsIcon1 = ArrangeVM.SplitCtrlFromSplitJson(recentList[0], eSplitModes.AWS);
-                    AwsIcon2 = ArrangeVM.SplitCtrlFromSplitJson(recentList[1], eSplitModes.AWS);
-                    AwsIcon3 = ArrangeVM.SplitCtrlFromSplitJson(recentList[2], eSplitModes.AWS);
-                    AwsIcon4 = ArrangeVM.SplitCtrlFromSplitJson(recentList[3], eSplitModes.AWS);
-                    return true;
-                }
+                AwsIcon1 = ArrangeVM.SplitCtrlFromSplitJson(recentList[0], eSplitModes.AWS);
+                AwsIcon2 = ArrangeVM.SplitCtrlFromSplitJson(recentList[1], eSplitModes.AWS);
+                AwsIcon3 = ArrangeVM.SplitCtrlFromSplitJson(recentList[2], eSplitModes.AWS);
+                AwsIcon4 = ArrangeVM.SplitCtrlFromSplitJson(recentList[3], eSplitModes.AWS);
+                return true;
+
             }
             return false;
        }
@@ -1498,12 +1508,9 @@ namespace DDPM.EABroker
                 SetProperty(ref _hoveringAwsCellObj, value);
                 OnPropertyChanged("HoveringAwsCell");
 
-                if (isChanged)
+                if (isChanged && HoveringAwsCellObjChanged != null)
                 {
-                    if (HoveringAwsCellObjChanged != null)
-                    {
-                        Task.Run(() => HoveringAwsCellObjChanged.Invoke(this, _hoveringAwsCellObj));
-                    }
+                    Task.Run(() => HoveringAwsCellObjChanged.Invoke(this, _hoveringAwsCellObj));
                 }
             }
         }
@@ -1883,6 +1890,39 @@ namespace DDPM.EABroker
                 }
 
             }
+        }
+        #endregion
+
+        #region SetEAWindowPos
+        public Rect SetEAWindowPos(IntPtr hWnd, Rect rcArrange, Rectangle? workingArea=null)
+        {
+            if (workingArea == null && WorkScreen != null)
+            {
+                workingArea = WorkScreen.WorkingArea;
+            }
+
+            if (IsWithoutGap)
+            {
+
+                double extendedFrameBoundsHorz = 3;
+                rcArrange.Inflate(6 + extendedFrameBoundsHorz, 6);
+
+                if (workingArea != null)
+                {
+                    int scrLeft = (int)workingArea?.Left;
+                    if (rcArrange.Left < scrLeft)
+                    {
+                        double dx = scrLeft - rcArrange.Left;
+                        rcArrange.X = scrLeft;
+                        rcArrange.Width -= dx;
+                    }
+                }
+            }
+            if (!rcArrange.IsEmpty)
+            {
+                WinEventHook.SetWindowPosition(hWnd, rcArrange);
+            }
+            return rcArrange;
         }
         #endregion
     }

@@ -11,14 +11,22 @@ namespace DDPM.UI.Module.Kvm
     /// </summary>
     public partial class KvmRightView : UserControl
     {
+        //Robert_Lin, 2024-12-26, ViewModel is required for KvmRightView, keep is as a data member.
+        private readonly KvmViewModel _vm;
         private KvmViewModel vm
         {
-            get => (KvmViewModel)DataContext != null ? (KvmViewModel)DataContext : null;
+            //Robert_Lin, 2024-12-26
+            //NEW:
+            get => _vm;
+            //OLD:
+            //get => (KvmViewModel)DataContext != null ? (KvmViewModel)DataContext : null;
         }
 
         public KvmRightView(KvmViewModel vm)
         {
             InitializeComponent();
+            //Robert_Lin, 2024-12-26
+            _vm = vm;
             //DataContext = new KvmViewModel();
             DataContext = vm;
             vm.Invoke_RefreshData();
@@ -156,16 +164,17 @@ namespace DDPM.UI.Module.Kvm
                         vm._log.Debug("[SelectUSBKVM]USBKVM is on");
                         button_USB.Visibility = Visibility.Collapsed;
                         button_OnUSB.Visibility = Visibility.Visible;
-                        if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E8"))
-                        {
-                            vm._log.Debug("[SelectUSBKVM]Have E8");
-                            button_USBHotkeys.Visibility = Visibility.Visible;
-                        }
-                        else
-                        {
-                            vm._log.Debug("[SelectUSBKVM]No E8");
-                            button_USBHotkeys.Visibility = Visibility.Collapsed;
-                        }
+                        button_USBHotkeys.Visibility = Visibility.Visible;
+                        //if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E8"))
+                        //{
+                        //    vm._log.Debug("[SelectUSBKVM]Have E8");
+                        //    button_USBHotkeys.Visibility = Visibility.Visible;
+                        //}
+                        //else
+                        //{
+                        //    vm._log.Debug("[SelectUSBKVM]No E8");
+                        //    button_USBHotkeys.Visibility = Visibility.Collapsed;
+                        //}
                     }
                     else
                     {

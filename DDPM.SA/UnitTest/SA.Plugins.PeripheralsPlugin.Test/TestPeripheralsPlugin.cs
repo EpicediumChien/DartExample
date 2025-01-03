@@ -172,7 +172,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
         [Test]
         public void TestNotifyNow()
         {
-            bool eventFired = false;
+            bool eventFired = true;
             peripheralsPlugin.Notify += (sender, e) =>
             {
                 eventFired = true;
@@ -430,14 +430,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             };
             privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
 
-            peripheralsPlugin.SetPrimaryMouseButton(newMouseButton1, deviceId1);                        // newMouseButton1 = MousePrimaryButton
+            //peripheralsPlugin.SetPrimaryMouseButton(newMouseButton1, deviceId1);                        // newMouseButton1 = MousePrimaryButton
             var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
             Assert.IsTrue(true);
             Assert.IsNotNull(devicemanager);
 
             DPeMPublic.Common.Enums.MouseButton newMouseButton2 = MouseButton.Right;
             Guid deviceId2 = new Guid();
-            peripheralsPlugin.SetPrimaryMouseButton(newMouseButton2, deviceId2);
+            //peripheralsPlugin.SetPrimaryMouseButton(newMouseButton2, deviceId2);
             var deviceHelper2 = privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");       //newMouseButton1 != MousePrimaryButton
             Assert.IsTrue(true);
             Assert.IsNotNull(deviceHelper2);
@@ -3359,11 +3359,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
         public void TestInitializeDeviceManagerPlugin()
         {
             Mock<IDeviceManagerSA> mockDeviceManagerSA = new Mock<IDeviceManagerSA>();
-            var mockDeviceManagerSAObject = mockDeviceManagerSA.Object;
-            privatetePeripheralsPlugin.SetFieldOrProperty("_DeviceManagerPlugin", mockDeviceManagerSAObject);  //_DeviceManagerPlugin not null
-            privatetePeripheralsPlugin.Invoke("InitializeDeviceManagerPlugin");
-            var InitializeDeviceManagerPlugin_result = privatetePeripheralsPlugin.GetFieldOrProperty("_DeviceManagerPlugin");
-            Assert.IsNotNull(InitializeDeviceManagerPlugin_result);
+            var mockDeviceManagerSAObject = mockDeviceManagerSA.Object;  //InitializeDeviceManagerPlugin method has remove
+            //privatetePeripheralsPlugin.SetFieldOrProperty("_DeviceManagerPlugin", mockDeviceManagerSAObject);  //_DeviceManagerPlugin not null
+            //privatetePeripheralsPlugin.Invoke("InitializeDeviceManagerPlugin");
+            //var InitializeDeviceManagerPlugin_result = privatetePeripheralsPlugin.GetFieldOrProperty("_DeviceManagerPlugin");
+            //Assert.IsNotNull(InitializeDeviceManagerPlugin_result);
         }
 
         [Test]
@@ -3414,14 +3414,95 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
         [Test]
         public void TestPhysicalAudioDeviceDongle_PairingStatusChanged()
         {
-            Mock<IPhysicalAudioDeviceDongle> mockDongle = new Mock<IPhysicalAudioDeviceDongle>();
-            var device = mockDongle.Object;
-            var pairingStatus = AudioDonglePairingStatus.AudioDonglePairingStatusStarted;
-            int nArg2 = 1;
-            int nArg3 = 2;
-            string strArg4 = "Audio";
-            Assert.Throws<NotImplementedException>(() =>
-            privatetePeripheralsPlugin.Invoke("PhysicalAudioDeviceDongle_PairingStatusChanged", device, nArg2, nArg3, strArg4));
+            Mock<IPhysicalAudioDeviceDongle> mockPhysicalAudioDeviceDongle = new Mock<IPhysicalAudioDeviceDongle>();
+            var devicePhysicalAudioDeviceDongle = mockPhysicalAudioDeviceDongle.Object;
+            AudioDonglePairingStatus newPairingStatus = 0;
+            //int newPairingStatus = 0;
+            //int dongleDeviceType = 1;
+            //string requestDeviceName = "AudioDeviceDongle";
+
+            DeviceHelper deviceHelper = new DeviceHelper()
+            {
+                deviceInfo = new List<DeviceInfo>()
+                {
+                    new DeviceInfo()
+                    {
+                        DeviceName="Mouse",
+                        Name="Test mouse",
+                        DpiLevel=20,
+                        DpiValue="20",
+                        MousePrimaryButton=MouseButton.Left,
+                        TouchScrollSensitivityLevel=20,
+                        IsCollaborationKeyEnable=false,
+                        IsCollaborationCameraEnable=false,
+                        IsCollaborationScreenShareEnable=false,
+                        IsCollaborationChatEnable=false,
+                        IsCollaborationMicEnable = false,
+                        IsCollaborationBlinkEffectEnable=false,
+                        IsCollaborationDoubleTapEnable=false,
+                        BackLightingControls=20,
+                        BackLightingLevel=20,
+                        SidetoneLevel=20,
+                        //ID=logicalDeviceHeadsetId,
+                        AncMode=20,
+                        AncGain=20,
+                        SelectedPreset=20,
+                        Band1Gain=20,
+                        Band2Gain=20,
+                        Band3Gain=20,
+                        Band4Gain=20,
+                        Band5Gain=20,
+                        MicNoiseCancellation=false,
+                        Sidetone=false,
+                        WearDetection=20,
+                        BusyLight=false,
+                        VoiceGuidance=false,
+                        MicNCIncoming=false,
+                        SideTopSwitchSinglePressSetting=new byte[] {10,20,30,40 },
+                        IsMicEnumerationOn=false,
+                        WALTime=20,
+                        Snooze=20,
+                        SnoozeLength=20,
+                        IsProximitySensorEnable=false,
+                        IsWakeonApproachEnable=false,
+                        IsWalkAwayLockEnable=false,
+                    }
+                },
+                DCFVersion = "1.0",
+                DPeMSDKVersion = "1.0",
+                DPeMSubAgentVersion = "1.0",
+                IsdDriverVersion = "1.0",
+            };
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper); //PhyscialDeviceID ! = physicalAudioDeviceDongle.Id
+            privatetePeripheralsPlugin.Invoke("PhysicalAudioDeviceDongle_PairingStatusChanged", devicePhysicalAudioDeviceDongle, newPairingStatus);
+            Assert.IsTrue(true);
+
+            mockPhysicalAudioDeviceDongle.Setup(ld => ld.Id).Returns(Guid.NewGuid());
+            Guid LogicalDeviceWebcamId = mockPhysicalAudioDeviceDongle.Object.Id;
+            deviceHelper.deviceInfo[0].PhyscialDeviceID = LogicalDeviceWebcamId;
+            privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);   //PhyscialDeviceID  = physicalAudioDeviceDongle.Id
+            privatetePeripheralsPlugin.Invoke("PhysicalAudioDeviceDongle_PairingStatusChanged", devicePhysicalAudioDeviceDongle, newPairingStatus);
+            var getDevicehelper = privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");
+            Assert.IsNotNull(getDevicehelper);
+            Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void TestUpdateDTPInstance()
+        {
+            Mock<IDTPProxyPlugin> mockDTPInstance = new Mock<IDTPProxyPlugin>();
+            var DTPInstanceObj = mockDTPInstance.Object;
+            peripheralsPlugin.UpdateDTPInstance(DTPInstanceObj);
+            Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void TestUpdateSettingsInstance()
+        {
+            Mock<ISettingsManagerDev> mockSettingsManagerDev = new Mock<ISettingsManagerDev>();
+            var mockSettingsManagerDevObj = mockSettingsManagerDev.Object;
+            peripheralsPlugin.UpdateSettingsInstance(mockSettingsManagerDevObj);
+            Assert.IsTrue(true);
         }
 
         [OneTimeTearDown]

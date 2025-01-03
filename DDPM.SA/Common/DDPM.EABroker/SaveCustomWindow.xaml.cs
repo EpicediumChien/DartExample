@@ -21,6 +21,7 @@ using System.Printing;
 using System.Security.AccessControl;
 using Rectangle = System.Drawing.Rectangle;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Microsoft.Win32;
 
 namespace DDPM.EABroker
 {
@@ -150,6 +151,20 @@ namespace DDPM.EABroker
             InitComboBox();
 
             //Determine the display position (x,y)
+
+            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+        }
+
+        private void SystemEvents_DisplaySettingsChanged(object? sender, EventArgs e)
+        {
+            if (System.Windows.Interop.ComponentDispatcher.IsThreadModal)
+                DialogResult = false;
+
+            if (CancelButtonClick != null)
+            {
+                CancelButtonClick(this, "");
+            }
+            Hide();
         }
 
         //private void UpdateMultilingualUiText()
@@ -915,5 +930,11 @@ namespace DDPM.EABroker
 
         #endregion
 
+        #region Exit
+        private void Window_Unloaded(object sender, RoutedEventArgs e)
+        {
+            SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
+        }
+        #endregion
     }
 }

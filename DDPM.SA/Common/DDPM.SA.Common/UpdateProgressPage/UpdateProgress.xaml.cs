@@ -33,6 +33,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
         private string _ProgressStr_2_Color;
         ManagementEventWatcher watcher;
         Logs _Logs;
+        private bool isInstalling = false;
 
         public string UpdateTitle
         {
@@ -172,6 +173,16 @@ namespace DDPM.SA.Common.UpdateProgressPage
             Close();
         }
 
+        public void HideWindow()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(HideWindow);
+                return;
+            }
+            Hide();
+        }
+
         private void UXWindow_Loaded(object sender, RoutedEventArgs e)
         {
             this.Width = 800;
@@ -201,24 +212,27 @@ namespace DDPM.SA.Common.UpdateProgressPage
             }
             else
             {
-                UpdateTitle = $"{LangHelper.Instance["Firmware_Update"]} - {e.DeviceName}";
+
+                UpdateTitle = $"{LangHelper.Instance["Firmware_Update"]} - {e.DeviceName} {e.Model}";
                 UpdateSubTitle = LangHelper.Instance["Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed"];
             }
             UpdateVersion = $"{LangHelper.Instance["Version"]} {e.TheLatestVersion}";
             if (e.ProcessName.Equals(LangHelper.Instance["Installing"]))
             {
+                isInstalling = true;
                 ProgressValue = (int)100;
                 ProgressStr = $"{LangHelper.Instance["Processing"]}... {(int)e.ProcessProgress}%";
                 if (!e.DeviceName.Equals("DDPM"))
                 {
                     ProgressStr_2 = $"{LangHelper.Instance["DDPM_will_reopen_soon_after_update"]}";
-                    ProgressStr_2_Color = "#FFFFFF";
+                    ProgressStr_2_Color = TextForeground;
                 }
                 AlertVisibility = Visibility.Collapsed;
                 Progress_IsAnimated = true;
             }
             else if (e.ProcessName.Equals(LangHelper.Instance["Downloading_and_installing"]))
             {
+                isInstalling = false;
                 ProgressValue = (int)e.ProcessProgress;
                 ProgressStr = $"{LangHelper.Instance["Downloading_and_installing"]}... {ProgressValue}%";
                 ProgressStr_2 = "";
@@ -227,13 +241,14 @@ namespace DDPM.SA.Common.UpdateProgressPage
             }
             else if (e.ProcessName.Equals(LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"]) || e.ProcessName.Equals(LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"]))
             {
+                isInstalling = false;
                 ProgressValue = (int)e.ProcessProgress;
                 ProgressStr = $"{LangHelper.Instance["Downloading_and_installing"]}... {ProgressValue}%";
                 Progress_IsAnimated = false;
                 AlertMessage = e.ProcessName;
                 AlertVisibility = Visibility.Visible;
             }
-            else if (e.ProcessName.Equals(LangHelper.Instance["Timeout"]))
+            else if (e.ProcessName.Equals(LangHelper.Instance["Timeout"]) && !isInstalling)
             {
                 ProgressStr_2 = $"{LangHelper.Instance["Unable_to_detect_target_device"]}… {(int)e.ProcessProgress}s";
                 ProgressStr_2_Color = "#E6AC28";

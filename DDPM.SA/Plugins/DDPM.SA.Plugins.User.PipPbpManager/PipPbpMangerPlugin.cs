@@ -17,6 +17,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Microsoft;
+using Microsoft.VisualBasic.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -54,7 +55,8 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         private IAgent _agent;
         private const string PluginLogId = "PipPbpManger";
 
-        private Logs _logs;
+        //private Logs _logs;
+        private ILog? _log;
         private IDisplayService _DisplayManagerPlugin;
         private PluginCondition _DisplayManagerPluginCondition;
         private bool _DisplayManagerPluginUsable = false;
@@ -78,7 +80,8 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         {
             _agent = agent;
             _IsAdministrator = ProcessSecurityHelperWrapper.IsCurrentProcessRunningElevated();
-            _logs = new Logs(Log);
+            _log = Log;
+            //_logs = new Logs(Log);
             //_logs.DebugMsg("[PipPbpMangerPlugin] Does PipPbpMangerPlugin have Administrator: " + _IsAdministrator.ToString());
         }
 
@@ -94,6 +97,23 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         }
 
         #endregion
+
+        #region Log
+        private void WriteLog(string msg, Exception? ex = null)
+        {
+            if (_log != null)
+            {
+                if (ex != null)
+                {
+                    _log.Error(ex, msg);
+                }
+                else
+                {
+                    _log.Info(msg);
+                }
+            }
+        }
+        #endregion Log
 
         #region PIP Mode Code for VCP code 0xE9
 
@@ -120,40 +140,52 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         /// </returns>
         public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo)
         {
-            if (_DisplayManagerPlugin != null)
+            /*
+        if (_DisplayManagerPlugin != null)
+        {
+            //Robert_Lin, 2024-12-28, due to MonitorInfo has provide the capability string, will get from it
+            //NEW Code:
+            //if (monitorInfo.CapabilityDic != null)
+            //{
+            //    if (monitorInfo.CapabilityDic.ContainsKey("E9"))
+            //    {
+            //        return monitorInfo.CapabilityDic["E9"];
+            //    }
+            //}
+
+            string monitorCaps = _DisplayManagerPlugin.GetCapabilitiesString(monitorInfo).Result;
+            if (String.IsNullOrEmpty(monitorCaps))
             {
-                string monitorCaps = _DisplayManagerPlugin.GetCapabilitiesString(monitorInfo).Result;
-                if (String.IsNullOrEmpty(monitorCaps))
-                {
-                    _lastError = $"GetCapabilitiesString({monitorInfo.AliasDeviceName}): monitor capabilities string is empty.";
-                    _logs.DebugMsg($"[{pluginName}] {_lastError}");
-                    return Task.FromResult(String.Empty);
-                }
-                //Find the start index of "E9("
-                string signature = "E9(";
-                int idxSignature = monitorCaps.IndexOf(signature);
-                if (idxSignature < 0) //Not found, will return String.Empty
-                {
-                    _lastError = $"GetCapabilitiesString({monitorInfo.AliasDeviceName}): PIP/PBP capabilities (E9) not found.";
-                    _logs.DebugMsg($"[{pluginName}] {_lastError}");
-                    return Task.FromResult(String.Empty);
-                }
-                int idxPipPbpCapsStart = idxSignature + signature.Length;
-                //Find the index of next ')' char
-                int idxEnd = monitorCaps.IndexOf(')', idxPipPbpCapsStart);
-                if (idxEnd < 0)
-                {
-                    _lastError = $"GetCapabilitiesString({monitorInfo.AliasDeviceName}): End of capabilties char ')' not found.";
-                    _logs.DebugMsg($"[{pluginName}] {_lastError}");
-                    return Task.FromResult(String.Empty);
-                }
-                int pipPbpCapsLen = idxEnd - idxPipPbpCapsStart;
-                //Extract the sub string contains PIP/PBP capabilities
-                string retString = monitorCaps.Substring(idxPipPbpCapsStart, pipPbpCapsLen);
-                return Task.FromResult(retString);
+                _lastError = $"GetCapabilitiesString({monitorInfo.AliasDeviceName}): monitor capabilities string is empty.";
+                WriteLog($"[{pluginName}] {_lastError}");
+                return Task.FromResult(String.Empty);
             }
-            _lastError = $"GetCapabilitiesString({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
-            _logs.DebugMsg($"[{pluginName}] {_lastError}");
+            //Find the start index of "E9("
+            string signature = "E9(";
+            int idxSignature = monitorCaps.IndexOf(signature);
+            if (idxSignature < 0) //Not found, will return String.Empty
+            {
+                _lastError = $"GetCapabilitiesString({monitorInfo.AliasDeviceName}): PIP/PBP capabilities (E9) not found.";
+                _logs.DebugMsg($"[{pluginName}] {_lastError}");
+                return Task.FromResult(String.Empty);
+            }
+            int idxPipPbpCapsStart = idxSignature + signature.Length;
+            //Find the index of next ')' char
+            int idxEnd = monitorCaps.IndexOf(')', idxPipPbpCapsStart);
+            if (idxEnd < 0)
+            {
+                _lastError = $"GetCapabilitiesString({monitorInfo.AliasDeviceName}): End of capabilties char ')' not found.";
+                _logs.DebugMsg($"[{pluginName}] {_lastError}");
+                return Task.FromResult(String.Empty);
+            }
+            int pipPbpCapsLen = idxEnd - idxPipPbpCapsStart;
+            //Extract the sub string contains PIP/PBP capabilities
+            string retString = monitorCaps.Substring(idxPipPbpCapsStart, pipPbpCapsLen);
+            return Task.FromResult(retString);
+        }
+        _lastError = $"GetCapabilitiesString({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
+        _logs.DebugMsg($"[{pluginName}] {_lastError}");
+        */
             return Task.FromResult(String.Empty);
         }
 
@@ -218,10 +250,14 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_Off);
+                Stopwatch sw = Stopwatch.StartNew();
+                bool ret = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_Off).Result;
+                sw.Stop();
+                WriteLog($"@SetPipModeOff({monitorInfo.modelName}) Result={ret}, Elapsed={sw.ElapsedMilliseconds}.");
+                return Task.FromResult(ret);
             }
-            _lastError = $"SetPxpModeOff({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
-            _logs.DebugMsg($"[{pluginName}] {_lastError}");
+            _lastError = $"SetPxpModeOff({monitorInfo.modelName}): DeviceManagerPlugin is null.";
+            WriteLog("@" + _lastError);
             return Task.FromResult(false);
         }
 
@@ -229,10 +265,14 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_Small);
+                Stopwatch sw = Stopwatch.StartNew();
+                bool ret = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_Small).Result;
+                sw.Stop();
+                WriteLog($"@SetPipModeSmall({monitorInfo.modelName}) Result={ret}, Elapsed={sw.ElapsedMilliseconds}.");
+                return Task.FromResult(ret);
             }
-            _lastError = $"SetPxpModeSmall({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
-            _logs.DebugMsg($"[{pluginName}] {_lastError}");
+            _lastError = $"SetPipModeSmall({monitorInfo.modelName}): DeviceManagerPlugin is null.";
+            WriteLog("@" + _lastError);
             return Task.FromResult(false);
         }
 
@@ -240,10 +280,14 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_Large);
+                Stopwatch sw = Stopwatch.StartNew();
+                bool ret = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_Large).Result;
+                sw.Stop();
+                WriteLog($"@SetPipModeLarge({monitorInfo.modelName}) Result={ret}, Elapsed={sw.ElapsedMilliseconds}.");
+                return Task.FromResult(ret);
             }
-            _lastError = $"SetPxpModeLarge({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
-            _logs.DebugMsg($"[{pluginName}] {_lastError}");
+            _lastError = $"SetPipModeLarge({monitorInfo.modelName}): DeviceManagerPlugin is null.";
+            WriteLog("@" + _lastError);
             return Task.FromResult(false);
         }
 
@@ -251,10 +295,14 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_SizeToggle);
+                Stopwatch sw = Stopwatch.StartNew();
+                bool ret = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_SizeToggle).Result;
+                sw.Stop();
+                WriteLog($"@TogglePipSize({monitorInfo.modelName}) Result={ret}, Elapsed={sw.ElapsedMilliseconds}.");
+                return Task.FromResult(ret);
             }
-            _lastError = $"TogglePipSize({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
-            _logs.DebugMsg($"[{pluginName}] {_lastError}");
+            _lastError = $"TogglePipSize({monitorInfo.modelName}): DeviceManagerPlugin is null.";
+            WriteLog("@" + _lastError);
             return Task.FromResult(false);
         }
 
@@ -262,10 +310,17 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_PositionToggle);
+                Stopwatch sw = Stopwatch.StartNew();
+                bool ret = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, PipMode_PositionToggle).Result;
+                sw.Stop();
+                WriteLog($"@TogglePipPosition({monitorInfo.modelName}) Result={ret}, Elapsed={sw.ElapsedMilliseconds}.");
+
+                //ObjGetVCP objVcp = GetPxpMode(monitorInfo).Result;
+                //Trace.WriteLine($"Toggle.Result={ret}, GetPxpMode({objVcp.result}, {objVcp.value})");
+                return Task.FromResult( ret );
             }
-            _lastError = $"TogglePipPosition({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
-            _logs.DebugMsg($"[{pluginName}] {_lastError}");
+            _lastError = $"TogglePipPosition({monitorInfo.modelName}): DeviceManagerPlugin is null.";
+            WriteLog("@" + _lastError);
             return Task.FromResult(false);
         }
 
@@ -273,10 +328,14 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, modeCode);
+                Stopwatch sw = Stopwatch.StartNew();
+                bool ret = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE9, modeCode).Result;
+                sw.Stop();
+                WriteLog($"@SetPbpMode({monitorInfo.modelName},0x{modeCode:X}) Result={ret}, Elapsed={sw.ElapsedMilliseconds}.");
+                return Task<bool>.FromResult(ret);
             }
-            _lastError = $"SetPbpMode({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
-            _logs.DebugMsg($"[{pluginName}] {_lastError}");
+            _lastError = $"SetPbpMode({monitorInfo.modelName}): DeviceManagerPlugin is null.";
+            WriteLog("@" + _lastError);
             return Task.FromResult(false);
         }
 
@@ -293,14 +352,28 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         {
             if (_DisplayManagerPlugin != null)
             {
+                //For AA mode monitors
+                string aaMode = "";
+                if (monitorInfo.modelName.Equals("UP2720Q", StringComparison.OrdinalIgnoreCase) ||
+                    monitorInfo.modelName.Equals("U4919DW", StringComparison.OrdinalIgnoreCase))
+                {
+                    aaMode = "AA mode";
+                    x = 0;
+                    y = 0;
+                }
                 //Write value: 0xF0xy, x and y is 0=main, 1=sub1, 2=sub2, 3=sub3
                 UInt16 wX = (UInt16)((x & 3) << 4);
-                UInt16 wY = (UInt16)((y & 3));
+                UInt16 wY = (UInt16)(y & 3);
                 UInt16 wValue = (UInt16)(0xF000 | wX | wY);
-                return _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE5, wValue);
+                //Robert_Lin, 2024-12-28 add log for trace issues
+                Stopwatch sw = Stopwatch.StartNew();
+                bool ret = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, 0xE5, wValue).Result;
+                sw.Stop();
+                WriteLog($"@VideoSwap({monitorInfo.modelName},{x},{y}){aaMode}, Result={ret}, Elapsed={sw.ElapsedMilliseconds}.");
+                return Task<bool>.FromResult(ret);
             }
-            _lastError = $"VideoSwap({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
-            _logs.DebugMsg($"[{pluginName}] {_lastError}");
+            _lastError = $"VideoSwap({monitorInfo.modelName}): DeviceManagerPlugin is null.";
+            WriteLog("@" + _lastError);
             return Task.FromResult(false);
         }
 
@@ -308,10 +381,14 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         {
             if (_DisplayManagerPlugin != null)
             {
-                return _DisplayManagerPlugin.GetVCPCapability(monitorInfo, 0xE9);
+                Stopwatch sw = Stopwatch.StartNew();
+                ObjGetVCP ret = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, 0xE9).Result;
+                sw.Stop();
+                WriteLog($"@GetPxpMode({monitorInfo.modelName}), Result={ret.result}, Value=0x{ret.value:X}, Elapsed={sw.ElapsedMilliseconds}");
+                return Task.FromResult<ObjGetVCP>(ret);
             }
-            _lastError = $"SetPbpMode({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
-            _logs.DebugMsg($"[{pluginName}] {_lastError}");
+            _lastError = $"GetPxpMode({monitorInfo.modelName}): DeviceManagerPlugin is null.";
+            WriteLog("@" + _lastError);
             return Task.FromResult<ObjGetVCP>(new ObjGetVCP() { result = false, value = 0xff });
         }
 
@@ -319,7 +396,9 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         {
             if (_DisplayManagerPlugin != null)
             {
+                Stopwatch sw = Stopwatch.StartNew();
                 ObjGetVCP ret = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, 0xE8).Result;
+                sw.Stop();
                 if (ret.result)
                 {
                     List<UInt16> listOut = new List<UInt16>();
@@ -345,9 +424,16 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
                     {
                         listOut.Add(sub3);
                     }
+                    WriteLog($"@GetSubInputList({monitorInfo.modelName}), Result={ret.result}, Value=[0x{ret.value:X}], Sub1~3=[0x{sub1:X} 0x{sub2:X} 0x{sub3:X}], Elapsed={sw.ElapsedMilliseconds}");
                     return Task.FromResult<List<UInt16>>(listOut);
                 }
+                else
+                {
+                    WriteLog($"@GetSubInputList({monitorInfo.modelName}), Result={ret.result}, Elapsed={sw.ElapsedMilliseconds}");
+                }
             }
+            _lastError = $"GetSubInputList({monitorInfo.modelName}): DeviceManagerPlugin is null.";
+            WriteLog("@" + _lastError);
             return Task.FromResult<List<UInt16>>(null);
         }
 
@@ -458,10 +544,14 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
                 //Prepase for the VCP Code Word
                 // VCP 0xE7 writeValue=FF0x where is x=target
                 UInt16 writeValue = (UInt16)(0xFF00 + target);
-                return _DisplayManagerPlugin.SetVCPCapability(monitorInfo, (byte)0xE7, writeValue);
+                Stopwatch sw = Stopwatch.StartNew();
+                bool ret = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, (byte)0xE7, writeValue).Result;
+                sw.Stop();
+                WriteLog($"@UsbSwitch({monitorInfo.modelName}, 0x{target:X}), Result={ret}, Elapsed={sw.ElapsedMilliseconds}");
+                return Task.FromResult(ret);
             }
-            _lastError = $"VideoSwap({monitorInfo.AliasDeviceName}): DeviceManagerPlugin is null.";
-            _logs.DebugMsg($"[{pluginName}] {_lastError}");
+            _lastError = $"UsbSwitch({monitorInfo.modelName}, 0x{target:X}): DeviceManagerPlugin is null.";
+            WriteLog("@" + _lastError);
             return Task.FromResult(false);
         }
 
@@ -493,13 +583,13 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
                 {
                     if (pluginCondition is PluginErrorCondition)
                     {
-                        _logs.DebugMsg($"[PipPbpMangerPlugin] {nameof(GetCurrentDisplayManagerPluginCondition)} - Display ManagerPlugin is in an error condition");
+                        WriteLog($"@{nameof(GetCurrentDisplayManagerPluginCondition)} - Display ManagerPlugin is in an error condition");
                         _DisplayManagerPluginCondition = pluginCondition;
                         _DisplayManagerPluginUsable = false;
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
-                        _logs.DebugMsg($"[PipPbpMangerPlugin] {nameof(GetCurrentDisplayManagerPluginCondition)} -Display ManagerPlugin is in a started condition");
+                        WriteLog($"@{nameof(GetCurrentDisplayManagerPluginCondition)} -Display ManagerPlugin is in a started condition");
                         _DisplayManagerPluginCondition = pluginCondition;
                         _DisplayManagerPluginUsable = true;
 

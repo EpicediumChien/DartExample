@@ -319,11 +319,11 @@ namespace NGA.Common
         /// <summary>
         ///  Telemetry Registry Key
         /// </summary>
-        public static string TelemetryRegKey = @"SOFTWARE\\Dell\\DCFShared\\Telemetry";
+        public readonly static string TelemetryRegKey = @"SOFTWARE\\Dell\\DCFShared\\Telemetry";
 
         /// <summary>
         ///  ConsentConfirmed Registry Value
         /// </summary>
-        public static string ConsentConfirmedRegValue = "ConsentConfirmed";
+        public readonly static string ConsentConfirmedRegValue = "ConsentConfirmed";
     }
 }

@@ -34,5 +34,27 @@ namespace DDPM.SA.Common.Method
         {
             return FindWindow(lpClassName, lpWindowName);
         }
+
+        // << 250102 added by Hess to change MousePrimaryButton
+        private const uint SPI_SETMOUSEBUTTONSWAP = 0x0021;
+        private const uint SPIF_SENDCHANGE = 0x0002;
+        private const int SM_SWAPBUTTON = 0x0017;
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int GetSystemMetrics(int nIndex);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, bool pvParam, uint fWinIni);
+        public static bool IsPrimaryButtonLeft()
+        {
+            var value = GetSystemMetrics(SM_SWAPBUTTON);
+            return value == 0;
+        }
+        public static void SetPrimaryButtonToLeft(bool isLeftPrimary)
+        {
+            SystemParametersInfo(SPI_SETMOUSEBUTTONSWAP, (uint)(isLeftPrimary ? 0 : 1), false, SPIF_SENDCHANGE);
+        }
+        // >>
     }
 }

@@ -148,6 +148,7 @@
                                             -->
                                             <ComboBox x:Name="cbManualPreset" Grid.Column="2" Style="{StaticResource DdpmComboBoxStyle}"
                                                     Width="184"
+                                                    SelectionChanged="cbManualPreset_SelectionChanged"
                                                     ItemsSource="{Binding ColorPresets_ItemsCollection}"
                                                     SelectedIndex="{Binding ColorPresetSelectedIndex}" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
                                         </Grid>
@@ -518,21 +519,28 @@
                     </StackPanel>
                 </StackPanel>
 
-                <Border Name="DisableAll" >
+                <Border Name="DisableAll"
+                        Background="#4C24273C">
                     <Border.Style>
                         <Style TargetType="Border">
-                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Setter Property="Visibility"
+                                    Value="Collapsed" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsBusy}" Value="True">
-                                    <Setter Property="Visibility" Value="Visible" />
+                                <DataTrigger Binding="{Binding IsBusy}"
+                                            Value="True">
+                                    <Setter Property="Visibility"
+                                            Value="Visible" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
                     <!-- Add a UXBusyIndicator from Robert -->
-                    <UXControls:UXBusyIndicator BusyIndicatorType="Secondary" Width="64" Height="64"
-                                                HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                IsActive="{Binding IsBusy}" />
+                    <UXControls:UXBusyIndicator BusyIndicatorType="Secondary"
+                                Width="64"
+                                Height="64"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                IsActive="{Binding IsBusy}" />
                 </Border>
             </Grid>
         </UXControls:UXScrollViewer>

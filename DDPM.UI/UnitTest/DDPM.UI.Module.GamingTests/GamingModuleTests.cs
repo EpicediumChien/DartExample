@@ -129,15 +129,17 @@ namespace DDPM.UI.Module.Gaming.Tests
         [Test]
         public void TestOnSelectedHomeDeviceChanged()
         {
-            try
-            {
-                gamingModule.OnSelectedHomeDeviceChanged();
-                Assert.True(true);
-            }
-            catch (Exception ex)
-            {
-                Assert.Fail("not invoked");
-            }
+            gamingModule.IsModuleActive = false;
+            gamingModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(true));
+        }
+
+        [Test]
+        public void TestOnSelectedHomeDeviceChangeda()
+        {
+            gamingModule.IsModuleActive = true;
+            gamingModule.OnSelectedHomeDeviceChanged();
+            Assert.That(privateObject.GetFieldOrProperty("isSelectChanged"), Is.EqualTo(false));
         }
 
         [Test]

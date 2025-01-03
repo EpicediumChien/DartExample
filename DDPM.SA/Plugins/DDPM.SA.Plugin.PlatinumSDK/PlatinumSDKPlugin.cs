@@ -33,6 +33,7 @@ namespace DDPM.SA.Plugin.PlatinumSDK
         private const string Description = pluginDescription;
 
         private static Logs _logs;
+        private static bool IsSucessInitializeAsync = false;
 
         private static readonly AgentPluginInfo _agentPluginInfo = new AgentPluginInfo()
         {
@@ -120,13 +121,6 @@ namespace DDPM.SA.Plugin.PlatinumSDK
                 _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
                 base.OnPluginStarting();
                 InitializePlatinumClientSdk();
-                _logs.DebugMsg_1("PlatinumSDK plugin report started");
-
-                if (_platinumClientSdk != null)
-                {
-                    _platinumClientSdk.InitializeAsync(new ClientAppId(new Guid("b397b9b3-04cb-4cdf-8a79-852d63cf4801"))).Wait();
-                    _logs.DebugMsg_1($"PlatinumSDK plugin InitializeAsync correct ...");
-                }
             }
             catch (Exception ex)
             {
@@ -195,8 +189,25 @@ namespace DDPM.SA.Plugin.PlatinumSDK
                 return;
             if (e.ChangedPlugins.Any() == false)
                 return;
+            
+            //---------------------------------------------------------
+            try
+            {
+                InitializePlatinumClientSdk();
+                _logs.DebugMsg_1("PlatinumSDK plugin report started");
 
-            InitializePlatinumClientSdk();
+                if (_platinumClientSdk != null && (!IsSucessInitializeAsync))
+                {
+                    _platinumClientSdk.InitializeAsync(new ClientAppId(new Guid("b397b9b3-04cb-4cdf-8a79-852d63cf4801"))).Wait();
+                    IsSucessInitializeAsync = true;
+                    _logs.DebugMsg_1($"PlatinumSDK plugin InitializeAsync correct ...");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"PlatinumSDK plugin OnPluginStarted ex: {ex.Message}");
+            }
+            //---------------------------------------------------------
         }
 
         #endregion Event Handler

@@ -23,6 +23,9 @@ using DDPM.UI.Resources.Helper;
 using System.Collections.ObjectModel;
 using DDPM.UI.Plugin.DdpmHomePlugin;
 using Dell.Client.Framework.UX.WPF;
+using Microsoft.VisualBasic.Logging;
+using CommunityToolkit.Mvvm.Input;
+using System.Windows.Input;
 
 namespace DDPM.UI.Module.Kvm
 {
@@ -164,6 +167,7 @@ namespace DDPM.UI.Module.Kvm
         private ImageSource? _PCImage;
         #endregion
 
+        #region Win32
         [DllImport("user32.dll", EntryPoint = "SetParent", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
@@ -179,6 +183,8 @@ namespace DDPM.UI.Module.Kvm
         {
             return EnableWindow(hWnd, bEnable);
         }
+        #endregion Win32
+
         //[DllImport("user32.dll", SetLastError = true)]
         //public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         public readonly ILog _log;
@@ -200,35 +206,79 @@ namespace DDPM.UI.Module.Kvm
         public Visibility EditPXP { get; set; } = Visibility.Collapsed;
         public Visibility DisenableUSBKVM { get; set; } = Visibility.Visible;
         public Visibility EnableUSBKVM { get; set; } = Visibility.Collapsed;
-        public string PC1_Input { get; set; }
-        public string PC2_Input { get; set; }
-        public string PC3_Input { get; set; }
-        public string PC4_Input { get; set; }
+        private string _pc1_Input { get; set; }
+        public string PC1_Input 
+        { 
+            get => _pc1_Input;
+            set 
+            {
+                _pc1_Input = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _pc2_Input { get; set; }
+        public string PC2_Input
+        {
+            get => _pc2_Input;
+            set
+            {
+                _pc2_Input = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _pc3_Input { get; set; }
+        public string PC3_Input 
+        { 
+            get => _pc3_Input; 
+            set
+            {
+                _pc3_Input = value;
+                OnPropertyChanged();
+            }
+        }
+        private string _pc4_Input { get; set; }
+        public string PC4_Input 
+        { 
+            get => _pc4_Input;
+            set
+            {
+                _pc4_Input = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsMoreThanPC2
+        {
+            get
+            {
+                return PC3_Visibility == Visibility.Visible;
+            }
+        }
 
         public Dictionary<UInt16, System.Windows.Controls.UserControl> PxPcodeDictionary = new Dictionary<UInt16, System.Windows.Controls.UserControl>()
         {
-            [0x0] = new PxPSplitCtrl0A(),
-            [0x11] = new PIPSplitCtrl1A(),
-            [0x12] = new PIPSplitCtrl1B(),
-            [0x24] = new PBPSplitCtrl2A(),
-            [0x2F] = new PBPSplitCtrl2B(),
-            [0x26] = new PBPSplitCtrl2C(),
-            [0x28] = new PBPSplitCtrl2C(),
-            [0x2A] = new PBPSplitCtrl2C(),
-            [0x2C] = new PBPSplitCtrl2C(),
-            [0x2E] = new PBPSplitCtrl2C(),
-            [0x25] = new PBPSplitCtrl2D(),
-            [0x27] = new PBPSplitCtrl2D(),
-            [0x29] = new PBPSplitCtrl2D(),
-            [0x2B] = new PBPSplitCtrl2D(),
-            [0x2D] = new PBPSplitCtrl2D(),
-            [0x31] = new PBPSplitCtrl3E(),
-            [0x32] = new PBPSplitCtrl3D(),
-            [0x33] = new PBPSplitCtrl3H(),
-            [0x34] = new PBPSplitCtrl3B(),
-            [0x35] = new PBPSplitCtrl3I(),
-            [0x41] = new PBPSplitCtrl4A(),
-            [0x42] = new PBPSplitCtrl4D()
+            [0x0] = null,
+            [0x21] = null,
+            [0x22] = null
+            //    [0x24] = new PBPSplitCtrl2A(),
+            //    [0x2F] = new PBPSplitCtrl2B(),
+            //    [0x26] = new PBPSplitCtrl2C(),
+            //    [0x28] = new PBPSplitCtrl2C(),
+            //    [0x2A] = new PBPSplitCtrl2C(),
+            //    [0x2C] = new PBPSplitCtrl2C(),
+            //    [0x2E] = new PBPSplitCtrl2C(),
+            //    [0x25] = new PBPSplitCtrl2D(),
+            //    [0x27] = new PBPSplitCtrl2D(),
+            //    [0x29] = new PBPSplitCtrl2D(),
+            //    [0x2B] = new PBPSplitCtrl2D(),
+            //    [0x2D] = new PBPSplitCtrl2D(),
+            //    [0x31] = new PBPSplitCtrl3E(),
+            //    [0x32] = new PBPSplitCtrl3D(),
+            //    [0x33] = new PBPSplitCtrl3H(),
+            //    [0x34] = new PBPSplitCtrl3B(),
+            //    [0x35] = new PBPSplitCtrl3I(),
+            //    [0x41] = new PBPSplitCtrl4A(),
+            //    [0x42] = new PBPSplitCtrl4D()
         };
 
         public string InputName1 { get; set; }
@@ -415,9 +465,11 @@ namespace DDPM.UI.Module.Kvm
         public Visibility isPxP { get; set; } = Visibility.Collapsed;
         public Visibility NoPxP { get; set; } = Visibility.Collapsed;
 
+        public bool isPxPFullView { get; set; } = false;
+
         #region Hotkey
 
-        private string _kvmHotkeyTooltip = "None";
+        private string _kvmHotkeyTooltip = LangHelper.Instance["None"];
 
         public string KvmHotkeyTooltip
         {
@@ -429,7 +481,7 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
-        private string _switchPCsKey = "None";
+        private string _switchPCsKey = LangHelper.Instance["None"];
 
         public string SwitchPCsKey
         {
@@ -441,7 +493,7 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
-        private string _changePipKey = "None";
+        private string _changePipKey = LangHelper.Instance["None"];
 
         public string ChangePipKey
         {
@@ -453,7 +505,7 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
-        private string _switchKbMsKey = "None";
+        private string _switchKbMsKey = LangHelper.Instance["None"];
 
         public string SwitchKbMsKey
         {
@@ -574,22 +626,22 @@ namespace DDPM.UI.Module.Kvm
                                     UInt16 curPxpMode = Convert.ToUInt16(ret_PxP.value);
                                     if (curPxpMode != 0)
                                     {
-                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
                                     }
                                     else
                                     {
-                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}";
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}";
                                     }
                                 }
                             }
                             else
                             {
-                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
+                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
                             }
                         }
                         else
                         {
-                            _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}";
+                            _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}";
                         }
                     }
                     else
@@ -605,28 +657,38 @@ namespace DDPM.UI.Module.Kvm
                                     UInt16 curPxpMode = Convert.ToUInt16(ret_PxP.value);
                                     if (curPxpMode != 0)
                                     {
-                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
                                     }
                                     else
                                     {
-                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}";
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}";
                                     }
                                 }
                             }
                             else
                             {
-                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
+                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
                             }
 
                         }
                         else
                         {
-                            _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}";
+                            _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}";
                         }
                     }
                     if (curHotkey.HotkeyOptions.Count > 0 && curHotkey.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
                     {
-                        _autoSwitchChecked = true;
+                        if (selectedHomeDevice != null && selectedHomeDevice.MonitorInfo != null)
+                        {
+                            if (IsPBPMode(selectedHomeDevice.MonitorInfo, _curPxpMode))
+                            {
+                                _autoSwitchChecked = true;
+                            }
+                            else
+                            {
+                                _autoSwitchChecked = false;
+                            }
+                        }
                     }
                 }
 
@@ -638,6 +700,71 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
+        private bool IsPBPMode(MonitorInfo mo, UInt16 curPxpMode)
+        {
+            bool ret = false;
+            UInt16 pxpModeValue = 0;
+            if (!mo.CapabilityDic.ContainsKey("E9"))
+                return ret;
+            if (curPxpMode == 0)
+            {
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    ObjGetVCP ret_PxP = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(mo).Result;
+                    if (ret_PxP != null && ret_PxP.result)
+                    {
+                        //pxpModeValue = Convert.ToUInt16(ret_PxP.value);
+                        if (!ushort.TryParse(ret_PxP.value.ToString(), out pxpModeValue))
+                        {
+                            pxpModeValue = curPxpMode;
+                        }
+                    }
+                    else
+                    {
+                        pxpModeValue = curPxpMode;
+                    }
+                }
+            }
+            switch (pxpModeValue)
+            {
+                case 0x00://off
+                    ret = false;
+                    break;
+                case 0x21://PIP small
+                    ret = false;
+                    break;
+
+                case 0x22://PIP large
+                    ret = false;
+                    break;
+                case 0x23:
+                case 0x24:
+                case 0x25:
+                case 0x26:
+                case 0x27:
+                case 0x28:
+                case 0x29:
+                case 0x2A:
+                case 0x2B:
+                case 0x2C:
+                case 0x2D:
+                case 0x2E:
+                case 0x2F:
+                case 0x31:
+                case 0x32:
+                case 0x33:
+                case 0x34:
+                case 0x35:
+                case 0x41:
+                case 0x42:
+                    ret = true;
+                    break;
+                default:
+                    ret = false;
+                    break;
+            }
+            return ret;
+        }
         private void RunWorkerCompleted_RefreshHotkeyData(object sender, RunWorkerCompletedEventArgs e)
         {
             Debug.WriteLine("load kvm hotkey setting done");
@@ -654,6 +781,10 @@ namespace DDPM.UI.Module.Kvm
                 //OSD/VCP control back event
                 DdpmCommonHelper.DeviceManagerSA.VCPchanged += OnVCPChangedEvent;
             }
+
+            //Robert_Lin, 2024-12-26, to handle Pip toggle positions click commnd handling
+            PipTogglePositionClickCommand = new RelayCommand(OnPipTogglePositionClicked);
+
         }
 
         ~KvmViewModel()
@@ -718,54 +849,6 @@ namespace DDPM.UI.Module.Kvm
                     NKVMisON = false;
                 }
 
-                if (mi.CapabilityDic.ContainsKey("EE"))
-                {
-                    SupportUSBKVM = Visibility.Visible;
-                    //inputList = new Dictionary<string, InputInfo>();
-                    //subInputs = new List<InputSourceObj>();
-                    //usbsList = new List<string>();
-                    isUSBKVMButton = true;
-                    USBKVMButtonOpacity = 1;
-
-                    if (mi.CapabilityDic.ContainsKey("E8"))
-                    {
-                        isPxP = Visibility.Visible;
-                        NoPxP = Visibility.Collapsed;
-                        if (DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
-                        {
-                            isUSBKVMButton = false;
-                            USBKVMButtonOpacity = 0.5;
-                        }
-                    }
-                    else
-                    {
-                        isPxP = Visibility.Collapsed;
-                        NoPxP = Visibility.Visible;
-                    }
-                }
-                else
-                {
-                    USBKVMisON = false;
-                }
-
-                if (USBKVMisON)
-                {
-                    _isUSBKVM = true;
-                    //EnableUSBKVM = Visibility.Visible;
-                    //DisenableUSBKVM = Visibility.Collapsed;
-                }
-                else if (NKVMisON)
-                {
-                    _isNKVM = true;
-                    //EnableUSBKVM = Visibility.Collapsed;
-                    //DisenableUSBKVM = Visibility.Visible;
-                }
-                else
-                {
-                    _isNoKVM = true;
-                    //EnableUSBKVM = Visibility.Collapsed;
-                    //DisenableUSBKVM = Visibility.Visible;
-                }
                 bw.DoWork += DoWork_RefreshData;
                 bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
                 bw.RunWorkerAsync(); //myArg is the optional argument
@@ -797,13 +880,45 @@ namespace DDPM.UI.Module.Kvm
                     return;
                 }
 
-                if (DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
+                if (mi.CapabilityDic.ContainsKey("E7"))
                 {
-                    _log?.Debug("[KvmViewModel]isScreenPartition.");
-                    return;
+                    SupportUSBKVM = Visibility.Visible;
+                    //inputList = new Dictionary<string, InputInfo>();
+                    //subInputs = new List<InputSourceObj>();
+                    //usbsList = new List<string>();
+                    isUSBKVMButton = true;
+                    USBKVMButtonOpacity = 1;
+
+                    if (mi.CapabilityDic.ContainsKey("E8"))
+                    {
+                        isPxP = Visibility.Visible;
+                        NoPxP = Visibility.Collapsed;
+                        if (DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
+                        {
+                            isUSBKVMButton = false;
+                            USBKVMButtonOpacity = 0.5;
+                            _log?.Debug("[KvmViewModel]isScreenPartition.");
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        isPxP = Visibility.Collapsed;
+                        NoPxP = Visibility.Visible;
+                    }
+                }
+                else
+                {
+                    USBKVMisON = false;
                 }
 
-                if (mi.CapabilityDic.ContainsKey("EE"))
+                //if (DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
+                //{
+                //    _log?.Debug("[KvmViewModel]isScreenPartition.");
+                //    return;
+                //}
+
+                if (mi.CapabilityDic.ContainsKey("E7"))
                 {
                     _log?.Debug("[KvmViewModel]Have 0xEE");
                     //If arg is specified, you can get it with below code
@@ -837,7 +952,17 @@ namespace DDPM.UI.Module.Kvm
                         string currentinput = KvmModule.SelectedHomeDevice.MonitorInfo.inputSource;
                         pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
                         usbsList = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstreamList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
-                        original_pcsList = DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, inputList, subInputs).Result;
+                        if (pcsList == null)
+                        {
+                            _log?.Debug("No value return from `DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList` for pcsList.");
+                            return;
+                        }
+                        if (usbsList == null)
+                        {
+                            _log?.Debug("No value return from `DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList` for pcsList.");
+                            return;
+                        }
+                        original_pcsList = pcsList.ToDictionary(entry => entry.Key, entry => entry.Value);
                         if (pcsList != null && pcsList.Count > 1)   // 2024-06-19 Elie, fix exception.
                         {
                             if (inputList.Count != _inputsList.Count && usbsList.Count != _usbsList.Count)
@@ -974,23 +1099,34 @@ namespace DDPM.UI.Module.Kvm
                                 //Check if this monitor has Pxp mode capabilities
                                 if ((_pipPbpCaps != null) && (_pipPbpCaps.Length > 0))
                                 {
+                                    foreach (UInt16 code in _pipPbpCaps)
+                                    {
+                                        if (!PxPcodeDictionary.ContainsKey(code))
+                                        {
+                                            PxPcodeDictionary.Add(code, null);
+                                        }
+                                    }
                                     //Get current monitor's Pxp mode
                                     ObjGetVCP ret_PxP = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(mi).Result;
                                     if (ret_PxP != null && ret_PxP.result)
                                     {
                                         //UInt64 u64 = (UInt64)ret.result;
                                         _curPxpMode = Convert.ToUInt16(ret_PxP.value);
-                                        PxPCode = _curPxpMode;
-                                        VideoSwapContent = PxPcodeDictionary[_curPxpMode];
+                                        //PxPCode = _curPxpMode;
+                                        //VideoSwapContent = PxPcodeDictionary[_curPxpMode];
+                                        //if (USBKVMisON)
+                                        //{
+                                        //    VideoSwapContent_Left = PxPcodeDictionary[PxPCode];
+                                        //}
                                         switch (_curPxpMode)
                                         {
-                                            case 0x11:
+                                            case 0x21:
                                                 isPipSmall = true;
                                                 isPipLarge = false;
                                                 isPBP = false;
                                                 break;
 
-                                            case 0x12:
+                                            case 0x22:
                                                 isPipSmall = true;
                                                 isPipLarge = false;
                                                 isPBP = false;
@@ -1057,14 +1193,19 @@ namespace DDPM.UI.Module.Kvm
                                 }
                             }
                         }
-                        //else
-                        //{
-                        //    NoPxP = Visibility.Visible;
-                        //    isPxP = Visibility.Collapsed;
-                        //}
+                        else
+                        {
+                            _curPxpMode = 0x0;
+                            isPipSmall = false;
+                            isPipLarge = false;
+                            isPBP = false;
+                            //    NoPxP = Visibility.Visible;
+                            //    isPxP = Visibility.Collapsed;
+                        }
                         #endregion PIP/PBP
                     }
                 }
+
             }
             catch (Exception ex)
             {
@@ -1075,6 +1216,65 @@ namespace DDPM.UI.Module.Kvm
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             _log.Debug("[KvmViewModel] RunWorkerCompleted_RefreshData start");
+            if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E9"))
+            {
+                PxPCode = _curPxpMode;
+                if (PxPcodeDictionary.ContainsKey(_curPxpMode))
+                {
+                    if (PxPcodeDictionary[_curPxpMode] != null)
+                    {
+                        VideoSwapContent = PxPcodeDictionary[_curPxpMode];
+                    }
+                    else
+                    {
+                        PxpModeaddDic(_curPxpMode);
+                        VideoSwapContent = PxPcodeDictionary[_curPxpMode];
+
+                    }
+                    if (USBKVMisON)
+                    {
+                        if (PxPcodeDictionary[_curPxpMode] != null)
+                        {
+                            VideoSwapContent_Left = PxPcodeDictionary[_curPxpMode];
+                        }
+                        else
+                        {
+                            PxpModeaddDic(_curPxpMode);
+                            VideoSwapContent_Left = PxPcodeDictionary[_curPxpMode];
+
+                        }
+                    }
+                }
+                else
+                {
+                    _log?.Debug("[RunWorkerCompleted_RefreshData] PxPcodeDictionary is null or PxPCode not found.");
+                }
+            }
+            else
+            {
+                PxpModeaddDic(0x0);
+                VideoSwapContent_Left = PxPcodeDictionary[0x0];
+            }
+
+            if (USBKVMisON)
+            {
+                isUSBKVM = true;
+                //EnableUSBKVM = Visibility.Visible;
+                //DisenableUSBKVM = Visibility.Collapsed;
+            }
+            else if (NKVMisON)
+            {
+                isNKVM = true;
+                //EnableUSBKVM = Visibility.Collapsed;
+                //DisenableUSBKVM = Visibility.Visible;
+            }
+            else
+            {
+                isNoKVM = true;
+                //EnableUSBKVM = Visibility.Collapsed;
+                //DisenableUSBKVM = Visibility.Visible;
+            }
+
             OnPropertyChanged("PC1_Input");
             OnPropertyChanged("PC2_Input");
             OnPropertyChanged("PC3_Input");
@@ -1164,6 +1364,8 @@ namespace DDPM.UI.Module.Kvm
                 //if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
                 //{
                 bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(KvmModule.SelectedHomeDevice.MonitorInfo, "Input Select", pcsList["PC1"].InputType).Result;
+                string result = b ? "Success" : "Failed";
+                _log.Debug($"[KvmViewModel] MainInput PC1-{pcsList["PC1"].InputType} Done with {result}.");
                 if (b)
                 {
                     KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = pcsList["PC1"].InputType;
@@ -1193,7 +1395,7 @@ namespace DDPM.UI.Module.Kvm
         //public UInt16[] PipPbpCaps { get => _pipPbpCaps; }
 
         //Call this method when _pipPbpCaps has been changed
-        private void OnPipPbpCapsChanged()
+        public void OnPipPbpCapsChanged()
         {
             OnPropertyChanged("HasCap_PipSmall");
             OnPropertyChanged("HasCap_PipLarge");
@@ -1248,6 +1450,8 @@ namespace DDPM.UI.Module.Kvm
                     _selectedSplitItem.IsSelected = true;
                     //To determine if "Toggle between position" button should be enabled
                     OnPropertyChanged("IsPipListItemSelected");
+                    //Robert_Lin, 2024-12-25 added to refresh toggle button state
+                    OnPropertyChanged("IsTogglePositionEnabled");
                 }
                 else
                 {
@@ -1255,10 +1459,27 @@ namespace DDPM.UI.Module.Kvm
                     SetProperty(ref _selectedSplitItem, value);
                     //To determine if "Toggle between position" button should be enabled
                     OnPropertyChanged("IsPipListItemSelected");
+                    //Robert_Lin, 2024-12-25 added to refresh toggle button state
+                    OnPropertyChanged("IsTogglePositionEnabled");
                 }
             }
         }
 
+        /// <summary>
+        /// Return the PxpMode code of SelectedSplitItem
+        /// </summary>
+        /// <returns>0x00 ~ 0xFF : The PxpMode
+        /// 0xFFFF : unknown mode
+        /// </returns>
+        public UInt16 GetSelectedItemPxpMode()
+        {
+            if (SelectedSplitItem == null)
+                return 0xffff;
+            ISplit? isp = SelectedSplitItem.ISplit;
+            if (isp == null)
+                return 0xffff;
+            return isp.PbpCapabilityCode;
+        }
         #endregion Selected SplitItems
 
         #region Main Input Source
@@ -1344,20 +1565,73 @@ namespace DDPM.UI.Module.Kvm
         {
             get
             {
-                return IsPipListItemSelected && HasCap_PipTogglePosition;
+                //Robert_Lin, 2024-12-26, return true only when selected item is the same with current Pxp mode
+                if (IsPipListItemSelected)
+                {
+                    //Get selected mode
+                    UInt16 selectedMode = GetSelectedItemPxpMode();
+                    if (selectedMode != 0xffff)
+                    {
+                        return CurPxpMode == selectedMode;
+                    }
+                    //if (CurPxpMode == PipMode_Large || CurPxpMode == PipMode_Small)
+                    //    return true;
+                }
+                return false;
             }
         }
 
+        //Robert_Lin, 2024-12-26, to handle PIP toggle positions command
+        /// <summary>
+        /// The Command when 'Toggle position' is clicked
+        /// </summary>
+        private ICommand? _pipTogglePositionClickCommand;
+
+        public ICommand? PipTogglePositionClickCommand
+        {
+            get => _pipTogglePositionClickCommand;
+            set => SetProperty(ref _pipTogglePositionClickCommand, value);
+        }
+
+        private void OnPipTogglePositionClicked()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            bw.DoWork += delegate
+            {
+                //UInt16 capCode = SelectedSplitItem.ISplit.PbpCapabilityCode;
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    DdpmCommonHelper.DeviceManagerSA.TogglePipPosition(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+                }
+            };
+            bw.RunWorkerCompleted += delegate
+            {
+                IsBusy = false;
+            };
+            IsBusy = true;
+            bw.RunWorkerAsync();
+        }
         #endregion Determine if Toggle between positons button enabled/disabled
 
         #region VideoSwap control and content
 
         private ContentControl? _videoSwapContent;
+        private ContentControl? _videoSwapContent_Left;
 
         public ContentControl? VideoSwapContent
         {
             get => _videoSwapContent;
             set => SetProperty(ref _videoSwapContent, value);
+        }
+
+        public ContentControl? VideoSwapContent_Left
+        {
+            get => _videoSwapContent_Left;
+            set => SetProperty(ref _videoSwapContent_Left, value);
         }
 
         public void PCSwap(string PC1, string PC2)
@@ -1572,45 +1846,57 @@ namespace DDPM.UI.Module.Kvm
         private void NKVMOpenUI_Dowork(object sender, DoWorkEventArgs e)
         {
             DdpmCommonHelper.DeviceManagerSA.NKVM_State(true).Wait();
-            if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
+            DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
+            //#if DEBUG
+            //                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+            //#else
+            //                OpenNKVMUI(0, 100, 100);
+            //#endif
+            int i = 0;
+            while (i < 120)
             {
-                //#if DEBUG
-                isOnNKVM(true);
-                _log.Debug("NKVMOpenUI...");
-                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
-                //#else
-                //                OpenNKVMUI(0, 100, 100);
-                //#endif
-            }
-            else
-            {
-                DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
-                //#if DEBUG
-                //                DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
-                //#else
-                //                OpenNKVMUI(0, 100, 100);
-                //#endif
-                int i = 0;
-                while (!DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result && i < 20)
+                if (i == 70 && !DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
                 {
-                    i++;
-                    Thread.Sleep(500);
+                    _log.Debug("Named pipe is not Connected, so CreatNewNamedpipe again.");
+                    DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
                 }
                 if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
                 {
                     isOnNKVM(true);
-                    _log.Debug("NKVMOpenUI...");
+                    _log.Debug("NKVMOpenUI i = " + i);
                     DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+                    e.Result = true;
+                    break;
                 }
-                else
-                {
-                    _log.Debug("Named pipe is not Connected or time out");
-                }
+                i++;
+                Thread.Sleep(500);
             }
+            if (i == 120)
+            {
+                _log.Debug("Named pipe is not Connected or time out");
+                e.Result = false;
+            }
+            //if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
+            //{
+            //    isOnNKVM(true);
+            //    _log.Debug("NKVMOpenUI...");
+            //    DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
+            //}
+            //else
+            //{
+            //    _log.Debug("Named pipe is not Connected or time out");
+            //}
         }
         private void NKVMOpenUI_Done(object sender, RunWorkerCompletedEventArgs e)
         {
-            Thread.Sleep(3000);
+            if (e.Error != null)
+            {
+                _log.Error("NKVMOpenUI error : " + e.Error.ToString());
+            }
+            if (e.Result != null)
+            {
+                Thread.Sleep(3000);
+            }
             IsBusy = false;
             OnPropertyChanged("IsBusy");
         }
@@ -1632,8 +1918,12 @@ namespace DDPM.UI.Module.Kvm
             //set input source
             if (pcsList != null)
             {
-                if (pcsList != original_pcsList)
-                {
+                // Since Profile issue PCs will be inconsistent need to rewrite each change,
+                // Monitor info is only updated by monitor info updated. Originally get from profile not real monitor status
+                // if (!isPCsListSame(pcsList,  original_pcsList))
+                // {
+                    CurrentInputChange();
+
                     if (pcsList.TryGetValue("PC1", out var pc1) && pcsList.TryGetValue("PC2", out var pc2))
                     {
                         InputSourceObj pc1input = new InputSourceObj((UInt16)pcsList["PC1"].Code, pcsList["PC1"].InputType);
@@ -1655,6 +1945,8 @@ namespace DDPM.UI.Module.Kvm
                                         bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
                                             DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                                             pc2input, pc3input, pc4input).Result;
+                                        string result = res ? "Success" : "Failed";
+                                        _log.Debug($"[KvmViewModel] SubInputs PC2-{pc2input.Name}, PC3-{pc3input.Name}, PC4-{pc4input.Name} Done with {result}.");
                                         if (res)
                                         {
                                             Thread.Sleep(1000);
@@ -1670,6 +1962,8 @@ namespace DDPM.UI.Module.Kvm
                                     bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
                                         DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                                         pc2input, pc3input, null).Result;
+                                    string result = res ? "Success" : "Failed";
+                                    _log.Debug($"[KvmViewModel] SubInputs PC2-{pc2input.Name}, PC3-{pc3input.Name} Done with {result}.");
                                     if (res)
                                     {
                                         Thread.Sleep(1000);
@@ -1686,6 +1980,8 @@ namespace DDPM.UI.Module.Kvm
                             bool res = DdpmCommonHelper.DeviceManagerSA.SetSubInputs(
                                     DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                                     pc2input, null, null).Result;
+                            string result = res ? "Success" : "Failed";
+                            _log.Debug($"[KvmViewModel] SubInputs PC2-{pc2input.Name} Done with {result}.");
                             if (res)
                             {
                                 Thread.Sleep(1000);
@@ -1702,29 +1998,37 @@ namespace DDPM.UI.Module.Kvm
                             //{
                             //    bool binputname = DdpmCommonHelper.DeviceManagerSA.SetInputName(pcs.Value.InputType, pcs.Value.InputName).Result;
                             //}
-                            if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
+                            if (string.IsNullOrEmpty(pcs.Value.USBUpstream))
                             {
-                                bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
-                                if (bUSBuptream)
+                                pcs.Value.USBUpstream = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType).Result;
+                            }
+                            else
+                            {
+                                if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
                                 {
-                                    Thread.Sleep(1000);
+                                    bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
+                                    _log.Debug($"[KvmViewModel] SetUSBUpstream {pcs.Key}-{pcs.Value.InputType}: {pcs.Value.USBUpstream} Done");
+                                    if (bUSBuptream)
+                                    {
+                                        Thread.Sleep(1000);
+                                    }
                                 }
                             }
                         }
 
-                        if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
-                        {
-                            CurrentInputChange();
-                        }
+                        //if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
+                        //{
+                        //}
                         bool bin = DdpmCommonHelper.DeviceManagerSA.SetInputSourcelist(KvmModule.SelectedHomeDevice.MonitorInfo, inputList).Result;
-                        //bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
+                        bool bpcs = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
+                        original_pcsList = pcsList.ToDictionary(entry => entry.Key, entry => entry.Value);
                         //isOnUSBKVM(true);//bool b = DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(true).Result;
                     }
                     else
                     {
                         _log?.Debug("PC1 or PC2 not found in pcsList.");
                     }
-                }
+                // }
             }
             else
             {
@@ -1747,6 +2051,137 @@ namespace DDPM.UI.Module.Kvm
                 return _curPxpMode != 0;
             }
         }
+
+        public void PxpModeaddDic(UInt16 code)
+        {
+            switch (code)
+            {
+                case 0x0:
+                    PxPcodeDictionary[code] = new PxPSplitCtrl0A();
+                    break;
+                case 0x21:
+                    PxPcodeDictionary[code] = new PIPSplitCtrl1A();
+                    break;
+                case 0x22:
+                    PxPcodeDictionary[code] = new PIPSplitCtrl1B();
+                    break;
+                case 0x24:
+                    PxPcodeDictionary[code] = new PBPSplitCtrl2A();
+                    break;
+                case 0x2F:
+                    PxPcodeDictionary[code] = new PBPSplitCtrl2B();
+                    break;
+                case 0x26:
+                case 0x28:
+                case 0x2A:
+                case 0x2C:
+                case 0x2E:
+                    PxPcodeDictionary[code] = new PBPSplitCtrl2C();
+                    break;
+                case 0x25:
+                case 0x27:
+                case 0x29:
+                case 0x2B:
+                case 0x2D:
+                    PxPcodeDictionary[code] = new PBPSplitCtrl2D();
+                    break;
+                case 0x31:
+                    PxPcodeDictionary[code] = new PBPSplitCtrl3E();
+                    break;
+                case 0x32:
+                    PxPcodeDictionary[code] = new PBPSplitCtrl3D();
+                    break;
+                case 0x33:
+                    PxPcodeDictionary[code] = new PBPSplitCtrl3H();
+                    break;
+                case 0x34:
+                    PxPcodeDictionary[code] = new PBPSplitCtrl3B();
+                    break;
+                case 0x35:
+                    PxPcodeDictionary[code] = new PBPSplitCtrl3I();
+                    break;
+                case 0x41:
+                    PxPcodeDictionary[code] = new PBPSplitCtrl4A();
+                    break;
+                case 0x42:
+                    PxPcodeDictionary[code] = new PBPSplitCtrl4D();
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+
+        public bool isPxpModeOFF
+        {
+            get
+            {
+                return _curPxpMode == 0;
+            }
+        }
+        public bool isPBPmode
+        {
+            get
+            {
+                bool ret = false;
+                switch (_curPxpMode)
+                {
+                    case 0x00://off
+                        ret = false;
+                        break;
+                    case 0x21://PIP small
+                        ret = false;
+                        break;
+
+                    case 0x22://PIP large
+                        ret = false;
+                        break;
+                    case 0x23:
+                    case 0x24:
+                    case 0x25:
+                    case 0x26:
+                    case 0x27:
+                    case 0x28:
+                    case 0x29:
+                    case 0x2A:
+                    case 0x2B:
+                    case 0x2C:
+                    case 0x2D:
+                    case 0x2E:
+                    case 0x2F:
+                    case 0x31:
+                    case 0x32:
+                    case 0x33:
+                    case 0x34:
+                    case 0x35:
+                    case 0x41:
+                    case 0x42:
+                        ret = true;
+                        break;
+
+                    default:
+                        ret = false;
+                        break;
+                }
+                DdpmCommonHelper.WriteUILog($"[USBKVM Hotkey] _curPxpMode={_curPxpMode},isPBPmode={ret}");
+                return ret;
+            }
+        }
+
+        public void ShowPxPView(ushort PbpCapabilityCode)
+        {
+            if (PxPcodeDictionary.ContainsKey(PbpCapabilityCode))
+            {
+                VideoSwapContent = PxPcodeDictionary[PbpCapabilityCode];
+                VideoSwapContent_Left = PxPcodeDictionary[PbpCapabilityCode];
+            }
+            else
+            {
+                _log.Debug("[PBP_MouseLeftDown]PxPcodeDictionary not find key " + PbpCapabilityCode);
+            }
+        }
+
         #region Event
         /// <summary>
         /// Catch OSD menu event
@@ -1755,7 +2190,7 @@ namespace DDPM.UI.Module.Kvm
         /// <param name="e">changed event</param>
         private void OnVCPChangedEvent(object? sender, VCPchangedEventArgs e)
         {
-            if (e.vcpcode.Equals("E7"))
+            if (e.vcpcode.Equals("E7") && DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(KvmModule.SelectedHomeDevice.MonitorInfo).Result)
             {
                 pcsList = new Dictionary<string, PCsInfo>();
                 usbsList = new List<string>();
@@ -1826,5 +2261,24 @@ namespace DDPM.UI.Module.Kvm
             }
         }
         #endregion
+
+        private bool isPCsListSame(Dictionary<string, PCsInfo> sourceDict, Dictionary<string, PCsInfo> targetDict)
+        {
+            bool isSame = true;
+            if (sourceDict == null && targetDict == null) return true;
+            else {
+                if (sourceDict == null || targetDict == null) return false; 
+                else if (sourceDict.Count != targetDict.Count) return false; 
+                else {
+                    foreach (var kvp in sourceDict) {
+                        if (targetDict[kvp.Key].Code != kvp.Value.Code) return false;
+                        if (targetDict[kvp.Key].InputName != kvp.Value.InputName) return false;
+                        if (targetDict[kvp.Key].InputType != kvp.Value.InputType) return false;
+                        if (targetDict[kvp.Key].USBUpstream != kvp.Value.USBUpstream) return false;
+                    }
+                    return true;
+                }
+            }
+        }
     }
 }

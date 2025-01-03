@@ -25,6 +25,7 @@ using static DDPM.SA.Common.ICLICommandTable;
 using DDPM.SA.Obfuscation;
 using System.IO;
 using System.Collections.Generic;
+using DDPM.SA.Common.Defer;
 
 namespace CLI.Subagent
 {
@@ -116,6 +117,11 @@ namespace CLI.Subagent
         //If runMode = true, means run as elevated mode
         private void RunManagement(string[] args, bool runMode)
         {
+            if (!runMode)//0724 only allow elevated privilege to perform action
+            {
+                _exitcode = ICLICommandTable.Response_UnelevatedError();
+                return;
+            }
             // 2024-08-28 Casper: move upper to let command parser work earlier
             ICLICommandTable iCLICommandTable = new ICLICommandTable(_Log);            
             List<CommandLineInput> commandLineInputs = new List<CommandLineInput>();
@@ -170,18 +176,40 @@ namespace CLI.Subagent
                     _exitcode = (int)CLI_ExitCode.null_cli_manager;
                     return;
                 }
+
+                // add start @ 20241223 stephen: check defer
+                //bool hasDefer = false;
+                //string cmds = string.Empty;
+
+
+                //foreach (string arg in args)
+                //{
+                //    //Console.WriteLine("@@@@stephen RunManagement arg = " + arg);
+
+                //    cmds = cmds + arg + " ";
+                //    if (arg.ToLower().Contains("defer"))
+                //    {
+                //        hasDefer = true;
+                //    }
+                //}
+
+                //if (hasDefer)
+                //{
+                //    //Console.WriteLine("@@@@stephen check Defer Result ");
+
+                //    if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds.Trim()).Result)
+                //    {
+                //        //Console.WriteLine("@@@@stephen check Defer Result = true ");
+                //        return;
+                //    }
+                //}
+                // add end @ 20241223
+
+
                 List<int> returnCode = new List<int>();
                 foreach (CommandLineInput commandLineInput in commandLineInputs)
                 {
                     commandLineInput.isCliRunAdmin = runMode;
-                    if (!runMode)//0724 only allow elevated privilege to perform action
-                    {
-                        _exitcode = ICLICommandTable.Response_UnelevatedError(commandLineInput);
-                        return;
-                    }
-
-
-
                     //***
                     //Assign command line input to CLIManager and it will pass data to CLIProxy (Relay)
                     //CLIProxy should handle all possible condition and return json serialize string included in CLIEventResult

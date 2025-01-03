@@ -1,6 +1,7 @@
 ﻿using DdmLibrary;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Management;
 using System.Text;
 using Windows.System;
@@ -12,14 +13,15 @@ namespace DDPM.SA.Common
         public string GetMonitorAdapter()
         {
             ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
-            foreach (ManagementObject mo in searcher.Get())
+            foreach (ManagementObject mo in searcher.Get().Cast<ManagementObject>())
             {
                 PropertyData currentBitsPerPixel = mo.Properties["CurrentBitsPerPixel"];
                 PropertyData description = mo.Properties["Description"];
-                if (currentBitsPerPixel != null && description != null)
+                if (currentBitsPerPixel != null && 
+                    description != null &&
+                    currentBitsPerPixel.Value != null)
                 {
-                    if (currentBitsPerPixel.Value != null)
-                        return (description.Value).ToString();
+                    return (description.Value).ToString();
                 }
             }
             return string.Empty;
@@ -30,12 +32,11 @@ namespace DDPM.SA.Common
             {
                 List<string> strList = new List<string>(4) { "1Key", " 2Keys", "3Keys", "4Keys" };
                 string rt = string.Empty;
-                if (hotKeys != null)
+                if (hotKeys != null &&
+                    hotKeys.Count > 0 && 
+                    hotKeys.Count <= 4)
                 {
-                    if (hotKeys.Count > 0 && hotKeys.Count <= 4)
-                    {
-                        rt = strList[hotKeys.Count - 1];
-                    }
+                    rt = strList[hotKeys.Count - 1];
                 }
                 return rt;
             }
