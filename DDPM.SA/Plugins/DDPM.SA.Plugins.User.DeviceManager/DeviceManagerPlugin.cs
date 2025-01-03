@@ -15791,6 +15791,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        //01/03 Jason add Hotkey to same model 
         private void UpdateHotkeyInfo()
         {
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
@@ -15808,12 +15809,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             {
                                 if (monitorSettings.hotkeyData.Count > 0)
                                 {
+                                    writelog("[UpdateHotkeyInfo] monitor : " + monitorSettings.Model);
                                     foreach (HotkeyData hotkey in monitorSettings.hotkeyData)
                                     {
+                                        writelog("[UpdateHotkeyInfo] hotkeyType : " + hotkey.hotkeyType);
                                         if ((hotkey.hotkeyType != HotkeyType.FavoriteInputSource && 
                                             hotkey.hotkeyType != HotkeyType.SwitchInputSource) &&
                                             !hotkeyDatas.Exists(x => x.hotkeyType == hotkey.hotkeyType))
                                         {
+                                            writelog("[UpdateHotkeyInfo] add hotkeyType to hotkeyDatas.");
                                             hotkeyDatas.Add(hotkey);
                                         }
                                     }
@@ -15824,15 +15828,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             if (monitorSettings != null)
                             {
+                                writelog("[UpdateHotkeyInfo] monitor : " + monitorSettings.Model);
                                 foreach (HotkeyData hotkey in hotkeyDatas)
                                 {
                                     if (!monitorSettings.hotkeyData.Exists(x => x.hotkeyType == hotkey.hotkeyType))
                                     {
+                                        writelog("[UpdateHotkeyInfo] add hotkeyType to monitorSettings.");
                                         monitorSettings.hotkeyData.Add(hotkey);
                                     }
                                 }
                             }
                         }
+                        bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
                     }
                 }
             }
