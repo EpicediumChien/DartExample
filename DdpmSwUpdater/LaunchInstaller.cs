@@ -75,6 +75,7 @@ namespace DdpmSwUpdater
                             // Free resources associated with process.
                             process.Close();
                         }
+                        Thread.Sleep(1000);
                     }
                 } while (processes.Length > 0);
             }
