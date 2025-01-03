@@ -201,13 +201,35 @@ namespace DDPM.UI.Plugin.ViewModels
                                 _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_WearDetectionSensitivityChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             }
                             break;
-
+                        case "Headset_BandsGainChanged":
+                            // DTH event still support, DTP keep empty.
+                            break;
                         default:
                             break;
                     }
                     _isRestoreEnable = false;
                     CheckWearDetectionUI();
                 }
+                //Keep first, Reset event
+                //if (device == "Headset_Reset")
+                //{
+                //    if (!event_param.TryGetValue("EventType", out var eventtype))
+                //    {
+                //        _log.Info($"[HeadsetViewModel] EventType cannot be found in event_param");
+                //        return;
+                //    }
+
+                //    _log.Info($"[HeadsetViewModel] EventType = {eventtype}");
+                //    switch (eventtype)
+                //    {
+                //        case "SetFactoryResetAsyncValue":
+                //            HandleWearDetectionEvent(eventtype, event_param[eventtype], ref _isQuickPauseStatus);
+                //            DeviceInfoDTP.WearDetectionSensitivityFromDTP = BoolToInt(_isQuickPauseStatus);
+                //            _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_WearDetectionSensitivityChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
+                //            break;
+                //    }
+                //}
+
             }
             catch (Exception ex)
             {
@@ -406,11 +428,18 @@ namespace DDPM.UI.Plugin.ViewModels
             ReadQRCodeReg();
             AllResetHeadsetPage();
             string fwv = string.Empty;
+            bool answerCall = false;
             if (!IsDTPReady)
+            {
                 fwv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceInfo!.ID.ToString()).Result;
+                answerCall = _deviceManager.GetIsBoomMicSupportedAsync(CurrentDeviceInfo.ID.ToString()).Result; //DTP
+            }
             else
+            {
                 fwv = FirmwareVersion;
-
+                answerCall = SupportedAnswerCalls;
+            }
+            _log!.Info($"[HeadsetViewModel] DetectPageShow ... BoomMicSupported = {answerCall.ToString()}");
             switch (model.ToUpper())
             {
                 case "WL7024"://Mito
@@ -436,7 +465,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _wearDetectionPageShow = true;
                     _automatedActionsSensitivityUpPageShow = true;
                     _automatedActionsWhenHeadsetIsRemovedPageShow = true;
-                    _automatedActionsAnswerCallPageShow = true;
+                    _automatedActionsAnswerCallPageShow = answerCall; //WL5024 page2, not only AnswerCall 
                     //Page 3
                     _voiceGuidancePageShow = true;
                     //_deviceSettingsDownloadDellAudioPageShow = false;
@@ -447,10 +476,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     _controlTheNoiseIHearPageShow = true;
                     _configureMyAudioModesPageShow = true;
                     //Page 2                  
-                    if (ConvertVersionToInt(fwv) >= 252)
-                        _automatedActionsAnswerCallPageShow = true;
-                    else
-                        _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
+                    //if (ConvertVersionToInt(fwv) >= 252)
+                    //    _automatedActionsAnswerCallPageShow = true;
+                    //else
+                    _automatedActionsAnswerCallPageShow = answerCall;//DELL 說拿掉;// only AnswerCall 
                     //Page 3
                     _voiceGuidancePageShow = true;
                     _deviceSettingsDownloadDellAudioPageShow = false;
@@ -460,7 +489,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     //Page 1
                     _configureMyAudioModesPageShow = true;
                     //Page 2
-                    _automatedActionsAnswerCallPageShow = true;
+                    _automatedActionsAnswerCallPageShow = answerCall;// only AnswerCall 
                     //Page 3
                     _voiceGuidancePageShow = true;
                     //_deviceSettingsDownloadDellAudioPageShow = false;
@@ -471,10 +500,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     _controlTheNoiseIHearPageShow = false;//Fix PIMS-PIMS-294568
                     _configureMyAudioModesPageShow = true;
                     //Page 2
-                    if (ConvertVersionToInt(fwv) >= 275)
-                        _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;
-                    else
-                        _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
+                    //if (ConvertVersionToInt(fwv) >= 275)
+                    //    _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;
+                    //else
+                    _automatedActionsAnswerCallPageShow = answerCall;//DELL 說拿掉;// only AnswerCall 
                     //Page 3
                     _deviceSettingsDownloadDellAudioPageShow = false;
                     //defult page
@@ -1053,6 +1082,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     DeviceInfoDTP.Band3Gain = di.Band3Gain;
                     DeviceInfoDTP.Band4Gain = di.Band4Gain;
                     DeviceInfoDTP.Band5Gain = di.Band5Gain;
+                    HeadsetSettingChanged?.Invoke(this, EventArgs.Empty);
                     break;
 
                 case "AncModeChanged":
