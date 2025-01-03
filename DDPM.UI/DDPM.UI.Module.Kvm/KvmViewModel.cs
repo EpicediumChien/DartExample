@@ -1927,9 +1927,9 @@ namespace DDPM.UI.Module.Kvm
                 {
                     CurrentInputChange();
                     //Jason by U3824DW input source greyed out
-                    if (pcsList["PC1"].InputType != DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.inputSource)
+                    if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
                     {
-                        DdpmCommonHelper.DeviceManagerSA.VideoSwap(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, 0, 1);
+                        DdpmCommonHelper.DeviceManagerSA.VideoSwap(KvmModule.SelectedHomeDevice.MonitorInfo, 0, 1);
                     }
                     InputSourceObj pc1input = new InputSourceObj((UInt16)pcsList["PC1"].Code, pcsList["PC1"].InputType);
                     InputSourceObj pc2input = new InputSourceObj((UInt16)pcsList["PC2"].Code, pcsList["PC2"].InputType);
