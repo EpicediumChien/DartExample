@@ -783,12 +783,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
 
-                        if (_vm.WebcamSettings.Selected_Resolution != "Full HD" && _vm.WebcamSettings.Selected_Resolution != "HD")
+                        if (_vm.WebcamSettings.SelectedResolution != "Full HD" && _vm.WebcamSettings.SelectedResolution != "HD")
                         {
-                            _vm.SetResolution_Selected(1);
-                            if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.Selected_Resolution))
+                            //_vm.SetResolution_Selected(1);
+                            if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.SelectedResolution))
                             {
-                                List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.Selected_Resolution];
+                                List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
                                 int index = FPS.FindIndex(x => x == "30");
                                 if (index != -1)
                                 {
@@ -876,7 +876,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
-                        _vm!.SetResolution_Selected(1);
+                        //_vm!.SetResolution_Selected(1);
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
@@ -937,7 +937,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
-                        _vm!.SetResolution_Selected(1);
+                        //_vm!.SetResolution_Selected(1);
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
@@ -992,7 +992,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
-                        _vm!.SetResolution_Selected(1);
+                        //_vm!.SetResolution_Selected(1);
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
@@ -1214,7 +1214,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         microphone = devices_List[0];
                         foreach (DeviceInformation device in devices_List)
                         {
-                            if ( !string.IsNullOrEmpty( _vm.Model ) &&  device.Name.Contains(_vm.Model) )
+                            if (!string.IsNullOrEmpty(_vm.Model) && device.Name.Contains(_vm.Model))
                             {
                                 microphone = device;
                             }

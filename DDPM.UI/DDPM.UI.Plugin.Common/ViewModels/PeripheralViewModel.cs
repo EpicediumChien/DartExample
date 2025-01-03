@@ -215,6 +215,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
                 }
                 CurrentDeviceInfo = di;
+                if (di == null)
+                    return false;
             }
             else
             {
