@@ -15715,7 +15715,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void InitMonitorSettings()
         {
             List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
-            if (_AllInfoMonitors != null)
+            if (_AllInfoMonitors != null && _SettingsPlugin != null)
             {
                 foreach (MonitorInfo m in _AllInfoMonitors.ToList())
                 {
@@ -15726,6 +15726,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             monitorSettingsList = new List<DDPMMonitorSettings>();
                         }
+                        Trace.WriteLine("ServiceTag:" + m.edid.ServiceTag);
                         if (monitorSettingsList.Count == 0 || !monitorSettingsList.Exists(x => x.ServiceTag == m.edid.ServiceTag))
                         {
                             DDPMMonitorSettings settings = new DDPMMonitorSettings();
@@ -15783,6 +15784,53 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                             monitorSettingsList.Add(settings);
                             bool b = _SettingsPlugin.WriteMonitorSettings(m.modelName, monitorSettingsList).Result;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void UpdateHotkeyInfo()
+        {
+            List<DDPMMonitorSettings> monitorSettingsList = new List<DDPMMonitorSettings>();
+            if (_AllInfoMonitors != null && _SettingsPlugin != null)
+            {
+                foreach (MonitorInfo m in _AllInfoMonitors.ToList())
+                {
+                    monitorSettingsList = _SettingsPlugin.ReloadMonitorSettings(m.modelName).Result;
+                    if (monitorSettingsList != null && monitorSettingsList.Count > 1)
+                    {
+                        List<HotkeyData> hotkeyDatas = new List<HotkeyData>();
+                        foreach (DDPMMonitorSettings monitorSettings in monitorSettingsList)
+                        {
+                            if (monitorSettings != null)
+                            {
+                                if (monitorSettings.hotkeyData.Count > 0)
+                                {
+                                    foreach (HotkeyData hotkey in monitorSettings.hotkeyData)
+                                    {
+                                        if ((hotkey.hotkeyType != HotkeyType.FavoriteInputSource && 
+                                            hotkey.hotkeyType != HotkeyType.SwitchInputSource) &&
+                                            !hotkeyDatas.Exists(x => x.hotkeyType == hotkey.hotkeyType))
+                                        {
+                                            hotkeyDatas.Add(hotkey);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        foreach (DDPMMonitorSettings monitorSettings in monitorSettingsList)
+                        {
+                            if (monitorSettings != null)
+                            {
+                                foreach (HotkeyData hotkey in hotkeyDatas)
+                                {
+                                    if (!monitorSettings.hotkeyData.Exists(x => x.hotkeyType == hotkey.hotkeyType))
+                                    {
+                                        monitorSettings.hotkeyData.Add(hotkey);
+                                    }
+                                }
+                            }
                         }
                     }
                 }

@@ -534,14 +534,14 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     if (_AllMonitorSettings.ContainsKey(modelname))
                     {
                         _AllMonitorSettings[modelname] = monitorSettingList;
-                        binit = false; //has data, no need to re-create
+                        binit = true; //has data, no need to re-create
                     }
                     else
                     {
                         if (monitorSettingList.Count > 0)
                         {
                             _AllMonitorSettings.Add(modelname, monitorSettingList);
-                            binit = false;
+                            binit = true;
                         }
                         else
                             binit = true;
