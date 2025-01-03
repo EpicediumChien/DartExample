@@ -223,7 +223,7 @@
                 <Path Grid.Column="1" Data="M107.41,264.905 L113.384,278.212 C113.623,278.742 114.009,279.192 114.497,279.508 C114.985,279.824 115.554,279.992 116.136,279.993 H246.147 C246.706,279.993 247.254,279.837 247.729,279.544 C248.205,279.25 248.59,278.83 248.841,278.331 L255.593,264.922" 
       Stroke="{DynamicResource DefaultTheme_TxtColor}" StrokeThickness="0.258474" StrokeMiterLimit="10" Fill="Transparent" Margin="210,65,0,0"/>
 
-                <Canvas x:Name="MainCanvas" Grid.Column="1"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="216,70,0,0" Width="351.525" Height="197.733"/>
+                <Canvas x:Name="MainCanvas" Grid.Column="1" Background="{DynamicResource DefaultTheme_BdBkColor}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="216,70,0,0" Width="351.525" Height="197.733" Panel.ZIndex="0"/>
                 <ContentControl Name="EMsplitCtrl" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="216,70,0,0" Width="351.525" Height="197.733"/>
 
                 <!-- Only 2 -->
