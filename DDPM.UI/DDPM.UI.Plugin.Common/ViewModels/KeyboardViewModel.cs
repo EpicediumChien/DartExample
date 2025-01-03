@@ -115,9 +115,9 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        public override bool SetCurrentDevice(string instanceID)
+        public override bool SetCurrentDevice(string deviceID)
         {
-            if (!base.SetCurrentDevice(instanceID))
+            if (!base.SetCurrentDevice(deviceID))
                 return false;
 
             if (!IsCopilotEnabled)

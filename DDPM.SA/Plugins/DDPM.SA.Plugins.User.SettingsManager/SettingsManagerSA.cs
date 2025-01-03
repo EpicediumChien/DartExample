@@ -1339,6 +1339,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                                         settings.VCPs = monitorSettings.VCPs;
                                         settings.EA = monitorSettings.EA;
                                         settings.DisplayPropertiesInfo = monitorSettings.DisplayPropertiesInfo;
+                                        settings.hotkeyData = monitorSettings.hotkeyData;
                                         settings.scheduleInfo = monitorSettings.scheduleInfo;
                                         if (WriteMonitorSettings(settings.Model, monitorSettingsList).Result)
                                         {
@@ -2666,6 +2667,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             WriteLog($"InitGlobalSettingConfigFile: appdata path: {folder}");
             string file_path = Path.Combine(folder, folder_product, filename_GlobalSetting_peruser);
             _GlobalSetting_path = file_path;
+            Trace.WriteLine($"_GlobalSetting_path={_GlobalSetting_path}");
+
             //
             // Security check (folder)
             string tmp_path = Path.Combine(folder, folder_product);

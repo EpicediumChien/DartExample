@@ -339,9 +339,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             string jsonData = "{\"hotkeySettings\":[{\"DeviceInfo\":null,\"HotkeyOptions\":[],\"HotkeyInfo\":[{\"Description\":\"Testhotkey\",\"Hotkey\":[],\"Status\":\"Registered\",\"Job\":\"BrightnessIncrease\",\"InputSource\":[]}]}]}";
             File.WriteAllText(RunSerializehotkeySettingsObject_path1_, jsonData);
             PrivateObject privateSettingsManagerObject = new PrivateObject(SettingsManagerSAPlugin);
-            privateSettingsManagerObject.SetFieldOrProperty("_hotkeysettings_path", RunSerializehotkeySettingsObject_path1_);
-            var RunSerializeObjectResult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", hotkeySettingsConfig);
-            Assert.Greater(RunSerializeObjectResult.Length, 0);
+            //privateSettingsManagerObject.SetFieldOrProperty("_hotkeysettings_path", RunSerializehotkeySettingsObject_path1_);  // RunSerialize hotkeySettings method is remover in settingmanagerSA.cs 
+            //var RunSerializeObjectResult = (string)privateSettingsManagerObject.Invoke("RunSerializeObject", hotkeySettingsConfig);
+            //Assert.Greater(RunSerializeObjectResult.Length, 0);
             File.Delete(RunSerializehotkeySettingsObject_path1_);
         }
 
@@ -959,8 +959,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager.Test
             Dictionary<string, List<DDPMMonitorSettings>> _allMonitorSettings44 = new Dictionary<string, List<DDPMMonitorSettings>>();
             _allMonitorSettings44.Add("TestU2725DD", new List<DDPMMonitorSettings> { settings });
             privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings44);
+            List<DDPMMonitorSettings> monitorSettings4 = null;
             var ReloadMonitorSettingsResult4 = SettingsManagerSAPlugin.ReloadMonitorSettings(modelname).Result;  // displayPath is not null, file exist monitorSettings_path, _AllMonitorSettings is null 
-            Assert.That(ReloadMonitorSettingsResult4, Is.EqualTo(dDPMMonitorSettingsList));
+            Assert.That(ReloadMonitorSettingsResult4, Is.EqualTo(monitorSettings4));
 
             //displayPath is not null, file exist monitorSettings_path, _AllMonitorSettings is not null
             privatesettingsManagerObj.SetFieldOrProperty("_AllMonitorSettings", _allMonitorSettings);

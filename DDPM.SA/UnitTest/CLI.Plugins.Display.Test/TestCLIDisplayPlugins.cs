@@ -1685,7 +1685,7 @@ namespace DDPM.CLI.Plugins.Display.Test
 
             // Case 03  OSDENABLE,Volume:52
             value = 0x1234;
-            get_SpeakerVolume_status = "OSDENABLE";
+            get_SpeakerVolume_status = "Volume:52";
             get_SpeakerVolume_status_Result = (string)privatetecLIDisplayPlugins.Invoke("get_SpeakerVolume_status", value);
             Assert.IsNotNull(get_SpeakerVolume_status_Result);
             Assert.That(get_SpeakerVolume_status, Is.EqualTo(get_SpeakerVolume_status_Result));

@@ -103,9 +103,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
 
         // For WalkThrough
-        public static string _userId = string.Empty;
-        public static bool _showPluginById = false;
+        public static string UserId { get => userId; set => userId = value; }
+        private static string userId = string.Empty;
+
+        public static bool ShowPluginById { get => showPluginById; set => showPluginById = value; }
+        private static bool showPluginById = false;
         public static List<WalkThroughInfo> WalkThroughQueue { get; private set; } = new List<WalkThroughInfo>();
+
         private static readonly Dictionary<string, int> ModelTypeMapping = new Dictionary<string, int>
         {
             { "Consent", 1}, //Add by Derek 2024/10/24
@@ -369,11 +373,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         _log.Info($"Calling to CheckAndQueueDevice(DDPM,DDPM,null)");
                         await CheckAndQueueDevice("DDPM", "DDPM", null);//DDPM WalkThrough no need into setting page.
                         _log.Info($"Returned from CheckAndQueueDevice()");
-                        if (WalkThroughQueue.Count != 0 && _showPluginById == false)
+                        if (WalkThroughQueue.Count != 0 && ShowPluginById == false)
                         {
                             _log.Info($"[Walkthrough] WalkThroughQueue.Count != 0, ShowPluginById Start DDPM");
                             _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
-                            _showPluginById = true;
+                            ShowPluginById = true;
                         }
 
                         //Elapsed= 1 msec
@@ -467,11 +471,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} Start");
                     await CollectAndCompareDevicesAsync();
                     //// Check Queue¡Afirst use device need to show WalkThroughPage
-                    if (WalkThroughQueue.Count > 0 && _showPluginById == false)
+                    if (WalkThroughQueue.Count > 0 && ShowPluginById == false)
                     {
                         _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} WalkThroughQueue has items, ShowPluginById.");
                         _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
-                        _showPluginById = true;
+                        ShowPluginById = true;
                     }
                 }
                 //2024-8-6 Robert, fix bug. compare string should be lowercase due to ToLower()
@@ -860,9 +864,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         }
 
         /// <inheritdoc/>
-        public void OnShown(string param = "")
+        public void OnShown(string pluginParameter = "")
         {
-            if (!string.IsNullOrEmpty(param))
+            if (!string.IsNullOrEmpty(pluginParameter))
             {
                 IDdpmHomePageViewModel? viewModel = PluginIoc.GetService<IDdpmHomePageViewModel>();
                 if (viewModel != null)
@@ -1232,7 +1236,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         b = interruptScreen.ShowDialog();
                         if (b == true)
                         {
-                            _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
+                            _log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall go");
+                            List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(sWUpdateInfoPackage.SWUpdateInfo, true).Result;
+                            _log?.Info("CheckIfSwFwUpdateAvailable SW_DownloadAndInstall finish");
+                            //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
                         }
                     }));
                 }
@@ -1447,8 +1454,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             _log.Info($"[Walkthrough] {nameof(CheckAndQueueDevice)} Start for ModelNumber {modelNumber}, ModelType {modelType}");
             object regValue;
-            _userId = GetActiveUserID();
-            string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{_userId}";
+            UserId = GetActiveUserID();
+            string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
             string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{modelNumber}";
             string regKeyForDDPM = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
 
@@ -1556,11 +1563,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     await CheckAndQueueDevice(_modelNumber, device.LogicalDeviceType.ToString(), device.ID);
                 }
 
-                if (WalkThroughQueue.Count != 0 && _showPluginById == false)
+                if (WalkThroughQueue.Count != 0 && ShowPluginById == false)
                 {
                     _log.Info($"[Walkthrough] WalkThroughQueue.Count != 0, ShowPluginById Start");
                     _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.WalkThroughPluginId);
-                    _showPluginById = true;
+                    ShowPluginById = true;
                 }
             }
             catch (Exception ex)

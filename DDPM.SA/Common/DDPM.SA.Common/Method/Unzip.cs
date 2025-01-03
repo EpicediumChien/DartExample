@@ -41,7 +41,7 @@ namespace DDPM.SA.Common.Method
         /// <param name="extractPath">解壓縮資料夾路徑</param>
         /// <param name="exeFilePath">回傳解壓縮後資料夾中的exe檔案</param>
         /// <returns></returns>
-        public bool ExecuteUnzip(string zipFilePath, string extractPath, out string exeFilePath)
+        public bool ExecuteUnzip(string zipFilePath, string extractPath, bool recursive, out string exeFilePath)
         {
             //Elsa Add Security
             string FileInfo;
@@ -62,10 +62,10 @@ namespace DDPM.SA.Common.Method
                     if (aclChecker.ContainsUnprivilegedWriteAccess(fileLock))
                     {
                         throw new SecurityException($"File ACLs for {zipFilePath} contained unprivileged write access for one or more identity");
-                    }    
+                    }
                     ZipFile.ExtractToDirectory(zipFilePath, extractPath, true);
                     _logs?.DebugMsg_1(nameof(Unzip) + " done");
-                    exeFilePath = GetExeFilePath(extractPath);
+                    exeFilePath = GetExeFilePath(extractPath, recursive);
                     //Dean 1223 check output
                     if (string.IsNullOrEmpty(exeFilePath) || exeFilePath.Length == 0)
                     {
@@ -81,20 +81,24 @@ namespace DDPM.SA.Common.Method
                 exeFilePath = "";
                 return false;
             }
-        }        
+        }
 
-        private static List<string> SearchExeFileFromDirectory(DirectoryInfo directoryInfo, Logs _logs = null, bool recursive = false)
+        private static List<string> SearchExeFileFromDirectory(DirectoryInfo directoryInfo, Logs _logs, bool recursive)
         {
             List<string> output = new List<string>();
             // Get all files in the directory
             FileInfo[] files = directoryInfo.GetFiles();
             _logs?.DebugMsg_1(nameof(SearchExeFileFromDirectory) + $": Folder [{directoryInfo.Name}]");
-            foreach (FileInfo file in files) 
-            { 
-                if (file.Extension.Equals(".exe", StringComparison.OrdinalIgnoreCase)) 
-                { 
-                    string fileTemp = DDPMFileSecurity.SanitizePath(file.FullName, out string info); 
-                    if(string.IsNullOrEmpty(fileTemp))
+            foreach (FileInfo file in files)
+            {
+                if (file.Extension.Equals(".exe", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (recursive)
+                    {
+                        recursive = false;
+                    }
+                    string fileTemp = DDPMFileSecurity.SanitizePath(file.FullName, out string info);
+                    if (string.IsNullOrEmpty(fileTemp))
                     {
                         _logs?.DebugMsg_1(nameof(SearchExeFileFromDirectory) + $": Abnormal File is {file.Name}");
                     }
@@ -104,7 +108,7 @@ namespace DDPM.SA.Common.Method
                         _logs?.DebugMsg_1(nameof(SearchExeFileFromDirectory) + $": Add file to list - {fi.Name}");
                         output.Add(fileTemp);
                     }
-                } 
+                }
             }
             if (recursive)
             {
@@ -122,7 +126,7 @@ namespace DDPM.SA.Common.Method
             return output;
         }
 
-        private string GetExeFilePath(string directory)
+        private string GetExeFilePath(string directory, bool recursive)
         {
             // 列舉資料夾中的所有 .exe 檔案
             string[] exeFiles = default;
@@ -165,16 +169,16 @@ namespace DDPM.SA.Common.Method
                     //}
 
                     //for checkmarx check [code part4]
-                    List<string> files = SearchExeFileFromDirectory(new DirectoryInfo(directory), _logs);
-                    if(files != null && files.Count > 0)
+                    List<string> files = SearchExeFileFromDirectory(new DirectoryInfo(directory), _logs, recursive);
+                    if (files != null && files.Count > 0)
                     {
                         exeFiles = files.ToArray();
                         _logs?.DebugMsg_1(nameof(GetExeFilePath) + $": Got {exeFiles.Length} executable file(s)");
                     }
                 }
             }
-            catch  (Exception ex)
-            { 
+            catch (Exception ex)
+            {
                 _logs?.DebugMsg_1(nameof(GetExeFilePath) + "Get exe files in folder fail: " + ex.Message);
             }
 
@@ -182,9 +186,9 @@ namespace DDPM.SA.Common.Method
             {
                 return string.Empty;
             }
-            
+
             //Add white list comparison, Dean 1227
-            if(exeFiles.Length > 1)
+            if (exeFiles.Length > 1)
             {
                 //white list
                 List<string> whitelist = new List<string> {
@@ -196,10 +200,11 @@ namespace DDPM.SA.Common.Method
                     "OTATestServer",
                     "PriFWUpdate",
                     "BLE_RF_OTA",
-                    "FWUpdateTool"
+                    "FWUpdateTool",
+                    "DdpmSwUpdater",
                 };
-                                
-                string[] comparedList = exeFiles.Where( x => whitelist.Any(y => x.Contains(y, StringComparison.OrdinalIgnoreCase))).ToArray();
+
+                string[] comparedList = exeFiles.Where(x => whitelist.Any(y => x.Contains(y, StringComparison.OrdinalIgnoreCase))).ToArray();
                 if (comparedList != null && comparedList.Length > 0)
                 {
                     _logs?.DebugMsg_1(nameof(GetExeFilePath) + $": Matching {comparedList.Length} executable file(s), return first one");

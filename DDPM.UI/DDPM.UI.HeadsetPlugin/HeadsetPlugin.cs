@@ -239,7 +239,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
         }
 
         /// <inheritdoc/>
-        public void OnShown(string parameter)
+        public void OnShown(string pluginParameter)
         {
             _log.Info($"[HeadsetPlugin] OnShown ... in");
             if (!IsEventRegistered)
@@ -249,7 +249,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             }
             ConfigureServices();
             GetPeripheralsAsync();
-            if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter)) { }
+            if (_viewModel != null && !_viewModel.SetCurrentDevice(pluginParameter)) { }
             _log.Info($"[HeadsetPlugin] OnShown ... out");
         }
         #endregion Interface IConsolePluginSupportsActivations

@@ -180,20 +180,20 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public bool IsIDInvalid = false;
 
-        public virtual bool SetCurrentDevice(string deviceID)
+        public virtual bool SetCurrentDevice(string instanceIDs)
         {
             _console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, new EventManagerArgs() { Tag = true });
             IsIDInvalid = false;
-            if (deviceID.Substring(deviceID.Length - 2, 1) == "-")
+            if (instanceIDs.Substring(instanceIDs.Length - 2, 1) == "-")
             {
-                instenceNo = deviceID.Substring(deviceID.Length - 1, 1);
-                deviceID = deviceID.Substring(0, deviceID.Length - 2);
+                instenceNo = instanceIDs.Substring(instanceIDs.Length - 1, 1);
+                instanceIDs = instanceIDs.Substring(0, instanceIDs.Length - 2);
             }
             else
             {
                 instenceNo = "";
             }
-            CurrentDeviceID = new Guid(deviceID);
+            CurrentDeviceID = new Guid(instanceIDs);
 
             if (DeviceInfos.TryGetValue(CurrentDeviceID, out DeviceInfo? di))
             {
