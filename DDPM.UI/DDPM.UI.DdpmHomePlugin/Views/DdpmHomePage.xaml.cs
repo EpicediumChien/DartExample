@@ -89,6 +89,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                     double windowTop = 0;
                                     double actualWidth = 0;
                                     double actualHeight = 0;
+                                    if (parentWindow == null) {
+                                        DdpmCommonHelper.WriteUILog($"[DdpmHomePlugin] Error cannot get MainWindow value", memberName: nameof(parentWindow));
+                                        return;
+                                    }
                                     ImportModalDialog modalDialog = new(mo.modelName, parentWindow.ActualWidth, parentWindow.ActualHeight - 40);
                                     if (parentWindow != null)
                                     {
