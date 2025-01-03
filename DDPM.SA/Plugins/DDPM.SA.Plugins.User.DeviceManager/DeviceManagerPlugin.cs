@@ -1920,6 +1920,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 ReviewAllMonitorToAvoidDuplicatedInfo();
 
                 InitMonitorSettings();
+                UpdateHotkeyInfo();
 
                 Task.Run(() => //support last selected monitor info from settings
                 {
