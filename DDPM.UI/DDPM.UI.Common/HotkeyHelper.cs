@@ -3,6 +3,7 @@ using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 using Windows.System;
 
@@ -99,13 +100,14 @@ namespace DDPM.UI.Common
 
             try
             {
-                //Derek 2025/01/03 to check ALT+Z hotkey for QAM
+                //Derek 2025/01/03 to check ALT+Z hotkey conflict for QAM
                 if (hotkeyInfo.Alt && hotkeyInfo.Hotkey.Contains(VirtualKey.Z))
                 {
-                    DdpmCommonHelper.DDPMPureMesssageBox(LangHelper.Instance["hotkey.7"],
-                        LangHelper.Instance["Hotkey.10"],
-                        true, 
-                        null);
+                    Thickness headMargin = new Thickness(24, 30, 45, 24);
+                    Thickness subMargin = new Thickness(24, -66, 24, 8);
+
+                    DdpmCommonHelper.DDPMEzMesssageBox(LangHelper.Instance["hotkey.7"], LangHelper.Instance["Hotkey.10"], true, null,
+                        420, 240, headMargin, subMargin);
 
                     return false;
                 }
