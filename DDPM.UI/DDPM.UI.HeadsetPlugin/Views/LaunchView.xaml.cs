@@ -195,7 +195,9 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             moduleGroup.AddHeader(AudioSettings, new HeadsetAudioSettingsModule(_vm!));
             groups.Add(moduleGroup);
 
-            if (_vm!.Model != "WH5024" && _vm.Model != "WH3024")
+            bool answerCall = DdpmCommonHelper.DeviceManagerSA.GetIsBoomMicSupportedAsync(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
+
+            if (_vm!.Model == "WL7024" || _vm!.Model == "WL5024" || answerCall)
             {
                 moduleGroup = new ModuleGroup()
                 {
@@ -206,39 +208,51 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
                 groups.Add(moduleGroup);
             }
-            else
-            {
-                if (_vm.Model == "WH3024")
-                {
-                    DdpmCommonHelper.WriteUILog($"[LaunchView] Model = WH3024, FirmwareVersion = {_vm.FirmwareVersion}");
-                    if (_vm.ConvertVersionToInt(_vm.FirmwareVersion) >= 275)
-                    {
-                        moduleGroup = new ModuleGroup()
-                        {
-                            GroupName = AutomatedActions,
-                            GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
-                            GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
-                        };
-                        moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
-                        groups.Add(moduleGroup);
-                    }
-                }
-                else
-                {
-                    DdpmCommonHelper.WriteUILog($"[LaunchView] Model = WH5024, FirmwareVersion = {_vm.FirmwareVersion}");
-                    if (_vm.ConvertVersionToInt(_vm.FirmwareVersion) >= 252)
-                    {
-                        moduleGroup = new ModuleGroup()
-                        {
-                            GroupName = AutomatedActions,
-                            GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
-                            GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
-                        };
-                        moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
-                        groups.Add(moduleGroup);
-                    }
-                }
-            }
+
+            //if (_vm!.Model != "WH5024" && _vm.Model != "WH3024")
+            //{
+            //    moduleGroup = new ModuleGroup()
+            //    {
+            //        GroupName = AutomatedActions,
+            //        GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
+            //        GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
+            //    };
+            //    moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
+            //    groups.Add(moduleGroup);
+            //}
+            //else
+            //{
+            //    if (_vm.Model == "WH3024")
+            //    {
+            //        DdpmCommonHelper.WriteUILog($"[LaunchView] Model = WH3024, FirmwareVersion = {_vm.FirmwareVersion}");
+            //        if (_vm.ConvertVersionToInt(_vm.FirmwareVersion) >= 275)
+            //        {
+            //            moduleGroup = new ModuleGroup()
+            //            {
+            //                GroupName = AutomatedActions,
+            //                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
+            //                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
+            //            };
+            //            moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
+            //            groups.Add(moduleGroup);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        DdpmCommonHelper.WriteUILog($"[LaunchView] Model = WH5024, FirmwareVersion = {_vm.FirmwareVersion}");
+            //        if (_vm.ConvertVersionToInt(_vm.FirmwareVersion) >= 252)
+            //        {
+            //            moduleGroup = new ModuleGroup()
+            //            {
+            //                GroupName = AutomatedActions,
+            //                GroupIcon = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/Headset_Media.png"),
+            //                GroupIconCanvas = DdpmCommonHelper.CanvasIconCreator(VbarIcon.HeadsetAutoActions)
+            //            };
+            //            moduleGroup.AddHeader(AutomatedActions, new HeadsetAutomatedActionsModule(_vm!));
+            //            groups.Add(moduleGroup);
+            //        }
+            //    }
+            //}
 
 
             moduleGroup = new ModuleGroup()
