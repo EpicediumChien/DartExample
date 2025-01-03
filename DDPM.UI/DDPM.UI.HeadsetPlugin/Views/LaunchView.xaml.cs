@@ -490,7 +490,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 if (string.IsNullOrEmpty(_vm.PairedHostName2))
                     PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
                 else
-                    PairedHostName1 = _vm.PairedHostName2;  //DTH
+                    PairedHostName2 = _vm.PairedHostName2;  //DTH
 
                 if (string.IsNullOrEmpty(PairedHostName1))
                 {
