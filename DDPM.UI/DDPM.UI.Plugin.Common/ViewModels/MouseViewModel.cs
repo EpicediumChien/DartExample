@@ -297,11 +297,8 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(IsReportRateSupported));
             ReportRate = CurrentDeviceInfo.ReportRate;
 
-            //_buttonCollection.Clear();
-            //_buttonCollection.Add(MouseButton.Left.ToString());
-            //_buttonCollection.Add(MouseButton.Right.ToString());
-            //ButtonCollection = _buttonCollection;
-            PrimaryButtonIndex = CurrentDeviceInfo.MousePrimaryButton == MouseButton.Left ? 0 : 1;
+            //PrimaryButtonIndex = CurrentDeviceInfo.MousePrimaryButton == MouseButton.Left ? 0 : 1;
+            PrimaryButtonIndex = User32.IsPrimaryButtonLeft() ? 0 : 1;
             OnPropertyChanged(nameof(ButtonCollection));
 
             InitializeButton();
@@ -540,8 +537,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     _primaryButtonIndex = value;
                     OnPropertyChanged();
-                    MouseButton button = _primaryButtonIndex == 0 ? MouseButton.Left : MouseButton.Right;
-                    DdpmCommonHelper.DeviceManagerSA!.SetPrimaryMouseButton(button, CurrentDeviceInfo!.ID);
+                    //MouseButton button = _primaryButtonIndex == 0 ? MouseButton.Left : MouseButton.Right;
+                    //DdpmCommonHelper.DeviceManagerSA!.SetPrimaryMouseButton(button, CurrentDeviceInfo!.ID);
+                    User32.SetPrimaryButtonToLeft(_primaryButtonIndex == 0);
                 }
             }
         }
