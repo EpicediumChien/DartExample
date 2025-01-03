@@ -101,7 +101,7 @@ namespace DDPM.UI.Common
             try
             {
                 //Derek 2025/01/03 to check ALT+Z hotkey conflict for QAM
-                if (hotkeyInfo.Alt && hotkeyInfo.Hotkey.Contains(VirtualKey.Z))
+                if (hotkeyInfo.Alt && hotkeyInfo.Hotkey.Contains(VirtualKey.Z) && hotkeyInfo.Hotkey.Count == 2)
                 {
                     Thickness headMargin = new Thickness(24, 30, 45, 24);
                     Thickness subMargin = new Thickness(24, -66, 24, 8);
