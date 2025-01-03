@@ -1071,8 +1071,25 @@ namespace DDPM.UI.Common.ViewModels
                 screenDeviceName = screenOfCursor.DeviceName;
             }
 
+            //screenName = new move in Screen
+            //LastShowOsdScreenDeviceName =  Screen show OSD last time
+            //SelectedHomeDevice.MonitorInfo = Current selected monitor
+
+            //Get the current selected monitor's DeviceName
+            string selScreenName = "";
+            if (SelectedHomeDevice != null)
+            {
+                if (SelectedHomeDevice.MonitorInfo != null)
+                {
+                    selScreenName = SelectedHomeDevice.MonitorInfo.DisplayName;
+                }
+            }
+ 
             //Check if screen is different with last show
-            if (!screenDeviceName.Equals(DdpmCommonHelper.LastShowOsdScreenDeviceName))
+            //if (!screenDeviceName.Equals(DdpmCommonHelper.LastShowOsdScreenDeviceName))
+
+            //If screenName != SelectedHomeDevice
+            if (!screenDeviceName.Equals(selScreenName))
             {
                 DdpmCommonHelper.LastShowOsdScreenDeviceName = screenDeviceName;
 

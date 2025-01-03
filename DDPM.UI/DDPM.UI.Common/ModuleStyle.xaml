@@ -1442,6 +1442,73 @@
     </Style>-->
     <!-- #endregion SecondaryButton -->
 
+    <!-- #region DestructiveButton -->
+    <!-- Robert_Lin, 2025-1-2 added. There is no Disabled state sample in Figma, will use the same color with
+         PrimaryButton in Disabled state.
+    -->
+    <!-- DestructiveButton Colors -->
+    <SolidColorBrush x:Key="DestructiveButton_BkColor_Default" Color="#D0353F"/>
+    <SolidColorBrush x:Key="DestructiveButton_BkColor_Hover" Color="#FF3E3B"/>
+    <SolidColorBrush x:Key="DestructiveButton_BkColor_Pressed" Color="#D12A3D"/>
+    <SolidColorBrush x:Key="DestructiveButton_BkColor_Disabled" Color="#7F2E3034"/>
+
+    <SolidColorBrush x:Key="DestructiveButton_TextColor_Default" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="DestructiveButton_TextColor_Hover" Color="#F4FFFF"/>
+    <SolidColorBrush x:Key="DestructiveButton_TextColor_Pressed" Color="#F5F6F7"/>
+    <SolidColorBrush x:Key="DestructiveButton_TextColor_Disabled" Color="#7F7C7C7C"/>
+
+    <!-- DestructiveButton Style -->
+    <Style x:Key="DestructiveButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+        <Setter Property="Background" Value="{DynamicResource DestructiveButton_BkColor_Default}"/>
+        <!--<Setter Property="BorderBrush" Value="{StaticResource PrimaryButton.Static.Border}"/> DestructiveButton has not Border -->
+        <Setter Property="Foreground" Value="{DynamicResource DestructiveButton_TextColor_Default}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="31,8"/>
+        <Setter Property="FontFamily" Value="Roboto"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            SnapsToDevicePixels="true"
+                            CornerRadius="2">
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Focusable="False"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsDefaulted" Value="true">
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="{DynamicResource DestructiveButton_BkColor_Hover}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="{DynamicResource DestructiveButton_BkColor_Pressed}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" TargetName="border" Value="{DynamicResource DestructiveButton_BkColor_Disabled}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{DynamicResource DestructiveButton_TextColor_Disabled}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+    <!-- #endregion DestructiveButton -->
+
+
     <!-- #region SplitListVew -->
     <!-- #region EzBtn -->
     <SolidColorBrush x:Key="EzBtn_BkColor_Default" Color="#FF193457" />

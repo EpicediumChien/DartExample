@@ -111,7 +111,7 @@
         <!-- Robert_Lin, 2024-12-28, add below propery into bdOuter can see the design UI 
         d:Width="64"    -> Non-Landing mode VarItem
         -->
-        <Border x:Name="bdOuter" Height="64" BorderThickness="2" CornerRadius="13" Focusable="True"
+        <Border x:Name="bdOuter" Height="64" BorderThickness="2" CornerRadius="13" Focusable="True" d:Width="64"  
                 >
             <Border.Style>
                 <Style TargetType="Border">
@@ -184,8 +184,12 @@
                     </Image.Style>
                 </Image>
                 <!-- Robert_Lin, 2024-12-28 add d:Template to view the design time UI -->
-                <!-- Robert_Lin, 2024-12-28, PIMS- -->
+                <!-- Robert_Lin, 2025-1-2, PIMS-331506 DDPM icon not centered 
+                     Add Margin=0,0,3.5.0  
+                     NOTE. It looks not center in design time (shift left about 2~3 pixes, but in runtime it will be centered.
+                -->
                 <ContentControl x:Name="IconCanvasContent" Grid.Column="0"  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Margin="0,0,3.5,0"
                                 d:Template="{StaticResource iconTemplate_DisplaySettings}">
                     <ContentControl.Style>
                         <Style TargetType="ContentControl">
