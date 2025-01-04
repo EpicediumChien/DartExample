@@ -2633,6 +2633,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         _logicalDevicePen.KeyCaptureProgressDataChanged -= Pen_KeyCaptureProgressDataChanged;
                         LogicalDevicesPen.Remove(iLogicalDevice.Id);
                     }
+                    if (LowBatteryIDs.Contains(iLogicalDevice.Id.ToString()))
+                        LowBatteryIDs.Remove(iLogicalDevice.Id.ToString());
                     ScanDevices();
                 }
             }
@@ -2850,14 +2852,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         //    }
         //}
 
+        private List<string> LowBatteryIDs = new();
         private void CheckLowBatteryOSD(DeviceInfo deviceInfo)
         {
             try
             {
-                //var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
-                //if (!settings.GlobalSetting_General.Low_Battery_Level)
-                //    return;
-                //var settings = _UserSettingsPlugin.ReadGlobalSettings().Result;
                 if (_UserSettingsPlugin == null)
                     return;
 
@@ -2873,7 +2872,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     return;
                 }
 
-                if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9 && deviceInfo.BatteryStatus != "Charging")
+                if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9 && deviceInfo.BatteryStatus != "Charging" && !LowBatteryIDs.Contains(deviceInfo.ID.ToString()))
                 {
                     OSDType_Device type = OSDType_Device.Unknown;
                     var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
@@ -2918,6 +2917,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         Message = message
                     };
                     OnOSDNotify(args);
+                    LowBatteryIDs.Add(deviceInfo.ID.ToString());
                     Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
                     writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
                 }
