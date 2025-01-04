@@ -2303,8 +2303,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             OnVCPchanged(_VCPchangedEventArgs);
 
-            //Wayn  1130
-            //For [PIMS-314608] U2725QEt Wistron-P3:DDPM(Windows) - Shine a torch or cover the sensor of DUT1, DUT2 screen has not changed
             //Keep first
             if (e.vcpcode.Equals("67") || e.vcpcode.Equals("68"))
             {
