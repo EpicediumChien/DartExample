@@ -30,7 +30,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
         {
             InitializeComponent();
             _vm = vm;
-            InitializeAsync();
+            //InitializeAsync();
             _vm!.SoundbarSettingChanged += SoundbarSettingChanged;
         }
         ~SpeakerAudioPresetRightView()

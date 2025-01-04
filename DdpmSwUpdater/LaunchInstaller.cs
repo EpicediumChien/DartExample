@@ -61,24 +61,29 @@ namespace DdpmSwUpdater
             {
                 LogManage.LogMessage($"{nameof(CloseDDPM)} start");
                 string processName = "DDPM";
-                Process[] processes = Process.GetProcessesByName(processName);
-                LogManage.LogMessage($"{nameof(CloseDDPM)} processes.Length {processes.Length}");
-                if (processes.Length > 0)
+                Process[] processes;
+                do
                 {
-                    foreach (Process process in processes)
+                    processes = Process.GetProcessesByName(processName);
+                    LogManage.LogMessage($"{nameof(CloseDDPM)} processes.Length {processes.Length}");
+                    if (processes.Length > 0)
                     {
-                        // Close process by sending a close message to its main window.
-                        process.CloseMainWindow();
-                        // Free resources associated with process.
-                        process.Close();
+                        foreach (Process process in processes)
+                        {
+                            // Close process by sending a close message to its main window.
+                            process.CloseMainWindow();
+                            // Free resources associated with process.
+                            process.Close();
+                        }
+                        Thread.Sleep(1000);
                     }
-                }
+                } while (processes.Length > 0);
             }
             catch (Exception ex)
             {
                 LogManage.LogMessage($"{nameof(CloseDDPM)} Error:{ex.Message}");
             }
-             _CancellationTokenSource = new CancellationTokenSource();
+            _CancellationTokenSource = new CancellationTokenSource();
             CancellationToken token = _CancellationTokenSource.Token;
             _CheckDDPMThread = new Thread(() => CheckDDPM(token));
             _CheckDDPMThread.Start();

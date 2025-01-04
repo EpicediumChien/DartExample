@@ -69,7 +69,7 @@ namespace DDPM.SA.Common
 
         void SetDPILevel(int newDPILevel, Guid deviceId);
 
-        void SetPrimaryMouseButton(MouseButton newMouseButton, Guid deviceId);
+        //void SetPrimaryMouseButton(MouseButton newMouseButton, Guid deviceId);
 
         void SetTouchScrollSensitivityLevel(int newTouchScrollSensitivityLevel, Guid deviceId);
 
@@ -103,7 +103,7 @@ namespace DDPM.SA.Common
         void SetWiredAudioMicMuteSoundEnable(bool newValue, Guid deviceId);
 
         void SetWiredAudioVolumeAdjustmentTone(int newValue, Guid deviceId);
-        
+
         void SetAncMode(int newValue, Guid deviceId);
 
         void SetAncGain(int newValue, Guid deviceId);
