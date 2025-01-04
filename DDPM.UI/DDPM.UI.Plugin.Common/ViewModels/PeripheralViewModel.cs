@@ -180,20 +180,20 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public bool IsIDInvalid = false;
 
-        public virtual bool SetCurrentDevice(string deviceID)
+        public virtual bool SetCurrentDevice(string instanceIDs)
         {
             _console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, new EventManagerArgs() { Tag = true });
             IsIDInvalid = false;
-            if (deviceID.Substring(deviceID.Length - 2, 1) == "-")
+            if (instanceIDs.Substring(instanceIDs.Length - 2, 1) == "-")
             {
-                instenceNo = deviceID.Substring(deviceID.Length - 1, 1);
-                deviceID = deviceID.Substring(0, deviceID.Length - 2);
+                instenceNo = instanceIDs.Substring(instanceIDs.Length - 1, 1);
+                instanceIDs = instanceIDs.Substring(0, instanceIDs.Length - 2);
             }
             else
             {
                 instenceNo = "";
             }
-            CurrentDeviceID = new Guid(deviceID);
+            CurrentDeviceID = new Guid(instanceIDs);
 
             if (DeviceInfos.TryGetValue(CurrentDeviceID, out DeviceInfo? di))
             {
@@ -215,6 +215,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
                 }
                 CurrentDeviceInfo = di;
+                if (di == null)
+                    return false;
             }
             else
             {
@@ -229,7 +231,7 @@ namespace DDPM.UI.Plugin.ViewModels
             if (EOLKBList.Contains(Model) || EOLMouseList.Contains(Model))
                 Name = DdpmCommonHelper.MappingEOLName(Model);
             else
-                Name = CurrentDeviceInfo.Name.Replace(Model, "").Trim();
+                Name = DdpmCommonHelper.MappingName(Model, CurrentDeviceInfo.Name.Trim());
 
             if (CurrentDeviceInfo.Type == DeviceType.PhysicalWiredDock || CurrentDeviceInfo.Type == DeviceType.LogicalDock)
             {
@@ -259,10 +261,10 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}{colorCode}.png";
             }
-            else if(CurrentDeviceInfo.Type == DeviceType.LogicalKeyboard || CurrentDeviceInfo.Type == DeviceType.LogicalMouse)
+            else if (CurrentDeviceInfo.Type == DeviceType.LogicalKeyboard || CurrentDeviceInfo.Type == DeviceType.LogicalMouse)
             {
                 ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/";
-                if (!DdpmCommonHelper.isDarkMode()) 
+                if (!DdpmCommonHelper.isDarkMode())
                 {
                     ImageFilePath += "LightMode/";
                 }

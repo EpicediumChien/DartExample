@@ -43,14 +43,12 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
         }
         private void HeadsetSettingChanged(object? sender, EventArgs e)
         {
-            InitializeAsync();
+            InitializeNodeValue();
         }
-        private async void InitializeAsync()
+
+        private async void InitializeNodeValue()
         {
-            //await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
             _vm._log!.Info("[HeadsetAudioSettingsRightView] Before Invoke_PleaseWaitAsync");
-            //await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
-            //_vm._log!.Info("[HeadsetAudioSettingsRightView] After Invoke_PleaseWaitAsync");
             if (_vm.DeviceInfoDTP!.IsPresetsSupported)
             {
                 if (_vm.DeviceInfoDTP!.Band1Gain > 4 || _vm.DeviceInfoDTP!.Band1Gain < -6)
@@ -108,8 +106,10 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
                     _vm._log!.Info($"[HeadsetAudioSettingsRightView] HeadsetAudioSettingsRightView SetNodeValue ... Band5Gain {_vm.DeviceInfoDTP!.Band5Gain.ToString()}");
                 }
             }
-            //_vm.Invoke_PleaseWait(_vm.Model);
+        }
 
+        private async void InitializeAsync()
+        {
             //lock/unlock init, 9/23 add
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
@@ -536,9 +536,15 @@ namespace DDPM.UI.Module.HeadsetAudioSettings
 
             double newY = minValue + (maxValue - minValue) * (maxOutput - value) / (maxOutput - minOutput);
 
-            Canvas.SetTop(node, newY);
-            UpdateNodeValuePosition(node);
-            UpdateCurve();
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Canvas.SetTop(node, newY);
+                UpdateNodeValuePosition(node);
+                UpdateCurve();
+            });
+            //Canvas.SetTop(node, newY);
+            //UpdateNodeValuePosition(node);
+            //UpdateCurve();
             //UpdateShadowVisibility();
         }
     }

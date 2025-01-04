@@ -54,7 +54,7 @@
             </Grid>
         </Border>
         <Border Background="#132F54"
-                Opacity="0.6"
+                Opacity="0.2"
                 CornerRadius="13" Visibility="{Binding LockMaskVisible}"/>
     </Grid>
 </UserControl>

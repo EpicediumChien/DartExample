@@ -424,6 +424,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             _vm.brdHello_show = Visibility.Collapsed;
                             _vm.MPS_Setting_Visibility = Visibility.Collapsed;
                             _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+
+                            //2025/01/02 Leo fixed
+                            noPresenceFunction = true;
+
                         }
 
                         //dell 7 韌體升級畫面需要在 usb 3.0下,如果在2.0模式整個分頁關閉
@@ -595,7 +599,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //都不需要顯示韌體升級提示
             }
 
-            print_debug("check_PresenceFunction() s22-20241219 17:11 update ver step");
+            print_debug("check_PresenceFunction() s22-20250102 14:43 update ver step");
 
             print_debug("check_PresenceFunction() end");
         }
@@ -779,12 +783,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
 
-                        if (_vm.WebcamSettings.Selected_Resolution != "Full HD" && _vm.WebcamSettings.Selected_Resolution != "HD")
+                        if (_vm.WebcamSettings.SelectedResolution != "Full HD" && _vm.WebcamSettings.SelectedResolution != "HD")
                         {
-                            _vm.SetResolution_Selected(1);
-                            if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.Selected_Resolution))
+                            //_vm.SetResolution_Selected(1);
+                            if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.SelectedResolution))
                             {
-                                List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.Selected_Resolution];
+                                List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
                                 int index = FPS.FindIndex(x => x == "30");
                                 if (index != -1)
                                 {
@@ -872,7 +876,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
-                        _vm!.SetResolution_Selected(1);
+                        //_vm!.SetResolution_Selected(1);
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
@@ -933,7 +937,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
-                        _vm!.SetResolution_Selected(1);
+                        //_vm!.SetResolution_Selected(1);
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
@@ -988,7 +992,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
-                        _vm!.SetResolution_Selected(1);
+                        //_vm!.SetResolution_Selected(1);
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
@@ -1210,7 +1214,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         microphone = devices_List[0];
                         foreach (DeviceInformation device in devices_List)
                         {
-                            if ( !string.IsNullOrEmpty( _vm.Model ) &&  device.Name.Contains(_vm.Model) )
+                            if (!string.IsNullOrEmpty(_vm.Model) && device.Name.Contains(_vm.Model))
                             {
                                 microphone = device;
                             }

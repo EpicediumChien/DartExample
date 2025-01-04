@@ -1040,7 +1040,7 @@ namespace DDPM.SA.Common.Settings
             try
             {
                 // Create an RSACryptoServiceProvider from the public key
-                using (var rsa = new RSACryptoServiceProvider(4096))
+                using (var rsa = new RSACryptoServiceProvider()) //align with customer, no need to restrict the key length //4096)) 250102
                 {
                     rsa.ImportSubjectPublicKeyInfo(publicKeyBytes, out _);
 

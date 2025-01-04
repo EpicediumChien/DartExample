@@ -116,6 +116,7 @@ namespace DDPM.SA.Common.Display
             return x.SequenceEqual(y);
         }
         #region Defaul Recent List
+        //Robert_Lin, 2024-12-31 Add EAID
         /// <summary>
         /// Need to copy the DefaultSettings from DDPM.Easy.Common/SplitCtrlXX.xaml.cs
         /// Never add SplitCtrl0A (Off) into the RecentList
@@ -123,15 +124,15 @@ namespace DDPM.SA.Common.Display
         public static readonly List<SplitJson> DefaultRecentList = new List<SplitJson>()
         {
             //[0] SplitCtrl2A
-            new  SplitJson() { CellCount = 2, SplitKey='A', Settings=new List<double>() { 1, 1 } },
+            new  SplitJson() { CellCount = 2, SplitKey='A', EAID=1, Settings=new List<double>() { 1, 1 } },
             //[1] SplitCtrl2C
-            new  SplitJson() { CellCount = 2, SplitKey='C', Settings=new List<double>() { 7, 3 } },
+            new  SplitJson() { CellCount = 2, SplitKey='C', EAID=3, Settings=new List<double>() { 7, 3 } },
             //[2] SplitCtrl3E
-            new  SplitJson() { CellCount = 3, SplitKey='E', Settings=new List<double>() { 1, 1, 1, 1 } },
+            new  SplitJson() { CellCount = 3, SplitKey='E', EAID=9, Settings=new List<double>() { 1, 1, 1, 1 } },
             //[3] SplitCtrl4A
-            new  SplitJson() { CellCount = 4, SplitKey='A', Settings=new List<double>() { 1, 1, 1, 1, 1 } },
+            new  SplitJson() { CellCount = 4, SplitKey='A', EAID=14, Settings=new List<double>() { 1, 1, 1, 1, 1 } },
             //[4] SplitCtrl3C
-            new  SplitJson() { CellCount = 3, SplitKey='C', Settings=new List<double>() { 3, 4, 3 } }
+            new  SplitJson() { CellCount = 3, SplitKey='C', EAID=7, Settings=new List<double>() { 3, 4, 3 } }
 
         };
         #endregion Defaul Recent List

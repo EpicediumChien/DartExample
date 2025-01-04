@@ -963,9 +963,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     fwUpdateInfos[i].FWUErrorCode = _updateErrorCode;
                     if (!fwUpdateInfos[i].IsDisplay)
                     {
-                        if (CheckDeviceStatus_IsStopUpdate(fwUpdateInfos[i]))
+                        if (CheckDeviceStatus_IsStopUpdate(fwUpdateInfos[i], out FWUErrorCode isStopUpdateError))
                         {
-                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.ConnectMultipleDocks;
+                            fwUpdateInfos[i].FWUErrorCode = isStopUpdateError;
                             NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                             method.DeleteFolder(savePath);
                             continue;
@@ -1063,6 +1063,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} Unzip Fail");
                                 _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                                fileLock.Unlock();
                                 method.DeleteFolder(savePath);
                                 continue;
                             }
@@ -1075,6 +1076,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                                     NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                                     method.DeleteFolder(savePath);
+                                    fileLock_2.Unlock();
+                                    fileLock.Unlock();
                                     continue;
                                 }
                                 fwUpdateInfos[i].InstallPaths = exeFilePath;
@@ -1294,10 +1297,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// </summary>
         /// <param name="currentFWInfo">Firmware information currently to be updated</param>
         /// <returns>Two Docks are connected at the same time return true; otherwise return false.</returns>
-        private bool CheckDeviceStatus_IsStopUpdate(FWUpdateInfo currentFWInfo)
+        private bool CheckDeviceStatus_IsStopUpdate(FWUpdateInfo currentFWInfo, out FWUErrorCode fWUErrorCode)
         {
             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} start");
             bool ret = false;
+            fWUErrorCode = FWUErrorCode.NoError;
             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} currentFWInfo.DeviceType: {currentFWInfo.DeviceType}");
             if (_DeviceInfos != null)
             {
@@ -1312,6 +1316,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} dock_deviceInfos.Count: {dock_deviceInfos.Count}");
                         if (dock_deviceInfos.Count >= 2)
                         {
+                            fWUErrorCode = FWUErrorCode.ConnectMultipleDocks;
                             _notificationStr = LangHelper.Instance["Multiple_docks_are_detected"];
                             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} LogicalDock: Multiple docks are detected. Keep only one dock connected to prevent damage to your docks");
                             ret = true;
@@ -1329,6 +1334,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} _DongleCount : {_DongleCount}");
                         if (_DongleCount >= 2)
                         {
+                            fWUErrorCode = FWUErrorCode.ConnectMultipleSameModels;
                             _notificationStr = LangHelper.Instance["Firmware_update_aborted_same_model_is_connected"];
                             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} currentFWInfo.Model: {currentFWInfo.Model}: Multiple devices of the same model are plugged in");
                             ret = true;
@@ -1348,6 +1354,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} deviceInfos.BatteryLevel : {deviceInfo.BatteryLevel}");
                             if (deviceInfo.BatteryLevel <= 20)
                             {
+                                fWUErrorCode = FWUErrorCode.DeviceBatteryTooLow;
                                 _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                                 ret = true;
                             }
@@ -2474,7 +2481,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} File is zip.");
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} ExecuteUnzip go.");
-                    if (unzip.ExecuteUnzip(filePath, extractPath, out exeFilePath))
+                    if (unzip.ExecuteUnzip(filePath, extractPath, false, out exeFilePath))
                     {
                         if (string.IsNullOrEmpty(exeFilePath))
                         {
@@ -2695,7 +2702,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _logs.DebugMsg_1($"Check_CanBeOTAUpdate start");
             bool ret = true;
             if ((fwUpdateInfo.DeviceType == DeviceType.LogicalWebcam ||
-                fwUpdateInfo.DeviceType == DeviceType.PhysicalWebcam) && 
+                fwUpdateInfo.DeviceType == DeviceType.PhysicalWebcam) &&
                 fwUpdateInfo.Model.Contains("7022"))
             {
                 _logs.DebugMsg_1($"Check_CanBeOTAUpdate DeviceType is WB7022");

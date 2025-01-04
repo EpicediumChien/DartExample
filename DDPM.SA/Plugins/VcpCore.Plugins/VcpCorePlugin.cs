@@ -2014,6 +2014,9 @@ namespace VcpCore.Plugins
                         }
                     }
 
+                    _AddSignalfor0X52 = 0;
+                    _AddSignalforStatusCheck = 0;
+
                     try
                     {
                         if (_cancellationTokenSource != null)
@@ -5017,10 +5020,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 1;
-
                         else
                             return 5;
                     }
@@ -5032,10 +5033,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 1;
-
                         else
                             return 5;
                     }
@@ -5058,10 +5057,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 4;
-
                         else
                             return 5;
                     }
@@ -5070,10 +5067,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 1;
-
                         else
                             return 5;
                     }
@@ -5081,10 +5076,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 1;
-
                         else
                             return 5;
                     }
@@ -5093,10 +5086,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 1;
-
                         else
                             return 5;
                     }
@@ -5108,22 +5099,17 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Novatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                         {
                             if (SI.Equals("TPV"))
                                 return 1;
-
                             else if (SI.Equals("Qisda"))
                                 return 4;
-
                             else
                                 return 5;
                         }
-
                         else
                             return 5;
                     }
@@ -5131,10 +5117,8 @@ namespace VcpCore.Plugins
                     {
                         if (SI.Equals("TPV"))
                             return 1;
-
                         else if (SI.Equals("Qisda"))
                             return 4;
-
                         else
                             return 5;
                     }
@@ -5147,10 +5131,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 1;
-
                         else
                             return 5;
                     }
@@ -5164,10 +5146,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 1;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 4;
-
                         else
                             return 5;
                     }

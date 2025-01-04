@@ -160,7 +160,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         public void EndWalkThrough()
         {
             if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
-                DdpmHomePlugin.DdpmHomePlugin._showPluginById = false;
+                DdpmHomePlugin.DdpmHomePlugin.ShowPluginById = false;
 
             IShowPluginManager? _showPluginManager = WalkThroughPlugin.PluginIoc.GetService<IShowPluginManager>();
             //_showPluginManager?.ShowHomePage();

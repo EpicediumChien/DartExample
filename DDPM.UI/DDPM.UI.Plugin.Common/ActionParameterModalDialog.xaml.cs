@@ -149,7 +149,9 @@ namespace DDPM.UI.Plugin.Common
             //}
 
             if (IsForPen)
+            {
                 StopPenCapture();
+            }
 
             DialogResult = true;
             Close();

@@ -156,6 +156,8 @@ namespace DDPM.SA.Common
         CAFail = 12,
         NamedPipeServerIsNoSafe = 13,
         FileCheckFail = 14,
+        ConnectMultipleSameModels = 15,
+        DeviceBatteryTooLow = 16,
         Unknow = 99
     }
 

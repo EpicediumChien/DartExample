@@ -255,23 +255,23 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
-        public void SetPrimaryMouseButton(MouseButton newMouseButton, Guid deviceId)
-        {
-            foreach (var device in _iDeviceManager.Devices)
-            {
-                var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
-                if (logicalDevice is ILogicalDevice3 _logicalDevice3)
-                {
-                    DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID == deviceId);
-                    if (_deviceInfo != null && _deviceInfo.MousePrimaryButton != newMouseButton)
-                    {
-                        _logicalDevice3.SetPrimaryMouseButton(newMouseButton);
-                        _deviceInfo.MousePrimaryButton = newMouseButton;
-                        break;
-                    }
-                }
-            }
-        }
+        //public void SetPrimaryMouseButton(MouseButton newMouseButton, Guid deviceId)
+        //{
+        //    foreach (var device in _iDeviceManager.Devices)
+        //    {
+        //        var logicalDevice = device.Devices.FirstOrDefault(x => x.Id == deviceId);
+        //        if (logicalDevice is ILogicalDevice3 _logicalDevice3)
+        //        {
+        //            DeviceInfo _deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID == deviceId);
+        //            if (_deviceInfo != null && _deviceInfo.MousePrimaryButton != newMouseButton)
+        //            {
+        //                _logicalDevice3.SetPrimaryMouseButton(newMouseButton);
+        //                _deviceInfo.MousePrimaryButton = newMouseButton;
+        //                break;
+        //            }
+        //        }
+        //    }
+        //}
 
         public void SetTouchScrollSensitivityLevel(int newTouchScrollSensitivityLevel, Guid deviceId)
         {
@@ -2044,7 +2044,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                if(deviceInfo != null)
+                if (deviceInfo != null)
                 {
                     DeviceChangedEventArgs _EventArgs = new();
                     _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;

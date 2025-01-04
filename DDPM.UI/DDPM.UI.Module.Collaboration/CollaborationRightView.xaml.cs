@@ -119,6 +119,8 @@ namespace DDPM.UI.Module.Collaboration
                 bdrAlert1.Visibility = Visibility.Visible;
                 tsCollaboration.IsEnabled = false;
                 _vm.IsCollaborationKeyEnable = false;
+                spAlert.Visibility = Visibility.Visible;
+                return;
             }
             else if (CTKMessage == "ZoomNotInstalled, ApplicationUnpaired")
             { // Scenario 2

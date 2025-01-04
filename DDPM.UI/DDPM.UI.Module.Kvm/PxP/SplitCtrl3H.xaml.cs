@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using DDPM.UI.Common;
+using System.Windows.Input;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.Kvm
@@ -58,35 +59,65 @@ namespace DDPM.UI.Module.Kvm
 
         private void PBP_MouseLeftDown1(object sender, MouseButtonEventArgs e)
         {
-            vm.PC1Click();
-            vm.VideoSwapContent = vm.PxPcodeDictionary[PbpCapabilityCode]/*new PBPSplitCtrl2A()*/;
+            if (vm != null)
+            {
+                vm.PC1Click();
+                vm.ShowPxPView(PbpCapabilityCode);
+            }
         }
 
         private void PBP_MouseLeftDown2(object sender, MouseButtonEventArgs e)
         {
-            vm.PC2Click();
-            vm.VideoSwapContent = vm.PxPcodeDictionary[PbpCapabilityCode];
+            if (vm != null)
+            {
+                vm.PC2Click();
+                vm.ShowPxPView(PbpCapabilityCode);
+            }
         }
 
         private void PBP_MouseLeftDown3(object sender, MouseButtonEventArgs e)
         {
-            vm.PC3Click();
-            vm.VideoSwapContent = vm.PxPcodeDictionary[PbpCapabilityCode];
+            if (vm != null)
+            {
+                vm.PC3Click();
+                vm.ShowPxPView(PbpCapabilityCode);
+            }
         }
 
         private void PBP_SwapClick1(object sender, MouseButtonEventArgs e)
         {
-            vm.PCSwap("PC1", "PC2");
+            if (vm != null)
+            {
+                vm.PCSwap("PC1", "PC2");
+                if (!vm.isPxPFullView)
+                {
+                    DdpmCommonHelper.DeviceManagerSA.VideoSwap(vm.KvmModule.SelectedHomeDevice.MonitorInfo, 0, 1);
+                }
+            }
         }
 
         private void PBP_SwapClick2(object sender, MouseButtonEventArgs e)
         {
-            vm.PCSwap("PC2", "PC3");
+            if (vm != null)
+            {
+                vm.PCSwap("PC2", "PC3");
+                if (!vm.isPxPFullView)
+                {
+                    DdpmCommonHelper.DeviceManagerSA.VideoSwap(vm.KvmModule.SelectedHomeDevice.MonitorInfo, 1, 2);
+                }
+            }
         }
 
         private void PBP_SwapClick3(object sender, MouseButtonEventArgs e)
         {
-            vm.PCSwap("PC1", "PC3");
+            if (vm != null)
+            {
+                vm.PCSwap("PC1", "PC3");
+                if (!vm.isPxPFullView)
+                {
+                    DdpmCommonHelper.DeviceManagerSA.VideoSwap(vm.KvmModule.SelectedHomeDevice.MonitorInfo, 0, 2);
+                }
+            }
         }
     }
 }
