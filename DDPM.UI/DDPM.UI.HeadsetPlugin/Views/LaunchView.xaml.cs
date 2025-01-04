@@ -196,6 +196,7 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
             groups.Add(moduleGroup);
 
             bool answerCall = DdpmCommonHelper.DeviceManagerSA.GetIsBoomMicSupportedAsync(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
+            DdpmCommonHelper.WriteUILog($"[Headset] BuildModuleGroups Model = {_vm!.Model}, GetIsBoomMicSupportedAsync = {answerCall.ToString()}");
 
             if (_vm!.Model == "WL7024" || _vm!.Model == "WL5024" || answerCall)
             {
