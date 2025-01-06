@@ -2330,7 +2330,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     Trace.WriteLine($"[DisplayMangerPlugin] show_VCPchangedEventArgs, lastProcessedTime = {lastProcessedTime.ToString()} || now - lastProcessedTime = {(now - lastProcessedTime).TotalSeconds.ToString()}");
                     _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs, lastProcessedTime = {lastProcessedTime.ToString()} || now - lastProcessedTime = {(now - lastProcessedTime).TotalSeconds.ToString()}");
-                    if ((now - lastProcessedTime).TotalSeconds < 8)
+                    if ((now - lastProcessedTime).TotalSeconds < 3)
                     {
                         Trace.WriteLine($"[DisplayManagerPlugin] show_VCPchangedEventArgs, Skipping VCP code {e.vcpcode.ToString()} event ... Time to close {(now - lastProcessedTime).TotalSeconds.ToString()}");
                         _logs.DebugMsg($"[DisplayManagerPlugin] show_VCPchangedEventArgs, Skipping VCP code {e.vcpcode.ToString()} event ... Time to close {(now - lastProcessedTime).TotalSeconds.ToString()}");
@@ -2497,7 +2497,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     try
                                     {
                                         //待定義，先KEEP
-                                        await SyncPrimaryMonitorBrightnessAndColorTemp(e.monitor, targetMonitor, e.vcpcode, valemp);
+                                        //await SyncPrimaryMonitorBrightnessAndColorTemp(e.monitor, targetMonitor, e.vcpcode, valemp);
                                     }
                                     catch (Exception ex)
                                     {

@@ -273,6 +273,24 @@ namespace DDPM.UI.WalkThroughData
                         new WalkThroughPageData { MainText = Strings.WalkThroughWebCam_Main4, SubText = Strings.WalkThroughWebCam_Sub4, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KBA_5.png" }
                     }
                 },
+                { "U3224KBA", new List<WalkThroughPageData>
+                    {
+                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main0, SubText = Strings.WalkThroughWebCamWB3023_Sub0, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KBA_1.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main1, SubText = Strings.WalkThroughWebCamWB3023_Sub1, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KBA_2.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCam_Main2, SubText = Strings.WalkThroughWebCam_Sub2, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KBA_3.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main2, SubText = Strings.WalkThroughWebCam_Sub3, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KBA_4.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCam_Main4, SubText = Strings.WalkThroughWebCam_Sub4, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KBA_5.png" }
+                    }
+                },
+                { "U3224KB/A", new List<WalkThroughPageData>
+                    {
+                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main0, SubText = Strings.WalkThroughWebCamWB3023_Sub0, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KBA_1.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main1, SubText = Strings.WalkThroughWebCamWB3023_Sub1, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KBA_2.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCam_Main2, SubText = Strings.WalkThroughWebCam_Sub2, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KBA_3.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main2, SubText = Strings.WalkThroughWebCam_Sub3, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KBA_4.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCam_Main4, SubText = Strings.WalkThroughWebCam_Sub4, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KBA_5.png" }
+                    }
+                },
                 //Headset////////////////////////////////////////////////////////////////////////////////////////////////
                 // Vaporfly (WL3024)
                 { "WL3024", new List<WalkThroughPageData>
