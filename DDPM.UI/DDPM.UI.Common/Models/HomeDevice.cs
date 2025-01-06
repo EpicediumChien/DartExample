@@ -1656,10 +1656,9 @@ namespace DDPM.UI.Common.Models
         {
             get
             {
-                if (MonitorInfo != null)
+                if (MonitorInfo != null && MonitorInfo.CapabilityDic != null)
                 {
-                    if (MonitorInfo.CapabilityDic != null)
-                        return MonitorInfo.CapabilityDic.ContainsKey("E9");
+                    return MonitorInfo.CapabilityDic.ContainsKey("E9");
                 }
                 return false;
             }
