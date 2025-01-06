@@ -7133,14 +7133,15 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #endregion
 
         #region Dock
-        public Task<DockData> GetDockData(string guid)
+        public async Task<DockData> GetDockData(string guid)
         {
             try
             {
-                if (!GetItemIDAsync("Dock", guid).Result)
+                //if (!GetItemIDAsync("Dock", guid).Result)
+                if (!await GetItemIDAsync("Dock", guid))
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return Task.FromResult<DockData>(null);
+                    return null;
                 }
                 var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
                 if (commodity is ICommodity)
@@ -7180,7 +7181,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                                                 {
                                                     dockData.MarketingName = $"{dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
                                                 }
-                                                return Task.FromResult(dockData);
+                                                return dockData;
                                             }
                                         }
                                     }
@@ -7196,26 +7197,27 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                             writelog($"[Dock] GetDockData Dock Data Error : {ex.Message}");
                         }
                     }
-                    return Task.FromResult<DockData>(null);
+                    return null;
                 }
 
                 writelog($"[Dock] GetDockData failed: Could not retrieve commodity interface for {guid}");
-                return Task.FromResult<DockData>(null);
+                return await Task.FromResult<DockData>(null);
             }
             catch (Exception ex)
             {
                 writelog($"[Dock] GetDockData failed for {guid} - Exception: {ex.Message}");
-                return Task.FromResult<DockData>(null);
+                return null;
             }
         }
-        public Task<string> GetFirmwareVersionForDock(string guid)
+        public async Task<string> GetFirmwareVersionForDock(string guid)
         {
             try
             {
-                if (!GetItemIDAsync("Dock", guid).Result)
+                //if (!GetItemIDAsync("Dock", guid).Result)
+                if (!await GetItemIDAsync("Dock", guid))
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return Task.FromResult("");
+                    return "";
                 }
                 var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
                 if (commodity is ICommodity)
@@ -7223,26 +7225,27 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     var value = GetPropertyValue(_dockInterfaceType, commodity, "FirmwareVersion");
                     writelog($"[Dock] GetFirmwareVersionForDock succeeded for {guid}");
                     writelog($"[Dock] GetDockServiceTagForDock succeeded for {(string)value}");
-                    return Task.FromResult((string)value);
+                    return value == null ? "" : (string)value;
                 }
 
                 writelog($"[Dock] GetFirmwareVersionForDock failed: Could not retrieve commodity interface for {guid}");
-                return Task.FromResult("");
+                return "";
             }
             catch (Exception ex)
             {
                 writelog($"[Dock] GetFirmwareVersionForDock failed for {guid} - Exception: {ex.Message}");
-                return Task.FromResult("");
+                return "";
             }
         }
-        public Task<string> GetDockServiceTagForDock(string guid)
+        public async Task<string> GetDockServiceTagForDock(string guid)
         {
             try
             {
-                if (!GetItemIDAsync("Dock", guid).Result)
+                //if (!GetItemIDAsync("Dock", guid).Result)
+                if (!await GetItemIDAsync("Dock", guid))
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return Task.FromResult("");
+                    return "";
                 }
                 var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
                 if (commodity is ICommodity)
@@ -7267,7 +7270,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                                     int temp_int = 0;
                                     if (!string.IsNullOrEmpty(payloadElement))
                                     {
-                                        return Task.FromResult(payloadElement);
+                                        return payloadElement;
                                     }
                                 }
                             }
@@ -7277,16 +7280,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                             }
                         }
                     }
-                    return Task.FromResult("");
+                    return "";
                 }
 
                 writelog($"[Dock] GetDockServiceTagForDock failed: Could not retrieve commodity interface for {guid}");
-                return Task.FromResult("");
+                return "";
             }
             catch (Exception ex)
             {
                 writelog($"[Dock] GetDockServiceTagForDock failed for {guid} - Exception: {ex.Message}");
-                return Task.FromResult("");
+                return "";
             }
         }
 
