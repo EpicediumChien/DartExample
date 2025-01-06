@@ -766,6 +766,8 @@ namespace DDPM.SA.Plugin.CLIManager
             if (_commandLineInput.Command == "SET" && _commandLineInput.Options.Count > 0 && !string.IsNullOrWhiteSpace(_commandLineInput.Options[0].Option_Value))
             {
                 response.Value = _commandLineInput.Options[0].Option_Value;
+                _commandLineInput.Options[0].Option_Value = _commandLineInput.Options[0].Option_Value.Replace("ENABLE", "ON")
+                                                                                                     .Replace("DISABLE", "OFF");
 
                 if (!validOptions.Contains(_commandLineInput.Options[0].Option_Value.ToUpper()))
                 {
