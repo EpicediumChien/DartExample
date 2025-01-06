@@ -36,6 +36,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             if (_ddpmHomePageViewModel != null)
             {
                 base.DataContext = _ddpmHomePageViewModel;
+                _ddpmHomePageViewModel.HomeDevicesChanged -= _ddpmHomePageViewModel_HomeDevicesChanged;
                 _ddpmHomePageViewModel.HomeDevicesChanged += _ddpmHomePageViewModel_HomeDevicesChanged;
 
                 ////Robert_Lin, 2024-7-16 for engineer debug,
@@ -43,7 +44,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     UIDebugPanel.Visibility = Visibility.Visible;
                 }
+                _ddpmHomePageViewModel.ShowConsentRequested -= _ddpmHomePageViewModel_ShowConsent;
                 _ddpmHomePageViewModel.ShowConsentRequested += _ddpmHomePageViewModel_ShowConsent;
+                _ddpmHomePageViewModel.ImportNotify -= ImportNotifyEventHandler;
                 _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
             }
             Dispatcher.BeginInvoke(new Action(() =>
