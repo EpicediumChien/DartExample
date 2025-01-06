@@ -2430,6 +2430,25 @@
                         BusyIndicatorType="Secondary"
                         IsActive="{Binding IsBusy}" />
                 </Border>
+                <Border Name="DisableAll2" Background="#4C24273C">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsBusyALS}" Value="False">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <UXControls:UXBusyIndicator
+                        Width="64"
+                        Height="64"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        BusyIndicatorType="Secondary"
+                        IsActive="{Binding IsBusyALS}" />
+                </Border>
             </Grid>
         </UXControls:UXScrollViewer>
         <Border

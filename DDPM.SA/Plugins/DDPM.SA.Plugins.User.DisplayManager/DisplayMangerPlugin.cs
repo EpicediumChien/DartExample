@@ -1137,6 +1137,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 ALSConfig aconfig = AllALSConfig[idx];
                 AllALSConfig[idx] = param;
+                if(GetBitValue(param.AllValue, 5) == 1)
+                {
+                    for(int i = 0; i < AllALSConfig.Count; i++)
+                    {
+                        AllALSConfig[i].isBusy = true;
+                    }
+                }
                 //CheckisPrimaryMonitorSyncOnOff(monitorInfos, param, "0");
             }
             else
@@ -2272,7 +2279,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             uint.TryParse(e.value, NumberStyles.Integer, CultureInfo.CurrentCulture, out uint result2);
             _logs.DebugMsg("[DisplayMangerPlugin] Receive VcpChanged Event Notify from VcpCorePlugin");
             _logs.DebugMsg("[DisplayMangerPlugin] Send VcpChanged Event Notify from DisplayMangerPlugin");
-            Trace.WriteLine("[DisplayMangerPlugin] show_VCPchangedEventArgs vcpcode = " + e.vcpcode.ToString() + " || monitor = " + e.monitor.edid.ModelName + " || Value = " + result2.ToString());
+            Trace.WriteLine("[DisplayMangerPlugin] show_VCPchangedEventArgs vcpcode = " + e.vcpcode.ToString() + " || monitor = " + e.monitor.edid.ModelName + " || e.Value = " + e.value.ToString());
 
             VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
             _VCPchangedEventArgs.value = e.value;
@@ -2293,6 +2300,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     if (alsConfig != null)// && alsConfig.AllValue != result)
                     {
                         Task.Run(() => CheckisPrimaryMonitorSyncOnOff(e.monitor, alsConfig, e.vcpcode));//JIRA DDPMW-770
+                        int idx = AllALSConfig.FindIndex(x => x.Edid.Equals(e.monitor.edid));
+                        AllALSConfig[idx].isBusy = false;
                     }
                 }
                 _VCPchangedEventArgs.vcpcode = e.vcpcode;

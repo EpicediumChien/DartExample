@@ -65,13 +65,14 @@ namespace DDPM.UI.Module.Brightness
         public void OnSelectedHomeDeviceChanged()
         {
             Trace.WriteLine("BrightnessModule.OnSelectedHomeDeviceChanged");
-
+            //vm.SetIsBusy(vm.IsBusy);
             isSelectChanged = true;
             if (IsModuleActive)
             {
                 isSelectChanged = false;
                 InitNewViewModel();
             }
+            vm.SetIsBusy(vm.IsBusyALS);
         }
 
         private void InitNewViewModel()
