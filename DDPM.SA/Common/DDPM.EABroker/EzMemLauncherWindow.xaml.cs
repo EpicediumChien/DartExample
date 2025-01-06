@@ -54,7 +54,7 @@ namespace DDPM.EABroker
             return IsWindowVisible(hWnd);
         }
 
-        [DllImport("user32.dll", SetLastError = true)]
+        /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
@@ -62,12 +62,12 @@ namespace DDPM.EABroker
         private bool EzMemorySetForegroundWindow(IntPtr hWnd)
         {
             return SetForegroundWindow(hWnd);
-        }
+        }*/
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-        public static bool EzMemoryShowWindow(IntPtr hWnd, int nCmdShow)
+        private static bool EzMemoryShowWindow(IntPtr hWnd, int nCmdShow)
         {
             return ShowWindow(hWnd, nCmdShow);
         }
@@ -79,8 +79,8 @@ namespace DDPM.EABroker
         private const int SW_RESTORE = 9;
 
 
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+        //[DllImport("user32.dll")]
+        //private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
 
 
         #region Private members
@@ -277,8 +277,8 @@ namespace DDPM.EABroker
                         //ShowWindowAsync(handle, SW_MAXIMIZE);
                         //ShowWindowAsync(handle, SW_SHOWNORMAL);
                         //ShowWindow(handle, SW_RESTORE);
-                        ShowWindow(handle, SW_SHOWNORMAL);
-                        ShowWindow(handle, SW_SHOWN);
+                        EzMemoryShowWindow(handle, SW_SHOWNORMAL);
+                        EzMemoryShowWindow(handle, SW_SHOWN);
                         Win32._SetForegroundWindow(handle);
                         //EzMemorySetForegroundWindow(handle); // 把應用程式拉到前景
                         //ShowWindow(handle, SW_SHOWNORMAL);
@@ -307,7 +307,7 @@ namespace DDPM.EABroker
                         _vm.WriteLog($"[LaunchAndArrange] App is launched, hWnd={handle}=0x{handle:X}, pid={process.Id}, hProcess={process.Handle}");
 
 
-                        ShowWindow(handle, SW_SHOWNORMAL);
+                        EzMemoryShowWindow(handle, SW_SHOWNORMAL);
                         Win32._SetForegroundWindow(handle);
                     }
                     Trace.WriteLine($"[LaunchAndArrange] 3 => {winUWP} APP, handle = {handle.ToString()}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, app.AppName = {app.AppName}");
