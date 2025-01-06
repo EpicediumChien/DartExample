@@ -44,11 +44,22 @@ namespace DDPM.QAM
             if (deviceInfos != null && deviceInfos.Count > 0)
             {
                 CurrentDeviceInfo = deviceInfos.FirstOrDefault(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
+
                 if (CurrentDeviceInfo != null)
                 {
                     //DeviceModel = CurrentDeviceInfo.Name;
                     DeviceModel = CurrentDeviceInfo.Name + " " + CurrentDeviceInfo.ModelNumber; //Derek 1213
-                    ImportWebcamProfiles(CurrentDeviceInfo.ModelNumber);
+
+                    var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), 
+                        @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{CurrentDeviceInfo.ModelNumber}.json");
+                    
+                    //Derek 0106 Add to create profile if not exist
+                    if (!File.Exists(filePath))
+                    {
+                        CreateWebcamProfile(filePath, CurrentDeviceInfo.ModelNumber);
+                    }
+
+                    ImportWebcamProfiles(filePath);
                     ZoomMax = CurrentDeviceInfo.ZoomMax;
                     ZoomMin = CurrentDeviceInfo.ZoomMin;
 
@@ -236,17 +247,11 @@ namespace DDPM.QAM
         public ObservableCollection<UI_Profile> UI_ProfileList { get; set; }
         public Dictionary<string, WebcamProfile> Profiles = new Dictionary<string, WebcamProfile>();
         private WebcamProfile CurrentProfile;
-        public void ImportWebcamProfiles(string model)
+        public void ImportWebcamProfiles(string filePath)
         {
             try
             {
-                var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
-
-                //Derek 0106 Add to create profile if not exist
-                if (!File.Exists(filePath))
-                {
-                    CreateWebcamProfile(filePath, model);
-                }
+                //var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
 
                 if (File.Exists(filePath))
                 {
@@ -315,9 +320,9 @@ namespace DDPM.QAM
 
         private bool CreateWebcamProfile(string filePath, string model)
         {
-            CurrentDeviceInfo = deviceInfos.FirstOrDefault(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
+            //CurrentDeviceInfo = deviceInfos.FirstOrDefault(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
 
-            Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetSupportedResolutions(di.ID.ToString());
+            //Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetSupportedResolutions(di.ID.ToString());
 
             return true;
         }
