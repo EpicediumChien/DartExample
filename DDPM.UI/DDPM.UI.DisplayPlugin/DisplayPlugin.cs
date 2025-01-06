@@ -108,6 +108,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin
             CancellationToken = StartupCancellationTokenSource.Token;
             _pluginManager.PluginsStarted += PluginManager_PluginsStarted;
 
+            //Robert_Lin, 2025-1-2, the handler is registered in DeviceBasePageViewModel.cs
+            //So will comment-out the registeration and handler in DisplayPlugin.
             //Robert_Lin, 2024-12-21 Register a event handler to handle when mainwindow
             // move to new position
             //_console.RegisterForEvent(ConsoleEventNames.MainWindow_MoveToNewPosition, Handle_MainWindow_MoveToNewPosition);
@@ -466,7 +468,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin
 
         #endregion DDC/CI Status Changed
 
-        #region MainWindow Move To new position
+        #region MainWindow Move To new position - Unused
+        /*
         /// <summary>
         /// Handle the IConsole Event, MainWindow_MoveToNewPosition, when DDPM main window
         /// move to a new position.
@@ -539,6 +542,7 @@ namespace DDPM.UI.Plugin.DisplayPlugin
             //    this.Activate();
             //}));
         }
+        */
         #endregion  MainWindow Move To new position
     }
 }
