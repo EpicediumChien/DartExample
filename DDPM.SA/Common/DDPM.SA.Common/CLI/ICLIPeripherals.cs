@@ -253,6 +253,33 @@ namespace DDPM.SA.Common
                         Message = "Keyboard not support COLLABCHATENABLE";
                     }
                     return;
+                case "ANCMODE":
+                    TargetFeature = targetFeature;
+                    if (!di.IsANCSupported)
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Audio not support ANCMODE";
+                    }
+                    return;
+                case "MICNOISECANCELLATION":
+                    TargetFeature = targetFeature;
+                    if (!di.IsMicNoiseCancellationSupported)
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Audio not support MICNOISECANCELLATION";
+                    }
+                    return;
+                case "WEARDETECTION":
+                    TargetFeature = targetFeature;
+                    if (!di.IsWearDetectionSupported)
+                    {
+                        Value = "N/A";
+                        Result = "FAIL";
+                        Message = "Audio not support WEARDETECTION";
+                    }
+                    return;
                 default:
                     TargetFeature = targetFeature;
                     break;
@@ -262,7 +289,6 @@ namespace DDPM.SA.Common
             {
                 Result = "PASS";
                 Message = "N/A";
-
                 var type = di.GetType();
                 foreach (var prop in type.GetProperties())
                 {
