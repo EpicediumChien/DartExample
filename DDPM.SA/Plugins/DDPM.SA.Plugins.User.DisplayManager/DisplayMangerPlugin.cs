@@ -2320,7 +2320,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 if (!AllALSConfig.All(config => !config.isBusy))
                 {
-                    Trace.WriteLine($" -------------------- ALS Busy --------------------");
+                    Trace.WriteLine($"[DisplayMangerPlugin] show_VCPchangedEventArgs 67 / 68, -------------------- ALS Busy --------------------");
+                    _logs.DebugMsg($" [DisplayMangerPlugin] show_VCPchangedEventArgs 67 / 68, -------------------- ALS Busy --------------------");
                     return;
                 }
                 DateTime now = DateTime.Now;
