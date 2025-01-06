@@ -42,18 +42,28 @@ namespace DDPM.SA.Common.Method
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetSystemMetrics(int nIndex);
+        private static int _GetSystemMetrics(int nIndex)
+        {
+            return GetSystemMetrics(nIndex);
+        }
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool SystemParametersInfo(uint uiAction, uint uiParam, bool pvParam, uint fWinIni);
+        private static bool _SystemParametersInfo(uint uiAction, uint uiParam, bool pvParam, uint fWinIni)
+        {
+            return SystemParametersInfo(uiAction, uiParam, pvParam, fWinIni);
+        }
+
+        //DDPM.UI reference this function
         public static bool IsPrimaryButtonLeft()
         {
-            var value = GetSystemMetrics(SM_SWAPBUTTON);
+            var value = _GetSystemMetrics(SM_SWAPBUTTON);
             return value == 0;
         }
         public static void SetPrimaryButtonToLeft(bool isLeftPrimary)
         {
-            SystemParametersInfo(SPI_SETMOUSEBUTTONSWAP, (uint)(isLeftPrimary ? 0 : 1), false, SPIF_SENDCHANGE);
+            _SystemParametersInfo(SPI_SETMOUSEBUTTONSWAP, (uint)(isLeftPrimary ? 0 : 1), false, SPIF_SENDCHANGE);
         }
         // >>
     }

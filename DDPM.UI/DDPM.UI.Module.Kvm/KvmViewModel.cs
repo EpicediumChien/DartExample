@@ -168,21 +168,21 @@ namespace DDPM.UI.Module.Kvm
         #endregion
 
         #region Win32
-        [DllImport("user32.dll", EntryPoint = "SetParent", SetLastError = true)]
+        /*[DllImport("user32.dll", EntryPoint = "SetParent", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
         private static int _SetParent(IntPtr hWndChild, IntPtr hWndNewParent)
         {
             return SetParent(hWndChild, hWndNewParent);
-        }
+        }*/
 
-        [DllImport("user32.dll", SetLastError = true)]
+        /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
         private static bool _EnableWindow(IntPtr hWnd, bool bEnable)
         {
             return EnableWindow(hWnd, bEnable);
-        }
+        }*/
         #endregion Win32
 
         //[DllImport("user32.dll", SetLastError = true)]

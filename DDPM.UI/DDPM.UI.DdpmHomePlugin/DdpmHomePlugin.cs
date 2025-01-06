@@ -620,14 +620,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         }
 
         [DllImport("user32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+        private static int _SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam)
+        {
+            return SendMessage(hWnd, wMsg, wParam, lParam);
+        }
         private const int WM_EXITBYMYSELF = 0xFF30;
         private void CloseMyself()
         {
             try
             {
                 IntPtr hWnd = Process.GetCurrentProcess().MainWindowHandle;
-                int result = SendMessage(hWnd, WM_EXITBYMYSELF, IntPtr.Zero, IntPtr.Zero);
+                int result = _SendMessage(hWnd, WM_EXITBYMYSELF, IntPtr.Zero, IntPtr.Zero);
 
                 _log.Info($"SendMessage result = {result}");
             }
