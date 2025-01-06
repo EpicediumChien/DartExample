@@ -370,8 +370,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             if (hotkeySettings.HotkeyOptions.Count > 0 && hotkeySettings.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
                             {
                                 //check cursor position at the edge
+                                //Robert_Lin, 2025-1-3 fix compiler error: 'Rectangle' is an ambiguous reference between 'System.Drawing.Rectangle' and 'System.Windows.Shapes.Rectangle'
                                 //1.get PBP mode sub input source
-                                Rectangle bounds = currentScreen.Bounds;
+                                System.Drawing.Rectangle bounds = currentScreen.Bounds;
                                 Dictionary<string, InputInfo> inputSourcelist = GetInputSourcelist(monitorInfo).Result;
                                 List<ushort> subInputListRet = GetSubInputList(monitorInfo).Result;
                                 //var currentResolution = _DisplayManagerPlugin.GetMonitorCurrentResolution(monitorInfo).Result;
@@ -13716,12 +13717,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
 
             //will register as ALT+Z ?
-            if (_altPressed && strKey.Equals("Z"))
+            if (_altPressed && strKey.Equals("Z") && !_ctrlPressed && !_shiftPressed)
             {
                 int devCnt = GetWebcamDeviceCount();
 
-                writelog($"ALT+Z conditons: devcnt = {devCnt}, " +
-                    $"global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
+                writelog($"ALT+Z conditons: devcnt = {devCnt}, global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
 
                 //Derek PIMS-329759 Problem 1
                 if (1 == devCnt && _GlobalSettingParam != null &&
