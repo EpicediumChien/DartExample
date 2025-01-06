@@ -297,10 +297,8 @@ namespace VcpCore.Common
             { "HDR10", 55 },
             { "HLG", 56 },
             { "Custom Color HDR", 57 }, // Jim add 2025 for [S3225QC] HDR list
-            { "HDR Peak 1000", 58 }, // Jim add 2025 for [S3225QC] HDR list
-            { "Bright", 61 }, // Jim add 2025 for [S3225QC] HDR list
-            { "Dark", 62 }, // Jim add 2025 for [S3225QC] HDR list
-            { "Game", 63 } // Jim add 2025 for [S3225QC] HDR list
+            { "HDR Peak 1000", 58 } // Jim add 2025 for [S3225QC] HDR list
+      
         };
 
         public static readonly Dictionary<string, byte> VCP14 = new Dictionary<string, byte>(StringComparer.OrdinalIgnoreCase)
@@ -396,10 +394,7 @@ namespace VcpCore.Common
             //{ 46, "Custom 3" },
             { 47, "SPORTS Game" },
             { 48, "Custom Color HDR" }, // Jim add 2025 for [S3225QC] HDR list
-            { 49, "HDR Peak 1000" }, // Jim add 2025 for [S3225QC] HDR list
-            { 64, "Bright" }, // Jim add 2025 for [S3225QC] HDR list
-            { 62, "Dark" }, // Jim add 2025 for [S3225QC] HDR list
-            { 63, "Game" } // Jim add 2025 for [S3225QC] HDR list
+            { 49, "HDR Peak 1000" } // Jim add 2025 for [S3225QC] HDR list        
 
         };
 
@@ -544,10 +539,8 @@ namespace VcpCore.Common
             {"HLG", 60},
             {"Presets Disabled", 127},
             { "Custom Color HDR", 48 }, // Jim add 2025 for [S3225QC] HDR list
-            { "HDR Peak 1000", 49 }, // Jim add 2025 for [S3225QC] HDR list
-            { "Bright", 64 }, // Jim add 2025 for [S3225QC] HDR list
-            { "Dark", 62 }, // Jim add 2025 for [S3225QC] HDR list
-            { "Game", 63 } // Jim add 2025 for [S3225QC] HDR list
+            { "HDR Peak 1000", 49 } // Jim add 2025 for [S3225QC] HDR list
+          
         };
 
         public struct VcpValue

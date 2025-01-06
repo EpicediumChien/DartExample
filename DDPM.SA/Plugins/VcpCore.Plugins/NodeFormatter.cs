@@ -418,10 +418,7 @@ namespace VcpCore.Plugins
                 case "37": return "HDR10";
                 case "38": return "HLG";
                 case "39": return "Custom Color HDR"; // Jim add 2025 for [S3225QC] HDR list
-                case "3a": return "HDR Peak 1000"; // Jim add 2025 for [S3225QC] HDR list
-                case "3d": return "Bright"; // Jim add 2025 for [S3225QC] HDR list
-                case "3e": return "Dark"; // Jim add 2025 for [S3225QC] HDR list
-                case "3f": return "Game"; // Jim add 2025 for [S3225QC] HDR list
+                case "3a": return "HDR Peak 1000"; // Jim add 2025 for [S3225QC] HDR list               
                 case "a1": return "Display P3";
                 case "c1": return "Custom 1 / User 1";
                 case "c2": return "Custom 2 / User 2";
@@ -499,9 +496,6 @@ namespace VcpCore.Plugins
                 case "3c": return "HLG";
                 case "30": return "Custom Color HDR"; // Jim add 2025 for [S3225QC] HDR list
                 case "31": return "HDR Peak 1000"; // Jim add 2025 for [S3225QC] HDR list
-                case "40": return "Bright"; // Jim add 2025 for [S3225QC] HDR list
-                case "3e": return "Dark"; // Jim add 2025 for [S3225QC] HDR list
-                case "3f": return "Game"; // Jim add 2025 for [S3225QC] HDR list
                 case "7f": return "Presets Disabled";
                 default: return null;
             }
