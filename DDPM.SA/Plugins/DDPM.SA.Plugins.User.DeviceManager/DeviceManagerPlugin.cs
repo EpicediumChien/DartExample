@@ -2936,6 +2936,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             nRes = _PeripheralsPlugin.GetSnoozeLength(deviceId);
             return Task.FromResult(nRes);
         }
+        public Task<bool> StartCopilotRegistryMonitor()
+        {
+            writelog("DeviceMangerPlugin received StartCopilotRegistryMonitor requested ...");
+            return Task.Run(() => _PeripheralsPlugin.StartCopilotRegistryMonitor());
+        }
+        public Task<bool> StopCopilotRegistryMonitor()
+        {
+            writelog("DeviceMangerPlugin received StopCopilotRegistryMonitor requested ...");
+            return Task.Run(() => _PeripheralsPlugin.StopCopilotRegistryMonitor());
+        }
 
         #endregion
 
@@ -9629,6 +9639,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAutoFramingSensitivity(Guid));
         }
+        public async Task<string> GetWebcamSerialNumber(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetWebcamSerialNumber(Guid));
+        }
 
         public Task SetIsMicEnumerationOn(string Guid, bool newValue)
         {
@@ -15936,7 +15950,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     foreach (HotkeyData hotkey in monitorSettings.hotkeyData)
                                     {
                                         writelog("[UpdateHotkeyInfo] hotkeyType : " + hotkey.hotkeyType);
-                                        if ((hotkey.hotkeyType != HotkeyType.FavoriteInputSource && 
+                                        if ((hotkey.hotkeyType != HotkeyType.FavoriteInputSource &&
                                             hotkey.hotkeyType != HotkeyType.SwitchInputSource) &&
                                             !hotkeyDatas.Exists(x => x.hotkeyType == hotkey.hotkeyType))
                                         {
@@ -16207,7 +16221,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 Directory.Delete(migrationPath, true);
                                 writelog("[DDMMigration] delete temp folder success");
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
                                 writelog($"[DDMMigration] delete temp folder exception: {migrationPath}");
                             }

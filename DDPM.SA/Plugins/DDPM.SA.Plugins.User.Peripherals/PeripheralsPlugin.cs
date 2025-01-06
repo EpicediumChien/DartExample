@@ -19,11 +19,13 @@ using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
+using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -3669,6 +3671,57 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        private RegistryMonitor_Copilot registryMonitor_Copilot = null;
+        public Task<bool> StartCopilotRegistryMonitor()
+        {
+            writelog("PeripheralPlugin StartCopilotRegistryMonitor requested ...");
+
+            if (registryMonitor_Copilot == null)
+            {
+                writelog("Monitor ICC change initiate...");
+                registryMonitor_Copilot = new RegistryMonitor_Copilot(Registry.CurrentUser, @"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot");
+                registryMonitor_Copilot.RegChanged += new EventHandler(OnRegChanged_Copilot);
+                registryMonitor_Copilot.Start();
+                writelog("Monitor ICC change started");
+                return System.Threading.Tasks.Task.FromResult(true);
+            }
+
+            return System.Threading.Tasks.Task.FromResult(false);
+        }
+        private void OnRegChanged_Copilot(object sender, EventArgs e)
+        {
+            var di = new DeviceInfo();
+            if (e == null)
+                di.Message = "false";
+            else
+                di.Message = "true";
+
+            DeviceChangedEventArgs _EventArgs = new()
+            {
+                type = DeviceChangedType.Peripherals_SettingsChange,
+                device_peripherals = di,
+                changedProperty = "CopilotEnableChanged"
+            };
+            OnNotify(_EventArgs);
+        }
+        private void OnError_Copilot(object sender, ErrorEventArgs e)
+        {
+            StopCopilotRegistryMonitor();
+        }
+        public Task<bool> StopCopilotRegistryMonitor()
+        {
+            writelog("PeripheralPlugin StopRegistryMonitor_ICC requested ...");
+
+            if (registryMonitor_Copilot != null)
+            {
+                registryMonitor_Copilot.Stop();
+                registryMonitor_Copilot.RegChanged -= new EventHandler(OnRegChanged_Copilot);
+                registryMonitor_Copilot = null;
+                return System.Threading.Tasks.Task.FromResult(true);
+            }
+            registryMonitor_Copilot = null;
+            return System.Threading.Tasks.Task.FromResult(false);
+        }
         #endregion
         private void writelog(string text,
                 [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
