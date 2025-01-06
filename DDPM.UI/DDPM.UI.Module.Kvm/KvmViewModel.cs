@@ -1927,8 +1927,7 @@ namespace DDPM.UI.Module.Kvm
                 {
                     //Jason by U3824DW input source greyed out
                     if (pcsList["PC1"].InputType == original_pcsList["PC2"].InputType &&
-                    pcsList["PC2"].InputType == original_pcsList["PC1"].InputType &&
-                    (isPipSmall || isPipLarge) &&
+                    //pcsList["PC2"].InputType == original_pcsList["PC1"].InputType) &&
                     _curPxpMode != 0x0)
                     {
                         DdpmCommonHelper.DeviceManagerSA.VideoSwap(KvmModule.SelectedHomeDevice.MonitorInfo, 0, 1);
