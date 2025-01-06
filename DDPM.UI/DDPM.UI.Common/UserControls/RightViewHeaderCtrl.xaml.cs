@@ -29,13 +29,11 @@ namespace DDPM.UI.Common
                 Dispatcher.Invoke(new Action(() =>
                 {
                     RightViewHeaderCtrlViewModel vm = (RightViewHeaderCtrlViewModel)this.DataContext;
-                    if (vm != null)
+                    if (vm != null &&
+                        vm.Text1.Equals(Strings.RightViewHeader_BrightnessContrast))
                     {
-                        if(vm.Text1.Equals(Strings.RightViewHeader_BrightnessContrast))
-                        {
-                            vm.Locker1 = data.LockSettings.Lock_Display_BriCont ? Visibility.Visible : Visibility.Collapsed;
-                            Trace.WriteLine($"[SettingsPage] Apply Brightness (lock) : {data.LockSettings.Lock_Display_BriCont}");
-                        }
+                        vm.Locker1 = data.LockSettings.Lock_Display_BriCont ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply Brightness (lock) : {data.LockSettings.Lock_Display_BriCont}");
                     }
                 }));
             }
@@ -57,13 +55,11 @@ namespace DDPM.UI.Common
                 Dispatcher.Invoke(new Action(() =>
                 {
                     RightViewHeaderCtrlViewModel vm = (RightViewHeaderCtrlViewModel)this.DataContext;
-                    if (vm != null)
+                    if (vm != null &&
+                        vm.Text1.Equals(Strings.RightViewHeader_BrightnessContrast))
                     {
-                        if (vm.Text1.Equals(Strings.RightViewHeader_BrightnessContrast))
-                        {
-                            vm.Locker1 = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
-                            Trace.WriteLine($"[SettingsPage] Apply Display_BriCont(Lock) : {isLocked}");
-                        }
+                        vm.Locker1 = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        Trace.WriteLine($"[SettingsPage] Apply Display_BriCont(Lock) : {isLocked}");
                     }
                 }));
             }
