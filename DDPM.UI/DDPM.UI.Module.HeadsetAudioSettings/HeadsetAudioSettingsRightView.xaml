@@ -177,7 +177,9 @@
                                                     </Border.Resources>
                                                     <StackPanel>
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding NoiseControlToolTip}" />
+                                                            <!-- Derek for PIMS-335198 -->
+                                                            <TextBlock Text="{Binding NoiseControlToolTip}" 
+                                                                       MaxWidth="350" TextWrapping="WrapWithOverflow"/>
                                                         </StackPanel>
                                                     </StackPanel>
                                                 </Border>
@@ -911,7 +913,9 @@
                                                             </Border.Resources>
                                                             <StackPanel>
                                                                 <StackPanel Orientation="Horizontal">
-                                                                    <TextBlock Text="{Binding MicNoiseCancellationToolTip}" />
+                                                                    <!-- Derek for PIMS-335196 -->
+                                                                    <TextBlock Text="{Binding MicNoiseCancellationToolTip}"
+                                                                               MaxWidth="350" TextWrapping="WrapWithOverflow"/>
                                                                 </StackPanel>
                                                             </StackPanel>
                                                         </Border>
@@ -985,7 +989,9 @@
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding SidetoneToolTip}" />
+                                                                <!-- Derek for PIMS-335191 -->
+                                                                <TextBlock Text="{Binding SidetoneToolTip}" 
+                                                                           MaxWidth="350" TextWrapping="WrapWithOverflow"/>
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>
