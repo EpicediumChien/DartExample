@@ -37,6 +37,7 @@ using DDPM.SA.Obfuscation;
 using System.Net.NetworkInformation;
 using System.Windows.Interop;
 using DDPMSettings = DDPM.SA.Common.Settings;
+using Microsoft.VisualBasic.Logging;
 
 namespace DDPM.SA.Plugins.SettingsManager
 {
@@ -89,6 +90,15 @@ namespace DDPM.SA.Plugins.SettingsManager
         {
             _agent = agent;
             WriteLog($"SettingsManagerPlugin constructor ...(Admin:{_IsAdministrator})");
+
+            if(_agent != null)
+            {                
+                WriteLog($"SettingsManagerPlugin constructor ...(Data location: {DDPMFileSecurity.SysLogLocation})");
+                if (!DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(DDPMFileSecurity.SysLogLocation, out string info))
+                {
+                    WriteLog($"SettingsManagerPlugin constructor ... ACL failed...{info}");
+                }
+            }
         }
 
         #endregion
