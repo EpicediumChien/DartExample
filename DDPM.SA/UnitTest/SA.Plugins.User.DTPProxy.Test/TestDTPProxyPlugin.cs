@@ -1545,6 +1545,190 @@ namespace DDPM.SA.Plugins.User.DTPProxy.Test
             Assert.IsNotNull(GetEraserSinglePressSetting_result2);
         }
 
+        [Test]
+        public void TestGetEraserLongPressSetting()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var GetEraserLongPressSetting_result = dTPProxyPlugin.GetEraserLongPressSetting().Result;   //_penMethodInfo null
+            Assert.IsNotNull(GetEraserLongPressSetting_result);
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetEraserLongPressSetting_result2 = dTPProxyPlugin.GetEraserLongPressSetting().Result;
+            Assert.IsNotNull(GetEraserLongPressSetting_result2);
+        }
+
+        [Test]
+        public void TestGetSideTopSwitchSinglePressSetting()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var GetSideTopSwitchSinglePressSetting_result = dTPProxyPlugin.GetSideTopSwitchSinglePressSetting().Result;   //_penMethodInfo null
+            Assert.IsNotNull(GetSideTopSwitchSinglePressSetting_result);
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetSideTopSwitchSinglePressSetting_result2 = dTPProxyPlugin.GetSideTopSwitchSinglePressSetting().Result;
+            Assert.IsNotNull(GetSideTopSwitchSinglePressSetting_result2);
+        }
+
+        [Test]
+        public void TestGetSideBottomSwitchSinglePressSetting()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var GetSideBottomSwitchSinglePressSetting_result = dTPProxyPlugin.GetSideBottomSwitchSinglePressSetting().Result;   //_penMethodInfo null
+            Assert.IsNotNull(GetSideBottomSwitchSinglePressSetting_result);
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetSideBottomSwitchSinglePressSetting_result2 = dTPProxyPlugin.GetSideBottomSwitchSinglePressSetting().Result;
+            Assert.IsNotNull(GetSideBottomSwitchSinglePressSetting_result2);
+        }
+
+        [Test]
+        public void TestGetMenuSinglePressSetting()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var GetMenuSinglePressSetting_result = dTPProxyPlugin.GetMenuSinglePressSetting().Result;   //_penMethodInfo null
+            Assert.IsNotNull(GetMenuSinglePressSetting_result);
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetMenuSinglePressSetting_result2 = dTPProxyPlugin.GetMenuSinglePressSetting().Result;
+            Assert.IsNotNull(GetMenuSinglePressSetting_result2);
+        }
+
+        [Test]
+        public void TestGetMenuCenterRightClickSetting()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var GetMenuCenterRightClickSetting_result = dTPProxyPlugin.GetMenuCenterRightClickSetting().Result;   //_penMethodInfo null
+            Assert.IsNotNull(GetMenuCenterRightClickSetting_result);
+            Assert.That(GetMenuCenterRightClickSetting_result, Is.EqualTo(false));
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetMenuCenterRightClickSetting_result2 = dTPProxyPlugin.GetMenuCenterRightClickSetting().Result;
+            Assert.IsNotNull(GetMenuCenterRightClickSetting_result2);
+            Assert.That(GetMenuCenterRightClickSetting_result2, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestGetIsSideTopButtonHoverClick()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var GetIsSideTopButtonHoverClick_result = dTPProxyPlugin.GetIsSideTopButtonHoverClick().Result;   //_penMethodInfo null
+            Assert.IsNotNull(GetIsSideTopButtonHoverClick_result);
+            Assert.That(GetIsSideTopButtonHoverClick_result, Is.EqualTo(false));
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetIsSideTopButtonHoverClick_result_result2 = dTPProxyPlugin.GetIsSideTopButtonHoverClick().Result;
+            Assert.IsNotNull(GetIsSideTopButtonHoverClick_result);
+            Assert.That(GetIsSideTopButtonHoverClick_result, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestGetIsSideBottomButtonHoverClick()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var GetIsSideBottomButtonHoverClick_result = dTPProxyPlugin.GetIsSideBottomButtonHoverClick().Result;   //_penMethodInfo null
+            Assert.IsNotNull(GetIsSideBottomButtonHoverClick_result);
+            Assert.That(GetIsSideBottomButtonHoverClick_result, Is.EqualTo(false));
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var GetIsSideBottomButtonHoverClick_result2 = dTPProxyPlugin.GetIsSideBottomButtonHoverClick().Result;
+            Assert.IsNotNull(GetIsSideBottomButtonHoverClick_result2);
+            Assert.That(GetIsSideBottomButtonHoverClick_result2, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestStartKeyCapturePen()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var StartKeyCapturePen_result = dTPProxyPlugin.StartKeyCapturePen().Result;   //_penMethodInfo null
+            Assert.IsNotNull(StartKeyCapturePen_result);
+            Assert.That(StartKeyCapturePen_result, Is.EqualTo(false));
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var StartKeyCapturePen_result2 = dTPProxyPlugin.StartKeyCapturePen().Result;
+            Assert.IsNotNull(StartKeyCapturePen_result2);
+            Assert.That(StartKeyCapturePen_result2, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestFinishKeyCapturePen()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var FinishKeyCapturePen_result = dTPProxyPlugin.FinishKeyCapturePen().Result;   //_penMethodInfo null
+            Assert.IsNotNull(FinishKeyCapturePen_result);
+            Assert.That(FinishKeyCapturePen_result, Is.EqualTo(false));
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var FinishKeyCapturePen_result2 = dTPProxyPlugin.FinishKeyCapturePen().Result;
+            Assert.IsNotNull(FinishKeyCapturePen_result2);
+            Assert.That(FinishKeyCapturePen_result2, Is.EqualTo(false));
+        }
+
+        [Test]
+        public void TestKeyCaptureData()
+        {
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var KeyCaptureData_result = dTPProxyPlugin.KeyCaptureData().Result;   //_penMethodInfo null
+            Assert.IsNotNull(KeyCaptureData_result);
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var KeyCaptureData_result2 = dTPProxyPlugin.KeyCaptureData().Result;
+            Assert.IsNotNull(KeyCaptureData_result2);
+        }
+
+        [Test]
+        public void TestSetEraserDoublePressSetting()
+        {
+            string itemID = "TestPenItemID";
+            byte[] newValue = new byte[] { 1, 2 };
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var SetEraserDoublePressSetting_result = dTPProxyPlugin.SetEraserDoublePressSetting(itemID, newValue);   //_penMethodInfo null
+            Assert.IsNotNull(SetEraserDoublePressSetting_result);
+            var ItemID = privateteDTPProxyPlugin.GetFieldOrProperty("_itemID");
+            Assert.IsNotNull(itemID);
+            Assert.IsTrue(true);
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var SetEraserDoublePressSetting_result2 = dTPProxyPlugin.SetEraserDoublePressSetting(itemID, newValue);
+            Assert.IsNotNull(SetEraserDoublePressSetting_result2);
+            var ItemID2 = privateteDTPProxyPlugin.GetFieldOrProperty("_itemID");
+            Assert.IsNotNull(ItemID2);
+            Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void TestSetEraserLongPressSetting()
+        {
+            string itemID = "TestPenItemID";
+            byte[] newValue = new byte[] { 1, 2 };
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", null);
+            var SetEraserLongPressSetting_result = dTPProxyPlugin.SetEraserLongPressSetting(itemID, newValue);   //_penMethodInfo null
+            Assert.IsNotNull(SetEraserLongPressSetting_result);
+            var ItemID = privateteDTPProxyPlugin.GetFieldOrProperty("_itemID");
+            Assert.IsNotNull(itemID);
+            Assert.IsTrue(true);
+
+            privateteDTPProxyPlugin.SetFieldOrProperty("_penMethodInfo", new Mock<MethodInfo>().Object);  //_penMethodInfo not null
+            privateteDTPProxyPlugin.SetFieldOrProperty("_commSdk", CommodityClientSdk.Object);
+            var SetEraserLongPressSetting_result2 = dTPProxyPlugin.SetEraserLongPressSetting(itemID, newValue);
+            Assert.IsNotNull(SetEraserLongPressSetting_result2);
+            var ItemID2 = privateteDTPProxyPlugin.GetFieldOrProperty("_itemID");
+            Assert.IsNotNull(ItemID2);
+            Assert.IsTrue(true);
+        }
+
         [OneTimeTearDown]
         public void TearDown()
         {

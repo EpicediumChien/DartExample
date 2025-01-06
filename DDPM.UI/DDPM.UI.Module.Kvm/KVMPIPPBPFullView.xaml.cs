@@ -264,12 +264,12 @@ namespace DDPM.UI.Module.Kvm
         {
             if (vm != null)
             {
+                vm.isPipSmall = true;
+                vm.isPipLarge = false;
+                vm.isPBP = false;
                 vm.SelectedSplitItem = spItem;
                 if (spItem != null)
                 {
-                    vm.isPipSmall = true;
-                    vm.isPipLarge = false;
-                    vm.isPBP = false;
                     if (vm.pcsList.TryGetValue("PC1", out var pc1) && vm.pcsList.TryGetValue("PC2", out var pc2))
                     {
                         vm.PC1_Input = vm.pcsList["PC1"].InputType;
@@ -304,12 +304,12 @@ namespace DDPM.UI.Module.Kvm
         {
             if (vm != null)
             {
+                vm.isPipSmall = false;
+                vm.isPipLarge = true;
+                vm.isPBP = false;
                 vm.SelectedSplitItem = spItem;
                 if (spItem != null)
                 {
-                    vm.isPipSmall = false;
-                    vm.isPipLarge = true;
-                    vm.isPBP = false;
                     if (vm.pcsList.TryGetValue("PC1", out var pc1) && vm.pcsList.TryGetValue("PC2", out var pc2))
                     {
                         vm.PC1_Input = vm.pcsList["PC1"].InputType;
@@ -341,12 +341,12 @@ namespace DDPM.UI.Module.Kvm
         {
             if (vm != null)
             {
+                vm.isPipSmall = false;
+                vm.isPipLarge = false;
+                vm.isPBP = true;
                 vm.SelectedSplitItem = spItem;
                 if (spItem != null)
                 {
-                    vm.isPipSmall = false;
-                    vm.isPipLarge = false;
-                    vm.isPBP = true;
                     _pbpcode = vm.SelectedSplitItem.ISplit.PbpCapabilityCode;
                     //Get the Content of the new selected SplitItem
                     //vm.PxPCode = _pbpcode;
