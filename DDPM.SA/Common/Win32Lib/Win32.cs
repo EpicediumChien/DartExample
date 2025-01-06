@@ -895,7 +895,7 @@ namespace DDPM.Win32Lib
         }
 
 
-        public enum ShowWindowCommands
+        public enum ShowWindowCommands 
         {
             /// <summary>
             /// Hides the window and activates another window.
@@ -967,6 +967,15 @@ namespace DDPM.Win32Lib
             ForceMinimize = 11
         }
 
+        //ShowWindow()
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        public static bool _ShowWindow(IntPtr hWnd, ShowWindowCommands nCmdShow)
+        {
+            return ShowWindow(hWnd, (int) nCmdShow);
+        }
         #endregion
 
         #region Window ClassName

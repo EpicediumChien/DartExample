@@ -1,4 +1,4 @@
-﻿using DDPM.Easy.Common;
+﻿    using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using DDPM.Win32Lib;
 using Dell.Client.Framework.Common;
@@ -460,7 +460,8 @@ namespace DDPM.EABroker
                     }
 
                     //Other window classes => not the mainwindow
-                    continue;
+                    //Robert_Lin, 2025-1-6, comment-out let it fo down for PathName check and special check
+                    //continue;
                 }
 
                 //Target app is Non-UWP
@@ -534,6 +535,30 @@ namespace DDPM.EABroker
                         _vm.WriteLog($"@FindRunningProcess, Found the running Win32App, hWnd={hWnd}=0x{hWnd:X}");
                         hWndApp = hWnd;
                         break;
+                    }
+                }
+
+                //Finaly check some specical cases
+                //
+
+                //Microsoft Mail:
+                //app:
+                // Name="Mail"
+                // Path="C:\\Program Files\\WindowsApps\\microsoft.windowscommunicationsapps_16005.14326.22113.0_x64__8wekyb3d8bbwe"
+                // AppUserModelID="microsoft.windowscommunicationsapps_8wekyb3d8bbwe!microsoft.windowslive.mail"
+                //process:
+                // WindowClassName="OlkHost"
+                // pathName="C:\\Program Files\\WindowsApps\\Microsoft.OutlookForWindows_1.2024.1216.300_x64_8wekyb3d8bbwe\olk.exe
+                if (app.AppUserModelID.Equals("microsoft.windowscommunicationsapps_8wekyb3d8bbwe!microsoft.windowslive.mail", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (pathName.StartsWith("C:\\Program Files\\WindowsApps\\Microsoft.OutlookForWindows_"))
+                    {
+                        string fileName = System.IO.Path.GetFileName(pathName);
+                        if (fileName.Equals("olk.exe", StringComparison.OrdinalIgnoreCase))
+                        {
+                            hWndApp = hWnd;
+                            break;
+                        }
                     }
                 }
 
