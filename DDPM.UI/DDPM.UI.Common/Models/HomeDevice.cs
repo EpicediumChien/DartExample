@@ -1262,6 +1262,10 @@ namespace DDPM.UI.Common.Models
             BleHost2Style = BleHostStyle_Gray; // "2";
             BleHost3Style = BleHostStyle_Gray; // "2";
 
+            //@ LaunchView:
+            //switch (_vm.Model)
+
+            //@ HomeDevice:
             switch (DeviceInfo.ModelNumber)
             {
                 case "KB700":
