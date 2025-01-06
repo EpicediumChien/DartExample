@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using DDPM.UI.Common;
+using System.Windows.Input;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.Kvm
@@ -23,8 +24,19 @@ namespace DDPM.UI.Module.Kvm
 
         private void PIP_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            vm.PCSwap("PC1", "PC2");
-            vm.VideoSwapContent = new PIPSplitCtrl1A();
+            if (vm != null)
+            {
+                vm.PCSwap("PC1", "PC2");
+                if (!vm.isPxPFullView)
+                {
+                    DdpmCommonHelper.DeviceManagerSA.VideoSwap(vm.KvmModule.SelectedHomeDevice.MonitorInfo, 0, 1);
+                }
+                else
+                {
+                    vm.VideoSwapContent = new PIPSplitCtrl1A();
+                    vm.VideoSwapContent_Left = new PIPSplitCtrl1A();
+                }
+            }
         }
     }
 }

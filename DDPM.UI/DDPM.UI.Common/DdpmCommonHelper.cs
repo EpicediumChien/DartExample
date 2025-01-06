@@ -9,6 +9,7 @@ using Dell.Client.Framework.UX.WPF.ResourceManager;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,8 @@ using System.Windows.Data;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Xml.Linq;
+using VcpCore.Common;
 using Windows.Devices.PointOfService;
 using static DDPM.UI.Common.Views.DDPMMsgBox;
 using Application = System.Windows.Application;
@@ -69,14 +72,16 @@ namespace DDPM.UI.Common
         public static ILog? Log { get; set; }
 
         //Derek 1209
-        public static bool isDDPMSwitchToSettingPageByQAM = false;
+        private static bool isDDPMSwitchToSettingPageByQAM = false;
+        public static bool IsDDPMSwitchToSettingPageByQAM { get => isDDPMSwitchToSettingPageByQAM; set => isDDPMSwitchToSettingPageByQAM = value; }
+
 
         /// <summary>
         /// Flag to switch the Light Mode Feature
         /// </summary>
         public static bool ThemeSwitchFlag { get; set; } = false;
 
-        /// <summary>
+        /// <summary>previousOsTheme
         /// Flag to turn on and off UI Test buttons
         /// </summary>
         public static bool UIDebugModeFlag { get; set; } = false;
@@ -86,14 +91,28 @@ namespace DDPM.UI.Common
         // event will be handled by DisplayPugin, or DdpmHomePlugin shoud take over.
         public static bool IsDisplayPluginActivated { get; set; } = false;
 
+        private static bool isMainWindowAtPrimaryScreen = true;
+
+        public static bool IsMainWindowAtPrimaryScreen { get => isMainWindowAtPrimaryScreen; set => isMainWindowAtPrimaryScreen = value; }
+
+        //default theme is dark
+        private static OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
+        public static OSThemeEnum PreviousOsTheme { get => previousOsTheme; set => previousOsTheme = value; }
+
+        private static string lastShowOsdScreenDeviceName = "";
+
+        public static string LastShowOsdScreenDeviceName { get => lastShowOsdScreenDeviceName; set => lastShowOsdScreenDeviceName = value; }
+
         //The last DisplayName (DeviceName) of the screen which show the OSD.
-        public static string LastShowOsdScreenDeviceName = "";
 
         public enum log_type
         {
             info = 0,
             error
         }
+
+        public static List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        public static List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
 
         /// <summary>
         /// 
@@ -165,8 +184,6 @@ namespace DDPM.UI.Common
                 return false;
         }
 
-
-        public static bool IsMainWindowAtPrimaryScreen = true;
 
         /// <summary>
         ///Parsing hex value blank separated string to a WORD array
@@ -355,12 +372,12 @@ namespace DDPM.UI.Common
             }
             return Settings_Cache;
         }
-        //default theme is dark
-        public static OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
+
+
         public static void updateMergedDictionaries(ResourceManager resourceManager)
         {
             OSThemeEnum oSTheme = UXSystemParameters.Instance.OSTheme;
-            if (previousOsTheme == oSTheme)
+            if (PreviousOsTheme == oSTheme)
                 return;
             string darkModeStyle = @"pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml";
             ResourceDictionary? darkResourceDictionary = Application.Current.Resources.MergedDictionaries.SingleOrDefault(x => x.Source.OriginalString.Equals(darkModeStyle));
@@ -389,7 +406,7 @@ namespace DDPM.UI.Common
                 Application.Current.MainWindow?.InvalidateVisual();
             }, System.Windows.Threading.DispatcherPriority.Loaded);
             // Debug.WriteLine($"updateMergedDictionarie to {oSTheme.ToString()}");
-            previousOsTheme = oSTheme;
+            PreviousOsTheme = oSTheme;
         }
 
         public static bool isDarkMode()
@@ -511,13 +528,21 @@ namespace DDPM.UI.Common
         /// </summary>
         /// <param name="deviceInfo"></param>
         /// <returns></returns>
-        public static string DeterminePeripheralProductImageFileName(DeviceInfo deviceInfo)
+        public static string DeterminePeripheralProductImageFileName(DeviceInfo? deviceInfo)
         {
             string model = "";
             string colorCode = "";
 
             if (deviceInfo != null)
             {
+                // Handle EOL and non-dell peripherials return empty to show lineart
+                if (deviceInfo.Type == DPeMPublic.Common.Enums.DeviceType.LogicalKeyboard
+                    && EOLKBList.Contains(deviceInfo.ModelNumber))
+                    return string.Empty;
+                if (deviceInfo.Type == DPeMPublic.Common.Enums.DeviceType.LogicalMouse
+                    && EOLMouseList.Contains(deviceInfo.ModelNumber))
+                    return string.Empty;
+
                 //[#PeripheralModelMap] This mapping table has a duplicate code in
                 //1 DdpmCommonHelpers.cs    DeterminePeripheralProductImageFileName()
                 //2 HomeDevices             TooltipModelName property
@@ -580,6 +605,23 @@ namespace DDPM.UI.Common
             }
         }
 
+        public static string MappingName(string model, string name)
+        {
+            name = name.Replace(model, "").Trim();
+            switch (CultureInfo.InstalledUICulture.Name)
+            {
+                case "ja-JP":
+                    if (model == "WB7022")
+                        return "Dell Digital Hi-Resolution Webcam";
+                    if (model == "U3223QZ")
+                        return "Dell Digital Hi-End 32 4K Video Conferencing Monitor";
+                    if (model == "U3224KB")
+                        return "Dell Digital Hi-End 32 6K Monitor";
+                    return name;
+                default:
+                    return name;
+            }
+        }
         /// <summary>
         /// Check if the specifc peripheral model is EOL model.
         /// Based on "Copy of Peripheral-SupportedDeviceList_20241224.xlsx"

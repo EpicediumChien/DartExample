@@ -95,23 +95,47 @@ namespace DDPM.UI.Common.Method
 
         public static string GetComputerManufacturer()
         {
-            ManagementClass mc = new ManagementClass("Win32_ComputerSystem");
-            ManagementObjectCollection moc = mc.GetInstances();
-            if (moc.Count != 0)
+            //ManagementClass mc = new ManagementClass("Win32_ComputerSystem");
+            //ManagementObjectCollection moc = mc.GetInstances();
+            //if (moc.Count != 0)
+            //{
+            //    foreach (ManagementObject mo in moc.Cast<ManagementObject>())
+            //    {
+            //        try
+            //        {
+            //            return mo["Manufacturer"].ToString();
+            //        }
+            //        catch
+            //        {
+            //            return null;
+            //        }
+            //    }
+            //}
+            //return null;
+            using (ManagementClass mc = new ManagementClass("Win32_ComputerSystem"))
             {
-                foreach (ManagementObject mo in mc.GetInstances())
+                using (ManagementObjectCollection moc = mc.GetInstances())
                 {
-                    try
+                    foreach (ManagementObject mo in moc.Cast<ManagementObject>())
                     {
-                        return mo["Manufacturer"].ToString();
-                    }
-                    catch
-                    {
-                        return null;
+                        try
+                        {
+                            return mo["Manufacturer"]?.ToString();
+                        }
+                        catch (Exception ex)
+                        {
+
+                            Console.WriteLine($"Exception: {ex.Message}");
+                            return null;
+                        }
+                        finally
+                        {
+                            mo.Dispose();
+                        }
                     }
                 }
+                return null;
             }
-            return null;
         }
     }
 

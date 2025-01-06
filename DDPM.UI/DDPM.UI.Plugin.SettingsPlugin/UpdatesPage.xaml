@@ -22,7 +22,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid IsEnabled="{Binding UpdatesPageUI_IsEnable}"
+    <Grid 
           Opacity="{Binding UpdatesPageUI_Opacity}">
         <UXControls:UXScrollViewer>
             <Border Style="{StaticResource GroupBorderStyle}" CornerRadius="13">
@@ -232,5 +232,8 @@
                                         BusyIndicatorType="Secondary"
                                         IsActive="{Binding IsBusy_UpdatePage}" />
         </Border>
+        <Border Background="#132F54"
+         Opacity="0.2"
+         CornerRadius="13" Visibility="{Binding UpdatesPageUI_LockTooltip}"/>
     </Grid>
 </UserControl>

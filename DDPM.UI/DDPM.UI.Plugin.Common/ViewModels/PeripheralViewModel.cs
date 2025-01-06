@@ -180,20 +180,20 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public bool IsIDInvalid = false;
 
-        public virtual bool SetCurrentDevice(string deviceID)
+        public virtual bool SetCurrentDevice(string instanceIDs)
         {
             _console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, new EventManagerArgs() { Tag = true });
             IsIDInvalid = false;
-            if (deviceID.Substring(deviceID.Length - 2, 1) == "-")
+            if (instanceIDs.Substring(instanceIDs.Length - 2, 1) == "-")
             {
-                instenceNo = deviceID.Substring(deviceID.Length - 1, 1);
-                deviceID = deviceID.Substring(0, deviceID.Length - 2);
+                instenceNo = instanceIDs.Substring(instanceIDs.Length - 1, 1);
+                instanceIDs = instanceIDs.Substring(0, instanceIDs.Length - 2);
             }
             else
             {
                 instenceNo = "";
             }
-            CurrentDeviceID = new Guid(deviceID);
+            CurrentDeviceID = new Guid(instanceIDs);
 
             if (DeviceInfos.TryGetValue(CurrentDeviceID, out DeviceInfo? di))
             {
@@ -215,6 +215,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
                 }
                 CurrentDeviceInfo = di;
+                if (di == null)
+                    return false;
             }
             else
             {
@@ -229,7 +231,7 @@ namespace DDPM.UI.Plugin.ViewModels
             if (EOLKBList.Contains(Model) || EOLMouseList.Contains(Model))
                 Name = DdpmCommonHelper.MappingEOLName(Model);
             else
-                Name = CurrentDeviceInfo.Name.Replace(Model, "").Trim();
+                Name = DdpmCommonHelper.MappingName(Model, CurrentDeviceInfo.Name.Trim());
 
             if (CurrentDeviceInfo.Type == DeviceType.PhysicalWiredDock || CurrentDeviceInfo.Type == DeviceType.LogicalDock)
             {
@@ -254,7 +256,23 @@ namespace DDPM.UI.Plugin.ViewModels
             }
 
             var colorCode = CurrentDeviceInfo.ColorCode == 0 ? "" : $"_{CurrentDeviceInfo.ColorCode}";
-            ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}{colorCode}.png";
+            string imageFileName = DdpmCommonHelper.DeterminePeripheralProductImageFileName(CurrentDeviceInfo);
+            if (!String.IsNullOrEmpty(imageFileName))
+            {
+                ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}{colorCode}.png";
+            }
+            else if (CurrentDeviceInfo.Type == DeviceType.LogicalKeyboard || CurrentDeviceInfo.Type == DeviceType.LogicalMouse)
+            {
+                ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/";
+                if (!DdpmCommonHelper.isDarkMode())
+                {
+                    ImageFilePath += "LightMode/";
+                }
+                if (CurrentDeviceInfo.Type == DeviceType.LogicalKeyboard)
+                    ImageFilePath += "Lineart-kb.png";
+                else if (CurrentDeviceInfo.Type == DeviceType.LogicalMouse)
+                    ImageFilePath += "Lineart-ms.png";
+            }
             FirmwareVersion = CurrentDeviceInfo.FirmwareVersion;
             var fv = CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
             FirmwareVersion2 = $"Firmware Version {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
@@ -359,6 +377,13 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
+            if (DeviceInfo == null)
+            {
+                DdpmCommonHelper.WriteUILog($"Error: DeviceChanged Event with no device info!");
+                return;
+            }
+            DdpmCommonHelper.WriteUILog($"DeviceChanged Event: Type: {changeType} ID: {di.ID} Property: {property}");
+
             switch (changeType)
             {
                 case DeviceChangedType.Peripherals_PlugIn:
@@ -399,29 +424,34 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
 
                 case DeviceChangedType.Peripherals_SettingsChange:
-                    if (DeviceInfos.Keys.Contains(di.ID))
-                    {
-                        DeviceInfos.Remove(di.ID);
-                        DeviceInfos.Add(di.ID, di);
-                    }
-                    else
-                    {
-                        return;
-                    }
+                    //if (DeviceInfos.Keys.Contains(di.ID))
+                    //{
+                    //    DeviceInfos.Remove(di.ID);
+                    //    DeviceInfos.Add(di.ID, di);
+                    //}
+                    //else
+                    //{
+                    //    return;
+                    //}
                     if (di.ID == CurrentDeviceID)
                     {
-                        CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
+                        //CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
                         switch (property)
                         {
                             case "BatteryStatusChanged":
                                 BatteryStatus = di.BatteryStatus;
+                                CurrentDeviceInfo!.BatteryStatus = di.BatteryStatus;
+                                break;
+                            case "DeviceNameChanged":
+                                Name = di.Name.Replace(Model, "").Trim();
                                 break;
 
                             case "BatteryLevelChanged":
-                                if (BatteryLevel == -1)
-                                    SetCurrentDevice(CurrentDeviceID.ToString());
-                                else
-                                    BatteryLevel = di.BatteryLevel;
+                                BatteryLevel = di.BatteryLevel;
+                                CurrentDeviceInfo!.BatteryLevel = di.BatteryLevel;
+                                //if (BatteryLevel == -1)
+                                //    SetCurrentDevice(CurrentDeviceID.ToString());
+                                //else
                                 break;
 
                             default:

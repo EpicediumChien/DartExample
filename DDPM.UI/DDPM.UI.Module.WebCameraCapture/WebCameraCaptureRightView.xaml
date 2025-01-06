@@ -72,7 +72,7 @@
                 <Border CornerRadius="6" Margin="0,22,0,0">
                     <StackPanel Orientation="Vertical">
                         <UXControls:UXTextBlock Margin="18,25,0,18" Text="{Binding [WebCameraCapture.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" IsEnabled="{Binding IsNotRecording}" />
-                        <Grid Margin="18,0,18,18">
+                        <Grid Margin="18,0,18,18" IsEnabled="{Binding IsResolutionSectionEnable}">
                             <!-- Define a Grid with three equal columns -->
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition x:Name="btnRes0_Col" Width="{Binding btnRes0_width}"  />
@@ -232,7 +232,7 @@
                             <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
                                 <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                                 <Border.ToolTip>
-                                    <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                    <ToolTip Placement="Right" VerticalOffset="-75" HorizontalOffset="-15">
                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                             <TextBlock Width="350" Height="56" Text="{Binding [WebCameraCapture.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" TextWrapping="Wrap" />
                                         </Border>
@@ -240,7 +240,7 @@
                                 </Border.ToolTip>
                             </Border>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="18,0,18,18">
+                        <StackPanel Orientation="Horizontal" Margin="18,0,18,18" IsEnabled="{Binding IsResolutionSectionEnable}">
                             <Border x:Name="btnFPS0" CornerRadius="5,0,0,5" Focusable="True" MouseLeftButtonDown="btnFPS_Click" Height="30" Width="{Binding btnRes3_width}" Tag="0" IsEnabled="{Binding IsNotRecording}">
                                 <Border.Style>
                                     <Style TargetType="Border" BasedOn="{StaticResource BorderBase}">

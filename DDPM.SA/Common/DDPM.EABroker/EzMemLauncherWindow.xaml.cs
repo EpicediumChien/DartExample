@@ -74,6 +74,7 @@ namespace DDPM.EABroker
         private const int SW_SHOWNORMAL = 1;
         private const int SW_SHOWMAXIMIZED = 3;
         private const int SW_MAXIMIZE = 3;
+        private const int SW_SHOWN = 5;
         private const int SW_SHOWNA = 8;
         private const int SW_RESTORE = 9;
 
@@ -264,7 +265,7 @@ namespace DDPM.EABroker
                     if (handle != IntPtr.Zero)
                     {
                         //Trace.WriteLine($"[LaunchAndArrange] 2 => ArrangeWindow = {idx},{winUWP} APP already exit, SpecialGetHandle Find Handle = {handle}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, EzMemorySetForegroundWindow");
-                        //_vm.WriteLog($"[LaunchAndArrange] 2 => ArrangeWindow = {idx}, {winUWP} APPalready exit, SpecialGetHandle Find Handle = {handle}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, EzMemorySetForegroundWindow");
+                        _vm.WriteLog($"[LaunchAndArrange] 2 => App is already running, hWnd={handle}=0x{handle:X}, Title= {GetWindowTitle(handle)}");
                         //if (app.AppType != "True")// 已經在而且為UWP
                         //{
                         //    //Process process = LaunchApp(app, _vm.Log);
@@ -277,6 +278,7 @@ namespace DDPM.EABroker
                         //ShowWindowAsync(handle, SW_SHOWNORMAL);
                         //ShowWindow(handle, SW_RESTORE);
                         ShowWindow(handle, SW_SHOWNORMAL);
+                        ShowWindow(handle, SW_SHOWN);
                         Win32._SetForegroundWindow(handle);
                         //EzMemorySetForegroundWindow(handle); // 把應用程式拉到前景
                         //ShowWindow(handle, SW_SHOWNORMAL);
@@ -284,7 +286,13 @@ namespace DDPM.EABroker
                     }
                     else // 不存在就啟動
                     {
-                        Process process = LaunchApp(app, _vm.Log);
+                        _vm.WriteLog($"[LaunchAndArrange] 2 => App is not running, calling to LaunchApp.");
+                        Process process = LaunchApp(app);
+                        if (process == null)
+                        {
+                            _vm.WriteLog($"[LaunchAndArrange] Fail to launchApp: {app.AppName}");
+                            continue;
+                        }
 
                         processName = process.ProcessName;
 
@@ -296,6 +304,9 @@ namespace DDPM.EABroker
                             _vm.WriteLog($"[LaunchAndArrange] 2 => {winUWP} APP, No. = {idx.ToString()}, handle = {handle.ToString()}");
                             await Task.Delay(1500);
                         }
+                        _vm.WriteLog($"[LaunchAndArrange] App is launched, hWnd={handle}=0x{handle:X}, pid={process.Id}, hProcess={process.Handle}");
+
+
                         ShowWindow(handle, SW_SHOWNORMAL);
                         Win32._SetForegroundWindow(handle);
                     }
@@ -375,7 +386,12 @@ namespace DDPM.EABroker
             _vm.WriteLog($"@FindRunningProcess(Name={app.AppName}, Type={app.AppType}, UserModelId={app.AppUserModelID}, Path={app.AppPath})");
 
             IntPtr hWndApp = IntPtr.Zero;
-            List<IntPtr> windowHandles = GetVisibleWindowHandles();// list出現在桌面的handle
+            //Robert_Lin, 2024-12-26 changed, to use the same method of EA capture overlap windows
+            //NEW:
+            List<IntPtr> windowHandles = Win32.GetAltTabWindows();// list出現在桌面的handle
+            //OLD:
+            //List<IntPtr> windowHandles = GetVisibleWindowHandles();// list出現在桌面的handle
+            _vm.WriteLog($"@FindRunningWindowHandle(), EnumWindows count={windowHandles.Count}");
             foreach (var hWnd in windowHandles)
             {
                 //Get basic window properties
@@ -684,12 +700,12 @@ namespace DDPM.EABroker
             }
         }
 
-        private static Process LaunchApp(Bind_AddFullPage_AppCollectionData appData, ILog? log = null)
+        private Process LaunchApp(Bind_AddFullPage_AppCollectionData appData, ILog? log = null)
         {
             Process process = null;
             try
             {
-                if (appData.AppType == "False")
+                if (appData.AppType == "False") //UWP
                 {
                     // UWP 應用程式
                     ProcessStartInfo startInfo = new ProcessStartInfo
@@ -701,7 +717,7 @@ namespace DDPM.EABroker
                     //log?.Info($"[{myName}] LaunchApp, Launching UWP app: {appData.AppName}");
                     process = Process.Start(startInfo);
                 }
-                else
+                else //Win32
                 {
                     // Desktop exe或檔案
                     ProcessStartInfo startInfo = new ProcessStartInfo
@@ -717,8 +733,7 @@ namespace DDPM.EABroker
             }
             catch (Exception ex)
             {
-                //log?.Error(ex,
-                //    $"[{myName}] LaunchApp, Exception while launching app or file: {appData.AppName}, Error: {ex}");
+                _vm?.WriteLog($"@LaunchApp({appData.AppName}) exception.", ex);
             }
 
             return process;

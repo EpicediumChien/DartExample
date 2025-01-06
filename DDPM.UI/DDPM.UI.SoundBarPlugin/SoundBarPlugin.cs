@@ -228,11 +228,11 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         }
 
         /// <inheritdoc/>
-        public void OnShown(string parameter)
+        public void OnShown(string pluginParameter)
         {
             ConfigureServices();
             GetPeripheralsAsync();
-            if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter))
+            if (_viewModel != null && !_viewModel.SetCurrentDevice(pluginParameter))
             { }
             Mouse.OverrideCursor = null;
         }

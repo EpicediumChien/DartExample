@@ -26,6 +26,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     public partial class SettingsPage : UserControl
     {
         private ILog? _log;
+        private DDPMSettings data = null;
         private SettingsPageViewModel vm
         {
             get { return (SettingsPageViewModel)DataContext; }
@@ -36,7 +37,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             _log?.Info("SettingsPage initialize start");
             InitializeComponent();
             SettingsPageViewModel _vm = (SettingsPageViewModel?)SettingsPlugin.PluginIoc?.GetService<ISettingsPageViewModel>();
-
+            data = DdpmCommonHelper.ReadDDPMSettings();
             if (_vm != null)
             {
                 DataContext = _vm;
@@ -107,7 +108,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     if (vm != null)
                     {
                         vm.Lock_UpdatesPage = (bool)isLocked;
+                        data.LockSettings.Lock_Settings_Updates = vm.Lock_UpdatesPage;
                         _log?.Info($"[SettingsPage] Apply FW/SW Updates(Lock) : {isLocked}");
+                        vm.RefreshUI();
                     }
                 }));
             }
@@ -120,7 +123,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     if (vm != null)
                     {
                         vm.Lock_GeneralPage = (bool)isLocked;
+                        data.LockSettings.Lock_Setting_ScreenNotification = vm.Lock_GeneralPage;
                         _log?.Info($"[SettingsPage] Apply General(check) : {isLocked}");
+                        vm.RefreshUI();
                     }
                 }));
             }
@@ -133,6 +138,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 if (vm != null)
                 {
                     //vm.GlobalSettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                    Global.SettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
                     vm.GlobalSettingParam = Global.SettingParam;
                     vm.RefreshUI();
                 }
@@ -211,12 +217,12 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             //Derek 1210 use new solution -- workable
 
-            if (DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM)
+            if (DdpmCommonHelper.IsDDPMSwitchToSettingPageByQAM)
             {
                 DdpmCommonHelper.WriteUILog($"DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM == true");
 
                 WidgetSettingsButton_Click(this, null);
-                DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM = false;
+                DdpmCommonHelper.IsDDPMSwitchToSettingPageByQAM = false;
             }
             else
                 DdpmCommonHelper.WriteUILog($"DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM == false");

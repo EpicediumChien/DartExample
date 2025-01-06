@@ -108,6 +108,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     /// </summary>
     public partial class AnalyticsPage : UserControl
     {
+        DDPMSettings data=null;
         // 10/15 Derek add for RWD
         //private readonly Int16 breakPoints = 910;
         private ILog? _log;
@@ -127,7 +128,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 return;
             try
             {
-                DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
+                data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 //GlobalSettingParam param = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
                 GlobalSettingParam param=Global.SettingParam;
                 if (data == null)
@@ -148,7 +149,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             }
             _log?.Info("AnalyticsPage initialize done");
         }
-
+        
         ~AnalyticsPage()
         {
             if (DdpmCommonHelper.DeviceManagerSA != null)
@@ -195,6 +196,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     {
                         vm.isTabStoppable = !(bool)isLocked;
                         vm.ShowLockMask = (bool)isLocked;
+                        data.LockSettings.Lock_Settings_TelemetryConsent = (bool)isLocked;
                         Trace.WriteLine($"Apply TelemetryConsent(Lock) : {isLocked}");
                     }
                 }));

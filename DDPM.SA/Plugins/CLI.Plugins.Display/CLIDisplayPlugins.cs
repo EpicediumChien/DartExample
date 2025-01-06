@@ -1003,6 +1003,17 @@ namespace DDPM.CLI.Plugins.Display
                     {
                         writelog("_devMgr.GetAntiFlicker entry");
                         webcam.AntiFlicker = _devMgr.GetAntiFlicker(guid).Result.ToString();
+                        switch (webcam.AntiFlicker)
+                        {
+                            case "1":
+                                webcam.AntiFlicker = "50";
+                                break;
+                            case "2":
+                                webcam.AntiFlicker = "60";
+                                break;
+                            default:
+                                break;
+                        }
                     }
                     writelog("device.IsMicEnumerationSupported entry");
                     if (device.IsMicEnumerationSupported)
@@ -1982,7 +1993,7 @@ namespace DDPM.CLI.Plugins.Display
             return result;
         }
 
-        private async Task<ObjGetVCP> GetVCPCode(IDeviceManagerSA devMgr, MonitorInfo mo, string vcpcode)
+        private async Task<ObjGetVCP> GetVCPCode(IDeviceManagerSA devMgr, MonitorInfo mo, string vcpcode, int opt = 0)
         {
             writelog($"GetVCPCode entry, vcpcode: {vcpcode}, monitor: {mo?.modelName}");
             if (devMgr == null)
@@ -2002,9 +2013,9 @@ namespace DDPM.CLI.Plugins.Display
                 byte byte_vcpcode = IsHexNumeric_vcpcode ? (Convert.ToByte(vcpcode, 16)) : (IsNumeric_vcpcode ? Convert.ToByte(vcpcode, 10) : default);
 
                 if (IsNumeric_vcpcode)
-                    result = await devMgr.GetVCPCapability(mo, byte_vcpcode, 0);
+                    result = await devMgr.GetVCPCapability(mo, byte_vcpcode, opt);
                 else
-                    result = await devMgr.GetVCPCapability(mo, vcpcode, 0);
+                    result = await devMgr.GetVCPCapability(mo, vcpcode, opt);
             }
             else
                 return new ObjGetVCP() { result = false, value = null };
@@ -9153,8 +9164,8 @@ namespace DDPM.CLI.Plugins.Display
 
                                     writelog($"LuminanceLevel Entry");
                                     rc = GetVCPCode(devMgr, monitor, "0x10").Result;
-                                    get_DeviceData.LuminanceLevel = (rc.value).ToString() + "%";
-                                    writelog($"LuminanceLevel Exit return value: {(rc.value).ToString() + "%"}");
+                                    get_DeviceData.LuminanceLevel = rc.value?.ToString() ?? "N/A";
+                                    writelog($"LuminanceLevel Exit return value: {get_DeviceData.LuminanceLevel}");
                                 }
 
                                 if (monitor.CapabilityDic.ContainsKey("66"))
@@ -9224,7 +9235,7 @@ namespace DDPM.CLI.Plugins.Display
                                 writelog($"SpeakerVolume Entry (62)");
                                 if (CheckSpeakerSupported(monitor, commandLineInput))
                                 {
-                                    rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                    rc = GetVCPCode(devMgr, monitor, "0x62", 2).Result;
                                     int getvalue = Convert.ToInt32(rc.value);
                                     get_DeviceData.SpeakerVolume = get_SpeakerVolume_status(Convert.ToInt32(rc.value));
                                 }
@@ -9427,8 +9438,8 @@ namespace DDPM.CLI.Plugins.Display
 
                         writelog($"LuminanceLevel Entry");
                         rc = GetVCPCode(devMgr, monitor, "0x10").Result;
-                        get_DeviceData.LuminanceLevel = (rc.value).ToString() + "%";
-                        writelog($"LuminanceLevel Exit return value: {(rc.value).ToString() + "%"}");
+                        get_DeviceData.LuminanceLevel = rc.value?.ToString() ?? "N/A";
+                        writelog($"LuminanceLevel Exit return value: {get_DeviceData.LuminanceLevel}");
                     }
 
                     if (monitor.CapabilityDic.ContainsKey("66"))
@@ -9498,7 +9509,7 @@ namespace DDPM.CLI.Plugins.Display
                     writelog($"SpeakerVolume Entry (62)");
                     if (CheckSpeakerSupported(monitor, commandLineInput))
                     {
-                        rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                        rc = GetVCPCode(devMgr, monitor, "0x62", 2).Result;
                         int getvalue = Convert.ToInt32(rc.value);
                         get_DeviceData.SpeakerVolume = get_SpeakerVolume_status(Convert.ToInt32(rc.value));
                     }
@@ -10000,12 +10011,11 @@ namespace DDPM.CLI.Plugins.Display
                 foreach (string idxString in cmdLineInput.DeviceIndex)
                 {
                     int idx;
-                    if (int.TryParse(idxString, out idx))
+                    if (int.TryParse(idxString, out idx) &&
+                        (idx >= 0) && 
+                        (idx < allMonitors.Count))
                     {
-                        if ((idx >= 0) && (idx < allMonitors.Count))
-                        {
-                            listOut.Add(idx);
-                        }
+                        listOut.Add(idx);
                     }
                 }
             }
@@ -11068,13 +11078,12 @@ namespace DDPM.CLI.Plugins.Display
             if (!string.IsNullOrEmpty(commandLineInput.Options[0].Option_Value))
             {
                 string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
-                if (ss_1.Length == 2)
+                if (ss_1.Length == 2 &&
+                    !string.IsNullOrEmpty(ss_1[0]) && 
+                    !string.IsNullOrEmpty(ss_1[1]))
                 {
-                    if (!string.IsNullOrEmpty(ss_1[0]) && !string.IsNullOrEmpty(ss_1[1]))
-                    {
                         Trace.WriteLine(ss_1[0]);
                         Trace.WriteLine(ss_1[1]);
-
 
                         /*StreamReader r = new StreamReader(ss_1[1]);
                         string jsonString = r.ReadToEnd();;
@@ -11452,11 +11461,11 @@ namespace DDPM.CLI.Plugins.Display
                                                     int getvalue = Convert.ToInt32(rc.value);
                                                     retcode = SetVCPCode(devMgr, monitor, "0x62", get_SpeakerMicrophone(property.Value.ToString(), getvalue)).Result;
 
-                                                    rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                                                    int getvalue2 = Convert.ToInt32(rc.value);
-                                                    bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(property.Value.ToString(), getvalue2)).Result;
+                                                    //rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                                    //int getvalue2 = Convert.ToInt32(rc.value);
+                                                    //bool retcode2 = SetVCPCode(devMgr, monitor, "0x8D", get_SpeakerMicrophone(property.Value.ToString(), getvalue2)).Result;
 
-                                                        if (!retcode && !retcode2) ispass = false;
+                                                        if (!retcode) ispass = false;
                                                         else ApplyConfiguration.SpeakerMicrophone = property.Value.ToString();
                                                     writelog($"SpeakerMicrophone={ApplyConfiguration.SpeakerMicrophone}");
                                                 }
@@ -11688,8 +11697,9 @@ namespace DDPM.CLI.Plugins.Display
                                                     {
                                                         if (property.Value.ToString() == "50" || property.Value.ToString() == "60")
                                                         {
+                                                            var antiflickerValue = property.Value.ToString() == "50" ? 1 : 2;
                                                             writelog("_devMgr.SetAntiFlicker entry");
-                                                            _devMgr.SetAntiFlicker(device.ID.ToString(), int.Parse(property.Value.ToString()));
+                                                            _devMgr.SetAntiFlicker(device.ID.ToString(), antiflickerValue);
                                                             writelog("_devMgr.SetAntiFlicker exit");
                                                         }
                                                         else
@@ -11757,6 +11767,34 @@ namespace DDPM.CLI.Plugins.Display
                                                     else
                                                     {
                                                         resultMessages.Add("AIAUTOFRAMING not support");
+                                                    }
+                                                    break;
+                                                case "PRESENCEDETECTION":
+                                                    writelog("PRESENCEDETECTION entry");
+                                                    writelog("device.IsESISupported entry");
+                                                    if (device.IsESISupported)
+                                                    {
+                                                        if (property.Value.ToString() == "ON")
+                                                        {
+                                                            writelog("_devMgr.SetIsProximitySensorEnable entry");
+                                                            _devMgr.SetIsProximitySensorEnable(device.ID.ToString(), true);
+                                                            writelog("_devMgr.SetIsProximitySensorEnable exit");
+                                                        }
+                                                        else if (property.Value.ToString() == "OFF")
+                                                        {
+                                                            writelog("_devMgr.SetIsProximitySensorEnable entry");
+                                                            _devMgr.SetIsProximitySensorEnable(device.ID.ToString(), false);
+                                                            writelog("_devMgr.SetIsProximitySensorEnable exit");
+                                                        }
+                                                        else
+                                                        {
+                                                            resultMessages.Add("PRESENCEDETECTION is wrong value");
+                                                            ispass = false;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        resultMessages.Add("PRESENCEDETECTION not support");
                                                     }
                                                     break;
                                                 default:
@@ -11937,8 +11975,6 @@ namespace DDPM.CLI.Plugins.Display
                         }
                         return (ispass ? (int)CLI_ExitCode.success : (int)CLI_ExitCode.functional_error, output);
                     }
-                }
-
             }
             else
             {
@@ -12000,14 +12036,12 @@ namespace DDPM.CLI.Plugins.Display
                 return supported;
             }
 
-            if (commandLineInput.Options.Count > 0)
+            if (commandLineInput.Options.Count > 0 &&
+                commandLineInput.Options[0].Option_Value.Contains("LOCK"))
             {
-                if (commandLineInput.Options[0].Option_Value.Contains("LOCK"))
-                {
-                    writelog("Check monitor is support speaker lock/unlock");
-                    supported = value.Contains("C000");
-                    writelog(supported ? "Monitor is support speaker lock/unlock" : "Monitor is not support speaker lock/unlock");
-                }
+                writelog("Check monitor is support speaker lock/unlock");
+                supported = value.Contains("C000");
+                writelog(supported ? "Monitor is support speaker lock/unlock" : "Monitor is not support speaker lock/unlock");
             }
 
             return supported;
@@ -12032,14 +12066,12 @@ namespace DDPM.CLI.Plugins.Display
                 return supported;
             }
 
-            if (commandLineInput.Options.Count > 0)
+            if (commandLineInput.Options.Count > 0 &&
+                commandLineInput.Options[0].Option_Value.Contains("LOCK"))
             {
-                if (commandLineInput.Options[0].Option_Value.Contains("LOCK"))
-                {
-                    writelog("Check monitor is support microphone lock/unlock");
-                    supported = value.Contains("C000");
-                    writelog(supported ? "Monitor is support microphone lock/unlock" : "Monitor is not support microphone lock/unlock");
-                }
+                writelog("Check monitor is support microphone lock/unlock");
+                supported = value.Contains("C000");
+                writelog(supported ? "Monitor is support microphone lock/unlock" : "Monitor is not support microphone lock/unlock");
             }
 
             return supported;
@@ -12083,39 +12115,74 @@ namespace DDPM.CLI.Plugins.Display
             {
                 output += "OSDDISABLE";
             }
-            else //if (value_tmp == 0xFE)
+            else if (value_tmp == 0xFE)
             {
                 output += "OSDENABLE";
             }
-
-            //if (value_tmp < 0x65)
-            //{
-            //    output = $"Volume:{value & 0xFF}";
-            //}
+            else if (value_tmp < 0x65)
+            {
+                output = $"Volume:{value & 0xFF}";
+            }
             return output;
         }
 
         private static string get_SpeakerMicrophone(string status, int value)
         {
+            string binaryString = Convert.ToString(value, 2).PadLeft(16, '0');
+
             switch (status.ToUpper())
             {
-                case "OSDDISABLE": return (value & 0xBFFF).ToString();                  // b14:0;
-                case "OSDENABLE": return (value | 0x4000).ToString();                   // b14:1;
-                case "OSDUNLOCK": return (value & 0x7FFF).ToString();                 // b15:0;
-                case "OSDLOCK": return (value | 0x8000).ToString();                   // b15:1;
-                case "OSDUNLOCK,OSDDISABLE": return ((value & 0x3FFF) /*| 0x0000*/).ToString();//b15 b14: 00
-                case "OSDUNLOCK,OSDENABLE": return ((value & 0x3FFF) | 0x4000).ToString(); //b15 b14: 01
-                case "OSDLOCK,OSDDISABLE": return ((value & 0x3FFF) | 0x8000).ToString(); //b15 b14: 10
-                case "OSDLOCK,OSDENABLE": return ((value & 0x3FFF) | 0xC000).ToString();  //b15 b14: 11
-                default: return "unknown_command";
-                }
+                case "OSDDISABLE":
+                    binaryString = ModifyBitInString(binaryString, 14, '1');
+                    break;
+                case "OSDENABLE":
+                    binaryString = ModifyBitInString(binaryString, 14, '0');
+                    break;
+                case "OSDUNLOCK":
+                    binaryString = ModifyBitInString(binaryString, 15, '0');
+                    break;
+                case "OSDLOCK":
+                    binaryString = ModifyBitInString(binaryString, 15, '1');
+                    break;
+                case "OSDUNLOCK,OSDDISABLE":
+                    binaryString = ModifyBitInString(binaryString, 15, '0');
+                    binaryString = ModifyBitInString(binaryString, 14, '1');
+                    break;
+                case "OSDUNLOCK,OSDENABLE":
+                    binaryString = ModifyBitInString(binaryString, 15, '0');
+                    binaryString = ModifyBitInString(binaryString, 14, '0');
+                    break;
+                case "OSDLOCK,OSDDISABLE":
+                    binaryString = ModifyBitInString(binaryString, 15, '1');
+                    binaryString = ModifyBitInString(binaryString, 14, '1');
+                    break;
+                case "OSDLOCK,OSDENABLE":
+                    binaryString = ModifyBitInString(binaryString, 15, '1');
+                    binaryString = ModifyBitInString(binaryString, 14, '0');
+                    break;
+                default:
+                    return "unknown_command";
             }
+
+            return "0x" + Convert.ToInt32(binaryString, 2).ToString("X");
+        }
+
+        private static string ModifyBitInString(string binaryString, int position, char newBitValue)
+        {
+            char[] binaryArray = binaryString.ToCharArray();
+
+            int arrayPosition = binaryArray.Length - 1 - position;
+            binaryArray[arrayPosition] = newBitValue;
+
+            return new string(binaryArray);
+        }
 
         private static string get_SpeakerMicrophone_status(int value)
         {
+            string binaryString = Convert.ToString(value, 2).PadLeft(16, '0');
             string output = string.Empty;
-            output += ((value & 0x8000) == 0x8000) ? "OSDLOCK," : "OSDUNLOCK,";
-            output += ((value & 0x4000) == 0x4000) ? "OSDENABLE" : "OSDDISABLE";
+            output += binaryString[binaryString.Length - 1 - 15] == '1' ? "OSDLOCK," : "OSDUNLOCK,";
+            output += binaryString[binaryString.Length - 1 - 14] == '1' ? "OSDDISABLE" : "OSDENABLE";
 
             return output;
         }
@@ -12521,7 +12588,12 @@ namespace DDPM.CLI.Plugins.Display
             if (_AllInfoMonitors == null)
                 _AllInfoMonitors = devMgr.GetMonitors().Result;
 
-            var serviceTags = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).Distinct().ToList();
+            var serviceTags = _AllInfoMonitors.Where(_ => commandLineInput.DeviceIndex.Count == 0 || commandLineInput.DeviceIndex.Contains((_.Index + 1).ToString()))
+                                              .Where(_ => commandLineInput.ServiceTag.Count == 0 || commandLineInput.ServiceTag.Contains(_.edid.ServiceTag))
+                                              .Where(_ => commandLineInput.Model.Count == 0 || commandLineInput.Model.Contains(_.modelName))
+                                              .Select(_ => _.edid.ServiceTag)
+                                              .Distinct()
+                                              .ToList();
 
             foreach (string serviceTag in serviceTags)
             {
@@ -12588,7 +12660,7 @@ namespace DDPM.CLI.Plugins.Display
                             else if (commandLineInput.Command == "GET")
                             {
                                 writelog("SPEAKERVOLUME GET entry");
-                                rc = GetVCPCode(devMgr, monitor, "0x62").Result;
+                                rc = GetVCPCode(devMgr, monitor, "0x62", 2).Result;
                                 cli_Response.Value = get_SpeakerVolume_status(Convert.ToInt32(rc.value));
                                 retcode = true;
                             }
@@ -12612,32 +12684,33 @@ namespace DDPM.CLI.Plugins.Display
 
                                 if (setvalue != "unknown_command")
                                 {
-                                    retcode = SetVCPCode(devMgr, monitor, "0x62", setvalue).Result;
+                                    SetVCPCode(devMgr, monitor, "0x62", setvalue);
+                                    retcode = true;
                                     cli_Response.Value = commandLineInput.Options[0].Option_Value;
                                 }
                                 else
                                     somethingfail |= 0x01;
 
-                                int count = 0;
-                                while (!_AllInfoMonitors.Any(_ => _.edid.ServiceTag == monitor.edid.ServiceTag) && count < 1000)
-                                {
-                                    _AllInfoMonitors = devMgr.GetMonitors().Result;
-                                    count++;
-                                }
+                                //int count = 0;
+                                //while (!_AllInfoMonitors.Any(_ => _.edid.ServiceTag == monitor.edid.ServiceTag) && count < 1000)
+                                //{
+                                //    _AllInfoMonitors = devMgr.GetMonitors().Result;
+                                //    count++;
+                                //}
 
-                                monitor = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTag);
+                                //monitor = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTag);
 
-                                rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
-                                int getvalue2 = Convert.ToInt32(rc.value);
-                                string setvalue2 = get_SpeakerMicrophone(commandLineInput.Options[0].Option_Value, getvalue2);
+                                //rc = GetVCPCode(devMgr, monitor, "0x8D").Result;
+                                //int getvalue2 = Convert.ToInt32(rc.value);
+                                //string setvalue2 = get_SpeakerMicrophone(commandLineInput.Options[0].Option_Value, getvalue2);
 
-                                if (setvalue2 != "unknown_command")
-                                {
-                                    retcode = SetVCPCode(devMgr, monitor, "0x8D", setvalue2).Result;
-                                    cli_Response.Value = commandLineInput.Options[0].Option_Value;
-                                }
-                                else
-                                    somethingfail |= 0x02;
+                                //if (setvalue2 != "unknown_command")
+                                //{
+                                //    retcode = SetVCPCode(devMgr, monitor, "0x8D", setvalue2).Result;
+                                //    cli_Response.Value = commandLineInput.Options[0].Option_Value;
+                                //}
+                                //else
+                                //    somethingfail |= 0x02;
                             }
                             else if (commandLineInput.Command == "GET")
                             {
@@ -12734,19 +12807,17 @@ namespace DDPM.CLI.Plugins.Display
 
                             string capability = monitor.CapabilityString;
                             string[] ss_1 = null;
-                            if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE"))
+                            if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE") &&
+                                commandLineInput.Options[0].Option_Value.Contains("0X"))
                             {
-                                if (commandLineInput.Options[0].Option_Value.Contains("0X"))
+                                ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
+                                Trace.WriteLine($"monitor.CapabilityDic.ContainsKey : {monitor.CapabilityDic.ContainsKey(ss_1[1])}");
+                                Trace.WriteLine($"ss_1[1] : {ss_1[1]}");
+                                if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
                                 {
-                                    ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
-                                    Trace.WriteLine($"monitor.CapabilityDic.ContainsKey : {monitor.CapabilityDic.ContainsKey(ss_1[1])}");
-                                    Trace.WriteLine($"ss_1[1] : {ss_1[1]}");
-                                    if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
-                                    {
-                                        rc = GetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value).Result;
-                                        cli_Response.Value = (rc.value).ToString();
-                                        retcode = true;
-                                    }
+                                    rc = GetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value).Result;
+                                    cli_Response.Value = (rc.value).ToString();
+                                    retcode = true;
                                 }
                             }
                             if (retcode)
@@ -12775,17 +12846,15 @@ namespace DDPM.CLI.Plugins.Display
 
                             string capability = monitor.CapabilityString;
                             string[] ss_1 = null;
-                            if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE"))
+                            if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE") &&
+                                commandLineInput.Options[0].Option_Value.Contains("0X"))
                             {
-                                if (commandLineInput.Options[0].Option_Value.Contains("0X"))
+                                ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
+                                if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
                                 {
-                                    ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
-                                    if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
-                                    {
-                                        rc = GetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value).Result;
-                                        cli_Response.Value = (rc.value).ToString();
-                                        retcode = true;
-                                    }
+                                    rc = GetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value).Result;
+                                    cli_Response.Value = (rc.value).ToString();
+                                    retcode = true;
                                 }
                             }
                             if (retcode)
@@ -12814,17 +12883,15 @@ namespace DDPM.CLI.Plugins.Display
                                 string capability = monitor.CapabilityString;
                                 string[] ss_1 = null;
 
-                                if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE"))
+                                if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE") &&
+                                    commandLineInput.Options[0].Option_Value.Contains("0X"))
                                 {
-                                    if (commandLineInput.Options[0].Option_Value.Contains("0X"))
+                                    ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
+                                    if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
                                     {
-                                        ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
-                                        if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
-                                        {
-                                            rc = GetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value).Result;
-                                            cli_Response.Value = (rc.value).ToString();
-                                            retcode = true;
-                                        }
+                                        rc = GetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value).Result;
+                                        cli_Response.Value = (rc.value).ToString();
+                                        retcode = true;
                                     }
                                 }
                                 if (retcode)
@@ -12854,18 +12921,16 @@ namespace DDPM.CLI.Plugins.Display
                                 string capability = monitor.CapabilityString;
                                 string[] ss_1 = null;
 
-                                if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE"))
+                                if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE") &&
+                                    commandLineInput.Options[0].Option_Value.Contains("0X"))
                                 {
-                                    if (commandLineInput.Options[0].Option_Value.Contains("0X"))
+                                    ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
+                                    if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
                                     {
-                                        ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
-                                        if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
-                                        {
-                                            rc = GetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value).Result;
-                                            cli_Response.Value = (rc.value).ToString();
-                                            retcode = true;
-                                        }
-                                    }
+                                        rc = GetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value).Result;
+                                        cli_Response.Value = (rc.value).ToString();
+                                        retcode = true;
+                                    }                                    
                                 }
                                 if (retcode)
                                 {
@@ -12897,36 +12962,34 @@ namespace DDPM.CLI.Plugins.Display
                             string capability = monitor.CapabilityString;
                             string[] ss_1 = null;
                             Trace.WriteLine($"option value : {commandLineInput.Options[1].Option_Value}");
-                            if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE"))
+                            if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE") &&
+                                commandLineInput.Options[0].Option_Value.Contains("0X"))
                             {
-                                if (commandLineInput.Options[0].Option_Value.Contains("0X"))
+                                ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
+                                if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
                                 {
-                                    ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
-                                    if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
+                                    if (capability.Contains(ss_1[1] + "("))
                                     {
-                                        if (capability.Contains(ss_1[1] + "("))
+                                        string[] ss = capability.Split(ss_1[1] + "(");
+                                        ss = ss[1].Split(")");
+                                        if (commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
                                         {
-                                            string[] ss = capability.Split(ss_1[1] + "(");
-                                            ss = ss[1].Split(")");
-                                            if (commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
+                                            if (ss[0].Contains(commandLineInput.Options[1].Option_Value))
                                             {
-                                                if (ss[0].Contains(commandLineInput.Options[1].Option_Value))
-                                                {
-                                                    retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
+                                                retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
 
-                                                    cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
-                                                    vcp_value = true;
-                                                    Trace.WriteLine($"retcode : {retcode}");
-                                                }
+                                                cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
+                                                vcp_value = true;
+                                                Trace.WriteLine($"retcode : {retcode}");
                                             }
                                         }
-                                        else if (capability.Contains(ss_1[1]))
-                                        {
-                                            retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
-                                            cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
-                                            vcp_value = true;
-                                            Trace.WriteLine($"retcode : {retcode}");
-                                        }
+                                    }
+                                    else if (capability.Contains(ss_1[1]))
+                                    {
+                                        retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
+                                        cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
+                                        vcp_value = true;
+                                        Trace.WriteLine($"retcode : {retcode}");
                                     }
                                 }
                             }
@@ -12966,36 +13029,32 @@ namespace DDPM.CLI.Plugins.Display
                             string capability = monitor.CapabilityString;
                             string[] ss_1 = null;
 
-                            if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE"))
+                            if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE") &&
+                                commandLineInput.Options[0].Option_Value.Contains("0X"))
                             {
-                                if (commandLineInput.Options[0].Option_Value.Contains("0X"))
+                                ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
+                                if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
                                 {
-                                    ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
-                                    if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
+                                    if (capability.Contains(ss_1[1] + "("))
                                     {
-                                        if (capability.Contains(ss_1[1] + "("))
-                                        {
-                                            string[] ss = capability.Split(ss_1[1] + "(");
-                                            ss = ss[1].Split(")");
-                                            if (commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
-                                            {
-                                                if (ss[0].Contains(commandLineInput.Options[1].Option_Value))
-                                                {
-                                                    retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
-
-                                                    cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
-                                                    vcp_value = true;
-                                                    Trace.WriteLine($"retcode : {retcode}");
-                                                }
-                                            }
-                                        }
-                                        else if (capability.Contains(ss_1[1]))
+                                        string[] ss = capability.Split(ss_1[1] + "(");
+                                        ss = ss[1].Split(")");
+                                        if (commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE") &&
+                                            ss[0].Contains(commandLineInput.Options[1].Option_Value))
                                         {
                                             retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
+
                                             cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
                                             vcp_value = true;
-                                            Trace.WriteLine($"retcode : {retcode}");
+                                            Trace.WriteLine($"retcode : {retcode}");                                            
                                         }
+                                    }
+                                    else if (capability.Contains(ss_1[1]))
+                                    {
+                                        retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
+                                        cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
+                                        vcp_value = true;
+                                        Trace.WriteLine($"retcode : {retcode}");
                                     }
                                 }
                             }
@@ -13034,39 +13093,37 @@ namespace DDPM.CLI.Plugins.Display
                                 string capability = monitor.CapabilityString;
                                 string[] ss_1 = null;
 
-                                if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE"))
+                                if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE") &&
+                                    commandLineInput.Options[0].Option_Value.Contains("0X"))
                                 {
-                                    if (commandLineInput.Options[0].Option_Value.Contains("0X"))
+                                    
+                                    ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
+
+                                    if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
                                     {
-                                        ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
-
-                                        if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
+                                        if (capability.Contains(ss_1[1] + "("))
                                         {
-                                            if (capability.Contains(ss_1[1] + "("))
-                                            {
-                                                string[] ss = capability.Split(ss_1[1] + "(");
-                                                ss = ss[1].Split(")");
-                                                if (commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
-                                                {
-                                                    if (ss[0].Contains(commandLineInput.Options[1].Option_Value))
-                                                    {
-                                                        retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
-
-                                                        cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
-                                                        vcp_value = true;
-                                                        Trace.WriteLine($"retcode : {retcode}");
-                                                    }
-                                                }
-                                            }
-                                            else if (capability.Contains(ss_1[1]))
+                                            string[] ss = capability.Split(ss_1[1] + "(");
+                                            ss = ss[1].Split(")");
+                                            if (commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE") &&
+                                                ss[0].Contains(commandLineInput.Options[1].Option_Value))
                                             {
                                                 retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
+
                                                 cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
                                                 vcp_value = true;
                                                 Trace.WriteLine($"retcode : {retcode}");
                                             }
                                         }
+                                        else if (capability.Contains(ss_1[1]))
+                                        {
+                                            retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
+                                            cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
+                                            vcp_value = true;
+                                            Trace.WriteLine($"retcode : {retcode}");
+                                        }
                                     }
+                                    
                                 }
                                 if (retcode)
                                 {
@@ -13105,39 +13162,35 @@ namespace DDPM.CLI.Plugins.Display
                                 string capability = monitor.CapabilityString;
                                 string[] ss_1 = null;
 
-                                if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE"))
+                                if (commandLineInput.Options[0].Option_Name.ToUpper().Equals("OPCODE") &&
+                                    commandLineInput.Options[0].Option_Value.Contains("0X"))
                                 {
-                                    if (commandLineInput.Options[0].Option_Value.Contains("0X"))
+                                    ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
+
+                                    if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
                                     {
-                                        ss_1 = commandLineInput.Options[0].Option_Value.Split("0X");
-
-                                        if (monitor.CapabilityDic.ContainsKey(ss_1[1]))
+                                        if (capability.Contains(ss_1[1] + "("))
                                         {
-                                            if (capability.Contains(ss_1[1] + "("))
-                                            {
-                                                string[] ss = capability.Split(ss_1[1] + "(");
-                                                ss = ss[1].Split(")");
-                                                if (commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
-                                                {
-                                                    if (ss[0].Contains(commandLineInput.Options[1].Option_Value))
-                                                    {
-                                                        retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
-
-                                                        cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
-                                                        vcp_value = true;
-                                                        Trace.WriteLine($"retcode : {retcode}");
-                                                    }
-                                                }
-                                            }
-                                            else if (capability.Contains(ss_1[1]))
+                                            string[] ss = capability.Split(ss_1[1] + "(");
+                                            ss = ss[1].Split(")");
+                                            if (commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE") &&
+                                                ss[0].Contains(commandLineInput.Options[1].Option_Value))
                                             {
                                                 retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
+
                                                 cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
                                                 vcp_value = true;
-                                                Trace.WriteLine($"retcode : {retcode}");
+                                                Trace.WriteLine($"retcode : {retcode}");                                                
                                             }
                                         }
-                                    }
+                                        else if (capability.Contains(ss_1[1]))
+                                        {
+                                            retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
+                                            cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
+                                            vcp_value = true;
+                                            Trace.WriteLine($"retcode : {retcode}");
+                                        }
+                                    }                                    
                                 }
                                 if (retcode)
                                 {

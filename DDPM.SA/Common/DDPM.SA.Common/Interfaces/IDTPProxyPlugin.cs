@@ -22,6 +22,7 @@ namespace DDPM.SA.Common
 {
     public interface IDTPProxyPlugin : IFrameworkPlugin
     {
+        event EventHandler<UpdateDTPProxyNotify> DTPProxyPluginSDKeventHandler;
         Task<bool> GetDTPProxyPluginReady();
 
         #region globalperipheral
@@ -355,6 +356,7 @@ namespace DDPM.SA.Common
 
         ////////////////////////////////Get////////////////////////////////
 
+        Task<string> GetProfileNameAsync(string item);
         Task<string> GetProfileAsync(string item);
         Task<int> GetBassAsync(string Guid);
         Task<int> GetMidRangeAsync(string Guid);
@@ -364,6 +366,13 @@ namespace DDPM.SA.Common
         Task<bool> GetIsWiredAudioIMicNSEnableAsync(string Guid);
         Task<bool> GetIsAudioEqualizerSupportedAsync(string Guid);
         Task<bool> GetMuteStatusAsyncForSpeaker(string Guid);
+        Task<bool> GetIsIMicNSSupportedAsync(string Guid);
+        Task<bool> GetIsVolumeAdjustmentToneSupportedAsync(string Guid);
+        Task<bool> GetIsMicMuteSoundSupportedAsync(string Guid);
+        Task<bool> GetPresetProfilesAsync(string Guid);
+        Task<bool> GetIsBassEqualizerSupportedAsync(string Guid);
+        Task<bool> GetIsMidRangeEqualizerSupportedAsync(string Guid);
+        Task<bool> GetIsTrebleEqualizerSupportedAsync(string Guid);
 
         #endregion
 

@@ -397,8 +397,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 //JArray input = (JArray)capsDataMap["Input Select"];
                 foreach (InputSourceObject tmp in (List<InputSourceObject>)objGet.value)
                 {
-                    if (!inputSourcelist.ContainsKey(tmp.ToString()))
-                    {
+                    //if (!inputSourcelist.ContainsKey(tmp.ToString()))
+                    //{
                         InputInfo inputInfo = new InputInfo();
                         inputInfo.InputName = tmp.Name;
                         inputInfo.Code = tmp.value;
@@ -453,9 +453,16 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                         //{
                         inputInfo.USBUpstream = string.Empty;
                         //}
-                        inputSourcelist.Add(tmp.Name, inputInfo);
+                        if (inputSourcelist.ContainsKey(tmp.Name))
+                        {
+                            inputSourcelist[tmp.Name] = inputInfo;
+                        }
+                        else
+                        {
+                            inputSourcelist.Add(tmp.Name, inputInfo);
+                        }
                         input_num = input_num + 1;
-                    }
+                    //}
                 }
             }
             return Task.FromResult(inputSourcelist);
@@ -4732,10 +4739,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     firmwares_item.id = model;
                                     if (firmwares_item.url.Contains("%2"))
                                     {
-                                        if (!string.IsNullOrEmpty(testServer))
-                                        {
-                                            firmwares_item.url = firmwares_item.url.Replace("%2", testServer);
-                                        }
+                                        firmwares_item.url = firmwares_item.url.Replace("%2", "https://downloads.dell.com");
                                     }
                                     else
                                     {

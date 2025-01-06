@@ -532,21 +532,24 @@ namespace DDPM.SA.Plugins.SettingsManager
                 catch (Exception ex)
                 {
                     WriteLog($"[{type}]System config: retrieve Directory got null return");
-                    Directory.Delete(folder, true);
-                    directoryInfo = System.IO.Directory.CreateDirectory(folder);
-                    WriteLog($"[{type}]re-create system settings folder success");
+                    try
+                    {
+                        Directory.Delete(folder, true);
+                        directoryInfo = System.IO.Directory.CreateDirectory(folder);
+                        WriteLog($"[{type}]re-create system settings folder success");
+                    }
+                    catch(Exception ex2)
+                    {
+                        WriteLog($"[{type}]re-create system settings folder failed: {ex2.Message}");
+                        return null;
+                    }
                 }
 
                 string info2 = string.Empty;
-                //if (DDPMFileSecurity.IsPathSymbolicLinked(folder, out info2))
                 if (!DDPMFileSecurity.IsFolderPathValid(folder, out info2))
                 {
                     //WriteLog($"[{type}]Directory ACLs for system setting contained unprivileged write access for one or more identity");
                     WriteLog($"[{type}] *** Directory path and symbolic check GOT ISSUE *** ({info2})");
-                    /*Directory.Delete(folder, true);
-                    WriteLog($"[{type}]Exist folder deleted.");
-                    directoryInfo = System.IO.Directory.CreateDirectory(folder);
-                    WriteLog($"[{type}]re-create system settings folder success");*/
                     return null;
                 }
             }
@@ -554,7 +557,11 @@ namespace DDPM.SA.Plugins.SettingsManager
             //Apply folder ACL
             try
             {
-                DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(folder);
+                //DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(folder);
+                if (!DDPMFileSecurity.CheckFolderACL(folder, out info, true))
+                    WriteLog($"[InitSysSettingsData][CheckFolderACL] failed with: {info}");
+                else
+                    WriteLog("[InitSysSettingsData][CheckFolderACL] Success");
             }
             catch (Exception ex)
             {
@@ -578,7 +585,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             if (File.Exists(filePath))
             {
                 FileInfo fileInfo = null;
-                try
+                /*try
                 {
                     fileInfo = new FileInfo(filePath);
                 }
@@ -587,7 +594,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                     WriteLog($"[{type}]System config: retrieve FileInfo got null return");
                     File.Delete(filePath);
                     WriteLog($"[{type}]Exist file deleted.");
-                }
+                }*/
 
                 if (fileInfo != null)
                 {
@@ -598,6 +605,11 @@ namespace DDPM.SA.Plugins.SettingsManager
                         File.Delete(filePath);
                         WriteLog($"[{type}]Exist file deleted.");
                     }
+                }
+                else
+                {
+                    WriteLog($"[InitSysSettingsData] type({type}) using file info got null object");
+                    return null;
                 }
             }
 

@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using DDPM.SA.Common.UpdateProgressPage;
 using DDPM.SA.Common;
 using Dell.Client.Framework.Security.Interfaces;
 using Dell.Client.Framework.Security;
 using PInvoke;
 using System.Diagnostics;
 using System.Security;
+using Newtonsoft.Json.Linq;
 
 namespace DdpmSwUpdater
 {
@@ -20,6 +20,8 @@ namespace DdpmSwUpdater
     {
         private UpdateProgress _UpdateProgress;
         private SWUpdatePlugins _SWUpdatePlugins;
+        Thread _CheckDDPMThread;
+        CancellationTokenSource _CancellationTokenSource;
         public LaunchInstaller()
         {
             _SWUpdatePlugins = new SWUpdatePlugins();
@@ -38,6 +40,10 @@ namespace DdpmSwUpdater
                     _UpdateProgress.CloseWindow();
                     _UpdateProgress = null;
                 }
+                if (_CheckDDPMThread != null && _CancellationTokenSource != null)
+                {
+                    _CancellationTokenSource.Cancel();
+                }
                 foreach (SWUpdateInfo swUErrorCode in retSWUpdate)
                 {
                     if (swUErrorCode.SWUErrorCode != SWUErrorCode.NoError)
@@ -55,23 +61,32 @@ namespace DdpmSwUpdater
             {
                 LogManage.LogMessage($"{nameof(CloseDDPM)} start");
                 string processName = "DDPM";
-                Process[] processes = Process.GetProcessesByName(processName);
-                LogManage.LogMessage($"{nameof(CloseDDPM)} processes.Length {processes.Length}");
-                if (processes.Length > 0)
+                Process[] processes;
+                do
                 {
-                    foreach (Process process in processes)
+                    processes = Process.GetProcessesByName(processName);
+                    LogManage.LogMessage($"{nameof(CloseDDPM)} processes.Length {processes.Length}");
+                    if (processes.Length > 0)
                     {
-                        // Close process by sending a close message to its main window.
-                        process.CloseMainWindow();
-                        // Free resources associated with process.
-                        process.Close();
+                        foreach (Process process in processes)
+                        {
+                            // Close process by sending a close message to its main window.
+                            process.CloseMainWindow();
+                            // Free resources associated with process.
+                            process.Close();
+                        }
+                        Thread.Sleep(1000);
                     }
-                }
+                } while (processes.Length > 0);
             }
             catch (Exception ex)
             {
                 LogManage.LogMessage($"{nameof(CloseDDPM)} Error:{ex.Message}");
             }
+            _CancellationTokenSource = new CancellationTokenSource();
+            CancellationToken token = _CancellationTokenSource.Token;
+            _CheckDDPMThread = new Thread(() => CheckDDPM(token));
+            _CheckDDPMThread.Start();
             LogManage.LogMessage($"{nameof(CloseDDPM)} done");
         }
         private Task CallUpdateProgressUI()
@@ -94,6 +109,23 @@ namespace DdpmSwUpdater
             thread1.Start();
             LogManage.LogMessage($"{nameof(CallUpdateProgressUI)} done");
             return tcs.Task;
+        }
+        void CheckDDPM(CancellationToken token)
+        {
+            LogManage.LogMessage($"{nameof(CheckDDPM)} start");
+            string processName = "DDPM";
+            Process[] processes;
+            do
+            {
+                processes = Process.GetProcessesByName(processName);
+                Thread.Sleep(1000);
+            }
+            while (processes.Length <= 0 && !token.IsCancellationRequested);
+            if (_UpdateProgress != null)
+            {
+                _UpdateProgress.HideWindow();
+            }
+            LogManage.LogMessage($"{nameof(CheckDDPM)} done");
         }
     }
 }

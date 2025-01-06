@@ -137,60 +137,21 @@ namespace SA.Plugins.User.PipPbpManager.Test
         public void TestGetCapabilitiesString()
         {
             string getcapabilitiesString1 = "";
-            string signature = "E9(";
-            string signature1 = "E8(";
-            if (getcapabilitiesString1 == "")
-            {
-                var GetCapabilitiesStringResult1 = pipPbpMangerPlugin.GetCapabilitiesString(monitorInfo1).Result;
-                Assert.That(getcapabilitiesString1, Is.EqualTo(GetCapabilitiesStringResult1));
-            }
 
-            if (signature1 != "E9(")
-            {
-                string capabilitiesString2 = "(prot(monitor)type(LCD)model(U2724DE)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C) 16 18 1A 52 60(19 0F 11 ) mccs_ver(2.1))";
-                PrivateObject privatepipPbp = new PrivateObject(pipPbpMangerPlugin);
-                DisplayManagerService.Setup(x => x.GetCapabilitiesString(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(capabilitiesString2));
-                privatepipPbp.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService.Object);
-                var GetCapabilitiesStringResult2 = pipPbpMangerPlugin.GetCapabilitiesString(monitorInfo1).Result;
-                Assert.That(getcapabilitiesString1, Is.EqualTo(GetCapabilitiesStringResult2));
-            }
-
-            if (signature == "E9(")
-            {
-                string capabilitiesString3 = "(prot(monitor)type(LCD)model(U2724DE)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C) 16 18 1A 52 60(19 0F 11 ) E9(00 01 02 21 22 24 ) mccs_ver(2.1))";
-                string getcapabilitiesString3 = "00 01 02 21 22 24 ";
-                PrivateObject privatepipPbp = new PrivateObject(pipPbpMangerPlugin);
-                DisplayManagerService.Setup(x => x.GetCapabilitiesString(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(capabilitiesString3));
-                privatepipPbp.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService.Object);
-                var GetCapabilitiesStringResult3 = pipPbpMangerPlugin.GetCapabilitiesString(monitorInfo1).Result;
-                Assert.That(getcapabilitiesString3, Is.EqualTo(GetCapabilitiesStringResult3));
-            }
+            var GetCapabilitiesStringResult1 = pipPbpMangerPlugin.GetCapabilitiesString(monitorInfo1).Result; //Robert_Lin, 2024-12-28, due to MonitorInfo has provide the capability string, will get from it
+            Assert.That(getcapabilitiesString1, Is.EqualTo(GetCapabilitiesStringResult1));
         }
 
         [Test]
         public void TestGetCapabilitiesWords()
         {
-            string pipPbpCapsStr = "";
-            string pipPbpCapsStr2 = "E9(";
             UInt16[] pipPbpCapsStrushorts = new UInt16[0];
-            if (pipPbpCapsStr == "")
-            {
-                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
-                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", _displayManagerPlugin);
-                var GetCapabilitiesWordsResult1 = pipPbpMangerPlugin.GetCapabilitiesWords(monitorInfo1).Result;
-                Assert.That(pipPbpCapsStrushorts, Is.EqualTo(GetCapabilitiesWordsResult1));
-            }
 
-            if (pipPbpCapsStr2 != "")
-            {
-                string capabilitiesString2 = "(prot(monitor)type(LCD)model(U2724DE)cmds(01 02 03 07 0C E3 F3)vcp(02 04 05 08 10 12 14(01 04 05 06 08 09 0B 0C) 16 18 1A 52 60(19 0F 11 ) E9(00 01 02 21 22 24 ) mccs_ver(2.1))";
-                UInt16[] pipPbpCaps2 = new UInt16[6] { 00, 01, 02, 33, 34, 36 };
-                PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
-                DisplayManagerService2.Setup(x => x.GetCapabilitiesString(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(capabilitiesString2));
-                privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", DisplayManagerService2.Object);
-                var GetCapabilitiesWordsResult2 = pipPbpMangerPlugin.GetCapabilitiesWords(monitorInfo1).Result;
-                Assert.That(pipPbpCaps2, Is.EqualTo(GetCapabilitiesWordsResult2));
-            }
+            // pipPbpCapsStr is null
+            PrivateObject privatepipPbp2 = new PrivateObject(pipPbpMangerPlugin);
+            privatepipPbp2.SetFieldOrProperty("_DisplayManagerPlugin", _displayManagerPlugin);
+            var GetCapabilitiesWordsResult1 = pipPbpMangerPlugin.GetCapabilitiesWords(monitorInfo1).Result;
+            Assert.That(pipPbpCapsStrushorts, Is.EqualTo(GetCapabilitiesWordsResult1));
         }
 
         [Test]

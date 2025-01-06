@@ -83,17 +83,17 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         {
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
         }
-        public void OnShown(string showPage)
+        public void OnShown(string pluginParameter)
         {
             ConfigureServices();
             PrepareHomeDevices();
             if (_viewModel != null)
             {
-                if (string.IsNullOrEmpty(showPage))
+                if (string.IsNullOrEmpty(pluginParameter))
                 {
-                    showPage = "0";
+                    pluginParameter = "0";
                 }
-                if (int.TryParse(showPage, out int page))
+                if (int.TryParse(pluginParameter, out int page))
                 {
                     _viewModel.SetSelected(page);
                 }

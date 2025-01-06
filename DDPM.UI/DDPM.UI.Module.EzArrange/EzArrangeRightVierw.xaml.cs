@@ -167,7 +167,7 @@ namespace DDPM.UI.Module.EzArrange
             // below 19 inches in size (Reference: MDDM-3039)
             //Robert_Lin, 2024-12-11 update, for the smaller monitor,
             // all SpliItems will be added, but hide these SplitListViews
-            //
+            //i
             float monitorSize = _homeDevice.MonitorInfo.edid.Size;
             bool isSmallSizeMonitor = monitorSize < 19.0000;
             _vm.LogInfo($"DDPMW-866(MDDM-3039): Easy arrange window arrangement preset limited to 4 windows for all displays   below 19 inches in size. EDID.MonitorSize={monitorSize}");
@@ -323,7 +323,8 @@ namespace DDPM.UI.Module.EzArrange
                 foreach (DDPM.SA.Common.Display.SplitJson spj in eaSettings.RecentList)
                 {
                     //Robert_Lin, 2024-10-4 Check maximun items
-                    if (splitListView_Recent.ItemCount >= EAEMConstants.MaxRecentItems)
+                    //since sp0A is not null,the splitListView_Recent.ItemCount init with 1.
+                    if (splitListView_Recent.ItemCount > EAEMConstants.MaxRecentItems)
                         break;
 
                     //Validate RectentList items, skip the invalid items
@@ -1347,6 +1348,42 @@ namespace DDPM.UI.Module.EzArrange
                 InitListViewItems();
             });
         }
+
+        /// <summary>
+        /// Check if screen orientation is changed, and then refresh to ISplitCtrls
+        /// </summary>
+        public void RefreshScreenOrientation()
+        {
+            //Origial IsVertical settings
+            bool isVerticalOrg = _vm.IsVertical;
+
+            //Get new IsVertical
+            Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
+            bool isVerticalNew = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
+
+            //If it's changed, then refresh to all ListViews
+            if (isVerticalOrg != isVerticalNew)
+            {
+                _vm.IsVertical = isVerticalNew;
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    //Recent ListView
+                    splitListView_Recent.IsVertical = isVerticalNew;
+
+                    //Custom ListView
+                    splitListView_Custom.IsVertical = isVerticalNew;
+
+                    //Reset ListViews
+                    splitListView_2w.IsVertical = isVerticalNew;
+                    splitListView_3w.IsVertical = isVerticalNew;
+                    splitListView_4w.IsVertical = isVerticalNew;
+                    splitListView_5w.IsVertical = isVerticalNew;
+                    splitListView_6w.IsVertical = isVerticalNew;
+                    splitListView_7w.IsVertical = isVerticalNew;
+                }));
+
+            }
+        }
         #endregion Refresh Data
 
         #region Screen
@@ -1579,6 +1616,25 @@ namespace DDPM.UI.Module.EzArrange
         #endregion
 
         #region Complement Recent List Item
+        //Robert_Lin, 2024-12-31 Use below method to replace FindPresetItemWhichNoBuddy()
+        //The Complement recent list source will be the default RecentList
+        private SplitItem? FindComplementItem()
+        {
+            List<SplitJson> defaultRecentList = SplitJson.DefaultRecentList;
+            foreach (SplitJson spjRecent in defaultRecentList)
+            {
+                //Check if this ISplitCtrl is already existed
+                SplitItem? spjItem = splitListView_Recent.FindItemByEAID(spjRecent.EAID);
+                //If not found, then it's not in RecentList, will use this as the Complement item
+                if (spjItem == null)
+                {
+                    SplitItem? compItem = FindSplitItemFromWindowLists(spjRecent.CellCount, spjRecent.SplitKey);
+                    return compItem;
+                }
+            }
+            return null;
+        }
+
         /// <summary>
         /// Find a preset layout as the complement recent item, which is no Buddy.
         /// </summary>
@@ -1629,10 +1685,11 @@ namespace DDPM.UI.Module.EzArrange
         private int ComplementRecentListItem()
         {
             int addCount = 0;
-            while (splitListView_Recent.ItemCount <= EAEMConstants.MaxRecentItems)
+            while (splitListView_Recent.ItemCount < (EAEMConstants.MaxRecentItems+1))
             {
                 //To find a complement candidate
-                SplitItem? itemPreset = FindPresetItemWhichNoBuddy();
+                SplitItem? itemPreset = FindComplementItem();
+                //SplitItem? itemPreset = FindPresetItemWhichNoBuddy();
                 //If found
                 if ((itemPreset != null) && (itemPreset.ISplitCtrl != null))
                 {

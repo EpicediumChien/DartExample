@@ -161,7 +161,7 @@ namespace DDPM.UI.Plugin.MousePlugin
         }
 
         /// <inheritdoc/>
-        public void OnShown(string parameter)
+        public void OnShown(string pluginParameter)
         {
             if (!IsEventRegistered)
             {
@@ -170,7 +170,7 @@ namespace DDPM.UI.Plugin.MousePlugin
             }
             ConfigureServices();
             GetPeripheralsAsync();
-            if (_viewModel != null && !_viewModel.SetCurrentDevice(parameter))
+            if (_viewModel != null && !_viewModel.SetCurrentDevice(pluginParameter))
             { }
             Mouse.OverrideCursor = null;
         }

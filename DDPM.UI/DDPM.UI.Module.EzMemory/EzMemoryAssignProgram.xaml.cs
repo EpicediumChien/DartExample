@@ -256,6 +256,7 @@ namespace DDPM.UI.Module.EzMemory
         {
             _vm.ProgressValue = 1;
             _vm.IsAddPageBack = false;
+            _vm.RightViewDataClear();
             DdpmCommonHelper.ModuleOwner?.CloseFullView();
             return;
         }
@@ -431,12 +432,21 @@ namespace DDPM.UI.Module.EzMemory
                 string controlName = _vm.UXTextBoxNameToUXButtonName(textBox.Name);
                 if (_vm._sortApps.ContainsKey(controlName))
                 {
-                    string apppath = _vm._sortApps[controlName].AppPath;
-
-                    var toolTipContent = new TextBlock
+                    var toolTipContent = new TextBlock();
+                    if (_vm._sortApps[controlName].AppUserModelID == "")
                     {
-                        Text = apppath,                          
-                    };
+                        toolTipContent = new TextBlock
+                        {
+                            Text = _vm._sortApps[controlName].AppPath,
+                        };
+                    }
+                    else
+                    {
+                        toolTipContent = new TextBlock
+                        {
+                            Text = _vm._sortApps[controlName].AppName,
+                        };
+                    }
 
                     toolTipContent.Style = (Style)FindResource("ToolTipTextBlockStyle");
 

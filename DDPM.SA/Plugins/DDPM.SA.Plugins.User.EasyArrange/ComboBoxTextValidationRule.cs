@@ -11,12 +11,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange
     {
         public override ValidationResult Validate(object value, System.Globalization.CultureInfo cultureInfo)
         {
-            if (value is string custName)
+            if (value is string custName &&
+                String.IsNullOrWhiteSpace(custName))
             {
-                if (String.IsNullOrWhiteSpace(custName))
-                {
-                    return new ValidationResult(false, "Cannot be empty");
-                }
+                return new ValidationResult(false, "Cannot be empty");                
             }
 
 

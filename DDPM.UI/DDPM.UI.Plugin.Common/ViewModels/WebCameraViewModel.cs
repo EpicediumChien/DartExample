@@ -151,28 +151,32 @@ namespace DDPM.UI.Plugin.ViewModels
             get { return _isChecked_ProximitySensor; }
             set
             {
-                if (value != _isChecked_ProximitySensor) //Add by Derek 11/12
-                {
-                    _isChecked_ProximitySensor = value;
-                    DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
-                    //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
+                //if (value != _isChecked_ProximitySensor) //Add by Derek 11/12
+                //{
+                _isChecked_ProximitySensor = value;
+                DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString(), _isChecked_ProximitySensor);
+                //DdpmCommonHelper.DeviceManagerSA!.SetIsProximitySensorEnable(value, CurrentDeviceInfo!.ID);
 
-                    // jim add for PIMS-328195
-                    _isEnable_WalkAwayLock = _isChecked_WalkAwayLock && _isChecked_ProximitySensor;
+                // jim add for PIMS-328195
+                _isEnable_WalkAwayLock = _isChecked_WalkAwayLock && _isChecked_ProximitySensor;
 
-                    _isEnable_SnoozeLength = _isChecked_Snooze && _isChecked_ProximitySensor;
+                _isEnable_Snooze = _isChecked_ProximitySensor;
 
-                    OnPropertyChanged("IsChecked_ProximitySensor");
-                    OnPropertyChanged("ProximitySensorStatus_String");
-                    OnPropertyChanged("IsEnable_WalkAwayLock");
-                    OnPropertyChanged("IsEnable_SnoozeLength");
+                _isEnable_SnoozeLength = _isChecked_Snooze && _isChecked_ProximitySensor;
 
-                    //Derek 11/12
-                    //PIMS - 319099
-                    //Find Presence Detection Setting is available, when SUT does not support HPD_MPS and
-                    //Internal Presence Sensor. DUT is with HPD_MPS FW
-                    ChangeUPDStatus();
-                }
+
+                OnPropertyChanged("IsChecked_ProximitySensor");
+                OnPropertyChanged("ProximitySensorStatus_String");
+                OnPropertyChanged("IsEnable_WalkAwayLock");
+                OnPropertyChanged("IsEnable_Snooze");
+                OnPropertyChanged("IsEnable_SnoozeLength");
+
+                //Derek 11/12
+                //PIMS - 319099
+                //Find Presence Detection Setting is available, when SUT does not support HPD_MPS and
+                //Internal Presence Sensor. DUT is with HPD_MPS FW
+                ChangeUPDStatus();
+                //}
             }
         }
 
@@ -281,6 +285,18 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 _isEnable_WalkAwayLock = value;
                 OnPropertyChanged("IsEnable_WalkAwayLock");
+            }
+        }
+
+        // jim 20250102 add for PIMS-328195 - [DDPM WIN 2.0][R17_ Webcam] Delay and Snooze still selectable when Proximity Sensor is off and WAL is on.
+        private bool _isEnable_Snooze = false;
+        public bool IsEnable_Snooze
+        {
+            get { return _isEnable_Snooze; }
+            set
+            {
+                _isEnable_Snooze = value;
+                OnPropertyChanged("IsEnable_Snooze");
             }
         }
 
@@ -574,6 +590,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public override bool SetCurrentDevice(string deviceID)
         {
+            _log.Info("WebCameraViewModel SetCurrentDevice");
             deviceID ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
 
             if (!base.SetCurrentDevice(deviceID))
@@ -599,6 +616,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsChecked_ProximitySensor = false;
                 WebcamSettings.IsFirstTime = false;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+                _log.Info("WebCameraViewModel ExportWebcamSettings Finish");
             }
 
             IsMicEnumerationOnEnabled = true;
@@ -610,6 +628,8 @@ namespace DDPM.UI.Plugin.ViewModels
         private void InitializeWebcam()
         {
             WebcamSettings = WebcamSettings.ImportWebcamSettings(Model, CurrentDeviceInfo!);
+            //WebcamSettings.SetJsonToResolution(WebcamSettings, CurrentDeviceInfo!);
+
             //if (WebcamSettings.SelectedProfileName == "")
             //{
             //    IsDTPReady = false;
@@ -723,8 +743,13 @@ namespace DDPM.UI.Plugin.ViewModels
 
             _resolutions = WebcamSettings.Resolutions.Keys.ToList();
             var i = WebcamSettings.Resolutions.Keys.ToList().IndexOf(WebcamSettings.SelectedResolution);
+            _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(_resolutions)}!");
+            _log.Info($"DTP (WebcamSettings.Selected_Resolution:{WebcamSettings.SelectedResolution}!");
+            _log.Info($"DTP i:{i}!");
             SetResolution_Selected(i);
+            _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(WebcamSettings.SupportedFPSs)}!");
             var j = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution]);
+            _log.Info($"DTP j:{j}!");
             SetFPS_Selected(j);
             foreach (var sf in WebcamSettings.SelectedFPSs)
             {
@@ -767,6 +792,7 @@ namespace DDPM.UI.Plugin.ViewModels
             CurrentProfile.IsAutoFramingTransitionOn = _isAutoFramingTransitionOn;
             CurrentProfile.AutoFramingFrameSize = _autoFramingFrameSize;
             CurrentProfile.AutoFramingSensitivity = _autoFramingSensitivity;
+
             if (!IsUSB3)
                 CurrentProfile.IsHDROn = false;
 
@@ -1017,12 +1043,12 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         public bool is_ProximitySensor_enable = true;
-        public bool IsProximitySensorEnable
-        {
-            get => IsProximitySensorEnable;
+        //public bool IsProximitySensorEnable
+        //{
+        //    get => IsProximitySensorEnable;
 
-            set { }
-        }
+        //    //set { }
+        //}
 
         private bool _isChecked_Autofocus;
 

@@ -340,27 +340,24 @@ namespace DDPM.SA.Common
                 CalculateLengths(row, columns, lengths, toString);
 
             int rowOrdinalsLength = 0;
-            if (rowOrdinals)
+            if (rowOrdinals && dataRows.Count() > 0)
             {
-                if (dataRows.Count() > 0)
+                int maxRowOrdinal = 0;
+
+                try
                 {
-                    int maxRowOrdinal = 0;
-
-                    try
-                    {
-                        if (string.IsNullOrEmpty(ordinalColumnName))
-                            maxRowOrdinal = dataRows.Select(row => row.Table.Rows.IndexOf(row)).Max();
-                        else
-                            maxRowOrdinal = dataRows.Select(row => (int)row[ordinalColumnName]).Max();
-                    }
-                    catch (Exception ex) 
-                    {
-                        Console.Write("[PrintRows] error, message: " + ex.Message);
-                    }
-
-                    if (maxRowOrdinal > -1)
-                        rowOrdinalsLength = maxRowOrdinal.ToString().Length;
+                    if (string.IsNullOrEmpty(ordinalColumnName))
+                        maxRowOrdinal = dataRows.Select(row => row.Table.Rows.IndexOf(row)).Max();
+                    else
+                        maxRowOrdinal = dataRows.Select(row => (int)row[ordinalColumnName]).Max();
                 }
+                catch (Exception ex) 
+                {
+                    Console.Write("[PrintRows] error, message: " + ex.Message);
+                }
+
+                if (maxRowOrdinal > -1)
+                    rowOrdinalsLength = maxRowOrdinal.ToString().Length;
             }
 
             string header = Top_Left.ToString();
@@ -756,34 +753,32 @@ namespace DDPM.SA.Common
                 CalculateLengths(row, columns, lengths, toString);
             int rowsLength = lengths.Max();
 
-            if (rowOrdinals)
+            if (rowOrdinals && dataRows.Count() > 0)
             {
-                if (dataRows.Count() > 0)
+                if (columnsLength < 7) // "Ordinal".Length
+                    columnsLength = 7;
+
+                int maxRowOrdinal = 0;
+
+                try
                 {
-                    if (columnsLength < 7) // "Ordinal".Length
-                        columnsLength = 7;
-
-                    int maxRowOrdinal = 0;
-
-                    try
-                    {
-                        if (string.IsNullOrEmpty(ordinalColumnName))
-                            maxRowOrdinal = dataRows.Select(row => row.Table.Rows.IndexOf(row)).Max();
-                        else
-                            maxRowOrdinal = dataRows.Select(row => (int)row[ordinalColumnName]).Max();
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.Write("[PrintListRows] error, message: " + ex.Message);
-                    }
-
-                    if (maxRowOrdinal > -1)
-                    {
-                        int rowOrdinalsLength = maxRowOrdinal.ToString().Length;
-                        if (rowsLength < rowOrdinalsLength)
-                            rowsLength = rowOrdinalsLength;
-                    }
+                    if (string.IsNullOrEmpty(ordinalColumnName))
+                        maxRowOrdinal = dataRows.Select(row => row.Table.Rows.IndexOf(row)).Max();
+                    else
+                        maxRowOrdinal = dataRows.Select(row => (int)row[ordinalColumnName]).Max();
                 }
+                catch (Exception ex)
+                {
+                    Console.Write("[PrintListRows] error, message: " + ex.Message);
+                }
+
+                if (maxRowOrdinal > -1)
+                {
+                    int rowOrdinalsLength = maxRowOrdinal.ToString().Length;
+                    if (rowsLength < rowOrdinalsLength)
+                        rowsLength = rowOrdinalsLength;
+                }
+                
             }
 
             if (repeatColumns < 1)

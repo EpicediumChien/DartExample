@@ -159,9 +159,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         //Derek 1120
         public event EventHandler<UpdateUINotify> DTPEventHandler;
+
+        public event EventHandler<UpdateDTPProxyNotify> DTPProxyPluginSDKeventHandler;
         public void OnUIUpdateNotify(UpdateUINotify e)
         {
             DTPEventHandler?.Invoke(this, e);
+        }
+
+        public void DTPProxyPluginSDKNotify(UpdateDTPProxyNotify e)
+        {
+            DTPProxyPluginSDKeventHandler?.Invoke(this, e);
         }
 
         public void NotifyNow()
@@ -173,6 +180,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsLockKeyNotificationsEnabledValue()
         {
             writelog($"Get IsLockKeyNotificationsEnabled Fun");
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -198,6 +206,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsBatteryNotificationsEnabledValue()
         {
             writelog($"Get IsBatteryNotificationsEnabled Fun");
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -223,7 +232,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsPresenceDetectionSensnorStateNotificationsEnabledValue()
         {
             writelog($"Get IsPresenceDetectionSensnorStateNotificationsEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -249,6 +258,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsAnalyticsEnabledValue()
         {
             writelog($"Get IsAnalyticsEnabled Fun");
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -274,7 +284,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsQuickAccessMenuEnabledValue()
         {
             writelog($"Get IsQuickAccessMenuEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -300,7 +310,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsMuteStatusNotificationsEnabledValue()
         {
             writelog($"Get IsMuteStatusNotificationsEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -326,6 +336,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> GetIsQuickAccessMenuOSDEnabledValue()
         {
             writelog($"Get IsQuickAccessMenuOSDEnabled Fun");
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (_globalperipheralMethodInfo != null)
             {
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
@@ -351,7 +362,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> SetIsLockKeyNotificationsEnabledValue(bool newValue)
         {
             writelog($"Set IsLockKeyNotificationsEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsLockKeyNotificationsEnabled :{newValue}");
@@ -368,7 +379,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> SetIsBatteryNotificationsEnabledValue(bool newValue)
         {
             writelog($"Set IsBatteryNotificationsEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsBatteryNotificationsEnabled :{newValue}");
@@ -385,7 +396,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> SetIsPresenceDetectionSensnorStateNotificationsEnabledValue(bool newValue)
         {
             writelog($"Set IsPresenceDetectionSensnorStateNotificationsEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsPresenceDetectionSensnorStateNotificationsEnabled :{newValue}");
@@ -402,7 +413,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> SetIsAnalyticsEnabledValue(bool newValue)
         {
             writelog($"Set IsAnalyticsEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsAnalyticsEnabled :{newValue}");
@@ -419,7 +430,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> SetIsQuickAccessMenuEnabledValue(bool newValue)
         {
             writelog($"Set IsQuickAccessMenuEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsQuickAccessMenuEnabled :{newValue}");
@@ -436,7 +447,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> SetIsMuteStatusNotificationsEnabledValue(bool newValue)
         {
             writelog($"Set IsMuteStatusNotificationsEnabled Fun");
-
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsMuteStatusNotificationsEnabled :{newValue}");
@@ -453,6 +464,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         public async Task<bool> SetIsQuickAccessMenuOSDEnabledValue(bool newValue)
         {
             writelog($"Set IsQuickAccessMenuOSDEnabled Fun");
+            _itemID = new ItemId(GlobalPeripheralItemID);
             if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
             {
                 writelog($"SetPropertyValue IsQuickAccessMenuOSDEnabled :{newValue}");
@@ -1564,7 +1576,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_webcamInterfaceType, commodity, "SupportedResolutions");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -1591,7 +1609,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_webcamInterfaceType, commodity, "SelectedResolution");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -2851,7 +2875,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "EraserDoublePressValues");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -2877,7 +2907,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "EraserSinglePressValues");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -2903,7 +2939,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "EraserLongPressValues");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -2929,7 +2971,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "SideSwitchSinglePressValues");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -2955,7 +3003,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "MenuSinglePressValues");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -2981,7 +3035,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "LaunchableAppValues");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -3007,7 +3067,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "EraserDoublePressSetting");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -3033,7 +3099,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "EraserSinglePressSetting");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -3059,7 +3131,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "EraserLongPressSetting");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -3085,7 +3163,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "SideTopSwitchSinglePressSetting");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -3111,7 +3195,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_penInterfaceType, commodity, "SideBottomSwitchSinglePressSetting");
-                    return Encoding.UTF8.GetString((byte[])value);
+                    if (value is byte[] byteArray)
+                    {
+                        var str = Encoding.UTF8.GetString(byteArray);
+                        Debug.WriteLine(str);
+                        return str;
+                    }
+                    return string.Empty;
                 }
                 else
                 {
@@ -6043,6 +6133,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
                 {
+                    _Headsetcom.BandsGainChanged += Headset_BandsGainChanged;
                     _Headsetcom.WearDetectionChanged += Headset_WearDetectionChanged;
                     _Headsetcom.WearDetectionSensitivityChanged += Headset_WearDetectionSensitivityChanged;
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged += Headset_IsWearDetectionPauseMusicEnabledChanged;
@@ -6073,6 +6164,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
                 {
+                    _Headsetcom.BandsGainChanged -= Headset_BandsGainChanged;
                     _Headsetcom.WearDetectionChanged -= Headset_WearDetectionChanged;
                     _Headsetcom.WearDetectionSensitivityChanged -= Headset_WearDetectionSensitivityChanged;
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged -= Headset_IsWearDetectionPauseMusicEnabledChanged;
@@ -6110,6 +6202,17 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Connected", e.DeviceId));
 
             writelog($"[Headset] Catch event _Headset_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_BandsGainChanged(object sender, BandsGainChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_BandsGainChanged", e.DeviceId,
+                                      "Headset_Band1Gain:" + e.Band1Gain.ToString() + ";" +
+                                      "Headset_Band2Gain:" + e.Band2Gain.ToString() + ";" +
+                                      "Headset_Band3Gain:" + e.Band3Gain.ToString() + ";" +
+                                      "Headset_Band4Gain:" + e.Band4Gain.ToString() + ";" +
+                                      "Headset_Band5Gain:" + e.Band5Gain.ToString()));
+            writelog($"[Headset] Catch event Headset_BandsGainChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Headset_WearDetectionChanged(object sender, WearDetectionChangedArgs e)
@@ -6407,6 +6510,32 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
 
         /////////////////////////Get////////////////////////////////
+        public async Task<string> GetProfileNameAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "ProfileName");
+                    writelog($"[Speaker] GetProfileNameAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[Speaker] GetProfileNameAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetProfileNameAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
 
         public async Task<string> GetProfileAsync(string item)
         {
@@ -6647,6 +6776,189 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             catch (Exception ex)
             {
                 writelog($"[Speaker] GetMuteStatusAsyncForSpeaker failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetIsIMicNSSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsIMicNSSupported");
+                    writelog($"[Speaker] GetIsIMicNSSupportedAsync succeeded for {guid}");
+                    return value != null && (bool)value;
+                }
+
+                writelog($"[Speaker] GetIsIMicNSSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetIsIMicNSSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> GetIsVolumeAdjustmentToneSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsVolumeAdjustmentToneSupported");
+                    writelog($"[Speaker] GetIsVolumeAdjustmentToneSupportedAsync succeeded for {guid}");
+                    return value != null && (bool)value;
+                }
+
+                writelog($"[Speaker] GetIsVolumeAdjustmentToneSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetIsVolumeAdjustmentToneSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> GetIsMicMuteSoundSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsMicMuteSoundSupported");
+                    writelog($"[Speaker] GetIsMicMuteSoundSupportedAsync succeeded for {guid}");
+                    return value != null && (bool)value;
+                }
+
+                writelog($"[Speaker] GetIsMicMuteSoundSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetIsMicMuteSoundSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> GetPresetProfilesAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "PresetProfiles");
+                    writelog($"[Speaker] GetPresetProfilesAsync succeeded for {guid}");
+                    return value != null && (bool)value;
+                }
+
+                writelog($"[Speaker] GetPresetProfilesAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetPresetProfilesAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> GetIsBassEqualizerSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsBassEqualizerSupported");
+                    writelog($"[Speaker] GetIsBassEqualizerSupportedAsync succeeded for {guid}");
+                    return value != null && (bool)value;
+                }
+
+                writelog($"[Speaker] GetIsBassEqualizerSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetIsBassEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> GetIsMidRangeEqualizerSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsMidRangeEqualizerSupported");
+                    writelog($"[Speaker] GetIsMidRangeEqualizerSupportedAsync succeeded for {guid}");
+                    return value != null && (bool)value;
+                }
+
+                writelog($"[Speaker] GetIsMidRangeEqualizerSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetIsMidRangeEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> GetIsTrebleEqualizerSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Speaker", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_speakerMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_speakerInterfaceType, commodity, "IsTrebleEqualizerSupported");
+                    writelog($"[Speaker] GetIsTrebleEqualizerSupportedAsync succeeded for {guid}");
+                    return value != null && (bool)value;
+                }
+
+                writelog($"[Speaker] GetIsTrebleEqualizerSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[Speaker] GetIsTrebleEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
                 return false;
             }
         }
@@ -7053,6 +7365,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             try
             {
+                writelog($" GetCommodityInterfaceInstanceAsync_itemID : {_itemID} methodInfo :{methodInfo.Name}");
                 dynamic rawResult = methodInfo.Invoke(_commSdk, new object[] { _itemID, new CancellationTokenSource().Token });
                 Debug.WriteLine($"rawResult: {rawResult}");
                 return rawResult is null ? null : (ICommodity)await rawResult;
@@ -7089,7 +7402,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                         IsDTPReady = true;
                         writelog($"ICommodityClientSdk.InitializeAsync Complete time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-
+                        DTPProxyPluginSDKNotify(new UpdateDTPProxyNotify() { State = "IsDTPReady OK" });
                         writelog($"Find IGlobalPeripheralCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                         _globalperipheralInterfaceType = FindCommodityInterfaceType("IGlobalPeripheralCommodity");
                         if (_globalperipheralInterfaceType != null)
@@ -7211,6 +7524,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                             writelog($"Find IDockCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                         }
                         DTPProxyPluginReady = true;
+                        DTPProxyPluginSDKNotify(new UpdateDTPProxyNotify() {State= "DTPProxyPluginSDK Ready OK" });
                         _ = RegisterEventAsync();
                     });
                 }

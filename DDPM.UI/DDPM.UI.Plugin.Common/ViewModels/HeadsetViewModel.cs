@@ -28,7 +28,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private Debouncer _debouncerHeadsetMuteMicrophone;
         private Debouncer _debouncerHeadsetQuickPause;
         private Debouncer _debouncerHeadsetSidetoneCheck;
-
+        public event EventHandler<EventArgs> HeadsetSettingChanged;
         #endregion Variables
 
         public new event PropertyChangedEventHandler? PropertyChanged;
@@ -201,13 +201,35 @@ namespace DDPM.UI.Plugin.ViewModels
                                 _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_WearDetectionSensitivityChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             }
                             break;
-
+                        case "Headset_BandsGainChanged":
+                            // DTH event still support, DTP keep empty.
+                            break;
                         default:
                             break;
                     }
                     _isRestoreEnable = false;
                     CheckWearDetectionUI();
                 }
+                //Keep first, Reset event
+                //if (device == "Headset_Reset")
+                //{
+                //    if (!event_param.TryGetValue("EventType", out var eventtype))
+                //    {
+                //        _log.Info($"[HeadsetViewModel] EventType cannot be found in event_param");
+                //        return;
+                //    }
+
+                //    _log.Info($"[HeadsetViewModel] EventType = {eventtype}");
+                //    switch (eventtype)
+                //    {
+                //        case "SetFactoryResetAsyncValue":
+                //            HandleWearDetectionEvent(eventtype, event_param[eventtype], ref _isQuickPauseStatus);
+                //            DeviceInfoDTP.WearDetectionSensitivityFromDTP = BoolToInt(_isQuickPauseStatus);
+                //            _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_WearDetectionSensitivityChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
+                //            break;
+                //    }
+                //}
+
             }
             catch (Exception ex)
             {
@@ -270,6 +292,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "NoiseOff":
                         _log.Info($"[HeadsetViewModel] ExecuteDebouncedAction SetAncModeAsync ... {mode} ... {DeviceInfoDTP.AncMode.ToString()}");
                         _deviceManager.SetAncModeAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.AncMode).Wait();
+                        _log.Info($"[HeadsetViewModel] ExecuteDebouncedAction SetSidetoneAsync ... SidetoneCheck .... {DeviceInfoDTP.Sidetone.ToString()}");
+                        _deviceManager.SetSidetoneAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.Sidetone).Wait();
                         break;
                     case "TransparencylevelSlider":
                         _log.Info($"[HeadsetViewModel] ExecuteDebouncedAction SetAncGainAsync ... Transparencylevel ... {DeviceInfoDTP.AncGain.ToString()}");
@@ -404,11 +428,18 @@ namespace DDPM.UI.Plugin.ViewModels
             ReadQRCodeReg();
             AllResetHeadsetPage();
             string fwv = string.Empty;
+            bool answerCall = false;
             if (!IsDTPReady)
+            {
                 fwv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceInfo!.ID.ToString()).Result;
+                answerCall = _deviceManager.GetIsBoomMicSupportedAsync(CurrentDeviceInfo.ID.ToString()).Result; //DTP
+            }
             else
+            {
                 fwv = FirmwareVersion;
-
+                answerCall = SupportedAnswerCalls;
+            }
+            _log!.Info($"[HeadsetViewModel] DetectPageShow ... BoomMicSupported = {answerCall.ToString()}");
             switch (model.ToUpper())
             {
                 case "WL7024"://Mito
@@ -434,7 +465,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     _wearDetectionPageShow = true;
                     _automatedActionsSensitivityUpPageShow = true;
                     _automatedActionsWhenHeadsetIsRemovedPageShow = true;
-                    _automatedActionsAnswerCallPageShow = true;
+                    _automatedActionsAnswerCallPageShow = answerCall; //WL5024 page2, not only AnswerCall 
                     //Page 3
                     _voiceGuidancePageShow = true;
                     //_deviceSettingsDownloadDellAudioPageShow = false;
@@ -445,10 +476,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     _controlTheNoiseIHearPageShow = true;
                     _configureMyAudioModesPageShow = true;
                     //Page 2                  
-                    if (ConvertVersionToInt(fwv) >= 252)
-                        _automatedActionsAnswerCallPageShow = true;
-                    else
-                        _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
+                    //if (ConvertVersionToInt(fwv) >= 252)
+                    //    _automatedActionsAnswerCallPageShow = true;
+                    //else
+                    _automatedActionsAnswerCallPageShow = answerCall;//DELL 說拿掉;// only AnswerCall 
                     //Page 3
                     _voiceGuidancePageShow = true;
                     _deviceSettingsDownloadDellAudioPageShow = false;
@@ -458,7 +489,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     //Page 1
                     _configureMyAudioModesPageShow = true;
                     //Page 2
-                    _automatedActionsAnswerCallPageShow = true;
+                    _automatedActionsAnswerCallPageShow = answerCall;// only AnswerCall 
                     //Page 3
                     _voiceGuidancePageShow = true;
                     //_deviceSettingsDownloadDellAudioPageShow = false;
@@ -469,10 +500,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     _controlTheNoiseIHearPageShow = false;//Fix PIMS-PIMS-294568
                     _configureMyAudioModesPageShow = true;
                     //Page 2
-                    if (ConvertVersionToInt(fwv) >= 275)
-                        _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;
-                    else
-                        _automatedActionsAnswerCallPageShow = false;//DELL 說拿掉;
+                    //if (ConvertVersionToInt(fwv) >= 275)
+                    //    _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;
+                    //else
+                    _automatedActionsAnswerCallPageShow = answerCall;//DELL 說拿掉;// only AnswerCall 
                     //Page 3
                     _deviceSettingsDownloadDellAudioPageShow = false;
                     //defult page
@@ -549,6 +580,7 @@ namespace DDPM.UI.Plugin.ViewModels
             CheckVoiceGuidanceUI(false);
             CheckANCUI(false);
             CheckAnswerCallUI(false);
+            HeadsetSettingChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void CheckSidetoneUI(bool PropertyChange)
@@ -1050,6 +1082,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     DeviceInfoDTP.Band3Gain = di.Band3Gain;
                     DeviceInfoDTP.Band4Gain = di.Band4Gain;
                     DeviceInfoDTP.Band5Gain = di.Band5Gain;
+                    HeadsetSettingChanged?.Invoke(this, EventArgs.Empty);
                     break;
 
                 case "AncModeChanged":
@@ -1136,7 +1169,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 CheckHeadsetFunc();
                 UpdateResetToDefault();
-                //OnPropertyChanged(nameof(IsRestoreEnable));
+                HeadsetSettingChanged?.Invoke(this, EventArgs.Empty);
                 //_showPluginManager?.ShowHomePage();
             }
             catch (Exception ex)
@@ -1851,7 +1884,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         //public bool IsRestoreEnable { get; set; } = false;
 
-        private bool _isRestoreEnable = false;
+        public bool _isRestoreEnable = false;
 
         public bool IsRestoreEnable
         {
@@ -2040,6 +2073,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 else
                     _deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
                 OnPropertyChanged(nameof(Sidetone_String));
+                OnPropertyChanged(nameof(SidetoneStatus));
                 OnPropertyChanged(nameof(SidetoneSliderStatus));
             }
         }
@@ -2233,13 +2267,15 @@ namespace DDPM.UI.Plugin.ViewModels
                         if (IsDTPReady)
                         {
                             _debouncerHeadset.Debounce("ANC");
-                            _debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
+                            //_debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
                         }
                         else
                         {
                             _deviceManager.SetAncMode(1, CurrentDeviceInfo!.ID).Wait();
-                            _deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
+                            //_deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
                         }
+                        //SidetoneStatus = true;
+                        _isSidetoneStatus = true;
                         OnPropertyChanged(nameof(IsTransparencyChecked));
                         OnPropertyChanged(nameof(IsNoiseOffChecked));
                         OnPropertyChanged(nameof(Sidetone_String));
@@ -2265,29 +2301,30 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isTransparencyChecked = value;
                     if (_isTransparencyChecked)
                     {
+                        _isRestoreEnable = false;
                         DeviceInfoDTP.AncMode = 2;
                         _isActiveNoiseCancellingChecked = false;
                         _isNoiseOffChecked = false;
+                        DeviceInfoDTP!.Sidetone = false;
+                        //SidetoneStatus = false;
+                        _isSidetoneStatus = false;
                         if (IsDTPReady)
-                        {
-                            _isRestoreEnable = false;
-                            DeviceInfoDTP!.Sidetone = false;
-                            _isSidetoneStatus = false;
+                        {                         
                             _debouncerHeadset.Debounce("Transparency");
-                            if (IsDTPReady)
-                                _debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
-                            else
-                                _deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
-                            OnPropertyChanged(nameof(Sidetone_String));
-                            OnPropertyChanged(nameof(SidetoneStatus));
-                            OnPropertyChanged(nameof(SidetoneSliderStatus));
+                            //if (IsDTPReady)
+                            //    _debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
+                            //else
+                            //    _deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
                         }
                         else
                             _deviceManager.SetAncMode(2, CurrentDeviceInfo!.ID).Wait();
                         OnPropertyChanged(nameof(IsActiveNoiseCancellingChecked));
                         OnPropertyChanged(nameof(IsNoiseOffChecked));
-                        OnPropertyChanged("IsTransparencyChecked");
-                        OnPropertyChanged("TransparencylevelSliderValue");
+                        OnPropertyChanged(nameof(IsTransparencyChecked));
+                        OnPropertyChanged(nameof(TransparencylevelSliderValue));
+                        OnPropertyChanged(nameof(Sidetone_String));
+                        OnPropertyChanged(nameof(SidetoneStatus));
+                        OnPropertyChanged(nameof(SidetoneSliderStatus));
                     }
                 }
             }
@@ -2313,16 +2350,17 @@ namespace DDPM.UI.Plugin.ViewModels
                         _isActiveNoiseCancellingChecked = false;
                         _isTransparencyChecked = false;
                         DeviceInfoDTP!.Sidetone = true;
+                        //SidetoneStatus = true;
                         _isSidetoneStatus = true;
                         if (IsDTPReady)
                         {
                             _debouncerHeadset.Debounce("NoiseOff");
-                            _debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
+                            //_debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
                         }
                         else
                         {
                             _deviceManager.SetAncMode(0, CurrentDeviceInfo!.ID).Wait();
-                            _deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
+                            //_deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
                         }
                         OnPropertyChanged(nameof(IsActiveNoiseCancellingChecked));
                         OnPropertyChanged(nameof(IsTransparencyChecked));
@@ -3394,10 +3432,10 @@ namespace DDPM.UI.Plugin.ViewModels
             if (currentSettings.AnswerCall != defaultSettings.AnswerCall) return false;
             return true;
         }
-        private static readonly Dictionary<string, DeviceDefaultSettings> ModelDefaultSettings =
-        new Dictionary<string, DeviceDefaultSettings>()
+        private static readonly Dictionary<string, HeadsetDeviceDefaultSettings> ModelDefaultSettings =
+        new Dictionary<string, HeadsetDeviceDefaultSettings>()
         {
-            { "WL7024", new DeviceDefaultSettings {
+            { "WL7024", new HeadsetDeviceDefaultSettings {
                 AncMode = 1,
                 AncGain = 3,
                 BusyLight = true,
@@ -3418,7 +3456,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 WearDetectionSensitivityFromDTP = 0,
                 AnswerCall = false
             }},
-            { "WH3024", new DeviceDefaultSettings {
+            { "WH3024", new HeadsetDeviceDefaultSettings {
                 AncMode = 0,
                 AncGain = 0,
                 BusyLight = true,
@@ -3439,7 +3477,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 WearDetectionSensitivityFromDTP = 0,
                 AnswerCall = false
             }},
-            { "WL3024", new DeviceDefaultSettings {
+            { "WL3024", new HeadsetDeviceDefaultSettings {
                 AncMode = 0,
                 AncGain = 0,
                 BusyLight = true,
@@ -3460,7 +3498,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 WearDetectionSensitivityFromDTP = 0,
                 AnswerCall = false
             }},
-            { "WL5024", new DeviceDefaultSettings {
+            { "WL5024", new HeadsetDeviceDefaultSettings {
                 AncMode = 1,
                 AncGain = 3,
                 BusyLight = true,
@@ -3481,7 +3519,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 WearDetectionSensitivityFromDTP = 1,
                 AnswerCall = false
             }},
-            { "WH5024", new DeviceDefaultSettings {
+            { "WH5024", new HeadsetDeviceDefaultSettings {
                 AncMode = 1,
                 AncGain = 3,
                 BusyLight = true,
@@ -3591,7 +3629,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
     }
-    public class DeviceDefaultSettings
+    public class HeadsetDeviceDefaultSettings
     {
         public int AncMode { get; set; } = 0;
         public int AncGain { get; set; } = 0;

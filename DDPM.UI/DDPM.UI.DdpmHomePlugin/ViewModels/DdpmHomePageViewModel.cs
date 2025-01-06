@@ -151,7 +151,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     //byte b_vcpcode = Convert.ToByte("60", 16);
                     //string currentInput = ""; //DdpmCommonHelper.DeviceManagerSA.GetCurrentInput(mi, b_vcpcode, 0).Result;
 
-                    HomeDevice dev = new HomeDevice()
+                    //Robert_Lin, 2024-12-27 provide ILog to HomeDevice, so it can write log 
+                    HomeDevice dev = new HomeDevice(_log)
                     {
                         DeviceName = mi.AliasDeviceName,
                         DeviceCategory = eDeviceCategory.Display,
@@ -255,7 +256,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                     if (!di.IsConnected)
                         continue;
 
-                    HomeDevice dev = new HomeDevice()
+                    //Robert_Lin, 2024-12-27 provide ILog to HomeDevice, so it can write log 
+                    HomeDevice dev = new HomeDevice(_log)
                     {
                         DeviceName = di.DeviceName,
                         DeviceInfo = di
@@ -584,6 +586,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             int idx = HomeDevices.Count;
             MonitorInfo mi = GetFakeMonitorInfo();
             mi.Index = idx;
+            mi.ImageFileName = "S2422HGF";
             PrepareMonitorInfos(new List<MonitorInfo> { mi });
         }
         private MonitorInfo GetFakeMonitorInfo()
@@ -615,9 +618,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
             info.edid.VideoInputType = "digital singal";
             return info;
         }
-        public void AddDemoHomeDevice(HomeDevice device)
+        public void AddDemoHomeDevice(HomeDevice dev)
         {
-            HomeDevices.Add(device);
+            HomeDevices.Add(dev);
         }
 
         private double _cxItem;

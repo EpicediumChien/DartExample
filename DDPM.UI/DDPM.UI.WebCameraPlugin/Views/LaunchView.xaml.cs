@@ -424,6 +424,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             _vm.brdHello_show = Visibility.Collapsed;
                             _vm.MPS_Setting_Visibility = Visibility.Collapsed;
                             _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+
+                            //2025/01/02 Leo fixed
+                            noPresenceFunction = true;
+
                         }
 
                         //dell 7 韌體升級畫面需要在 usb 3.0下,如果在2.0模式整個分頁關閉
@@ -595,7 +599,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //都不需要顯示韌體升級提示
             }
 
-            print_debug("check_PresenceFunction() s22-20241219 17:11 update ver step");
+            print_debug("check_PresenceFunction() s22-20250102 14:43 update ver step");
 
             print_debug("check_PresenceFunction() end");
         }
@@ -781,7 +785,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         if (_vm.WebcamSettings.SelectedResolution != "Full HD" && _vm.WebcamSettings.SelectedResolution != "HD")
                         {
-                            _vm.SetResolution_Selected(1);
+                            //_vm.SetResolution_Selected(1);
                             if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.SelectedResolution))
                             {
                                 List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
@@ -872,7 +876,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
-                        _vm!.SetResolution_Selected(1);
+                        //_vm!.SetResolution_Selected(1);
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
@@ -933,7 +937,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
-                        _vm!.SetResolution_Selected(1);
+                        //_vm!.SetResolution_Selected(1);
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
@@ -988,7 +992,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes2_width = 201;
-                        _vm!.SetResolution_Selected(1);
+                        //_vm!.SetResolution_Selected(1);
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
@@ -1024,7 +1028,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //_vm.IsHDROn = true;
 
                 _vm.is_AutoFramingVisibility = true;
-                _vm.IsAutoFramingOn = true;
+                //_vm.IsAutoFramingOn = true;
 
                 _vm.is_ProximitySensor_enable = true;
                 _vm.IsChecked_ProximitySensor = true;
@@ -1148,6 +1152,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 var frameSourceGroups = await MediaFrameSourceGroup.FindAllAsync();
 
                 // 20240626  jim add to avoid exception
+
                 if (frameSourceGroups.Count <= 0)
                 {
                     Debug.WriteLine("frameSourceGroups.Count = 0");
@@ -1192,19 +1197,44 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                     // get mic list first
                     var audioDevices = await DeviceInformation.FindAllAsync(DeviceClass.AudioCapture);
-                    var microphone = audioDevices.FirstOrDefault();
 
-                    string AudioDeviceId = null;
+                    List<DeviceInformation> devices_List = new List<DeviceInformation>();
+                    foreach (DeviceInformation device in audioDevices)
+                    {
+                        if (device.IsEnabled)
+                        {
+                            //check device enable
+                            devices_List.Add(device);
+                        }
+                    }
+
+                    DeviceInformation microphone = null;
+                    if (devices_List.Count > 0)
+                    {
+                        microphone = devices_List[0];
+                        foreach (DeviceInformation device in devices_List)
+                        {
+                            if (!string.IsNullOrEmpty(_vm.Model) && device.Name.Contains(_vm.Model))
+                            {
+                                microphone = device;
+                            }
+                        }
+                    }
+
+                    // 2024/12/31 Elie.
+                    var captureMode = devices_List.Count == 0 ? StreamingCaptureMode.Video : StreamingCaptureMode.AudioAndVideo;
+
+                    //var microphone = audioDevices.FirstOrDefault();
+
+                    string AudioDeviceId = string.Empty; // 2024/12/31 Elie.
                     if (microphone != null)
                     {
                         AudioDeviceId = microphone.Id;
                     }
 
-                    StreamingCaptureMode captureMode;
-                    if (audioDevices != null)
+                    //if (audioDevices != null)
+                    if (!string.IsNullOrEmpty(AudioDeviceId))
                     {
-                        captureMode = StreamingCaptureMode.AudioAndVideo;
-
                         await _vm.MediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
                         {
                             AudioDeviceId = AudioDeviceId,
@@ -1217,8 +1247,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     }
                     else
                     {
-                        captureMode = StreamingCaptureMode.Video;
-
                         await _vm.MediaCapture.InitializeAsync(new MediaCaptureInitializationSettings()
                         {
                             SourceGroup = selectedFrameSourceGroup,

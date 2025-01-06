@@ -26,7 +26,7 @@
         public UInt16 Code { get; set; } = 0;
         public string Name { get; set; } = string.Empty;
 
-        public static InputSourceObj_Unused[] InputSourceMappingTable = new InputSourceObj_Unused[]
+        public readonly static InputSourceObj_Unused[] InputSourceMappingTable = new InputSourceObj_Unused[]
         {
             new InputSourceObj_Unused(0x01, "VGA-1"),
             new InputSourceObj_Unused(0x02, "VGA-2"),

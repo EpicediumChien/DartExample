@@ -47,13 +47,10 @@ namespace DDPM.UI.Common
             {
                 Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetSupportedResolutions(di.ID.ToString());
                 var str = task.Result;
+                DdpmCommonHelper.WriteUILog(@$"WebcamSettings Json str{str}!");
                 if (string.IsNullOrEmpty(str))
                 {
                     DdpmCommonHelper.WriteUILog("DTP GetSupportedResolutions fail!");
-                    str = di.SupportedResolutions;
-                }
-                if (string.IsNullOrEmpty(str))
-                {
                     switch (di.ModelNumber)
                     {
                         case "WB5023":
@@ -66,6 +63,20 @@ namespace DDPM.UI.Common
                             break;
                     }
                 }
+                //if (string.IsNullOrEmpty(str))
+                //{
+                //    switch (di.ModelNumber)
+                //    {
+                //        case "WB5023":
+                //            str = "[{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}]";
+                //            //str = "{\"1280x720\":{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},\"1920x1080\":{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},\"2560x1440\":{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}}";
+                //            break;
+                //        default:
+                //            str = "[{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}]";
+                //            //str = "{\"1280x720\":{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},\"1920x1080\":{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},\"2560x1440\":{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}}";
+                //            break;
+                //    }
+                //}
 
                 var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
                 //var resolutions = JsonConvert.DeserializeObject<Dictionary<string, ResolutionItem>>(str)!;
@@ -76,9 +87,13 @@ namespace DDPM.UI.Common
                         var resName = res.Resolution switch
                         {
                             "1280x720" => "HD",
+                            "720x1280" => "HD",
                             "1920x1080" => "Full HD",
+                            "1080x1920" => "Full HD",
                             "2560x1440" => "2K QHD",
+                            "1440x2560" => "2K QHD",
                             "3840x2160" => "4K UHD",
+                            "2160x3840" => "4K UHD",
                             _ => "8K UHD"
                         };
                         SupportedFPSs.Add(resName, res.FPS);
@@ -92,15 +107,14 @@ namespace DDPM.UI.Common
                 if (string.IsNullOrEmpty(str))
                 {
                     DdpmCommonHelper.WriteUILog("DTP GetSelectedResolution fail!");
-                    str = di.SelectedResolution;
-                }
-                if (string.IsNullOrEmpty(str))
                     str = "{\"Resolution\":\"1280x720\",\"FPS\":[\"30\"]}";
+                }
 
                 var currentRes = JsonConvert.DeserializeObject<ResolutionItem>(str);
                 if (currentRes != null)
                 {
                     SelectedResolution = Resolutions.FirstOrDefault(x => x.Value == currentRes.Resolution).Key;
+                    SelectedFPSs[SelectedResolution] = currentRes.FPS?.Count > 0 ? currentRes.FPS[0] : "30";
                 }
 
                 var customProfiles = di.CustomProfiles.ToObject<List<WebcamProfile>>()?.ToList();
@@ -111,10 +125,16 @@ namespace DDPM.UI.Common
                         CustomProfiles.Add(customProfiles[l].Name, customProfiles[l]);
                     }
                 }
-
-                var presetProfiles = di.PresetProfiles?.ToObject<List<WebcamProfile>>()?.ToList();
-                if (presetProfiles != null)
-                    presetProfiles = new List<WebcamProfile>();
+                //var presetProfiles = di.PresetProfiles.ToObject<List<WebcamProfile>>()!.ToList();
+                //task1 = DdpmCommonHelper.DeviceManagerSA!.GetPresetProfiles(di.ID.ToString());
+                //jArray = JArray.FromObject(task1.Result);
+                //var presetProfiles = jArray.ToObject<List<WebcamProfile>>()!.ToList();
+                //foreach (var profile in presetProfiles.OrderBy(x => x.Name))
+                //{
+                //    profile.Focus = di.FocusMin;
+                //    PresetProfiles.Add(profile.Name, profile);
+                //    //ProfileIDs.Add(profile.Name, profile.Id);
+                //}
 
                 WebcamProfile profile = new();
                 profile.Name = "Default";
@@ -226,7 +246,9 @@ namespace DDPM.UI.Common
         {
             try
             {
+                DdpmCommonHelper.WriteUILog($"[ExportWebcamSettings] SelectedResolution :{WebcamSettings.SelectedResolution}");
                 string json = JsonConvert.SerializeObject(WebcamSettings, Formatting.Indented);
+                DdpmCommonHelper.WriteUILog($"[ExportWebcamSettings] json json:{json}");
                 var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
                 string info = string.Empty;
                 //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
@@ -257,6 +279,7 @@ namespace DDPM.UI.Common
 
         public static WebcamSettings ImportWebcamSettings(string model, DeviceInfo di)
         {
+            DdpmCommonHelper.WriteUILog(@$"[WebcamSettings] ImportWebcamSettings Start  !");
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
             var hasFile = File.Exists(filePath);
             string jsonString = string.Empty;
@@ -269,6 +292,7 @@ namespace DDPM.UI.Common
                     if (DdpmCommonHelper.DeviceManagerSA != null)
                     {
                         jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
+                        DdpmCommonHelper.WriteUILog(@$"[WebcamSettings] ImportWebcamSettings jsonString:{jsonString}!");
                     }
                     if (!string.IsNullOrEmpty(jsonString))
                         return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
@@ -279,9 +303,38 @@ namespace DDPM.UI.Common
                 }
             }
             var ka = new WebcamSettings(di);
+            DdpmCommonHelper.WriteUILog(@$"[WebcamSettings] ImportWebcamSettings di jsonString:{JsonConvert.SerializeObject(di)}!");
+            //SetJsonToResolution(ka, di);
             ExportWebcamSettings(ka, model);
             return ka;
         }
+
+        //public static void SetJsonToResolution(WebcamSettings ka, DeviceInfo di)
+        //{
+
+        //    if (!string.IsNullOrWhiteSpace(di.SelectedResolution))
+        //    {
+        //        ka.SelectedResolution = di.SelectedResolution;
+        //        ka.resolution = JsonConvert.DeserializeObject<ResolutionItem>(ka.SelectedResolution);
+        //        DdpmCommonHelper.WriteUILog(@$"[WebcamSettings] ImportWebcamSettings ka.SelectedResolution :{ka.SelectedResolution}!");
+        //        var resName = ka.resolution.Resolution switch
+        //        {
+        //            "1280x720" => "HD",
+        //            "720x1280" => "HD",
+        //            "1920x1080" => "Full HD",
+        //            "1080x1920" => "Full HD",
+        //            "2560x1440" => "2K QHD",
+        //            "1440x2560" => "2K QHD",
+        //            "3840x2160" => "4K UHD",
+        //            "2160x3840" => "4K UHD",
+        //            _ => "8K UHD"
+        //        };
+        //        ka.Selected_Resolution = resName;
+        //        ka.Selected_FPS = ka.resolution.FPS.ToList().FirstOrDefault();
+        //        DdpmCommonHelper.WriteUILog(@$"[WebcamSettings] ImportWebcamSettings resName :{resName}!");
+        //        DdpmCommonHelper.WriteUILog(@$"[WebcamSettings] ImportWebcamSettings ka.Selected_FPS :{ka.Selected_FPS}!");
+        //    }
+        //}
     }
 
     public class ResolutionItem
