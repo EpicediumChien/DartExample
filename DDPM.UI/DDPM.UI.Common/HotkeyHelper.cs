@@ -3,6 +3,7 @@ using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.UX.WPF.Controls;
 using System.Diagnostics;
 using System.Text;
+using System.Windows;
 using System.Windows.Input;
 using Windows.System;
 
@@ -88,22 +89,52 @@ namespace DDPM.UI.Common
 
         public static bool hotKeyConflictsCheck(HotkeyInfo hotkeyInfo)
         {
-            HotkeyWarning hotkeyWarning = DdpmCommonHelper.DeviceManagerSA.GetHotkeyConflicts(hotkeyInfo).Result;
-            bool result = false;
-            switch (hotkeyWarning)
+            if (hotkeyInfo == null)
             {
-                case HotkeyWarning.None:
-                    result = true;
-                    break;
+                DdpmCommonHelper.WriteUILog($"hotkeyInfo == null when run hotKeyConflictsCheck");
 
-                case HotkeyWarning.SingleKey:
-                    result = DdpmCommonHelper.DDPMMesssageBox(LangHelper.Instance["hotkey.7"], LangHelper.Instance["hotkey.8"]);
-                    break;
-
-                case HotkeyWarning.ConflictInbox:
-                    result = DdpmCommonHelper.DDPMMesssageBox(LangHelper.Instance["hotkey.7"], LangHelper.Instance["hotkey.9"]);
-                    break;
+                return false;
             }
+
+            bool result = false;
+
+            try
+            {
+                //Derek 2025/01/03 to check ALT+Z hotkey conflict for QAM
+                if (hotkeyInfo.Alt && hotkeyInfo.Hotkey.Contains(VirtualKey.Z) && hotkeyInfo.Hotkey.Count == 2)
+                {
+                    Thickness headMargin = new Thickness(24, 30, 45, 24);
+                    Thickness subMargin = new Thickness(24, -66, 24, 8);
+
+                    DdpmCommonHelper.DDPMEzMesssageBox(LangHelper.Instance["hotkey.7"], LangHelper.Instance["Hotkey.10"], true, null,
+                        420, 240, headMargin, subMargin);
+
+                    return false;
+                }
+
+                HotkeyWarning hotkeyWarning = DdpmCommonHelper.DeviceManagerSA!.GetHotkeyConflicts(hotkeyInfo).Result;
+                
+                switch (hotkeyWarning)
+                {
+                    case HotkeyWarning.None:
+                        result = true;
+                        break;
+
+                    case HotkeyWarning.SingleKey:
+                        result = DdpmCommonHelper.DDPMMesssageBox(LangHelper.Instance["hotkey.7"], LangHelper.Instance["hotkey.8"]);
+                        break;
+
+                    case HotkeyWarning.ConflictInbox:
+                        result = DdpmCommonHelper.DDPMMesssageBox(LangHelper.Instance["hotkey.7"], LangHelper.Instance["hotkey.9"]);
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                result = false;
+                DdpmCommonHelper.WriteUILog($"Catch exception[{e.Message}] when run hotKeyConflictsCheck");
+            }
+
             return result;
         }
         public static HotkeyInfo getUXTextBoxHotkeyInfo(object sender, System.Windows.Input.KeyEventArgs e, ref List<VirtualKey> newKeys, HotkeyType hotkeyType)
@@ -227,7 +258,7 @@ namespace DDPM.UI.Common
             //bypass
             if (!DdpmCommonHelper.isHotkeyBypass)
             {
-                DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(true).Result;
+                DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA!.ByPassHotkey(true).Result;
                 bool v = DdpmCommonHelper.DeviceManagerSA.UnRegistAllHotkey().Result;
             }
             e.Handled = true;

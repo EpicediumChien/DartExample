@@ -13707,12 +13707,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool _shiftPressed = _HotkeyPlugin.IsKeyPushedDown(System.Windows.Forms.Keys.ShiftKey);
 
             //will register as ALT+Z ?
-            if (_altPressed && strKey.Equals("Z"))
+            if (_altPressed && strKey.Equals("Z") && !_ctrlPressed && !_shiftPressed)
             {
                 int devCnt = GetWebcamDeviceCount();
 
-                writelog($"ALT+Z conditons: devcnt = {devCnt}, " +
-                    $"global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
+                writelog($"ALT+Z conditons: devcnt = {devCnt}, global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
 
                 //Derek PIMS-329759 Problem 1
                 if (1 == devCnt && _GlobalSettingParam != null &&
