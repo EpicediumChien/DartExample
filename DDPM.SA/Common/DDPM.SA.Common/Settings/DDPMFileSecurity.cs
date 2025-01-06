@@ -34,6 +34,8 @@ namespace DDPM.SA.Common.Settings
 {
     public class DDPMFileSecurity
     {
+        public static readonly string SysLogLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Dell\\DDPM.Subagent");
+
         private static void WriteLog(ILog log, string message, bool isError = false)
         {
 #if DEBUG
@@ -800,41 +802,99 @@ namespace DDPM.SA.Common.Settings
             }
         }
 
-        //
-        //The caller should use try-catch to catch exception and avoid crash
-        public static void SetFolderPermissions_UserReadAndExecute(string folderPath)
+        public static bool SetFolderPermissions_UserReadAndExecute(string folderPath, out string info)
         {
-            // Elsa Add Security
-            string FileInfo;
-            if (!IsFolderPathValid(folderPath, out FileInfo))
+            info = string.Empty;
+
+            string fileInfo;
+            if (!ValidateFilePath(folderPath, out fileInfo))
             {
-                //_log.Info($"{nameof(SetFolderPermissions_UserReadAndExecute)} {FileInfo}");
-                throw new SecurityException($"{FileInfo}");
+                info = $"[{nameof(SetFolderPermissions_UserReadAndExecute)}][ValidateFilePath] {fileInfo}";
+                return false;
             }
-            DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
-            DirectorySecurity directorySecurity = new DirectorySecurity();// directoryInfo.GetAccessControl();
+            try
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
+                DirectorySecurity directorySecurity = new DirectorySecurity();
 
-            // Admin - full control
-            SecurityIdentifier adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
-            FileSystemAccessRule adminRule = new FileSystemAccessRule(adminSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
-            directorySecurity.AddAccessRule(adminRule);
+                // Admin - full control
+                SecurityIdentifier adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+                FileSystemAccessRule adminRule = new FileSystemAccessRule(adminSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+                directorySecurity.AddAccessRule(adminRule);
 
-            // System - full control
-            SecurityIdentifier systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
-            FileSystemAccessRule systemRule = new FileSystemAccessRule(systemSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
-            directorySecurity.AddAccessRule(systemRule);
+                // System - full control
+                SecurityIdentifier systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
+                FileSystemAccessRule systemRule = new FileSystemAccessRule(systemSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+                directorySecurity.AddAccessRule(systemRule);
 
-            // normal user - read and execute (w/o write)
-            SecurityIdentifier usersSid = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
-            FileSystemAccessRule usersRule = new FileSystemAccessRule(usersSid, FileSystemRights.ReadAndExecute, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
-            directorySecurity.AddAccessRule(usersRule);
+                // Normal user - read and execute (w/o write)
+                SecurityIdentifier usersSid = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
+                FileSystemAccessRule usersRule = new FileSystemAccessRule(usersSid, FileSystemRights.ReadAndExecute, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+                directorySecurity.AddAccessRule(usersRule);
 
-            // normal user - write deny
-            FileSystemAccessRule denyWriteRule = new FileSystemAccessRule(usersSid, FileSystemRights.Write, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Deny);
-            directorySecurity.AddAccessRule(denyWriteRule);
+                // Normal user - write deny
+                FileSystemAccessRule denyWriteRule = new FileSystemAccessRule(usersSid, FileSystemRights.Write, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Deny);
+                directorySecurity.AddAccessRule(denyWriteRule);
 
-            // apply change
-            directoryInfo.SetAccessControl(directorySecurity);
+                // Disable inheritance and remove inherited rules
+                directorySecurity.SetAccessRuleProtection(true, false);
+
+                // Apply changes
+                directoryInfo.SetAccessControl(directorySecurity);
+            }
+            catch (Exception ex)
+            {
+                info = $"[{nameof(SetFolderPermissions_UserReadAndExecute)}]exception: {ex.Message}";
+                return false;
+            }
+            return true;
+        }
+
+
+        public static bool SetFolderPermissions_UserReadAndExecute_old(string folderPath, out string info)
+        {
+            info = string.Empty;
+
+            string FileInfo;
+            if (!ValidateFilePath(folderPath, out FileInfo))
+            {
+                info = $"[{nameof(SetFolderPermissions_UserReadAndExecute)}][ValidateFilePath] {FileInfo}";
+                // throw new SecurityException($"{FileInfo}");
+                return false;
+            }
+            try
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
+                DirectorySecurity directorySecurity = new DirectorySecurity();// directoryInfo.GetAccessControl();
+
+                // Admin - full control
+                SecurityIdentifier adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+                FileSystemAccessRule adminRule = new FileSystemAccessRule(adminSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+                directorySecurity.AddAccessRule(adminRule);
+
+                // System - full control
+                SecurityIdentifier systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
+                FileSystemAccessRule systemRule = new FileSystemAccessRule(systemSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+                directorySecurity.AddAccessRule(systemRule);
+
+                // normal user - read and execute (w/o write)
+                SecurityIdentifier usersSid = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
+                FileSystemAccessRule usersRule = new FileSystemAccessRule(usersSid, FileSystemRights.ReadAndExecute, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+                directorySecurity.AddAccessRule(usersRule);
+
+                // normal user - write deny
+                FileSystemAccessRule denyWriteRule = new FileSystemAccessRule(usersSid, FileSystemRights.Write, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Deny);
+                directorySecurity.AddAccessRule(denyWriteRule);
+
+                // apply change
+                directoryInfo.SetAccessControl(directorySecurity);
+            }
+            catch (Exception ex)
+            {
+                info = $"[{nameof(SetFolderPermissions_UserReadAndExecute)}]exception: {ex.Message}";
+                return false;
+            }
+            return true;
         }
 
         public static string GetFileSHA_256(string filePath, out string info)
