@@ -9,7 +9,6 @@ using System.Collections.ObjectModel;
 using DDPM.SA.Resources.Helper;
 using DDPM.SA.Common.Settings;
 
-
 namespace DDPM.QAM
 {
     public class QAMPageViewModel : INotifyPropertyChanged
@@ -246,7 +245,7 @@ namespace DDPM.QAM
                 //Derek 0106 Add to create profile if not exist
                 if (!File.Exists(filePath))
                 {
-                    
+                    CreateWebcamProfile(filePath, model);
                 }
 
                 if (File.Exists(filePath))
@@ -312,6 +311,15 @@ namespace DDPM.QAM
             {
                 LogMsg($"Catch exception: {e.Message}");
             }
+        }
+
+        private bool CreateWebcamProfile(string filePath, string model)
+        {
+            CurrentDeviceInfo = deviceInfos.FirstOrDefault(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
+
+            Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetSupportedResolutions(di.ID.ToString());
+
+            return true;
         }
 
         private bool SetProfile(string name)
