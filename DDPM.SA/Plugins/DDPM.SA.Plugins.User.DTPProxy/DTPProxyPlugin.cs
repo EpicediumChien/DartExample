@@ -7143,7 +7143,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     writelog(" [Dock] Failed to retrieve guid.");
                     return null;
                 }
-                var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
+                var commodity = await GetCommodityInterfaceInstanceAsync(_dockMethodInfo);
                 if (commodity is ICommodity)
                 {
                     writelog($"[Dock] GetPropertyValue go");
@@ -7219,7 +7219,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     writelog(" [Dock] Failed to retrieve guid.");
                     return "";
                 }
-                var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
+                var commodity = await GetCommodityInterfaceInstanceAsync(_dockMethodInfo);
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_dockInterfaceType, commodity, "FirmwareVersion");
@@ -7247,7 +7247,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     writelog(" [Dock] Failed to retrieve guid.");
                     return "";
                 }
-                var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
+                var commodity = await GetCommodityInterfaceInstanceAsync(_dockMethodInfo);
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_dockInterfaceType, commodity, "DockServiceTag");
