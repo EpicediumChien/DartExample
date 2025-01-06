@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Collections.ObjectModel;
 using DDPM.SA.Resources.Helper;
+using DDPM.SA.Common.Settings;
 
 
 namespace DDPM.QAM
@@ -242,16 +243,30 @@ namespace DDPM.QAM
             {
                 var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
 
+                //Derek 0106 Add to create profile if not exist
+                if (!File.Exists(filePath))
+                {
+                    
+                }
+
                 if (File.Exists(filePath))
                 {
                     Dictionary<string, WebcamProfile> presetProfiles = new();
                     //Dictionary<string, WebcamProfile> customProfiles = new();
-                    string json = File.ReadAllText(filePath);
+                    //string json = File.ReadAllText(filePath);
+                    //Derek 20250106 use DDPMFileSecurity.GetSerializedJsonString to read file by SDL requirement
+                    string info = string.Empty;
+                    string json = DDPMFileSecurity.GetSerializedJsonString(filePath, out info);
                     var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(json);
-                    string presetProfilesString = jsonObject["PresetProfiles"].ToString();
-                    //Derek 1212
-                    selectedProfileName = jsonObject["SelectedProfileName"].ToString();
-                    LogMsg($"ImportWebcamProfiles current SelectedProfileName: {selectedProfileName}");
+
+                    string presetProfilesString = string.Empty;
+                    if (jsonObject != null)
+                    {
+                        presetProfilesString = jsonObject["PresetProfiles"]!.ToString();
+                        //Derek 1212
+                        selectedProfileName = jsonObject["SelectedProfileName"]!.ToString();
+                        LogMsg($"ImportWebcamProfiles current SelectedProfileName: {selectedProfileName}, GetSerializedJsonString result is {info}");
+                    }
 
                     if (!string.IsNullOrEmpty(presetProfilesString))
                     {
@@ -681,6 +696,8 @@ namespace DDPM.QAM
             OnPropertyChanged(nameof(ZoomValue));
             OnPropertyChanged(nameof(FullView_Height));
             OnPropertyChanged(nameof(UI_ProfileList));
+
+            DdpmCommonHelper.DeviceManagerSA!.WriteLog($"RefreshUI  --> ZoomValue = {ZoomValue}, FieldOfView = {FieldOfView}, _AutoFramingStatus = {_AutoFramingStatus}");
         }
     }
     public class UI_Profile
