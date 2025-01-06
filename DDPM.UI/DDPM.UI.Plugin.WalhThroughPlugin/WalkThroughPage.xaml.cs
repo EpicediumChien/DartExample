@@ -95,22 +95,22 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             WalkThroughBox msgBox = new WalkThroughBox(ViewModel, Window.GetWindow(this));
             msgBox.WindowStartupLocation = WindowStartupLocation.Manual;
-            msgBox.ShowDialog();
-
-            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
-            {
-                ViewModel.EndWalkThrough();
-            }
-            else
-            {
-                if (!DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
-                {
-                    ViewModel.IsPeripheralVisible = true;
-                    ViewModel.IsDDPMVisibility = false;
-                    ViewModel.InitializeDeviceFromQueue();
-                    ViewModel.UpdateButtonVisibility();
-                }
-            }
+            //msgBox.ShowDialog();
+            msgBox.Show();
+            //if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
+            //{
+            //    ViewModel.EndWalkThrough();
+            //}
+            //else
+            //{
+            //    if (!DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
+            //    {
+            //        ViewModel.IsPeripheralVisible = true;
+            //        ViewModel.IsDDPMVisibility = false;
+            //        ViewModel.InitializeDeviceFromQueue();
+            //        ViewModel.UpdateButtonVisibility();
+            //    }
+            //}
         }
     }
 }

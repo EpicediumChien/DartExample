@@ -103,11 +103,11 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (IsDTPReady)
                 {
-                    _log.Info($"[SoundBarViewModel] Print get property ...UpdateDTPValue ... in");
+                    _log.Info($"[SoundBarViewModel] DTP Print get property ...UpdateDTPValue ... in");
                     if (SpeakerInfoValueDTP == null)
                     {
                         SpeakerInfoValueDTP = new SpeakerInfoValue();
-                        _log.Info($"[SoundBarViewModel] Print before property ...UpdateDTPValue new DeviceInfo...");
+                        _log.Info($"[SoundBarViewModel] DTP Print before property ...UpdateDTPValue new DeviceInfo...");
                     }
 
                     SpeakerInfoValueDTP.SpeakerProfileName = _deviceManager.GetProfileNameAsync(CurrentDeviceID.ToString()).Result ?? String.Empty;
@@ -155,8 +155,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = CurrentDeviceInfo!.IsWiredAudioMicMuteSoundEnable;
                     SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = CurrentDeviceInfo!.WiredAudioVolumeAdjustmentTone;
                     SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable = CurrentDeviceInfo!.IsWiredAudioIMicNSEnable;
-                    SpeakerInfoValueDTP.IsAudioEqualizerSupported = true;
-                    SpeakerInfoValueDTP.MuteStatus = true;
+                    SpeakerInfoValueDTP.IsAudioEqualizerSupported = CurrentDeviceInfo!.IsEqualizerSupported;
+                    SpeakerInfoValueDTP.MuteStatus = CurrentDeviceInfo!.MuteStatus;
                     SpeakerInfoValueDTP.SpeakerProfileName = CurrentDeviceInfo!.ProfileName;
                     SpeakerInfoValueDTP.IsIMicNSSupportedAsync = false;
                     SpeakerInfoValueDTP.IsVolumeAdjustmentToneSupportedAsync = false;
@@ -490,14 +490,21 @@ namespace DDPM.UI.Plugin.ViewModels
             if (DeviceInfos[CurrentDeviceID].ModelNumber.Contains("SB725"))
             {
                 IsDTPReady = true;
+                _log.Info($"[SoundBarViewModel] SetCurrentDevice ... ModelNumber ... SB725");
             }
             else
             {
                 string fv = _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()).Result;
                 if (fv == null || fv == string.Empty)
+                {
                     IsDTPReady = false;
+                    _log.Info($"[SoundBarViewModel] SetCurrentDevice ... GetProfileAsync ... Null or Empty ... DTP fail ...");
+                }
                 else
+                {
                     IsDTPReady = true;
+                    _log.Info($"[SoundBarViewModel] SetCurrentDevice ... GetProfileAsync ... DTP success ...");
+                }
             }
             return true;
         }
@@ -547,17 +554,54 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             try
             {
-                _log.Info($"[SoundBarViewModel] Print before property ...RestoreToDefault ... in");
-                _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerProfileName .............= {SpeakerInfoValueDTP.SpeakerProfileName.ToString()}");
-                _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerProfile .............= {SpeakerInfoValueDTP.SpeakerProfile.ToString()}");
-                _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerBass .............= {SpeakerInfoValueDTP.SpeakerBass.ToString()}");
-                _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerMidRange ........= {SpeakerInfoValueDTP.SpeakerMidRange.ToString()}");
-                _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerTreble ...........= {SpeakerInfoValueDTP.SpeakerTreble.ToString()}");
-                _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = {SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable.ToString()}");
-                _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone .......= {SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone.ToString()}");
-                _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable ............= {SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable.ToString()}");
-                _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.IsAudioEqualizerSupported .......= {SpeakerInfoValueDTP.IsAudioEqualizerSupported.ToString()}");
-                _deviceManager.SetResetToDefaultAsyncForSoundbar(CurrentDeviceInfo!.ID.ToString(), true).Wait();
+                _log.Info($"[SpeakerViewModel] RestoreToDefault model = {Model} ... in ");
+                if (IsDTPReady)
+                {
+                    _log.Info($"[SoundBarViewModel] DTP Print before property ...RestoreToDefault ... in");
+                    _log.Info($"[SoundBarViewModel] DTP SpeakerInfoValueDTP.SpeakerProfileName .............= {SpeakerInfoValueDTP.SpeakerProfileName.ToString()}");
+                    _log.Info($"[SoundBarViewModel] DTP SpeakerInfoValueDTP.SpeakerProfile .............= {SpeakerInfoValueDTP.SpeakerProfile.ToString()}");
+                    _log.Info($"[SoundBarViewModel] DTP SpeakerInfoValueDTP.SpeakerBass .............= {SpeakerInfoValueDTP.SpeakerBass.ToString()}");
+                    _log.Info($"[SoundBarViewModel] DTP SpeakerInfoValueDTP.SpeakerMidRange ........= {SpeakerInfoValueDTP.SpeakerMidRange.ToString()}");
+                    _log.Info($"[SoundBarViewModel] DTP SpeakerInfoValueDTP.SpeakerTreble ...........= {SpeakerInfoValueDTP.SpeakerTreble.ToString()}");
+                    _log.Info($"[SoundBarViewModel] DTP SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = {SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable.ToString()}");
+                    _log.Info($"[SoundBarViewModel] DTP SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone .......= {SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone.ToString()}");
+                    _log.Info($"[SoundBarViewModel] DTP SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable ............= {SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable.ToString()}");
+                    _log.Info($"[SoundBarViewModel] DTP SpeakerInfoValueDTP.IsAudioEqualizerSupported .......= {SpeakerInfoValueDTP.IsAudioEqualizerSupported.ToString()}");
+                    bool SetFactoryResult = _deviceManager.SetResetToDefaultAsyncForSoundbar(CurrentDeviceInfo!.ID.ToString(), true).Result;
+                    _log.Info($"[SoundBarViewModel] DTP SetResetToDefaultAsyncForSoundbar = {SetFactoryResult.ToString()},  for model = {Model} ...");
+                }
+                else
+                {
+                    _log.Info($"[SoundBarViewModel] DTH Print before property ...RestoreToDefault ... in");
+                    _log.Info($"[SoundBarViewModel] DTH SpeakerInfoValueDTP.SpeakerProfileName .............= {CurrentDeviceInfo!.ProfileName.ToString()}");
+                    _log.Info($"[SoundBarViewModel] DTH SpeakerInfoValueDTP.SpeakerProfile .............= {CurrentDeviceInfo!.Profile.ToString()}");
+                    _log.Info($"[SoundBarViewModel] DTH SpeakerInfoValueDTP.SpeakerBass .............= DTH no support");
+                    _log.Info($"[SoundBarViewModel] DTH SpeakerInfoValueDTP.SpeakerMidRange ........= DTH no support");
+                    _log.Info($"[SoundBarViewModel] DTH SpeakerInfoValueDTP.SpeakerTreble ...........= DTH no support");
+                    _log.Info($"[SoundBarViewModel] DTH SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = {CurrentDeviceInfo!.IsWiredAudioMicMuteSoundEnable.ToString()}");
+                    _log.Info($"[SoundBarViewModel] DTH SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone .......= {CurrentDeviceInfo!.WiredAudioVolumeAdjustmentTone.ToString()}");
+                    _log.Info($"[SoundBarViewModel] DTH SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable ............= {CurrentDeviceInfo!.IsWiredAudioIMicNSEnable.ToString()}");
+                    _log.Info($"[SoundBarViewModel] DTH SpeakerInfoValueDTP.IsAudioEqualizerSupported .......= {CurrentDeviceInfo!.IsEqualizerSupported.ToString()}");
+                    if (!ModelDefaultSettings.ContainsKey(Model))
+                    {
+                        _log.Warning($"[SoundBarViewModel] No default settings found for model: {Model}");
+                        return;
+                    }
+                    var defaultSettings = ModelDefaultSettings[Model];
+
+                    SpeakerInfoValueDTP.SpeakerProfileName = defaultSettings.SpeakerProfileName;
+                    SpeakerInfoValueDTP.SpeakerProfile = defaultSettings.SpeakerProfile;
+                    SpeakerInfoValueDTP.SpeakerBass = defaultSettings.SpeakerBass;
+                    SpeakerInfoValueDTP.SpeakerMidRange = defaultSettings.SpeakerMidRange;
+                    SpeakerInfoValueDTP.SpeakerTreble = defaultSettings.SpeakerTreble;
+                    SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable = defaultSettings.IsWiredAudioMicMuteSoundEnable;
+                    SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = defaultSettings.WiredAudioVolumeAdjustmentTone;
+                    SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable = defaultSettings.IsWiredAudioIMicNSEnable;
+                    _deviceManager.SetWiredAudioVolumeAdjustmentTone(SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone, CurrentDeviceInfo!.ID).Wait();
+                    _deviceManager.SetWiredAudioMicMuteSoundEnable(SpeakerInfoValueDTP.IsWiredAudioMicMuteSoundEnable, CurrentDeviceInfo!.ID).Wait();
+                    _deviceManager.SetWiredAudioIMicNSEnable(SpeakerInfoValueDTP.IsWiredAudioIMicNSEnable, CurrentDeviceInfo!.ID).Wait();
+                    _log.Info($"[SoundBarViewModel] DTH SetResetToDefaultAsyncForSoundbar for model = {Model} ...");
+                }
                 UpdateDTPValue();
                 CheckSpeakerFunc();
                 SoundbarSettingChanged?.Invoke(this, EventArgs.Empty);
