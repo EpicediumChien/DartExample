@@ -4034,7 +4034,9 @@ namespace VcpCore.Plugins
             VCPF0.Add("DisplayHDR", "36");
             VCPF0.Add("HDR10", "37");
             VCPF0.Add("HLG", "38");
-
+            VCPF0.Add("Custom Color HDR", "39"); // Jim add 2025 for [S3225QC] HDR list
+            VCPF0.Add("HDR Peak 1000", "3A"); // Jim add 2025 for [S3225QC] HDR list
+          
             Dictionary<string, string> VCP14 = new Dictionary<string, string>();
             VCP14.Add("sRGB", "01");
             VCP14.Add("sRGB D65 sRGB L120", "01"); // PIMS-327394 jim 20241211
@@ -4121,8 +4123,9 @@ namespace VcpCore.Plugins
             VCPE2.Add("DisplayHDR", "3A");
             VCPE2.Add("HDR10", "3B");
             VCPE2.Add("HLG", "3C");
-            VCPE2.Add("Presets Disabled", "7F");
-
+            VCPE2.Add("Custom Color HDR", "30"); // Jim add 2025 for [S3225QC] HDR list
+            VCPE2.Add("HDR Peak 1000", "31"); // Jim add 2025 for [S3225QC] HDR list
+          
             #endregion
 
             _ColorPresets.Add("DC", VCPDC);

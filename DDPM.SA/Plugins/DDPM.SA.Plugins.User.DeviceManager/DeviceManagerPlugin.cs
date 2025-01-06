@@ -5321,8 +5321,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public void OnUIUpdateNotify(UpdateUINotify e)
         {
             //Derek 1125
-            if (e != null && e != EventArgs.Empty && e.UI_Field_Name.StartsWith("WebcamEvent"))
-                HandleQAMEvent(e.UI_Field_Name);
+            //if (e != null && e != EventArgs.Empty && e.UI_Field_Name.StartsWith("WebcamEvent"))
+            // Jim 20250106 modify 
+            if (e != null && e != EventArgs.Empty && e.UI_Field_Name != null && e.UI_Field_Name.StartsWith("WebcamEvent"))
+            {
+                // Jim 20250104 add for PIMS-335905 [DDPM Win 2.0][R19] Observe no WAL Countdown OSD is seen when WAL is act=tivated
+                if (e.UI_Field_Name.Contains("Webcam_Esi_IsWALLockCountdownStartedChanged") && e.UI_Field_Name.ToLower().Contains("true"))
+                {
+                    ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.WalkAwayLock);
+                    writelog($"[UIUpdateNotify] OSDType.WalkAwayLock is Invoked");
+                }
+                else
+                    HandleQAMEvent(e.UI_Field_Name);
+            }
 
             if (UIUpdateNotify == null || e == null || e == EventArgs.Empty)
                 return;
