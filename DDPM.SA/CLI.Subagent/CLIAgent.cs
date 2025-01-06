@@ -183,7 +183,7 @@ namespace CLI.Subagent
                     var isDefer = false;
                     var isForceWithNotice = false;
                     var isForceWithNoNotice = false;
-                    var cmds = string.Join(" ", args);
+                    var cmds = string.Join(" ", args.Select(_ => _.ToUpper()));
 
                     if (commandLineInput.Command == "SET" && commandLineInput.Options.Count > 0)
                     {
@@ -233,7 +233,7 @@ namespace CLI.Subagent
                                 {
                                     isDefer = true;
                                     option.Option_Value = option.Option_Value.Replace(",DEFER", "");
-                                    cmds = string.Join(" ", args.Select(_ => _.Replace(",DEFER", "")));
+                                    cmds = string.Join(" ", args.Select(_ => _.ToUpper().Replace(",DEFER", "")));
 
                                     if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds).Result)
                                     {
@@ -245,7 +245,7 @@ namespace CLI.Subagent
                                 {
                                     isForceWithNotice = true;
                                     option.Option_Value = option.Option_Value.Replace(",FORCEWITHNOTICE", "");
-                                    cmds = string.Join(" ", args.Select(_ => _.Replace(",FORCEWITHNOTICE", "")));
+                                    cmds = string.Join(" ", args.Select(_ => _.ToUpper().Replace(",FORCEWITHNOTICE", "")));
 
                                     var deferItem = new DeferItem(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds);
                                     _CliManagerPlugin.showNotification(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), deferItem);
