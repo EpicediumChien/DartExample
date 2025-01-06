@@ -73,53 +73,47 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                         DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
                         ImpExpSettings = DdpmCommonHelper.DeviceManagerSA.ReadImportSettingsFile(exportpath).Result;
 
-                        if (ImpExpSettings != null)
+                        if (ImpExpSettings != null &&
+                            ImpExpSettings.MonitorSettings != null &&
+                            ImpExpSettings.MonitorSettings.ServiceTag != mo.edid.ServiceTag)
                         {
-                            if (ImpExpSettings.MonitorSettings != null
-                            && ImpExpSettings.MonitorSettings.ServiceTag != mo.edid.ServiceTag)
+                            if (ImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
                             {
-                                if (ImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
-                                {
-                                    DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Wait();
+                                DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Wait();
+                            }
+                            else
+                            {
+                                Window parentWindow = System.Windows.Application.Current.MainWindow;
+                                double windowLeft = 0;
+                                double windowTop = 0;
+                                double actualWidth = 0;
+                                double actualHeight = 0;
+                                if (parentWindow == null) {
+                                    DdpmCommonHelper.WriteUILog($"[DdpmHomePlugin] Error cannot get MainWindow value", memberName: nameof(parentWindow));
+                                    return;
                                 }
-                                else
+                                ImportModalDialog modalDialog = new(mo.modelName, parentWindow.ActualWidth, parentWindow.ActualHeight - 40);
+                                if (parentWindow != null)
                                 {
-                                    Window parentWindow = System.Windows.Application.Current.MainWindow;
-                                    double windowLeft = 0;
-                                    double windowTop = 0;
-                                    double actualWidth = 0;
-                                    double actualHeight = 0;
-                                    if (parentWindow == null) {
-                                        DdpmCommonHelper.WriteUILog($"[DdpmHomePlugin] Error cannot get MainWindow value", memberName: nameof(parentWindow));
-                                        return;
-                                    }
-                                    ImportModalDialog modalDialog = new(mo.modelName, parentWindow.ActualWidth, parentWindow.ActualHeight - 40);
-                                    if (parentWindow != null)
-                                    {
-                                        modalDialog.Owner = parentWindow;
-                                        windowLeft = parentWindow.Left;
-                                        windowTop = parentWindow.Top + 40;
-                                    }
-                                    modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-                                    modalDialog.Left = windowLeft;
-                                    modalDialog.Top = windowTop;
-                                    modalDialog.ShowDialog();
+                                    modalDialog.Owner = parentWindow;
+                                    windowLeft = parentWindow.Left;
+                                    windowTop = parentWindow.Top + 40;
+                                }
+                                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                                modalDialog.Left = windowLeft;
+                                modalDialog.Top = windowTop;
+                                modalDialog.ShowDialog();
 
-                                    if (modalDialog.DialogResult != null && modalDialog.DialogResult == true)
-                                    {
-                                        //For jason to do import
-                                        if ((int)DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result > 0)
-                                        {
-                                            //ignore next check for this model
-                                            if (modalDialog.isChecked)
-                                            {
-                                                DdpmCommonHelper.DeviceManagerSA.SetSameModel(mo, true);
-                                            }
-                                        }
-                                    }
+                                if (modalDialog.DialogResult != null && 
+                                    modalDialog.DialogResult == true &&
+                                    (int)DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result > 0 && //For jason to do import
+                                    modalDialog.isChecked) //ignore next check for this model
+                                {
+                                    DdpmCommonHelper.DeviceManagerSA.SetSameModel(mo, true);
                                 }
                             }
                         }
+                        
                     });
                 }
             }
