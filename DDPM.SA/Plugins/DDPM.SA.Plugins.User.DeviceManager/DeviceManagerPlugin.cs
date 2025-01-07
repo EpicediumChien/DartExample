@@ -2937,6 +2937,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             nRes = _PeripheralsPlugin.GetSnoozeLength(deviceId);
             return Task.FromResult(nRes);
         }
+        public Task<bool> StartCopilotRegistryMonitor()
+        {
+            writelog("DeviceMangerPlugin received StartCopilotRegistryMonitor requested ...");
+            return Task.Run(() => _PeripheralsPlugin.StartCopilotRegistryMonitor());
+        }
+        public Task<bool> StopCopilotRegistryMonitor()
+        {
+            writelog("DeviceMangerPlugin received StopCopilotRegistryMonitor requested ...");
+            return Task.Run(() => _PeripheralsPlugin.StopCopilotRegistryMonitor());
+        }
 
         #endregion
 
@@ -9640,6 +9650,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<int> GetAutoFramingSensitivity(string Guid)
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAutoFramingSensitivity(Guid));
+        }
+        public async Task<string> GetWebcamSerialNumber(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetWebcamSerialNumber(Guid));
         }
 
         public Task SetIsMicEnumerationOn(string Guid, bool newValue)

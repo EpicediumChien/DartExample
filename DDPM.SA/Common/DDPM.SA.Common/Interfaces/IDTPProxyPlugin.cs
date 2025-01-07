@@ -32,7 +32,7 @@ namespace DDPM.SA.Common
         Task<bool> GetIsPresenceDetectionSensnorStateNotificationsEnabledValue();
         Task<bool> GetIsAnalyticsEnabledValue();
         Task<bool> GetIsQuickAccessMenuEnabledValue();
-        
+
         Task<bool> GetIsMuteStatusNotificationsEnabledValue();
         Task<bool> GetIsQuickAccessMenuOSDEnabledValue();
         Task<bool> SetIsLockKeyNotificationsEnabledValue(bool newValue);
@@ -171,6 +171,7 @@ namespace DDPM.SA.Common
         Task<bool?> GetIsAutoFramingTransitionOn(string Guid);
         Task<int> GetAutoFramingFrameSize(string Guid);
         Task<int> GetAutoFramingSensitivity(string Guid);
+        Task<string> GetWebcamSerialNumber(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
         Task SetProfile(string Guid, string newValue);
