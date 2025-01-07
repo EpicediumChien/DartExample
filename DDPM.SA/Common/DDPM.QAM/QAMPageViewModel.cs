@@ -711,7 +711,7 @@ namespace DDPM.QAM
             OnPropertyChanged(nameof(FullView_Height));
             OnPropertyChanged(nameof(UI_ProfileList));
 
-            DdpmCommonHelper.DeviceManagerSA!.WriteLog($"RefreshUI  --> ZoomValue = {ZoomValue}, FieldOfView = {FieldOfView}, _AutoFramingStatus = {_AutoFramingStatus}");
+            //DdpmCommonHelper.DeviceManagerSA!.WriteLog($"RefreshUI  --> ZoomValue = {ZoomValue}, FieldOfView = {FieldOfView}, _AutoFramingStatus = {_AutoFramingStatus}");
         }
     }
     public class UI_Profile
