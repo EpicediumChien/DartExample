@@ -1137,11 +1137,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 ALSConfig aconfig = AllALSConfig[idx];
                 AllALSConfig[idx] = param;
-                if(GetBitValue(param.AllValue, 5) == 1)
+                if (AllALSConfig.Count > 1) // If only one monitor, do not need show Busy
                 {
-                    for(int i = 0; i < AllALSConfig.Count; i++)
+                    if (GetBitValue(param.AllValue, 5) == 1)
                     {
-                        AllALSConfig[i].isBusy = true;
+                        for (int i = 0; i < AllALSConfig.Count; i++)
+                        {
+                            AllALSConfig[i].isBusy = true;
+                            _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue ... {AllALSConfig[i].Edid.ModelName} ... Busy ... ");
+                        }
                     }
                 }
                 //CheckisPrimaryMonitorSyncOnOff(monitorInfos, param, "0");
