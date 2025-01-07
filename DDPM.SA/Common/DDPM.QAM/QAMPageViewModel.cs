@@ -39,59 +39,67 @@ namespace DDPM.QAM
         public bool isStatusChagneByDDPM = false;
         public QAMPageViewModel()
         {
-            List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA!.GetDevices().Result.deviceInfo;
-
-            if (deviceInfos != null && deviceInfos.Count > 0)
+            try
             {
-                CurrentDeviceInfo = deviceInfos.FirstOrDefault(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
+                List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA!.GetDevices().Result.deviceInfo;
 
-                if (CurrentDeviceInfo != null)
+                if (deviceInfos != null && deviceInfos.Count > 0)
                 {
-                    //DeviceModel = CurrentDeviceInfo.Name;
-                    DeviceModel = CurrentDeviceInfo.Name + " " + CurrentDeviceInfo.ModelNumber; //Derek 1213
+                    CurrentDeviceInfo = deviceInfos.FirstOrDefault(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
 
-                    var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), 
-                        @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{CurrentDeviceInfo.ModelNumber}.json");
-                    
-                    //Derek 0106 Add to create profile if not exist
-                    if (!File.Exists(filePath))
+                    if (CurrentDeviceInfo != null)
                     {
-                        //wait for Dean implement this function by setting manager  0107
-                        CreateWebcamProfile(filePath, CurrentDeviceInfo.ModelNumber);
-                    }
+                        //DeviceModel = CurrentDeviceInfo.Name;
+                        DeviceModel = CurrentDeviceInfo.Name + " " + CurrentDeviceInfo.ModelNumber; //Derek 1213
 
-                    ImportWebcamProfiles(filePath);
-                    ZoomMax = CurrentDeviceInfo.ZoomMax;
-                    ZoomMin = CurrentDeviceInfo.ZoomMin;
+                        var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                            @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{CurrentDeviceInfo.ModelNumber}.json");
 
-                    //if (!CurrentDeviceInfo.IsPropertyAutoFramingSupported)
-                    if (!IsAutoFramingVisable())
-                    {
-                        Settings_IsVisibility[1] = Visibility.Collapsed;
-                    }
+                        if (!File.Exists(filePath))
+                        {
+                            //Derek 20250107 change to use WebcamSettings.ImportWebcamSettings function 
+                            WebcamSettings ws = WebcamSettings.ImportWebcamSettings(CurrentDeviceInfo.ModelNumber, CurrentDeviceInfo, DdpmCommonHelper.DeviceManagerSA);
 
-                    //added by Derek 1225 to get Webcam AutoFraming Property
-                    LogMsg($"AutoFraming Property,IsAutoFramingVisable = {IsAutoFramingVisable()}, IsPropertyAutoFramingSupported = " +
-                        $"{CurrentDeviceInfo.IsPropertyAutoFramingSupported}, GetIsPropertyAutoFramingSupported = " +
-                        $"{DdpmCommonHelper.DeviceManagerSA?.GetIsPropertyAutoFramingSupported(DdpmCommonHelper.DeviceManagerSA?.GetWebcamDeviceID().Result).Result}");
+                            LogMsg($"Create webcam profile:{filePath} due to it not exit, result is {ws}");
+                        }
 
-                    for (int k = 0; k < CurrentDeviceInfo!.FOVValues.Length; k++)
-                    {
-                        _fOVs[k] = int.Parse(CurrentDeviceInfo!.FOVValues[k]);
+                        ImportWebcamProfiles(filePath);
+                        ZoomMax = CurrentDeviceInfo.ZoomMax;
+                        ZoomMin = CurrentDeviceInfo.ZoomMin;
+
+                        //if (!CurrentDeviceInfo.IsPropertyAutoFramingSupported)
+                        if (!IsAutoFramingVisable())
+                        {
+                            Settings_IsVisibility[1] = Visibility.Collapsed;
+                        }
+
+                        //added by Derek 1225 to get Webcam AutoFraming Property
+                        LogMsg($"AutoFraming Property,IsAutoFramingVisable = {IsAutoFramingVisable()}, IsPropertyAutoFramingSupported = " +
+                            $"{CurrentDeviceInfo.IsPropertyAutoFramingSupported}, GetIsPropertyAutoFramingSupported = " +
+                            $"{DdpmCommonHelper.DeviceManagerSA?.GetIsPropertyAutoFramingSupported(DdpmCommonHelper.DeviceManagerSA?.GetWebcamDeviceID().Result).Result}");
+
+                        for (int k = 0; k < CurrentDeviceInfo!.FOVValues.Length; k++)
+                        {
+                            _fOVs[k] = int.Parse(CurrentDeviceInfo!.FOVValues[k]);
+                        }
                     }
                 }
-            }
 
-            //Derek 1210
-            if (!isQAMPageViewModel_UIUpdateNotifyExist)
+                //Derek 1210
+                if (!isQAMPageViewModel_UIUpdateNotifyExist)
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += QAMPageViewModel_UIUpdateNotify;
+                    isQAMPageViewModel_UIUpdateNotifyExist = true;
+
+                    LogMsg($"Add event QAMPageViewModel_UIUpdateNotify, isQAMPageViewModel_UIUpdateNotifyExist={isQAMPageViewModel_UIUpdateNotifyExist}");
+                }
+
+                LoadCurrentStatus();
+            }
+            catch (Exception e)
             {
-                DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += QAMPageViewModel_UIUpdateNotify;
-                isQAMPageViewModel_UIUpdateNotifyExist = true;
-
-                LogMsg($"Add event QAMPageViewModel_UIUpdateNotify, isQAMPageViewModel_UIUpdateNotifyExist={isQAMPageViewModel_UIUpdateNotifyExist}");                
+                LogMsg($"QAMPageViewModel --> Catch exception {e.Message}");
             }
-
-            LoadCurrentStatus();
         }
 
         //~QAMPageViewModel()
@@ -322,15 +330,6 @@ namespace DDPM.QAM
             }
         }
 
-        private bool CreateWebcamProfile(string filePath, string model)
-        {
-            //CurrentDeviceInfo = deviceInfos.FirstOrDefault(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
-
-            //Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetSupportedResolutions(di.ID.ToString());
-
-            return true;
-        }
-
         private bool SetProfile(string name)
         {
             try
@@ -432,18 +431,22 @@ namespace DDPM.QAM
                         LogMsg($"SetProfile change FieldOfView to {FieldOfView}");
                     }
 
-                    if (CurrentDeviceInfo.IsPropertyZoomSupported)
-                    {
-                        //1227
-                        //bool result = DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom).Result;
-                        //_ZoomValue = CurrentProfile.Zoom;
+                    //Derek 2025/01/07 don't change the zoom value(same action with DDPM)
+                    //if (CurrentDeviceInfo.IsPropertyZoomSupported)
+                    //{
+                    //    //1227
+                    //    //bool result = DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Zoom).Result;
+                    //    //_ZoomValue = CurrentProfile.Zoom;
 
-                        //LogMsg($"SetProfile --> SetZoom result is {result}");
+                    //    //LogMsg($"SetProfile --> SetZoom result is {result}");
 
-                        //Derek 1227
-                        ZoomValue = CurrentProfile.Zoom;
-                        SetZoom();
-                    }
+                    //    //Derek 1227
+                    //    if (-1 != CurrentProfile.Zoom)
+                    //    {
+                    //        ZoomValue = CurrentProfile.Zoom;
+                    //        SetZoom();
+                    //    }
+                    //}
 
                     if (CurrentDeviceInfo.IsPropertyFocusSupported)
                     {

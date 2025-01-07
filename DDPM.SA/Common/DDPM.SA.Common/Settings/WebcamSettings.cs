@@ -1,14 +1,10 @@
-﻿using System;
+﻿using Dell.Client.Framework.Common;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
-using DDPM.SA.Common;
-using Dell.Client.Framework.Common;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -276,7 +272,7 @@ namespace DDPM.SA.Common.Settings
             if (devMgr != null)
             {
                 log?.Info(@$"[WebcamSettings] ImportWebcamSettings Start  !");
-                var filePath = target_folder;
+                var filePath = Path.Combine(target_folder, $"{model}.json");
                 var hasFile = File.Exists(filePath);
                 string jsonString = string.Empty;
                 if (hasFile && devMgr != null)
