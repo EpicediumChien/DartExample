@@ -56,6 +56,7 @@ namespace DDPM.QAM
                     //Derek 0106 Add to create profile if not exist
                     if (!File.Exists(filePath))
                     {
+                        //wait for Dean implement this function by setting manager  0107
                         CreateWebcamProfile(filePath, CurrentDeviceInfo.ModelNumber);
                     }
 
