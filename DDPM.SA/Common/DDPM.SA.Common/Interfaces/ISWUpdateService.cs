@@ -7,8 +7,6 @@ namespace DDPM.SA.Common
 {
     public interface ISWUpdateService : IFrameworkPlugin
     {
-        event EventHandler CollCheckUpdate;
-
         event EventHandler<SWUpdateInfoPackage> CallSaveUpdateInfoPackage;
 
         event EventHandler<PopupContentPackage> CallPopup;
@@ -17,8 +15,6 @@ namespace DDPM.SA.Common
         /// for CLI use
         /// </summary>
         event EventHandler<List<SWUpdateInfo>> DownloadAndInstall_Result_Notify;
-
-        void StartCheckUpdateScheduleTimer();
 
         Task<SWUpdateInfoPackage> GetSWUpdateInfo(bool isShowNotify, bool isForce, bool isDefer, string currentVersion, bool reScan, bool isUItrigger);
 
