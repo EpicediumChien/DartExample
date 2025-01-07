@@ -194,17 +194,19 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private void RemoveCopilotAction()
+        public void RemoveCopilotAction()
         {
+            var btn = SelectedButton;
             foreach (var ba in MouseAction.ButtonActions)
             {
                 if (ba.Value.AssignedAction.ID == 1)
                 {
                     SelectedButton = ba.Key.ToString();
-                    UpdateAction(ba.Value.DefaultActionID);
+                    UpdateAction(ba.Value.DefaultActionID, "", false);
                 }
             }
-            SelectedButton = "";
+            SelectedButton = btn;
+            InitializeButton();
         }
 
 
@@ -900,7 +902,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public ObservableCollection<int> ExcelActions { get; set; } = new(Actions.ExcelActions);
         public ObservableCollection<int> PowerPointActions { get; set; } = new(Actions.PowerPointActions);
         public ObservableCollection<int> OutlookActions { get; set; } = new(Actions.OutlookActions);
-        public void UpdateAction(int actionID, string parameter = "")
+        public void UpdateAction(int actionID, string parameter = "", bool RefreshImage = true)
         {
             if (SelectedButton != "")
             {
@@ -942,9 +944,8 @@ namespace DDPM.UI.Plugin.ViewModels
                             DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignDialogAction(CurrentDeviceID.ToString(), newValue);
                     }
                 }
-                //OnPropertyChanged($"{SelectedButton}Tooltip");
-                //RefreshButtonImageFile(SelectedButton, false, true);
-                RefreshButtonInfo();
+                if (RefreshImage)
+                    RefreshButtonInfo();
                 CheckRestoreStatus();
                 ActionList.ExportActionList(MouseAction, Model);
             }

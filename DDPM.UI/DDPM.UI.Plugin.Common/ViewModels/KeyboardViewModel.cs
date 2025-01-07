@@ -182,17 +182,19 @@ namespace DDPM.UI.Plugin.ViewModels
             return true;
         }
 
-        private void RemoveCopilotAction()
+        public void RemoveCopilotAction()
         {
+            var key = SelectedKey;
             foreach (var ka in KeyboardAction.KeyActions)
             {
                 if (ka.Value.AssignedAction.ID == 1)
                 {
                     SelectedKey = ka.Key.ToString();
-                    UpdateAction(ka.Value.DefaultActionID);
+                    UpdateAction(ka.Value.DefaultActionID, "", false);
                 }
             }
-            SelectedKey = "";
+            SelectedKey = key;
+            InitializeKey();
         }
 
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
@@ -1168,7 +1170,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public ObservableCollection<int> WindowsActions { get; set; } = new(Actions.WindowsActionsKnM);
         public ObservableCollection<int> MultimediaActions { get; set; } = new(Actions.MultimediaActionsKnM);
 
-        public void UpdateAction(int actionID, string parameter = "")
+        public void UpdateAction(int actionID, string parameter = "", bool RefreshImage = true)
         {
             if (SelectedKey != "")
             {
@@ -1207,9 +1209,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 SelectedAction!.AssignedAction.ID = actionID;
                 SelectedAction!.AssignedAction.Parameter = parameter;
                 OnPropertyChanged($"{SelectedKey}Tooltip");
-                RefreshKeyImageFile(SelectedKey, false, true);
+                if (RefreshImage)
+                    RefreshKeyImageFile(SelectedKey, false, true);
                 CheckRestoreStatus();
-                //ActionList.ExportActionList(KeyboardAction, Model, CurrentInstanceID);
                 ActionList.ExportActionList(KeyboardAction, Model);
             }
         }

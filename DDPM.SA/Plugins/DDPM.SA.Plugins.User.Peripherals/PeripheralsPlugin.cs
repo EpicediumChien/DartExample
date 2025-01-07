@@ -17,13 +17,16 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
+using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
+using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -2633,7 +2636,15 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         _logicalDevicePen.KeyCaptureProgressDataChanged -= Pen_KeyCaptureProgressDataChanged;
                         LogicalDevicesPen.Remove(iLogicalDevice.Id);
                     }
+                    //if (LowBatteryIDs.Contains(iLogicalDevice.Id.ToString()))
+                    //    LowBatteryIDs.Remove(iLogicalDevice.Id.ToString());
                     ScanDevices();
+                    var IDs = _deviceHelper.deviceInfo.Select(x => x.ID.ToString()).ToList();
+                    LowBatteryIDs.ForEach(id =>
+                    {
+                        if (!IDs.Contains(id))
+                            LowBatteryIDs.Remove(id);
+                    });
                 }
             }
         }
@@ -2850,14 +2861,11 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         //    }
         //}
 
+        private List<string> LowBatteryIDs = new();
         private void CheckLowBatteryOSD(DeviceInfo deviceInfo)
         {
             try
             {
-                //var settings = _DeviceManagerPlugin.GetGlobalSettingParam().Result;
-                //if (!settings.GlobalSetting_General.Low_Battery_Level)
-                //    return;
-                //var settings = _UserSettingsPlugin.ReadGlobalSettings().Result;
                 if (_UserSettingsPlugin == null)
                     return;
 
@@ -2873,7 +2881,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     return;
                 }
 
-                if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9 && deviceInfo.BatteryStatus != "Charging")
+                if (deviceInfo.BatteryLevel >= 0 && deviceInfo.BatteryLevel <= 9 && deviceInfo.BatteryStatus != "Charging" && !LowBatteryIDs.Contains(deviceInfo.ID.ToString()))
                 {
                     OSDType_Device type = OSDType_Device.Unknown;
                     var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
@@ -2918,6 +2926,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         Message = message
                     };
                     OnOSDNotify(args);
+                    LowBatteryIDs.Add(deviceInfo.ID.ToString());
                     Debug.WriteLine($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
                     writelog($"Show BatteryLow OSD: ID: {deviceInfo.ID} Level: {deviceInfo.BatteryLevel}");
                 }
@@ -3669,6 +3678,57 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             }
         }
 
+        private RegistryMonitor_Copilot registryMonitor_Copilot = null;
+        public Task<bool> StartCopilotRegistryMonitor()
+        {
+            writelog("PeripheralPlugin StartCopilotRegistryMonitor requested ...");
+
+            if (registryMonitor_Copilot == null)
+            {
+                writelog("Monitor ICC change initiate...");
+                registryMonitor_Copilot = new RegistryMonitor_Copilot(Registry.CurrentUser, @"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot");
+                registryMonitor_Copilot.RegChanged += new EventHandler(OnRegChanged_Copilot);
+                registryMonitor_Copilot.Start();
+                writelog("Monitor ICC change started");
+                return System.Threading.Tasks.Task.FromResult(true);
+            }
+
+            return System.Threading.Tasks.Task.FromResult(false);
+        }
+        private void OnRegChanged_Copilot(object sender, EventArgs e)
+        {
+            var di = new DeviceInfo();
+            if (e == null)
+                di.Message = "false";
+            else
+                di.Message = "true";
+
+            DeviceChangedEventArgs _EventArgs = new()
+            {
+                type = DeviceChangedType.Peripherals_SettingsChange,
+                device_peripherals = di,
+                changedProperty = "CopilotEnableChanged"
+            };
+            OnNotify(_EventArgs);
+        }
+        private void OnError_Copilot(object sender, ErrorEventArgs e)
+        {
+            StopCopilotRegistryMonitor();
+        }
+        public Task<bool> StopCopilotRegistryMonitor()
+        {
+            writelog("PeripheralPlugin StopRegistryMonitor_ICC requested ...");
+
+            if (registryMonitor_Copilot != null)
+            {
+                registryMonitor_Copilot.Stop();
+                registryMonitor_Copilot.RegChanged -= new EventHandler(OnRegChanged_Copilot);
+                registryMonitor_Copilot = null;
+                return System.Threading.Tasks.Task.FromResult(true);
+            }
+            registryMonitor_Copilot = null;
+            return System.Threading.Tasks.Task.FromResult(false);
+        }
         #endregion
         private void writelog(string text,
                 [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",

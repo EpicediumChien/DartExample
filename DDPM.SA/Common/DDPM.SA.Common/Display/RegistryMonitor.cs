@@ -24,7 +24,7 @@ namespace DDPM.SA.Common
         private static int _RegOpenKeyEx(IntPtr hKey, string subKey, uint options, int samDesired,
                                                out IntPtr phkResult)
         {
-            return RegOpenKeyEx(hKey,  subKey,  options,  samDesired, out phkResult);
+            return RegOpenKeyEx(hKey, subKey, options, samDesired, out phkResult);
         }
 
         [DllImport("advapi32.dll", SetLastError = true)]
@@ -233,10 +233,10 @@ namespace DDPM.SA.Common
 
                     //dispatcher.BeginInvoke((Action)delegate ()
                     //{
-                        Task.Run(() =>
-                        {
-                            _thread.Start();
-                        });
+                    Task.Run(() =>
+                    {
+                        _thread.Start();
+                    });
                     //});
                 }
             }
@@ -326,7 +326,7 @@ namespace DDPM.SA.Common
         private static int _RegOpenKeyEx(IntPtr hKey, string subKey, uint options, int samDesired,
                                                out IntPtr phkResult)
         {
-            return RegOpenKeyEx(hKey,  subKey,  options,  samDesired, out  phkResult);
+            return RegOpenKeyEx(hKey, subKey, options, samDesired, out phkResult);
         }
 
         [DllImport("advapi32.dll", SetLastError = true)]
@@ -539,8 +539,8 @@ namespace DDPM.SA.Common
                     Task.Run(() =>
                     {
                         _thread.Start();
-                    });                   
-                        
+                    });
+
                     //});
                 }
             }
@@ -719,11 +719,11 @@ namespace DDPM.SA.Common
             {
                 Stop();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Console.WriteLine("RegistryMonitor_NightLightScheduler: Dispose() " + ex.Message);
             }
-           
+
             _disposed = true;
             GC.SuppressFinalize(this);
         }
@@ -907,6 +907,140 @@ namespace DDPM.SA.Common
                     _RegCloseKey(registryKey);
                 }
             }
+        }
+    }
+
+    public class RegistryMonitor_Copilot : IDisposable
+    {
+        #region P/Invoke
+
+        [DllImport("advapi32.dll", SetLastError = true)]
+        private static extern int RegNotifyChangeKeyValue(
+        IntPtr hKey,
+        bool bWatchSubtree,
+        uint dwNotifyFilter,
+        IntPtr hEvent,
+        bool fAsynchronous);
+
+        private static class NativeMethods
+        {
+            public const uint REG_NOTIFY_CHANGE_NAME = 0x1;
+            public const uint REG_NOTIFY_CHANGE_ATTRIBUTES = 0x2;
+            public const uint REG_NOTIFY_CHANGE_LAST_SET = 0x4;
+            public const uint REG_NOTIFY_CHANGE_SECURITY = 0x8;
+
+            public const int KEY_READ = 0x20019;
+        }
+
+        #endregion P/Invoke
+
+        #region Event handling
+
+        public event EventHandler RegChanged;  //SDL, add ? to syncup definitions
+
+        protected virtual void OnRegChanged_NightLightScheduler()
+        {
+            EventHandler handler = RegChanged;
+            if (handler != null)
+                handler(this, null);
+        }
+
+        #endregion Event handling
+
+        #region Private member variables
+
+        private readonly string _registryKey;
+        private readonly bool _isDisposed;
+        private Thread _monitorThread;
+        private bool _stopMonitoring;
+        private readonly RegistryKey _regKey;
+
+        public event Action OnRegistryValueChanged;
+
+        #endregion Private member variables
+
+        public RegistryMonitor_Copilot(RegistryKey registryKey, string subKey)
+        {
+            _regKey = registryKey.OpenSubKey(subKey, writable: false) ?? throw new ArgumentException("Invalid registry key");
+            _registryKey = subKey;
+        }
+
+        public void Dispose()
+        {
+            Stop();
+            _regKey?.Dispose();
+            GC.SuppressFinalize(this);
+        }
+
+        public void Start()
+        {
+            if (_monitorThread != null && _monitorThread.IsAlive)
+                return;
+
+            _stopMonitoring = false;
+            _monitorThread = new Thread(MonitorRegistryKey) { IsBackground = true };
+            _monitorThread.Start();
+        }
+
+        private bool IsCopilotEnabled = CheckCopilotEnabled();
+        private void MonitorRegistryKey()
+        {
+            IntPtr registryKeyHandle = _regKey.Handle.DangerousGetHandle();
+
+            while (!_stopMonitoring)
+            {
+                // Wait for changes in the registry key
+                _ = RegNotifyChangeKeyValue(registryKeyHandle, false, NativeMethods.REG_NOTIFY_CHANGE_LAST_SET, IntPtr.Zero, false);
+
+                var cp = CheckCopilotEnabled();
+                if (cp != IsCopilotEnabled)
+                {
+                    if (cp)
+                        RegChanged?.Invoke(this, new EventArgs());
+                    else
+                        RegChanged?.Invoke(this, null);
+                    IsCopilotEnabled = cp;
+                }
+            }
+        }
+        private static bool CheckCopilotEnabled()
+        {
+            string regPath = $@"SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot";
+            string regKey = $"TurnOffWindowsCopilot";
+            try
+            {
+                using (RegistryKey? key = Registry.CurrentUser.OpenSubKey(regPath))
+                {
+                    if (key != null)
+                    {
+                        // Read the value
+                        object value = key.GetValue(regKey);
+
+                        if (value != null && Convert.ToInt32(value) == 1)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return true;
+            }
+        }
+
+        public void Stop()
+        {
+            _stopMonitoring = true;
+            _monitorThread?.Join();
         }
     }
 }
