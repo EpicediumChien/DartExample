@@ -562,33 +562,33 @@ namespace DDPM.SA.Common.Settings
 
             if (File.Exists(fileName) == false)
             {
-                info = $"[ApplyDDPMACLtoSettingFile] file ({fileName}) not exist";
+                info = $"[ApplyFileACLUserReadOnly] file ({fileName}) not exist";
                 return false;
             }
 
             //Elsa Add Security
             string FileInfo;
-            if (!DDPMFileSecurity.IsFilePathValid(fileName, out FileInfo))
+            if (!DDPMFileSecurity.ValidateFilePath(fileName, out FileInfo))
             {
-                info = $"[ApplyFileACLUserReadOnly] {FileInfo}";
+                info = $"[ApplyFileACLUserReadOnly][ValidateFilePath] {FileInfo}";
                 return false;
             }
             FileInfo fileInfo = new FileInfo(fileName);
 
             // Get file's security content
-            FileSecurity fileSecurity = fileInfo.GetAccessControl();
+            FileSecurity fileSecurity = new FileSecurity();// fileInfo.GetAccessControl();
 
             // Create rules for setting file
             var usersReadRule = new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null), FileSystemRights.Read, AccessControlType.Allow);
             var usersWriteRule = new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null), FileSystemRights.Write, AccessControlType.Deny);
-            var usersRule = new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null), FileSystemRights.FullControl, AccessControlType.Allow);
+            //var usersRule = new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null), FileSystemRights.FullControl, AccessControlType.Allow);
             var systemRule = new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null), FileSystemRights.FullControl, AccessControlType.Allow);
-            var adminRule = new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null), FileSystemRights.Read | FileSystemRights.Write, AccessControlType.Allow);
+            var adminRule = new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null), FileSystemRights.FullControl, AccessControlType.Allow);
 
             try
             {
                 // check if can apply rules
-                SetAccessRuleIfNotExists(ref fileSecurity, systemRule);
+                /*SetAccessRuleIfNotExists(ref fileSecurity, systemRule);
                 if (!isDebug)
                 {
                     //for release build please use this rule for normal user
@@ -602,15 +602,25 @@ namespace DDPM.SA.Common.Settings
                 SetAccessRuleIfNotExists(ref fileSecurity, adminRule);
 
                 // In dotnet core, FileSystemAclExtensions.SetAccessControl method is the major function used to update file access right
+                fileInfo.SetAccessControl(fileSecurity);*/
+                // Disable inheritance and remove inherited rules
+
+                fileSecurity.AddAccessRule(usersReadRule);
+                fileSecurity.AddAccessRule(usersWriteRule);
+                fileSecurity.AddAccessRule(systemRule);
+                fileSecurity.AddAccessRule(adminRule);
+                fileSecurity.SetAccessRuleProtection(true, false);
+
+                // Apply changes
                 fileInfo.SetAccessControl(fileSecurity);
             }
             catch (Exception ex)
             {
-                info = ex.Message;
+                info = "[ApplyFileACLUserReadOnly]" + ex.Message;
                 return false;
             }
 
-            info = "Success";
+            info = "[ApplyFileACLUserReadOnly] Success";
             return true;
         }
 

@@ -595,16 +595,17 @@ namespace DDPM.SA.Plugins.SettingsManager
             if (File.Exists(filePath))
             {
                 FileInfo fileInfo = null;
-                /*try
+                try
                 {
                     fileInfo = new FileInfo(filePath);
                 }
                 catch (Exception ex)
                 {
-                    WriteLog($"[{type}]System config: retrieve FileInfo got null return");
-                    File.Delete(filePath);
-                    WriteLog($"[{type}]Exist file deleted.");
-                }*/
+                    WriteLog($"[{type}]System config: retrieve FileInfo got null return ({ex.Message})");
+                    //File.Delete(filePath);
+                    //WriteLog($"[{type}]Exist file deleted.");
+                    return null;
+                }
 
                 if (fileInfo != null)
                 {
