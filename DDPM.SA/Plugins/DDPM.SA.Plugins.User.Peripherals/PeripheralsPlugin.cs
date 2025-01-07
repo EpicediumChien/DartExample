@@ -17,6 +17,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
+using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
 using Microsoft.Win32;
@@ -2635,9 +2636,15 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         _logicalDevicePen.KeyCaptureProgressDataChanged -= Pen_KeyCaptureProgressDataChanged;
                         LogicalDevicesPen.Remove(iLogicalDevice.Id);
                     }
-                    if (LowBatteryIDs.Contains(iLogicalDevice.Id.ToString()))
-                        LowBatteryIDs.Remove(iLogicalDevice.Id.ToString());
+                    //if (LowBatteryIDs.Contains(iLogicalDevice.Id.ToString()))
+                    //    LowBatteryIDs.Remove(iLogicalDevice.Id.ToString());
                     ScanDevices();
+                    var IDs = _deviceHelper.deviceInfo.Select(x => x.ID.ToString()).ToList();
+                    LowBatteryIDs.ForEach(id =>
+                    {
+                        if (!IDs.Contains(id))
+                            LowBatteryIDs.Remove(id);
+                    });
                 }
             }
         }
