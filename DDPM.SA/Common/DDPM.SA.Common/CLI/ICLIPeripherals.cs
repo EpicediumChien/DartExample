@@ -294,24 +294,22 @@ namespace DDPM.SA.Common
                 {
                     if (prop.Name.ToUpper() == TargetFeature)
                     {
-                        bool WearDetectionDTP = devMgr.GetWearDetectionAsync(di.ID.ToString()).Result;
-                        if(WearDetectionDTP)
+                        if (TargetFeature == "WEARDETECTION")
+                        {
+                            bool WearDetectionDTP = devMgr.GetWearDetectionAsync(di.ID.ToString()).Result;
+                            if (WearDetectionDTP)
+                                Value = "ON";
+                            else
+                                Value = "OFF";
+                        }
+                        else if (prop.GetValue(di).ToString().Equals("1") || prop.GetValue(di).ToString().ToUpper().Equals("TRUE"))
                             Value = "ON";
-                        else
+                        else if (prop.GetValue(di).ToString().Equals("0") || prop.GetValue(di).ToString().ToUpper().Equals("FALSE"))
                             Value = "OFF";
-                        //if (prop.GetValue(di).ToString().Equals("1") || prop.GetValue(di).ToString().ToUpper().Equals("TRUE"))
-                        //    Value = "ON";
-                        //else if (prop.GetValue(di).ToString().Equals("0") || prop.GetValue(di).ToString().ToUpper().Equals("FALSE"))
-                        //    Value = "OFF";
-                        //else if (prop.GetValue(di).ToString().Equals("7"))
-                        //{
-                        //    if (TargetFeature.ToUpper().Equals("WEARDETECTION"))
-                        //        Value = "ON";
-                        //}                          
-                        //else
-                        //{
-                        //    Value = prop.GetValue(di).ToString() ?? "";
-                        //}
+                        else
+                        {
+                            Value = prop.GetValue(di).ToString() ?? "";
+                        }
                     }
                 }
                 switch (targetFeature)
