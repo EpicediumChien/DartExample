@@ -14629,8 +14629,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             UInt16 pxpModeValue = 0xff;
             if (!mo.CapabilityDic.ContainsKey("E9"))
             {
-                writelog($"[IsPxPModeOFF] monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],has no E9.");
-                return false;
+                writelog($"[IsPxPModeOFF] monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],has no E9.ret=true");
+                return true;
             }
             ObjGetVCP pxpMode = GetPxpMode(mo).Result;
             if (pxpMode != null && pxpMode.result)
