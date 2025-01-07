@@ -190,16 +190,13 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if (_rightViewHeaders.Count == 0)
+                if (_rightViewHeaders.Count == 0 &&
+                    ModuleGroups.Count > 0 &&
+                    DeviceBarSelectedIndex >= 0 && 
+                    DeviceBarSelectedIndex < ModuleGroups.Count)
                 {
-                    if (ModuleGroups.Count > 0)
-                    {
-                        if ((DeviceBarSelectedIndex >= 0) && (DeviceBarSelectedIndex < (ModuleGroups.Count)))
-                        {
-                            ModuleGroup mg = ModuleGroups[DeviceBarSelectedIndex];
-                            _rightViewHeaders = mg.Headers;
-                        }
-                    }
+                    ModuleGroup mg = ModuleGroups[DeviceBarSelectedIndex];
+                    _rightViewHeaders = mg.Headers;  
                 }
                 return _rightViewHeaders;
             }

@@ -641,37 +641,33 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         private void CheckOutgoingAudioUI(bool PropertyChange)
         {
-            if (DeviceInfoDTP!.IsMicNoiseCancellationSupported)
+            if (DeviceInfoDTP!.IsMicNoiseCancellationSupported &&
+                _isOutgoingAudioStatus != DeviceInfoDTP.MicNoiseCancellation)
             {
-                if (_isOutgoingAudioStatus != DeviceInfoDTP.MicNoiseCancellation)
-                {
-                    _isOutgoingAudioStatus = DeviceInfoDTP.MicNoiseCancellation;
+                _isOutgoingAudioStatus = DeviceInfoDTP.MicNoiseCancellation;
 
-                    if (PropertyChange)
-                    {
-                        OnPropertyChanged(nameof(OutgoingAudioStatus));
-                        OnPropertyChanged(nameof(OutgoingAudio_String));
-                        UpdateCollaborationAndultimediaUI(true, false);
-                    }
-                }
+                if (PropertyChange)
+                {
+                    OnPropertyChanged(nameof(OutgoingAudioStatus));
+                    OnPropertyChanged(nameof(OutgoingAudio_String));
+                    UpdateCollaborationAndultimediaUI(true, false);
+                }                
             }
         }
 
         private void CheckMicNCIncomingUI(bool PropertyChange)
         {
-            if (DeviceInfoDTP!.IsMicNCIncomingSupported)
+            if (DeviceInfoDTP!.IsMicNCIncomingSupported &&
+                _isIncomingAudioStatus != DeviceInfoDTP.MicNCIncoming)
             {
-                if (_isIncomingAudioStatus != DeviceInfoDTP.MicNCIncoming)
-                {
-                    _isIncomingAudioStatus = DeviceInfoDTP.MicNCIncoming;
+                _isIncomingAudioStatus = DeviceInfoDTP.MicNCIncoming;
 
-                    if (PropertyChange)
-                    {
-                        OnPropertyChanged(nameof(IncomingAudioStatus));
-                        OnPropertyChanged(nameof(IncomingAudio_String));
-                        UpdateCollaborationAndultimediaUI(true, false);
-                    }
-                }
+                if (PropertyChange)
+                {
+                    OnPropertyChanged(nameof(IncomingAudioStatus));
+                    OnPropertyChanged(nameof(IncomingAudio_String));
+                    UpdateCollaborationAndultimediaUI(true, false);
+                }                
             }
         }
 
