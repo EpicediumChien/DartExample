@@ -95,7 +95,7 @@
                     </ContentControl.Style>
                 </ContentControl>
                 <UXControls:UXTextBlock Grid.Column="1" Text="{Binding Text}" FontSize="14"
-                                        VerticalAlignment="Center" HorizontalAlignment="Left"
+                                        VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
                                         TextBlockType="Subtitle2" TextBlockSemanticColorType="Light">
                     <UXControls:UXTextBlock.Style>
                         <Style TargetType="UXControls:UXTextBlock">
