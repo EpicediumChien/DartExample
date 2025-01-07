@@ -525,21 +525,26 @@ namespace NGA.ThickClient
         #endregion  Move to new position event
 
         #region Workaround solution - Robert_Lin 2024-12-03, can be removed
-        private void RefreshWindowTaskbar()
+        /*private void RefreshWindowTaskbar()
         {
             const int HWND_BROADCAST = 0xffff;
             const uint WM_SETTINGCHANGE = 0x001A;
             bool result = PostMessage((IntPtr)HWND_BROADCAST, WM_SETTINGCHANGE, IntPtr.Zero, IntPtr.Zero);
-        }
-        [DllImport("user32.dll")]
-        private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+        }*/
+        /*[DllImport("user32.dll")]
+        private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);*/
 
-        [DllImport("user32.dll")]
-        static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        /*[DllImport("user32.dll")]
+        static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);*/
 
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern void mouse_event(long dwFlags, long dx, long dy, long cButtons, long dwExtraInfo);
+        private static void _mouse_event(long dwFlags, long dx, long dy, long cButtons, long dwExtraInfo)
+        {
+            mouse_event(dwFlags, dx, dy, cButtons, dwExtraInfo);
+        }
 
         private const int MOUSEEVENTF_LEFTDOWN = 0x02;
         private const int MOUSEEVENTF_LEFTUP = 0x04;
@@ -548,16 +553,16 @@ namespace NGA.ThickClient
 
         private static void DoMouseClick()
         {
-            mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+            _mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
         }
 
-        [DllImport("user32.dll")]
+        /*[DllImport("user32.dll")]
         static extern bool SetCursorPos(int X, int Y);
 
         private static void MoveCursorToPoint(int x, int y)
         {
             SetCursorPos(x, y);
-        }
+        }*/
 
         //public const short SWP_NOMOVE = 0X2;
         //public const short SWP_NOSIZE = 1;

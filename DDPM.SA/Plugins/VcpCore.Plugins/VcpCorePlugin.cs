@@ -1375,7 +1375,7 @@ namespace VcpCore.Plugins
                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCode is " + BitConverter.ToString(new byte[] { code }));
                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] val is " + val.ToString());
 
-                        rc = Set_VCPCapability(monitorInfoX, code, val, IsOutInitialize);
+                            rc = Set_VCPCapability(monitorInfoX, code, val, IsOutInitialize);
 
                         if (rc)
                         {
