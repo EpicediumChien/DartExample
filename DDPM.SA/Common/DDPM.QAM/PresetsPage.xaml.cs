@@ -33,9 +33,11 @@ namespace DDPM.QAM
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            DdpmCommonHelper.DeviceManagerSA!.WriteLog($"PresetsPage -> UserControl_Loaded");
+
             if (DataContext is QAMPageViewModel vm)
             {
-                vm.SetProfile();
+                //vm.SetProfile();
             }
         }
     }
