@@ -267,9 +267,12 @@ namespace DDPM.QAM
                     string presetProfilesString = string.Empty;
                     if (jsonObject != null)
                     {
-                        presetProfilesString = jsonObject["PresetProfiles"]!.ToString();
+                        //presetProfilesString = jsonObject["PresetProfiles"]!.ToString();
                         //Derek 1212
-                        selectedProfileName = jsonObject["SelectedProfileName"]!.ToString();
+                        //selectedProfileName = jsonObject["SelectedProfileName"]!.ToString();
+                        presetProfilesString = jsonObject["PresetProfiles"]?.ToString() ?? string.Empty;
+                        selectedProfileName = jsonObject["SelectedProfileName"]?.ToString() ?? string.Empty;
+
                         LogMsg($"ImportWebcamProfiles current SelectedProfileName: {selectedProfileName}, GetSerializedJsonString result is {info}");
                     }
 
