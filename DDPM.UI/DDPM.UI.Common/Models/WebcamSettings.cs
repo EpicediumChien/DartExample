@@ -300,7 +300,8 @@ namespace DDPM.UI.Common
                         //Always reread the resolution and FPS information.
                         try
                         {
-                            WebcamSettings tmp = JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
+                            var json = File.ReadAllText(filePath);
+                            WebcamSettings tmp = JsonConvert.DeserializeObject<WebcamSettings>(json) ?? new WebcamSettings();
                             tmp.SupportedFPSs.Clear();
                             tmp.SelectedFPSs.Clear();
                             tmp.Resolutions.Clear();

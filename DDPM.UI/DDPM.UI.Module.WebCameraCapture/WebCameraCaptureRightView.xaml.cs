@@ -36,7 +36,7 @@ namespace DDPM.UI.Module.WebCameraCapture
         }
         private void InitializeResolution()
         {
-            var Res = _vm.WebcamSettings.SupportedFPSs.Keys.ToList();
+            var Res = _vm.WebcamSettings?.SupportedFPSs?.Keys.ToList() ?? new List<string>();
             switch (Res.Count)
             {
                 case 2:
