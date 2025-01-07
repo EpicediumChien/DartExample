@@ -803,40 +803,42 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             Assert.That(InputType2, Is.EqualTo(result["PC2"].InputType));
         }
 
+        //Robert_Lin, 2025-1-7 EAPlugin.IsFunctionEnabled has been deleted.
         [Test]
         public void TestSetEAFunctionEnabled()
         {
-            bool isEnabled = true;
-            bool isDisabled = false;
-            if (EasyArrangeplugin != null)
-            {
-                var SetEAFunctionEnabledResult = displayPlugin.SetEAFunctionEnabled(isEnabled).Result;
-                Assert.That(isEnabled, Is.EqualTo(SetEAFunctionEnabledResult));
-            }
-            else
-            {
-                var SetEAFunctionEnabledResult = displayPlugin.SetEAFunctionEnabled(isEnabled).Result;
-                Assert.That(isDisabled, Is.EqualTo(SetEAFunctionEnabledResult));
-            }
+            //bool isEnabled = true;
+            //bool isDisabled = false;
+            //if (EasyArrangeplugin != null)
+            //{
+            //    var SetEAFunctionEnabledResult = displayPlugin.SetEAFunctionEnabled(isEnabled).Result;
+            //    Assert.That(isEnabled, Is.EqualTo(SetEAFunctionEnabledResult));
+            //}
+            //else
+            //{
+            //    var SetEAFunctionEnabledResult = displayPlugin.SetEAFunctionEnabled(isEnabled).Result;
+            //    Assert.That(isDisabled, Is.EqualTo(SetEAFunctionEnabledResult));
+            //}
         }
 
+        //Robert_Lin, 2025-1-7 EAPlugin.IsFunctionEnabled has been deleted.
         [Test]
         public void TestGetEAFunctionEnabled()
         {
-            bool result = false;
-            bool value = false;
-            if (EasyArrangeplugin != null)
-            {
-                var GetEAFunctionEnableddResult = displayPlugin.GetEAFunctionEnabled().Result;
-                Assert.That(result, Is.EqualTo(GetEAFunctionEnableddResult.result));
-                Assert.That(EasyArrangeplugin.IsFunctionEnabled, Is.EqualTo(GetEAFunctionEnableddResult.value));
-            }
-            else
-            {
-                var GetEAFunctionEnableddResult = displayPlugin.GetEAFunctionEnabled().Result;
-                Assert.That(result, Is.EqualTo(GetEAFunctionEnableddResult.result));
-                Assert.That(value, Is.EqualTo(GetEAFunctionEnableddResult.value));
-            }
+            //bool result = false;
+            //bool value = false;
+            //if (EasyArrangeplugin != null)
+            //{
+            //    var GetEAFunctionEnableddResult = displayPlugin.GetEAFunctionEnabled().Result;
+            //    Assert.That(result, Is.EqualTo(GetEAFunctionEnableddResult.result));
+            //    Assert.That(EasyArrangeplugin.IsFunctionEnabled, Is.EqualTo(GetEAFunctionEnableddResult.value));
+            //}
+            //else
+            //{
+            //    var GetEAFunctionEnableddResult = displayPlugin.GetEAFunctionEnabled().Result;
+            //    Assert.That(result, Is.EqualTo(GetEAFunctionEnableddResult.result));
+            //    Assert.That(value, Is.EqualTo(GetEAFunctionEnableddResult.value));
+            //}
         }
 
         [Test]
