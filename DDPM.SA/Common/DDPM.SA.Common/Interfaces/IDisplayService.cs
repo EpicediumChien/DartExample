@@ -150,9 +150,9 @@ namespace DDPM.SA.Common
 
         #endregion Properties - EasyArange
 
-        public Task<bool> SetEAFunctionEnabled(bool isEnabled);
+        //public Task<bool> SetEAFunctionEnabled(bool isEnabled);
 
-        public Task<ObjGetVCP> GetEAFunctionEnabled();
+        //public Task<ObjGetVCP> GetEAFunctionEnabled();
 
         public event EventHandler<EAArgs> EASettingsChanged;
 

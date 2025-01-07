@@ -64,20 +64,22 @@ namespace DDPM.UI.Common.ViewModels
             Init_EzMemory();
         }
 
-        private bool _isEaFunctionEnabled;
+        //Robert_Lin, 2025-1-7 IsEAFunctionEnabled is deleted
 
-        public bool IsEaFunctionEnabled
-        {
-            get => _isEaFunctionEnabled;
-            set
-            {
-                bool res = _deviceManagerSA.SetEAFunctionEnabled(value).Result;
-                if (res)
-                {
-                    _isEaFunctionEnabled = value;
-                }
-            }
-        }
+        //private bool _isEaFunctionEnabled;
+
+        //public bool IsEaFunctionEnabled
+        //{
+        //    get => _isEaFunctionEnabled;
+        //    set
+        //    {
+        //        bool res = _deviceManagerSA.SetEAFunctionEnabled(value).Result;
+        //        if (res)
+        //        {
+        //            _isEaFunctionEnabled = value;
+        //        }
+        //    }
+        //}
 
         #region Init Data
 
@@ -96,11 +98,11 @@ namespace DDPM.UI.Common.ViewModels
 
         private void DoWork_InitData(object? sender, DoWorkEventArgs e)
         {
-#if ENABLE_CALL_SA
-            ObjGetVCP ret = _deviceManagerSA.GetEAFunctionEnabled().Result;
-            if (ret.result)
-                _isEaFunctionEnabled = (bool)ret.value;
-#endif
+//#if ENABLE_CALL_SA
+//            ObjGetVCP ret = _deviceManagerSA.GetEAFunctionEnabled().Result;
+//            if (ret.result)
+//                _isEaFunctionEnabled = (bool)ret.value;
+//#endif
             e.Result = "OK";
         }
 
