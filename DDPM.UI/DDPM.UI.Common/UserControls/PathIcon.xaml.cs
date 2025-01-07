@@ -148,5 +148,27 @@ namespace DDPM.UI.Common.UserControls
             });
         }
         #endregion Glow and Breathe effect
+
+        //Robert_Lin, 2025-1-6 Narrator, handling Space key down
+        private void UserControl_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+            {
+                if (!IsEnabled)
+                {
+                    return;
+                }
+                e.Handled = true;
+                if (ClickCommand != null)
+                {
+                    ClickCommand.Execute(this);
+                }
+            }
+        }
+
+        private void UserControl_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+
+        }
     }
 }
