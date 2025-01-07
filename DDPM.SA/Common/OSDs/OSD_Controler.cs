@@ -1,4 +1,6 @@
 ﻿using DDPM.SA.Common;
+using System;
+using System.Diagnostics;
 
 namespace DDPM.OSDs
 {
@@ -29,6 +31,34 @@ namespace DDPM.OSDs
 
         public OSD_Controler()
         { }
+
+        private int osdLockMark = 0;
+        private object osdLock = new object();
+        public bool OSD_ShowStatus(OSDType_Device type_Device)
+        {
+            lock (osdLock)
+            {
+                int bit = (int)type_Device;
+                if ((osdLockMark >> bit & 1) == 1)
+                {
+                    return false;
+                }
+                osdLockMark |= 1 << bit;
+                Debug.WriteLine($"osdLockMark show={osdLockMark}");
+                return true;
+            }
+
+        }
+
+        public void OSD_ShowStatusClose(OSDType_Device type_Device)
+        {
+            lock (osdLock)
+            {
+                int bit = (int)type_Device;
+                osdLockMark &= ~(1 << bit);
+                Debug.WriteLine($"osdLockMark close={osdLockMark}");
+            }
+        }
 
         public void Mute_ShowWindow(string Content, double Top, double Left)
         {
@@ -63,61 +93,76 @@ namespace DDPM.OSDs
         public void HeadsetBatteryLow_ShowWindow(string Content, double Top, double Left)
         {
             HeadsetBatteryLowIWinx = new HeadsetBatteryLowIWin(Content);
+            HeadsetBatteryLowIWinx.Closed += HeadsetBatteryLow_CloseWindow;
 
             HeadsetBatteryLowIWinx.Top = Top;
             HeadsetBatteryLowIWinx.Left = Left;
             HeadsetBatteryLowIWinx.ShowWindow();
         }
-
-        public void HeadsetBatteryLow_CloseWindow()
+        public void HeadsetBatteryLow_CloseWindow(object? sender, EventArgs e)
         {
             if (HeadsetBatteryLowIWinx != null)
+            {
                 HeadsetBatteryLowIWinx.CloseWindow();
+                OSD_ShowStatusClose(OSDType_Device.Headset);
+            }
         }
 
         public void KeybordBatteryLow_ShowWindow(string Content, double Top, double Left)
         {
             KeybordBatteryLowIWinx = new KeybordBatteryLowIWin(Content);
+            KeybordBatteryLowIWinx.Closed += KeybordBatteryLow_CloseWindow;
 
             KeybordBatteryLowIWinx.Top = Top;
             KeybordBatteryLowIWinx.Left = Left;
             KeybordBatteryLowIWinx.ShowWindow();
         }
 
-        public void KeybordBatteryLow_CloseWindow()
+        public void KeybordBatteryLow_CloseWindow(object? sender, EventArgs e)
         {
             if (KeybordBatteryLowIWinx != null)
+            {
                 KeybordBatteryLowIWinx.CloseWindow();
+                OSD_ShowStatusClose(OSDType_Device.Keyboard);
+            }
         }
 
         public void MouseBatteryLow_ShowWindow(string Content, double Top, double Left)
         {
             MouseBatteryLowIWinx = new MouseBatteryLowIWin(Content);
+            MouseBatteryLowIWinx.Closed += MouseBatteryLow_CloseWindow;
 
             MouseBatteryLowIWinx.Top = Top;
             MouseBatteryLowIWinx.Left = Left;
             MouseBatteryLowIWinx.ShowWindow();
         }
 
-        public void MouseBatteryLow_CloseWindow()
+        public void MouseBatteryLow_CloseWindow(object? sender, EventArgs e)
         {
             if (MouseBatteryLowIWinx != null)
+            {
                 MouseBatteryLowIWinx.CloseWindow();
+                OSD_ShowStatusClose(OSDType_Device.Mouse);
+            }
         }
 
         public void StylusBatteryLow_ShowWindow(string Content, double Top, double Left)
         {
             StylusBatteryLowIWin = new StylusBatteryLowIWin(Content);
+            StylusBatteryLowIWin.Closed += StylusBatteryLow_CloseWindow;
 
             StylusBatteryLowIWin.Top = Top;
             StylusBatteryLowIWin.Left = Left;
             StylusBatteryLowIWin.ShowWindow();
         }
 
-        public void StylusBatteryLow_CloseWindow()
+        public void StylusBatteryLow_CloseWindow(object? sender, EventArgs e)
         {
             if (StylusBatteryLowIWin != null)
+            {
                 StylusBatteryLowIWin.CloseWindow();
+                OSD_ShowStatusClose(OSDType_Device.Pen);
+            }
         }
 
         public void StartRecording_ShowWindow(string Content, double Top, double Left)

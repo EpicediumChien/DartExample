@@ -305,13 +305,11 @@ namespace DDPM.UI.Common.ViewModels
         {
             get
             {
-                if (_homeDevice != null)
+                if (_homeDevice != null &&
+                    _homeDevice.MonitorInfo != null &&
+                    _homeDevice.MonitorInfo.edid != null)
                 {
-                    if (_homeDevice.MonitorInfo != null)
-                    {
-                        if (_homeDevice.MonitorInfo.edid != null)
-                            return (_homeDevice.MonitorInfo.edid.Size < 19.000);
-                    }
+                    return (_homeDevice.MonitorInfo.edid.Size < 19.000);                    
                 }
                 return false;
             }
@@ -1313,12 +1311,10 @@ namespace DDPM.UI.Common.ViewModels
             get => _isManualLaunch;
             set
             {
-                if (SetProperty(ref _isManualLaunch, value))
+                if (SetProperty(ref _isManualLaunch, value) &&
+                    _isManualLaunch)
                 {
-                    if (_isManualLaunch)
-                    {
-                        IsAutoLaunch = false;
-                    }
+                    IsAutoLaunch = false;                    
                 }
             }
         }
@@ -1329,12 +1325,10 @@ namespace DDPM.UI.Common.ViewModels
             get => _isAutoLaunch;
             set
             {
-                if (SetProperty(ref _isAutoLaunch, value))
+                if (SetProperty(ref _isAutoLaunch, value) &&
+                    _isAutoLaunch)
                 {
-                    if (_isAutoLaunch)
-                    {
-                        IsManualLaunch = false;
-                    }
+                    IsManualLaunch = false;                    
                 }
             }
         }

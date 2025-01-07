@@ -62,14 +62,6 @@ namespace DDPM.SA.Common.Settings
             return CloseHandle(hObject);
         }
 
-        /*[DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private extern static bool ImpersonateLoggedOnUser(IntPtr hToken);
-        private static bool _ImpersonateLoggedOnUser(IntPtr hToken)
-        {
-            return ImpersonateLoggedOnUser(hToken);
-        }*/
-
         [DllImport("advapi32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool DuplicateTokenEx(IntPtr hExistingToken, uint dwDesiredAccess, ref SECURITY_ATTRIBUTES lpTokenAttributes,

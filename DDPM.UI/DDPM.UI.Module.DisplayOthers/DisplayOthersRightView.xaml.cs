@@ -314,7 +314,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 case "result_success":
                     Dispatcher.Invoke(new Action(() =>
                     {
-                        DisplayMsgBox(Strings.ImpExp_Success, Strings.ImpExp_SuccessMsg0, returnToHomepage: true);
+                        DisplayMsgBox(Strings.ImpExp_Success, Strings.ImpExp_SuccessMsg0);
                     }));
                     break;
                 case "result_success_model":

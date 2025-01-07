@@ -651,6 +651,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         }
                         break;
 
+                        // Jim 20250104 comment out for PIMS-335905 [DDPM Win 2.0][R19] Observe no WAL Countdown OSD is seen when WAL is act=tivated
+                        /*
                         case "Webcam_Esi_IsWALLockCountdownStartedChanged":
                         {
                             if (!event_param.TryGetValue("NewValue", out var NewValue))
@@ -663,6 +665,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                 DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.WalkAwayLock);
                         }
                         break;
+                        */
 
                         case "Webcam_WALSnoozeTimeLeftInSecondsChanged":
                         {

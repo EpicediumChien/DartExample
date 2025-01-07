@@ -372,14 +372,14 @@ namespace DDPM.Win32Lib
         // StringBuilder sb1=new StringBuilder(255);
         // int charsRet=GetPrivateProfileString("secName","key","defValue",sb1,sb1.Capacity,@"C:\temp\a.ini");
         // string result=sb1.ToString();
-        [DllImport("kernel32", SetLastError = true)]
+        /*[DllImport("kernel32", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
 
         public static int _GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath)
         {
             return GetPrivateProfileString(section, key, def, retVal, size, filePath);
-        }
+        }*/
 
         #endregion Read/Write INI file
 
@@ -528,6 +528,7 @@ namespace DDPM.Win32Lib
 
         //EnumChildWindows( )
         [DllImport("user32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool EnumChildWindows(IntPtr hwndParent, EnumWindowsProc lpEnumFunc, IntPtr lParam);
         public static bool _EnumChildWindows(IntPtr hwndParent, EnumWindowsProc proc, IntPtr lParam)
@@ -607,15 +608,15 @@ namespace DDPM.Win32Lib
         [DllImport("dwmapi.dll")]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int DwmGetWindowAttribute(IntPtr hwnd, eDwmWindowAttribute dwAttribute, out uint pvAttribute, int cbAttribute);
-
-        [DllImport("dwmapi.dll")]
-        private static extern int DwmGetWindowAttribute(IntPtr hWnd, eDwmWindowAttribute dwAttribute, ref RECT pvAttribute, int cbAttribute);
-
-
         public static int _DwmGetWindowAttribute(IntPtr hwnd, eDwmWindowAttribute dwAttribute, out uint pvAttribute, int cbAttribute)
         {
             return DwmGetWindowAttribute(hwnd, dwAttribute, out pvAttribute, cbAttribute);
         }
+
+        [DllImport("dwmapi.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern int DwmGetWindowAttribute(IntPtr hWnd, eDwmWindowAttribute dwAttribute, ref RECT pvAttribute, int cbAttribute);
+        
         public static int _DwmGetWindowAttribute(IntPtr hwnd, eDwmWindowAttribute dwAttribute, ref RECT pvAttribute, int cbAttribute)
         {
             return DwmGetWindowAttribute(hwnd, dwAttribute, ref pvAttribute, cbAttribute);
@@ -825,6 +826,7 @@ namespace DDPM.Win32Lib
         /// </para>
         /// </returns>
         [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetWindowPlacement(IntPtr hWnd, [In] ref WINDOWPLACEMENT lpwndpl);
         public static bool _SetWindowPlacement(IntPtr hWnd, [In] ref WINDOWPLACEMENT lpwndpl)
@@ -833,6 +835,7 @@ namespace DDPM.Win32Lib
         }
 
         [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
         public static bool _GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl)
@@ -895,7 +898,7 @@ namespace DDPM.Win32Lib
         }
 
 
-        public enum ShowWindowCommands
+        public enum ShowWindowCommands 
         {
             /// <summary>
             /// Hides the window and activates another window.
@@ -967,6 +970,15 @@ namespace DDPM.Win32Lib
             ForceMinimize = 11
         }
 
+        //ShowWindow()
+        [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        public static bool _ShowWindow(IntPtr hWnd, ShowWindowCommands nCmdShow)
+        {
+            return ShowWindow(hWnd, (int) nCmdShow);
+        }
         #endregion
 
         #region Window ClassName
@@ -1045,6 +1057,7 @@ namespace DDPM.Win32Lib
 
         //QueryFullProcessImageName()
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool QueryFullProcessImageName(IntPtr hProcess, uint dwFlags, [Out, MarshalAs(UnmanagedType.LPTStr)] StringBuilder lpExeName, ref uint lpdwSize);
 
         public static bool _QueryFullProcessImageName(IntPtr hProcess, uint dwFlags, [Out, MarshalAs(UnmanagedType.LPTStr)] StringBuilder lpExeName, ref uint lpdwSize)
@@ -1054,6 +1067,7 @@ namespace DDPM.Win32Lib
 
         //OpenProcess()
         [DllImport("kernel32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr OpenProcess(uint processAccess, bool bInheritHandle, uint processId);
         public static IntPtr _OpenProcess(uint processAccess, bool bInheritHandle, uint processId)
         {
@@ -1061,7 +1075,8 @@ namespace DDPM.Win32Lib
         }
 
         //CloseHandle()
-        [DllImport("kernel32.dll", SetLastError = true)]
+        /*[DllImport("kernel32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SuppressUnmanagedCodeSecurity]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -1069,7 +1084,7 @@ namespace DDPM.Win32Lib
         public static bool _CloseHandle(IntPtr hObject)
         {
             return CloseHandle(hObject);
-        }
+        }*/
         #endregion
 
 
@@ -1163,7 +1178,12 @@ namespace DDPM.Win32Lib
 
         //SHGetPropertyStoreForWindow()
         [DllImport("Shell32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern HRESULT SHGetPropertyStoreForWindow(IntPtr hwnd, ref Guid iid, [Out(), MarshalAs(UnmanagedType.Interface)] out IPropertyStore propertyStore);
+        private static HRESULT _SHGetPropertyStoreForWindow(IntPtr hwnd, ref Guid iid, [Out(), MarshalAs(UnmanagedType.Interface)] out IPropertyStore propertyStore)
+        {
+            return SHGetPropertyStoreForWindow(hwnd, ref iid, out propertyStore);
+        }
         #endregion
 
         #region UWP
@@ -1223,7 +1243,7 @@ namespace DDPM.Win32Lib
         {
             IPropertyStore propertyStore;
             Guid guid = new Guid("{886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99}");
-            HRESULT hr = SHGetPropertyStoreForWindow(hWnd, ref guid, out propertyStore);
+            HRESULT hr = _SHGetPropertyStoreForWindow(hWnd, ref guid, out propertyStore);
             if (hr == HRESULT.S_OK)
             {
                 PROPVARIANT propVar = new PROPVARIANT();
