@@ -1,4 +1,5 @@
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
@@ -58,7 +59,7 @@ namespace DDPM.UI.Common.Tests
             DdpmCommonHelper.DeviceManagerSA = DeviceManagerSAMock.Object;
             DeviceManagerSAMock.Setup(x => x.WriteSerializedContentToFile(It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult(true));
             webcamSettings.SelectedResolution = "1";
-            var result = WebcamSettings.ExportWebcamSettings(webcamSettings, "model");
+            var result = WebcamSettings.ExportWebcamSettings(webcamSettings, "model", DeviceManagerSAMock.Object);
             // Assert
             Assert.That(result, Is.EqualTo(true));
         }
@@ -72,7 +73,7 @@ namespace DDPM.UI.Common.Tests
             DdpmCommonHelper.DeviceManagerSA = DeviceManagerSAMock.Object;
             DeviceManagerSAMock.Setup(x => x.GetSupportedResolutions(It.IsAny<string>())).Returns(Task.FromResult(""));
             DeviceManagerSAMock.Setup(x => x.GetSelectedResolution(It.IsAny<string>())).Returns(Task.FromResult("{\"Resolution\":\"1280x720\",\"FPS\":[\"24\"]}"));
-            var result = WebcamSettings.ImportWebcamSettings("model", new DeviceInfo() { SupportedResolutions = "", ModelNumber = "WB5023", CustomProfiles = new Newtonsoft.Json.Linq.JArray(), PresetProfiles = new Newtonsoft.Json.Linq.JArray() });
+            var result = WebcamSettings.ImportWebcamSettings("model", new DeviceInfo() { SupportedResolutions = "", ModelNumber = "WB5023", CustomProfiles = new Newtonsoft.Json.Linq.JArray(), PresetProfiles = new Newtonsoft.Json.Linq.JArray() }, DeviceManagerSAMock.Object);
             // Assert
             Assert.That(result, Is.Not.Null);
         }

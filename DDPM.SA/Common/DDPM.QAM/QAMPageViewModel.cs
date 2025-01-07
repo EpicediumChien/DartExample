@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Collections.ObjectModel;
 using DDPM.SA.Resources.Helper;
+using DDPM.SA.Common.Settings;
 
 
 namespace DDPM.QAM

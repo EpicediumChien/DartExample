@@ -48,9 +48,9 @@ using Color = System.Windows.Media.Color;
 using Image = System.Windows.Controls.Image;
 using LangHelper = DDPM.UI.Resources.Helper.LangHelper;
 using MessageBox = System.Windows.MessageBox;
-using WebcamProfile = DDPM.UI.Common.WebcamProfile;
+using WebcamProfile = DDPM.SA.Common.Settings.WebcamProfile;
 using static Windows.Foundation.UniversalApiContract;
-
+using Dell.Client.Framework.Common;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -2191,7 +2191,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (_vm!.WebcamSettings.CustomProfiles.ContainsKey(profileName))
             {
                 _vm!.WebcamSettings.CustomProfiles.Remove(profileName);
-                WebcamSettings.ExportWebcamSettings(_vm.WebcamSettings, _vm.Model);
+                WebcamSettings.ExportWebcamSettings(_vm.WebcamSettings, _vm.Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
                 _vm.PrepareProfileItems();
                 ProfileItems.ItemsSource = null;
                 ProfileItems.ItemsSource = _vm.ProfileItems;
@@ -2402,7 +2402,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.WebcamSettings.CustomProfiles.Add(_vm!.CurrentProfile.Name, profile);
             }
             _vm.CurrentProfileName = txt;
-            WebcamSettings.ExportWebcamSettings(_vm.WebcamSettings, _vm.Model);
+            WebcamSettings.ExportWebcamSettings(_vm.WebcamSettings, _vm.Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
             _vm.PrepareProfileItems();
             ProfileItems.ItemsSource = null;
             ProfileItems.ItemsSource = _vm.ProfileItems;

@@ -6,13 +6,21 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using DDPM.SA.Common;
+using Dell.Client.Framework.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace DDPM.UI.Common
+namespace DDPM.SA.Common.Settings
 {
+    /// <summary>
+    /// This webcam setting is designed for user mode process to read/write data,
+    /// if you use this class under system mode process the target folder might be empty.
+    /// </summary>
     public class WebcamSettings
     {
+        private static readonly string target_folder = 
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
+
         public string VideoCaptureFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
         public bool WebcamCountdown = false;
         public bool WebcamGrid = false;
@@ -21,19 +29,18 @@ namespace DDPM.UI.Common
         public Dictionary<string, string> SelectedFPSs = new();
         public Dictionary<string, string> Resolutions = new();
 
-        public bool IsFocusOn { get; set; }
-        public int Focus { get; set; }
-        public int Pan { get; set; }
-        public int Tilt { get; set; }
-        public int Zoom { get; set; }
-        public int AntiFlicker { get; set; }
-        public bool IsAutoFramingTransitionOn { get; set; }
-        public int AutoFramingSensitivity { get; set; }
-        public int AutoFramingFrameSize { get; set; }
-        public int AutoWhiteBalance { get; set; }
-
-        public string SelectedProfile = "";
-        public string SelectedProfileName = "";
+        public bool IsFocusOn { get; set; } = false;
+        public int Focus { get; set; } = -1;
+        public int Pan { get; set; } = -1;
+        public int Tilt { get; set; } = -1;
+        public int Zoom { get; set; } = -1;
+        public int AntiFlicker { get; set; } = -1;
+        public bool IsAutoFramingTransitionOn { get; set; } = false;
+        public int AutoFramingSensitivity { get; set; } = -1;
+        public int AutoFramingFrameSize { get; set; } = -1;
+        public int AutoWhiteBalance { get; set; } = -1;
+        public string SelectedProfile { get; set; } = string.Empty;
+        public string SelectedProfileName { get; set; } = string.Empty;
         public Dictionary<string, WebcamProfile> PresetProfiles = new();
         public Dictionary<string, WebcamProfile> CustomProfiles = new();
 
@@ -41,16 +48,24 @@ namespace DDPM.UI.Common
         public string CurrentFPS { get => SelectedFPSs[SelectedResolution]; }
         public bool IsFirstTime = true;
 
-        public WebcamSettings(DeviceInfo? di = null)
-        {
-            if (di != null)
+        public WebcamSettings(DeviceInfo di = null, IDeviceManagerSA devMgr = null, ILog log = null)
+        { 
+            if(di != null && devMgr != null)
             {
-                Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetSupportedResolutions(di.ID.ToString());
+                UpdateSupportedResolutions(di, devMgr, log);
+            }
+        }
+
+        public void UpdateSupportedResolutions(DeviceInfo di = null, IDeviceManagerSA devMgr = null, ILog log = null)
+        {
+            if (di != null && devMgr != null)
+            {
+                Task<string> task = devMgr.GetSupportedResolutions(di.ID.ToString());
                 var str = task.Result;
-                DdpmCommonHelper.WriteUILog(@$"WebcamSettings Json str{str}!");
+                log?.Info(@$"WebcamSettings Json str{str}!");
                 if (string.IsNullOrEmpty(str))
                 {
-                    DdpmCommonHelper.WriteUILog("DTP GetSupportedResolutions fail!");
+                    log?.Info("DTP GetSupportedResolutions fail!");
                     switch (di.ModelNumber)
                     {
                         case "WB5023":
@@ -63,23 +78,8 @@ namespace DDPM.UI.Common
                             break;
                     }
                 }
-                //if (string.IsNullOrEmpty(str))
-                //{
-                //    switch (di.ModelNumber)
-                //    {
-                //        case "WB5023":
-                //            str = "[{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}]";
-                //            //str = "{\"1280x720\":{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},\"1920x1080\":{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},\"2560x1440\":{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}}";
-                //            break;
-                //        default:
-                //            str = "[{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}]";
-                //            //str = "{\"1280x720\":{\"Resolution\":\"1280x720\",\"FPS\":[\"24\",\"30\",\"60\"]},\"1920x1080\":{\"Resolution\":\"1920x1080\",\"FPS\":[\"24\",\"30\",\"60\"]},\"2560x1440\":{\"Resolution\":\"2560x1440\",\"FPS\":[\"24\",\"30\"]}}";
-                //            break;
-                //    }
-                //}
 
                 var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
-                //var resolutions = JsonConvert.DeserializeObject<Dictionary<string, ResolutionItem>>(str)!;
                 if (resolutions != null)
                 {
                     foreach (var res in resolutions.OrderByDescending(x => x.Resolution))
@@ -102,11 +102,11 @@ namespace DDPM.UI.Common
                     }
                 }
 
-                task = DdpmCommonHelper.DeviceManagerSA!.GetSelectedResolution(di.ID.ToString());
+                task = devMgr.GetSelectedResolution(di.ID.ToString());
                 str = task.Result;
                 if (string.IsNullOrEmpty(str))
                 {
-                    DdpmCommonHelper.WriteUILog("DTP GetSelectedResolution fail!");
+                    log?.Error("DTP GetSelectedResolution fail!");
                     str = "{\"Resolution\":\"1280x720\",\"FPS\":[\"30\"]}";
                 }
 
@@ -125,16 +125,6 @@ namespace DDPM.UI.Common
                         CustomProfiles.Add(customProfiles[l].Name, customProfiles[l]);
                     }
                 }
-                //var presetProfiles = di.PresetProfiles.ToObject<List<WebcamProfile>>()!.ToList();
-                //task1 = DdpmCommonHelper.DeviceManagerSA!.GetPresetProfiles(di.ID.ToString());
-                //jArray = JArray.FromObject(task1.Result);
-                //var presetProfiles = jArray.ToObject<List<WebcamProfile>>()!.ToList();
-                //foreach (var profile in presetProfiles.OrderBy(x => x.Name))
-                //{
-                //    profile.Focus = di.FocusMin;
-                //    PresetProfiles.Add(profile.Name, profile);
-                //    //ProfileIDs.Add(profile.Name, profile.Id);
-                //}
 
                 WebcamProfile profile = new();
                 profile.Name = "Default";
@@ -242,99 +232,85 @@ namespace DDPM.UI.Common
             }
         }
 
-        public static bool ExportWebcamSettings(WebcamSettings WebcamSettings, string model)
+        //Target folder should be: Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
+        public static bool ExportWebcamSettings(WebcamSettings WebcamSettings, string model, IDeviceManagerSA devMgr = null, ILog log = null)
         {
+            if(devMgr == null)
+            {
+                log?.Error("[ExportWebcamSettings] The input devMgr is null");
+                return false;
+            }
             try
             {
-                DdpmCommonHelper.WriteUILog($"[ExportWebcamSettings] SelectedResolution :{WebcamSettings.SelectedResolution}");
+                log?.Info($"[ExportWebcamSettings] SelectedResolution :{WebcamSettings.SelectedResolution}");
                 string json = JsonConvert.SerializeObject(WebcamSettings, Formatting.Indented);
-                DdpmCommonHelper.WriteUILog($"[ExportWebcamSettings] json json:{json}");
-                var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
+                log?.Info($"[ExportWebcamSettings] json json:{json}");
+                var fileFolder = target_folder;
                 string info = string.Empty;
-                //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
                 if (!Directory.Exists(fileFolder))
                     Directory.CreateDirectory(fileFolder);
                 if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(fileFolder, out info))
                 {
                     string strPath = Path.Combine(fileFolder, $"{model}.json");
-                    //File.WriteAllText(strPath, json);
-                    if (DdpmCommonHelper.DeviceManagerSA != null)
-                    {
-                        return DdpmCommonHelper.DeviceManagerSA.WriteSerializedContentToFile(strPath, json).Result;//1007 apply signature
-                    }
-                    //return true;
-                    throw new Exception($"[ExportWebcamSettings] DeviceManagerSA is null(model:{model})");
+                    bool result = devMgr.WriteSerializedContentToFile(strPath, json).Result;//1007 apply signature
+                    
+                    if(!result)
+                        log?.Error($"[ExportWebcamSettings] DeviceManagerSA is null(model:{model})");
+                    return result;
                 }
                 else
                 {
-                    DdpmCommonHelper.WriteUILog($"[ExportWebcamSettings] ValidateFilePath failed(model:{model}): {info}");
+                    log?.Error($"[ExportWebcamSettings] ValidateFilePath failed(model:{model}): {info}");
                 }
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog($"[ExportWebcamSettings] exception: {ex.Message}");
+                log?.Error($"[ExportWebcamSettings] exception: {ex.Message}");
             }
             return false;
         }
 
-        public static WebcamSettings ImportWebcamSettings(string model, DeviceInfo di)
+        //Target folder should be Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
+        public static WebcamSettings ImportWebcamSettings(string model, DeviceInfo di, IDeviceManagerSA devMgr = null, ILog log = null)
         {
-            DdpmCommonHelper.WriteUILog(@$"[WebcamSettings] ImportWebcamSettings Start  !");
-            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
-            var hasFile = File.Exists(filePath);
-            string jsonString = string.Empty;
-            if (hasFile)
+            if (devMgr != null)
             {
-                string info = string.Empty;
-                //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
-                if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
+                log?.Info(@$"[WebcamSettings] ImportWebcamSettings Start  !");
+                var filePath = target_folder;
+                var hasFile = File.Exists(filePath);
+                string jsonString = string.Empty;
+                if (hasFile && devMgr != null)
                 {
-                    if (DdpmCommonHelper.DeviceManagerSA != null)
+                    string info = string.Empty;
+                    //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
+                    if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
                     {
-                        jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
-                        DdpmCommonHelper.WriteUILog(@$"[WebcamSettings] ImportWebcamSettings jsonString:{jsonString}!");
+                        jsonString = devMgr.ReadSerializedContentFromFile(filePath).Result;
+                        log?.Info(@$"[WebcamSettings] ImportWebcamSettings jsonString:{jsonString}!");
+                        if (!string.IsNullOrEmpty(jsonString))
+                            return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
+                        else
+                            log?.Error($"[ImportWebcamSettings][ReadSerializedContentFromFile] empty string output(model:{model})");
                     }
-                    if (!string.IsNullOrEmpty(jsonString))
-                        return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
-                }
-                else
-                {
-                    DdpmCommonHelper.WriteUILog($"[ImportWebcamSettings] ValidateFilePath failed(model:{model}): {info}");
+                    else
+                    {
+                        log?.Error($"[ImportWebcamSettings] ValidateFilePath failed(model:{model}): {info}");
+                    }
                 }
             }
-            var ka = new WebcamSettings(di);
-            DdpmCommonHelper.WriteUILog(@$"[WebcamSettings] ImportWebcamSettings di jsonString:{JsonConvert.SerializeObject(di)}!");
-            //SetJsonToResolution(ka, di);
-            ExportWebcamSettings(ka, model);
-            return ka;
+            else
+            {
+                log?.Error("[ExportWebcamSettings] The input devMgr is null");
+            }
+            //Init a new data
+            var wc = new WebcamSettings(di, devMgr, log);
+            log?.Info(@$"[WebcamSettings] ImportWebcamSettings di jsonString:{JsonConvert.SerializeObject(di)}!");
+            if(!ExportWebcamSettings(wc, model, devMgr, log))
+            {
+                log?.Info(@$"[WebcamSettings][ImportWebcamSettings] try to use ExportWebcamSettings to init file fail");
+            }
+            return wc;
         }
-
-        //public static void SetJsonToResolution(WebcamSettings ka, DeviceInfo di)
-        //{
-
-        //    if (!string.IsNullOrWhiteSpace(di.SelectedResolution))
-        //    {
-        //        ka.SelectedResolution = di.SelectedResolution;
-        //        ka.resolution = JsonConvert.DeserializeObject<ResolutionItem>(ka.SelectedResolution);
-        //        DdpmCommonHelper.WriteUILog(@$"[WebcamSettings] ImportWebcamSettings ka.SelectedResolution :{ka.SelectedResolution}!");
-        //        var resName = ka.resolution.Resolution switch
-        //        {
-        //            "1280x720" => "HD",
-        //            "720x1280" => "HD",
-        //            "1920x1080" => "Full HD",
-        //            "1080x1920" => "Full HD",
-        //            "2560x1440" => "2K QHD",
-        //            "1440x2560" => "2K QHD",
-        //            "3840x2160" => "4K UHD",
-        //            "2160x3840" => "4K UHD",
-        //            _ => "8K UHD"
-        //        };
-        //        ka.Selected_Resolution = resName;
-        //        ka.Selected_FPS = ka.resolution.FPS.ToList().FirstOrDefault();
-        //        DdpmCommonHelper.WriteUILog(@$"[WebcamSettings] ImportWebcamSettings resName :{resName}!");
-        //        DdpmCommonHelper.WriteUILog(@$"[WebcamSettings] ImportWebcamSettings ka.Selected_FPS :{ka.Selected_FPS}!");
-        //    }
-        //}
     }
 
     public class ResolutionItem
@@ -345,30 +321,28 @@ namespace DDPM.UI.Common
 
     public class WebcamProfile
     {
-        public string Id { get; set; } = "";
-        public string Name { get; set; } = "";
-        public string Description { get; set; } = "";
-        public int Priority { get; set; }
-        public bool IsHDROn { get; set; }
-        public int Brightness { get; set; }
-        public int Contrast { get; set; }
-        public int Saturation { get; set; }
-        public int Sharpness { get; set; }
-        public bool IsAutoFramingOn { get; set; }
-        public int FieldOfView { get; set; }
-        public bool IsAutoWhiteBalanceOn { get; set; }
-        public int AutoWhiteBalance { get; set; }
-
-
-        public bool IsFocusOn { get; set; }
-        public int Focus { get; set; }
-        public int Pan { get; set; }
-        public int Tilt { get; set; }
-        public int Zoom { get; set; }
-        public int AntiFlicker { get; set; }
-        public int AutoFramingSensitivity { get; set; }
-        public int AutoFramingFrameSize { get; set; }
-        public bool IsAutoFramingTransitionOn { get; set; }
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public int Priority { get; set; } = -1;
+        public bool IsHDROn { get; set; } = false;
+        public int Brightness { get; set; } = -1;
+        public int Contrast { get; set; } = -1;
+        public int Saturation { get; set; } = -1;
+        public int Sharpness { get; set; } = -1;
+        public bool IsAutoFramingOn { get; set; } = false;
+        public int FieldOfView { get; set; } = -1;
+        public bool IsAutoWhiteBalanceOn { get; set; } = false;
+        public int AutoWhiteBalance { get; set; } = -1;
+        public bool IsFocusOn { get; set; } = false;
+        public int Focus { get; set; } = -1;
+        public int Pan { get; set; } = -1;
+        public int Tilt { get; set; } = -1;
+        public int Zoom { get; set; } = -1;
+        public int AntiFlicker { get; set; } = -1;
+        public int AutoFramingSensitivity { get; set; } = -1;
+        public int AutoFramingFrameSize { get; set; } = -1;
+        public bool IsAutoFramingTransitionOn { get; set; } = false;
     }
 
     public enum OperationModule
