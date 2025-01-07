@@ -1954,9 +1954,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         }
                         //_iDeviceManager_DeviceAddedEvent(device);
                     }
+                    //Console.WriteLine(_deviceHelper.ToString());
+                    writelog(_deviceHelper.ToString());
                 }
-                //Console.WriteLine(_deviceHelper.ToString());
-                writelog(_deviceHelper.ToString());
             }
         }
 
