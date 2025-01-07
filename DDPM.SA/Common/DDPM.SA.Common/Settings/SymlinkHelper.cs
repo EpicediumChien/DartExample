@@ -91,96 +91,7 @@ namespace DDPM.SA.Common.Settings
             return null;
         }
 
-        /*public static bool RemoveFileSymlink(string path, out string info)
-        {
-            //Dean 0911: basic function, no function mix with other file checking
-            //Elsa Add Security
-            //string FileInfo;
-            //if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
-            //{
-            //    info = $"{nameof(RemoveFileSymlink)} {FileInfo}";
-            //    _log.Info(info);
-            //    return false;
-            //}
-            while (true)
-            {
-                try
-                {
-                    var targetPath = SymlinkHelper.GetTargetPath(path);
-                    if (targetPath == null)
-                        break;
-#if DEBUG
-                    Console.WriteLine($"Symlink target path: {targetPath}, from: {path}");
-#endif
-                    System.IO.File.Delete(targetPath);
-                }
-                catch (Exception ex)
-                {
-                    info = ex.Message;
-                    return false;
-                }
-            }
-            info = "Success";
-            return true;
-        }*/
-
-	/*public static bool RemoveFileSymlink2(string path, out string info)
-        {
-            try
-            {
-                var targetPath = SymlinkHelper.GetTargetPath(path);
-                if (targetPath != null)
-                {
-#if DEBUG
-                    Console.WriteLine($"Symlink target path: {targetPath}, from: {path}");
-#endif
-                    System.IO.File.Delete(path);
-                }
-            }
-            catch (Exception ex)
-            {
-                info = ex.Message;
-                return false;
-            }
-
-            info = "Success";
-            return true;
-        }*/
-
-        /*public static bool RemoveFolderSymlink(string path, out string info)
-        {
-            //Dean 0911: basic function, no function mix with other file checking
-            //Elsa Add Security
-            //string FileInfo;
-            //if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
-            //{
-            //    info = $"{nameof(RemoveFolderSymlink)} {FileInfo}";
-            //    //_log.Info(info);
-            //    return false;
-            //}
-            while (true)
-            {
-                try
-                {
-                    var targetPath = SymlinkHelper.GetTargetPath(path);
-                    if (targetPath == null)
-                        break;
-#if DEBUG
-                    Console.WriteLine($"Symlink target path: {targetPath}, from: {path}");
-#endif
-                    System.IO.Directory.Delete(targetPath);
-                }
-                catch (Exception ex)
-                {
-                    info = ex.Message;
-                    return false;
-                }
-            }
-            info = "Success";
-            return true;
-        }*/
-
-	public static bool RemoveFolderSymlink2(string path, out string info)
+        /*public static bool RemoveFolderSymlink2(string path, out string info)
         {
             try
             {
@@ -201,33 +112,6 @@ namespace DDPM.SA.Common.Settings
 
             info = "Success";
             return true;
-        }
-
-        /*public static bool IsFileHasSymlink(string path, out string info)
-        {
-            info = $"File {path} has symlink";
-            //Dean 0911: basic function, no function mix with other file checking
-            //Elsa Add Security
-            //string FileInfo;
-            //if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
-            //{
-            //    info = $"{nameof(IsFileHasSymlink)} {FileInfo}";
-            //    //_log.Info(info);
-            //    return false;
-            //}
-            try
-            {
-                FileInfo file = new FileInfo(path);
-                if (file.LinkTarget != null)
-                    return true;
-
-                info = $"File {path} has no symlink";
-            }
-            catch (Exception ex)
-            {
-                info = ex.Message;
-            }
-            return false;
         }*/
 
         public static bool IsFilePathHasSymlink(string path, out string info, PathCheckOption option = PathCheckOption.None)

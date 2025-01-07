@@ -168,21 +168,21 @@ namespace DDPM.UI.Module.Kvm
         #endregion
 
         #region Win32
-        [DllImport("user32.dll", EntryPoint = "SetParent", SetLastError = true)]
+        /*[DllImport("user32.dll", EntryPoint = "SetParent", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
         private static int _SetParent(IntPtr hWndChild, IntPtr hWndNewParent)
         {
             return SetParent(hWndChild, hWndNewParent);
-        }
+        }*/
 
-        [DllImport("user32.dll", SetLastError = true)]
+        /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
         private static bool _EnableWindow(IntPtr hWnd, bool bEnable)
         {
             return EnableWindow(hWnd, bEnable);
-        }
+        }*/
         #endregion Win32
 
         //[DllImport("user32.dll", SetLastError = true)]
@@ -1927,8 +1927,7 @@ namespace DDPM.UI.Module.Kvm
                 {
                     //Jason by U3824DW input source greyed out
                     if (pcsList["PC1"].InputType == original_pcsList["PC2"].InputType &&
-                    pcsList["PC2"].InputType == original_pcsList["PC1"].InputType &&
-                    (isPipSmall || isPipLarge) &&
+                    //pcsList["PC2"].InputType == original_pcsList["PC1"].InputType) &&
                     _curPxpMode != 0x0)
                     {
                         DdpmCommonHelper.DeviceManagerSA.VideoSwap(KvmModule.SelectedHomeDevice.MonitorInfo, 0, 1);
