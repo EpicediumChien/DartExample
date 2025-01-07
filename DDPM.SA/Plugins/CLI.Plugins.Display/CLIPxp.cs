@@ -516,6 +516,40 @@ namespace CLI.Plugins.Display
             if (_cmdLineInput.Options.Count == 2)
             {
                 swapIsDone = new List<string>();
+                flag = true;
+                while (flag && count < 1000)
+                {
+                    for (int i = 0; i < serviceTagList.Count; i++)
+                    {
+                        string stIsDone = swapIsDone.FirstOrDefault(_ => _ == serviceTagList[i]);
+                        if (!String.IsNullOrWhiteSpace(stIsDone))
+                            continue;
+                        MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
+                        if (mo == null)
+                        {
+                            _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                            break;
+                        }
+                        if (mo.CapabilityDic.ContainsKey("E9"))
+                        {
+                            isOK = _devMgr.SetPbpMode(mo, 0x00).Result;
+                            if (!isOK)
+                            {
+                                _AllInfoMonitors = _devMgr.GetMonitors().Result;
+                                break;
+                            }
+                        }
+                        swapIsDone.Add(mo.edid.ServiceTag);
+                    }
+                    if (serviceTagList.Count == swapIsDone.Count)
+                        flag = false;
+                    count++;
+                }
+                Thread.Sleep(5000);
+            }
+            if (_cmdLineInput.Options.Count == 2)
+            {
+                swapIsDone = new List<string>();
                 flag = true;              
                 while (flag && count < 1000)
                 {
@@ -581,7 +615,7 @@ namespace CLI.Plugins.Display
                         flag = false;
                     count++;
                 }
-                Thread.Sleep(1000);
+                Thread.Sleep(3000);
             }
             swapIsDone = new List<string>();
             flag = true;
@@ -635,7 +669,7 @@ namespace CLI.Plugins.Display
                     flag = false;
                 count++;
             }
-            Thread.Sleep(1000);
+            Thread.Sleep(3000);
             if (_cmdLineInput.Options.Count == 2)
             {
                 swapIsDone = new List<string>();
