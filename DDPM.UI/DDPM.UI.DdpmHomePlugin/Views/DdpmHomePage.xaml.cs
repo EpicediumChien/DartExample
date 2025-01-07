@@ -46,8 +46,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
                 _ddpmHomePageViewModel.ShowConsentRequested -= _ddpmHomePageViewModel_ShowConsent;
                 _ddpmHomePageViewModel.ShowConsentRequested += _ddpmHomePageViewModel_ShowConsent;
-                _ddpmHomePageViewModel.ImportNotify -= ImportNotifyEventHandler;
-                _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
+
+                AttachImportNotification();
             }
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -1070,6 +1070,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
             };
             _ddpmHomePageViewModel?.AddDemoHomeDevice(demo);
+        }
+
+        private void AttachImportNotification()
+        {
+            _ddpmHomePageViewModel.ImportNotify -= ImportNotifyEventHandler;
+            _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
+        }
+
+        ~DdpmHomePage()
+        {
+            _ddpmHomePageViewModel.ImportNotify -= ImportNotifyEventHandler;
         }
 
         #region Unused
