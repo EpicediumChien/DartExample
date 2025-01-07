@@ -697,36 +697,35 @@ namespace DDPM.UI.Module.Brightness
                 //}
                 Trace.WriteLine($"6. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
                 //Check if support ALS
-                if (SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("66") || isLuminance == true)
+                if ( (SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("66") || isLuminance == true) &&
+                      SelectedHomeDevice != null && 
+                      SelectedHomeDevice.MonitorInfo != null)
                 {
-                    if (SelectedHomeDevice != null && SelectedHomeDevice.MonitorInfo != null)
+                    //fixed releate PIMS-287891
+                    List<ALSConfig> alsList = new List<ALSConfig>();
+                    alsList = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
+                    if (alsList.Count > 0) // Check Start_ALSConfig whether exist
                     {
-                        //fixed releate PIMS-287891
-                        List<ALSConfig> alsList = new List<ALSConfig>();
-                        alsList = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
-                        if (alsList.Count > 0) // Check Start_ALSConfig whether exist
+                        for (int i = 0; i < alsList.Count; i++)
                         {
-                            for (int i = 0; i < alsList.Count; i++)
+                            if (alsList[i].Edid == SelectedHomeDevice.MonitorInfo.edid)
                             {
-                                if (alsList[i].Edid == SelectedHomeDevice.MonitorInfo.edid)
-                                {
-                                    Start_ALSConfig = alsList[i];
-                                }
+                                Start_ALSConfig = alsList[i];
                             }
                         }
-                        //Re-Get Start_ALSConfig
-                        if (Start_ALSConfig.AllValue == 0 && isLuminance == false)//Need to Re-Get value
-                        {
-                            Start_ALSConfig = DdpmCommonHelper.DeviceManagerSA.GetALSFeatureValue(SelectedHomeDevice.MonitorInfo, ALSFeatureQueryType.All, 0).Result;
-                            if (!alsList.Contains(Start_ALSConfig))
-                            {
-                                alsList.Add(Start_ALSConfig);
-                            }
-                        }
-                        GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
-                        SynchronizeBtnExpectedResult(DdpmCommonHelper.DeviceManagerSA.CheckisShowSynchronize(SelectedHomeDevice.MonitorInfo, alsList).Result);
-                        //CheckisShowSynchronize(alsList);
                     }
+                    //Re-Get Start_ALSConfig
+                    if (Start_ALSConfig.AllValue == 0 && isLuminance == false)//Need to Re-Get value
+                    {
+                        Start_ALSConfig = DdpmCommonHelper.DeviceManagerSA.GetALSFeatureValue(SelectedHomeDevice.MonitorInfo, ALSFeatureQueryType.All, 0).Result;
+                        if (!alsList.Contains(Start_ALSConfig))
+                        {
+                            alsList.Add(Start_ALSConfig);
+                        }
+                    }
+                    GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
+                    SynchronizeBtnExpectedResult(DdpmCommonHelper.DeviceManagerSA.CheckisShowSynchronize(SelectedHomeDevice.MonitorInfo, alsList).Result);
+                    //CheckisShowSynchronize(alsList);                    
                 }
 
                 //OSD control back event
@@ -775,23 +774,21 @@ namespace DDPM.UI.Module.Brightness
                 if (PR1Luminance_Value < 0 || PR2Luminance_Value < 0 || PR1Brightness_Value < 0 || PR2Brightness_Value < 0 || PR1Contrast_Value < 0 || PR2Contrast_Value < 0 || hOurs_1 < 0 || hOurs_2 < 0 || mIns_1 < 0 || mIns_2 < 0 || dUration_1 < 0 || dUration_2 < 0)
                 {
                     GetScheduleInfo();
-                    if (ScheduleMap.IsEnable == true)
+                    if (ScheduleMap.IsEnable == true &&
+                        MyModule.GetRightView() is BrightnessRightView)
                     {
-                        if ((MyModule.GetRightView() is BrightnessRightView))
+                        MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                         {
-                            MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                            if (isLuminance)
                             {
-                                if (isLuminance)
-                                {
-                                    ((BrightnessRightView)MyModule.GetRightView()).Expander_Schedule_Luminance.IsExpanded = true;
-                                }
-                                else
-                                {
-                                    ((BrightnessRightView)MyModule.GetRightView()).Expander_Schedule.IsExpanded = true;
-                                }
-                            }));
-                            isRunScheduledNG = true;
-                        }
+                                ((BrightnessRightView)MyModule.GetRightView()).Expander_Schedule_Luminance.IsExpanded = true;
+                            }
+                            else
+                            {
+                                ((BrightnessRightView)MyModule.GetRightView()).Expander_Schedule.IsExpanded = true;
+                            }
+                        }));
+                        isRunScheduledNG = true;                        
                     }
                 }
             }
@@ -2426,12 +2423,11 @@ namespace DDPM.UI.Module.Brightness
                     _primaryMonitorSyncStatus = onoff;
                     Start_ALSConfig.isPrimaryMonitorSync = onoff;
                 }
-                if (property.Equals("AUTOBRILEVEL"))//PIMS-314583
+                if (property.Equals("AUTOBRILEVEL") && //PIMS-314583
+                    Start_ALSConfig.AutoBrightnessRangeLevel != null && 
+                    Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
                 {
-                    if (Start_ALSConfig.AutoBrightnessRangeLevel != null && Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
-                    {
-                        SetBrightnessLevelDataToObject(level);
-                    }
+                    SetBrightnessLevelDataToObject(level);                    
                 }
                 SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
             }
@@ -2628,12 +2624,10 @@ namespace DDPM.UI.Module.Brightness
 
                 foreach (HomeDevice hd in ModuleOwner.HomeDevices)
                 {
-                    if (hd.MonitorInfo.IsDellMonitor)
+                    if (hd.MonitorInfo.IsDellMonitor &&
+                        !hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
                     {
-                        if (!hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
-                        {
-                            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;
-                        }
+                        _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;                        
                     }
                 }
             }
@@ -2662,12 +2656,10 @@ namespace DDPM.UI.Module.Brightness
 
                     foreach (HomeDevice hd in ModuleOwner.HomeDevices)
                     {
-                        if (hd.MonitorInfo.IsDellMonitor)
+                        if (hd.MonitorInfo.IsDellMonitor &&
+                            hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
                         {
-                            if (hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
-                            {
-                                _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;
-                            }
+                            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;                            
                         }
                     }
                 }
@@ -2681,47 +2673,45 @@ namespace DDPM.UI.Module.Brightness
                 //NotifyPropertyChanged("BrightnessValue");
             }
 
-            if (Start_ALSConfig != null && Start_ALSConfig.isSupportALS > 0)
+            if (Start_ALSConfig != null && Start_ALSConfig.isSupportALS > 0 &&
+                _autoBrightnessStatus)
             {
-                if (_autoBrightnessStatus)
+                if (CheckMonitorALSStatus() && !Start_ALSConfig.isPrimaryMonitorSync)
                 {
-                    if (CheckMonitorALSStatus() && !Start_ALSConfig.isPrimaryMonitorSync)
-                    {
-                        MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
-                        {
-                            ALSSettingsChangesOnNonPrimary(false, "BRILEVEL");
-                        }));
-                        if (_autoBrightnessStatus)//means select no
-                        {
-                            Get_Brightness_Value();
-                            return;
-                        }
-                        else//means select yes
-                            SET_Brightness();
-                        return;
-                    }
-                    string pop_string = Strings.BrightnessPageNotice0;// "Auto Brightness is currently enabled. Do you wish to disable it to continue?";
                     MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
                     {
-                        r = DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string, MyModule.GetRightView().Parent);
+                        ALSSettingsChangesOnNonPrimary(false, "BRILEVEL");
                     }));
-                    if (r)
-                        AutoBrightnessStatus = _autoBrightnessStatus = false;
-                    else
+                    if (_autoBrightnessStatus)//means select no
                     {
-                        //if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 0)
-                        //    Brightness_Value = 40;
-                        //else if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 1)
-                        //    Brightness_Value = 60;
-                        //else
-                        //    Brightness_Value = 100;
-
-                        //NotifyPropertyChanged("BrightnessValue");
-                        //NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
-
                         Get_Brightness_Value();
                         return;
                     }
+                    else//means select yes
+                        SET_Brightness();
+                    return;
+                }
+                string pop_string = Strings.BrightnessPageNotice0;// "Auto Brightness is currently enabled. Do you wish to disable it to continue?";
+                MyModule.GetRightView().Dispatcher.Invoke((Action)(() =>
+                {
+                    r = DdpmCommonHelper.DDPMMesssageBox(Strings.BrightnessPageWarning, pop_string, MyModule.GetRightView().Parent);
+                }));
+                if (r)
+                    AutoBrightnessStatus = _autoBrightnessStatus = false;
+                else
+                {
+                    //if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 0)
+                    //    Brightness_Value = 40;
+                    //else if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 1)
+                    //    Brightness_Value = 60;
+                    //else
+                    //    Brightness_Value = 100;
+
+                    //NotifyPropertyChanged("BrightnessValue");
+                    //NotifyPropertyChanged("AutoBrightnessRangeLevel_String");
+
+                    Get_Brightness_Value();
+                    return;
                 }
             }
 

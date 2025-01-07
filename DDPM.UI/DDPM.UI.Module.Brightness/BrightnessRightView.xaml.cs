@@ -847,17 +847,15 @@ namespace DDPM.UI.Module.Brightness
                                     BrightnessSteps_msec_counter = 0;
                                 }
 
-                                if (!(vm.isLuminanceSupport == Visibility.Visible))
+                                if (!(vm.isLuminanceSupport == Visibility.Visible) &&
+                                    ContrastSteps_msec_counter == ContrastSteps_msec)
                                 {
-                                    if (ContrastSteps_msec_counter == ContrastSteps_msec)
-                                    {
-                                        if (IsContrastPR1Plus)
-                                            vm.ContrastValue += PerStepValue;
-                                        else
-                                            vm.ContrastValue -= PerStepValue;
+                                    if (IsContrastPR1Plus)
+                                        vm.ContrastValue += PerStepValue;
+                                    else
+                                        vm.ContrastValue -= PerStepValue;
 
-                                        ContrastSteps_msec_counter = 0;
-                                    }
+                                    ContrastSteps_msec_counter = 0;                                    
                                 }
 
                                 Thread.Sleep(1);
@@ -912,17 +910,15 @@ namespace DDPM.UI.Module.Brightness
                                     BrightnessSteps_msec_counter = 0;
                                 }
 
-                                if (!(vm.isLuminanceSupport == Visibility.Visible))
-                                {
-                                    if (ContrastSteps_msec_counter == ContrastSteps_msec)
-                                    {
-                                        if (IsContrastPR2Plus)
-                                            vm.ContrastValue += PerStepValue;
-                                        else
-                                            vm.ContrastValue -= PerStepValue;
+                                if (!(vm.isLuminanceSupport == Visibility.Visible) &&
+                                    ContrastSteps_msec_counter == ContrastSteps_msec)
+                                { 
+                                    if (IsContrastPR2Plus)
+                                        vm.ContrastValue += PerStepValue;
+                                    else
+                                        vm.ContrastValue -= PerStepValue;
 
-                                        ContrastSteps_msec_counter = 0;
-                                    }
+                                    ContrastSteps_msec_counter = 0;
                                 }
 
                                 Thread.Sleep(1);
