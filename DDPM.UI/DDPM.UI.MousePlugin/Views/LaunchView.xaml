@@ -300,7 +300,8 @@
         </Grid>
         <Grid x:Name="AppCaptionArea" Width="250" Height="280" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,172" Visibility="Collapsed">
             <StackPanel Orientation="Vertical">
-                <UXControls:UXTextBlock Name="txtActionCaption" Margin="0" HorizontalAlignment="Left"
+                <!-- Elsa 20250107 For PIMS [PIMS-332080] add Height="50" Width="170" TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow" -->
+                <UXControls:UXTextBlock Name="txtActionCaption" Margin="0" HorizontalAlignment="Left" Height="50" Width="170" TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow"
                                         FontFamily="Roboto" Foreground="{DynamicResource txtActionCaption_TxtColor}"  FontSize="20" FontWeight="Normal" Text="{Binding [Mouse.0], Source={x:Static lang:LangHelper.Instance}}"/>
                 <StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="40,33,0,28">
