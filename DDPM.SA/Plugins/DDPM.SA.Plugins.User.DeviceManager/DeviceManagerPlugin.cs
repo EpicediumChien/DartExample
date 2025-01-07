@@ -2937,6 +2937,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             nRes = _PeripheralsPlugin.GetSnoozeLength(deviceId);
             return Task.FromResult(nRes);
         }
+        public Task<bool> StartCopilotRegistryMonitor()
+        {
+            writelog("DeviceMangerPlugin received StartCopilotRegistryMonitor requested ...");
+            return Task.Run(() => _PeripheralsPlugin.StartCopilotRegistryMonitor());
+        }
+        public Task<bool> StopCopilotRegistryMonitor()
+        {
+            writelog("DeviceMangerPlugin received StopCopilotRegistryMonitor requested ...");
+            return Task.Run(() => _PeripheralsPlugin.StopCopilotRegistryMonitor());
+        }
 
         #endregion
 
@@ -9641,6 +9651,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetAutoFramingSensitivity(Guid));
         }
+        public async Task<string> GetWebcamSerialNumber(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetWebcamSerialNumber(Guid));
+        }
 
         public Task SetIsMicEnumerationOn(string Guid, bool newValue)
         {
@@ -13720,7 +13734,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Keyboard, "Dell Multi-Device Mouse - MS5320W");
             //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Mouse, "Dell Multi-Device Mouse - MS5320W");
             //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Headset, "Dell Multi-Device Mouse - MS5320W");
-            ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Pen, "Dell Multi-Device Mouse - MS5320W");
+            //ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, OSDType_Device.Pen, "Dell Multi-Device Mouse - MS5320W");
             //will register as ALT+Z ?
             if (_altPressed && strKey.Equals("Z") && !_ctrlPressed && !_shiftPressed)
             {
@@ -14629,8 +14643,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             UInt16 pxpModeValue = 0xff;
             if (!mo.CapabilityDic.ContainsKey("E9"))
             {
-                writelog($"[IsPxPModeOFF] monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],has no E9.");
-                return false;
+                writelog($"[IsPxPModeOFF] monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],has no E9.ret=true");
+                return true;
             }
             ObjGetVCP pxpMode = GetPxpMode(mo).Result;
             if (pxpMode != null && pxpMode.result)

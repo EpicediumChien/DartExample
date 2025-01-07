@@ -1112,10 +1112,25 @@ namespace DDPM.UI.Plugin.ViewModels
                 WebcamSettings.WebcamGrid = value;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(WebcamGridVisibity));
                 //WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
+        private bool _showGrid = true;
+        public bool ShowGrid
+        {
+            get => _showGrid;
+            set
+            {
+                _showGrid = value;
+                OnPropertyChanged(nameof(WebcamGridVisibity));
+            }
+        }
+        public Visibility WebcamGridVisibity
+        {
+            get => ShowGrid && WebcamGrid ? Visibility.Visible : Visibility.Collapsed;
+        }
         public string IsMicEnumerationOnText
         {
             get => CurrentDeviceInfo!.IsMicEnumerationOn ? Strings.On : Strings.Off;

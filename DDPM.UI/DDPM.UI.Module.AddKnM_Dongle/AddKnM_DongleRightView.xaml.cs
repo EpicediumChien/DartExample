@@ -14,6 +14,8 @@ namespace DDPM.UI.Module.AddKnM_Dongle
         // 10/15 Derek for RWD
         private readonly int breakPoints = 1050;
 
+        private bool userControlLoaded = false;
+
         //private readonly string Step1 = "Connect your USB wireless receiver to your system";
         //private readonly string Step2 = "Slide the power switch to OFF.";
         //private readonly string Step3 = "Press and hold any key/button and slide power to ON";
@@ -35,6 +37,7 @@ namespace DDPM.UI.Module.AddKnM_Dongle
 
         private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
+            userControlLoaded = true;
             AdjustBorderHeight();
         }
 
@@ -55,7 +58,21 @@ namespace DDPM.UI.Module.AddKnM_Dongle
 
         private void AdjustBorderHeight()
         {
-            stepsBorder1.Height = stepsBorder2.Height = stepsBorder3.Height = stepsBorder4.ActualHeight;
+            if (userControlLoaded)
+            {
+                double maxTextHeight = txtStep1.ActualHeight;
+                if (txtStep2.ActualHeight > maxTextHeight) maxTextHeight = txtStep2.ActualHeight;
+                if (txtStep3.ActualHeight > maxTextHeight) maxTextHeight = txtStep3.ActualHeight;
+                if (txtStep4.ActualHeight > maxTextHeight) maxTextHeight = txtStep4.ActualHeight;
+                maxTextHeight += 28; // icon margin
+                maxTextHeight += 46; // icon
+                maxTextHeight += 15; // stack panel margin
+                maxTextHeight += 25; // text margin
+                stepsBorder1.Height = maxTextHeight;
+                stepsBorder2.Height = maxTextHeight;
+                stepsBorder3.Height = maxTextHeight;
+                stepsBorder4.Height = maxTextHeight;
+            }
         }
 
         private void ChangeToVerticalLayout()

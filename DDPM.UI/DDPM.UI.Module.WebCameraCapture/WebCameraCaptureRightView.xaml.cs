@@ -33,6 +33,7 @@ namespace DDPM.UI.Module.WebCameraCapture
             btnOpen.Caption = LangHelper.Instance["WebCameraCapture.2"];
             InitializeResolution();
             InitializeFPS();
+
         }
         private void InitializeResolution()
         {
