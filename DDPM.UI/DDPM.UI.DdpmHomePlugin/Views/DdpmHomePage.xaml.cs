@@ -38,11 +38,16 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 base.DataContext = _ddpmHomePageViewModel;
                 _ddpmHomePageViewModel.HomeDevicesChanged += _ddpmHomePageViewModel_HomeDevicesChanged;
 
+                //Robert_Lin, 2025-1-7, the DDPMDebug.txt solution will be removed, use DevSettings instaed.
+                //NEW:
+                if (DevSettings.DdpmHomeShowDeviceListViewToolbar())
+                //OLD:
                 ////Robert_Lin, 2024-7-16 for engineer debug,
-                if (DDPM.UI.Common.User32.IniReadInt("DDPMDebug", "HomePage.ShowDeviceListViewToolbar", 0, @"C:\temp\DDPMDebug.txt") == 1)
+                //if (DDPM.UI.Common.User32.IniReadInt("DDPMDebug", "HomePage.ShowDeviceListViewToolbar", 0, @"C:\temp\DDPMDebug.txt") == 1)
                 {
                     UIDebugPanel.Visibility = Visibility.Visible;
                 }
+
                 _ddpmHomePageViewModel.ShowConsentRequested += _ddpmHomePageViewModel_ShowConsent;
                 _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
             }
