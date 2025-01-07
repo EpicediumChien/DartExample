@@ -1364,11 +1364,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (vcpcode == "68")
             {
                 //uint contrastValue = temp & 0xFF;
-                if (aconfig.ContrastValue == temp)
+                if (aconfig.ContrastValue == temp) // same as last time 
                     return true;
-                uint contrastValue = temp;
+                uint contrastValue = temp & 0xFF;
 
-                aconfig.ContrastValue = (int)temp;
+                aconfig.ContrastValue = (int)contrastValue;
                 Trace.WriteLine($" [DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, temp = {temp.ToString()}, contrastValue = {contrastValue.ToString()}");
                 _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, {temp.ToString()} ");
                 if (await _VcpCorePlugin.SetVCPCapability(monitorvalue, 0x68, contrastValue))
@@ -1389,7 +1389,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     return true;
                 }
 
-                if (aconfig.BrightnessValue == temp)
+                if (aconfig.BrightnessValue == temp)  // same as last time 
                     return true;
 
                 aconfig.BrightnessValue = (int)temp;
@@ -2392,7 +2392,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     Trace.WriteLine($"[DisplayMangerPlugin] show_VCPchangedEventArgs, lastProcessedTime = {lastProcessedTime.ToString()} || now - lastProcessedTime = {(now - lastProcessedTime).TotalSeconds.ToString()}");
                     _logs.DebugMsg($"[DisplayMangerPlugin] show_VCPchangedEventArgs, lastProcessedTime = {lastProcessedTime.ToString()} || now - lastProcessedTime = {(now - lastProcessedTime).TotalSeconds.ToString()}");
-                    if ((now - lastProcessedTime).TotalSeconds < 3)
+                    if ((now - lastProcessedTime).TotalSeconds < 4)
                     {
                         Trace.WriteLine($"[DisplayManagerPlugin] show_VCPchangedEventArgs, Skipping VCP code {e.vcpcode.ToString()} event ... Time to close {(now - lastProcessedTime).TotalSeconds.ToString()}");
                         _logs.DebugMsg($"[DisplayManagerPlugin] show_VCPchangedEventArgs, Skipping VCP code {e.vcpcode.ToString()} event ... Time to close {(now - lastProcessedTime).TotalSeconds.ToString()}");
@@ -2416,6 +2416,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
                 _logs.DebugMsg("[DisplayManagerPlugin] show_VCPchangedEventArgs => PeocessALSTriggerEvent, End processing VCP code 67 / 68.");
             }
+
             //Dean 0614 handle brightness/contrast
             if (e.vcpcode.Equals("10") || e.vcpcode.Equals("12") || e.vcpcode.Equals("E2") || e.vcpcode.Equals("14") || e.vcpcode.Equals("F0") || e.vcpcode.Equals("DC"))
             {
