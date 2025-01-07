@@ -227,7 +227,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //usb 2.0限制規則要放在最後做校正
             CheckUSBtype();
 
-
+            //grdPreview.Visibility = _vm.WebcamGrid ? Visibility.Visible : Visibility.Hidden;
 
             DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
         }
@@ -375,17 +375,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //現在規格已經不需要判斷韌體奇偶數直接從 is_EsiSupport 判斷就好
 
             //硬體與條件狀態模擬測試 rd測試用
-            if (File.Exists(@"C:\ui_cond\ddpm_cond.txt"))
-            {
-                ui_cond cond = JsonConvert.DeserializeObject<ui_cond>(File.ReadAllText(@"C:\ui_cond\ddpm_cond.txt"));
+            //if (File.Exists(@"C:\ui_cond\ddpm_cond.txt"))
+            //{
+            //    ui_cond cond = JsonConvert.DeserializeObject<ui_cond>(File.ReadAllText(@"C:\ui_cond\ddpm_cond.txt"));
 
-                is_EsiSupport = cond.is_EsiSupport;
-                is_WindwosHelloSupport = cond.is_WindwosHelloSupport;
-                is_camera_dell7 = cond.is_camera_dell7;
-                is_WindowsVer_OK = cond.is_WindowsVer_OK;
-                is_DellPc = cond.is_DellPc;
-                AllSupportedResolutions = cond.AllSupportedResolutions;
-            }
+            //    is_EsiSupport = cond.is_EsiSupport;
+            //    is_WindwosHelloSupport = cond.is_WindwosHelloSupport;
+            //    is_camera_dell7 = cond.is_camera_dell7;
+            //    is_WindowsVer_OK = cond.is_WindowsVer_OK;
+            //    is_DellPc = cond.is_DellPc;
+            //    AllSupportedResolutions = cond.AllSupportedResolutions;
+            //}
 
             print_debug("is_EsiSupport:" + is_EsiSupport);
             print_debug("is_WindwosHelloSupport:" + is_WindwosHelloSupport);
@@ -1046,7 +1046,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //    DdpmCommonHelper.MyConsole!.ShowHomePage();
         }
 
-        bool WebcamGrid_old_ststus = false;
+        //bool WebcamGrid_old_ststus = false;
         private void status_change()
         {
 
@@ -1067,9 +1067,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         CameraImage.Visibility = Visibility.Visible;
 
                         //恢復9宮格線
-                        _vm.WebcamGrid = WebcamGrid_old_ststus;
-
-
+                        _vm.ShowGrid = true;
                     });
 
                 }
@@ -1083,8 +1081,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         CameraImage.Visibility = Visibility.Hidden;
                         _ = CleanupMediaCaptureAsync();
 
-                        WebcamGrid_old_ststus = _vm.WebcamGrid;
-                        _vm.WebcamGrid = false;
+                        //WebcamGrid_old_ststus = _vm.WebcamGrid;
+                        _vm.ShowGrid = false;
 
                         imgDevice.Visibility = Visibility.Visible;
                         DoubleAnimation visibilityAnimation = new()
