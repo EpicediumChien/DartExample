@@ -277,6 +277,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isEnable_Snooze = _isChecked_WalkAwayLock && _isChecked_ProximitySensor; // jim modify for PIMS - 328195
 
                 OnPropertyChanged("IsEnable_WalkAwayLock");
+                OnPropertyChanged("IsEnable_Snooze"); // jim modify for PIMS - 328195
             }
         }
 

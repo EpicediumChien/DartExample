@@ -466,7 +466,7 @@ namespace VcpCore.Plugins
                 //case "1a": return "Rec. 709 / BT.709";
                 case "1a": return "Rec.709 / BT.709"; // 10/04 add
                 case "1b": return "DCI-P3";
-                case "1c": return "Rec2020";
+                case "1c": return "Rec.2020 / BT.2020"; // Jim 2025017 modify
                 case "1d": return "ComfortView";
                 case "1e": return "Game2";
                 case "1f": return "Game3";
@@ -494,6 +494,7 @@ namespace VcpCore.Plugins
                 case "3a": return "DisplayHDR";
                 case "3b": return "HDR10";
                 case "3c": return "HLG";
+                case "3d": return "Display P3"; // Jim add 20250107
                 case "30": return "Custom Color HDR"; // Jim add 2025 for [S3225QC] HDR list
                 case "31": return "HDR Peak 1000"; // Jim add 2025 for [S3225QC] HDR list
                 case "7f": return "Presets Disabled";
