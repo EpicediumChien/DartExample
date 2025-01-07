@@ -487,54 +487,47 @@ namespace DDPM.UI.Plugin.DisplayPlugin
             double dpiX = DDPM.SA.Common.CommonFunctions.GetDpiX();
             string monitorDisplayName = "";
             //Checking event args
-            if (e != null)
+            if (e != null &&
+                e.Tag != null)
             {
-                if (e.Tag != null)
+                monitorDisplayName = e.Tag?.ToString();
+
+                //Get mouse cursor position
+                System.Drawing.Point cursorPosition = System.Windows.Forms.Cursor.Position;
+                //Get the Screen of the cursor
+                System.Windows.Forms.Screen screenOfCursor = System.Windows.Forms.Screen.FromPoint(cursorPosition);
+                if (_deviceManagerSAPlugin != null)
                 {
-                    monitorDisplayName = e.Tag?.ToString();
-
-                    //Get mouse cursor position
-                    System.Drawing.Point cursorPosition = System.Windows.Forms.Cursor.Position;
-                    //Get the Screen of the cursor
-                    System.Windows.Forms.Screen screenOfCursor = System.Windows.Forms.Screen.FromPoint(cursorPosition);
-                    if (_deviceManagerSAPlugin != null)
-                    {
-                        //Get AllMonitors
-                        List<MonitorInfo> monitors = _deviceManagerSAPlugin.GetMonitors().Result;
-                    }
-                    if (_viewModel != null)
-                    {
-                        if (_viewModel.HomeDevices != null)
-                        {
-                            HomeDevice? inPlaceDevice = _viewModel.HomeDevices.Find(x => x.DisplayName == screenOfCursor.DeviceName);
-                            if (inPlaceDevice != null)
-                            {
-                                if (_deviceManagerSAPlugin != null)
-                                {
-                                    _deviceManagerSAPlugin.ShowOSD(inPlaceDevice.MonitorInfo, OSDType.DisplayChanged);
-                                }
-                            }
-                        }
-                    }
-
-                    System.Drawing.Point ptMouse = System.Windows.Forms.Control.MousePosition;
-                    System.Drawing.Point mousePos = new System.Drawing.Point(ptMouse.X, ptMouse.Y);
-
-                    mousePos.X = (int)((double)mousePos.X * dpiX);
-                    mousePos.Y = (int)((double)mousePos.Y * dpiX);
-                    System.Windows.Forms.Screen screen1 = System.Windows.Forms.Screen.FromPoint(mousePos);
-
-                    VcpCore.Common.User32.POINTL ptCursor = new VcpCore.Common.User32.POINTL();
-                    VcpCore.Common.User32._GetCursorPos(out ptCursor);
-                    System.Drawing.Point cursorPos = new System.Drawing.Point(ptCursor.x, ptCursor.y);
-                    cursorPos.X = (int)((double)cursorPos.X / dpiX);
-                    cursorPos.Y = (int)((double)cursorPos.Y / dpiX);
-                    System.Windows.Forms.Screen screen2 = System.Windows.Forms.Screen.FromPoint(cursorPos);
-
-
-
-                    monitorDisplayName = screen2.DeviceName;
+                    //Get AllMonitors
+                    List<MonitorInfo> monitors = _deviceManagerSAPlugin.GetMonitors().Result;
                 }
+                if (_viewModel != null &&
+                    _viewModel.HomeDevices != null)
+                {
+                    HomeDevice? inPlaceDevice = _viewModel.HomeDevices.Find(x => x.DisplayName == screenOfCursor.DeviceName);
+                    if (inPlaceDevice != null &&
+                        _deviceManagerSAPlugin != null)
+                    {
+                        _deviceManagerSAPlugin.ShowOSD(inPlaceDevice.MonitorInfo, OSDType.DisplayChanged);
+                    }
+                    
+                }
+
+                System.Drawing.Point ptMouse = System.Windows.Forms.Control.MousePosition;
+                System.Drawing.Point mousePos = new System.Drawing.Point(ptMouse.X, ptMouse.Y);
+
+                mousePos.X = (int)((double)mousePos.X * dpiX);
+                mousePos.Y = (int)((double)mousePos.Y * dpiX);
+                System.Windows.Forms.Screen screen1 = System.Windows.Forms.Screen.FromPoint(mousePos);
+
+                VcpCore.Common.User32.POINTL ptCursor = new VcpCore.Common.User32.POINTL();
+                VcpCore.Common.User32._GetCursorPos(out ptCursor);
+                System.Drawing.Point cursorPos = new System.Drawing.Point(ptCursor.x, ptCursor.y);
+                cursorPos.X = (int)((double)cursorPos.X / dpiX);
+                cursorPos.Y = (int)((double)cursorPos.Y / dpiX);
+                System.Windows.Forms.Screen screen2 = System.Windows.Forms.Screen.FromPoint(cursorPos);
+
+                monitorDisplayName = screen2.DeviceName;                
             }
 
             //Dispatcher.Invoke(new Action(() =>

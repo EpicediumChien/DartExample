@@ -276,15 +276,13 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //1030 Dean
                             //For Hess to read global setting "_globalSettings"
                             //After "GetDdpmDevicesAsync" the user setting cache is ready "DdpmCommonHelper.Settings_Cache"
-                            if (DdpmCommonHelper.Settings_Cache == null)
+                            if (DdpmCommonHelper.Settings_Cache == null &&
+                                DdpmCommonHelper.DeviceManagerSA != null)
                             {
-                                if (DdpmCommonHelper.DeviceManagerSA != null)
-                                {
-                                    //Elapsed= 2 msec
-                                    _log.Info("Calling to ReadDDPMSettings()");
-                                    DdpmCommonHelper.ReadDDPMSettings();
-                                    _log.Info("Return to ReadDDPMSettings()");
-                                }
+                                //Elapsed= 2 msec
+                                _log.Info("Calling to ReadDDPMSettings()");
+                                DdpmCommonHelper.ReadDDPMSettings();
+                                _log.Info("Return to ReadDDPMSettings()");                                
                             }
                             if (_globalSettings != null && DdpmCommonHelper.Settings_Cache != null && _viewModel != null)
                             {
@@ -620,14 +618,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         }
 
         [DllImport("user32.dll")]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+        private static int _SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam)
+        {
+            return SendMessage(hWnd, wMsg, wParam, lParam);
+        }
         private const int WM_EXITBYMYSELF = 0xFF30;
         private void CloseMyself()
         {
             try
             {
                 IntPtr hWnd = Process.GetCurrentProcess().MainWindowHandle;
-                int result = SendMessage(hWnd, WM_EXITBYMYSELF, IntPtr.Zero, IntPtr.Zero);
+                int result = _SendMessage(hWnd, WM_EXITBYMYSELF, IntPtr.Zero, IntPtr.Zero);
 
                 _log.Info($"SendMessage result = {result}");
             }
@@ -643,9 +646,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             string monitorName = "";
             string vcpCode = "";
-            if (e.monitor != null)
-                if (e.monitor.AliasDeviceName != null)
-                    monitorName = e.monitor.AliasDeviceName;
+            if (e.monitor != null &&
+                e.monitor.AliasDeviceName != null)
+            {
+                monitorName = e.monitor.AliasDeviceName;
+            }
             if (e.vcpcode != null)
                 vcpCode = e.vcpcode;
             _log.Info($"DdpmHomePlugin._deviceManager_VCPchanged() executed, Monitor=[{monitorName}], VcpCode=[{e.vcpcode}]");
@@ -771,13 +776,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //Robert_Lin, 2024-11-9 for Developer debug, check if C:\temp\DDPMDebug.txt contains
                             //[DDPMDebug]
                             //HomePlugin.GetDdpmDevicesAsync.AddFakeMonitorIfEmpty=1
-                            if (File.Exists(@"C:\temp\DDPMDebug.txt"))
+                            if (File.Exists(@"C:\temp\DDPMDebug.txt") &&
+                                User32.IniReadInt("DDPMDebug", "HomePlugin.GetDdpmDevicesAsync.AddFakeMonitorIfEmpty", 0, @"C:\temp\DDPMDebug.txt") == 1)
                             {
-                                if (User32.IniReadInt("DDPMDebug", "HomePlugin.GetDdpmDevicesAsync.AddFakeMonitorIfEmpty", 0, @"C:\temp\DDPMDebug.txt") == 1)
-                                {
-                                    //Add a Fake monitor to the listView of Homepage
-                                    _viewModel?.AddFakeMonitorToListView();
-                                }
+                                //Add a Fake monitor to the listView of Homepage
+                                _viewModel?.AddFakeMonitorToListView();                                
                             }
 
                         }
@@ -1090,22 +1093,20 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// <param name="e">Put a bool value to e.Tag, True=Show; False=Hide</param>
         private void Handler_ShowAddDeviceIcon(object sender, EventManagerArgs e)
         {
-            if (e.Tag != null)
-            {
-                if (e.Tag is bool)
+            if (e.Tag != null &&
+                e.Tag is bool)
+            {                                
+                bool isShow = (bool)e.Tag;
+                if (isShow)
                 {
-                    bool isShow = (bool)e.Tag;
-                    if (isShow)
-                    {
-                        if (_iconAddDevice != null)
-                            _iconAddDevice.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        if (_iconAddDevice != null)
-                            _iconAddDevice.Visibility = Visibility.Collapsed;
-                    }
+                    if (_iconAddDevice != null)
+                        _iconAddDevice.Visibility = Visibility.Visible;
                 }
+                else
+                {
+                    if (_iconAddDevice != null)
+                        _iconAddDevice.Visibility = Visibility.Collapsed;
+                }                
             }
         }
 
@@ -1116,22 +1117,20 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         /// <param name="e">Put a bool value to e.Tag, True=Show; False=Hide</param>
         private void Handler_ShowSettingsIcon(object sender, EventManagerArgs e)
         {
-            if (e.Tag != null)
+            if (e.Tag != null &&
+                e.Tag is bool)
             {
-                if (e.Tag is bool)
+                bool isShow = (bool)e.Tag;
+                if (isShow)
                 {
-                    bool isShow = (bool)e.Tag;
-                    if (isShow)
-                    {
-                        if (_iconGear != null)
-                            _iconGear.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        if (_iconGear != null)
-                            _iconGear.Visibility = Visibility.Collapsed;
-                    }
+                    if (_iconGear != null)
+                        _iconGear.Visibility = Visibility.Visible;
                 }
+                else
+                {
+                    if (_iconGear != null)
+                        _iconGear.Visibility = Visibility.Collapsed;
+                }                
             }
         }
 
@@ -1552,13 +1551,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     // Check color code
                     string _modelNumber = device.ModelNumber;
-                    if (device.ModelNumber == "MS700")
+                    if (device.ModelNumber == "MS700" &&
+                        device.ColorCode != 0)
                     {
-                        if (device.ColorCode != 0)
-                        {
-                            _modelNumber = _modelNumber + "/" + device.ColorCode.ToString();
-                            _log.Info($"[Walkthrough] CheckAndQueueDevice Check color code = {device.ColorCode.ToString()}");
-                        }
+                        _modelNumber = _modelNumber + "/" + device.ColorCode.ToString();
+                        _log.Info($"[Walkthrough] CheckAndQueueDevice Check color code = {device.ColorCode.ToString()}");                        
                     }
                     _log.Info($"[Walkthrough] CheckAndQueueDevice Start Add (Device)");
                     await CheckAndQueueDevice(_modelNumber, device.LogicalDeviceType.ToString(), device.ID);
@@ -1612,12 +1609,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             string screenDeviceName = "";
 
             //If e.Tag contains a DeviceName, then move the specified screen
-            if (e.Tag != null)
+            if (e.Tag != null &&
+                e.Tag is string)
             {
-                if (e.Tag is string)
-                {
-                    screenDeviceName = e.Tag.ToString();
-                }
+                screenDeviceName = e.Tag.ToString();                
             }
             //Else the screen will be get from mouse cursor position
             if (String.IsNullOrEmpty(screenDeviceName))

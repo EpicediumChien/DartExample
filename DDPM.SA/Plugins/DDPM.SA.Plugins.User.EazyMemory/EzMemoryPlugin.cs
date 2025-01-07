@@ -67,14 +67,14 @@ namespace DDPM.SA.Plugins.User.EzMemory
             return GetWindowText(hWnd, lpString, nMaxCount);
         }
 
-        [DllImport("user32.dll", SetLastError = true)]
+        /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
         private bool EzMemorySetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags)
         {
             return SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
-        }
+        }*/
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -83,16 +83,17 @@ namespace DDPM.SA.Plugins.User.EzMemory
         {
             return GetClassName(hWnd, lpClassName, nMaxCount);
         }
-        [DllImport("user32.dll", SetLastError = true)]
+        
+        /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
         private bool EzMemoryGetWindowRect(IntPtr hWnd, out RECT lpRect)
         {
             return GetWindowRect(hWnd, out lpRect);
-        }
+        }*/
 
-        [DllImport("user32.dll", SetLastError = true)]
+        /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
@@ -100,17 +101,18 @@ namespace DDPM.SA.Plugins.User.EzMemory
         private bool EzMemorySetForegroundWindow(IntPtr hWnd)
         {
             return SetForegroundWindow(hWnd);
-        }
+        }*/
 
         // 检查窗口是否可见
-        [DllImport("user32.dll", SetLastError = true)]
+        /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool IsWindowVisible(IntPtr hWnd);
         private bool EzMemoryIsWindowVisible(IntPtr hWnd)
         {
             return IsWindowVisible(hWnd);
-        }
+        }*/
+
         //  DPI 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]

@@ -88,6 +88,7 @@ namespace DDPM.PowerMon
         private const int DEVICE_NOTIFY_CALLBACK = 2;
 
         [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern IntPtr RegisterSuspendResumeNotification(IntPtr hRecipient, uint Flags);
         private static IntPtr _RegisterSuspendResumeNotification(IntPtr hRecipient, uint Flags)
         {
@@ -95,6 +96,7 @@ namespace DDPM.PowerMon
         }
 
         [DllImport("user32.dll", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool UnregisterSuspendResumeNotification(IntPtr Handle);
         private static bool _UnregisterSuspendResumeNotification(IntPtr Handle)
         {

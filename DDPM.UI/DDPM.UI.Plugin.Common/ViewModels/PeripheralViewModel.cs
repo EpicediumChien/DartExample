@@ -201,6 +201,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (di.DeviceName == "Headset Settings" || di.DeviceName == "Wired Audio Settings")
                 {
                     CurrentInstanceID = di.ID.GetHashCode();
+                    _log.Info($"[PeripheralViewModel] SetCurrentDevice Headset/Wired Audio Settings... InstanceId = {CurrentInstanceID.ToString()}");
                 }
                 else
                 {

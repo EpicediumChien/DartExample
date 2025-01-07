@@ -1262,6 +1262,10 @@ namespace DDPM.UI.Common.Models
             BleHost2Style = BleHostStyle_Gray; // "2";
             BleHost3Style = BleHostStyle_Gray; // "2";
 
+            //@ LaunchView:
+            //switch (_vm.Model)
+
+            //@ HomeDevice:
             switch (DeviceInfo.ModelNumber)
             {
                 case "KB700":
@@ -1656,10 +1660,9 @@ namespace DDPM.UI.Common.Models
         {
             get
             {
-                if (MonitorInfo != null)
+                if (MonitorInfo != null && MonitorInfo.CapabilityDic != null)
                 {
-                    if (MonitorInfo.CapabilityDic != null)
-                        return MonitorInfo.CapabilityDic.ContainsKey("E9");
+                    return MonitorInfo.CapabilityDic.ContainsKey("E9");
                 }
                 return false;
             }

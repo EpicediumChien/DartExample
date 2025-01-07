@@ -1,4 +1,4 @@
-﻿using DDPM.Easy.Common;
+﻿    using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using DDPM.Win32Lib;
 using Dell.Client.Framework.Common;
@@ -54,7 +54,7 @@ namespace DDPM.EABroker
             return IsWindowVisible(hWnd);
         }
 
-        [DllImport("user32.dll", SetLastError = true)]
+        /*[DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
@@ -62,12 +62,12 @@ namespace DDPM.EABroker
         private bool EzMemorySetForegroundWindow(IntPtr hWnd)
         {
             return SetForegroundWindow(hWnd);
-        }
+        }*/
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-        public static bool EzMemoryShowWindow(IntPtr hWnd, int nCmdShow)
+        private static bool EzMemoryShowWindow(IntPtr hWnd, int nCmdShow)
         {
             return ShowWindow(hWnd, nCmdShow);
         }
@@ -79,8 +79,8 @@ namespace DDPM.EABroker
         private const int SW_RESTORE = 9;
 
 
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+        //[DllImport("user32.dll")]
+        //private static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
 
 
         #region Private members
@@ -277,8 +277,8 @@ namespace DDPM.EABroker
                         //ShowWindowAsync(handle, SW_MAXIMIZE);
                         //ShowWindowAsync(handle, SW_SHOWNORMAL);
                         //ShowWindow(handle, SW_RESTORE);
-                        ShowWindow(handle, SW_SHOWNORMAL);
-                        ShowWindow(handle, SW_SHOWN);
+                        EzMemoryShowWindow(handle, SW_SHOWNORMAL);
+                        EzMemoryShowWindow(handle, SW_SHOWN);
                         Win32._SetForegroundWindow(handle);
                         //EzMemorySetForegroundWindow(handle); // 把應用程式拉到前景
                         //ShowWindow(handle, SW_SHOWNORMAL);
@@ -307,7 +307,7 @@ namespace DDPM.EABroker
                         _vm.WriteLog($"[LaunchAndArrange] App is launched, hWnd={handle}=0x{handle:X}, pid={process.Id}, hProcess={process.Handle}");
 
 
-                        ShowWindow(handle, SW_SHOWNORMAL);
+                        EzMemoryShowWindow(handle, SW_SHOWNORMAL);
                         Win32._SetForegroundWindow(handle);
                     }
                     Trace.WriteLine($"[LaunchAndArrange] 3 => {winUWP} APP, handle = {handle.ToString()}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, app.AppName = {app.AppName}");
@@ -460,7 +460,8 @@ namespace DDPM.EABroker
                     }
 
                     //Other window classes => not the mainwindow
-                    continue;
+                    //Robert_Lin, 2025-1-6, comment-out let it fo down for PathName check and special check
+                    //continue;
                 }
 
                 //Target app is Non-UWP
@@ -534,6 +535,30 @@ namespace DDPM.EABroker
                         _vm.WriteLog($"@FindRunningProcess, Found the running Win32App, hWnd={hWnd}=0x{hWnd:X}");
                         hWndApp = hWnd;
                         break;
+                    }
+                }
+
+                //Finaly check some specical cases
+                //
+
+                //Microsoft Mail:
+                //app:
+                // Name="Mail"
+                // Path="C:\\Program Files\\WindowsApps\\microsoft.windowscommunicationsapps_16005.14326.22113.0_x64__8wekyb3d8bbwe"
+                // AppUserModelID="microsoft.windowscommunicationsapps_8wekyb3d8bbwe!microsoft.windowslive.mail"
+                //process:
+                // WindowClassName="OlkHost"
+                // pathName="C:\\Program Files\\WindowsApps\\Microsoft.OutlookForWindows_1.2024.1216.300_x64_8wekyb3d8bbwe\olk.exe
+                if (app.AppUserModelID.Equals("microsoft.windowscommunicationsapps_8wekyb3d8bbwe!microsoft.windowslive.mail", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (pathName.StartsWith("C:\\Program Files\\WindowsApps\\Microsoft.OutlookForWindows_"))
+                    {
+                        string fileName = System.IO.Path.GetFileName(pathName);
+                        if (fileName.Equals("olk.exe", StringComparison.OrdinalIgnoreCase))
+                        {
+                            hWndApp = hWnd;
+                            break;
+                        }
                     }
                 }
 

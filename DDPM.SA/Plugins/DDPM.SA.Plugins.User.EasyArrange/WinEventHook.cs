@@ -340,19 +340,6 @@ namespace nsWinEventHook
             return MoveWindow(hWnd, x, y, nWidth, nHeight, bRepaint);
         }
 
-        //[DllImport("dwmapi")]
-        //private static extern int DwmGetWindowAttribute(IntPtr hwnd, Int32 dwAttribute, ref Rectangle pvAttribute, Int32 cbAttribute);
-
-        //[DllImport("user32")]
-        //private static extern bool GetWindowRect(IntPtr hwnd, ref Rectangle lpRect);
-
-        //[DllImport("user32")]
-        //private static extern bool PhysicalToLogicalPointForPerMonitorDPI(IntPtr hwnd, ref System.Drawing.Point lpRect);
-
-        //[DllImport("user32", SetLastError = true)]
-        //[return: MarshalAs(UnmanagedType.Bool)]
-        //public static extern bool PhysicalToLogicalPointForPerMonitorDPI(IntPtr hwnd, ref POINT lpPoint);
-
         #endregion Win32 P-Invoke
 
         #region Win32 - GetCursorType

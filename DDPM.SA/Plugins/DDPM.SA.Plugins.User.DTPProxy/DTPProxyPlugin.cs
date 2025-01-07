@@ -38,6 +38,7 @@ using static DDPM.RemoteManagement.Common.Interfaces.Params;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Newtonsoft.Json;
 using MS.WindowsAPICodePack.Internal;
+using DDPM.SA.Common.Settings;
 
 namespace DDPM.SA.Plugins.User.DTPProxy
 {
@@ -813,11 +814,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     {
                         try
                         {
-                            File.Delete(filePath);
+                            if (DDPMFileSecurity.ValidateFilePath(filePath, out string info))
+                                File.Delete(filePath);
+                            else
+                                writelog($"[DTPProxyPlugin][RestoreToDefaultPen][Path] Delete setting file failed: {info}");
                         }
                         catch (Exception ex)
                         {
-                            writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
+                            writelog($"[DTPProxyPlugin][RestoreToDefaultPen] Delete setting file failed: {ex}");
                         }
                     }
                     var message = $"Mouse|RestoreToDefault|{Guid}|{model}";
@@ -1093,11 +1097,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    File.Delete(filePath);
+                    if (DDPMFileSecurity.ValidateFilePath(filePath, out string info))
+                        File.Delete(filePath);
+                    else
+                        writelog($"[DTPProxyPlugin][RestoreToDefaultPen][Path] Delete setting file failed: {info}");
                 }
                 catch (Exception ex)
                 {
-                    writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
+                    writelog($"[DTPProxyPlugin][RestoreToDefaultPen] Delete setting file failed: {ex}");
                 }
             }
             var message = $"Keyboard|RestoreToDefault|{Guid}|{model}";
@@ -3684,11 +3691,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
-                    File.Delete(filePath);
+                    if (DDPMFileSecurity.ValidateFilePath(filePath, out string info))
+                        File.Delete(filePath);
+                    else
+                        writelog($"[DTPProxyPlugin][RestoreToDefaultPen][Path] Delete setting file failed: {info}");
                 }
                 catch (Exception ex)
                 {
-                    writelog($"[DTPProxyPlugin] [RestoreToDefaultPen] Delete setting file failed: {ex}");
+                    writelog($"[DTPProxyPlugin][RestoreToDefaultPen] Delete setting file failed: {ex}");
                 }
             }
             var message = $"Pen|RestoreToDefault||";
