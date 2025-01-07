@@ -218,7 +218,11 @@ namespace DDPM.SA.Plugins.SettingsManager
                         string zipFilePath = saveFolderPath + ".zip";
                         if (!method.CreateZipFile(saveFolderPath, zipFilePath))// 壓縮資料夾
                             fail_info += "[Compression]";
-                        Directory.Delete(saveFolderPath, true);
+
+                        if(DDPMFileSecurity.ValidateFilePath(saveFolderPath, out string info))
+                            Directory.Delete(saveFolderPath, true);
+                        else
+                            log.Error($"[SaveLog] skip delete temp folder due to: {info}");
 
                         ret = true;
                         if (fail_info.Length > 0)

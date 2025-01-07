@@ -270,12 +270,9 @@ namespace DDPM.UI.Common
                 foreach (var programbleKey in ProgrambleKeys)
                 {
                     var btn = (KeyName)programbleKey.Id;
-                    if (KeyActions.ContainsKey(btn))
+                    if (KeyActions.ContainsKey(btn) && programbleKey.AssignedAction != null)
                     {
-                        if (programbleKey.AssignedAction != null)
-                        {
-                            KeyActions[btn].AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == programbleKey.AssignedAction.BaseGuid).Key;
-                        }
+                        KeyActions[btn].AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == programbleKey.AssignedAction.BaseGuid).Key;
                     }
                 }
             }
@@ -330,12 +327,9 @@ namespace DDPM.UI.Common
                 foreach (var programbleKey in ProgrambleKeys)
                 {
                     var btn = (MouseButtonName)programbleKey.Id;
-                    if (ButtonActions.ContainsKey(btn))
+                    if (ButtonActions.ContainsKey(btn) && programbleKey.AssignedAction != null)
                     {
-                        if (programbleKey.AssignedAction != null)
-                        {
-                            ButtonActions[btn].AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == programbleKey.AssignedAction.BaseGuid).Key;
-                        }
+                        ButtonActions[btn].AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == programbleKey.AssignedAction.BaseGuid).Key;
                     }
                 }
             }

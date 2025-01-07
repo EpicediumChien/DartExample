@@ -57,6 +57,7 @@ namespace DDPM.SA.Common
 
         public bool result { get; set; } = false;
 
+        public bool isBusy { get; set; } = false;
         public bool copyByType(ALSFeatureQueryType type, ALSConfig source, ref ALSConfig target)
         {
             switch (type)

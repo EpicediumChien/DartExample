@@ -3,6 +3,7 @@ using DDPM.Easy.Common;
 using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Interfaces;
+using DDPM.Win32Lib;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Interfaces;
 using System.ComponentModel;
@@ -276,6 +277,8 @@ namespace DDPM.EABroker
 
             //Phase A. Determine the WorkingArea of the arrange
             Rectangle workingArea = Rectangle.Empty;
+            //targetScreen: the target screen to be arranged. it's null when IsSpanScreenWorking is true.
+            Screen? targetScreen = null;
             // 1 If it's under SpanScreen working mode
             if (_vm.IsSpanScreenWorking)
             {
@@ -301,6 +304,7 @@ namespace DDPM.EABroker
                     WriteLog("LaunchAndArrangeAppsWithEzArrange ERROR: the Monitor is not a present screen.");
                     return false;
                 }
+                targetScreen = scr;
                 workingArea = scr.WorkingArea;
                 WriteLog($"@LaunchAndArrange, SpanScreenEnabled={_vm.IsSpanScreenWorking}, WorkingArea={CommonFunctions.FormatRectangle(workingArea)}");
             }
@@ -370,6 +374,54 @@ namespace DDPM.EABroker
             int arrangeCount = Math.Min(cellBorderCount, appCount);
             WriteLog($"LaunchAndArrangeAppsWithEzArrange: Layout={ispLayout.CtrlClass} CellBorderCount={cellBorderCount}, AppCount={appCount} => ArrangeCount={arrangeCount}");
 
+            //Robert_Lin, 2025-1-6 Added
+            // Before LaunchAppAndArrange starting, minimize all top-level Windows which is inside
+            // target screen.
+            //1 Get all top-level window handles
+            List<IntPtr> hWnds_TopLevel = Win32.GetAltTabWindows();
+
+            //For-loop to find the Window inside target screen, and minimize it
+            foreach (IntPtr hWnd in hWnds_TopLevel)
+            {
+                //Get WindowText, used only for debug time
+                string wndText = Win32._GetWindowText(hWnd);
+
+                //Check if the hWnd is inside target screen
+                bool isWndInsideTargetScreen = false;
+                Screen screenOfhWnd = Screen.FromHandle(hWnd);
+                string deviceNmaeOfHwnd = screenOfhWnd.DeviceName;
+
+                if(_vm.IsSpanScreenWorking)
+                {
+                    foreach(EAScreen eaScr in _vm.SpanScreen.eaScreens)
+                    {
+                        if (eaScr.FormsScreen.DeviceName.Equals(deviceNmaeOfHwnd))
+                        {
+                            isWndInsideTargetScreen = true;
+                        }
+                    }
+                }
+                else
+                {
+                    if (targetScreen != null)
+                    {
+                        if (targetScreen.DeviceName.Equals(deviceNmaeOfHwnd))
+                        {
+                            isWndInsideTargetScreen = true;
+                        }
+                    }
+                }
+                if (!isWndInsideTargetScreen)
+                    continue;
+
+                //Minimized this window
+                Win32._ShowWindow(hWnd, Win32.ShowWindowCommands.Minimize);
+            }
+
+
+            //
+            ///////////////////////
+
             //Phase C. Show EzMemLauncherWindow
             EzMemLauncherWindow emWin = new EzMemLauncherWindow(ispLayout, workingArea, arrangeCount, VM);
 
@@ -416,11 +468,21 @@ namespace DDPM.EABroker
             emWin.ArrangeDone += delegate
             {
                 emWin.Close();
-                VM.IsWorkUIEnabled = true;
+                //VM.IsWorkUIEnabled = true;
+
+                //Robert_Lin, 2025-1-6, After EAM Arrange Done, will chnage cureent selected layout
+                //Based on DDM behavior
+                if (_easyArrangeService != null)
+                {
+                    _vm.WriteLog($"@LaunchAndArrangeAppsWithEzArrange. Arrange done, will SetSelectedLayout to EAID={eaId}");
+                    _easyArrangeService.SetEASelectedLayout(moInfo, eaId);
+                }
+
+
             };
             emWin.Show();
 
-            VM.IsWorkUIEnabled = false;
+            //VM.IsWorkUIEnabled = false;
             return true;
         }
 

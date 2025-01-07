@@ -2382,32 +2382,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1($"WriteLog Error : {ex.Message}");
             }
         }
-        /*private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
-        {
-            folderInfo = "Error";
-            pathSymbolicLinInfo = "Error";
-            int count = 0;
-            bool folderValid = false;
-            do
-            {
-                folderInfo = string.Empty;
-                pathSymbolicLinInfo = string.Empty;
-                folderValid = false;
-                folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(path, out pathSymbolicLinInfo);//0924 Bruce Add Security
-                if (!folderValid)
-                {
-                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + pathSymbolicLinInfo + " Retry:" + (count++));
-                }
-                folderValid = DDPMFileSecurity.IsFolderPathValid(path, out folderInfo) && folderValid;
-                if (!folderValid)
-                {
-                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + folderInfo + " Retry:" + (count++));
-                    Directory.Delete(path, true);
-                    Directory.CreateDirectory(path);
-                }
-            } while (!folderValid && count < 2);
-            return folderValid;
-        }*/
+
         private bool CheckSHA(string filePath, out string fileCAInfo)
         {
             CertificateCheck certificateCheck = new CertificateCheck(_logs);

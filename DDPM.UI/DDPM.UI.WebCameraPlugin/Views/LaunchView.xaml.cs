@@ -1871,9 +1871,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out ulong lpFreeBytesAvailable, out ulong lpTotalNumberOfBytes, out ulong lpTotalNumberOfFreeBytes);
+        private static bool _GetDiskFreeSpaceEx(string lpDirectoryName, out ulong lpFreeBytesAvailable, out ulong lpTotalNumberOfBytes, out ulong lpTotalNumberOfFreeBytes)
+        {
+            return GetDiskFreeSpaceEx(lpDirectoryName, out lpFreeBytesAvailable, out lpTotalNumberOfBytes, out lpTotalNumberOfFreeBytes);
+        }
+
         public static bool HasEnoughSpace(string path, ulong requiredBytes)
         {
-            bool ret = GetDiskFreeSpaceEx(path, out ulong freeBytesAvailable, out _, out _);
+            bool ret = _GetDiskFreeSpaceEx(path, out ulong freeBytesAvailable, out _, out _);
             if (ret == false)
                 return false;
             return freeBytesAvailable >= requiredBytes;
@@ -2048,7 +2053,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private void btnRecord_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
 
-            bool ret = GetDiskFreeSpaceEx(_vm!.VideoCaptureFolder, out ulong freeBytesAvailable, out _, out _);
+            bool ret = _GetDiskFreeSpaceEx(_vm!.VideoCaptureFolder, out ulong freeBytesAvailable, out _, out _);
             if (ret)
             {
                 DdpmCommonHelper.WriteUILog("btnRecord_Click:  DISK Free " + freeBytesAvailable / (1024 * 1024) + "MB");

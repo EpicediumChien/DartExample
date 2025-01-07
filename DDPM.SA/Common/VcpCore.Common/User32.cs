@@ -264,9 +264,6 @@ namespace VcpCore.Common
             return GetDisplayConfigBufferSizes(flags, out numPathArrayElements, out numModeInfoArrayElements);
         }
 
-        //[DllImport("user32")]
-        //public static extern int QueryDisplayConfig(QDC flags, ref int numPathArrayElements, [In, Out] DISPLAYCONFIG_PATH_INFO[] pathArray, ref int numModeInfoArrayElements, [In, Out] DISPLAYCONFIG_MODE_INFO[] modeInfoArray, out DISPLAYCONFIG_TOPOLOGY_ID currentTopologyId);
-
         [DllImport("user32", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int QueryDisplayConfig(QDC flags, ref int numPathArrayElements, [In, Out] DISPLAYCONFIG_PATH_INFO[] pathArray, ref int numModeInfoArrayElements, [In, Out] DISPLAYCONFIG_MODE_INFO[] modeInfoArray, DISPLAYCONFIG_TOPOLOGY_ID currentTopologyId);
@@ -275,12 +272,6 @@ namespace VcpCore.Common
         {
             return QueryDisplayConfig(flags, ref numPathArrayElements, pathArray, ref numModeInfoArrayElements, modeInfoArray, currentTopologyId);
         }
-
-        //[DllImport("user32")]
-        //private static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO requestPacket);
-
-        //[DllImport("user32")]
-        //public static extern int DisplayConfigGetDeviceInfo(ref DISPLAYCONFIG_SOURCE_DEVICE_NAME requestPacket);
 
         [DllImport("user32", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -767,8 +758,6 @@ namespace VcpCore.Common
 
         #endregion DisplayConfig Enum/Sturct
 
-        //[DllImport("user32")]
-        //public static extern int QueryDisplayConfig(QDC flags, out int numPathArrayElements, [Out] DISPLAYCONFIG_PATH_INFO[] pathInfoArray, out int modeInfoArrayElements, [Out] DISPLAYCONFIG_MODE_INFO[] modeInfoArray, DISPLAYCONFIG_TOPOLOGY_ID id);
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -804,7 +793,7 @@ namespace VcpCore.Common
 
         public const int EDD_GET_DEVICE_INTERFACE_NAME = 1;
 
-        #region Cursor
+        /*#region Cursor
         //GetCursorPos(), Robert_Lin, 2024-12-21
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -816,7 +805,7 @@ namespace VcpCore.Common
             return GetCursorPos(out lpPoint);
         }
 
-        #endregion Cursor
+        #endregion Cursor*/
 
     }
 }
