@@ -371,7 +371,18 @@ namespace DDPM.SA.Common.Settings
                         jsonString = devMgr.ReadSerializedContentFromFile(filePath).Result;
                         log?.Info(@$"[WebcamSettings] ImportWebcamSettings jsonString:{jsonString}!");
                         if (!string.IsNullOrEmpty(jsonString))
-                            return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
+                        {
+                            //return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
+                            WebcamSettings obj = JsonConvert.DeserializeObject<WebcamSettings>(jsonString);
+                            if (obj != null)
+                            {
+                                return obj;
+                            }
+                            else
+                            {
+                                log?.Error($"[ImportWebcamSettings][JsonConvert.DeserializeObject] null object (model:{model})");
+                            }
+                        }
                         else
                             log?.Error($"[ImportWebcamSettings][ReadSerializedContentFromFile] empty string output(model:{model})");
                     }
