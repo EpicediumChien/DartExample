@@ -138,7 +138,7 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
         }
 
-        public void CheckCopilot()
+        private void CheckCopilot()
         {
             //string regPath2 = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
             //string regKey2 = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";

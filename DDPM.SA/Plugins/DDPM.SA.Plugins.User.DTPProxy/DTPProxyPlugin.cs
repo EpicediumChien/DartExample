@@ -113,7 +113,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             public string DeviceId { get; set; } = string.Empty;     //36ce653b-7a0f-4c85-97f7-aad029cceeb2
             public string ModelNumber { get; set; } = string.Empty;  //P2424HEB
         };
-        
+
 
         /// <summary>
         /// Webcam change event
@@ -1132,7 +1132,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                     writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
-                    
+
                     return new JArray();
                 }
             }
@@ -1140,7 +1140,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 Debug.WriteLine($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
                 writelog($"[GetDeviceItemsEx]Could not retrieve the Commodity Interface for the {_itemID} item. _webcamMethodInfo is null");
-                
+
                 return new JArray();
             }
         }
@@ -1170,7 +1170,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     writelog($"GetWebcamDeviceID get exception {e.Message}");
                     return Task.FromResult(string.Empty);
-                }   
+                }
             }
             else
                 return Task.FromResult(string.Empty);
@@ -1756,6 +1756,23 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 Debug.WriteLine($"[GetAutoFramingSensitivity]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
                 writelog($"[GetAutoFramingSensitivity]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
                 return -1;
+            }
+        }
+        public async Task<string> GetWebcamSerialNumber(string Guid)
+        {
+            if (!await GetItemIDAsync("Webcam", Guid))
+            { return ""; }
+
+            if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_webcamInterfaceType, commodity, "SerialNumber");
+                return value == null ? "" : (string)value;
+            }
+            else
+            {
+                Debug.WriteLine($"[GetWebcamSerialNumber]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                writelog($"[GetWebcamSerialNumber]Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {Guid} item.");
+                return "";
             }
         }
 
@@ -7126,16 +7143,17 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #endregion
 
         #region Dock
-        public Task<DockData> GetDockData(string guid)
+        public async Task<DockData> GetDockData(string guid)
         {
             try
             {
-                if (!GetItemIDAsync("Dock", guid).Result)
+                //if (!GetItemIDAsync("Dock", guid).Result)
+                if (!await GetItemIDAsync("Dock", guid))
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return Task.FromResult<DockData>(null);
+                    return null;
                 }
-                var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
+                var commodity = await GetCommodityInterfaceInstanceAsync(_dockMethodInfo);
                 if (commodity is ICommodity)
                 {
                     writelog($"[Dock] GetPropertyValue go");
@@ -7173,7 +7191,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                                                 {
                                                     dockData.MarketingName = $"{dockData.MarketingName}_{dockData.PowerSupplyWattage}W";
                                                 }
-                                                return Task.FromResult(dockData);
+                                                return dockData;
                                             }
                                         }
                                     }
@@ -7189,55 +7207,57 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                             writelog($"[Dock] GetDockData Dock Data Error : {ex.Message}");
                         }
                     }
-                    return Task.FromResult<DockData>(null);
+                    return null;
                 }
 
                 writelog($"[Dock] GetDockData failed: Could not retrieve commodity interface for {guid}");
-                return Task.FromResult<DockData>(null);
+                return await Task.FromResult<DockData>(null);
             }
             catch (Exception ex)
             {
                 writelog($"[Dock] GetDockData failed for {guid} - Exception: {ex.Message}");
-                return Task.FromResult<DockData>(null);
+                return null;
             }
         }
-        public Task<string> GetFirmwareVersionForDock(string guid)
+        public async Task<string> GetFirmwareVersionForDock(string guid)
         {
             try
             {
-                if (!GetItemIDAsync("Dock", guid).Result)
+                //if (!GetItemIDAsync("Dock", guid).Result)
+                if (!await GetItemIDAsync("Dock", guid))
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return Task.FromResult("");
+                    return "";
                 }
-                var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
+                var commodity = await GetCommodityInterfaceInstanceAsync(_dockMethodInfo);
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_dockInterfaceType, commodity, "FirmwareVersion");
                     writelog($"[Dock] GetFirmwareVersionForDock succeeded for {guid}");
                     writelog($"[Dock] GetDockServiceTagForDock succeeded for {(string)value}");
-                    return Task.FromResult((string)value);
+                    return value == null ? "" : (string)value;
                 }
 
                 writelog($"[Dock] GetFirmwareVersionForDock failed: Could not retrieve commodity interface for {guid}");
-                return Task.FromResult("");
+                return "";
             }
             catch (Exception ex)
             {
                 writelog($"[Dock] GetFirmwareVersionForDock failed for {guid} - Exception: {ex.Message}");
-                return Task.FromResult("");
+                return "";
             }
         }
-        public Task<string> GetDockServiceTagForDock(string guid)
+        public async Task<string> GetDockServiceTagForDock(string guid)
         {
             try
             {
-                if (!GetItemIDAsync("Dock", guid).Result)
+                //if (!GetItemIDAsync("Dock", guid).Result)
+                if (!await GetItemIDAsync("Dock", guid))
                 {
                     writelog(" [Dock] Failed to retrieve guid.");
-                    return Task.FromResult("");
+                    return "";
                 }
-                var commodity = GetCommodityInterfaceInstanceAsync(_dockMethodInfo).Result;
+                var commodity = await GetCommodityInterfaceInstanceAsync(_dockMethodInfo);
                 if (commodity is ICommodity)
                 {
                     var value = GetPropertyValue(_dockInterfaceType, commodity, "DockServiceTag");
@@ -7260,7 +7280,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                                     int temp_int = 0;
                                     if (!string.IsNullOrEmpty(payloadElement))
                                     {
-                                        return Task.FromResult(payloadElement);
+                                        return payloadElement;
                                     }
                                 }
                             }
@@ -7270,16 +7290,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                             }
                         }
                     }
-                    return Task.FromResult("");
+                    return "";
                 }
 
                 writelog($"[Dock] GetDockServiceTagForDock failed: Could not retrieve commodity interface for {guid}");
-                return Task.FromResult("");
+                return "";
             }
             catch (Exception ex)
             {
                 writelog($"[Dock] GetDockServiceTagForDock failed for {guid} - Exception: {ex.Message}");
-                return Task.FromResult("");
+                return "";
             }
         }
 
@@ -7534,7 +7554,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                             writelog($"Find IDockCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                         }
                         DTPProxyPluginReady = true;
-                        DTPProxyPluginSDKNotify(new UpdateDTPProxyNotify() {State= "DTPProxyPluginSDK Ready OK" });
+                        DTPProxyPluginSDKNotify(new UpdateDTPProxyNotify() { State = "DTPProxyPluginSDK Ready OK" });
                         _ = RegisterEventAsync();
                     });
                 }
@@ -7712,7 +7732,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                             webcamList.Add(jsonObject);
                         }
                     }
-                    
+
                     writelog($"connected _WebcamComConnectEvent.DeviceItemsEx.Count = {_WebcamComConnectEvent.DeviceItemsEx.Count}");
 
                     writelog($"Webcam Commodity event(connected/disconnected) registered successfully");
@@ -7735,7 +7755,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private List<WebcamEventHandleObject> CreateWebcamObjectListByCurrentConditon()
         {
-            List < WebcamEventHandleObject > list = new List<WebcamEventHandleObject>();
+            List<WebcamEventHandleObject> list = new List<WebcamEventHandleObject>();
 
             if (_comdityWebcam is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity webcamObj)
             {
@@ -7767,7 +7787,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     }
                 }
             }
-            
+
             return list;
         }
 
@@ -8078,7 +8098,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (_comdityWebcam is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity _WebcamComObj)
                 {
                     writelog($"connected _WebcamComObj.DeviceItems = {_WebcamComObj.DeviceItems.Length}");
-                        
+
                     int i = 0;
                     foreach (var item in _WebcamComObj.DeviceItems)
                     {
@@ -8119,7 +8139,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                                 return false;
                             }
-                        }   
+                        }
                     }
                 }
             }
@@ -8278,7 +8298,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     result = UnregisterEventsForWebcam(item);
                 }
-                    
+
                 webcamList.Clear();
 
                 return result;

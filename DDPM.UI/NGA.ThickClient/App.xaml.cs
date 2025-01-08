@@ -72,8 +72,7 @@ namespace NGA.ThickClient
         /// <summary>
         /// Constructor
         /// </summary>
-        public App() : base(NGA.Resources.Resources.ResourceManager, ThickClientUniqueGuid)
-            => DdpmCommonHelper.UIDebugModeFlag = _GetPrivateProfileInt("DDPMDebug", "UIDebugFlag", 0, @"C:\DDPMDebug.ini") == 1;
+        public App() : base(NGA.Resources.Resources.ResourceManager, ThickClientUniqueGuid) { }
 
         /// <summary>
         /// Configures the ConsoleConfig.

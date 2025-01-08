@@ -124,7 +124,11 @@ namespace DDPM.UI.Module.EzArrange
             //InitRecentListView();
             //InitListViewItems();
 
-            if (IniReadInt("DDPMDebug", "EzArrange.SaveSplitCtrlsToPngFilesButtonEnabled", 0, @"C:\temp\DDPMDebug.txt") == 1)
+            //Robert_Lin, 2025-1-7, the DDPMDebug.txt solution will be removed, use DevSettings instaed.
+            //NEW:
+            if (DevSettings.IsEASaveSplitCtrlsToPngFilesButtonEnabled())
+            //OLD
+            //if (IniReadInt("DDPMDebug", "EzArrange.SaveSplitCtrlsToPngFilesButtonEnabled", 0, @"C:\temp\DDPMDebug.txt") == 1)
             {
                 saveSplitCtrlsToPngImagesButton.Visibility = Visibility.Visible;
             }
