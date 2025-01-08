@@ -467,6 +467,11 @@ namespace DDPM.UI.Module.Kvm
 
         public bool isPxPFullView { get; set; } = false;
 
+        public bool PC1USB_Enable { get; set; } = true;
+        public bool PC2USB_Enable { get; set; } = true;
+        public bool PC3USB_Enable { get; set; } = true;
+        public bool PC4USB_Enable {  get; set; } = true;
+
         #region Hotkey
 
         private string _kvmHotkeyTooltip = LangHelper.Instance["None"];
@@ -1056,12 +1061,14 @@ namespace DDPM.UI.Module.Kvm
                                     {
                                         PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_2PCs.png");
                                     }
+                                    USBDisenable();
                                 }
                                 else
                                 {
                                     _log?.Debug("PC1 or PC2 not found in pcsList.");
                                 }
                             }
+                            
                         }
                         else
                         {
@@ -1325,6 +1332,7 @@ namespace DDPM.UI.Module.Kvm
             {
                 _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
             }
+            USBDisenable();
             //bool b = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
             OnPropertyChanged("PC1_Input");
             OnPropertyChanged("PC2_Input");
@@ -1650,6 +1658,7 @@ namespace DDPM.UI.Module.Kvm
                         PC4_Input = pcsList["PC4"].InputType;
                     }
                 }
+                USBDisenable();
             }
             OnPropertyChanged("PC1_Input");
             OnPropertyChanged("PC2_Input");
@@ -2025,7 +2034,7 @@ namespace DDPM.UI.Module.Kvm
                             }
                         }
                     }
-
+                    USBDisenable();
                     //if (pcsList["PC1"].InputType != KvmModule.SelectedHomeDevice.MonitorInfo.inputSource)
                     //{
                     //}
@@ -2189,6 +2198,73 @@ namespace DDPM.UI.Module.Kvm
             else
             {
                 _log.Debug("[PBP_MouseLeftDown]PxPcodeDictionary not find key " + PbpCapabilityCode);
+            }
+        }
+
+        public void USBDisenable()
+        {
+            if (pcsList != null)
+            {
+                if (pcsList.ContainsKey("PC1"))
+                {
+                    if (pcsList["PC1"].InputType == "USB-C" ||
+                        pcsList["PC1"].InputType == "USC-C1" ||
+                        pcsList["PC1"].InputType == "Thunderbolt" ||
+                        pcsList["PC1"].InputType == "Thunderbolt1")
+                    {
+                        PC1USB_Enable = false;
+                    }
+                    else
+                    {
+                        PC1USB_Enable = true;
+                    }
+                    OnPropertyChanged("PC1USB_Enable");
+                }
+                if (pcsList.ContainsKey("PC2"))
+                {
+                    if (pcsList["PC2"].InputType == "USB-C" ||
+                        pcsList["PC2"].InputType == "USC-C1" ||
+                        pcsList["PC2"].InputType == "Thunderbolt" ||
+                        pcsList["PC2"].InputType == "Thunderbolt1")
+                    {
+                        PC2USB_Enable = false;
+                    }
+                    else
+                    {
+                        PC2USB_Enable = true;
+                    }
+                    OnPropertyChanged("PC2USB_Enable");
+                }
+                if (pcsList.ContainsKey("PC3"))
+                {
+                    if (pcsList["PC3"].InputType == "USB-C" ||
+                        pcsList["PC3"].InputType == "USC-C1" ||
+                        pcsList["PC3"].InputType == "Thunderbolt" ||
+                        pcsList["PC3"].InputType == "Thunderbolt1")
+                    {
+                        PC3USB_Enable = false;
+                    }
+                    else
+                    {
+                        PC3USB_Enable = true;
+                    }
+                    OnPropertyChanged("PC3USB_Enable");
+                }
+                if (pcsList.ContainsKey("PC4"))
+                {
+                    if (pcsList["PC4"].InputType == "USB-C" ||
+                        pcsList["PC4"].InputType == "USC-C1" ||
+                        pcsList["PC4"].InputType == "Thunderbolt" ||
+                        pcsList["PC4"].InputType == "Thunderbolt1")
+                    {
+                        PC4USB_Enable = false;
+                    }
+                    else
+                    {
+                        PC4USB_Enable = true;
+                    }
+                    OnPropertyChanged("PC4USB_Enable");
+                }
             }
         }
 
