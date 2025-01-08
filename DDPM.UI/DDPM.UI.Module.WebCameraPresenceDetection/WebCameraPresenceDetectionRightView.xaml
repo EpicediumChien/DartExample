@@ -79,7 +79,7 @@
               <Grid Margin="18,22,18,0">
                 <StackPanel Orientation="Horizontal">
                   <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                  <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                  <Border ToolTipService.Placement="Center" ToolTipService.VerticalOffset="40" Background="{StaticResource FakeTransparent}" Cursor="Hand">
                     <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                     <Border.ToolTip>
                       <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
@@ -96,13 +96,14 @@
                 <StackPanel Orientation="Vertical">
                   <Grid Margin="18,20,18,0">
                     <StackPanel Orientation="Horizontal">
-                      <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                      <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                      <!-- Derek for PIMS-332099 -->
+                      <UXControls:UXTextBlock Width="270" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraPresenceDetection.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                      <Border ToolTipService.Placement="Left" Background="{StaticResource FakeTransparent}" Cursor="Hand">
                         <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                         <Border.ToolTip>
                           <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                              <TextBlock Text="{Binding [WebCameraPresenceDetection.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" />
+                              <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" Text="{Binding [WebCameraPresenceDetection.4], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" />
                             </Border>
                           </ToolTip>
                         </Border.ToolTip>
@@ -114,7 +115,7 @@
                     <Grid>
                       <StackPanel Orientation="Horizontal">
                         <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                        <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                        <Border ToolTipService.Placement="Left" Background="{StaticResource FakeTransparent}" Cursor="Hand">
                           <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                           <Border.ToolTip>
                             <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
@@ -164,12 +165,12 @@
             <Grid Margin="18,22,18,18">
               <StackPanel Orientation="Horizontal">
                 <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.10], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                <Border ToolTipService.Placement="Center" ToolTipService.VerticalOffset="50" Background="{StaticResource FakeTransparent}" Cursor="Hand">
                   <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                   <Border.ToolTip>
                     <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                       <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                        <TextBlock Text="{Binding [WebCameraPresenceDetection.11], Source={x:Static lang:LangHelper.Instance}}"  Style="{StaticResource Tooltip_TextBlockStyle}" />
+                        <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" Text="{Binding [WebCameraPresenceDetection.11], Source={x:Static lang:LangHelper.Instance}}"  Style="{StaticResource Tooltip_TextBlockStyle}" />
                       </Border>
                     </ToolTip>
                   </Border.ToolTip>
