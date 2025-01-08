@@ -1430,7 +1430,7 @@ namespace DDPM.UI.Common.Models
                 {
                     BleHost1Style = BleHostStyle_Gray;
                 }
-                if(!string.IsNullOrEmpty(PairedHostName2))
+                if (!string.IsNullOrEmpty(PairedHostName2))
                 {
                     BleHost2Style = BleHostStyle_White; // "2";
                 }
@@ -1883,7 +1883,9 @@ namespace DDPM.UI.Common.Models
             log.Info($"HomeDevice, DeviceCategory=[{DeviceCategory}], DisplayName=[{DisplayName}]");
             //log installedUICulture,2024-11-15 gavin
             CultureInfo installedUICulture = CultureInfo.InstalledUICulture;
+            CultureInfo currentUICulture = CultureInfo.CurrentUICulture;
             log.Info($"HomeDevice Page, installedUICulture=[{installedUICulture}]");
+            log.Info($"HomeDevice Page, currentUICulture=[{currentUICulture}]");
             if (MonitorInfo != null)
             {
                 log.Info($"  * CapabilityString={MonitorInfo.CapabilityString}");
