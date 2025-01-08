@@ -38,6 +38,7 @@
                                                HorizontalAlignment="Left"
                                                IsTabStop="{Binding isTabStoppable}"
                                                IsChecked="{Binding isConsentChecked}" />
+                        <!-- Derek for PIMS-333574 change Width="250" to  MinWidth="250" -->
                         <Button Name="url_btn"
                                 Height="40"
                                 Style="{DynamicResource Button_WhiteFrame}"
@@ -45,7 +46,7 @@
                                 Margin="20,0,20,0"
                                 FontSize="16"
                                 Grid.Row="1"
-                                Width="250"
+                                MinWidth="250"
                                 HorizontalAlignment="Left"
                                 Click="url_btn_Click"
                                 IsTabStop="{Binding isTabStoppable}" />
