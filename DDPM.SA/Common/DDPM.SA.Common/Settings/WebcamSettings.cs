@@ -353,9 +353,60 @@ namespace DDPM.SA.Common.Settings
             return false;
         }
 
+        private static WebcamSettings ReAlignWebcamResolution(WebcamSettings input, string model, DeviceInfo di, IDeviceManagerSA devMgr = null, ILog log = null)
+        {
+            //leo fixed start 2025/01/07
+            //Always re-read the resolution and FPS information.
+            try
+            {
+                WebcamSettings tmp = input;// JsonConvert.DeserializeObject<WebcamSettings>(jsonString) ?? new WebcamSettings(di, devMgr, log);
+                tmp.SupportedFPSs.Clear();
+                tmp.SelectedFPSs.Clear();
+                tmp.Resolutions.Clear();
+                Task<string> task = devMgr.GetSupportedResolutions(di.ID.ToString());
+                var str = task.Result;
+                var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
+                if (resolutions != null)
+                {
+                    foreach (var res in resolutions.OrderByDescending(x => x.Resolution))
+                    {
+                        var resName = res.Resolution switch
+                        {
+                            "1280x720" => "HD",
+                            "720x1280" => "HD",
+                            "1920x1080" => "Full HD",
+                            "1080x1920" => "Full HD",
+                            "2560x1440" => "2K QHD",
+                            "1440x2560" => "2K QHD",
+                            "3840x2160" => "4K UHD",
+                            "2160x3840" => "4K UHD",
+                            _ => "8K UHD"
+                        };
+                        tmp.SupportedFPSs.Add(resName, res.FPS);
+                        tmp.SelectedFPSs.Add(resName, "30");
+                        tmp.Resolutions.Add(resName, res.Resolution);
+                    }
+                    //if (!ExportWebcamSettings(tmp, model, devMgr, log))
+                    //{
+                    //    log?.Info("[WebcamSettings][ImportWebcamSettings] resolutions change, ExportWebcamSettings to file fail");
+                    //}
+                    //else
+                    //    log?.Info("[WebcamSettings][ImportWebcamSettings] resolutions change, ExportWebcamSettings to file OK");
+                }
+                return tmp;
+            }
+            catch (Exception ex)
+            {
+                log?.Error("[ImportWebcamSettings][DeserializeObject] exception :　" + ex.Message);
+            }
+            //leo fixed end
+            return input;
+        }
+
         //Target folder should be Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
         public static WebcamSettings ImportWebcamSettings(string model, DeviceInfo di, IDeviceManagerSA devMgr = null, ILog log = null)
         {
+            WebcamSettings tmp = null;
             if (devMgr != null)
             {
                 log?.Info(@$"[WebcamSettings] ImportWebcamSettings Start  !");
@@ -372,51 +423,9 @@ namespace DDPM.SA.Common.Settings
                         log?.Info(@$"[WebcamSettings] ImportWebcamSettings jsonString:{jsonString}!");
                         if (!string.IsNullOrEmpty(jsonString))
                         {
-                            //leo fixed start 2025/01/07
-                            //Always re-read the resolution and FPS information.
-                            try
-                            {
-                                WebcamSettings tmp = JsonConvert.DeserializeObject<WebcamSettings>(jsonString) ?? new WebcamSettings(di, devMgr, log);                                
-                                tmp.SupportedFPSs.Clear();
-                                tmp.SelectedFPSs.Clear();
-                                tmp.Resolutions.Clear();
-                                Task<string> task = devMgr.GetSupportedResolutions(di.ID.ToString());
-                                var str = task.Result;
-                                var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
-                                if (resolutions != null)
-                                {
-                                    foreach (var res in resolutions.OrderByDescending(x => x.Resolution))
-                                    {
-                                        var resName = res.Resolution switch
-                                        {
-                                            "1280x720" => "HD",
-                                            "720x1280" => "HD",
-                                            "1920x1080" => "Full HD",
-                                            "1080x1920" => "Full HD",
-                                            "2560x1440" => "2K QHD",
-                                            "1440x2560" => "2K QHD",
-                                            "3840x2160" => "4K UHD",
-                                            "2160x3840" => "4K UHD",
-                                            _ => "8K UHD"
-                                        };
-                                        tmp.SupportedFPSs.Add(resName, res.FPS);
-                                        tmp.SelectedFPSs.Add(resName, "30");
-                                        tmp.Resolutions.Add(resName, res.Resolution);
-                                    }
-                                    if (!ExportWebcamSettings(tmp, model, devMgr, log))
-                                    {
-                                        log?.Info("[WebcamSettings][ImportWebcamSettings] resolutions change, ExportWebcamSettings to file fail");
-                                    }
-                                    else
-                                        log?.Info("[WebcamSettings][ImportWebcamSettings] resolutions change, ExportWebcamSettings to file OK");
-                                }
-                                return tmp;
-                            }
-                            catch (Exception ex)
-                            {
-                                log?.Error("[ImportWebcamSettings][DeserializeObject] exception :　" + ex.Message);
-                            }
-                            //leo fixed end
+                            tmp = JsonConvert.DeserializeObject<WebcamSettings>(jsonString) ?? new WebcamSettings(di, devMgr, log);
+                            tmp = ReAlignWebcamResolution(tmp, model, di, devMgr, log);
+                            //return tmp;
                         }
                         else
                             log?.Error($"[ImportWebcamSettings][ReadSerializedContentFromFile] empty string output(model:{model})");
@@ -432,13 +441,17 @@ namespace DDPM.SA.Common.Settings
                 log?.Error("[ExportWebcamSettings] The input devMgr is null");
             }
             //Init a new data
-            log?.Info(@$"[WebcamSettings] ImportWebcamSettings di jsonString:{JsonConvert.SerializeObject(di)}!");
-            var wc = new WebcamSettings(di, devMgr, log);
-            if (!ExportWebcamSettings(wc, model, devMgr, log))
+            if (tmp == null)
+            {
+                log?.Info(@$"[WebcamSettings][ImportWebcamSettings] init via di(jsonString:{JsonConvert.SerializeObject(di)})");
+                tmp = new WebcamSettings(di, devMgr, log);
+                tmp = ReAlignWebcamResolution(tmp, model, di, devMgr, log);
+            }
+            if (!ExportWebcamSettings(tmp, model, devMgr, log))
             {
                 log?.Info(@$"[WebcamSettings][ImportWebcamSettings] try to use ExportWebcamSettings to init file fail");
             }
-            return wc;
+            return tmp;
         }
     }
 
