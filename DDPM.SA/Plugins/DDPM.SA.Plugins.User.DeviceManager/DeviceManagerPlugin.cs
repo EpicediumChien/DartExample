@@ -235,6 +235,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
 
         private List<NKVMVCPValue> _nKVMVCPValues = new List<NKVMVCPValue>();
+        /// <summary>
+        ///Check software and firmware update timers
+        /// </summary>
+        private System.Timers.Timer _checkUpdateScheduleTimer;//Added 01/07 by Bruce
+        DisplayUpdateHelper displayUpdateHelper;
 
         #endregion
 
@@ -261,6 +266,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Robert_Lin, 2024-12-1 added, to let TextBox highlight text color can be changed with TextBox.SelectionTextBrush
             //Reference: https://github.com/dotnet/wpf/issues/4571
             AppContext.SetSwitch("Switch.System.Windows.Controls.Text.UseAdornerForTextboxSelectionRendering", false);
+
+
+            Microsoft.Win32.SystemEvents.PowerModeChanged += OnPowerModeChanged;//Added 01/07 by Bruce
         }
 
         private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
@@ -5718,7 +5726,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog("[DeviceMangerPlugin] deviceInfos is null");
                     deviceInfos = new List<DeviceInfo>();
                 }
-                DisplayUpdateHelper displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
+                displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
                 if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
                 {
                     writelog("[DeviceMangerPlugin] displayUpdateHelper is null");
@@ -5726,6 +5734,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     displayUpdateHelper.Firmwares = new List<Display_Firmwares_item>();
                 }
                 writelog("[DeviceMangerPlugin] _FWUpdatePlugin.GetFWUpdateInfo go");
+                ResetTimer();
                 return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay, reScan, isUITrigger, giuds, serviceTags, models, minVersion).Result);
             }
             writelog("[DeviceMangerPlugin] GetFWUpdateInfo done, But all obj is null");
@@ -6451,7 +6460,116 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"[DelayEvent],{ob} done.");
         }
+        /// <summary>
+        /// 定期檢查更新排程
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckUpdateScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
+        {
+            writelog($"{nameof(CheckUpdateScheduleTimer_Elapsed)} start");
+            ResetTimer();
+            if (_SettingsPlugin != null)
+            {
+                GetFWUpdateInfo(false, false, false, null, false, false, true, false).Wait();
+                SW_GetSWUpdateInfo(false).Wait();
+            }
+            else
+            {
+                writelog($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _SettingsPlugin is null");
+            }
+        }
+        private void UpdateLockSettingChange(ITSettingEventArgs e)
+        {
+            writelog($"UpdateLockSettingChange start");
+            if (_checkUpdateScheduleTimer != null)
+            {
+                if (e != null && e.IT_Feature_TriggerList != null && e.target_object != null)
+                {
+                    int idx = e.IT_Feature_TriggerList.FindIndex(x => x.Trim().Equals("Lock_Settings_Updates"));
+                    if (idx >= 0)
+                    {
+                        string feature = e.IT_Feature_TriggerList[idx];
+                        PropertyInfo propertyInfo = e.target_object.GetType().GetProperty(feature);
+                        writelog($"UpdateLockSettingChange Got [IT settings event] {feature} : {propertyInfo.GetValue(e.target_object)}");
 
+                        bool? isLockUpdate = (bool?)propertyInfo.GetValue(e.target_object);
+                        if (isLockUpdate != null)
+                        {
+                            writelog($"UpdateLockSettingChange _checkUpdateScheduleTimer is no null");
+                            writelog($"UpdateLockSettingChange _checkUpdateScheduleTimer isLockUpdate:{isLockUpdate}");
+                            if (isLockUpdate == true)
+                            {
+                                _checkUpdateScheduleTimer.Stop();
+                                writelog($"UpdateLockSettingChange _checkUpdateScheduleTimer is stop");
+                            }
+                            else
+                            {
+                                _checkUpdateScheduleTimer.Start();
+                                writelog($"UpdateLockSettingChange _checkUpdateScheduleTimer is start");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        writelog("UpdateLockSettingChange idx < 0!");
+                    }
+                }
+                else
+                {
+                    writelog("UpdateLockSettingChange Got [DeviceManagerSA_ITSettingsActionEvent] event but its argument is empty!");
+                }
+            }
+            writelog($"UpdateLockSettingChange done");
+        }
+        private void OnPowerModeChanged(object sender, Microsoft.Win32.PowerModeChangedEventArgs e)
+        {
+            if (_checkUpdateScheduleTimer != null)
+            {
+                switch (e.Mode)
+                {
+                    case Microsoft.Win32.PowerModes.Suspend:
+                        _checkUpdateScheduleTimer.Stop();
+                        writelog("OnPowerModeChanged PC is sleep");
+                        break;
+
+                    case Microsoft.Win32.PowerModes.Resume:
+                        _checkUpdateScheduleTimer.Start();
+                        writelog("OnPowerModeChanged PC is wakeup");
+                        break;
+
+                    case Microsoft.Win32.PowerModes.StatusChange:
+                        writelog("OnPowerModeChanged PC is status change");
+                        break;
+                }
+            }
+        }
+        private void ResetTimer()
+        {
+            writelog($"ResetTimer start");
+            if (_checkUpdateScheduleTimer != null)
+            {
+                writelog($"ResetTimer go");
+                _checkUpdateScheduleTimer.Stop();
+                _checkUpdateScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
+                _checkUpdateScheduleTimer.Start();
+            }
+            writelog($"ResetTimer done");
+        }
+        private void DisplayFWCheck()
+        {
+            writelog($"DisplayFWCheck start");
+            if (displayUpdateHelper != null && displayUpdateHelper.Firmwares != null && _AllInfoMonitors != null)
+            {
+                writelog($"displayUpdateHelper.Firmwares.Count : {displayUpdateHelper.Firmwares.Count}");
+                writelog($"_AllInfoMonitors.Count : {_AllInfoMonitors.Count}");
+                if (displayUpdateHelper.Firmwares.Count != _AllInfoMonitors.Count)
+                {
+                    show_peripheralsUpdateNotify(this, true);
+                }
+            }
+            writelog($"DisplayFWCheck done");
+        }
         #endregion
 
         #region USBKVM implementation
@@ -8064,6 +8182,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_SWUpdatePlugin != null)
             {
+                ResetTimer();
                 return Task.FromResult(_SWUpdatePlugin.GetSWUpdateInfo(isShowNotify, isForce, isDefer, _GlobalSettingParam.GlobalSetting_About.SWVersion, reScan, isUITrigger).Result);
             }
             return Task.FromResult(new SWUpdateInfoPackage());
@@ -11555,7 +11674,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, CancellationToken);
                 //SupportedNKVMMonitors();
             }
-
+            DisplayFWCheck();
             if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
                 Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, e.monitors, _SettingsPlugin));
         }
@@ -11771,6 +11890,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, token);
                     //SupportedNKVMMonitors();
                 }
+                DisplayFWCheck();
                 //for USB KVM auto switch kb ms
                 foreach (var monitor in _AllInfoMonitors)
                 {
@@ -12732,6 +12852,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //
                 //Do IT Settings update notify
                 //
+                UpdateLockSettingChange(e);
                 OnITSettingsActionEventNotify(e);
             });
         }
@@ -12771,9 +12892,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a running condition");
                         //0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
                         //_FWUpdatePluginCondition = pluginCondition;
-                        _FWUpdatePlugin.CollCheckUpdate += show_fwCheckUpdateScheduleEvent;
                         _FWUpdatePlugin.CallSaveUpdateInfoPackage += show_fwSaveUpdateInfoPackage;
-                        _FWUpdatePlugin.StartCheckUpdateScheduleTimer();
                         _FWUpdatePlugin.CallGetDeviceInfos += show_GetDeviceinfos;
                         _FWUpdatePlugin.CallSaveUODFWDeviceInfos += show_fwUODUpdateInfo;
                         SetDelayFWUpdateInfoPackage();
@@ -12782,15 +12901,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
                         _FWUpdatePlugin.CallPopup += CallPopup;
                         _FWUpdatePlugin.CallOSD += CallOSD;
+                        if (_checkUpdateScheduleTimer == null)
+                        {
+                            _checkUpdateScheduleTimer = new System.Timers.Timer();
+                            _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
+                            _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+                            _checkUpdateScheduleTimer.Start();
+                        }
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
                         writelog($"{nameof(GetCurrentFWUpdatePluginCondition)} - FW Update Plugin is in a started condition");
                         //0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
                         //_FWUpdatePluginCondition = pluginCondition;
-                        _FWUpdatePlugin.CollCheckUpdate += show_fwCheckUpdateScheduleEvent;
                         _FWUpdatePlugin.CallSaveUpdateInfoPackage += show_fwSaveUpdateInfoPackage;
-                        _FWUpdatePlugin.StartCheckUpdateScheduleTimer();
                         _FWUpdatePlugin.CallGetDeviceInfos += show_GetDeviceinfos;
                         _FWUpdatePlugin.CallSaveUODFWDeviceInfos += show_fwUODUpdateInfo;
                         SetDelayFWUpdateInfoPackage();
@@ -12799,6 +12923,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _FWUpdatePlugin.DownloadAndInstall_Result_Notify += show_fwUpdateResultEvent;
                         _FWUpdatePlugin.CallPopup += CallPopup;
                         _FWUpdatePlugin.CallOSD += CallOSD;
+                        if (_checkUpdateScheduleTimer == null)
+                        {
+                            _checkUpdateScheduleTimer = new System.Timers.Timer();
+                            _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
+                            _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+                            _checkUpdateScheduleTimer.Start();
+                        }
                     }
                 }
             });
@@ -12885,20 +13016,30 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     else if (pluginCondition is PluginRunningCondition)
                     {
                         writelog($"{nameof(GetCurrentSWUpdatePluginCondition)} - SW Update Plugin is in a running condition");
-                        _SWUpdatePlugin.CollCheckUpdate += show_swCheckUpdateScheduleEvent;
                         _SWUpdatePlugin.CallSaveUpdateInfoPackage += show_swSaveUpdateInfoPackage;
-                        _SWUpdatePlugin.StartCheckUpdateScheduleTimer();
                         SW_SetDelaySWUpdateInfoPackage();
                         _SWUpdatePlugin.CallPopup += CallPopup;
+                        if (_checkUpdateScheduleTimer == null)
+                        {
+                            _checkUpdateScheduleTimer = new System.Timers.Timer();
+                            _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
+                            _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+                            _checkUpdateScheduleTimer.Start();
+                        }
                     }
                     else if (pluginCondition is PluginStartedCondition)
                     {
                         writelog($"{nameof(GetCurrentSWUpdatePluginCondition)} - SW Update Plugin is in a started condition");
-                        _SWUpdatePlugin.CollCheckUpdate += show_swCheckUpdateScheduleEvent;
                         _SWUpdatePlugin.CallSaveUpdateInfoPackage += show_swSaveUpdateInfoPackage;
-                        _SWUpdatePlugin.StartCheckUpdateScheduleTimer();
                         SW_SetDelaySWUpdateInfoPackage();
                         _SWUpdatePlugin.CallPopup += CallPopup;
+                        if (_checkUpdateScheduleTimer == null)
+                        {
+                            _checkUpdateScheduleTimer = new System.Timers.Timer();
+                            _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
+                            _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
+                            _checkUpdateScheduleTimer.Start();
+                        }
                     }
                 }
             });

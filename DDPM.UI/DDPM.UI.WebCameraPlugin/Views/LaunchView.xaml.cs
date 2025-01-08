@@ -353,10 +353,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             if (!SpecialCase.Contains(model))
                 return;
-
+            DdpmCommonHelper.WriteUILog($"GetIsAllSupportedResolutionsFound Before {AllSupportedResolutions}");
             //check usb 2.0 / 3.0
             AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-
+            DdpmCommonHelper.WriteUILog($"GetIsAllSupportedResolutionsFound After {AllSupportedResolutions}");
             //api回傳camera硬體是否支援windows hello
             bool is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
 
@@ -776,12 +776,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //fps與解析度,排除4k
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
 
-                        _vm.btnRes0_show = Visibility.Collapsed;
-                        _vm.btnRes0_width = 0;
 
+                        //2025/01/07
+                        //There is no need to handle the resolution project by yourself, IL will provide the corresponding resolution according to USB 2.0/3.0.
+                        /*_vm.btnRes0_show = Visibility.Collapsed;
+                        _vm.btnRes0_width = 0;
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
-                        _vm.btnRes2_width = 201;
+                        _vm.btnRes2_width = 201;*/
 
                         if (_vm.WebcamSettings.SelectedResolution != "Full HD" && _vm.WebcamSettings.SelectedResolution != "HD")
                         {
@@ -834,15 +836,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //fps與解析度,排除4k
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
-
-                        _vm.btnRes0_show = Visibility.Visible;
+                        //2025/01/07
+                        //There is no need to handle the resolution project by yourself, IL will provide the corresponding resolution according to USB 2.0/3.0.
+                        /*_vm.btnRes0_show = Visibility.Visible;
                         _vm.btnRes0_width = 133;
                         _vm.btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
 
 
                         _vm.btnRes1_width = 133;
                         _vm.btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
-                        _vm.btnRes2_width = 133;
+                        _vm.btnRes2_width = 133;*/
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Visible;
@@ -871,12 +874,30 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //fps與解析度,排除4k Camera.14
 
-                        _vm.btnRes0_show = Visibility.Collapsed;
+                        //2025/01/07
+                        //There is no need to handle the resolution project by yourself, IL will provide the corresponding resolution according to USB 2.0/3.0.
+                        /*_vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 0;
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
-                        _vm.btnRes2_width = 201;
+                        _vm.btnRes2_width = 201;*/
                         //_vm!.SetResolution_Selected(1);
+
+                        if (_vm.WebcamSettings.SelectedResolution != "Full HD" && _vm.WebcamSettings.SelectedResolution != "HD")
+                        {
+                            //_vm.SetResolution_Selected(1);
+                            if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.SelectedResolution))
+                            {
+                                List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
+                                int index = FPS.FindIndex(x => x == "30");
+                                if (index != -1)
+                                {
+                                    _vm.SetFPS_Selected(index);
+                                }
+                            }
+                        }
+
+
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
@@ -900,13 +921,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
 
                         //fps與解析度,排除4k Camera.14
-
-                        _vm.btnRes0_show = Visibility.Visible;
+                        //2025/01/07
+                        //There is no need to handle the resolution project by yourself, IL will provide the corresponding resolution according to USB 2.0/3.0.
+                        /*_vm.btnRes0_show = Visibility.Visible;
                         _vm.btnRes0_width = 133;
                         _vm.btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes1_width = 133;
                         _vm.btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
-                        _vm.btnRes2_width = 133;
+                        _vm.btnRes2_width = 133;*/
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
@@ -931,13 +953,28 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
 
                         //fps與解析度,排除4k 
-
-                        _vm.btnRes0_show = Visibility.Collapsed;
+                        //2025/01/07
+                        //There is no need to handle the resolution project by yourself, IL will provide the corresponding resolution according to USB 2.0/3.0.
+                        /*_vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 0;
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
-                        _vm.btnRes2_width = 201;
+                        _vm.btnRes2_width = 201;*/
                         //_vm!.SetResolution_Selected(1);
+
+                        if (_vm.WebcamSettings.SelectedResolution != "Full HD" && _vm.WebcamSettings.SelectedResolution != "HD")
+                        {
+                            //_vm.SetResolution_Selected(1);
+                            if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.SelectedResolution))
+                            {
+                                List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
+                                int index = FPS.FindIndex(x => x == "30");
+                                if (index != -1)
+                                {
+                                    _vm.SetFPS_Selected(index);
+                                }
+                            }
+                        }
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
@@ -961,13 +998,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
 
                         //fps與解析度,排除4k 
-
-                        _vm.btnRes0_show = Visibility.Collapsed;
+                        //2025/01/07
+                        //There is no need to handle the resolution project by yourself, IL will provide the corresponding resolution according to USB 2.0/3.0.
+                        /*_vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 133;
                         _vm.btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes1_width = 133;
                         _vm.btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
-                        _vm.btnRes2_width = 133;
+                        _vm.btnRes2_width = 133;*/
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
@@ -986,13 +1024,28 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"].Replace("4K", "2K");
 
                         //fps與解析度,排除2k 
-
-                        _vm.btnRes0_show = Visibility.Collapsed;
+                        //2025/01/07
+                        //There is no need to handle the resolution project by yourself, IL will provide the corresponding resolution according to USB 2.0/3.0.
+                        /*_vm.btnRes0_show = Visibility.Collapsed;
                         _vm.btnRes0_width = 0;
                         _vm.btnRes1_width = 201;
                         _vm.btnRes1_radius_v = new CornerRadius(5, 0, 0, 5);
-                        _vm.btnRes2_width = 201;
+                        _vm.btnRes2_width = 201;*/
                         //_vm!.SetResolution_Selected(1);
+
+                        if (_vm.WebcamSettings.SelectedResolution != "Full HD" && _vm.WebcamSettings.SelectedResolution != "HD")
+                        {
+                            //_vm.SetResolution_Selected(1);
+                            if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.SelectedResolution))
+                            {
+                                List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
+                                int index = FPS.FindIndex(x => x == "30");
+                                if (index != -1)
+                                {
+                                    _vm.SetFPS_Selected(index);
+                                }
+                            }
+                        }
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Collapsed;
@@ -1006,13 +1059,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.usbtype_info_v = LangHelper.Instance["Camera.25"].Replace("4K", "2K");
 
                         //fps與解析度,排除2k 
-
-                        _vm.btnRes0_show = Visibility.Visible;
+                        //2025/01/07
+                        //There is no need to handle the resolution project by yourself, IL will provide the corresponding resolution according to USB 2.0/3.0.
+                        /*_vm.btnRes0_show = Visibility.Visible;
                         _vm.btnRes0_width = 133;
                         _vm.btnRes0_radius_v = new CornerRadius(5, 0, 0, 5);
                         _vm.btnRes1_width = 133;
                         _vm.btnRes1_radius_v = new CornerRadius(0, 0, 0, 0);
-                        _vm.btnRes2_width = 133;
+                        _vm.btnRes2_width = 133;*/
 
                         //camera控制權
                         _vm.bdrPrioritize_show = Visibility.Visible;
