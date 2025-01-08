@@ -1262,8 +1262,8 @@ namespace DDPM.UI.Module.EzArrange
             listOut.AddRange(existNames);
 
             //Step B. If all custom names are in ListOut
-            const int MaxCustomItems = DDPM.SA.Common.Display.EAEMConstants.MaxCustomItems; //=5
-            if (listOut.Count >= MaxCustomItems)
+            const int localMaxCustomItems = DDPM.SA.Common.Display.EAEMConstants.MaxCustomItems; //=5
+            if (listOut.Count >= localMaxCustomItems)
             {
                 idxFirstUnused = -1; //No unused name in listOut
                 return listOut;
@@ -1273,10 +1273,10 @@ namespace DDPM.UI.Module.EzArrange
             //C1. SelectedIndex <- the first available index
             idxFirstUnused = listOut.Count;
             //C2. Generate unused names
-            for (int i = idxFirstUnused; i < MaxCustomItems; i++)
+            for (int i = idxFirstUnused; i < localMaxCustomItems; i++)
             {
                 //C3. Get the next available custom name
-                for (int j = 1; j <= MaxCustomItems; j++)
+                for (int j = 1; j <= localMaxCustomItems; j++)
                 {
                     //C3.1. Generate a customName
                     string customName = $"Custom Layout ({j})";
