@@ -484,7 +484,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     (e.changedProperty.ToLower().Contains("add")) ||
                     (e.changedProperty.ToLower().Contains("batterystatuschanged")) ||
                     (e.changedProperty.ToLower().Contains("batterylevelchanged")) ||
-                    ((string.Compare(e.changedProperty, "DisplayChanged", true) == 0)))
+                    (string.Compare(e.changedProperty, "DisplayChanged", true) == 0))
                 {
                     //Force return to HomePage
                     // 2024-06-19 From Dean, using DeviceChangedType.NotifyOnly to check if it's a monitor settings change.
