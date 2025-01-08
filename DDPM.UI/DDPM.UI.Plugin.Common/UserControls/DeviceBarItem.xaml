@@ -97,7 +97,7 @@
                     <Path Data="M0 5.44531V16.9503H4.125V18.5553H7.41V16.9503H16.575V18.5403H19.875V16.9653H24V5.46031L0 5.44531ZM22.38 15.3753H1.605V7.03531H22.395V15.3603L22.38 15.3753Z"
                           Fill="{Binding Tag, RelativeSource={RelativeSource AncestorType=Canvas}}" />
                 </Canvas>
-                <!-- Elsa 20250108 For PIMS [PIMS-334920] add Width="145" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" -->
+                <!-- Elsa 20250108 For PIMS [PIMS-333543][PIMS-334920] add Width="145" TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis" -->
                 <UXControls:UXTextBlock x:Name="IconName" Grid.Column="1" Text="{Binding Text}" FontSize="14" FontFamily="Roboto" 
                                         Width="145"  TextWrapping="WrapWithOverflow" TextTrimming="CharacterEllipsis"
                                         LineHeight="20" FontWeight="Bold" Padding="0,4,0,0" 
