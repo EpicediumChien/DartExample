@@ -41,8 +41,13 @@ namespace DDPM.EABroker
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            bool IsInfoWindowVsible = Win32Lib.Win32.IniReadInt(
-                "DDPMDebug", "DDPM.SA.EAPlugin.InfoWindow.IsVisible", 0, @"C:\temp\DDPMDebug.txt") == 1;
+            //Developer Debug Flags Changed:
+            //OLD:
+            //bool IsInfoWindowVsible = Win32Lib.Win32.IniReadInt(
+            //        "DDPMDebug", "DDPM.SA.EAPlugin.InfoWindow.IsVisible", 0, @"C:\temp\DDPMDebug.txt") == 1;
+            //NEW:
+            bool IsInfoWindowVsible = DDPM.SA.Common.Settings.DevSettings.IsEAInfoWindowVisible();
+
             if (IsInfoWindowVsible)
             {
                 Left = 100;
