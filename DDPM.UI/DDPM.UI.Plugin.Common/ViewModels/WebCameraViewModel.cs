@@ -335,43 +335,40 @@ namespace DDPM.UI.Plugin.ViewModels
                 // jim add for PIMS-328195
                 _isEnable_SnoozeLength = _isChecked_Snooze && _isChecked_ProximitySensor;
 
-                if (_isChecked_Snooze)
+                if (_isChecked_Snooze &&
+                    _SelectedSnoozeLength != null)
                 {
-                    if (_SelectedSnoozeLength != null)
+                    if (_SelectedSnoozeLength.SnoozeLength == 30)
                     {
-                        if (_SelectedSnoozeLength.SnoozeLength == 30)
-                        {
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
-                            //_SelectedSnoozeLength.SnoozeLength = 1800;
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
-                        }
-                        else if (_SelectedSnoozeLength.SnoozeLength == 60)
-                        {
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
-                            //_SelectedSnoozeLength.SnoozeLength = 3600;
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
-                        }
-                        else if (_SelectedSnoozeLength.SnoozeLength == 90)
-                        {
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 2);
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(2, CurrentDeviceInfo!.ID);
-                            //_SelectedSnoozeLength.SnoozeLength = 5400;
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
-                        }
-                        else if (_SelectedSnoozeLength.SnoozeLength == 120)
-                        {
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
-                            DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 3);
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(3, CurrentDeviceInfo!.ID);
-                            //_SelectedSnoozeLength.SnoozeLength = 7200;
-                            //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
-                        }
-
+                        //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
+                        DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 0);
+                        //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(0, CurrentDeviceInfo!.ID);
+                        //_SelectedSnoozeLength.SnoozeLength = 1800;
+                        //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
+                    }
+                    else if (_SelectedSnoozeLength.SnoozeLength == 60)
+                    {
+                        //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
+                        DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
+                        //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(1, CurrentDeviceInfo!.ID);
+                        //_SelectedSnoozeLength.SnoozeLength = 3600;
+                        //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
+                    }
+                    else if (_SelectedSnoozeLength.SnoozeLength == 90)
+                    {
+                        //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
+                        DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 2);
+                        //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(2, CurrentDeviceInfo!.ID);
+                        //_SelectedSnoozeLength.SnoozeLength = 5400;
+                        //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
+                    }
+                    else if (_SelectedSnoozeLength.SnoozeLength == 120)
+                    {
+                        //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), -1); // jim 20241221 modify for 和DPeM 行為對齊 
+                        DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 3);
+                        //DdpmCommonHelper.DeviceManagerSA!.SetSnooze(3, CurrentDeviceInfo!.ID);
+                        //_SelectedSnoozeLength.SnoozeLength = 7200;
+                        //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(CurrentDeviceInfo!.ID.ToString(), _SelectedSnoozeLength.SnoozeLength_sec);
                     }
                 }
                 //    DdpmCommonHelper.DeviceManagerSA!.SetSnooze(CurrentDeviceInfo!.ID.ToString(), 1);
@@ -2097,12 +2094,10 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if (_properties is VideoEncodingProperties)
+                if (_properties is VideoEncodingProperties &&
+                    (_properties as VideoEncodingProperties).FrameRate.Denominator != 0)
                 {
-                    if ((_properties as VideoEncodingProperties).FrameRate.Denominator != 0)
-                    {
-                        return (_properties as VideoEncodingProperties).FrameRate.Numerator / (_properties as VideoEncodingProperties).FrameRate.Denominator;
-                    }
+                    return (_properties as VideoEncodingProperties).FrameRate.Numerator / (_properties as VideoEncodingProperties).FrameRate.Denominator;                    
                 }
 
                 return 0;

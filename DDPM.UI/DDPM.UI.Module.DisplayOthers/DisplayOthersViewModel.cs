@@ -165,15 +165,13 @@ namespace DDPM.UI.Module.DisplayOthers
                 BackgroundWorker bwk = (BackgroundWorker)sender;
                 AutoApply_Checked = DdpmCommonHelper.DeviceManagerSA.GetSameModel(DisplayOthersModule.SelectedHomeDevice.MonitorInfo).Result;
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null)
+                if (data != null &&
+                    data.LockSettings.Lock_Display_PowerNap)
                 {
-                    if (data.LockSettings.Lock_Display_PowerNap)
-                    {
-                        //Do lock ui init here (direct set or binding via vm)
-                        LockPowerNap_Visibility = Visibility.Visible;
-                        isLockPowerNapEnable = true;
-                        LockPowerNap_Opacity = 0.5;
-                    }
+                    //Do lock ui init here (direct set or binding via vm)
+                    LockPowerNap_Visibility = Visibility.Visible;
+                    isLockPowerNapEnable = true;
+                    LockPowerNap_Opacity = 0.5;
                 }
                 OnPropertyChanged("AutoApply_Checked");
                 updatePowerNapUISetting();

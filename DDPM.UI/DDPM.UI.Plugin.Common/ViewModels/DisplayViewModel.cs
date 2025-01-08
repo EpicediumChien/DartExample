@@ -481,10 +481,10 @@ namespace DDPM.UI.Plugin.Common.ViewModels
             get
             {
                 RightViewHeader? header = SelRightViewHeader;
-                if (header != null)
+                if (header != null &&
+                    header.DdpmModule != null)
                 {
-                    if (header.DdpmModule != null)
-                        return header.DdpmModule.ModuleName;
+                    return header.DdpmModule.ModuleName;
                 }
                 return "(ERROR)";
             }

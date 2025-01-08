@@ -94,22 +94,20 @@ namespace DDPM.UI.Plugin.Common
 
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
         {
-            if (e.type == DeviceChangedType.Peripherals_SettingsChange)
+            if (e.type == DeviceChangedType.Peripherals_SettingsChange &&
+                e.changedProperty.Split("|")[0] == "PenKeyCaptureProgressDataChanged")
             {
-                if (e.changedProperty.Split("|")[0] == "PenKeyCaptureProgressDataChanged")
+                var txt = e.changedProperty.Substring(33);
+                if (txt.Length > 30)
                 {
-                    var txt = e.changedProperty.Substring(33);
-                    if (txt.Length > 30)
-                    {
-                        Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
-                        _ = task1.Result;
-                        Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.KeyCaptureData();
-                        var keystroke = task2.Result;
-                    }
-                    Application.Current.Dispatcher.Invoke(() => {
-                        txtKeystroke.Text = e.changedProperty.Substring(33);
-                    });
+                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA!.FinishKeyCapturePen();
+                    _ = task1.Result;
+                    Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.KeyCaptureData();
+                    var keystroke = task2.Result;
                 }
+                Application.Current.Dispatcher.Invoke(() => {
+                    txtKeystroke.Text = e.changedProperty.Substring(33);
+                });                
             }
         }
 

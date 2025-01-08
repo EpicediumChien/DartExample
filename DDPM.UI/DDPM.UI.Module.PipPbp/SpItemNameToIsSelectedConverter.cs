@@ -7,13 +7,11 @@ namespace DDPM.UI.Module.PipPbp
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if ((value != null) && (parameter != null))
-            {
-                if ((value is string) && (parameter is string))
-                {
-                    if (value == parameter)
-                        return true;
-                }
+            if (value != null && value is string &&
+                parameter != null && parameter is string &&
+                value == parameter)
+            {             
+                return true;                
             }
             return false;
         }
