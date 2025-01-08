@@ -2271,4 +2271,1192 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>この機能により、私たちの目は目的の設定に適応できます。</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>ここからお気に入りの構成をエクスポートして、同じモデルの別のモニターに簡単にインポートできます。</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>入力ソースの名前変更</value>
+  </data>
+  <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
+    <value>モニターからすべてのUSBストレージ デバイスを取り外します。</value>
+  </data>
+  <data name="AddDevice.KnM.14" xml:space="preserve">
+    <value>ワイヤレス レシーバー接続</value>
+  </data>
+  <data name="ConsentNo" xml:space="preserve">
+    <value>いいえ、同意しません</value>
+  </data>
+  <data name="ConsentYes" xml:space="preserve">
+    <value>はい、同意します</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="Consent.1" xml:space="preserve">
+    <value>改善へのご協力</value>
+  </data>
+  <data name="Consent.2" xml:space="preserve">
+    <value>診断データと使用状況データを自動的に送信することで、Dellの製品とサービスの改善を支援します。詳細情報 </value>
+  </data>
+  <data name="ImpExp_CheckBox.0" xml:space="preserve">
+    <value>同じモデルの場合は、プロンプトを再び表示しない</value>
+  </data>
+  <data name="ImpExp_Message.1" xml:space="preserve">
+    <value>使いやすくするためにアプリケーション設定をインポートしますか？</value>
+  </data>
+  <data name="ImpExp_Title.0" xml:space="preserve">
+    <value>新しいモニター%1が検出されました。</value>
+  </data>
+  <data name="Wait_DevMgr" xml:space="preserve">
+    <value>DDPM Subagentに接続しています...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="Wait_DTH" xml:space="preserve">
+    <value>Dell.TechHubに接続しています...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="Wait_NoDevice" xml:space="preserve">
+    <value>デバイスを検出しています...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="InvalidURL" xml:space="preserve">
+    <value>無効なURL</value>
+  </data>
+  <data name="Left" xml:space="preserve">
+    <value>左</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>右</value>
+  </data>
+  <data name="WalkThrough.1" xml:space="preserve">
+    <value>スキップ</value>
+  </data>
+  <data name="WalkThrough.2" xml:space="preserve">
+    <value>アプリに移動</value>
+  </data>
+  <data name="HeadsetAudioSettings.29" xml:space="preserve">
+    <value>電話会議中に適用されます</value>
+  </data>
+  <data name="HeadsetAudioSettings.30" xml:space="preserve">
+    <value>音楽やポッドキャストなどのマルチメディアを聴くときに適用されます</value>
+  </data>
+  <data name="Brightness.19" xml:space="preserve">
+    <value>明るさの自動調整は現在有効です。オーバーライドしますか？</value>
+  </data>
+  <data name="Brightness.20" xml:space="preserve">
+    <value>これはプライマリー モニターではありません。変更を続行して、これを同期するプライマリー モニターとして設定しますか？</value>
+  </data>
+  <data name="ThirdPartyLicense.Title" xml:space="preserve">
+    <value>サード パーティー ライセンス</value>
+  </data>
+  <data name="Illumination.2" xml:space="preserve">
+    <value>輝度レベルを変更するには、F8キーを押します</value>
+  </data>
+  <data name="Illumination.3" xml:space="preserve">
+    <value>使用する環境での光の強さに基づいてキーボードの明るさレベルを調整します</value>
+  </data>
+  <data name="Illumination.4" xml:space="preserve">
+    <value>キーボードの明るさを手動で調整します</value>
+  </data>
+  <data name="Off2" xml:space="preserve">
+    <value>オフ</value>
+  </data>
+  <data name="EazyMemory.40" xml:space="preserve">
+    <value>プロファイル名を入力してください。</value>
+  </data>
+  <data name="hotkey.7" xml:space="preserve">
+    <value>ホットキー警告</value>
+  </data>
+  <data name="hotkey.8" xml:space="preserve">
+    <value>設定したホットキーは単独のキーです。他のアプリケーションでは、当該キーの機能が妨げられる可能性があります。続行しますか？</value>
+  </data>
+  <data name="hotkey.9" xml:space="preserve">
+    <value>このホットキーは、別のDell Display and Peripheral Manager機能で使用されています。置き換えますか？</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="Update_Available_Version" xml:space="preserve">
+    <value>使用可能なバージョンのアップデート</value>
+  </data>
+  <data name="New_Supported_Devices" xml:space="preserve">
+    <value>新しくサポートされるデバイス</value>
+  </data>
+  <data name="New_Features" xml:space="preserve">
+    <value>新機能</value>
+  </data>
+  <data name="Bug_Fixes" xml:space="preserve">
+    <value>バグフィックス</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>アップデート</value>
+  </data>
+  <data name="UI_Orientation.0" xml:space="preserve">
+    <value>横向き</value>
+  </data>
+  <data name="UI_Orientation.1" xml:space="preserve">
+    <value>縦向き</value>
+  </data>
+  <data name="UI_Orientation.2" xml:space="preserve">
+    <value>横向き（反転）</value>
+  </data>
+  <data name="UI_Orientation.3" xml:space="preserve">
+    <value>縦向き（反転）</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.0" xml:space="preserve">
+    <value>低</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.1" xml:space="preserve">
+    <value>中間</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.2" xml:space="preserve">
+    <value>高</value>
+  </data>
+  <data name="EazyMemorySettings.0" xml:space="preserve">
+    <value>ホットキー：最近使用</value>
+  </data>
+  <data name="EazyMemorySettings.1" xml:space="preserve">
+    <value>例：「Alt + P」、「Shift + F」、「Ctrl + Shift + F」。</value>
+  </data>
+  <data name="EazyMemorySettings.2" xml:space="preserve">
+    <value>パーティションにドラッグすることで、任意のアプリケーションを分割画面レイアウトに簡単にスナップします</value>
+  </data>
+  <data name="EazyMemorySettings.3" xml:space="preserve">
+    <value>アプリを隙間なく横に並べて分割できるようにします</value>
+  </data>
+  <data name="EazyMemorySettings.4" xml:space="preserve">
+    <value>SHIFTが押された場合にのみゾーン ポジショニングを許可します</value>
+  </data>
+  <data name="EazyMemorySettings.5" xml:space="preserve">
+    <value>複数のモニターにわたってスナップします</value>
+  </data>
+  <data name="EazyMemorySettings.6" xml:space="preserve">
+    <value>アプリケーション ウィンドウ スナップ</value>
+  </data>
+  <data name="PairedInfo.0" xml:space="preserve">
+    <value>このデバイスは{0}台のホストと同時にペアリングできます</value>
+  </data>
+  <data name="EazyMemory.41" xml:space="preserve">
+    <value>同じ時間を使用するように、別のプロファイルが設定されています。別の時間を使用してください。</value>
+  </data>
+  <data name="Action.1" xml:space="preserve">
+    <value>キーの組み合わせを入力してショートカットを作成します</value>
+  </data>
+  <data name="Action.2" xml:space="preserve">
+    <value>［参照］ボタンをクリックしてファイルを選択します</value>
+  </data>
+  <data name="Action.3" xml:space="preserve">
+    <value>\［参照\］ボタンをクリックしてフォルダーを選択します</value>
+  </data>
+  <data name="Action.4" xml:space="preserve">
+    <value>下のボックスにWebページのURLを入力します</value>
+  </data>
+  <data name="Action.5" xml:space="preserve">
+    <value>ファイル名</value>
+  </data>
+  <data name="Action.6" xml:space="preserve">
+    <value>フォルダー名</value>
+  </data>
+  <data name="Camera.14" xml:space="preserve">
+    <value>プリセット</value>
+  </data>
+  <data name="Camera.15" xml:space="preserve">
+    <value>プリセットの編集</value>
+  </data>
+  <data name="Camera.19" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="Camera.20" xml:space="preserve">
+    <value>この名前が取得されます</value>
+  </data>
+  <data name="Camera.21" xml:space="preserve">
+    <value>カメラの画像を中立的に調整し、元の設定に戻します</value>
+  </data>
+  <data name="Camera.22" xml:space="preserve">
+    <value>タッチアップして外観を滑らかにします</value>
+  </data>
+  <data name="Camera.23" xml:space="preserve">
+    <value>画像の色と鮮やかさを強調します</value>
+  </data>
+  <data name="Camera.24" xml:space="preserve">
+    <value>外観を暖系の色調で鮮やかにします</value>
+  </data>
+  <data name="Collab.1" xml:space="preserve">
+    <value>コラボレーション</value>
+  </data>
+  <data name="Collab.10" xml:space="preserve">
+    <value>リクエストをブロックしたため、コラボレーション キーボードをMicrosoft Teamsに接続できません。コラボレーション キーボードでMicrosoft Teamsを使用するには、\［詳細を見る\］をクリックして再接続する方法を確認してください。</value>
+  </data>
+  <data name="Collab.11" xml:space="preserve">
+    <value>Zoomでコラボレーション キーボードを使用するには、Zoomの最新のデスクトップ バージョンをインストールします</value>
+  </data>
+  <data name="Collab.12" xml:space="preserve">
+    <value>Microsoft Teamsでコラボレーション キーボードを使用するには、最新バージョンを使用してMicrosoft Teamsにサイン インしていること、およびサード パーティー製アプリAPIが有効になっていることを確認します</value>
+  </data>
+  <data name="Collab.13" xml:space="preserve">
+    <value>ビデオ</value>
+  </data>
+  <data name="Collab.14" xml:space="preserve">
+    <value>共有</value>
+  </data>
+  <data name="Collab.15" xml:space="preserve">
+    <value>チャット</value>
+  </data>
+  <data name="Collab.16" xml:space="preserve">
+    <value>マイク</value>
+  </data>
+  <data name="Collab.17" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Collab.2" xml:space="preserve">
+    <value>会議のコントロールにすばやくアクセスできます。\nキーのオン/オフを切り替えると、Microsoft TeamsやZoomで通話中に\nキーボードのキーが表示または非表示になります。</value>
+  </data>
+  <data name="Collab.3" xml:space="preserve">
+    <value>電話会議に新しいチャット メッセージがあるときに点滅効果を有効にします\n</value>
+  </data>
+  <data name="Collab.4" xml:space="preserve">
+    <value>シングル タップではなく、ダブル タップでキーボードのアイコンをアクティブにします\n</value>
+  </data>
+  <data name="Collab.5" xml:space="preserve">
+    <value>詳細</value>
+  </data>
+  <data name="Collab.6" xml:space="preserve">
+    <value>Microsoft Teamsでコラボレーション キーボードを使用するには：\r\n1. Teamsを開き、プライバシー設定に移動します。\n\n2. サード パーティー製アプリAPIを選択し、Dell Display and Peripheral Managerがブロック リストに入っていないことを確認します。\n\n3. Microsoft Teamsの電話会議を開始することで、Microsoft TeamsとDell Display and Peripheral Managerをペアリングします。</value>
+  </data>
+  <data name="Collab.7" xml:space="preserve">
+    <value>問題が解決しない場合は、コラボレーション キーボードからMicrosoft Teamsへの接続を禁止するポリシーが設定されている可能性があるため、IT部門（該当する場合）に問い合わせてください。</value>
+  </data>
+  <data name="Collab.8" xml:space="preserve">
+    <value>コラボレーション キーボードを使用するには、最新バージョンのZoomまたはMicrosoft Teamsが必要です</value>
+  </data>
+  <data name="Collab.9" xml:space="preserve">
+    <value>電話会議を開始して接続リクエストを受け入れることで、コラボレーション キーボードをMicrosoft Teamsに接続します</value>
+  </data>
+  <data name="Common.0" xml:space="preserve">
+    <value>参照</value>
+  </data>
+  <data name="Common.1" xml:space="preserve">
+    <value>クリア</value>
+  </data>
+  <data name="Common.2" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="Common.3" xml:space="preserve">
+    <value>アプリのリストからアプリを選択します</value>
+  </data>
+  <data name="Common.4" xml:space="preserve">
+    <value>ファイルを選択</value>
+  </data>
+  <data name="Common.5" xml:space="preserve">
+    <value>選択されたファイル</value>
+  </data>
+  <data name="DisplayDefault.1" xml:space="preserve">
+    <value>デバイスのすべてのデフォルト設定をリストアしますか？</value>
+  </data>
+  <data name="Dock.2" xml:space="preserve">
+    <value>USB-C (DP 1.4)</value>
+  </data>
+  <data name="Dock.3" xml:space="preserve">
+    <value>デュアルUSB-C (DP 1.4)</value>
+  </data>
+  <data name="Dock.4" xml:space="preserve">
+    <value>USB-C (TB 4)</value>
+  </data>
+  <data name="Dock.5" xml:space="preserve">
+    <value>USB-C (TB 5)</value>
+  </data>
+  <data name="Excel.1" xml:space="preserve">
+    <value>中央揃え</value>
+  </data>
+  <data name="Excel.10" xml:space="preserve">
+    <value>書式のみペースト</value>
+  </data>
+  <data name="Excel.11" xml:space="preserve">
+    <value>数式をペースト</value>
+  </data>
+  <data name="Excel.12" xml:space="preserve">
+    <value>値のみペースト</value>
+  </data>
+  <data name="Excel.13" xml:space="preserve">
+    <value>前のシート</value>
+  </data>
+  <data name="Excel.14" xml:space="preserve">
+    <value>A～Zで並べ替える</value>
+  </data>
+  <data name="Excel.2" xml:space="preserve">
+    <value>左揃え</value>
+  </data>
+  <data name="Excel.3" xml:space="preserve">
+    <value>右揃え</value>
+  </data>
+  <data name="Excel.4" xml:space="preserve">
+    <value>インデントを減らす</value>
+  </data>
+  <data name="Excel.5" xml:space="preserve">
+    <value>データ領域の一番下に移動</value>
+  </data>
+  <data name="Excel.6" xml:space="preserve">
+    <value>データ領域の先頭に移動</value>
+  </data>
+  <data name="Excel.7" xml:space="preserve">
+    <value>チャートを挿入</value>
+  </data>
+  <data name="Excel.8" xml:space="preserve">
+    <value>上に行を挿入</value>
+  </data>
+  <data name="Excel.9" xml:space="preserve">
+    <value>パン（マウスを押したまま移動）</value>
+  </data>
+  <data name="Multimedia.1" xml:space="preserve">
+    <value>メディアの次のトラック</value>
+  </data>
+  <data name="Multimedia.2" xml:space="preserve">
+    <value>メディアの再生/一時停止</value>
+  </data>
+  <data name="Multimedia.3" xml:space="preserve">
+    <value>メディアの前のトラック</value>
+  </data>
+  <data name="Multimedia.4" xml:space="preserve">
+    <value>音楽</value>
+  </data>
+  <data name="Multimedia.5" xml:space="preserve">
+    <value>画像</value>
+  </data>
+  <data name="Multimedia.6" xml:space="preserve">
+    <value>音量を下げる</value>
+  </data>
+  <data name="Multimedia.7" xml:space="preserve">
+    <value>消音</value>
+  </data>
+  <data name="Multimedia.8" xml:space="preserve">
+    <value>音量を上げる</value>
+  </data>
+  <data name="Outlook.1" xml:space="preserve">
+    <value>ファイルを添付</value>
+  </data>
+  <data name="Outlook.2" xml:space="preserve">
+    <value>Eメールを転送</value>
+  </data>
+  <data name="Outlook.3" xml:space="preserve">
+    <value>新着メール</value>
+  </data>
+  <data name="Outlook.4" xml:space="preserve">
+    <value>新しい会議</value>
+  </data>
+  <data name="Outlook.5" xml:space="preserve">
+    <value>返信</value>
+  </data>
+  <data name="Outlook.6" xml:space="preserve">
+    <value>全員に返信</value>
+  </data>
+  <data name="PairedInfo.1" xml:space="preserve">
+    <value>続行しますか？</value>
+  </data>
+  <data name="PairedInfo.10" xml:space="preserve">
+    <value>ペンをシステムとペアリングしますか？</value>
+  </data>
+  <data name="PairedInfo.2" xml:space="preserve">
+    <value>マウスのペアリングを解除すると、このコンピューターの操作性が制限される可能性があります。ペアリングを解除する前に、別のマウスがセットアップされていることを確認してください。</value>
+  </data>
+  <data name="PairedInfo.3" xml:space="preserve">
+    <value>キーボードのペアリングを解除すると、このコンピューターの操作性が制限される可能性があります。ペアリングを解除する前に、別のキーボードがセットアップされていることを確認してください。</value>
+  </data>
+  <data name="PairedInfo.4" xml:space="preserve">
+    <value>ペンのペアリングを解除すると、このコンピューターの操作性が制限される可能性があります。ペアリングを解除する前に、別のペンがセットアップされていることを確認してください。</value>
+  </data>
+  <data name="PairedInfo.5" xml:space="preserve">
+    <value>この手順により、ヘッドセットとUSBワイヤレス レシーバーのペアリングが解除されます。このシステムでは、引き続きBluetooth経由でヘッドセットをペアリングして使用できます。必要な場合は、DDPMのホーム画面の右上にある+アイコンから、ヘッドセットをワイヤレス レシーバーにペアリングし直すことができます。</value>
+  </data>
+  <data name="PairedInfo.6" xml:space="preserve">
+    <value>続行</value>
+  </data>
+  <data name="PairedInfo.7" xml:space="preserve">
+    <value>このデバイスは互換性がありません</value>
+  </data>
+  <data name="PairedInfo.8" xml:space="preserve">
+    <value>このデバイスはすでにペアリングされています。再度ペアリングするには、まずデバイスのペアリングを解除してください。</value>
+  </data>
+  <data name="PairedInfo.9" xml:space="preserve">
+    <value>ペンのペアリング</value>
+  </data>
+  <data name="PenSettings.10" xml:space="preserve">
+    <value>ペンのサイド ボタン2個を3秒間長押しして、Tileとペアリングします。</value>
+  </data>
+  <data name="PenSettings.11" xml:space="preserve">
+    <value>Tileをダウンロード</value>
+  </data>
+  <data name="PenSettings.8" xml:space="preserve">
+    <value>デバイスでBluetoothを有効にします。</value>
+  </data>
+  <data name="PenSettings.9" xml:space="preserve">
+    <value>QRコードをスキャンして、モバイル デバイスにTileをダウンロードします。</value>
+  </data>
+  <data name="PowerPoint.1" xml:space="preserve">
+    <value>中央揃えで配置</value>
+  </data>
+  <data name="PowerPoint.10" xml:space="preserve">
+    <value>最背面に移動</value>
+  </data>
+  <data name="PowerPoint.2" xml:space="preserve">
+    <value>左揃えで配置</value>
+  </data>
+  <data name="PowerPoint.3" xml:space="preserve">
+    <value>右揃えで配置</value>
+  </data>
+  <data name="PowerPoint.4" xml:space="preserve">
+    <value>最前面に移動</value>
+  </data>
+  <data name="PowerPoint.5" xml:space="preserve">
+    <value>リスト レベルを下げる</value>
+  </data>
+  <data name="PowerPoint.6" xml:space="preserve">
+    <value>選択したスライドを複製</value>
+  </data>
+  <data name="PowerPoint.7" xml:space="preserve">
+    <value>リスト レベルを上げる</value>
+  </data>
+  <data name="PowerPoint.8" xml:space="preserve">
+    <value>現在のスライドから再生</value>
+  </data>
+  <data name="PowerPoint.9" xml:space="preserve">
+    <value>前のスライド</value>
+  </data>
+  <data name="RadialMenu.1" xml:space="preserve">
+    <value>無効</value>
+  </data>
+  <data name="RadialMenu.2" xml:space="preserve">
+    <value>戻る</value>
+  </data>
+  <data name="RadialMenu.3" xml:space="preserve">
+    <value>進む</value>
+  </data>
+  <data name="RadialMenu.4" xml:space="preserve">
+    <value>再生 / 一時停止</value>
+  </data>
+  <data name="RadialMenu.5" xml:space="preserve">
+    <value>前のトラック</value>
+  </data>
+  <data name="RadialMenu.6" xml:space="preserve">
+    <value>ミュート</value>
+  </data>
+  <data name="RadialMenu.7" xml:space="preserve">
+    <value>選択したラジアルの機能</value>
+  </data>
+  <data name="RadialMenu.8" xml:space="preserve">
+    <value>選択したラジアルのラベル</value>
+  </data>
+  <data name="RadialMenu.9" xml:space="preserve">
+    <value>右クリックのエミュレートに中央を使用する</value>
+  </data>
+  <data name="Smooth" xml:space="preserve">
+    <value>滑らか</value>
+  </data>
+  <data name="Vibrant" xml:space="preserve">
+    <value>鮮やか</value>
+  </data>
+  <data name="Warm" xml:space="preserve">
+    <value>暖色</value>
+  </data>
+  <data name="Word.1" xml:space="preserve">
+    <value>自動スクロール</value>
+  </data>
+  <data name="Word.10" xml:space="preserve">
+    <value>ペーストして書式を合わせる</value>
+  </data>
+  <data name="Word.11" xml:space="preserve">
+    <value>前の変更</value>
+  </data>
+  <data name="Word.12" xml:space="preserve">
+    <value>前のコメント</value>
+  </data>
+  <data name="Word.13" xml:space="preserve">
+    <value>印刷(P)</value>
+  </data>
+  <data name="Word.14" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="Word.15" xml:space="preserve">
+    <value>取り消し線</value>
+  </data>
+  <data name="Word.16" xml:space="preserve">
+    <value>テキスト サイズ-</value>
+  </data>
+  <data name="Word.17" xml:space="preserve">
+    <value>テキスト サイズ+</value>
+  </data>
+  <data name="Word.18" xml:space="preserve">
+    <value>選択したテキストを翻訳</value>
+  </data>
+  <data name="Word.19" xml:space="preserve">
+    <value>1ページ表示</value>
+  </data>
+  <data name="Word.2" xml:space="preserve">
+    <value>検索</value>
+  </data>
+  <data name="Word.20" xml:space="preserve">
+    <value>ページ幅で表示</value>
+  </data>
+  <data name="Word.3" xml:space="preserve">
+    <value>インデントを増やす</value>
+  </data>
+  <data name="Word.4" xml:space="preserve">
+    <value>コメントを挿入</value>
+  </data>
+  <data name="Word.5" xml:space="preserve">
+    <value>次の変更</value>
+  </data>
+  <data name="Word.6" xml:space="preserve">
+    <value>次のコメント</value>
+  </data>
+  <data name="Word.7" xml:space="preserve">
+    <value>ソースの書式をペーストして保持</value>
+  </data>
+  <data name="Word.8" xml:space="preserve">
+    <value>テキストのみをペーストして保持</value>
+  </data>
+  <data name="Word.9" xml:space="preserve">
+    <value>書式をペーストしてマージ</value>
+  </data>
+  <data name="Camera.25" xml:space="preserve">
+    <value>USB 3.0を介してモニターを接続し、［USB-Cの優先順位付け］で［高データ スピード］を選択して、4K UHD解像度を有効にします。</value>
+  </data>
+  <data name="HeadsetAutomatedActions.14" xml:space="preserve">
+    <value>感度</value>
+  </data>
+  <data name="File_corrupted" xml:space="preserve">
+    <value>ファイルが破損しています</value>
+  </data>
+  <data name="File_corruptedMsg" xml:space="preserve">
+    <value>ファイルが破損しています。別のファイルを選択してください</value>
+  </data>
+  <data name="ImportFail" xml:space="preserve">
+    <value>失敗</value>
+  </data>
+  <data name="ImportFailMsg" xml:space="preserve">
+    <value>異なるモデルはインポートできません</value>
+  </data>
+  <data name="Update_Webcam_Alert" xml:space="preserve">
+    <value>Win 11 22H2以降、およびOSビルド\r\n22621以降のシステムの場合、Windows設定のプレゼンス センシング制御がこのアップデートにより有効になります</value>
+  </data>
+  <data name="Update_BatteryLow_Alert" xml:space="preserve">
+    <value>デバイスのバッテリー残量が少なくなっています。このアップデートを有効にするには、バッテリーを交換/再充電してください。</value>
+  </data>
+  <data name="Update_Dock_Alert" xml:space="preserve">
+    <value>お使いのシステムに接続されているドッキング ステーションが1個だけであることを確認します。アップデート中は、ドッキング ステーションに接続されているデバイスが使用できない場合があります。</value>
+  </data>
+  <data name="Update_PCBatteryLow_Alert" xml:space="preserve">
+    <value>PCを電源に接続し、PCのバッテリー残量が10%を超えていることを確認して、アップデートを続行します</value>
+  </data>
+  <data name="Update_Mouse_Alert" xml:space="preserve">
+    <value>デバイスのボタンまたはキーを押して、このアップデートを有効にします</value>
+  </data>
+  <data name="Landscape" xml:space="preserve">
+    <value>横向き</value>
+  </data>
+  <data name="Portrait" xml:space="preserve">
+    <value>縦向き</value>
+  </data>
+  <data name="Landscape_flipped" xml:space="preserve">
+    <value>横向き（反転）</value>
+  </data>
+  <data name="Portrait_flipped" xml:space="preserve">
+    <value>縦向き（反転）</value>
+  </data>
+  <data name="Frame_Rate" xml:space="preserve">
+    <value>フレーム レート</value>
+  </data>
+  <data name="Display_Alignment" xml:space="preserve">
+    <value>ディスプレイの位置合わせ</value>
+  </data>
+  <data name="Timer__30min" xml:space="preserve">
+    <value>タイマー/30分</value>
+  </data>
+  <data name="Timer__40min" xml:space="preserve">
+    <value>タイマー/40分</value>
+  </data>
+  <data name="Timer__50min" xml:space="preserve">
+    <value>タイマー/50分</value>
+  </data>
+  <data name="Timer__60min" xml:space="preserve">
+    <value>タイマー/60分</value>
+  </data>
+  <data name="Timer__90min" xml:space="preserve">
+    <value>タイマー/90分</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>無効にする</value>
+  </data>
+  <data name="Extreme" xml:space="preserve">
+    <value>エクストリーム</value>
+  </data>
+  <data name="Super_Fast" xml:space="preserve">
+    <value>超高速</value>
+  </data>
+  <data name="Fast" xml:space="preserve">
+    <value>速い</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>標準</value>
+  </data>
+  <data name="Level_0" xml:space="preserve">
+    <value>レベル0</value>
+  </data>
+  <data name="Level_1" xml:space="preserve">
+    <value>レベル1</value>
+  </data>
+  <data name="Level_2" xml:space="preserve">
+    <value>レベル2</value>
+  </data>
+  <data name="Level_3" xml:space="preserve">
+    <value>レベル3</value>
+  </data>
+  <data name="Desktop" xml:space="preserve">
+    <value>デスクトップ</value>
+  </data>
+  <data name="Movie_HDR" xml:space="preserve">
+    <value>映画HDR</value>
+  </data>
+  <data name="Game_HDR" xml:space="preserve">
+    <value>ゲームHDR</value>
+  </data>
+  <data name="Display_HDR" xml:space="preserve">
+    <value>ディスプレイHDR</value>
+  </data>
+  <data name="Custom_Color_HDR" xml:space="preserve">
+    <value>カスタム カラーHDR</value>
+  </data>
+  <data name="HDRPeak1000" xml:space="preserve">
+    <value>HDRPeak1000</value>
+  </data>
+  <data name="_4K" xml:space="preserve">
+    <value>4K</value>
+  </data>
+  <data name="_FHD" xml:space="preserve">
+    <value>FHD</value>
+  </data>
+  <data name="Steady_Vision" xml:space="preserve">
+    <value>安定した映像</value>
+  </data>
+  <data name="VisionEngine_Steady" xml:space="preserve">
+    <value>安定した映像</value>
+  </data>
+  <data name="Software_update" xml:space="preserve">
+    <value>ソフトウェア アップデート</value>
+  </data>
+  <data name="Firmware_update" xml:space="preserve">
+    <value>ファームウェア アップデート</value>
+  </data>
+  <data name="Color.10" xml:space="preserve">
+    <value>色温度の自動調整は現在有効です。オーバーライドしますか？</value>
+  </data>
+  <data name="Mouse.16" xml:space="preserve">
+    <value>マウスの位置がシステムに報告される1秒あたりの回数。USB経由で接続すると、ポーリング レートが向上します。</value>
+  </data>
+  <data name="EATooltip_00" xml:space="preserve">
+    <value>空のレイアウト</value>
+  </data>
+  <data name="EATooltip_21H" xml:space="preserve">
+    <value>オプション2.1：2列、均等に分割。</value>
+  </data>
+  <data name="EATooltip_21V" xml:space="preserve">
+    <value>オプション2.1：2行、均等に分割。</value>
+  </data>
+  <data name="EATooltip_22H" xml:space="preserve">
+    <value>オプション2.2：2行、均等に分割。</value>
+  </data>
+  <data name="EATooltip_22V" xml:space="preserve">
+    <value>オプション2.2：2列、均等に分割。</value>
+  </data>
+  <data name="EATooltip_23H" xml:space="preserve">
+    <value>オプション2.3：2列、70/30%で分割。</value>
+  </data>
+  <data name="EATooltip_23V" xml:space="preserve">
+    <value>オプション2.3：2行、30/70%で分割。</value>
+  </data>
+  <data name="EATooltip_24H" xml:space="preserve">
+    <value>オプション2.4：2列、30/70%で分割。</value>
+  </data>
+  <data name="EATooltip_24V" xml:space="preserve">
+    <value>オプション2.4：2行、70/30%で分割。</value>
+  </data>
+  <data name="EATooltip_31H" xml:space="preserve">
+    <value>オプション3.1：3行、均等に分割。</value>
+  </data>
+  <data name="EATooltip_31V" xml:space="preserve">
+    <value>オプション3.1：3列、均等に分割。</value>
+  </data>
+  <data name="EATooltip_32H" xml:space="preserve">
+    <value>オプション3.2：3列、均等に分割。</value>
+  </data>
+  <data name="EATooltip_32V" xml:space="preserve">
+    <value>オプション3.2：3行、均等に分割。</value>
+  </data>
+  <data name="EATooltip_33H" xml:space="preserve">
+    <value>オプション3.3：3列、30/40/30%で分割。</value>
+  </data>
+  <data name="EATooltip_33V" xml:space="preserve">
+    <value>オプション3.3：3行、30/40/30%で分割。</value>
+  </data>
+  <data name="EATooltip_34H" xml:space="preserve">
+    <value>オプション3.4：2行、均等に分割。列2、分割なし。</value>
+  </data>
+  <data name="EATooltip_34V" xml:space="preserve">
+    <value>オプション3.4：2行、均等に分割。行1、分割なし。行2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_35H" xml:space="preserve">
+    <value>オプション3.5：2行、均等に分割。列1、分割なし。列2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_35V" xml:space="preserve">
+    <value>オプション3.5：2行、均等に分割。行1、均等に分割。行2、分割なし。</value>
+  </data>
+  <data name="EATooltip_36H" xml:space="preserve">
+    <value>オプション3.6：2行、均等に分割。列1、30/70%で分割。列2、分割なし。</value>
+  </data>
+  <data name="EATooltip_36V" xml:space="preserve">
+    <value>オプション3.6：2行、70/30%で分割。行1、分割なし。行2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_37H" xml:space="preserve">
+    <value>オプション3.7：2行、均等に分割。列1、70/30%で分割。列2、分割なし。</value>
+  </data>
+  <data name="EATooltip_37V" xml:space="preserve">
+    <value>オプション3.7：2行、30/70%で分割。行1、均等に分割。行2、分割なし。</value>
+  </data>
+  <data name="EATooltip_38H" xml:space="preserve">
+    <value>オプション3.8：2行、均等に分割。行1、分割なし。行2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_38V" xml:space="preserve">
+    <value>オプション3.8：2列、均等に分割。列1、分割なし。列2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_39H" xml:space="preserve">
+    <value>オプション3.9：2行、均等に分割。行1、均等に分割。行2、分割なし。</value>
+  </data>
+  <data name="EATooltip_39V" xml:space="preserve">
+    <value>オプション3.9：2列、均等に分割。列1、均等に分割。列2、分割なし。</value>
+  </data>
+  <data name="EATooltip_41H" xml:space="preserve">
+    <value>オプション4.1：4つの象限に分割。</value>
+  </data>
+  <data name="EATooltip_41V" xml:space="preserve">
+    <value>オプション4.1：4つの象限に分割。</value>
+  </data>
+  <data name="EATooltip_42H" xml:space="preserve">
+    <value>オプション4.2：2列、均等に分割。列1、3セクションで均等に分割。列2、分割なし。</value>
+  </data>
+  <data name="EATooltip_42V" xml:space="preserve">
+    <value>オプション4.2：2行、均等に分割。行1、分割なし。行2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_43H" xml:space="preserve">
+    <value>オプション4.3：2列、均等に分割。列1、分割なし。列2、3セクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_43V" xml:space="preserve">
+    <value>オプション4.3：2行、均等に分割。行1、3セクションで均等に分割。列2、分割なし。</value>
+  </data>
+  <data name="EATooltip_44H" xml:space="preserve">
+    <value>オプション4.4：4列を均等に分割。</value>
+  </data>
+  <data name="EATooltip_44V" xml:space="preserve">
+    <value>オプション4.4：4行、均等に分割。</value>
+  </data>
+  <data name="EATooltip_45H" xml:space="preserve">
+    <value>オプション4.5：3列、均等に分割。列1、均等に分割。列2と3、分割なし。</value>
+  </data>
+  <data name="EATooltip_45V" xml:space="preserve">
+    <value>オプション4.5：3行、均等に分割。行1と2、分割なし。行3、均等に分割。</value>
+  </data>
+  <data name="EATooltip_46H" xml:space="preserve">
+    <value>オプション4.6：3列、均等に分割。列1と2、分割なし。列3、均等に分割。</value>
+  </data>
+  <data name="EATooltip_46V" xml:space="preserve">
+    <value>オプション4.6：3行、均等に分割。行1、均等に分割。行2と3、分割なし。</value>
+  </data>
+  <data name="EATooltip_51H" xml:space="preserve">
+    <value>オプション5.1：2行、均等に分割。行1、3セクションで均等に分割。行2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_51V" xml:space="preserve">
+    <value>オプション5.1：2列、均等に分割。列1、3つのセクションで均等に分割。列2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_52H" xml:space="preserve">
+    <value>オプション5.2：2行、均等に分割。行1、均等に分割。行2、3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_52V" xml:space="preserve">
+    <value>オプション5.2：2列、均等に分割。列1、均等に分割。列2、3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_53H" xml:space="preserve">
+    <value>オプション5.3：2行、30/70%で分割。行1、3つのセクションで均等に分割。行2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_53V" xml:space="preserve">
+    <value>オプション5.3：2列、30/70%で分割。行1、3つのセクションで均等に分割。行2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_54H" xml:space="preserve">
+    <value>オプション5.4：2行、70/30%で分割。行1、均等に分割。行2、3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_54V" xml:space="preserve">
+    <value>オプション5.4：2列、70/30%で分割。行1、均等に分割。行2、3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_55H" xml:space="preserve">
+    <value>オプション5.5：2行、30/70%で分割。行1と2、それぞれ均等に分割。列1、分割なし。列2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_55V" xml:space="preserve">
+    <value>オプション5.5：2行、均等に分割。行1、3つのセクションで均等に分割。行2、30/70%で分割。</value>
+  </data>
+  <data name="EATooltip_56H" xml:space="preserve">
+    <value>オプション5.6：2列、均等に分割。列1、3つのセクションで均等に分割。列2、30/70%で分割。</value>
+  </data>
+  <data name="EATooltip_56V" xml:space="preserve">
+    <value>オプション5.6：2行、均等に分割。行1、30/70%で分割。行2、3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_57H" xml:space="preserve">
+    <value>オプション5.7：3列、均等に分割。列1と3、それぞれ均等に分割。列2、分割なし。</value>
+  </data>
+  <data name="EATooltip_57V" xml:space="preserve">
+    <value>オプション5.7：3行、均等に分割。行1と3、それぞれ均等に分割。行2、分割なし。</value>
+  </data>
+  <data name="EATooltip_58H" xml:space="preserve">
+    <value>オプション5.8：2行、70/30%で分割。行1、70/30%で分割。行2、3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_58V" xml:space="preserve">
+    <value>オプション5.8：2列、30/70%で分割。列1、70/30%。列2、3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_59H" xml:space="preserve">
+    <value>オプション5.9：2行、70/30%で分割。行1、70/30%で分割。行2、3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_59V" xml:space="preserve">
+    <value>オプション5.9：2列、70/30%で分割。列1、70/30%で分割。列2、3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_61H" xml:space="preserve">
+    <value>オプション6.1：3列、均等に分割。列1、2、3は、それぞれ均等に分割。</value>
+  </data>
+  <data name="EATooltip_61V" xml:space="preserve">
+    <value>オプション6.1：2列、均等に分割。列1と2、それぞれ3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_62H" xml:space="preserve">
+    <value>オプション6.2：2行、70/30%で分割。行1、70/30%で分割。行2、3つのセクションで均等に分割。列1、分割なし。列2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_62V" xml:space="preserve">
+    <value>オプション6.2：2行、30/70%で分割。行1、3つのセクションで均等に分割。行2、30/70%で分割。列1、分割なし。列2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_63H" xml:space="preserve">
+    <value>オプション6.3：2行、30/70%で分割。行1、4つのセクションと均等に分割。行2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_63V" xml:space="preserve">
+    <value>オプション6.3：2列、30/70%で分割。列1、4つのセクションに均等に分割。列2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_64H" xml:space="preserve">
+    <value>オプション6.4：2行、30/70%で分割。行1、3つのセクションで均等に分割。行2、70/30%で分割。列1、分割なし。列2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_64V" xml:space="preserve">
+    <value>オプション6.4：2列、30/70%で分割。行1、3つのセクションで均等に分割。行2、30/70%で分割。列1、均等に分割。列2、分割なし。</value>
+  </data>
+  <data name="EATooltip_65H" xml:space="preserve">
+    <value>オプション6.5：2行、30/70%で分割。行1、3つのセクションで均等に分割。行2、30/70%で分割。列1、均等に分割。列2、分割なし。</value>
+  </data>
+  <data name="EATooltip_65V" xml:space="preserve">
+    <value>オプション6.5：2列、30/70%で分割。行1、30/70%で分割。行2、3つのセクションで均等に分割。列1、均等に分割。列2、分割なし。</value>
+  </data>
+  <data name="EATooltip_66H" xml:space="preserve">
+    <value>オプション6.6：2行、30/70%で分割。行1、30/70%で分割。列1、均等に分割。列2、分割なし。行1、3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_66V" xml:space="preserve">
+    <value>オプション6.6：2行、30/70%で分割。行1、30/70%で分割。行2、3つのセクションで均等に分割。列1、分割なし。列2、均等に分割。</value>
+  </data>
+  <data name="EATooltip_67H" xml:space="preserve">
+    <value>オプション6.7：2列、均等に分割。行1、2、3、3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_67V" xml:space="preserve">
+    <value>オプション6.7：3列、均等に分割。列1、2、3、それぞれ均等に分割。</value>
+  </data>
+  <data name="EATooltip_68H" xml:space="preserve">
+    <value>オプション6.8：4列、均等に分割。行1と4、均等に分割。行2と3、分割なし。</value>
+  </data>
+  <data name="EATooltip_68V" xml:space="preserve">
+    <value>オプション6.8：4行、均等に分割。行1と4、均等に分割。行2と3、分割なし。</value>
+  </data>
+  <data name="EATooltip_69H" xml:space="preserve">
+    <value>オプション6.9：2行、70/30%で分割。行1、均等に分割。行2、4つのセクションに均等に分割。</value>
+  </data>
+  <data name="EATooltip_69V" xml:space="preserve">
+    <value>オプション6.9：2行、均等に分割。行1、70/30%で分割。列1、分割なし、列2、均等に分割。行2、70/30%で分割。</value>
+  </data>
+  <data name="EATooltip_6AH" xml:space="preserve">
+    <value>オプション6.10：2列、70/30%で分割。列1、2、3、それぞれ均等に分割。</value>
+  </data>
+  <data name="EATooltip_6AV" xml:space="preserve">
+    <value>オプション6.10：2行、70/30%で分割。行1と2、それぞれ3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_71H" xml:space="preserve">
+    <value>オプション7.1：2行、30/70%で分割。行1、3つのセクションで均等に分割。行2、30/70%で分割。列1、均等に分割。列2と3、分割なし。</value>
+  </data>
+  <data name="EATooltip_71V" xml:space="preserve">
+    <value>オプション7.1：3行、均等に分割。行1と2、それぞれ30/70%で分割。行3、3つの均等なセクションで分割。</value>
+  </data>
+  <data name="EATooltip_72H" xml:space="preserve">
+    <value>オプション7.2：2行、30/70%で分割。行1と2、それぞれ3つのセクションで均等に分割。列1と2、分割なし。列3、均等に分割。</value>
+  </data>
+  <data name="EATooltip_72V" xml:space="preserve">
+    <value>オプション7.2：3行、均等に分割。行1と3、それぞれ3つのセクションで均等に分割。行2、30/70%で分割。</value>
+  </data>
+  <data name="EATooltip_73H" xml:space="preserve">
+    <value>オプション7.3：2行、均等に分割。行1、4つのセクションで均等に分割。行2、3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_73V" xml:space="preserve">
+    <value>オプション7.3：2列、均等に分割。列1、4つのセクションで均等に分割。列2、3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_74H" xml:space="preserve">
+    <value>オプション7.4：2行、均等に分割。行1と3、それぞれ均等に分割。行2、4つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_74V" xml:space="preserve">
+    <value>オプション7.4：2列、均等に分割。列1、3つのセクションで均等に分割。列2、4つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_75H" xml:space="preserve">
+    <value>オプション7.5：2行、均等に分割。行1、4つのセクションで均等に分割。行2、25/50/25%で分割。列1と3、それぞれ均等に分割。列2、分割なし。</value>
+  </data>
+  <data name="EATooltip_75V" xml:space="preserve">
+    <value>オプション7.5：3行、25/50/25%で分割。行1、3つのセクションで均等に分割。行2、30/70%で分割。列1、均等に分割。列2、分割なし。行3、3つの均等なセクションで分割。</value>
+  </data>
+  <data name="EATooltip_76H" xml:space="preserve">
+    <value>オプション7.6：2行、30/70%で分割。行1、25/50/25%で分割。列1と3、それぞれ均等に分割。列2、分割なし。行2、4つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_76V" xml:space="preserve">
+    <value>オプション7.6：3行、25/50/25%で分割。行1、3つのセクションで均等に分割。行2、70/30%で分割。行3、3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_77H" xml:space="preserve">
+    <value>オプション7.7：2行、30/70%で分割。行1、4つのセクションで均等に分割。行2、50/25/25%で分割。列1、分割なし。列2と3、それぞれ均等に分割。</value>
+  </data>
+  <data name="EATooltip_77V" xml:space="preserve">
+    <value>オプション7.7：3行、25/25/50%で分割。行1と2、それぞれ3つのセクションで均等に分割。行3、30/70%で分割。列1、均等に分割。列2、分割なし。</value>
+  </data>
+  <data name="EATooltip_78H" xml:space="preserve">
+    <value>オプション7.8：2行、30/70%で分割。行1と4、それぞれ均等に分割。行2、25/25/50%で分割。列1と2、それぞれ均等に分割。列3、分割なし。</value>
+  </data>
+  <data name="EATooltip_78V" xml:space="preserve">
+    <value>オプション7.8：3行、30/70%で分割。行1、30/70%で分割。列1、均等に分割。列2、分割なし。行2と3、それぞれ3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_79H" xml:space="preserve">
+    <value>オプション7.9：4列、均等に分割。列1、2、3、4、それぞれ均等に分割。</value>
+  </data>
+  <data name="EATooltip_79V" xml:space="preserve">
+    <value>オプション7.9：4列、均等に分割。行1、2、3、4、それぞれ均等に分割。</value>
+  </data>
+  <data name="EATooltip_7AH" xml:space="preserve">
+    <value>オプション7.10：4列、均等に分割、。列1、2、3、4、それぞれ3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_7AV" xml:space="preserve">
+    <value>オプション7.10：4列、均等に分割、。列1、2、3、4、それぞれ3つのセクションで均等に分割。</value>
+  </data>
+  <data name="EATooltip_7BH" xml:space="preserve">
+    <value>オプション7.11：2行、30/70%で分割。行1と2、それぞれ25/50/25%で分割。列1と3、それぞれ均等に分割。列2、分割なし。</value>
+  </data>
+  <data name="EATooltip_7BV" xml:space="preserve">
+    <value>オプション7.11：3列、30/70%で分割。列1、2、3、25/50/25%で分割。行1と3、均等に分割。行2、分割なし。</value>
+  </data>
+  <data name="EazyMemory.42" xml:space="preserve">
+    <value>対応するEasy Memoryプロファイルも削除されます。続行しますか？</value>
+  </data>
+  <data name="DiagnosticReport_SaveFail" xml:space="preserve">
+    <value>診断レポートの保存に失敗しました</value>
+  </data>
+  <data name="MonitorAssetReport_SaveFail" xml:space="preserve">
+    <value>資産監査レポートの保存に失敗しました</value>
+  </data>
+  <data name="USBKVM.Tips" xml:space="preserve">
+    <value>例：「Alt + P」、「Shift + F」、「Ctrl + Shift + F」。\nメモ：複数モニターの場合、ホットキー機能をトリガーするには、対象のモニター画面にマウス カーソルを置く必要があります。</value>
+  </data>
+  <data name="BrightnessLevel" xml:space="preserve">
+    <value>明るさレベル</value>
+  </data>
+  <data name="USBKVM" xml:space="preserve">
+    <value>USB KVM</value>
+  </data>
+  <data name="Mouse" xml:space="preserve">
+    <value>マウス</value>
+  </data>
+  <data name="Keyboard" xml:space="preserve">
+    <value>キーボード</value>
+  </data>
+  <data name="Calendar" xml:space="preserve">
+    <value>カレンダー</value>
+  </data>
+  <data name="Camera" xml:space="preserve">
+    <value>カメラ</value>
+  </data>
+  <data name="Clock" xml:space="preserve">
+    <value>クロック</value>
+  </data>
+  <data name="Cortana" xml:space="preserve">
+    <value>Cortana</value>
+  </data>
+  <data name="DellCommandUpdate" xml:space="preserve">
+    <value>Dellコマンド アップデート</value>
+  </data>
+  <data name="DellDigitalDelivery" xml:space="preserve">
+    <value>Dell Digital Delivery</value>
+  </data>
+  <data name="DellOptimizer" xml:space="preserve">
+    <value>Dell Optimizer</value>
+  </data>
+  <data name="Family" xml:space="preserve">
+    <value>ファミリー</value>
+  </data>
+  <data name="FeedbackHub" xml:space="preserve">
+    <value>フィードバック ハブ</value>
+  </data>
+  <data name="GameBar" xml:space="preserve">
+    <value>ゲーム バー</value>
+  </data>
+  <data name="GetHelp" xml:space="preserve">
+    <value>サポートを受ける</value>
+  </data>
+  <data name="GetStarted" xml:space="preserve">
+    <value>始める</value>
+  </data>
+  <data name="IntelManagementAndSecurityStatus" xml:space="preserve">
+    <value>インテル(R)管理およびセキュリティ ステータス</value>
+  </data>
+  <data name="IntelGraphicsCommandCenter" xml:space="preserve">
+    <value>インテル® グラフィックス・コマンド・センター</value>
+  </data>
+  <data name="IntelOptaneMemoryAndStorageManagement" xml:space="preserve">
+    <value>インテル® Optane™ メモリー・ストレージ・マネジメント</value>
+  </data>
+  <data name="Mail" xml:space="preserve">
+    <value>メール</value>
+  </data>
+  <data name="Maps" xml:space="preserve">
+    <value>マップ</value>
+  </data>
+  <data name="MediaPlayer" xml:space="preserve">
+    <value>メディアプレイヤー</value>
+  </data>
+  <data name="Microsoft365Office" xml:space="preserve">
+    <value>Microsoft 365 (Office)</value>
+  </data>
+  <data name="MicrosoftClipchamp" xml:space="preserve">
+    <value>Microsoft Clipchamp</value>
+  </data>
+  <data name="MicrosoftDefender" xml:space="preserve">
+    <value>Microsoft Defender</value>
+  </data>
+  <data name="MicrosoftStore" xml:space="preserve">
+    <value>Microsoft Store</value>
+  </data>
+  <data name="MicrosoftTeams" xml:space="preserve">
+    <value>Microsoft Teams</value>
+  </data>
+  <data name="MicrosoftTeamsWorkSchool" xml:space="preserve">
+    <value>Microsoft Teams（職場または学校）</value>
+  </data>
+  <data name="MicrosoftToDo" xml:space="preserve">
+    <value>Microsoft To Do</value>
+  </data>
+  <data name="MoviesTV" xml:space="preserve">
+    <value>映画とテレビ</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>ニュース</value>
+  </data>
+  <data name="Notepad" xml:space="preserve">
+    <value>メモ帳</value>
+  </data>
+  <data name="Paint" xml:space="preserve">
+    <value>Paint</value>
+  </data>
+  <data name="PhoneLink" xml:space="preserve">
+    <value>電話リンク</value>
+  </data>
+  <data name="Photos" xml:space="preserve">
+    <value>写真</value>
+  </data>
+  <data name="PowerAutomate" xml:space="preserve">
+    <value>Power Automate</value>
+  </data>
+  <data name="SnippingTool" xml:space="preserve">
+    <value>Snipping Tool</value>
+  </data>
+  <data name="SolitaireCasualGames" xml:space="preserve">
+    <value>ソリティア&amp;カジュアル ゲーム</value>
+  </data>
+  <data name="SoundRecorder" xml:space="preserve">
+    <value>Sound Recorder</value>
+  </data>
+  <data name="Spotify" xml:space="preserve">
+    <value>Spotify</value>
+  </data>
+  <data name="SupportAssist" xml:space="preserve">
+    <value>SupportAssist</value>
+  </data>
+  <data name="Terminal" xml:space="preserve">
+    <value>ターミナル</value>
+  </data>
+  <data name="Tips" xml:space="preserve">
+    <value>ヒント</value>
+  </data>
+  <data name="Weather" xml:space="preserve">
+    <value>天気</value>
+  </data>
+  <data name="WindowsBackup" xml:space="preserve">
+    <value>Windowsバックアップ</value>
+  </data>
+  <data name="WindowsSecurity" xml:space="preserve">
+    <value>Windowsセキュリティ</value>
+  </data>
+  <data name="Xbox" xml:space="preserve">
+    <value>Xbox</value>
+  </data>
+  <data name="NextTrack" xml:space="preserve">
+    <value>次のトラック</value>
+  </data>
+  <data name="PrtSc" xml:space="preserve">
+    <value>印刷スクリーン</value>
+  </data>
+  <data name="ScrollLock" xml:space="preserve">
+    <value>Scroll Lock</value>
+  </data>
+  <data name="PauseBreak" xml:space="preserve">
+    <value>一時停止/中断</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>ホーム</value>
+  </data>
+  <data name="End" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="PageDown" xml:space="preserve">
+    <value>Page Down</value>
+  </data>
+  <data name="PageUp" xml:space="preserve">
+    <value>Page Up</value>
+  </data>
+  <data name="WebBrowser" xml:space="preserve">
+    <value>Webブラウザー</value>
+  </data>
+  <data name="DTPUnavailable" xml:space="preserve">
+    <value>DTPサービスが使用できません。</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>（名前なし）</value>
+  </data>
+  <data name="Keyboard.20" xml:space="preserve">
+    <value>Dellプレミア ワイヤレス キーボード</value>
+  </data>
+  <data name="Keyboard.21" xml:space="preserve">
+    <value>Dell {0}ワイヤレス マウス</value>
+  </data>
+  <data name="EzArrange.10" xml:space="preserve">
+    <value>フォルダーを選択</value>
+  </data>
+  <data name="Fullscreen.1" xml:space="preserve">
+    <value>全画面</value>
+  </data>
+  <data name="PIPSmall" xml:space="preserve">
+    <value>PIP小</value>
+  </data>
+  <data name="PIPLarge" xml:space="preserve">
+    <value>PIP大</value>
+  </data>
+  <data name="Learn_more_for_firmware" xml:space="preserve">
+    <value>ファームウェアに関する詳細情報</value>
+  </data>
+  <data name="Learn_more_for_software" xml:space="preserve">
+    <value>ソフトウェアに関する詳細情報</value>
+  </data>
 </root>

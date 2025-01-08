@@ -2271,4 +2271,1192 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>Esse recurso permite que nossos olhos se adaptem a uma configuração desejada.</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>Você pode exportar sua configuração favorita daqui e importá-la para outro monitor do mesmo modelo sem complicações.</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>Renomear fonte de entrada</value>
+  </data>
+  <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
+    <value>Desconecte todos os dispositivos de armazenamento USB do monitor.</value>
+  </data>
+  <data name="AddDevice.KnM.14" xml:space="preserve">
+    <value>Conexão de receptor sem fio</value>
+  </data>
+  <data name="ConsentNo" xml:space="preserve">
+    <value>Não, não dou meu consentimento</value>
+  </data>
+  <data name="ConsentYes" xml:space="preserve">
+    <value>Sim, dou meu consentimento</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="Consent.1" xml:space="preserve">
+    <value>Ajude-nos a melhorar</value>
+  </data>
+  <data name="Consent.2" xml:space="preserve">
+    <value>Ajude a Dell a melhorar os produtos e serviços enviando automaticamente dados de uso e diagnóstico. Saiba mais sobre </value>
+  </data>
+  <data name="ImpExp_CheckBox.0" xml:space="preserve">
+    <value>Não solicitar novamente para o mesmo modelo</value>
+  </data>
+  <data name="ImpExp_Message.1" xml:space="preserve">
+    <value>Deseja importar as configurações do aplicativo para facilitar o uso?</value>
+  </data>
+  <data name="ImpExp_Title.0" xml:space="preserve">
+    <value>Um novo monitor %1 foi detectado.</value>
+  </data>
+  <data name="Wait_DevMgr" xml:space="preserve">
+    <value>Conectando-se ao subagente do DDPM...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="Wait_DTH" xml:space="preserve">
+    <value>Conectando-se ao Dell.TechHub...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="Wait_NoDevice" xml:space="preserve">
+    <value>Detectando dispositivo...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="InvalidURL" xml:space="preserve">
+    <value>URL inválido</value>
+  </data>
+  <data name="Left" xml:space="preserve">
+    <value>Esquerda</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>Direita</value>
+  </data>
+  <data name="WalkThrough.1" xml:space="preserve">
+    <value>Ignorar</value>
+  </data>
+  <data name="WalkThrough.2" xml:space="preserve">
+    <value>Ir para o aplicativo</value>
+  </data>
+  <data name="HeadsetAudioSettings.29" xml:space="preserve">
+    <value>Aplica-se quando você está em uma chamada de conferência</value>
+  </data>
+  <data name="HeadsetAudioSettings.30" xml:space="preserve">
+    <value>Aplica-se quando você está ouvindo multimídia, como música ou podcasts</value>
+  </data>
+  <data name="Brightness.19" xml:space="preserve">
+    <value>O brilho automático está ativado no momento. Deseja substituí-lo?</value>
+  </data>
+  <data name="Brightness.20" xml:space="preserve">
+    <value>Este não é o monitor principal. Deseja prosseguir com a alteração e defini-lo como seu monitor principal para sincronização?</value>
+  </data>
+  <data name="ThirdPartyLicense.Title" xml:space="preserve">
+    <value>Licença de terceiros</value>
+  </data>
+  <data name="Illumination.2" xml:space="preserve">
+    <value>Para alterar o nível de brilho, pressione a tecla F8</value>
+  </data>
+  <data name="Illumination.3" xml:space="preserve">
+    <value>Ajusta os níveis de brilho do teclado com base na quantidade de luz no ambiente</value>
+  </data>
+  <data name="Illumination.4" xml:space="preserve">
+    <value>Ajustar manualmente o brilho do teclado</value>
+  </data>
+  <data name="Off2" xml:space="preserve">
+    <value>Desativado</value>
+  </data>
+  <data name="EazyMemory.40" xml:space="preserve">
+    <value>Digite o nome do perfil.</value>
+  </data>
+  <data name="hotkey.7" xml:space="preserve">
+    <value>Aviso de tecla de atalho</value>
+  </data>
+  <data name="hotkey.8" xml:space="preserve">
+    <value>A tecla de atalho que você configurou é uma tecla única. Isso pode interferir em como você pretende que essa tecla funcione em outros aplicativos. Tem certeza de que deseja prosseguir?</value>
+  </data>
+  <data name="hotkey.9" xml:space="preserve">
+    <value>Essa tecla de atalho é usada por outra função do Dell Display and Peripheral Manager. Deseja substituí-la?</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="Update_Available_Version" xml:space="preserve">
+    <value>Atualizar para a versão disponível</value>
+  </data>
+  <data name="New_Supported_Devices" xml:space="preserve">
+    <value>Novos dispositivos compatíveis</value>
+  </data>
+  <data name="New_Features" xml:space="preserve">
+    <value>Novos recursos</value>
+  </data>
+  <data name="Bug_Fixes" xml:space="preserve">
+    <value>Correções de erros</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Atualizar</value>
+  </data>
+  <data name="UI_Orientation.0" xml:space="preserve">
+    <value>Paisagem</value>
+  </data>
+  <data name="UI_Orientation.1" xml:space="preserve">
+    <value>Retrato</value>
+  </data>
+  <data name="UI_Orientation.2" xml:space="preserve">
+    <value>Paisagem (invertida)</value>
+  </data>
+  <data name="UI_Orientation.3" xml:space="preserve">
+    <value>Retrato (invertida)</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.0" xml:space="preserve">
+    <value>Baixa</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.1" xml:space="preserve">
+    <value>Intermediária</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.2" xml:space="preserve">
+    <value>Alta</value>
+  </data>
+  <data name="EazyMemorySettings.0" xml:space="preserve">
+    <value>Tecla de atalho: recente</value>
+  </data>
+  <data name="EazyMemorySettings.1" xml:space="preserve">
+    <value>Exemplo: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.</value>
+  </data>
+  <data name="EazyMemorySettings.2" xml:space="preserve">
+    <value>Encaixar qualquer aplicativo em um layout de tela dividida facilmente arrastando-o para uma partição</value>
+  </data>
+  <data name="EazyMemorySettings.3" xml:space="preserve">
+    <value>Permitir que o aplicativo seja dividido lado a lado sem espaço</value>
+  </data>
+  <data name="EazyMemorySettings.4" xml:space="preserve">
+    <value>Permitir o posicionamento da zona somente quando SHIFT é pressionado</value>
+  </data>
+  <data name="EazyMemorySettings.5" xml:space="preserve">
+    <value>Encaixar em vários monitores</value>
+  </data>
+  <data name="EazyMemorySettings.6" xml:space="preserve">
+    <value>Encaixe da janela do aplicativo</value>
+  </data>
+  <data name="PairedInfo.0" xml:space="preserve">
+    <value>Este dispositivo pode ser emparelhado com {0} hosts simultaneamente</value>
+  </data>
+  <data name="EazyMemory.41" xml:space="preserve">
+    <value>Outro perfil foi configurado para usar o mesmo horário. Use outro horário.</value>
+  </data>
+  <data name="Action.1" xml:space="preserve">
+    <value>Digitar uma combinação de teclas para criar um atalho</value>
+  </data>
+  <data name="Action.2" xml:space="preserve">
+    <value>Clique no botão Procurar para selecionar um arquivo</value>
+  </data>
+  <data name="Action.3" xml:space="preserve">
+    <value>Clique no botão \&quot;Browse\&quot; para selecionar uma pasta</value>
+  </data>
+  <data name="Action.4" xml:space="preserve">
+    <value>Digite a URL da página da Web na caixa abaixo</value>
+  </data>
+  <data name="Action.5" xml:space="preserve">
+    <value>Nome do arquivo</value>
+  </data>
+  <data name="Action.6" xml:space="preserve">
+    <value>Nome da pasta</value>
+  </data>
+  <data name="Camera.14" xml:space="preserve">
+    <value>Predefinição</value>
+  </data>
+  <data name="Camera.15" xml:space="preserve">
+    <value>Editar predefinição</value>
+  </data>
+  <data name="Camera.19" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="Camera.20" xml:space="preserve">
+    <value>Este nome está sendo usado</value>
+  </data>
+  <data name="Camera.21" xml:space="preserve">
+    <value>Neutralizar a imagem da câmera e a restaurar para as configurações originais</value>
+  </data>
+  <data name="Camera.22" xml:space="preserve">
+    <value>Retocar e suavizar sua aparência</value>
+  </data>
+  <data name="Camera.23" xml:space="preserve">
+    <value>Intensificar a cor e a vibração da sua imagem</value>
+  </data>
+  <data name="Camera.24" xml:space="preserve">
+    <value>Melhorar sua aparência com tons mais quentes</value>
+  </data>
+  <data name="Collab.1" xml:space="preserve">
+    <value>Colaboração</value>
+  </data>
+  <data name="Collab.10" xml:space="preserve">
+    <value>O teclado de colaboração não consegue se conectar ao Microsoft Teams porque você bloqueou a solicitação. Para usar o Microsoft Teams com o teclado de colaboração, clique em \&quot;Saiba mais\&quot; para obter instruções sobre como se reconectar.</value>
+  </data>
+  <data name="Collab.11" xml:space="preserve">
+    <value>Para usar o teclado de colaboração com o Zoom, instale a versão mais recente do Zoom para desktop.</value>
+  </data>
+  <data name="Collab.12" xml:space="preserve">
+    <value>Para usar o teclado de colaboração com o Microsoft Teams, verifique se você está conectado e usando a versão mais recente do Microsoft Teams e se a API de aplicativos de terceiros está ativada</value>
+  </data>
+  <data name="Collab.13" xml:space="preserve">
+    <value>Vídeo</value>
+  </data>
+  <data name="Collab.14" xml:space="preserve">
+    <value>Compartilhar</value>
+  </data>
+  <data name="Collab.15" xml:space="preserve">
+    <value>Chat</value>
+  </data>
+  <data name="Collab.16" xml:space="preserve">
+    <value>Microfone</value>
+  </data>
+  <data name="Collab.17" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Collab.2" xml:space="preserve">
+    <value>Fornece acesso rápido aos controles de conferência. Ativar/desativar as\nteclas exibirá ou ocultará essas teclas no teclado durante\numa chamada do Microsoft Teams ou Zoom.</value>
+  </data>
+  <data name="Collab.3" xml:space="preserve">
+    <value>Ative o efeito de piscar quando houver uma nova mensagem de chat durante uma\nchamada</value>
+  </data>
+  <data name="Collab.4" xml:space="preserve">
+    <value>Ative ícones no teclado com dois toques em vez de um\ntoque</value>
+  </data>
+  <data name="Collab.5" xml:space="preserve">
+    <value>Saiba mais</value>
+  </data>
+  <data name="Collab.6" xml:space="preserve">
+    <value>Para usar o teclado de colaboração com o Microsoft Teams:\r\n1. Abra o Teams e acesse as configurações de privacidade.\n\n2. Selecione a API de aplicativos de terceiros e certifique-se de que o Dell Display and Peripheral Manager não esteja na lista de bloqueios.\n\n3. Emparelhe o Microsoft Teams com o Dell Display and Peripheral Manager e inicie uma teleconferência do Microsoft Teams.</value>
+  </data>
+  <data name="Collab.7" xml:space="preserve">
+    <value>Se você ainda estiver com problemas, entre em contato com seu departamento de TI (se aplicável), pois ele pode ter políticas em vigor que proíbem a conexão do teclado de colaboração com o Microsoft Teams.</value>
+  </data>
+  <data name="Collab.8" xml:space="preserve">
+    <value>Para usar o teclado de colaboração, você precisa da versão mais recente do Zoom ou do Microsoft Teams.</value>
+  </data>
+  <data name="Collab.9" xml:space="preserve">
+    <value>Conecte o teclado de colaboração ao Microsoft Teams iniciando uma chamada e aceitando a solicitação de conexão.</value>
+  </data>
+  <data name="Common.0" xml:space="preserve">
+    <value>Procurar</value>
+  </data>
+  <data name="Common.1" xml:space="preserve">
+    <value>Transparente</value>
+  </data>
+  <data name="Common.2" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Common.3" xml:space="preserve">
+    <value>Escolha o aplicativo em uma lista de aplicativos</value>
+  </data>
+  <data name="Common.4" xml:space="preserve">
+    <value>Selecione um arquivo</value>
+  </data>
+  <data name="Common.5" xml:space="preserve">
+    <value>Arquivo selecionado</value>
+  </data>
+  <data name="DisplayDefault.1" xml:space="preserve">
+    <value>Tem certeza de que deseja restaurar todas as configurações padrão do dispositivo?</value>
+  </data>
+  <data name="Dock.2" xml:space="preserve">
+    <value>USB-C (DP 1.4)</value>
+  </data>
+  <data name="Dock.3" xml:space="preserve">
+    <value>USB-C duplo (DP 1.4)</value>
+  </data>
+  <data name="Dock.4" xml:space="preserve">
+    <value>USB-C (TB 4)</value>
+  </data>
+  <data name="Dock.5" xml:space="preserve">
+    <value>USB-C (TB 5)</value>
+  </data>
+  <data name="Excel.1" xml:space="preserve">
+    <value>Alinhar centro</value>
+  </data>
+  <data name="Excel.10" xml:space="preserve">
+    <value>Colar somente formato</value>
+  </data>
+  <data name="Excel.11" xml:space="preserve">
+    <value>Colar fórmulas</value>
+  </data>
+  <data name="Excel.12" xml:space="preserve">
+    <value>Colar somente valor</value>
+  </data>
+  <data name="Excel.13" xml:space="preserve">
+    <value>Planilha anterior</value>
+  </data>
+  <data name="Excel.14" xml:space="preserve">
+    <value>Classificar de A a Z</value>
+  </data>
+  <data name="Excel.2" xml:space="preserve">
+    <value>Alinhar à esquerda</value>
+  </data>
+  <data name="Excel.3" xml:space="preserve">
+    <value>Alinhar à direita</value>
+  </data>
+  <data name="Excel.4" xml:space="preserve">
+    <value>Diminuir recuo</value>
+  </data>
+  <data name="Excel.5" xml:space="preserve">
+    <value>Ir para a parte inferior da região de dados</value>
+  </data>
+  <data name="Excel.6" xml:space="preserve">
+    <value>Ir para a parte superior da região de dados</value>
+  </data>
+  <data name="Excel.7" xml:space="preserve">
+    <value>Inserir gráfico</value>
+  </data>
+  <data name="Excel.8" xml:space="preserve">
+    <value>Inserir linha acima</value>
+  </data>
+  <data name="Excel.9" xml:space="preserve">
+    <value>Panorâmica (segure e mova o mouse)</value>
+  </data>
+  <data name="Multimedia.1" xml:space="preserve">
+    <value>Próxima faixa de mídia</value>
+  </data>
+  <data name="Multimedia.2" xml:space="preserve">
+    <value>Reprodução/pausa de mídia</value>
+  </data>
+  <data name="Multimedia.3" xml:space="preserve">
+    <value>Faixa anterior de mídia</value>
+  </data>
+  <data name="Multimedia.4" xml:space="preserve">
+    <value>Música</value>
+  </data>
+  <data name="Multimedia.5" xml:space="preserve">
+    <value>As fotos</value>
+  </data>
+  <data name="Multimedia.6" xml:space="preserve">
+    <value>Diminuir volume</value>
+  </data>
+  <data name="Multimedia.7" xml:space="preserve">
+    <value>Silenciar volume</value>
+  </data>
+  <data name="Multimedia.8" xml:space="preserve">
+    <value>Aumentar volume</value>
+  </data>
+  <data name="Outlook.1" xml:space="preserve">
+    <value>Anexar arquivo</value>
+  </data>
+  <data name="Outlook.2" xml:space="preserve">
+    <value>Encaminhar e-mail</value>
+  </data>
+  <data name="Outlook.3" xml:space="preserve">
+    <value>Novo email</value>
+  </data>
+  <data name="Outlook.4" xml:space="preserve">
+    <value>Nova reunião</value>
+  </data>
+  <data name="Outlook.5" xml:space="preserve">
+    <value>Responder</value>
+  </data>
+  <data name="Outlook.6" xml:space="preserve">
+    <value>Responder a todos</value>
+  </data>
+  <data name="PairedInfo.1" xml:space="preserve">
+    <value>Tem certeza disso?</value>
+  </data>
+  <data name="PairedInfo.10" xml:space="preserve">
+    <value>Gostaria de emparelhar sua caneta com seu sistema?</value>
+  </data>
+  <data name="PairedInfo.2" xml:space="preserve">
+    <value>Desemparelhar o mouse pode limitar sua capacidade de usar este computador. Certifique-se de ter uma configuração alternativa de mouse antes de desemparelhar.</value>
+  </data>
+  <data name="PairedInfo.3" xml:space="preserve">
+    <value>Desemparelhar o teclado pode limitar sua capacidade de usar este computador. Certifique-se de ter uma configuração alternativa de teclado antes de desemparelhar.</value>
+  </data>
+  <data name="PairedInfo.4" xml:space="preserve">
+    <value>Desemparelhar a caneta pode limitar sua capacidade de usar este computador. Certifique-se de ter uma configuração alternativa de caneta antes de desemparelhar.</value>
+  </data>
+  <data name="PairedInfo.5" xml:space="preserve">
+    <value>Isso desemparelhará o headset do receptor USB sem fio. Você ainda pode emparelhar e usar o headset neste sistema via Bluetooth. Se necessário, você pode emparelhar o headset de volta ao receptor sem fio a partir do ícone + no canto superior direito da tela inicial do DDPM.</value>
+  </data>
+  <data name="PairedInfo.6" xml:space="preserve">
+    <value>Continuar</value>
+  </data>
+  <data name="PairedInfo.7" xml:space="preserve">
+    <value>Este dispositivo não é compatível com</value>
+  </data>
+  <data name="PairedInfo.8" xml:space="preserve">
+    <value>Este dispositivo já está emparelhado. Desemparelhe o dispositivo primeiro se quiser emparelhá-lo novamente.</value>
+  </data>
+  <data name="PairedInfo.9" xml:space="preserve">
+    <value>Emparelhar sua caneta</value>
+  </data>
+  <data name="PenSettings.10" xml:space="preserve">
+    <value>Pressione e mantenha pressionados os dois botões laterais da caneta por 3 segundos para emparelhá-la com o Tile.</value>
+  </data>
+  <data name="PenSettings.11" xml:space="preserve">
+    <value>Fazer download de bloco</value>
+  </data>
+  <data name="PenSettings.8" xml:space="preserve">
+    <value>Ative o Bluetooth no dispositivo.</value>
+  </data>
+  <data name="PenSettings.9" xml:space="preserve">
+    <value>Digitalize o código QR para fazer download do bloco em seu dispositivo móvel.</value>
+  </data>
+  <data name="PowerPoint.1" xml:space="preserve">
+    <value>Organizar centro de alinhamento</value>
+  </data>
+  <data name="PowerPoint.10" xml:space="preserve">
+    <value>Enviar para trás</value>
+  </data>
+  <data name="PowerPoint.2" xml:space="preserve">
+    <value>Organizar alinhamento à esquerda</value>
+  </data>
+  <data name="PowerPoint.3" xml:space="preserve">
+    <value>Organizar alinhamento à direita</value>
+  </data>
+  <data name="PowerPoint.4" xml:space="preserve">
+    <value>Trazer para a frente</value>
+  </data>
+  <data name="PowerPoint.5" xml:space="preserve">
+    <value>Diminuir nível de lista</value>
+  </data>
+  <data name="PowerPoint.6" xml:space="preserve">
+    <value>Duplicar slides selecionados</value>
+  </data>
+  <data name="PowerPoint.7" xml:space="preserve">
+    <value>Aumentar o nível da lista</value>
+  </data>
+  <data name="PowerPoint.8" xml:space="preserve">
+    <value>Reproduzir a partir do slide atual</value>
+  </data>
+  <data name="PowerPoint.9" xml:space="preserve">
+    <value>Slide anterior</value>
+  </data>
+  <data name="RadialMenu.1" xml:space="preserve">
+    <value>Desativado</value>
+  </data>
+  <data name="RadialMenu.2" xml:space="preserve">
+    <value>Voltar</value>
+  </data>
+  <data name="RadialMenu.3" xml:space="preserve">
+    <value>Avançar</value>
+  </data>
+  <data name="RadialMenu.4" xml:space="preserve">
+    <value>Reproduzir/Pausar</value>
+  </data>
+  <data name="RadialMenu.5" xml:space="preserve">
+    <value>Faixa anterior</value>
+  </data>
+  <data name="RadialMenu.6" xml:space="preserve">
+    <value>Ativar mudo</value>
+  </data>
+  <data name="RadialMenu.7" xml:space="preserve">
+    <value>Função para radial selecionado</value>
+  </data>
+  <data name="RadialMenu.8" xml:space="preserve">
+    <value>Etiqueta para radial selecionado</value>
+  </data>
+  <data name="RadialMenu.9" xml:space="preserve">
+    <value>Usar o centro para emular o clique com o botão direito</value>
+  </data>
+  <data name="Smooth" xml:space="preserve">
+    <value>Sem problemas</value>
+  </data>
+  <data name="Vibrant" xml:space="preserve">
+    <value>Vibrante</value>
+  </data>
+  <data name="Warm" xml:space="preserve">
+    <value>Quente</value>
+  </data>
+  <data name="Word.1" xml:space="preserve">
+    <value>Rolagem automática</value>
+  </data>
+  <data name="Word.10" xml:space="preserve">
+    <value>Colar e combinar formatação</value>
+  </data>
+  <data name="Word.11" xml:space="preserve">
+    <value>Alteração anterior</value>
+  </data>
+  <data name="Word.12" xml:space="preserve">
+    <value>Comentário anterior</value>
+  </data>
+  <data name="Word.13" xml:space="preserve">
+    <value>Imprimir</value>
+  </data>
+  <data name="Word.14" xml:space="preserve">
+    <value>Salvar</value>
+  </data>
+  <data name="Word.15" xml:space="preserve">
+    <value>Tachado</value>
+  </data>
+  <data name="Word.16" xml:space="preserve">
+    <value>Tamanho do texto -</value>
+  </data>
+  <data name="Word.17" xml:space="preserve">
+    <value>Tamanho do texto +</value>
+  </data>
+  <data name="Word.18" xml:space="preserve">
+    <value>Traduzir o texto selecionado</value>
+  </data>
+  <data name="Word.19" xml:space="preserve">
+    <value>Visualizar uma página</value>
+  </data>
+  <data name="Word.2" xml:space="preserve">
+    <value>Procurar</value>
+  </data>
+  <data name="Word.20" xml:space="preserve">
+    <value>Visualizar largura da página</value>
+  </data>
+  <data name="Word.3" xml:space="preserve">
+    <value>Aumentar recuo</value>
+  </data>
+  <data name="Word.4" xml:space="preserve">
+    <value>Inserir comentário</value>
+  </data>
+  <data name="Word.5" xml:space="preserve">
+    <value>Próxima alteração</value>
+  </data>
+  <data name="Word.6" xml:space="preserve">
+    <value>Próximo comentário</value>
+  </data>
+  <data name="Word.7" xml:space="preserve">
+    <value>Colar e manter a formatação de origem</value>
+  </data>
+  <data name="Word.8" xml:space="preserve">
+    <value>Colar e manter somente o texto</value>
+  </data>
+  <data name="Word.9" xml:space="preserve">
+    <value>Colar e mesclar formatação</value>
+  </data>
+  <data name="Camera.25" xml:space="preserve">
+    <value>Conecte o monitor via USB 3.0 e selecione ‘Alta velocidade de dados’ em USB-C Prioritization para ativar a resolução 4K UHD.</value>
+  </data>
+  <data name="HeadsetAutomatedActions.14" xml:space="preserve">
+    <value>Sensibilidade</value>
+  </data>
+  <data name="File_corrupted" xml:space="preserve">
+    <value>Arquivo corrompido</value>
+  </data>
+  <data name="File_corruptedMsg" xml:space="preserve">
+    <value>O arquivo está corrompido. Selecione outro arquivo</value>
+  </data>
+  <data name="ImportFail" xml:space="preserve">
+    <value>Falha</value>
+  </data>
+  <data name="ImportFailMsg" xml:space="preserve">
+    <value>Não foi possível importar outro modelo</value>
+  </data>
+  <data name="Update_Webcam_Alert" xml:space="preserve">
+    <value>Esta atualização ativará controles de detecção de presença por meio das Configurações do Windows nos sistemas: Win 11 22H2 ou superior e com compilação do SO build\r\n22621 ou superior</value>
+  </data>
+  <data name="Update_BatteryLow_Alert" xml:space="preserve">
+    <value>O nível da bateria do dispositivo está baixo. Substitua/recarregue a bateria para ativar esta atualização.</value>
+  </data>
+  <data name="Update_Dock_Alert" xml:space="preserve">
+    <value>Certifique-se de que apenas uma dock station esteja conectada ao sistema. Os dispositivos conectados à dock station podem não estar disponíveis durante a atualização.</value>
+  </data>
+  <data name="Update_PCBatteryLow_Alert" xml:space="preserve">
+    <value>Para continuar com a atualização, conecte o PC à fonte de energia e certifique-se de que a carga da bateria esteja acima de 10%</value>
+  </data>
+  <data name="Update_Mouse_Alert" xml:space="preserve">
+    <value>Pressione um botão ou uma tecla no dispositivo para ativar esta atualização</value>
+  </data>
+  <data name="Landscape" xml:space="preserve">
+    <value>Paisagem</value>
+  </data>
+  <data name="Portrait" xml:space="preserve">
+    <value>Retrato</value>
+  </data>
+  <data name="Landscape_flipped" xml:space="preserve">
+    <value>Paisagem (invertida)</value>
+  </data>
+  <data name="Portrait_flipped" xml:space="preserve">
+    <value>Retrato (invertida)</value>
+  </data>
+  <data name="Frame_Rate" xml:space="preserve">
+    <value>Taxa de quadros</value>
+  </data>
+  <data name="Display_Alignment" xml:space="preserve">
+    <value>Alinhamento da tela</value>
+  </data>
+  <data name="Timer__30min" xml:space="preserve">
+    <value>Timer/30 min</value>
+  </data>
+  <data name="Timer__40min" xml:space="preserve">
+    <value>Timer/40 min</value>
+  </data>
+  <data name="Timer__50min" xml:space="preserve">
+    <value>Timer/50 min</value>
+  </data>
+  <data name="Timer__60min" xml:space="preserve">
+    <value>Timer/60 min</value>
+  </data>
+  <data name="Timer__90min" xml:space="preserve">
+    <value>Timer/90 min</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>Desativar</value>
+  </data>
+  <data name="Extreme" xml:space="preserve">
+    <value>Extremo</value>
+  </data>
+  <data name="Super_Fast" xml:space="preserve">
+    <value>Super-rápido</value>
+  </data>
+  <data name="Fast" xml:space="preserve">
+    <value>Rápido</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="Level_0" xml:space="preserve">
+    <value>Nível 0</value>
+  </data>
+  <data name="Level_1" xml:space="preserve">
+    <value>Nível 1</value>
+  </data>
+  <data name="Level_2" xml:space="preserve">
+    <value>Nível 2</value>
+  </data>
+  <data name="Level_3" xml:space="preserve">
+    <value>Nível 3</value>
+  </data>
+  <data name="Desktop" xml:space="preserve">
+    <value>Desktop</value>
+  </data>
+  <data name="Movie_HDR" xml:space="preserve">
+    <value>Filme HDR</value>
+  </data>
+  <data name="Game_HDR" xml:space="preserve">
+    <value>Jogo HDR</value>
+  </data>
+  <data name="Display_HDR" xml:space="preserve">
+    <value>HDR da tela</value>
+  </data>
+  <data name="Custom_Color_HDR" xml:space="preserve">
+    <value>HDR de cor personalizada</value>
+  </data>
+  <data name="HDRPeak1000" xml:space="preserve">
+    <value>HDRPeak1000</value>
+  </data>
+  <data name="_4K" xml:space="preserve">
+    <value>4K</value>
+  </data>
+  <data name="_FHD" xml:space="preserve">
+    <value>FHD</value>
+  </data>
+  <data name="Steady_Vision" xml:space="preserve">
+    <value>Visão constante</value>
+  </data>
+  <data name="VisionEngine_Steady" xml:space="preserve">
+    <value>Visão constante</value>
+  </data>
+  <data name="Software_update" xml:space="preserve">
+    <value>Atualizações de software</value>
+  </data>
+  <data name="Firmware_update" xml:space="preserve">
+    <value>Atualização de firmware</value>
+  </data>
+  <data name="Color.10" xml:space="preserve">
+    <value>A temperatura de cor está ativada no momento. Deseja substituí-la?</value>
+  </data>
+  <data name="Mouse.16" xml:space="preserve">
+    <value>Número de vezes por segundo que a posição do mouse informa ao sistema. Conecte-se via USB para taxas de sondagem mais altas.</value>
+  </data>
+  <data name="EATooltip_00" xml:space="preserve">
+    <value>Layout vazio</value>
+  </data>
+  <data name="EATooltip_21H" xml:space="preserve">
+    <value>Opção 2.1: 2 colunas, divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_21V" xml:space="preserve">
+    <value>Opção 2.1: 2 linhas, divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_22H" xml:space="preserve">
+    <value>Opção 2.2: 2 linhas, divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_22V" xml:space="preserve">
+    <value>Opção 2.2: 2 colunas, divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_23H" xml:space="preserve">
+    <value>Opção 2.3: 2 colunas, divisão 70/30%.</value>
+  </data>
+  <data name="EATooltip_23V" xml:space="preserve">
+    <value>Opção 2.3: 2 linhas, divisão 30/70%.</value>
+  </data>
+  <data name="EATooltip_24H" xml:space="preserve">
+    <value>Opção 2.4: 2 colunas, divisão 30/70%.</value>
+  </data>
+  <data name="EATooltip_24V" xml:space="preserve">
+    <value>Opção 2.4: 2 linhas, divisão 70/30%.</value>
+  </data>
+  <data name="EATooltip_31H" xml:space="preserve">
+    <value>Opção 3.1: 3 linhas, divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_31V" xml:space="preserve">
+    <value>Opção 3.1: 3 colunas, divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_32H" xml:space="preserve">
+    <value>Opção 3.2: 3 colunas, divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_32V" xml:space="preserve">
+    <value>Opção 3.2: 3 linhas, divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_33H" xml:space="preserve">
+    <value>Opção 3.3: 3 colunas, divisão 30/40/30%.</value>
+  </data>
+  <data name="EATooltip_33V" xml:space="preserve">
+    <value>Opção 3.3: 3 linhas, divisão 30/40/30%.</value>
+  </data>
+  <data name="EATooltip_34H" xml:space="preserve">
+    <value>Opção 3.4: 2 linhas, divididas igualmente. Coluna 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_34V" xml:space="preserve">
+    <value>Opção 3.4: 2 linhas, divididas igualmente. Linha 1, sem divisão. Linha 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_35H" xml:space="preserve">
+    <value>Opção 3.5: 2 linhas, divididas igualmente. Coluna 1, sem divisão. Coluna 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_35V" xml:space="preserve">
+    <value>Opção 3.5: 2 linhas, divididas igualmente. Linha 1, dividida igualmente. Linha 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_36H" xml:space="preserve">
+    <value>Opção 3.6: 2 linhas, divididas igualmente. Coluna 1, divisão 30/70%. Coluna 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_36V" xml:space="preserve">
+    <value>Opção 3.6: 2 linhas, divididas em 70/30%. Linha 1, sem divisão, Linha 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_37H" xml:space="preserve">
+    <value>Opção 3.7: 2 linhas, divididas igualmente. Coluna 1, divisão 70/30%. Coluna 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_37V" xml:space="preserve">
+    <value>Opção 3.7: 2 linhas, divididas em 30/70%. Linha 1, dividida igualmente, Linha 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_38H" xml:space="preserve">
+    <value>Opção 3.8: 2 linhas, divididas igualmente. Linha 1, sem divisão. Linha 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_38V" xml:space="preserve">
+    <value>Opção 3.8: 2 colunas, divididas igualmente.  Coluna 1, sem divisão. Coluna 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_39H" xml:space="preserve">
+    <value>Opção 3.9: 2 linhas, divididas igualmente. Linha 1, dividida igualmente. Linha 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_39V" xml:space="preserve">
+    <value>Opção 3.9: 2 colunas, divididas igualmente. Coluna 1, dividida igualmente. Coluna 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_41H" xml:space="preserve">
+    <value>Opção 4.1: divisão em 4 quadrantes.</value>
+  </data>
+  <data name="EATooltip_41V" xml:space="preserve">
+    <value>Opção 4.1: divisão em 4 quadrantes.</value>
+  </data>
+  <data name="EATooltip_42H" xml:space="preserve">
+    <value>Opção 4.2: 2 colunas, divididas igualmente. Coluna 1, dividida igualmente em 3 seções. Coluna 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_42V" xml:space="preserve">
+    <value>Opção 4.2: 2 linhas, divididas igualmente. Linha 1, sem divisão. Linha 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_43H" xml:space="preserve">
+    <value>Opção 4.3: 2 colunas, divididas igualmente. Coluna 1, sem divisão. Coluna 2, dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_43V" xml:space="preserve">
+    <value>Opção 4.3: 2 linhas, divididas igualmente. Linha 1, dividida igualmente em 3 seções. Coluna 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_44H" xml:space="preserve">
+    <value>Opção 4.4: 4 colunas divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_44V" xml:space="preserve">
+    <value>Opção 4.4: 4 linhas, divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_45H" xml:space="preserve">
+    <value>Opção 4.5: 3 colunas divididas igualmente. Coluna 1, dividida igualmente. Colunas 2 e 3, sem divisão.</value>
+  </data>
+  <data name="EATooltip_45V" xml:space="preserve">
+    <value>Opção 4.5: 3 linhas, divididas igualmente.  Linhas 1 e 2, sem divisão. Linha 3, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_46H" xml:space="preserve">
+    <value>Opção 4.6: 3 colunas, divididas igualmente. Colunas 1 e 2, sem divisão. Coluna 3, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_46V" xml:space="preserve">
+    <value>Opção 4.6: 3 linhas, divididas igualmente, Linha 1, dividida igualmente, Linhas 2 e 3, sem divisão.</value>
+  </data>
+  <data name="EATooltip_51H" xml:space="preserve">
+    <value>Opção 5.1: 2 linhas, divididas igualmente. Linha 1, dividida igualmente em 3 seções. Linha 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_51V" xml:space="preserve">
+    <value>Opção 5.1: 2 colunas, divididas igualmente. Coluna 1, dividida igualmente em 3 seções. Coluna 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_52H" xml:space="preserve">
+    <value>Opção 5.2: 2 linhas, divididas igualmente. Linha 1, dividida igualmente. Linha 2, dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_52V" xml:space="preserve">
+    <value>Opção 5.2: 2 colunas, divididas igualmente. Coluna 1, dividida igualmente. Coluna 2, dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_53H" xml:space="preserve">
+    <value>Opção 5.3: 2 linhas, dividida 30/70%. Linha 1, dividida igualmente em 3 seções. Linha 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_53V" xml:space="preserve">
+    <value>Opção 5.3: 2 colunas, divididas 30/70%, Linha 1, dividida igualmente em 3 seções. Linha 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_54H" xml:space="preserve">
+    <value>Opção 5.4: 2 linhas, divididas 70/30%. Linha 1, dividida igualmente. Linha 2, dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_54V" xml:space="preserve">
+    <value>Opção 5.4: 2 colunas, divididas 70/30%. Linha 1, dividida igualmente, Linha 2, dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_55H" xml:space="preserve">
+    <value>Opção 5.5: 2 linhas, divididas 30/70%. As Linhas 1 e 2, divididas igualmente. Coluna 1, sem divisão. Coluna 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_55V" xml:space="preserve">
+    <value>Opção 5.5: 2 linhas, divididas igualmente. Linha 1, dividida igualmente em 3 seções. Linha 2, divisão 30/70%.</value>
+  </data>
+  <data name="EATooltip_56H" xml:space="preserve">
+    <value>Opção 5.6: 2 colunas, divididas igualmente. Coluna 1, dividida igualmente em 3 seções. Coluna 2, dividida 30/70%.</value>
+  </data>
+  <data name="EATooltip_56V" xml:space="preserve">
+    <value>Opção 5.6: 2 linhas, divididas igualmente, Linha 1, dividida 30/70%. Linha 2, dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_57H" xml:space="preserve">
+    <value>Opção 5.7: 3 colunas, divididas igualmente, colunas 1 e 3, cada uma dividida igualmente, coluna 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_57V" xml:space="preserve">
+    <value>Opção 5.7: 3 linhas, divididas igualmente, Linhas 1 e 3, cada uma dividida igualmente, linha 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_58H" xml:space="preserve">
+    <value>Opção 5.8: 2 linhas, divididas em 70/30%. Linha 1, dividida 70/30%. Linha 2, dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_58V" xml:space="preserve">
+    <value>Opção 5.8: 2 colunas, divisão 30/70%. Coluna 1, dividida 70/30%, coluna 2, dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_59H" xml:space="preserve">
+    <value>Opção 5.9: 2 linhas, divididas em 70/30%. Linha 1, dividida 70/30%, Linha 2, dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_59V" xml:space="preserve">
+    <value>Opção 5.9: 2 colunas, divisão 70/30%. Coluna 1, dividida 70/30%, coluna 2, dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_61H" xml:space="preserve">
+    <value>Opção 6.1: 3 colunas, divididas igualmente. As colunas 1, 2 e 3 são divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_61V" xml:space="preserve">
+    <value>Opção 6.1: 2 colunas, divididas igualmente. As colunas 1 e 2, divididas igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_62H" xml:space="preserve">
+    <value>Opção 6.2: 2 linhas, divididas em 70/30%. Linha 1, dividida 70/30%. Linha 2, dividida igualmente em 3 seções. Coluna 1, sem divisão. Coluna 2, igualmente dividida.</value>
+  </data>
+  <data name="EATooltip_62V" xml:space="preserve">
+    <value>Opção 6.2: 2 linhas, divisão 30/70%. Linha 1, dividida igualmente em 3 seções. Linha 2, dividida 30/70%. Coluna 1, sem divisão. Coluna 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_63H" xml:space="preserve">
+    <value>Opção 6.3: 2 linhas, divisão 30/70%. Linha 1, dividida igualmente em 4 seções. Linha 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_63V" xml:space="preserve">
+    <value>Opção 6.3: 2 colunas, dividida 30/70%. Coluna 1, dividida igualmente em 4 seções. Coluna 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_64H" xml:space="preserve">
+    <value>Opção 6.4: 2 linhas, divisão de 30/70%. Linha 1, dividida igualmente em 3 seções. Linha 2, dividida 70/30%. Coluna 1, sem divisão. Coluna 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_64V" xml:space="preserve">
+    <value>Opção 6.4: 2 colunas, dividida 30/70%. Linha 1, dividida igualmente em 3 seções. Linha 2, divisão 30/70%. Coluna 1, dividida igualmente. Coluna 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_65H" xml:space="preserve">
+    <value>Opção 6.5: 2 linhas, divisão 30/70%. Linha 1, dividida igualmente em 3 seções. Linha 2, dividida 30/70%. Coluna 1, dividida igualmente. Coluna 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_65V" xml:space="preserve">
+    <value>Opção 6.5: 2 colunas, divididas 30/70%. Linha 1, dividida 30/70%. Linha 2, dividida igualmente em 3 seções. Coluna 1, dividida igualmente. Coluna 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_66H" xml:space="preserve">
+    <value>Opção 6.6: 2 linhas, divididas em 30/70%. Linha 1, dividida 30/70%. Coluna 1, dividida uniformemente. Coluna 2, sem divisão. Linha 1, dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_66V" xml:space="preserve">
+    <value>Opção 6.6: 2 linhas, divididas em 30/70%. Linha 1, dividia 30/70%. Linha 2, dividida igualmente em 3 seções. Coluna 1, sem divisão. Coluna 2, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_67H" xml:space="preserve">
+    <value>Opção 6.7: 2 colunas, divididas igualmente. As Linhas 1, 2 e 3 são divididas igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_67V" xml:space="preserve">
+    <value>Opção 6.7: 3 colunas, divididas igualmente. As colunas 1, 2 e 3 são divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_68H" xml:space="preserve">
+    <value>Opção 6.8: 4 colunas, divididas igualmente. As Linhas 1 e 4 são divididas igualmente. Linhas 2 e 3, sem divisões.</value>
+  </data>
+  <data name="EATooltip_68V" xml:space="preserve">
+    <value>Opção 6.8: 4 linhas, divididas igualmente. As Linhas 1 e 4 são divididas igualmente. Linhas 2 e 3, sem divisão.</value>
+  </data>
+  <data name="EATooltip_69H" xml:space="preserve">
+    <value>Opção 6.9: 2 linhas, divididas 70/30%. Linha 1, dividida igualmente. Linha 2, dividida igualmente em 4 seções.</value>
+  </data>
+  <data name="EATooltip_69V" xml:space="preserve">
+    <value>Opção 6.9: 2 linhas, divididas igualmente. Linha 1, dividida 70/30%. Coluna 1, sem divisão, coluna 2, dividida igualmente. Linha 2, dividida 70/30%.</value>
+  </data>
+  <data name="EATooltip_6AH" xml:space="preserve">
+    <value>Opção 6.10: 2 colunas, divididas 70/30%. As colunas 1, 2 e 3 são divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_6AV" xml:space="preserve">
+    <value>Opção 6.10: 2 linhas, divisão 70/30%. As Linhas 1 e 2, divididas igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_71H" xml:space="preserve">
+    <value>Opção 7.1: 2 linhas, dividida 30/70%. Linha 1, dividida igualmente em 3 seções. Linha 2, dividida 30/70%. Coluna 1, dividida igualmente. Colunas 2 e 3, sem divisões.</value>
+  </data>
+  <data name="EATooltip_71V" xml:space="preserve">
+    <value>Opção 7.1: 3 linhas, divididas igualmente. As Linhas 1 e 2, cada uma dividida 30/70%, linha 3, dividida em 3 seções iguais.</value>
+  </data>
+  <data name="EATooltip_72H" xml:space="preserve">
+    <value>Opção 7.2: 2 linhas, divisão de 30/70%. As Linhas 1 e 2, divididas igualmente em 3 seções. Colunas 1 e 2, sem divisão. Coluna 3, dividida igualmente.</value>
+  </data>
+  <data name="EATooltip_72V" xml:space="preserve">
+    <value>Opção 7.2: 3 linhas, divididas igualmente. As Linhas 1 e 3, divididas igualmente em 3 seções. Linha 2, divisão 30/70%.</value>
+  </data>
+  <data name="EATooltip_73H" xml:space="preserve">
+    <value>Opção 7.3: 2 linhas, divididas igualmente. Linha 1, dividida igualmente em 4 seções. Linha 2, dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_73V" xml:space="preserve">
+    <value>Opção 7.3: 2 colunas, divididas igualmente. Coluna 1, dividida igualmente em 4 seções. Coluna 2, dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_74H" xml:space="preserve">
+    <value>Opção 7.4: 2 linhas, divididas igualmente. As Linhas 1 e 3 são divididas igualmente. Linha 2, dividida igualmente em 4 seções.</value>
+  </data>
+  <data name="EATooltip_74V" xml:space="preserve">
+    <value>Opção 7.4: 2 colunas, divididas igualmente. Coluna 1, dividida igualmente em 3 seções. Coluna 2, dividida igualmente em 4 seções.</value>
+  </data>
+  <data name="EATooltip_75H" xml:space="preserve">
+    <value>Opção 7.5: 2 linhas, divididas igualmente. Linha 1, dividida igualmente em 4 seções. Linha 2, dividida 25/50/25%. As colunas 1 e 3, divididas igualmente. Coluna 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_75V" xml:space="preserve">
+    <value>Opção 7.5: 3 linhas, divididas em 25/50/25%. Linha 1, dividida igualmente em 3 seções. Linha 2, dividida de 30/70%. Coluna 1, dividida igualmente. Coluna 2, sem divisão. Linha 3, dividida em 3 seções iguais.</value>
+  </data>
+  <data name="EATooltip_76H" xml:space="preserve">
+    <value>Opção 7.6: 2 linhas, divisão 30/70%. Linha 1, dividida 25/50/25%. As Colunas 1 e 3, divididas igualmente. Coluna 2, sem divisão. Linha 2, dividida igualmente em 4 seções.</value>
+  </data>
+  <data name="EATooltip_76V" xml:space="preserve">
+    <value>Opção 7.6: 3 linhas, dividida 25/50/25%. Linha 1, dividida igualmente em 3 seções. Linha 2, dividida 70/30%. Linha 3, dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_77H" xml:space="preserve">
+    <value>Opção 7.7: 2 linhas, divisão de 30/70%. Linha 1, dividida igualmente em 4 seções. Linha 2, dividida 50/25/25%. Coluna 1, sem divisão. As colunas 2 e 3, divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_77V" xml:space="preserve">
+    <value>Opção 7.7: 3 linhas, divisão 25/25/50%. As Linhas 1 e 2, divididas igualmente em 3 seções. Linha 3, dividida 30/70%. Coluna 1, dividida igualmente. Coluna 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_78H" xml:space="preserve">
+    <value>Opção 7.8: 2 linhas, dividida 30/70%. As Linhas 1 e 4 são divididas igualmente. Linha 2, dividida 25/25/50%. As colunas 1 e 2, divididas igualmente. Coluna 3, sem divisão.</value>
+  </data>
+  <data name="EATooltip_78V" xml:space="preserve">
+    <value>Opção 7.8: 3 linhas, divisão de 30/70%. Linha 1, dividida 30/70%. Coluna 1, dividida igualmente. Coluna 2, sem divisão. As linhas 2 e 3, divididas igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_79H" xml:space="preserve">
+    <value>Opção 7.9: 4 colunas, divididas igualmente. As colunas 1, 2, 3 e 4 são divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_79V" xml:space="preserve">
+    <value>Opção 7.9: 4 colunas, divididas igualmente. As linhas 1, 2, 3 e 4 são divididas igualmente.</value>
+  </data>
+  <data name="EATooltip_7AH" xml:space="preserve">
+    <value>Opção 7.10: 4 colunas, divididas igualmente, colunas 1, 2, 3 e 4, cada uma dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_7AV" xml:space="preserve">
+    <value>Opção 7.10: 4 colunas, divididas igualmente, colunas 1, 2, 3 e 4, cada uma dividida igualmente em 3 seções.</value>
+  </data>
+  <data name="EATooltip_7BH" xml:space="preserve">
+    <value>Opção 7.11: 2 linhas, dividida 30/70%. As Linhas 1 e 2, divididas em 25/50/25%. As colunas 1 e 3, divididas igualmente. Coluna 2, sem divisão.</value>
+  </data>
+  <data name="EATooltip_7BV" xml:space="preserve">
+    <value>Opção 7.11: 3 colunas, dividida 30/70%. As colunas 1, 2 e 3 divididas 25/50/25%. As Linhas 1 e 3 são divididas igualmente. Linha 2, sem divisão.</value>
+  </data>
+  <data name="EazyMemory.42" xml:space="preserve">
+    <value>O perfil do Easy Memory correspondente também será excluído. Deseja continuar?</value>
+  </data>
+  <data name="DiagnosticReport_SaveFail" xml:space="preserve">
+    <value>Falha ao salvar relatório de diagnóstico</value>
+  </data>
+  <data name="MonitorAssetReport_SaveFail" xml:space="preserve">
+    <value>Falha ao salvar relatório de ativos do monitor</value>
+  </data>
+  <data name="USBKVM.Tips" xml:space="preserve">
+    <value>Exemplo: “Alt + P”; “Shift + F”; “Ctrl + Shift + F”\nObservação: Para vários monitores, o cursor do mouse deve estar na tela do monitor de destino para acionar a função de tecla de atalho.</value>
+  </data>
+  <data name="BrightnessLevel" xml:space="preserve">
+    <value>Nível de brilho</value>
+  </data>
+  <data name="USBKVM" xml:space="preserve">
+    <value>KVM USB</value>
+  </data>
+  <data name="Mouse" xml:space="preserve">
+    <value>Mouse</value>
+  </data>
+  <data name="Keyboard" xml:space="preserve">
+    <value>Teclado</value>
+  </data>
+  <data name="Calendar" xml:space="preserve">
+    <value>Calendário</value>
+  </data>
+  <data name="Camera" xml:space="preserve">
+    <value>Câmera</value>
+  </data>
+  <data name="Clock" xml:space="preserve">
+    <value>Relógio</value>
+  </data>
+  <data name="Cortana" xml:space="preserve">
+    <value>Cortana</value>
+  </data>
+  <data name="DellCommandUpdate" xml:space="preserve">
+    <value>Dell Command Update</value>
+  </data>
+  <data name="DellDigitalDelivery" xml:space="preserve">
+    <value>Dell Digital Delivery</value>
+  </data>
+  <data name="DellOptimizer" xml:space="preserve">
+    <value>Dell Optimizer</value>
+  </data>
+  <data name="Family" xml:space="preserve">
+    <value>Família</value>
+  </data>
+  <data name="FeedbackHub" xml:space="preserve">
+    <value>Hub de comentários</value>
+  </data>
+  <data name="GameBar" xml:space="preserve">
+    <value>Barra de jogo</value>
+  </data>
+  <data name="GetHelp" xml:space="preserve">
+    <value>Obter ajuda</value>
+  </data>
+  <data name="GetStarted" xml:space="preserve">
+    <value>Vamos começar</value>
+  </data>
+  <data name="IntelManagementAndSecurityStatus" xml:space="preserve">
+    <value>Intel (R) Management and Security Status</value>
+  </data>
+  <data name="IntelGraphicsCommandCenter" xml:space="preserve">
+    <value>Gráficos Intel®Command Center</value>
+  </data>
+  <data name="IntelOptaneMemoryAndStorageManagement" xml:space="preserve">
+    <value>Gestão de armazenamento e Intel® Optane™ Memory</value>
+  </data>
+  <data name="Mail" xml:space="preserve">
+    <value>Mail</value>
+  </data>
+  <data name="Maps" xml:space="preserve">
+    <value>Mapas</value>
+  </data>
+  <data name="MediaPlayer" xml:space="preserve">
+    <value>Leitor de mídia</value>
+  </data>
+  <data name="Microsoft365Office" xml:space="preserve">
+    <value>Microsoft 365 (Office)</value>
+  </data>
+  <data name="MicrosoftClipchamp" xml:space="preserve">
+    <value>Microsoft Clipchamp</value>
+  </data>
+  <data name="MicrosoftDefender" xml:space="preserve">
+    <value>Microsoft Defender</value>
+  </data>
+  <data name="MicrosoftStore" xml:space="preserve">
+    <value>Microsoft Store</value>
+  </data>
+  <data name="MicrosoftTeams" xml:space="preserve">
+    <value>Microsoft Teams</value>
+  </data>
+  <data name="MicrosoftTeamsWorkSchool" xml:space="preserve">
+    <value>Microsoft Teams (work or school)</value>
+  </data>
+  <data name="MicrosoftToDo" xml:space="preserve">
+    <value>Microsoft To Do</value>
+  </data>
+  <data name="MoviesTV" xml:space="preserve">
+    <value>Movies &amp; TV (Filmes e TV)</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Notícias</value>
+  </data>
+  <data name="Notepad" xml:space="preserve">
+    <value>Notepad</value>
+  </data>
+  <data name="Paint" xml:space="preserve">
+    <value>Paint</value>
+  </data>
+  <data name="PhoneLink" xml:space="preserve">
+    <value>Phone Link</value>
+  </data>
+  <data name="Photos" xml:space="preserve">
+    <value>Fotos</value>
+  </data>
+  <data name="PowerAutomate" xml:space="preserve">
+    <value>Automação de energia</value>
+  </data>
+  <data name="SnippingTool" xml:space="preserve">
+    <value>Ferramenta de corte</value>
+  </data>
+  <data name="SolitaireCasualGames" xml:space="preserve">
+    <value>Solitaire e jogos casuais</value>
+  </data>
+  <data name="SoundRecorder" xml:space="preserve">
+    <value>Gravador de som</value>
+  </data>
+  <data name="Spotify" xml:space="preserve">
+    <value>Spotify</value>
+  </data>
+  <data name="SupportAssist" xml:space="preserve">
+    <value>SupportAssist</value>
+  </data>
+  <data name="Terminal" xml:space="preserve">
+    <value>Terminal</value>
+  </data>
+  <data name="Tips" xml:space="preserve">
+    <value>Dicas</value>
+  </data>
+  <data name="Weather" xml:space="preserve">
+    <value>Tempo</value>
+  </data>
+  <data name="WindowsBackup" xml:space="preserve">
+    <value>Backup do Windows</value>
+  </data>
+  <data name="WindowsSecurity" xml:space="preserve">
+    <value>Segurança do Windows</value>
+  </data>
+  <data name="Xbox" xml:space="preserve">
+    <value>Xbox</value>
+  </data>
+  <data name="NextTrack" xml:space="preserve">
+    <value>Próxima faixa</value>
+  </data>
+  <data name="PrtSc" xml:space="preserve">
+    <value>Captura de tela</value>
+  </data>
+  <data name="ScrollLock" xml:space="preserve">
+    <value>Scroll Lock</value>
+  </data>
+  <data name="PauseBreak" xml:space="preserve">
+    <value>Pausa</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Início</value>
+  </data>
+  <data name="End" xml:space="preserve">
+    <value>Finalizar</value>
+  </data>
+  <data name="PageDown" xml:space="preserve">
+    <value>Descer a página</value>
+  </data>
+  <data name="PageUp" xml:space="preserve">
+    <value>Subir a página</value>
+  </data>
+  <data name="WebBrowser" xml:space="preserve">
+    <value>Navegador da Web</value>
+  </data>
+  <data name="DTPUnavailable" xml:space="preserve">
+    <value>O serviço DTP está indisponível!</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>(Sem nome)</value>
+  </data>
+  <data name="Keyboard.20" xml:space="preserve">
+    <value>Teclado sem fio Dell Premier</value>
+  </data>
+  <data name="Keyboard.21" xml:space="preserve">
+    <value>Mouse sem fio Dell {0}</value>
+  </data>
+  <data name="EzArrange.10" xml:space="preserve">
+    <value>Selecione uma pasta</value>
+  </data>
+  <data name="Fullscreen.1" xml:space="preserve">
+    <value>Tela inteira</value>
+  </data>
+  <data name="PIPSmall" xml:space="preserve">
+    <value>PIP Small</value>
+  </data>
+  <data name="PIPLarge" xml:space="preserve">
+    <value>PIP Large</value>
+  </data>
+  <data name="Learn_more_for_firmware" xml:space="preserve">
+    <value>Saiba mais sobre o firmware</value>
+  </data>
+  <data name="Learn_more_for_software" xml:space="preserve">
+    <value>Saiba mais sobre o software</value>
+  </data>
 </root>

@@ -2271,4 +2271,1192 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>تمكّن هذه الميزة أعيننا من التكيف مع الإعداد المطلوب.</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>يمكنك تصدير التكوين المفضل لديك من هنا واستيراده إلى شاشة أخرى من الطراز نفسه من دون عناء.</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>إعادة تسمية مصدر الإدخال</value>
+  </data>
+  <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
+    <value>افصل كل أجهزة تخزين USB عن الشاشة.</value>
+  </data>
+  <data name="AddDevice.KnM.14" xml:space="preserve">
+    <value>توصيل جهاز الاستقبال اللاسلكي</value>
+  </data>
+  <data name="ConsentNo" xml:space="preserve">
+    <value>لا، لا أوافق</value>
+  </data>
+  <data name="ConsentYes" xml:space="preserve">
+    <value>نعم، أوافق</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="Consent.1" xml:space="preserve">
+    <value>ساعدنا على التحسين</value>
+  </data>
+  <data name="Consent.2" xml:space="preserve">
+    <value>ساعد Dell على تحسين منتجاتها وخدماتها عن طريق إرسال بيانات التشخيصات والاستخدام. تعرف على المزيد حول </value>
+  </data>
+  <data name="ImpExp_CheckBox.0" xml:space="preserve">
+    <value>لا تطلب مرة أخرى للطراز نفسه</value>
+  </data>
+  <data name="ImpExp_Message.1" xml:space="preserve">
+    <value>هل تريد استيراد إعدادات التطبيق لتسهيل استخدامه؟</value>
+  </data>
+  <data name="ImpExp_Title.0" xml:space="preserve">
+    <value>تم اكتشاف شاشة جديدة %1.</value>
+  </data>
+  <data name="Wait_DevMgr" xml:space="preserve">
+    <value>جارٍ الاتصال بالعميل الفرعي DDPM...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="Wait_DTH" xml:space="preserve">
+    <value>جارٍ الاتصال بـ Dell.TechHub...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="Wait_NoDevice" xml:space="preserve">
+    <value>جارٍ اكتشاف الجهاز...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="InvalidURL" xml:space="preserve">
+    <value>عنوان URL غير صالح</value>
+  </data>
+  <data name="Left" xml:space="preserve">
+    <value>اليسار</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>اليمين</value>
+  </data>
+  <data name="WalkThrough.1" xml:space="preserve">
+    <value>تجاوز</value>
+  </data>
+  <data name="WalkThrough.2" xml:space="preserve">
+    <value>الانتقال إلى التطبيق</value>
+  </data>
+  <data name="HeadsetAudioSettings.29" xml:space="preserve">
+    <value>ينطبق عندما تكون في مكالمة جماعية</value>
+  </data>
+  <data name="HeadsetAudioSettings.30" xml:space="preserve">
+    <value>ينطبق عند الاستماع إلى وسائط متعددة، مثل الموسيقى أو المدونات الصوتية</value>
+  </data>
+  <data name="Brightness.19" xml:space="preserve">
+    <value>السطوع التلقائي ممكّن حاليًا. هل ترغب في تجاوزه؟</value>
+  </data>
+  <data name="Brightness.20" xml:space="preserve">
+    <value>هذه ليست شاشتك الأساسية. هل تريد متابعة التغيير وتعيينها كشاشة أساسية للمزامنة؟</value>
+  </data>
+  <data name="ThirdPartyLicense.Title" xml:space="preserve">
+    <value>ترخيص الجهة الخارجية</value>
+  </data>
+  <data name="Illumination.2" xml:space="preserve">
+    <value>لتغيير مستوى السطوع، اضغط على المفتاح F8</value>
+  </data>
+  <data name="Illumination.3" xml:space="preserve">
+    <value>يضبط مستويات سطوع لوحة المفاتيح بناءً على كمية الضوء في البيئة المحيطة</value>
+  </data>
+  <data name="Illumination.4" xml:space="preserve">
+    <value>ضبط سطوع لوحة المفاتيح يدويًا</value>
+  </data>
+  <data name="Off2" xml:space="preserve">
+    <value>إيقاف التشغيل</value>
+  </data>
+  <data name="EazyMemory.40" xml:space="preserve">
+    <value>يُرجى إدخال اسم ملف التعريف.</value>
+  </data>
+  <data name="hotkey.7" xml:space="preserve">
+    <value>تحذير مفتاح التشغيل السريع</value>
+  </data>
+  <data name="hotkey.8" xml:space="preserve">
+    <value>مفتاح التشغيل السريع الذي كونته هو مفتاح واحد. قد يتداخل مع الطريقة التي تنوي أن يعمل بها هذا المفتاح في تطبيقات أخرى. هل تريد بالتأكيد المتابعة؟</value>
+  </data>
+  <data name="hotkey.9" xml:space="preserve">
+    <value>يُستخدم مفتاح التشغيل السريع هذا من قِبل وظيفة أخرى في Dell Display and Peripheral Manager. هل تريد استبداله؟</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>عنوان URL</value>
+  </data>
+  <data name="Update_Available_Version" xml:space="preserve">
+    <value>تحديث الإصدار المتوفر</value>
+  </data>
+  <data name="New_Supported_Devices" xml:space="preserve">
+    <value>الأجهزة الجديدة المدعومة</value>
+  </data>
+  <data name="New_Features" xml:space="preserve">
+    <value>الميزات الجديدة</value>
+  </data>
+  <data name="Bug_Fixes" xml:space="preserve">
+    <value>إصلاحات الأخطاء</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>تحديث</value>
+  </data>
+  <data name="UI_Orientation.0" xml:space="preserve">
+    <value>أفقي</value>
+  </data>
+  <data name="UI_Orientation.1" xml:space="preserve">
+    <value>عمودي</value>
+  </data>
+  <data name="UI_Orientation.2" xml:space="preserve">
+    <value>أفقي (مقلوب)</value>
+  </data>
+  <data name="UI_Orientation.3" xml:space="preserve">
+    <value>عمودي (مقلوب)</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.0" xml:space="preserve">
+    <value>منخفض</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.1" xml:space="preserve">
+    <value>متوسط</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.2" xml:space="preserve">
+    <value>مرتفع</value>
+  </data>
+  <data name="EazyMemorySettings.0" xml:space="preserve">
+    <value>مفتاح التشغيل السريع: المستخدم حديثًا</value>
+  </data>
+  <data name="EazyMemorySettings.1" xml:space="preserve">
+    <value>مثال: &quot;Alt + P&quot;، ‏&quot;Shift + F&quot;، ‏&quot;Ctrl + Shift + F&quot;.</value>
+  </data>
+  <data name="EazyMemorySettings.2" xml:space="preserve">
+    <value>ثبّت أي تطبيق في تخطيط تقسيم الشاشة بسهولة عن طريق سحبه إلى قسم</value>
+  </data>
+  <data name="EazyMemorySettings.3" xml:space="preserve">
+    <value>السماح بتقسيم التطبيق جنبًا إلى جنب من دون فاصل</value>
+  </data>
+  <data name="EazyMemorySettings.4" xml:space="preserve">
+    <value>السماح بتحديد موضع المنطقة فقط عند الضغط على SHIFT</value>
+  </data>
+  <data name="EazyMemorySettings.5" xml:space="preserve">
+    <value>تقسيم عبر شاشات متعددة</value>
+  </data>
+  <data name="EazyMemorySettings.6" xml:space="preserve">
+    <value>تقسيم نافذة التطبيق</value>
+  </data>
+  <data name="PairedInfo.0" xml:space="preserve">
+    <value>يمكن إقران هذا الجهاز مع {0} من المضيفين في وقت واحد</value>
+  </data>
+  <data name="EazyMemory.41" xml:space="preserve">
+    <value>تم تكوين ملف تعريف آخر لاستخدام الوقت نفسه. يُرجى استخدام وقت آخر.</value>
+  </data>
+  <data name="Action.1" xml:space="preserve">
+    <value>أدخل مجموعة مفاتيح لإنشاء اختصار</value>
+  </data>
+  <data name="Action.2" xml:space="preserve">
+    <value>انقر فوق زر الاستعراض لتحديد ملف</value>
+  </data>
+  <data name="Action.3" xml:space="preserve">
+    <value>انقر فوق زر ‎‏‏\&quot;الاستعراض\&quot; لتحديد مجلد</value>
+  </data>
+  <data name="Action.4" xml:space="preserve">
+    <value>اكتب عنوان URL لصفحة الويب في المربع أدناه</value>
+  </data>
+  <data name="Action.5" xml:space="preserve">
+    <value>اسم الملف</value>
+  </data>
+  <data name="Action.6" xml:space="preserve">
+    <value>اسم المجلد</value>
+  </data>
+  <data name="Camera.14" xml:space="preserve">
+    <value>الإعداد المسبق</value>
+  </data>
+  <data name="Camera.15" xml:space="preserve">
+    <value>تحرير الإعداد المسبق</value>
+  </data>
+  <data name="Camera.19" xml:space="preserve">
+    <value>الاسم</value>
+  </data>
+  <data name="Camera.20" xml:space="preserve">
+    <value>هذا الاسم مستخدم بالفعل</value>
+  </data>
+  <data name="Camera.21" xml:space="preserve">
+    <value>عدل صورة الكاميرا لديك واستعدها إلى الإعدادات الأصلية</value>
+  </data>
+  <data name="Camera.22" xml:space="preserve">
+    <value>عدل مظهرك سريعًا وحسنه</value>
+  </data>
+  <data name="Camera.23" xml:space="preserve">
+    <value>عزز لون صورتك وزد من حيويتها</value>
+  </data>
+  <data name="Camera.24" xml:space="preserve">
+    <value>عزز مظهرك بألوان أكثر دفئًا</value>
+  </data>
+  <data name="Collab.1" xml:space="preserve">
+    <value>التعاون</value>
+  </data>
+  <data name="Collab.10" xml:space="preserve">
+    <value>لا يمكن اتصال لوحة المفاتيح التعاونية بتطبيق Microsoft Teams لأنك قمت بحظر الطلب. لاستخدام Microsoft Teams مع لوحة المفاتيح التعاونية، انقر فوق \&quot;معرفة المزيد\&quot; للحصول على إرشادات حول كيفية إعادة الاتصال.</value>
+  </data>
+  <data name="Collab.11" xml:space="preserve">
+    <value>لاستخدام لوحة المفاتيح التعاونية مع Zoom، ثبت أحدث إصدار لسطح المكتب من Zoom</value>
+  </data>
+  <data name="Collab.12" xml:space="preserve">
+    <value>لاستخدام لوحة المفاتيح التعاونية مع Microsoft Teams، تأكد من تسجيل الدخول إلى Microsoft Teams، باستخدام أحدث إصدار، وتمكين واجهة برمجة تطبيقات الجهات الخارجية</value>
+  </data>
+  <data name="Collab.13" xml:space="preserve">
+    <value>فيديو</value>
+  </data>
+  <data name="Collab.14" xml:space="preserve">
+    <value>مشاركة</value>
+  </data>
+  <data name="Collab.15" xml:space="preserve">
+    <value>محادثة</value>
+  </data>
+  <data name="Collab.16" xml:space="preserve">
+    <value>الميكروفون</value>
+  </data>
+  <data name="Collab.17" xml:space="preserve">
+    <value>موافق</value>
+  </data>
+  <data name="Collab.2" xml:space="preserve">
+    <value>توفر وصولاً سريعًا إلى عناصر التحكم في المؤتمرات. سيؤدي التبديل بين \nتشغيل/إيقاف تشغيل المفاتيح إلى إظهارها أو إخفائها على لوحة المفاتيح في أثناء إجراء مكالمة\nعبر Zoom أو Microsoft Teams.</value>
+  </data>
+  <data name="Collab.3" xml:space="preserve">
+    <value>قم بتمكين تأثير الوميض عند وجود رسالة دردشة جديدة في المكالمة\nالجماعية</value>
+  </data>
+  <data name="Collab.4" xml:space="preserve">
+    <value>قم بتنشيط الأيقونات على لوحة المفاتيح عن طريق النقر المزدوج بدلاً من النقر\nالفردي</value>
+  </data>
+  <data name="Collab.5" xml:space="preserve">
+    <value>تعرّف على المزيد</value>
+  </data>
+  <data name="Collab.6" xml:space="preserve">
+    <value>لاستخدام لوحة المفاتيح التعاونية مع Microsoft Teams:\r\n1. افتح Teams وانتقل إلى إعدادات الخصوصية.\n\n2. حدد واجهة برمجة تطبيقات الجهات الخارجية وتأكد من أن Dell Display and Peripheral Manager غير موجود في قائمة الحظر.\n\n3. أقرن Microsoft Teams مع Dell Display and Peripheral Manager من خلال بدء مكالمة جماعية من Microsoft Teams.</value>
+  </data>
+  <data name="Collab.7" xml:space="preserve">
+    <value>إذا كنت لا تزال تواجه مشكلة، فاتصل بموظفي قسم تكنولوجيا المعلومات لديك (إن أمكن) حيث قد تكون لديهم سياسات مطبقة تمنع لوحة المفاتيح التعاونية من الاتصال بتطبيق Microsoft Teams.</value>
+  </data>
+  <data name="Collab.8" xml:space="preserve">
+    <value>لاستخدام لوحة المفاتيح التعاونية، تحتاج إلى أحدث إصدار من Zoom أو Microsoft Teams</value>
+  </data>
+  <data name="Collab.9" xml:space="preserve">
+    <value>وصل لوحة المفاتيح التعاونية بتطبيق Microsoft Teams عن طريق بدء مكالمة جماعية وقبول طلب الاتصال</value>
+  </data>
+  <data name="Common.0" xml:space="preserve">
+    <value>أساسي</value>
+  </data>
+  <data name="Common.1" xml:space="preserve">
+    <value>مسح</value>
+  </data>
+  <data name="Common.2" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="Common.3" xml:space="preserve">
+    <value>اختر التطبيق من قائمة التطبيقات</value>
+  </data>
+  <data name="Common.4" xml:space="preserve">
+    <value>حدد ملفًا</value>
+  </data>
+  <data name="Common.5" xml:space="preserve">
+    <value>الملف المحدد</value>
+  </data>
+  <data name="DisplayDefault.1" xml:space="preserve">
+    <value>هل تريد بالتأكيد استعادة كل الإعدادات الافتراضية على جهازك؟</value>
+  </data>
+  <data name="Dock.2" xml:space="preserve">
+    <value>منفذ USB-C (DP 1.4)</value>
+  </data>
+  <data name="Dock.3" xml:space="preserve">
+    <value>منفذ USB-C مزدوج (DP 1.4)</value>
+  </data>
+  <data name="Dock.4" xml:space="preserve">
+    <value>منفذ USB-C (TB 4)</value>
+  </data>
+  <data name="Dock.5" xml:space="preserve">
+    <value>منفذ USB-C (TB 5)</value>
+  </data>
+  <data name="Excel.1" xml:space="preserve">
+    <value>محاذاة إلى المركز</value>
+  </data>
+  <data name="Excel.10" xml:space="preserve">
+    <value>لصق التنسيق فقط</value>
+  </data>
+  <data name="Excel.11" xml:space="preserve">
+    <value>لصق التنسيقات</value>
+  </data>
+  <data name="Excel.12" xml:space="preserve">
+    <value>لصق القيمة فقط</value>
+  </data>
+  <data name="Excel.13" xml:space="preserve">
+    <value>الورقة السابقة</value>
+  </data>
+  <data name="Excel.14" xml:space="preserve">
+    <value>فرز من الألف إلى الياء</value>
+  </data>
+  <data name="Excel.2" xml:space="preserve">
+    <value>محاذاة لليسار</value>
+  </data>
+  <data name="Excel.3" xml:space="preserve">
+    <value>محاذاة لليمين</value>
+  </data>
+  <data name="Excel.4" xml:space="preserve">
+    <value>تقليل المسافة البادئة</value>
+  </data>
+  <data name="Excel.5" xml:space="preserve">
+    <value>الانتقال إلى أسفل منطقة البيانات</value>
+  </data>
+  <data name="Excel.6" xml:space="preserve">
+    <value>الانتقال إلى أعلى منطقة البيانات</value>
+  </data>
+  <data name="Excel.7" xml:space="preserve">
+    <value>إدراج مخطط</value>
+  </data>
+  <data name="Excel.8" xml:space="preserve">
+    <value>إدراج صف أعلاه</value>
+  </data>
+  <data name="Excel.9" xml:space="preserve">
+    <value>التحريك (الضغط مع الاستمرار وتحريك الماوس)</value>
+  </data>
+  <data name="Multimedia.1" xml:space="preserve">
+    <value>المقطع التالي للوسائط</value>
+  </data>
+  <data name="Multimedia.2" xml:space="preserve">
+    <value>تشغيل/إيقاف الوسائط مؤقتًا</value>
+  </data>
+  <data name="Multimedia.3" xml:space="preserve">
+    <value>المقطع السابق للوسائط</value>
+  </data>
+  <data name="Multimedia.4" xml:space="preserve">
+    <value>الموسيقى</value>
+  </data>
+  <data name="Multimedia.5" xml:space="preserve">
+    <value>الصور</value>
+  </data>
+  <data name="Multimedia.6" xml:space="preserve">
+    <value>خفض مستوى الصوت</value>
+  </data>
+  <data name="Multimedia.7" xml:space="preserve">
+    <value>كتم الصوت</value>
+  </data>
+  <data name="Multimedia.8" xml:space="preserve">
+    <value>رفع مستوى الصوت</value>
+  </data>
+  <data name="Outlook.1" xml:space="preserve">
+    <value>إرفاق ملف</value>
+  </data>
+  <data name="Outlook.2" xml:space="preserve">
+    <value>إعادة توجيه البريد الإلكتروني</value>
+  </data>
+  <data name="Outlook.3" xml:space="preserve">
+    <value>بريد إلكتروني جديد</value>
+  </data>
+  <data name="Outlook.4" xml:space="preserve">
+    <value>اجتماع جديد</value>
+  </data>
+  <data name="Outlook.5" xml:space="preserve">
+    <value>رد</value>
+  </data>
+  <data name="Outlook.6" xml:space="preserve">
+    <value>الرد على الكل</value>
+  </data>
+  <data name="PairedInfo.1" xml:space="preserve">
+    <value>هل أنت متأكد؟</value>
+  </data>
+  <data name="PairedInfo.10" xml:space="preserve">
+    <value>هل ترغب في إقران قلمك مع نظامك؟</value>
+  </data>
+  <data name="PairedInfo.2" xml:space="preserve">
+    <value>قد يؤدي إلغاء إقران الماوس إلى تقييد قدرتك على استخدام هذا الكمبيوتر. تأكد من وجود إعداد بديل للماوس قبل إلغاء الإقران.</value>
+  </data>
+  <data name="PairedInfo.3" xml:space="preserve">
+    <value>قد يؤدي إلغاء إقران لوحة المفاتيح إلى تقييد قدرتك على استخدام هذا الكمبيوتر. تأكد من وجود إعداد بديل للوحة المفاتيح قبل إلغاء الإقران.</value>
+  </data>
+  <data name="PairedInfo.4" xml:space="preserve">
+    <value>قد يؤدي إلغاء إقران القلم إلى تقييد قدرتك على استخدام هذا الكمبيوتر. تأكد من وجود إعداد بديل للقلم قبل إلغاء الإقران.</value>
+  </data>
+  <data name="PairedInfo.5" xml:space="preserve">
+    <value>سيؤدي ذلك إلى إلغاء إقران سماعة الرأس من جهاز الاستقبال USB اللاسلكي الخاص بها. لا يزال بإمكانك إقران سماعة الرأس واستخدامها على هذا النظام عبر تقنية Bluetooth. إذا لزم الأمر، يمكنك إقران سماعة الرأس مرة أخرى بجهاز الاستقبال اللاسلكي من أيقونة + في أعلى يمين الشاشة الرئيسية في DDPM.</value>
+  </data>
+  <data name="PairedInfo.6" xml:space="preserve">
+    <value>متابعة</value>
+  </data>
+  <data name="PairedInfo.7" xml:space="preserve">
+    <value>هذا الجهاز غير متوافق مع</value>
+  </data>
+  <data name="PairedInfo.8" xml:space="preserve">
+    <value>تم إقران هذا الجهاز بالفعل. قم بإلغاء إقران الجهاز أولاً إذا كنت ترغب في الإقران مرة أخرى.</value>
+  </data>
+  <data name="PairedInfo.9" xml:space="preserve">
+    <value>إقران القلم</value>
+  </data>
+  <data name="PenSettings.10" xml:space="preserve">
+    <value>اضغط مع الاستمرار على الزرين الجانبيين في القلم لمدة 3 ثوانٍ لإقرانه بتطبيق Tile.</value>
+  </data>
+  <data name="PenSettings.11" xml:space="preserve">
+    <value>تنزيل اللوحة</value>
+  </data>
+  <data name="PenSettings.8" xml:space="preserve">
+    <value>مكن تقنية Bluetooth على جهازك.</value>
+  </data>
+  <data name="PenSettings.9" xml:space="preserve">
+    <value>امسح رمز الاستجابة السريعة ضوئيًا لتنزيل اللوحة على جهازك المحمول.</value>
+  </data>
+  <data name="PowerPoint.1" xml:space="preserve">
+    <value>ضبط المحاذاة إلى المركز</value>
+  </data>
+  <data name="PowerPoint.10" xml:space="preserve">
+    <value>إرسال إلى الخلف</value>
+  </data>
+  <data name="PowerPoint.2" xml:space="preserve">
+    <value>ضبط المحاذاة لليسار</value>
+  </data>
+  <data name="PowerPoint.3" xml:space="preserve">
+    <value>ضبط المحاذاة لليمين</value>
+  </data>
+  <data name="PowerPoint.4" xml:space="preserve">
+    <value>إحضار إلى الأمام</value>
+  </data>
+  <data name="PowerPoint.5" xml:space="preserve">
+    <value>خفض مستوى القائمة</value>
+  </data>
+  <data name="PowerPoint.6" xml:space="preserve">
+    <value>تكرار الشرائح المحددة</value>
+  </data>
+  <data name="PowerPoint.7" xml:space="preserve">
+    <value>زيادة مستوى القائمة</value>
+  </data>
+  <data name="PowerPoint.8" xml:space="preserve">
+    <value>تشغيل من الشريحة الحالية</value>
+  </data>
+  <data name="PowerPoint.9" xml:space="preserve">
+    <value>الشريحة السابقة</value>
+  </data>
+  <data name="RadialMenu.1" xml:space="preserve">
+    <value>مُعطل</value>
+  </data>
+  <data name="RadialMenu.2" xml:space="preserve">
+    <value>الرجوع للخلف</value>
+  </data>
+  <data name="RadialMenu.3" xml:space="preserve">
+    <value>الانتقال إلى الأمام</value>
+  </data>
+  <data name="RadialMenu.4" xml:space="preserve">
+    <value>تشغيل/إيقاف مؤقت</value>
+  </data>
+  <data name="RadialMenu.5" xml:space="preserve">
+    <value>المقطع السابق</value>
+  </data>
+  <data name="RadialMenu.6" xml:space="preserve">
+    <value>كتم الصوت</value>
+  </data>
+  <data name="RadialMenu.7" xml:space="preserve">
+    <value>وظيفة للقطاع الدائري المحدد</value>
+  </data>
+  <data name="RadialMenu.8" xml:space="preserve">
+    <value>تسمية للقطاع الدائري</value>
+  </data>
+  <data name="RadialMenu.9" xml:space="preserve">
+    <value>استخدام المركز لمحاكاة النقر بزر الماوس الأيمن</value>
+  </data>
+  <data name="Smooth" xml:space="preserve">
+    <value>سلس</value>
+  </data>
+  <data name="Vibrant" xml:space="preserve">
+    <value>حيوي</value>
+  </data>
+  <data name="Warm" xml:space="preserve">
+    <value>دافئ</value>
+  </data>
+  <data name="Word.1" xml:space="preserve">
+    <value>التمرير التلقائي</value>
+  </data>
+  <data name="Word.10" xml:space="preserve">
+    <value>لصق ومطابقة التنسيق</value>
+  </data>
+  <data name="Word.11" xml:space="preserve">
+    <value>التغيير السابق</value>
+  </data>
+  <data name="Word.12" xml:space="preserve">
+    <value>التعليق السابق</value>
+  </data>
+  <data name="Word.13" xml:space="preserve">
+    <value>طباعة</value>
+  </data>
+  <data name="Word.14" xml:space="preserve">
+    <value>حفظ</value>
+  </data>
+  <data name="Word.15" xml:space="preserve">
+    <value>شطب</value>
+  </data>
+  <data name="Word.16" xml:space="preserve">
+    <value>تصغير حجم النص</value>
+  </data>
+  <data name="Word.17" xml:space="preserve">
+    <value>تكبير حجم النص</value>
+  </data>
+  <data name="Word.18" xml:space="preserve">
+    <value>ترجمة النص المحدد</value>
+  </data>
+  <data name="Word.19" xml:space="preserve">
+    <value>عرض صفحة واحدة</value>
+  </data>
+  <data name="Word.2" xml:space="preserve">
+    <value>البحث</value>
+  </data>
+  <data name="Word.20" xml:space="preserve">
+    <value>رؤية عرض الصفحة</value>
+  </data>
+  <data name="Word.3" xml:space="preserve">
+    <value>زيادة المسافة البادئة</value>
+  </data>
+  <data name="Word.4" xml:space="preserve">
+    <value>إدراج تعليق</value>
+  </data>
+  <data name="Word.5" xml:space="preserve">
+    <value>التغيير التالي</value>
+  </data>
+  <data name="Word.6" xml:space="preserve">
+    <value>التعليق التالي</value>
+  </data>
+  <data name="Word.7" xml:space="preserve">
+    <value>اللصق والاحتفاظ بتنسيق المصدر</value>
+  </data>
+  <data name="Word.8" xml:space="preserve">
+    <value>اللصق والاحتفاظ بالنص فقط</value>
+  </data>
+  <data name="Word.9" xml:space="preserve">
+    <value>اللصق ودمج التنسيق</value>
+  </data>
+  <data name="Camera.25" xml:space="preserve">
+    <value>وصل شاشتك عبر منفذ USB 3.0 وحدد &quot;سرعة بيانات عالية&quot; ضمن تحديد أولويات منفذ USB-C لتمكين دقة 4K UHD.</value>
+  </data>
+  <data name="HeadsetAutomatedActions.14" xml:space="preserve">
+    <value>الحساسية</value>
+  </data>
+  <data name="File_corrupted" xml:space="preserve">
+    <value>الملف تالف</value>
+  </data>
+  <data name="File_corruptedMsg" xml:space="preserve">
+    <value>الملف تالف، يُرجى تحديد ملف آخر</value>
+  </data>
+  <data name="ImportFail" xml:space="preserve">
+    <value>فشل</value>
+  </data>
+  <data name="ImportFailMsg" xml:space="preserve">
+    <value>يتعذر استيراد طراز مختلف</value>
+  </data>
+  <data name="Update_Webcam_Alert" xml:space="preserve">
+    <value>سيؤدي هذا التحديث إلى تمكين عناصر التحكم في استشعار التواجد من خلال إعدادات Windows في الأنظمة: Win 11 22H2 أو أعلى، ومع بناء نظام التشغيل \r\n22621 أو أعلى</value>
+  </data>
+  <data name="Update_BatteryLow_Alert" xml:space="preserve">
+    <value>مستوى شحن البطارية في الجهاز منخفض. استبدل/أعد شحن البطارية لتمكين هذا التحديث.</value>
+  </data>
+  <data name="Update_Dock_Alert" xml:space="preserve">
+    <value>تأكد من توصيل وحدة إرساء واحدة فقط بنظامك. قد لا تكون الأجهزة المتصلة بوحدة إرساء متوفرة في أثناء التحديث.</value>
+  </data>
+  <data name="Update_PCBatteryLow_Alert" xml:space="preserve">
+    <value>وصل الكمبيوتر الشخصي بمصدر الطاقة وتأكد من أن شحن بطارية الكمبيوتر الشخصي أعلى من 10% لمتابعة التحديث</value>
+  </data>
+  <data name="Update_Mouse_Alert" xml:space="preserve">
+    <value>اضغط على زر أو مفتاح في الجهاز لتمكين هذا التحديث</value>
+  </data>
+  <data name="Landscape" xml:space="preserve">
+    <value>أفقي</value>
+  </data>
+  <data name="Portrait" xml:space="preserve">
+    <value>عمودي</value>
+  </data>
+  <data name="Landscape_flipped" xml:space="preserve">
+    <value>أفقي (مقلوب)</value>
+  </data>
+  <data name="Portrait_flipped" xml:space="preserve">
+    <value>عمودي (مقلوب)</value>
+  </data>
+  <data name="Frame_Rate" xml:space="preserve">
+    <value>معدل الإطارات</value>
+  </data>
+  <data name="Display_Alignment" xml:space="preserve">
+    <value>محاذاة الشاشة</value>
+  </data>
+  <data name="Timer__30min" xml:space="preserve">
+    <value>مؤقت/30 دقيقة</value>
+  </data>
+  <data name="Timer__40min" xml:space="preserve">
+    <value>مؤقت/40 دقيقة</value>
+  </data>
+  <data name="Timer__50min" xml:space="preserve">
+    <value>مؤقت/50 دقيقة</value>
+  </data>
+  <data name="Timer__60min" xml:space="preserve">
+    <value>مؤقت/60 دقيقة</value>
+  </data>
+  <data name="Timer__90min" xml:space="preserve">
+    <value>مؤقت/90 دقيقة</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>إيقاف عمل</value>
+  </data>
+  <data name="Extreme" xml:space="preserve">
+    <value>فائق</value>
+  </data>
+  <data name="Super_Fast" xml:space="preserve">
+    <value>شديد السرعة</value>
+  </data>
+  <data name="Fast" xml:space="preserve">
+    <value>مستوى سريع</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>مستوى عادي</value>
+  </data>
+  <data name="Level_0" xml:space="preserve">
+    <value>المستوى 0</value>
+  </data>
+  <data name="Level_1" xml:space="preserve">
+    <value>المستوى 1</value>
+  </data>
+  <data name="Level_2" xml:space="preserve">
+    <value>المستوى 2</value>
+  </data>
+  <data name="Level_3" xml:space="preserve">
+    <value>المستوى 3</value>
+  </data>
+  <data name="Desktop" xml:space="preserve">
+    <value>كمبيوتر مكتبي</value>
+  </data>
+  <data name="Movie_HDR" xml:space="preserve">
+    <value>HDR للأفلام</value>
+  </data>
+  <data name="Game_HDR" xml:space="preserve">
+    <value>HDR للألعاب</value>
+  </data>
+  <data name="Display_HDR" xml:space="preserve">
+    <value>HDR للعرض</value>
+  </data>
+  <data name="Custom_Color_HDR" xml:space="preserve">
+    <value>HDR بألوان مخصصة</value>
+  </data>
+  <data name="HDRPeak1000" xml:space="preserve">
+    <value>HDRPeak1000</value>
+  </data>
+  <data name="_4K" xml:space="preserve">
+    <value>4K</value>
+  </data>
+  <data name="_FHD" xml:space="preserve">
+    <value>FHD</value>
+  </data>
+  <data name="Steady_Vision" xml:space="preserve">
+    <value>رؤية ثابتة</value>
+  </data>
+  <data name="VisionEngine_Steady" xml:space="preserve">
+    <value>رؤية ثابتة</value>
+  </data>
+  <data name="Software_update" xml:space="preserve">
+    <value>تحديث البرنامج</value>
+  </data>
+  <data name="Firmware_update" xml:space="preserve">
+    <value>تحديث البرنامج الثابت</value>
+  </data>
+  <data name="Color.10" xml:space="preserve">
+    <value>درجة حرارة اللون التلقائية ممكّنة حاليًا. هل ترغب في تجاوزها؟</value>
+  </data>
+  <data name="Mouse.16" xml:space="preserve">
+    <value>عدد مرات إبلاغ النظام بموضع الماوس في الثانية. وصل عبر منفذ USB للحصول على معدلات تحقق أعلى.</value>
+  </data>
+  <data name="EATooltip_00" xml:space="preserve">
+    <value>تخطيط فارغ</value>
+  </data>
+  <data name="EATooltip_21H" xml:space="preserve">
+    <value>الخيار 2.1: عمودان، مقسمان بالتساوي.</value>
+  </data>
+  <data name="EATooltip_21V" xml:space="preserve">
+    <value>الخيار 2.1: صفان، مقسمان بالتساوي.</value>
+  </data>
+  <data name="EATooltip_22H" xml:space="preserve">
+    <value>الخيار 2.2: صفان، مقسمان بالتساوي.</value>
+  </data>
+  <data name="EATooltip_22V" xml:space="preserve">
+    <value>الخيار 2.2: عمودان، مقسمان بالتساوي.</value>
+  </data>
+  <data name="EATooltip_23H" xml:space="preserve">
+    <value>الخيار 2.3: عمودان، مقسمان بنسبة 70/30%.</value>
+  </data>
+  <data name="EATooltip_23V" xml:space="preserve">
+    <value>الخيار 2.3: صفان، مقسمان بنسبة 70/30%.</value>
+  </data>
+  <data name="EATooltip_24H" xml:space="preserve">
+    <value>الخيار 2.4: عمودان، مقسمان بنسبة 70/30%.</value>
+  </data>
+  <data name="EATooltip_24V" xml:space="preserve">
+    <value>الخيار 2.4: صفان، مقسمان بنسبة 70/30%.</value>
+  </data>
+  <data name="EATooltip_31H" xml:space="preserve">
+    <value>الخيار 3.1: 3 صفوف، مقسمة بالتساوي.</value>
+  </data>
+  <data name="EATooltip_31V" xml:space="preserve">
+    <value>الخيار 3.1: 3 أعمدة، مقسمة بالتساوي.</value>
+  </data>
+  <data name="EATooltip_32H" xml:space="preserve">
+    <value>الخيار 3.2: 3 أعمدة، مقسمة بالتساوي.</value>
+  </data>
+  <data name="EATooltip_32V" xml:space="preserve">
+    <value>الخيار 3.2: 3 صفوف، مقسمة بالتساوي.</value>
+  </data>
+  <data name="EATooltip_33H" xml:space="preserve">
+    <value>الخيار 3.3: 3 أعمدة، مقسمة بنسبة 30/40/30%.</value>
+  </data>
+  <data name="EATooltip_33V" xml:space="preserve">
+    <value>الخيار 3.3: 3 صفوف، مقسمة بنسبة 30/40/30%.</value>
+  </data>
+  <data name="EATooltip_34H" xml:space="preserve">
+    <value>الخيار 3.4: صفان، مقسمان بالتساوي. العمود 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_34V" xml:space="preserve">
+    <value>الخيار 3.4: صفان، مقسمان بالتساوي. الصف 1، من دون تقسيم. الصف 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_35H" xml:space="preserve">
+    <value>الخيار 3.5: صفان، مقسمان بالتساوي. العمود 1، من دون تقسيم. العمود 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_35V" xml:space="preserve">
+    <value>الخيار 3.5: صفان، مقسمان بالتساوي. الصف 1، مقسم بالتساوي. الصف 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_36H" xml:space="preserve">
+    <value>الخيار 3.6: صفان، مقسمان بالتساوي. العمود 1، مقسم بنسبة 70/30%. العمود 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_36V" xml:space="preserve">
+    <value>الخيار 3.6: صفان، مقسمان بنسبة 70/30%. الصف 1، من دون تقسيم، الصف 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_37H" xml:space="preserve">
+    <value>الخيار 3.7: صفان، مقسمان بالتساوي. العمود 1، مقسم بنسبة 70/30%. العمود 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_37V" xml:space="preserve">
+    <value>الخيار 3.7: صفان، مقسمان بنسبة 70/30%. الصف 1، مقسم بالتساوي. الصف 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_38H" xml:space="preserve">
+    <value>الخيار 3.8: صفان، مقسمان بالتساوي. الصف 1، من دون تقسيم. الصف 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_38V" xml:space="preserve">
+    <value>الخيار 3.8: عمودان، مقسمان بالتساوي. العمود 1، من دون تقسيم. العمود 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_39H" xml:space="preserve">
+    <value>الخيار 3.9: صفان، مقسمان بالتساوي. الصف 1، مقسم بالتساوي. الصف 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_39V" xml:space="preserve">
+    <value>الخيار 3.9: عمودان، مقسمان بالتساوي. العمود 1، مقسم بالتساوي. العمود 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_41H" xml:space="preserve">
+    <value>الخيار 4.1: مقسم إلى 4 أرباع.</value>
+  </data>
+  <data name="EATooltip_41V" xml:space="preserve">
+    <value>الخيار 4.1: مقسم إلى 4 أرباع.</value>
+  </data>
+  <data name="EATooltip_42H" xml:space="preserve">
+    <value>الخيار 4.2: عمودان، مقسمان بالتساوي. العمود 1، مقسم بالتساوي إلى 3 أقسام. العمود 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_42V" xml:space="preserve">
+    <value>الخيار 4.2: صفان، مقسمان بالتساوي. الصف 1، من دون تقسيم. الصف 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_43H" xml:space="preserve">
+    <value>الخيار 4.3: عمودان، مقسمان بالتساوي. العمود 1، من دون تقسيم. العمود 2، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_43V" xml:space="preserve">
+    <value>الخيار 4.3: صفان، مقسمان بالتساوي. الصف 1، مقسم بالتساوي إلى 3 أقسام. العمود 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_44H" xml:space="preserve">
+    <value>الخيار 4.4: 4 أعمدة مقسمة بالتساوي.</value>
+  </data>
+  <data name="EATooltip_44V" xml:space="preserve">
+    <value>الخيار 4.4: 4 صفوف، مقسمة بالتساوي.</value>
+  </data>
+  <data name="EATooltip_45H" xml:space="preserve">
+    <value>الخيار 4.5: 3 أعمدة مقسمة بالتساوي. العمود 1، مقسم بالتساوي. العمود 2 و3، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_45V" xml:space="preserve">
+    <value>الخيار 4.5: 3 صفوف، مقسمة بالتساوي. الصف 1 و2، من دون تقسيم. الصف 3، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_46H" xml:space="preserve">
+    <value>الخيار 4.6: 3 أعمدة، مقسمة بالتساوي. العمود 1 و2، من دون تقسيم. العمود 3، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_46V" xml:space="preserve">
+    <value>الخيار 4.6: 3 صفوف، مقسمة بالتساوي. الصف 1، مقسم بالتساوي. الصف 2 و3، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_51H" xml:space="preserve">
+    <value>الخيار 5.1: صفان، مقسمان بالتساوي. الصف 1، مقسم بالتساوي إلى 3 أقسام. الصف 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_51V" xml:space="preserve">
+    <value>الخيار 5.1: عمودان، مقسمان بالتساوي. العمود 1، مقسم بالتساوي إلى 3 أقسام. العمود 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_52H" xml:space="preserve">
+    <value>الخيار 5.2: صفان، مقسمان بالتساوي. الصف 1، مقسم بالتساوي. الصف 2، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_52V" xml:space="preserve">
+    <value>الخيار 5.2: عمودان، مقسمان بالتساوي. العمود 1، مقسم بالتساوي. العمود 2، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_53H" xml:space="preserve">
+    <value>الخيار 5.3: صفان، مقسمان بنسبة 30/70%. الصف 1، مقسم بالتساوي إلى 3 أقسام. الصف 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_53V" xml:space="preserve">
+    <value>الخيار 5.3: عمودان، مقسمان بنسبة 30/70%. الصف 1، مقسم بالتساوي إلى 3 أقسام. الصف 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_54H" xml:space="preserve">
+    <value>الخيار 5.4: صفان، مقسمان بنسبة 30/70%. الصف 1، مقسم بالتساوي. الصف 2، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_54V" xml:space="preserve">
+    <value>الخيار 5.4: عمودان، مقسمان بنسبة 30/70%. الصف 1، مقسم بالتساوي. الصف 2، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_55H" xml:space="preserve">
+    <value>الخيار 5.5: صفان، مقسمان بنسبة 30/70%. الصفان 1 و2، كل منهما مقسم بالتساوي. العمود 1، من دون تقسيم. العمود 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_55V" xml:space="preserve">
+    <value>الخيار 5.5: صفان، مقسمان بالتساوي. الصف 1، مقسم بالتساوي إلى 3 أقسام. الصف 2، مقسم بنسبة 30/70%.</value>
+  </data>
+  <data name="EATooltip_56H" xml:space="preserve">
+    <value>الخيار 5.6: عمودان، مقسمان بالتساوي. العمود 1، مقسم بالتساوي إلى 3 أقسام. العمود 2، مقسم بنسبة 30/70%.</value>
+  </data>
+  <data name="EATooltip_56V" xml:space="preserve">
+    <value>الخيار 5.6: صفان، مقسمان بالتساوي. الصف 1، مقسم بنسبة 30/70%. الصف 2، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_57H" xml:space="preserve">
+    <value>الخيار 5.7: 3 أعمدة، مقسمة بالتساوي. العمودان 1 و3، كل منهما مقسم بالتساوي. العمود 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_57V" xml:space="preserve">
+    <value>الخيار 5.7: 3 صفوف، مقسمة بالتساوي. الصفان 1 و3، كل منهما مقسم بالتساوي. الصف 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_58H" xml:space="preserve">
+    <value>الخيار 5.8: صفان، مقسمان بنسبة 70/30%. الصف 1، مقسم بنسبة 70/30%. الصف 2، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_58V" xml:space="preserve">
+    <value>الخيار 5.8: عمودان، مقسمان بنسبة 70/30%. العمود 1، مقسم بنسبة 70/30%. العمود 2، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_59H" xml:space="preserve">
+    <value>الخيار 5.9: صفان، مقسمان بنسبة 70/30%. الصف 1، مقسم بنسبة 70/30%. الصف 2، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_59V" xml:space="preserve">
+    <value>الخيار 5.9: عمودان، مقسمان بنسبة 70/30%. العمود 1، مقسم بنسبة 70/30%. العمود 2، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_61H" xml:space="preserve">
+    <value>الخيار 6.1: 3 أعمدة، مقسمة بالتساوي. الأعمدة 1 و2 و3، كل منها مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_61V" xml:space="preserve">
+    <value>الخيار 6.1: عمودان، مقسمان بالتساوي. العمودان 1 و2، كل منهما مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_62H" xml:space="preserve">
+    <value>الخيار 6.2: صفان، مقسمان بنسبة 70/30%. الصف 1، مقسم بنسبة 70/30%. الصف 2، مقسم بالتساوي إلى 3 أقسام. العمود 1، من دون تقسيم. العمود 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_62V" xml:space="preserve">
+    <value>الخيار 6.2: صفان، مقسمان بنسبة 30/70%. الصف 1، مقسم بالتساوي إلى 3 أقسام. الصف 2، مقسم بنسبة 30/70%. العمود 1، من دون تقسيم. العمود 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_63H" xml:space="preserve">
+    <value>الخيار 6.3: صفان، مقسمان بنسبة 30/70%. الصف 1، مقسم بالتساوي إلى 4 أقسام. الصف 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_63V" xml:space="preserve">
+    <value>الخيار 6.3: عمودان، مقسمان بنسبة 30/70%. العمود 1، مقسم بالتساوي إلى 4 أقسام. العمود 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_64H" xml:space="preserve">
+    <value>الخيار 6.4: صفان، مقسمان بنسبة 30/70%. الصف 1، مقسم بالتساوي إلى 3 أقسام. الصف 2، مقسم بنسبة 70/30%. العمود 1، من دون تقسيم. العمود 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_64V" xml:space="preserve">
+    <value>الخيار 6.4: عمودان، مقسمان بنسبة 30/70%. الصف 1، مقسم بالتساوي إلى 3 أقسام. الصف 2، مقسم بنسبة 30/70%. العمود 1، مقسم بالتساوي. العمود 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_65H" xml:space="preserve">
+    <value>الخيار 6.5: صفان، مقسمان بنسبة 30/70%. الصف 1، مقسم بالتساوي إلى 3 أقسام. الصف 2، مقسم بنسبة 30/70%. العمود 1، مقسم بالتساوي. العمود 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_65V" xml:space="preserve">
+    <value>الخيار 6.5: عمودان، مقسمان بنسبة 30/70%. الصف 1، مقسم بنسبة 30/70%. الصف 2، مقسم بالتساوي إلى 3 أقسام. العمود 1، مقسم بالتساوي. العمود 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_66H" xml:space="preserve">
+    <value>الخيار 6.6: صفان، مقسمان بنسبة 30/70%. الصف 1، مقسم بنسبة 30/70%. العمود 1، مقسم بالتساوي. العمود 2، من دون تقسيم. الصف 1، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_66V" xml:space="preserve">
+    <value>الخيار 6.6: صفان، مقسمان بنسبة 30/70%. الصف 1، مقسم بنسبة 30/70%. الصف 2، مقسم بالتساوي إلى 3 أقسام. العمود 1، من دون تقسيم. العمود 2، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_67H" xml:space="preserve">
+    <value>الخيار 6.7: عمودان، مقسمان بالتساوي. الصفوف 1 و2 و3، مقسمة بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_67V" xml:space="preserve">
+    <value>الخيار 6.7: 3 أعمدة، مقسمة بالتساوي. الأعمدة 1 و2 و3، كل منها مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_68H" xml:space="preserve">
+    <value>الخيار 6.8: 4 أعمدة، مقسمة بالتساوي. الصفان 1 و4، مقسمان بالتساوي. الصفان 2 و3، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_68V" xml:space="preserve">
+    <value>الخيار 6.8: 4 صفوف، مقسمة بالتساوي. الصفان 1 و4، مقسمان بالتساوي. الصفان 2 و3، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_69H" xml:space="preserve">
+    <value>الخيار 6.9: صفان، مقسمان بنسبة 30/70%. الصف 1، مقسم بالتساوي. الصف 2، مقسم بالتساوي إلى 4 أقسام.</value>
+  </data>
+  <data name="EATooltip_69V" xml:space="preserve">
+    <value>الخيار 6.9: صفان، مقسمان بالتساوي. الصف 1، مقسم بنسبة 70/30%. العمود 1، من دون تقسيم. العمود 2، مقسم بالتساوي. الصف 2، مقسم بنسبة 70/30%.</value>
+  </data>
+  <data name="EATooltip_6AH" xml:space="preserve">
+    <value>الخيار 6.10: عمودان، مقسمان بنسبة 70/30%. الأعمدة 1 و2 و3، كل منها مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_6AV" xml:space="preserve">
+    <value>الخيار 6.10: صفان، مقسمان بنسبة 70/30%. الصفان 1 و2، كل منهما مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_71H" xml:space="preserve">
+    <value>الخيار 7.1: صفان، مقسمان بنسبة 30/70%. الصف 1، مقسم بالتساوي إلى 3 أقسام. الصف 2، مقسم بنسبة 30/70%. العمود 1، مقسم بالتساوي. العمودان 2 و3، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_71V" xml:space="preserve">
+    <value>الخيار 7.1: 3 صفوف، مقسمة بالتساوي. الصفان 1 و2، كل منهما مقسم بنسبة 30/70%. الصف 3، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_72H" xml:space="preserve">
+    <value>الخيار 7.2: صفان، مقسمان بنسبة 30/70%. الصفان 1 و2، كل منهما مقسم بالتساوي إلى 3 أقسام. العمودان 1 و2، من دون تقسيم. العمود 3، مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_72V" xml:space="preserve">
+    <value>الخيار 7.2: 3 صفوف، مقسمة بالتساوي. الصفان 1 و3، كل منهما مقسم بالتساوي إلى 3 أقسام. الصف 2، مقسم بنسبة 30/70%.</value>
+  </data>
+  <data name="EATooltip_73H" xml:space="preserve">
+    <value>الخيار 7.3: صفان، مقسمان بالتساوي. الصف 1، مقسم بالتساوي إلى 4 أقسام. الصف 2، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_73V" xml:space="preserve">
+    <value>الخيار 7.3: عمودان، مقسمان بالتساوي. العمود 1، مقسم بالتساوي إلى 4 أقسام. العمود 2، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_74H" xml:space="preserve">
+    <value>الخيار 7.4: صفان، مقسمان بالتساوي. الصفان 1 و3، كل منهما مقسم بالتساوي. الصف 2، مقسم بالتساوي إلى 4 أقسام.</value>
+  </data>
+  <data name="EATooltip_74V" xml:space="preserve">
+    <value>الخيار 7.4: عمودان، مقسمان بالتساوي. العمود 1، مقسم بالتساوي إلى 3 أقسام. العمود 2، مقسم بالتساوي إلى 4 أقسام.</value>
+  </data>
+  <data name="EATooltip_75H" xml:space="preserve">
+    <value>الخيار 7.5: صفان، مقسمان بالتساوي. الصف 1، مقسم بالتساوي إلى 4 أقسام. الصف 2، مقسم بنسبة 25/50/25%. العمودان 1 و3، كل منهما مقسم بالتساوي. العمود 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_75V" xml:space="preserve">
+    <value>الخيار 7.5: 3 صفوف، مقسمة بنسبة 25/50/25%. الصف 1، مقسم بالتساوي إلى 3 أقسام. الصف 2، مقسم بنسبة 30/70%. العمود 1، مقسم بالتساوي. العمود 2، من دون تقسيم. الصف 3، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_76H" xml:space="preserve">
+    <value>الخيار 7.6: صفان، مقسمان بنسبة 30/70%. الصف 1، مقسم بنسبة 25/50/25%. العمودان 1 و3، كل منهما مقسم بالتساوي. العمود 2، من دون تقسيم. الصف 2، مقسم بالتساوي إلى 4 أقسام.</value>
+  </data>
+  <data name="EATooltip_76V" xml:space="preserve">
+    <value>الخيار 7.6: 3 صفوف، مقسمة بنسبة 25/50/25%. الصف 1، مقسم بالتساوي إلى 3 أقسام. الصف 2، مقسم بنسبة 70/30%. الصف 3، مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_77H" xml:space="preserve">
+    <value>الخيار 7.7: صفان، مقسمان بنسبة 30/70%. الصف 1، مقسم بالتساوي إلى 4 أقسام. الصف 2، مقسم بنسبة 50/25/25%. العمود 1، من دون تقسيم. العمودان 2 و3، كل منهما مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_77V" xml:space="preserve">
+    <value>الخيار 7.7: 3 صفوف، مقسمة بنسبة 25/25/50%. الصفان 1 و2، كل منهما مقسم بالتساوي إلى 3 أقسام. الصف 3، مقسم بنسبة 30/70%. العمود 1، مقسم بالتساوي. العمود 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_78H" xml:space="preserve">
+    <value>الخيار 7.8: صفان، مقسمان بنسبة 30/70%. الصفان 1 و4، كل منهما مقسم بالتساوي. الصف 2، مقسم بنسبة 25/25/50%. العمودان 1 و2، كل منهما مقسم بالتساوي. العمود 3، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_78V" xml:space="preserve">
+    <value>الخيار 7.8: 3 صفوف، مقسمة بنسبة 30/70%. الصف 1، مقسم بنسبة 30/70%. العمود 1، مقسم بالتساوي. العمود 2، من دون تقسيم. الصفان 2 و3، كل منهما مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_79H" xml:space="preserve">
+    <value>الخيار 7.9: 4 أعمدة، مقسمة بالتساوي. الأعمدة 1 و2 و3 و4، كل منها مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_79V" xml:space="preserve">
+    <value>الخيار 7.9: 4 أعمدة، مقسمة بالتساوي. الصفوف 1 و2 و3 و4، كل منها مقسم بالتساوي.</value>
+  </data>
+  <data name="EATooltip_7AH" xml:space="preserve">
+    <value>الخيار 7.10: 4 أعمدة، مقسمة بالتساوي. الأعمدة 1 و2 و3 و4، كل منها مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_7AV" xml:space="preserve">
+    <value>الخيار 7.10: 4 أعمدة، مقسمة بالتساوي. الأعمدة 1 و2 و3 و4، كل منها مقسم بالتساوي إلى 3 أقسام.</value>
+  </data>
+  <data name="EATooltip_7BH" xml:space="preserve">
+    <value>الخيار 7.11: صفان، مقسمان بنسبة 30/70%. الصفان 1 و2، كل منهما مقسم بنسبة 25/50/25%. العمودان 1 و3، كل منهما مقسم بالتساوي. العمود 2، من دون تقسيم.</value>
+  </data>
+  <data name="EATooltip_7BV" xml:space="preserve">
+    <value>الخيار 7.11: 3 أعمدة، مقسمة بنسبة 30/70%. الأعمدة 1 و2 و3 مقسمة بنسبة 25/50/25%. الصفان 1 و3، مقسمان بالتساوي. الصف 2، من دون تقسيم.</value>
+  </data>
+  <data name="EazyMemory.42" xml:space="preserve">
+    <value>سيتم حذف ملف تعريف Easy Memory المقابل أيضًا. هل تريد المتابعة؟</value>
+  </data>
+  <data name="DiagnosticReport_SaveFail" xml:space="preserve">
+    <value>فشل حفظ تقرير التشخيص</value>
+  </data>
+  <data name="MonitorAssetReport_SaveFail" xml:space="preserve">
+    <value>فشل حفظ تقرير مراقبة الأصول</value>
+  </data>
+  <data name="USBKVM.Tips" xml:space="preserve">
+    <value>مثال: &quot;Alt + P&quot; و&quot;Shift + F&quot; و&quot;Ctrl + Shift + F&quot;‏\nملاحظة: بالنسبة إلى الشاشات المتعددة، يجب أن يكون مؤشر الماوس على الشاشة المستهدفة لتشغيل وظيفة مفتاح التشغيل السريع.</value>
+  </data>
+  <data name="BrightnessLevel" xml:space="preserve">
+    <value>مستوى السطوع</value>
+  </data>
+  <data name="USBKVM" xml:space="preserve">
+    <value>وحدة KVM عبر USB</value>
+  </data>
+  <data name="Mouse" xml:space="preserve">
+    <value>الماوس</value>
+  </data>
+  <data name="Keyboard" xml:space="preserve">
+    <value>لوحة المفاتيح</value>
+  </data>
+  <data name="Calendar" xml:space="preserve">
+    <value>التقويم</value>
+  </data>
+  <data name="Camera" xml:space="preserve">
+    <value>الكاميرا</value>
+  </data>
+  <data name="Clock" xml:space="preserve">
+    <value>الساعة</value>
+  </data>
+  <data name="Cortana" xml:space="preserve">
+    <value>Cortana</value>
+  </data>
+  <data name="DellCommandUpdate" xml:space="preserve">
+    <value>Dell Command Update</value>
+  </data>
+  <data name="DellDigitalDelivery" xml:space="preserve">
+    <value>Dell Digital Delivery</value>
+  </data>
+  <data name="DellOptimizer" xml:space="preserve">
+    <value>Dell Optimizer</value>
+  </data>
+  <data name="Family" xml:space="preserve">
+    <value>العائلة</value>
+  </data>
+  <data name="FeedbackHub" xml:space="preserve">
+    <value>محور الملاحظات</value>
+  </data>
+  <data name="GameBar" xml:space="preserve">
+    <value>شريط اللعبة</value>
+  </data>
+  <data name="GetHelp" xml:space="preserve">
+    <value>الحصول على التعليمات</value>
+  </data>
+  <data name="GetStarted" xml:space="preserve">
+    <value>بدء الاستخدام</value>
+  </data>
+  <data name="IntelManagementAndSecurityStatus" xml:space="preserve">
+    <value>الإدارة وحالة أمان Intel (R)</value>
+  </data>
+  <data name="IntelGraphicsCommandCenter" xml:space="preserve">
+    <value>Command Center رسوميات Intel®‎</value>
+  </data>
+  <data name="IntelOptaneMemoryAndStorageManagement" xml:space="preserve">
+    <value>إدارة التخزين وذاكرة Intel®‎ Optane™‎</value>
+  </data>
+  <data name="Mail" xml:space="preserve">
+    <value>البريد</value>
+  </data>
+  <data name="Maps" xml:space="preserve">
+    <value>الخرائط</value>
+  </data>
+  <data name="MediaPlayer" xml:space="preserve">
+    <value>Media Player</value>
+  </data>
+  <data name="Microsoft365Office" xml:space="preserve">
+    <value>Microsoft 365 (Office)</value>
+  </data>
+  <data name="MicrosoftClipchamp" xml:space="preserve">
+    <value>Microsoft Clipchamp</value>
+  </data>
+  <data name="MicrosoftDefender" xml:space="preserve">
+    <value>Microsoft Defender</value>
+  </data>
+  <data name="MicrosoftStore" xml:space="preserve">
+    <value>متجر Microsoft</value>
+  </data>
+  <data name="MicrosoftTeams" xml:space="preserve">
+    <value>Microsoft Teams</value>
+  </data>
+  <data name="MicrosoftTeamsWorkSchool" xml:space="preserve">
+    <value>Microsoft Teams (للعمل أو المدرسة)</value>
+  </data>
+  <data name="MicrosoftToDo" xml:space="preserve">
+    <value>Microsoft To Do</value>
+  </data>
+  <data name="MoviesTV" xml:space="preserve">
+    <value>الأفلام والبرامج التليفزيونية</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>الأخبار</value>
+  </data>
+  <data name="Notepad" xml:space="preserve">
+    <value>المفكرة</value>
+  </data>
+  <data name="Paint" xml:space="preserve">
+    <value>الرسام</value>
+  </data>
+  <data name="PhoneLink" xml:space="preserve">
+    <value>رابط الهاتف</value>
+  </data>
+  <data name="Photos" xml:space="preserve">
+    <value>الصور</value>
+  </data>
+  <data name="PowerAutomate" xml:space="preserve">
+    <value>Power Automate</value>
+  </data>
+  <data name="SnippingTool" xml:space="preserve">
+    <value>أداة القصاصة</value>
+  </data>
+  <data name="SolitaireCasualGames" xml:space="preserve">
+    <value>Solitaire والألعاب العادية</value>
+  </data>
+  <data name="SoundRecorder" xml:space="preserve">
+    <value>مسجل الصوت</value>
+  </data>
+  <data name="Spotify" xml:space="preserve">
+    <value>Spotify</value>
+  </data>
+  <data name="SupportAssist" xml:space="preserve">
+    <value>SupportAssist</value>
+  </data>
+  <data name="Terminal" xml:space="preserve">
+    <value>Terminal</value>
+  </data>
+  <data name="Tips" xml:space="preserve">
+    <value>تلميحات</value>
+  </data>
+  <data name="Weather" xml:space="preserve">
+    <value>الطقس</value>
+  </data>
+  <data name="WindowsBackup" xml:space="preserve">
+    <value>النسخ الاحتياطي لـ Windows</value>
+  </data>
+  <data name="WindowsSecurity" xml:space="preserve">
+    <value>Windows Security</value>
+  </data>
+  <data name="Xbox" xml:space="preserve">
+    <value>Xbox</value>
+  </data>
+  <data name="NextTrack" xml:space="preserve">
+    <value>المقطع التالي</value>
+  </data>
+  <data name="PrtSc" xml:space="preserve">
+    <value>مفتاح Print Screen</value>
+  </data>
+  <data name="ScrollLock" xml:space="preserve">
+    <value>مفتاح Scroll Lock</value>
+  </data>
+  <data name="PauseBreak" xml:space="preserve">
+    <value>مفتاح Pause Break</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>الأعمال التي تتم في المنزل</value>
+  </data>
+  <data name="End" xml:space="preserve">
+    <value>مفتاح End</value>
+  </data>
+  <data name="PageDown" xml:space="preserve">
+    <value>صفحة لأسفل</value>
+  </data>
+  <data name="PageUp" xml:space="preserve">
+    <value>صفحة لأعلى</value>
+  </data>
+  <data name="WebBrowser" xml:space="preserve">
+    <value>متصفح الويب</value>
+  </data>
+  <data name="DTPUnavailable" xml:space="preserve">
+    <value>خدمة النشر المكتبي غير متوفرة!</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>(من دون اسم)</value>
+  </data>
+  <data name="Keyboard.20" xml:space="preserve">
+    <value>لوحة مفاتيح Dell Premier اللاسلكية</value>
+  </data>
+  <data name="Keyboard.21" xml:space="preserve">
+    <value>ماوس Dell {0} اللاسلكي</value>
+  </data>
+  <data name="EzArrange.10" xml:space="preserve">
+    <value>تحديد مجلد</value>
+  </data>
+  <data name="Fullscreen.1" xml:space="preserve">
+    <value>ملء الشاشة</value>
+  </data>
+  <data name="PIPSmall" xml:space="preserve">
+    <value>صورة داخل صورة صغيرة</value>
+  </data>
+  <data name="PIPLarge" xml:space="preserve">
+    <value>صورة داخل صورة كبيرة</value>
+  </data>
+  <data name="Learn_more_for_firmware" xml:space="preserve">
+    <value>تعرف على المزيد عن البرنامج الثابت</value>
+  </data>
+  <data name="Learn_more_for_software" xml:space="preserve">
+    <value>تعرف على المزيد عن البرنامج</value>
+  </data>
 </root>

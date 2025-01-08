@@ -477,4 +477,61 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>부재 시 잠금</value>
   </data>
+  <data name="Caps_Lock_Off" xml:space="preserve">
+    <value>Caps Lock 꺼짐</value>
+  </data>
+  <data name="App_Name" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="ImpExp_Message.0" xml:space="preserve">
+    <value>동일한 모니터가 감지되었습니다. %1의 설정을 가져오시겠습니까?</value>
+  </data>
+  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
+    <value>펌웨어 업데이트가 중단되었습니다. 동일한 모델의 디바이스 하나만 시스템에 연결되어 있는지 확인합니다.</value>
+  </data>
+  <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
+    <value>USB 무선 수신기 펌웨어가 디바이스 펌웨어 업그레이드를 지원할 수 없습니다.</value>
+  </data>
+  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
+    <value>펌웨어 업데이트가 진행 중입니다. 중단하지 못했습니다.</value>
+  </data>
+  <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
+    <value>다음에 해당하는 ICC 프로파일을 동기화할 수 없습니다.</value>
+  </data>
+  <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
+    <value>이 맞춤형 레이아웃과 관련된 Easy Memory 프로파일이 있습니다.\n이 맞춤형 레이아웃을 저장하면 관련된 모든 프로파일의 레이아웃이 업데이트됩니다.\n레이아웃을 저장하시겠습니까?</value>
+  </data>
+  <data name="CollabMultipleCalls" xml:space="preserve">
+    <value>여러 전화 회의 중에는 협업 컨트롤을 사용할 수 없습니다.</value>
+  </data>
+  <data name="Custom_Color_HDR" xml:space="preserve">
+    <value>맞춤형 색상 HDR</value>
+  </data>
+  <data name="Display_P3" xml:space="preserve">
+    <value>Display P3</value>
+  </data>
+  <data name="FPS_Game" xml:space="preserve">
+    <value>FPS 게임</value>
+  </data>
+  <data name="HDR_Peak_1000" xml:space="preserve">
+    <value>HDR Peak 1000</value>
+  </data>
+  <data name="Multiscreen_Match" xml:space="preserve">
+    <value>다중 화면 일치</value>
+  </data>
+  <data name="Off_0" xml:space="preserve">
+    <value>끄기</value>
+  </data>
+  <data name="Presets_Disabled" xml:space="preserve">
+    <value>사전 설정 비활성화됨</value>
+  </data>
+  <data name="RTS_Game" xml:space="preserve">
+    <value>RTS 게임</value>
+  </data>
+  <data name="RPG_Game" xml:space="preserve">
+    <value>RPG 게임</value>
+  </data>
 </root>

@@ -2271,4 +2271,1192 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>이 기능은 사용자의 눈이 원하는 설정에 적응할 수 있도록 합니다.</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>여기에 즐겨 찾는 구성을 내보낸 후 복잡한 과정 없이 동일한 모델의 다른 모니터로 가져올 수 있습니다.</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>입력 소스 이름 바꾸기</value>
+  </data>
+  <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
+    <value>모니터에서 모든 USB 스토리지 디바이스를 분리합니다.</value>
+  </data>
+  <data name="AddDevice.KnM.14" xml:space="preserve">
+    <value>무선 수신기 연결</value>
+  </data>
+  <data name="ConsentNo" xml:space="preserve">
+    <value>아니요, 동의하지 않습니다.</value>
+  </data>
+  <data name="ConsentYes" xml:space="preserve">
+    <value>예, 동의합니다.</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="Consent.1" xml:space="preserve">
+    <value>개선 참여</value>
+  </data>
+  <data name="Consent.2" xml:space="preserve">
+    <value>진단 및 사용 데이터를 자동으로 전송하여 Dell이 제품과 서비스를 개선할 수 있도록 협조 부탁드립니다. 자세히 알아보기 </value>
+  </data>
+  <data name="ImpExp_CheckBox.0" xml:space="preserve">
+    <value>동일한 모델에 대해 다시 표시하지 않음</value>
+  </data>
+  <data name="ImpExp_Message.1" xml:space="preserve">
+    <value>사용 편의성을 위해 애플리케이션 설정을 가져오시겠습니까?</value>
+  </data>
+  <data name="ImpExp_Title.0" xml:space="preserve">
+    <value>새 모니터 %1이(가) 감지되었습니다.</value>
+  </data>
+  <data name="Wait_DevMgr" xml:space="preserve">
+    <value>DDPM 하위 에이전트에 연결하는 중...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="Wait_DTH" xml:space="preserve">
+    <value>Dell.TechHub에 연결하는 중...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="Wait_NoDevice" xml:space="preserve">
+    <value>디바이스 감지 중...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="InvalidURL" xml:space="preserve">
+    <value>유효하지 않은 URL</value>
+  </data>
+  <data name="Left" xml:space="preserve">
+    <value>왼쪽</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>오른쪽</value>
+  </data>
+  <data name="WalkThrough.1" xml:space="preserve">
+    <value>건너뛰기</value>
+  </data>
+  <data name="WalkThrough.2" xml:space="preserve">
+    <value>앱으로 이동</value>
+  </data>
+  <data name="HeadsetAudioSettings.29" xml:space="preserve">
+    <value>전화 회의 중일 때 적용</value>
+  </data>
+  <data name="HeadsetAudioSettings.30" xml:space="preserve">
+    <value>음악 또는 팟캐스트와 같은 멀티미디어를 들을 때 적용</value>
+  </data>
+  <data name="Brightness.19" xml:space="preserve">
+    <value>현재 자동 밝기가 활성화되어 있습니다. 덮어쓰시겠습니까?</value>
+  </data>
+  <data name="Brightness.20" xml:space="preserve">
+    <value>기본 모니터가 아닙니다. 변경을 적용하여 이 모니터를 동기화할 기본 모니터로 설정하시겠습니까?</value>
+  </data>
+  <data name="ThirdPartyLicense.Title" xml:space="preserve">
+    <value>타사 라이선스</value>
+  </data>
+  <data name="Illumination.2" xml:space="preserve">
+    <value>밝기 수준을 변경하려면 F8 키를 누르십시오.</value>
+  </data>
+  <data name="Illumination.3" xml:space="preserve">
+    <value>주변 광량에 따라 키보드의 밝기 수준을 조정합니다.</value>
+  </data>
+  <data name="Illumination.4" xml:space="preserve">
+    <value>키보드의 밝기를 수동으로 조정</value>
+  </data>
+  <data name="Off2" xml:space="preserve">
+    <value>끄기</value>
+  </data>
+  <data name="EazyMemory.40" xml:space="preserve">
+    <value>프로파일 이름을 입력하십시오.</value>
+  </data>
+  <data name="hotkey.7" xml:space="preserve">
+    <value>핫키 경고</value>
+  </data>
+  <data name="hotkey.8" xml:space="preserve">
+    <value>구성한 핫키는 단일 키입니다. 다른 애플리케이션에서 해당 키가 작동하는 방식에 영향을 줄 수 있습니다. 정말 계속하시겠습니까?</value>
+  </data>
+  <data name="hotkey.9" xml:space="preserve">
+    <value>이 핫키는 다른 Dell Display and Peripheral Manager 기능에서 사용됩니다. 대체하시겠습니까?</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="Update_Available_Version" xml:space="preserve">
+    <value>사용 가능한 버전 업데이트</value>
+  </data>
+  <data name="New_Supported_Devices" xml:space="preserve">
+    <value>새로 지원되는 디바이스</value>
+  </data>
+  <data name="New_Features" xml:space="preserve">
+    <value>새로운 기능</value>
+  </data>
+  <data name="Bug_Fixes" xml:space="preserve">
+    <value>버그 수정 사항</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>업데이트(U)</value>
+  </data>
+  <data name="UI_Orientation.0" xml:space="preserve">
+    <value>가로</value>
+  </data>
+  <data name="UI_Orientation.1" xml:space="preserve">
+    <value>세로</value>
+  </data>
+  <data name="UI_Orientation.2" xml:space="preserve">
+    <value>가로(대칭 이동)</value>
+  </data>
+  <data name="UI_Orientation.3" xml:space="preserve">
+    <value>세로(대칭 이동)</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.0" xml:space="preserve">
+    <value>낮음</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.1" xml:space="preserve">
+    <value>중간</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.2" xml:space="preserve">
+    <value>높음</value>
+  </data>
+  <data name="EazyMemorySettings.0" xml:space="preserve">
+    <value>핫키: 최신</value>
+  </data>
+  <data name="EazyMemorySettings.1" xml:space="preserve">
+    <value>예: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;</value>
+  </data>
+  <data name="EazyMemorySettings.2" xml:space="preserve">
+    <value>애플리케이션을 파티션으로 끌어서 놓아 분할 화면 레이아웃에 쉽게 스냅</value>
+  </data>
+  <data name="EazyMemorySettings.3" xml:space="preserve">
+    <value>앱을 틈 없이 나란히 분할할 수 있도록 허용</value>
+  </data>
+  <data name="EazyMemorySettings.4" xml:space="preserve">
+    <value>&quot;SHIFT&quot; 키를 눌렀을 때만 존 위치 지정 허용</value>
+  </data>
+  <data name="EazyMemorySettings.5" xml:space="preserve">
+    <value>여러 모니터에 걸쳐 스냅</value>
+  </data>
+  <data name="EazyMemorySettings.6" xml:space="preserve">
+    <value>애플리케이션 창 스냅</value>
+  </data>
+  <data name="PairedInfo.0" xml:space="preserve">
+    <value>이 디바이스를 {0}개의 호스트와 동시에 페어링할 수 있습니다.</value>
+  </data>
+  <data name="EazyMemory.41" xml:space="preserve">
+    <value>다른 프로파일이 동일한 시간을 사용하도록 이미 구성되었습니다. 다른 시간을 사용하십시오.</value>
+  </data>
+  <data name="Action.1" xml:space="preserve">
+    <value>바로 가기를 생성할 키 조합을 입력하십시오.</value>
+  </data>
+  <data name="Action.2" xml:space="preserve">
+    <value>탐색 버튼을 클릭하여 파일을 선택하십시오.</value>
+  </data>
+  <data name="Action.3" xml:space="preserve">
+    <value>\&quot;탐색\&quot; 버튼을 클릭하여 폴더를 선택하십시오.</value>
+  </data>
+  <data name="Action.4" xml:space="preserve">
+    <value>아래 상자에 웹 페이지의 URL을 입력하십시오.</value>
+  </data>
+  <data name="Action.5" xml:space="preserve">
+    <value>파일 이름</value>
+  </data>
+  <data name="Action.6" xml:space="preserve">
+    <value>폴더 이름</value>
+  </data>
+  <data name="Camera.14" xml:space="preserve">
+    <value>사전 설정</value>
+  </data>
+  <data name="Camera.15" xml:space="preserve">
+    <value>사전 설정 편집</value>
+  </data>
+  <data name="Camera.19" xml:space="preserve">
+    <value>이름</value>
+  </data>
+  <data name="Camera.20" xml:space="preserve">
+    <value>이 이름은 사용 중입니다.</value>
+  </data>
+  <data name="Camera.21" xml:space="preserve">
+    <value>카메라 이미지를 중화하고 원래 설정으로 복원</value>
+  </data>
+  <data name="Camera.22" xml:space="preserve">
+    <value>이미지 보정 및 매끄럽게 하기</value>
+  </data>
+  <data name="Camera.23" xml:space="preserve">
+    <value>이미지의 색상 및 생동감 강화</value>
+  </data>
+  <data name="Camera.24" xml:space="preserve">
+    <value>이미지를 더 따뜻한 톤으로 보정</value>
+  </data>
+  <data name="Collab.1" xml:space="preserve">
+    <value>협업</value>
+  </data>
+  <data name="Collab.10" xml:space="preserve">
+    <value>요청을 차단했기 때문에 협업 키보드를 Microsoft Teams에 연결할 수 없습니다. Microsoft Teams에서 협업 키보드를 사용하려면 \&quot;자세히 알아보기\&quot;를 클릭하여 다시 연결하는 방법에 대한 지침을 확인하십시오.</value>
+  </data>
+  <data name="Collab.11" xml:space="preserve">
+    <value>Zoom에서 협업 키보드를 사용하려면 Zoom의 최신 데스크탑 버전을 설치합니다.</value>
+  </data>
+  <data name="Collab.12" xml:space="preserve">
+    <value>Microsoft Teams와 협업 키보드를 사용하려면 최신 버전을 사용하는 Microsoft Teams에 로그인되어 있고 타사 앱 API가 활성화되어 있는지 확인하십시오.</value>
+  </data>
+  <data name="Collab.13" xml:space="preserve">
+    <value>비디오</value>
+  </data>
+  <data name="Collab.14" xml:space="preserve">
+    <value>공유</value>
+  </data>
+  <data name="Collab.15" xml:space="preserve">
+    <value>채팅</value>
+  </data>
+  <data name="Collab.16" xml:space="preserve">
+    <value>마이크</value>
+  </data>
+  <data name="Collab.17" xml:space="preserve">
+    <value>확인</value>
+  </data>
+  <data name="Collab.2" xml:space="preserve">
+    <value>회의 컨트롤에 빠르게 액세스할 수 있습니다. 키를 켜거나 끄면\nMicrosoft Teams 또는 Zoom 통화 중에\n키보드에서 키가 표시되거나 숨겨집니다.</value>
+  </data>
+  <data name="Collab.3" xml:space="preserve">
+    <value>전화 회의 중 새 채팅 메시지가 있을 때 깜박임 효과를\n활성화합니다.</value>
+  </data>
+  <data name="Collab.4" xml:space="preserve">
+    <value>한 번 탭하는 대신 두 번 탭하여 키보드의 아이콘을\n활성화합니다.</value>
+  </data>
+  <data name="Collab.5" xml:space="preserve">
+    <value>자세히 알아보기</value>
+  </data>
+  <data name="Collab.6" xml:space="preserve">
+    <value>Microsoft Teams와 협업 키보드를 사용하려면 다음을 수행합니다.\r\n1. Teams를 열고 개인 정보 보호 설정으로 이동합니다.\n\n2. 타사 앱 API를 선택하고 Dell Display and Peripheral Manager가 차단 목록에 없는지 확인합니다.\n\n3. Microsoft Teams 전화 회의를 시작하여 Microsoft Teams를 Dell Display and Peripheral Manager와 페어링합니다.</value>
+  </data>
+  <data name="Collab.7" xml:space="preserve">
+    <value>문제가 계속되는 경우, 협업 키보드가 Microsoft Teams에 연결되지 않도록 하는 정책이 있을 수 있으므로 IT 부서(해당하는 경우)에 문의하십시오.</value>
+  </data>
+  <data name="Collab.8" xml:space="preserve">
+    <value>협업 키보드를 사용하려면 최신 버전의 Zoom 또는 Microsoft Teams가 필요합니다.</value>
+  </data>
+  <data name="Collab.9" xml:space="preserve">
+    <value>전화 회의를 시작하고 연결 요청을 수락하여 협업 키보드를 Microsoft Teams와 연결합니다.</value>
+  </data>
+  <data name="Common.0" xml:space="preserve">
+    <value>찾아보기</value>
+  </data>
+  <data name="Common.1" xml:space="preserve">
+    <value>지우기</value>
+  </data>
+  <data name="Common.2" xml:space="preserve">
+    <value>취소</value>
+  </data>
+  <data name="Common.3" xml:space="preserve">
+    <value>앱 목록에서 앱 선택</value>
+  </data>
+  <data name="Common.4" xml:space="preserve">
+    <value>파일 선택</value>
+  </data>
+  <data name="Common.5" xml:space="preserve">
+    <value>선택한 파일</value>
+  </data>
+  <data name="DisplayDefault.1" xml:space="preserve">
+    <value>디바이스의 모든 기본 설정을 복원하시겠습니까?</value>
+  </data>
+  <data name="Dock.2" xml:space="preserve">
+    <value>USB-C(DP 1.4)</value>
+  </data>
+  <data name="Dock.3" xml:space="preserve">
+    <value>듀얼 USB-C(DP 1.4)</value>
+  </data>
+  <data name="Dock.4" xml:space="preserve">
+    <value>USB-C(TB 4)</value>
+  </data>
+  <data name="Dock.5" xml:space="preserve">
+    <value>USB-C(TB 5)</value>
+  </data>
+  <data name="Excel.1" xml:space="preserve">
+    <value>가운데 정렬</value>
+  </data>
+  <data name="Excel.10" xml:space="preserve">
+    <value>형식만 붙여넣기</value>
+  </data>
+  <data name="Excel.11" xml:space="preserve">
+    <value>수식 붙여넣기</value>
+  </data>
+  <data name="Excel.12" xml:space="preserve">
+    <value>값만 붙여넣기</value>
+  </data>
+  <data name="Excel.13" xml:space="preserve">
+    <value>이전 시트</value>
+  </data>
+  <data name="Excel.14" xml:space="preserve">
+    <value>A~Z 순서로 정렬</value>
+  </data>
+  <data name="Excel.2" xml:space="preserve">
+    <value>왼쪽 맞춤</value>
+  </data>
+  <data name="Excel.3" xml:space="preserve">
+    <value>오른쪽 맞춤</value>
+  </data>
+  <data name="Excel.4" xml:space="preserve">
+    <value>들여쓰기 줄이기</value>
+  </data>
+  <data name="Excel.5" xml:space="preserve">
+    <value>데이터 영역 맨 아래로 이동</value>
+  </data>
+  <data name="Excel.6" xml:space="preserve">
+    <value>데이터 영역 맨 위로 이동</value>
+  </data>
+  <data name="Excel.7" xml:space="preserve">
+    <value>차트 삽입</value>
+  </data>
+  <data name="Excel.8" xml:space="preserve">
+    <value>상단 행 추가</value>
+  </data>
+  <data name="Excel.9" xml:space="preserve">
+    <value>이동(마우스를 누르고 이동)</value>
+  </data>
+  <data name="Multimedia.1" xml:space="preserve">
+    <value>미디어 다음 트랙</value>
+  </data>
+  <data name="Multimedia.2" xml:space="preserve">
+    <value>미디어 재생/일시 중지</value>
+  </data>
+  <data name="Multimedia.3" xml:space="preserve">
+    <value>미디어 이전 트랙</value>
+  </data>
+  <data name="Multimedia.4" xml:space="preserve">
+    <value>음악</value>
+  </data>
+  <data name="Multimedia.5" xml:space="preserve">
+    <value>사진</value>
+  </data>
+  <data name="Multimedia.6" xml:space="preserve">
+    <value>볼륨 작게</value>
+  </data>
+  <data name="Multimedia.7" xml:space="preserve">
+    <value>볼륨 음소거</value>
+  </data>
+  <data name="Multimedia.8" xml:space="preserve">
+    <value>볼륨 크게</value>
+  </data>
+  <data name="Outlook.1" xml:space="preserve">
+    <value>파일 첨부</value>
+  </data>
+  <data name="Outlook.2" xml:space="preserve">
+    <value>이메일 전달</value>
+  </data>
+  <data name="Outlook.3" xml:space="preserve">
+    <value>새로운 이메일</value>
+  </data>
+  <data name="Outlook.4" xml:space="preserve">
+    <value>새 회의</value>
+  </data>
+  <data name="Outlook.5" xml:space="preserve">
+    <value>회신</value>
+  </data>
+  <data name="Outlook.6" xml:space="preserve">
+    <value>전체 회신</value>
+  </data>
+  <data name="PairedInfo.1" xml:space="preserve">
+    <value>계속하시겠습니까?</value>
+  </data>
+  <data name="PairedInfo.10" xml:space="preserve">
+    <value>펜을 시스템과 페어링하시겠습니까?</value>
+  </data>
+  <data name="PairedInfo.2" xml:space="preserve">
+    <value>마우스의 페어링을 해제하면 이 컴퓨터에서 사용할 수 있는 기능이 제한될 수 있습니다. 페어링을 해제하기 전에 다른 마우스를 설정했는지 확인하십시오.</value>
+  </data>
+  <data name="PairedInfo.3" xml:space="preserve">
+    <value>키보드의 페어링을 해제하면 이 컴퓨터에서 사용할 수 있는 기능이 제한될 수 있습니다. 페어링을 해제하기 전에 다른 키보드를 설정했는지 확인하십시오.</value>
+  </data>
+  <data name="PairedInfo.4" xml:space="preserve">
+    <value>펜의 페어링을 해제하면 이 컴퓨터에서 사용할 수 있는 기능이 제한될 수 있습니다. 페어링을 해제하기 전에 다른 펜을 설정했는지 확인하십시오.</value>
+  </data>
+  <data name="PairedInfo.5" xml:space="preserve">
+    <value>이렇게 하면 헤드셋과 USB 무선 수신기의 페어링이 해제됩니다. Bluetooth를 통해 이 시스템의 헤드셋을 페어링하고 사용할 수 있습니다. 필요한 경우 DDPM 홈 화면의 오른쪽 상단에 있는 + 아이콘으로 헤드셋과 무선 수신기를 다시 페어링할 수 있습니다.</value>
+  </data>
+  <data name="PairedInfo.6" xml:space="preserve">
+    <value>계속</value>
+  </data>
+  <data name="PairedInfo.7" xml:space="preserve">
+    <value>이 디바이스는 다음과 호환되지 않음</value>
+  </data>
+  <data name="PairedInfo.8" xml:space="preserve">
+    <value>이 디바이스는 이미 페어링되어 있습니다. 다시 페어링하려면 먼저 디바이스의 페어링을 해제하십시오.</value>
+  </data>
+  <data name="PairedInfo.9" xml:space="preserve">
+    <value>펜 페어링</value>
+  </data>
+  <data name="PenSettings.10" xml:space="preserve">
+    <value>펜의 측면 버튼 2개를 3초 동안 길게 눌러 타일에 페어링합니다.</value>
+  </data>
+  <data name="PenSettings.11" xml:space="preserve">
+    <value>타일 다운로드</value>
+  </data>
+  <data name="PenSettings.8" xml:space="preserve">
+    <value>디바이스에서 Bluetooth를 활성화합니다.</value>
+  </data>
+  <data name="PenSettings.9" xml:space="preserve">
+    <value>QR 코드를 스캔하여 모바일 디바이스에 타일을 다운로드합니다.</value>
+  </data>
+  <data name="PowerPoint.1" xml:space="preserve">
+    <value>가운데 정렬 맞춤</value>
+  </data>
+  <data name="PowerPoint.10" xml:space="preserve">
+    <value>뒤로 보내기</value>
+  </data>
+  <data name="PowerPoint.2" xml:space="preserve">
+    <value>왼쪽 정렬 맞춤</value>
+  </data>
+  <data name="PowerPoint.3" xml:space="preserve">
+    <value>오른쪽 정렬 맞춤</value>
+  </data>
+  <data name="PowerPoint.4" xml:space="preserve">
+    <value>맨 앞으로 가져오기</value>
+  </data>
+  <data name="PowerPoint.5" xml:space="preserve">
+    <value>목록 수준 줄임</value>
+  </data>
+  <data name="PowerPoint.6" xml:space="preserve">
+    <value>선택한 슬라이드 복제</value>
+  </data>
+  <data name="PowerPoint.7" xml:space="preserve">
+    <value>목록 수준 늘림</value>
+  </data>
+  <data name="PowerPoint.8" xml:space="preserve">
+    <value>현재 슬라이드에서 재생</value>
+  </data>
+  <data name="PowerPoint.9" xml:space="preserve">
+    <value>이전 슬라이드</value>
+  </data>
+  <data name="RadialMenu.1" xml:space="preserve">
+    <value>비활성화됨</value>
+  </data>
+  <data name="RadialMenu.2" xml:space="preserve">
+    <value>뒤로 이동</value>
+  </data>
+  <data name="RadialMenu.3" xml:space="preserve">
+    <value>앞으로 이동</value>
+  </data>
+  <data name="RadialMenu.4" xml:space="preserve">
+    <value>재생/일시 중지</value>
+  </data>
+  <data name="RadialMenu.5" xml:space="preserve">
+    <value>이전 트랙</value>
+  </data>
+  <data name="RadialMenu.6" xml:space="preserve">
+    <value>음소거</value>
+  </data>
+  <data name="RadialMenu.7" xml:space="preserve">
+    <value>선택한 방사형의 기능</value>
+  </data>
+  <data name="RadialMenu.8" xml:space="preserve">
+    <value>선택한 방사형의 레이블</value>
+  </data>
+  <data name="RadialMenu.9" xml:space="preserve">
+    <value>가운데를 오른쪽 클릭 에뮬레이션용으로 사용</value>
+  </data>
+  <data name="Smooth" xml:space="preserve">
+    <value>매끄럽게</value>
+  </data>
+  <data name="Vibrant" xml:space="preserve">
+    <value>활기차게</value>
+  </data>
+  <data name="Warm" xml:space="preserve">
+    <value>따뜻하게</value>
+  </data>
+  <data name="Word.1" xml:space="preserve">
+    <value>자동 스크롤</value>
+  </data>
+  <data name="Word.10" xml:space="preserve">
+    <value>붙여넣기 후 서식 지정 일치</value>
+  </data>
+  <data name="Word.11" xml:space="preserve">
+    <value>이전 변경 사항</value>
+  </data>
+  <data name="Word.12" xml:space="preserve">
+    <value>이전 메모</value>
+  </data>
+  <data name="Word.13" xml:space="preserve">
+    <value>인쇄(P)</value>
+  </data>
+  <data name="Word.14" xml:space="preserve">
+    <value>저장</value>
+  </data>
+  <data name="Word.15" xml:space="preserve">
+    <value>취소선</value>
+  </data>
+  <data name="Word.16" xml:space="preserve">
+    <value>텍스트 크기 줄이기</value>
+  </data>
+  <data name="Word.17" xml:space="preserve">
+    <value>텍스트 크기 키우기</value>
+  </data>
+  <data name="Word.18" xml:space="preserve">
+    <value>선택한 텍스트 번역</value>
+  </data>
+  <data name="Word.19" xml:space="preserve">
+    <value>한 페이지 보기</value>
+  </data>
+  <data name="Word.2" xml:space="preserve">
+    <value>찾기</value>
+  </data>
+  <data name="Word.20" xml:space="preserve">
+    <value>페이지 너비 보기</value>
+  </data>
+  <data name="Word.3" xml:space="preserve">
+    <value>들여쓰기 늘림</value>
+  </data>
+  <data name="Word.4" xml:space="preserve">
+    <value>설명 삽입</value>
+  </data>
+  <data name="Word.5" xml:space="preserve">
+    <value>다음 변경 사항</value>
+  </data>
+  <data name="Word.6" xml:space="preserve">
+    <value>다음 메모</value>
+  </data>
+  <data name="Word.7" xml:space="preserve">
+    <value>붙여넣기 후 소스 서식 유지</value>
+  </data>
+  <data name="Word.8" xml:space="preserve">
+    <value>붙여넣기 후 텍스트만 유지</value>
+  </data>
+  <data name="Word.9" xml:space="preserve">
+    <value>붙여넣기 후 서식 병합</value>
+  </data>
+  <data name="Camera.25" xml:space="preserve">
+    <value>USB 3.0을 통해 모니터를 연결하고 USB-C 우선순위 지정에서 &apos;빠른 데이터 속도&apos;를 선택하여 4K UHD 해상도를 활성화합니다.</value>
+  </data>
+  <data name="HeadsetAutomatedActions.14" xml:space="preserve">
+    <value>감도</value>
+  </data>
+  <data name="File_corrupted" xml:space="preserve">
+    <value>파일이 손상됨</value>
+  </data>
+  <data name="File_corruptedMsg" xml:space="preserve">
+    <value>파일이 손상되었습니다. 다른 파일을 선택하십시오.</value>
+  </data>
+  <data name="ImportFail" xml:space="preserve">
+    <value>실패</value>
+  </data>
+  <data name="ImportFailMsg" xml:space="preserve">
+    <value>다른 모델을 가져올 수 없음</value>
+  </data>
+  <data name="Update_Webcam_Alert" xml:space="preserve">
+    <value>이 업데이트에서는 Windows 설정에서 존재 감지 컨트롤을 활성화합니다. 이 기능은 Win 11 22H2 이상 및 OS 빌드\r\n22621 이상의 시스템에서 적용합니다.</value>
+  </data>
+  <data name="Update_BatteryLow_Alert" xml:space="preserve">
+    <value>디바이스의 배터리 잔량이 부족합니다. 이 업데이트를 활성화하려면 배터리를 교체/재충전하십시오.</value>
+  </data>
+  <data name="Update_Dock_Alert" xml:space="preserve">
+    <value>시스템에 하나의 도크만 연결되어 있는지 확인합니다. 업데이트 중에는 도크에 연결된 디바이스를 사용하지 못할 수 있습니다.</value>
+  </data>
+  <data name="Update_PCBatteryLow_Alert" xml:space="preserve">
+    <value>업데이트를 계속하려면 PC를 전원에 연결하고 PC 배터리 충전량이 10% 이상인지 확인합니다.</value>
+  </data>
+  <data name="Update_Mouse_Alert" xml:space="preserve">
+    <value>디바이스의 버튼 또는 키를 눌러 이 업데이트를 활성화합니다.</value>
+  </data>
+  <data name="Landscape" xml:space="preserve">
+    <value>가로</value>
+  </data>
+  <data name="Portrait" xml:space="preserve">
+    <value>세로</value>
+  </data>
+  <data name="Landscape_flipped" xml:space="preserve">
+    <value>가로(대칭 이동)</value>
+  </data>
+  <data name="Portrait_flipped" xml:space="preserve">
+    <value>세로(대칭 이동)</value>
+  </data>
+  <data name="Frame_Rate" xml:space="preserve">
+    <value>프레임 속도</value>
+  </data>
+  <data name="Display_Alignment" xml:space="preserve">
+    <value>디스플레이 정렬</value>
+  </data>
+  <data name="Timer__30min" xml:space="preserve">
+    <value>타이머/30분</value>
+  </data>
+  <data name="Timer__40min" xml:space="preserve">
+    <value>타이머/40분</value>
+  </data>
+  <data name="Timer__50min" xml:space="preserve">
+    <value>타이머/50분</value>
+  </data>
+  <data name="Timer__60min" xml:space="preserve">
+    <value>타이머/60분</value>
+  </data>
+  <data name="Timer__90min" xml:space="preserve">
+    <value>타이머/90분</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>비활성화</value>
+  </data>
+  <data name="Extreme" xml:space="preserve">
+    <value>익스트림</value>
+  </data>
+  <data name="Super_Fast" xml:space="preserve">
+    <value>초고속</value>
+  </data>
+  <data name="Fast" xml:space="preserve">
+    <value>빠름</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>정상</value>
+  </data>
+  <data name="Level_0" xml:space="preserve">
+    <value>수준 0</value>
+  </data>
+  <data name="Level_1" xml:space="preserve">
+    <value>수준 1</value>
+  </data>
+  <data name="Level_2" xml:space="preserve">
+    <value>수준 2</value>
+  </data>
+  <data name="Level_3" xml:space="preserve">
+    <value>수준 3</value>
+  </data>
+  <data name="Desktop" xml:space="preserve">
+    <value>데스크탑</value>
+  </data>
+  <data name="Movie_HDR" xml:space="preserve">
+    <value>동영상 HDR</value>
+  </data>
+  <data name="Game_HDR" xml:space="preserve">
+    <value>게임 HDR</value>
+  </data>
+  <data name="Display_HDR" xml:space="preserve">
+    <value>디스플레이 HDR</value>
+  </data>
+  <data name="Custom_Color_HDR" xml:space="preserve">
+    <value>맞춤형 색상 HDR</value>
+  </data>
+  <data name="HDRPeak1000" xml:space="preserve">
+    <value>HDRPeak1000</value>
+  </data>
+  <data name="_4K" xml:space="preserve">
+    <value>4K</value>
+  </data>
+  <data name="_FHD" xml:space="preserve">
+    <value>FHD</value>
+  </data>
+  <data name="Steady_Vision" xml:space="preserve">
+    <value>Steady Vision</value>
+  </data>
+  <data name="VisionEngine_Steady" xml:space="preserve">
+    <value>Steady Vision</value>
+  </data>
+  <data name="Software_update" xml:space="preserve">
+    <value>소프트웨어 업데이트</value>
+  </data>
+  <data name="Firmware_update" xml:space="preserve">
+    <value>펌웨어 업데이트</value>
+  </data>
+  <data name="Color.10" xml:space="preserve">
+    <value>현재 자동 색온도가 활성화되어 있습니다. 덮어쓰시겠습니까?</value>
+  </data>
+  <data name="Mouse.16" xml:space="preserve">
+    <value>마우스 위치가 시스템에 보고되는 초당 횟수입니다. 폴링 속도를 높이려면 USB를 통해 연결합니다.</value>
+  </data>
+  <data name="EATooltip_00" xml:space="preserve">
+    <value>빈 레이아웃</value>
+  </data>
+  <data name="EATooltip_21H" xml:space="preserve">
+    <value>옵션 2.1: 2개의 열, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_21V" xml:space="preserve">
+    <value>옵션 2.1: 2개의 행, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_22H" xml:space="preserve">
+    <value>옵션 2.2: 2개의 행, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_22V" xml:space="preserve">
+    <value>옵션 2.2: 2개의 열, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_23H" xml:space="preserve">
+    <value>옵션 2.3: 2개의 열, 70/30%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_23V" xml:space="preserve">
+    <value>옵션 2.3: 2개의 행, 30/70%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_24H" xml:space="preserve">
+    <value>옵션 2.4: 2개의 열, 30/70%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_24V" xml:space="preserve">
+    <value>옵션 2.4: 2개의 행, 70/30%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_31H" xml:space="preserve">
+    <value>옵션 3.1: 3개의 행, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_31V" xml:space="preserve">
+    <value>옵션 3.1: 3개의 열, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_32H" xml:space="preserve">
+    <value>옵션 3.2: 3개의 열, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_32V" xml:space="preserve">
+    <value>옵션 3.2: 3개의 행, 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_33H" xml:space="preserve">
+    <value>옵션 3.3: 3개의 열, 30/40/30%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_33V" xml:space="preserve">
+    <value>옵션 3.3: 3개의 행, 30/40/30%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_34H" xml:space="preserve">
+    <value>옵션 3.4: 2개의 행, 균등하게 분할합니다. 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_34V" xml:space="preserve">
+    <value>옵션 3.4: 2개의 행, 균등하게 분할합니다. 1행은 분할하지 않고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_35H" xml:space="preserve">
+    <value>옵션 3.5: 2개의 행, 균등하게 분할합니다. 1열은 분할하지 않고 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_35V" xml:space="preserve">
+    <value>옵션 3.5: 2개의 행, 균등하게 분할합니다. 1행은 균등하게 분할하고 2행은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_36H" xml:space="preserve">
+    <value>옵션 3.6: 2개의 행, 균등하게 분할합니다. 1열은 30/70%로 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_36V" xml:space="preserve">
+    <value>옵션 3.6: 2개의 행, 70/30%로 분할합니다. 1행은 분할하지 않고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_37H" xml:space="preserve">
+    <value>옵션 3.7: 2개의 행, 균등하게 분할합니다. 1열은 70/30%로 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_37V" xml:space="preserve">
+    <value>옵션 3.7: 2개의 행, 30/70%로 분할합니다. 1행은 균등하게 분할하고 2행은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_38H" xml:space="preserve">
+    <value>옵션 3.8: 2개의 행, 균등하게 분할합니다. 1행은 분할하지 않고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_38V" xml:space="preserve">
+    <value>옵션 3.8: 2개의 열, 균등하게 분할합니다. 1열은 분할하지 않고 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_39H" xml:space="preserve">
+    <value>옵션 3.9: 2개의 행, 균등하게 분할합니다. 1행은 균등하게 분할하고 2행은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_39V" xml:space="preserve">
+    <value>옵션 3.9: 2개의 열, 균등하게 분할합니다. 1열은 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_41H" xml:space="preserve">
+    <value>옵션 4.1: 4개의 사분면으로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_41V" xml:space="preserve">
+    <value>옵션 4.1: 4개의 사분면으로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_42H" xml:space="preserve">
+    <value>옵션 4.2: 2개의 열, 균등하게 분할합니다. 1열은 3개의 구역으로 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_42V" xml:space="preserve">
+    <value>옵션 4.2: 2개의 행, 균등하게 분할합니다. 1행은 분할하지 않고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_43H" xml:space="preserve">
+    <value>옵션 4.3: 2개의 열, 균등하게 분할합니다. 1열은 분할하지 않고 2열은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_43V" xml:space="preserve">
+    <value>옵션 4.3: 2개의 행, 균등하게 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_44H" xml:space="preserve">
+    <value>옵션 4.4: 4개의 열을 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_44V" xml:space="preserve">
+    <value>옵션 4.4: 4개의 행을 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_45H" xml:space="preserve">
+    <value>옵션 4.5: 3개의 행을 균등하게 분할합니다. 1열은 균등하게 분할하고 2열과 3열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_45V" xml:space="preserve">
+    <value>옵션 4.5: 3개의 행, 균등하게 분할합니다. 1행과 2행은 분할하지 않고 3행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_46H" xml:space="preserve">
+    <value>옵션 4.6: 3개의 열, 균등하게 분할합니다. 1열과 2열은 분할하지 않고 3열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_46V" xml:space="preserve">
+    <value>옵션 4.6: 3개의 행, 균등하게 분할합니다. 1행은 균등하게 분할하고 2행과 3행은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_51H" xml:space="preserve">
+    <value>옵션 5.1: 2개의 행, 균등하게 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_51V" xml:space="preserve">
+    <value>옵션 5.1: 2개의 열, 균등하게 분할합니다. 1열은 3개의 구역으로 균등하게 분할하고 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_52H" xml:space="preserve">
+    <value>옵션 5.2: 2개의 행, 균등하게 분할합니다. 1행은 균등하게 분할하고 2행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_52V" xml:space="preserve">
+    <value>옵션 5.2: 2개의 열, 균등하게 분할합니다. 1열은 균등하게 분할하고 2열은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_53H" xml:space="preserve">
+    <value>옵션 5.3: 2개의 행, 30/70%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_53V" xml:space="preserve">
+    <value>옵션 5.3: 2개의 열, 30/70%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_54H" xml:space="preserve">
+    <value>옵션 5.4: 2개의 행, 70/30%로 분할합니다. 1행은 균등하게 분할하고 2행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_54V" xml:space="preserve">
+    <value>옵션 5.4: 2개의 열, 70/30%로 분할합니다. 1행은 균등하게 분할하고 2행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_55H" xml:space="preserve">
+    <value>옵션 5.5: 2개의 행, 30/70%로 분할합니다. 1행과 2행은 각각 균등하게 분할하고, 1열은 분할하지 않고, 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_55V" xml:space="preserve">
+    <value>옵션 5.5: 2개의 행, 균등하게 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_56H" xml:space="preserve">
+    <value>옵션 5.6: 2개의 열, 균등하게 분할합니다. 1열은 3개의 구역으로 균등하게 분할하고 2열은 30/70%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_56V" xml:space="preserve">
+    <value>옵션 5.6: 2개의 행, 균등하게 분할합니다. 1행은 30/70%로 분할하고 2행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_57H" xml:space="preserve">
+    <value>옵션 5.7: 3개의 열, 균등하게 분할합니다. 1열과 3열은 각각 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_57V" xml:space="preserve">
+    <value>옵션 5.7: 3개의 행, 균등하게 분할합니다. 1행과 3행은 각각 균등하게 분할하고 2행은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_58H" xml:space="preserve">
+    <value>옵션 5.8: 2개의 행, 70/30%로 분할합니다. 1행은 70/30%로 분할하고 2행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_58V" xml:space="preserve">
+    <value>옵션 5.8: 2개의 열, 30/70%로 분할합니다. 1열은 70/30%로 분할하고 2열은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_59H" xml:space="preserve">
+    <value>옵션 5.9: 2개의 행, 70/30%로 분할합니다. 1행은 70/30%로 분할하고 2행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_59V" xml:space="preserve">
+    <value>옵션 5.9: 2개의 열, 70/30%로 분할합니다. 1열은 70/30%로 분할하고 2열은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_61H" xml:space="preserve">
+    <value>옵션 6.1: 3개의 열, 균등하게 분할합니다. 1, 2, 3열을 각각 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_61V" xml:space="preserve">
+    <value>옵션 6.1: 2개의 열, 균등하게 분할합니다. 1열과 2열을 각각 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_62H" xml:space="preserve">
+    <value>옵션 6.2: 2개의 행, 70/30%로 분할합니다. 1행은 70/30%로 분할하고, 2행은 3개의 구역으로 균등하게 분할합니다. 1열은 분할하지 않고, 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_62V" xml:space="preserve">
+    <value>옵션 6.2: 2개의 행, 30/70%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다. 1열은 분할하지 않고, 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_63H" xml:space="preserve">
+    <value>옵션 6.3: 2개의 행, 30/70%로 분할합니다. 1행은 4개의 구역으로 균등하게 분할하고 2행은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_63V" xml:space="preserve">
+    <value>옵션 6.3: 2개의 열, 30/70%로 분할합니다. 1열은 4개의 구역으로 균등하게 분할하고 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_64H" xml:space="preserve">
+    <value>옵션 6.4: 2개의 행, 30/70%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다. 1열은 분할하지 않고, 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_64V" xml:space="preserve">
+    <value>옵션 6.4: 2개의 열, 30/70%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다. 1열은 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_65H" xml:space="preserve">
+    <value>옵션 6.5: 2개의 행, 30/70%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다. 1열은 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_65V" xml:space="preserve">
+    <value>옵션 6.5: 2개의 열, 30/70%로 분할합니다. 1행은 30/70%로 분할하고, 2행은 3개의 구역으로 균등하게 분할합니다. 1열은 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_66H" xml:space="preserve">
+    <value>옵션 6.6: 2개의 행, 30/70%로 분할합니다. 1행은 30/70%로 분할하고, 1열은 균등하게 분할합니다. 2열은 분할하지 않고 1행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_66V" xml:space="preserve">
+    <value>옵션 6.6: 2개의 행, 30/70%로 분할합니다. 1행은 30/70%로 분할하고, 2행은 3개의 구역으로 균등하게 분할합니다. 1열은 분할하지 않고, 2열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_67H" xml:space="preserve">
+    <value>옵션 6.7: 2개의 열, 균등하게 분할합니다. 1, 2, 3열을 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_67V" xml:space="preserve">
+    <value>옵션 6.7: 3개의 열, 균등하게 분할합니다. 1, 2, 3열을 각각 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_68H" xml:space="preserve">
+    <value>옵션 6.8: 4개의 열, 균등하게 분할합니다. 1행과 4행은 균등하게 분할하고 2행과 3행은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_68V" xml:space="preserve">
+    <value>옵션 6.8: 4개의 행, 균등하게 분할합니다. 1행과 4행은 균등하게 분할하고 2행과 3행은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_69H" xml:space="preserve">
+    <value>옵션 6.9: 2개의 행, 70/30%로 분할합니다. 1행은 균등하게 분할하고 2행은 4개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_69V" xml:space="preserve">
+    <value>옵션 6.9: 2개의 행, 균등하게 분할합니다. 1행은 70/30%로 분할하고 1열은 분할하지 않습니다. 2열은 균등하게 분할하고 2행은 70/30%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_6AH" xml:space="preserve">
+    <value>옵션 6.10: 2개의 열, 70/30%로 분할합니다. 1, 2, 3열을 각각 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_6AV" xml:space="preserve">
+    <value>옵션 6.10: 2개의 행, 70/30%로 분할합니다. 1행과 2행은 각각 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_71H" xml:space="preserve">
+    <value>옵션 7.1: 2개의 행, 30/70%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다. 1열은 균등하게 분할하고 2열과 3열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_71V" xml:space="preserve">
+    <value>옵션 7.1: 3개의 행, 균등하게 분할합니다. 1행과 2행은 각각 30/70%로 분할하고 3행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_72H" xml:space="preserve">
+    <value>옵션 7.2: 2개의 행, 30/70%로 분할합니다. 1행과 2행은 각각 3개의 구역으로 균등하게 분할하고, 1열과 2열은 분할하지 않고, 3열은 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_72V" xml:space="preserve">
+    <value>옵션 7.2: 3개의 행, 균등하게 분할합니다. 1행과 3행은 각각 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다.</value>
+  </data>
+  <data name="EATooltip_73H" xml:space="preserve">
+    <value>옵션 7.3: 2개의 행, 균등하게 분할합니다. 1행은 4개의 구역으로 균등하게 분할하고 2행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_73V" xml:space="preserve">
+    <value>옵션 7.3: 2개의 열, 균등하게 분할합니다. 1열은 4개의 구역으로 균등하게 분할하고 2열은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_74H" xml:space="preserve">
+    <value>옵션 7.4: 2개의 행, 균등하게 분할합니다. 1행과 3행은 각각 균등하게 분할하고 2행은 4개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_74V" xml:space="preserve">
+    <value>옵션 7.4: 2개의 열, 균등하게 분할합니다. 1열은 3개의 구역으로 균등하게 분할하고 2열은 4개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_75H" xml:space="preserve">
+    <value>옵션 7.5: 2개의 행, 균등하게 분할합니다. 1행은 4개의 구역으로 균등하게 분할하고 2행은 25/50/25%로 분할합니다. 1열과 3열은 각각 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_75V" xml:space="preserve">
+    <value>옵션 7.5: 3개의 행, 25/50/25%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고 2행은 30/70%로 분할합니다. 1열은 균등하게 분할하고, 2열은 분할하지 않고, 3행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_76H" xml:space="preserve">
+    <value>옵션 7.6: 2개의 행, 30/70%로 분할합니다. 1행은 25/50/25%로 분할하고, 1열과 3열은 각각 균등하게 분할합니다. 2열은 분할하지 않고 2행은 4개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_76V" xml:space="preserve">
+    <value>옵션 7.6: 3개의 행, 25/50/25%로 분할합니다. 1행은 3개의 구역으로 균등하게 분할하고, 2행은 70/30%로 분할하고, 3행은 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_77H" xml:space="preserve">
+    <value>옵션 7.7: 2개의 행, 30/70%로 분할합니다. 1행은 4개의 구역으로 균등하게 분할하고 2행은 50/25/25%로 분할합니다. 1열은 분할하지 않고 2열과 3열은 각각 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_77V" xml:space="preserve">
+    <value>옵션 7.7: 3개의 행, 25/25/50%로 분할합니다. 1행과 2행은 각각 3개의 구역으로 균등하게 분할하고 3행은 30/70%로 분할합니다. 1열은 균등하게 분할하고 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_78H" xml:space="preserve">
+    <value>옵션 7.8: 2개의 행, 30/70%로 분할합니다. 1행과 4행은 각각 균등하게 분할하고 2행은 25/25/50%로 분할합니다. 1열과 2열은 각각 균등하게 분할하고 3열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_78V" xml:space="preserve">
+    <value>옵션 7.8: 3개의 행, 30/70%로 분할합니다. 1행은 30/70%로 분할하고 1열은 균등하게 분할합니다. 2열은 분할하지 않고 2행과 3행은 각각 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_79H" xml:space="preserve">
+    <value>옵션 7.9: 4개의 열, 균등하게 분할합니다. 1, 2, 3, 4열을 각각 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_79V" xml:space="preserve">
+    <value>옵션 7.9: 4개의 열, 균등하게 분할합니다. 1, 2, 3, 4행을 각각 균등하게 분할됩니다.</value>
+  </data>
+  <data name="EATooltip_7AH" xml:space="preserve">
+    <value>옵션 7.10: 4개의 열, 균등하게 분할합니다. 1, 2, 3, 4열을 각각 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_7AV" xml:space="preserve">
+    <value>옵션 7.10: 4개의 열, 균등하게 분할합니다. 1, 2, 3, 4열을 각각 3개의 구역으로 균등하게 분할합니다.</value>
+  </data>
+  <data name="EATooltip_7BH" xml:space="preserve">
+    <value>옵션 7.11: 2개의 행, 30/70%로 분할합니다. 1행과 2행은 각각 25/50/25%로 분할하고, 1열과 3열은 각각 균등하게 분할하고, 2열은 분할하지 않습니다.</value>
+  </data>
+  <data name="EATooltip_7BV" xml:space="preserve">
+    <value>옵션 7.11: 3개의 행, 30/70%로 분할합니다. 1, 2, 3열은 25/50/25%로 분할하고, 1행과 3행은 균등하게 분할하고, 2행은 분할하지 않습니다.</value>
+  </data>
+  <data name="EazyMemory.42" xml:space="preserve">
+    <value>해당 Easy Memory 프로파일도 삭제됩니다. 계속하시겠습니까?</value>
+  </data>
+  <data name="DiagnosticReport_SaveFail" xml:space="preserve">
+    <value>진단 보고서 저장 실패</value>
+  </data>
+  <data name="MonitorAssetReport_SaveFail" xml:space="preserve">
+    <value>자산 보고서 저장 실패 모니터링</value>
+  </data>
+  <data name="USBKVM.Tips" xml:space="preserve">
+    <value>예: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;\n참고: 다중 모니터의 경우 마우스 커서가 대상 모니터 화면에 있어야 핫키 기능을 실행할 수 있습니다.</value>
+  </data>
+  <data name="BrightnessLevel" xml:space="preserve">
+    <value>밝기 수준</value>
+  </data>
+  <data name="USBKVM" xml:space="preserve">
+    <value>USB KVM</value>
+  </data>
+  <data name="Mouse" xml:space="preserve">
+    <value>마우스</value>
+  </data>
+  <data name="Keyboard" xml:space="preserve">
+    <value>키보드</value>
+  </data>
+  <data name="Calendar" xml:space="preserve">
+    <value>캘린더</value>
+  </data>
+  <data name="Camera" xml:space="preserve">
+    <value>카메라</value>
+  </data>
+  <data name="Clock" xml:space="preserve">
+    <value>시계</value>
+  </data>
+  <data name="Cortana" xml:space="preserve">
+    <value>Cortana</value>
+  </data>
+  <data name="DellCommandUpdate" xml:space="preserve">
+    <value>Dell Command Update</value>
+  </data>
+  <data name="DellDigitalDelivery" xml:space="preserve">
+    <value>Dell Digital Delivery</value>
+  </data>
+  <data name="DellOptimizer" xml:space="preserve">
+    <value>Dell Optimizer</value>
+  </data>
+  <data name="Family" xml:space="preserve">
+    <value>제품군</value>
+  </data>
+  <data name="FeedbackHub" xml:space="preserve">
+    <value>피드백 허브</value>
+  </data>
+  <data name="GameBar" xml:space="preserve">
+    <value>게임 바</value>
+  </data>
+  <data name="GetHelp" xml:space="preserve">
+    <value>도움말</value>
+  </data>
+  <data name="GetStarted" xml:space="preserve">
+    <value>시작하기</value>
+  </data>
+  <data name="IntelManagementAndSecurityStatus" xml:space="preserve">
+    <value>인텔(R) Management and Security Status</value>
+  </data>
+  <data name="IntelGraphicsCommandCenter" xml:space="preserve">
+    <value>인텔® 그래픽 제어 센터</value>
+  </data>
+  <data name="IntelOptaneMemoryAndStorageManagement" xml:space="preserve">
+    <value>인텔® Optane™ 메모리 및 스토리지 관리</value>
+  </data>
+  <data name="Mail" xml:space="preserve">
+    <value>메일</value>
+  </data>
+  <data name="Maps" xml:space="preserve">
+    <value>지도</value>
+  </data>
+  <data name="MediaPlayer" xml:space="preserve">
+    <value>미디어 플레이어</value>
+  </data>
+  <data name="Microsoft365Office" xml:space="preserve">
+    <value>Microsoft 365(Office)</value>
+  </data>
+  <data name="MicrosoftClipchamp" xml:space="preserve">
+    <value>Microsoft Clipchamp</value>
+  </data>
+  <data name="MicrosoftDefender" xml:space="preserve">
+    <value>Microsoft Defender</value>
+  </data>
+  <data name="MicrosoftStore" xml:space="preserve">
+    <value>Microsoft Store</value>
+  </data>
+  <data name="MicrosoftTeams" xml:space="preserve">
+    <value>Microsoft Teams</value>
+  </data>
+  <data name="MicrosoftTeamsWorkSchool" xml:space="preserve">
+    <value>Microsoft Teams(직장 또는 학교)</value>
+  </data>
+  <data name="MicrosoftToDo" xml:space="preserve">
+    <value>Microsoft To Do</value>
+  </data>
+  <data name="MoviesTV" xml:space="preserve">
+    <value>영화 및 TV</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>뉴스</value>
+  </data>
+  <data name="Notepad" xml:space="preserve">
+    <value>메모장</value>
+  </data>
+  <data name="Paint" xml:space="preserve">
+    <value>그림판</value>
+  </data>
+  <data name="PhoneLink" xml:space="preserve">
+    <value>전화 링크</value>
+  </data>
+  <data name="Photos" xml:space="preserve">
+    <value>사진</value>
+  </data>
+  <data name="PowerAutomate" xml:space="preserve">
+    <value>Power Automate</value>
+  </data>
+  <data name="SnippingTool" xml:space="preserve">
+    <value>캡처 도구</value>
+  </data>
+  <data name="SolitaireCasualGames" xml:space="preserve">
+    <value>Solitaire 및 Casual Games</value>
+  </data>
+  <data name="SoundRecorder" xml:space="preserve">
+    <value>녹음기</value>
+  </data>
+  <data name="Spotify" xml:space="preserve">
+    <value>Spotify</value>
+  </data>
+  <data name="SupportAssist" xml:space="preserve">
+    <value>SupportAssist</value>
+  </data>
+  <data name="Terminal" xml:space="preserve">
+    <value>터미널</value>
+  </data>
+  <data name="Tips" xml:space="preserve">
+    <value>추가 정보</value>
+  </data>
+  <data name="Weather" xml:space="preserve">
+    <value>날씨</value>
+  </data>
+  <data name="WindowsBackup" xml:space="preserve">
+    <value>Windows 백업</value>
+  </data>
+  <data name="WindowsSecurity" xml:space="preserve">
+    <value>Windows 보안</value>
+  </data>
+  <data name="Xbox" xml:space="preserve">
+    <value>Xbox</value>
+  </data>
+  <data name="NextTrack" xml:space="preserve">
+    <value>다음 트랙</value>
+  </data>
+  <data name="PrtSc" xml:space="preserve">
+    <value>화면 인쇄</value>
+  </data>
+  <data name="ScrollLock" xml:space="preserve">
+    <value>Scroll Lock</value>
+  </data>
+  <data name="PauseBreak" xml:space="preserve">
+    <value>Pause Break</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="End" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="PageDown" xml:space="preserve">
+    <value>Page Down</value>
+  </data>
+  <data name="PageUp" xml:space="preserve">
+    <value>Page Up</value>
+  </data>
+  <data name="WebBrowser" xml:space="preserve">
+    <value>웹 브라우저</value>
+  </data>
+  <data name="DTPUnavailable" xml:space="preserve">
+    <value>DTP 서비스를 사용할 수 없습니다!</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>(이름 없음)</value>
+  </data>
+  <data name="Keyboard.20" xml:space="preserve">
+    <value>Dell Premier 무선 키보드</value>
+  </data>
+  <data name="Keyboard.21" xml:space="preserve">
+    <value>Dell {0} 무선 마우스</value>
+  </data>
+  <data name="EzArrange.10" xml:space="preserve">
+    <value>폴더 선택</value>
+  </data>
+  <data name="Fullscreen.1" xml:space="preserve">
+    <value>전체 화면</value>
+  </data>
+  <data name="PIPSmall" xml:space="preserve">
+    <value>PIP Small</value>
+  </data>
+  <data name="PIPLarge" xml:space="preserve">
+    <value>PIP Large</value>
+  </data>
+  <data name="Learn_more_for_firmware" xml:space="preserve">
+    <value>펌웨어에 대해 자세히 알아보기</value>
+  </data>
+  <data name="Learn_more_for_software" xml:space="preserve">
+    <value>소프트웨어에 대해 자세히 알아보기</value>
+  </data>
 </root>

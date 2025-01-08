@@ -477,4 +477,61 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>遠離時鎖定</value>
   </data>
+  <data name="Caps_Lock_Off" xml:space="preserve">
+    <value>Caps Lock 關閉</value>
+  </data>
+  <data name="App_Name" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="ImpExp_Message.0" xml:space="preserve">
+    <value>偵測到相同的顯示器，是否要匯入 %1 的設定？</value>
+  </data>
+  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
+    <value>韌體更新中止。請確保只有一個相同型號的裝置連接至系統。</value>
+  </data>
+  <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
+    <value>USB 無線接收器韌體無法支援裝置韌體升級</value>
+  </data>
+  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
+    <value>韌體正在更新，無法中止。</value>
+  </data>
+  <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
+    <value>無法同步對應以下項目的 ICC 設定檔：</value>
+  </data>
+  <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
+    <value>有與此自訂配置相關聯的 Easy Memory 設定檔。\n儲存此自訂配置將更新所有相關設定檔的配置。\n是否要儲存配置？</value>
+  </data>
+  <data name="CollabMultipleCalls" xml:space="preserve">
+    <value>進行多場電話會議時，無法使用協作控制項</value>
+  </data>
+  <data name="Custom_Color_HDR" xml:space="preserve">
+    <value>自訂色彩 HDR</value>
+  </data>
+  <data name="Display_P3" xml:space="preserve">
+    <value>Display P3</value>
+  </data>
+  <data name="FPS_Game" xml:space="preserve">
+    <value>FPS 遊戲</value>
+  </data>
+  <data name="HDR_Peak_1000" xml:space="preserve">
+    <value>HDR 尖峰 1000</value>
+  </data>
+  <data name="Multiscreen_Match" xml:space="preserve">
+    <value>多螢幕相符</value>
+  </data>
+  <data name="Off_0" xml:space="preserve">
+    <value>關閉</value>
+  </data>
+  <data name="Presets_Disabled" xml:space="preserve">
+    <value>已停用預設</value>
+  </data>
+  <data name="RTS_Game" xml:space="preserve">
+    <value>RTS 遊戲</value>
+  </data>
+  <data name="RPG_Game" xml:space="preserve">
+    <value>RPG 遊戲</value>
+  </data>
 </root>
