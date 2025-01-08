@@ -19,4 +19,9 @@
 	<ItemGroup>
 		<ProjectReference Include="..\DDPM.UI.Plugin.Common\DDPM.UI.Plugin.Common.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="DDPM.SA.Common">
+			<HintPath>..\CommonDll\DDPM.SA.Common.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 </Project>
