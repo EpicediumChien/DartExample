@@ -110,17 +110,15 @@ namespace NGA.ThickClient
 
             //2024-6-19 Robert_Lin, to show Maximize button on main window titlebar
             IWindowLayout? windowLayout = formBuilder.GetSubsystem<IWindowLayout>();
-            if (windowLayout != null)
+            if (windowLayout != null &&
+                windowLayout.Masthead != null)
             {
-                if (windowLayout.Masthead != null)
-                {
-                    UXMasthead masthead = windowLayout.Masthead;
-                    masthead.MaximizeButtonVisible = true;
-                    masthead.MaximizeButtonEnabled = true;
+                UXMasthead masthead = windowLayout.Masthead;
+                masthead.MaximizeButtonVisible = true;
+                masthead.MaximizeButtonEnabled = true;
 
-                    //Robert_Lin, 2024-6-26 remove dell logo from left of titlebar
-                    masthead.IconVisible = false;
-                }
+                //Robert_Lin, 2024-6-26 remove dell logo from left of titlebar
+                masthead.IconVisible = false;                
             }
 
             IConsole? console = formBuilder.GetSubsystem<IConsole>();
