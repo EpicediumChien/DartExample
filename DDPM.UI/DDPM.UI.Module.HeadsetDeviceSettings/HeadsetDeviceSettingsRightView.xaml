@@ -93,7 +93,14 @@
             <Border x:Name="MainBorder" CornerRadius="13" Width="520" Margin="0,10,0,0">
                 <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
                     <Grid>
-                        <UXControls:UXTextBlock x:Name="DeviceSettingsTextBlock" Style="{StaticResource ModuleCaptionStyle}" Text="{Binding [DeviceSettings], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
+                        <!-- Derek 0107 for PIMS-335063 change Width="200" to Width="550"  -->
+                        <UXControls:UXTextBlock x:Name="DeviceSettingsTextBlock" 
+                                                Style="{StaticResource ModuleCaptionStyle}" 
+                                                Text="{Binding [DeviceSettings], Source={x:Static lang:LangHelper.Instance}}" 
+                                                FontFamily="Roboto" FontSize="20" Height="28" Width="550" 
+                                                VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                                                HorizontalAlignment="Left" 
+                                                Margin="0,20,20,20" />
                     </Grid>
 
                     <!-- Busy Light -->

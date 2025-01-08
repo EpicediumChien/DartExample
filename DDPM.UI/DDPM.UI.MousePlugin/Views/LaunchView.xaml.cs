@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DDPM.SA.Common;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Interfaces;
@@ -127,6 +128,43 @@ namespace DDPM.UI.Plugin.MousePlugin
                     }
                 }
             }
+            //Unloaded += LaunchView_Unloaded;
+            //if (DdpmCommonHelper.DeviceManagerSA != null)
+            //{
+            //    DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
+            //    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+            //}
+        }
+        private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
+        {
+            if (_vm != null && e.type == DeviceChangedType.Peripherals_SettingsChange && e.changedProperty == "CopilotEnableChanged")
+            {
+                _vm.IsCopilotEnabled = e.device_peripherals.Message != "false";
+                if (!_vm.IsCopilotEnabled)
+                    _vm.RemoveCopilotAction();
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    _vm.RefreshButtonImageFile(_vm.SelectedButton, false, true);
+
+                    if (_vm.VbarSelectedIndex == 1)
+                    {
+                        _vm.ActiveModule!.OnActivated();
+                    }
+                    else
+                    {
+                        OnVbarItemClicked(_vm.VbarItems[1]);
+                    }
+                }));
+            }
+        }
+
+        private void LaunchView_Unloaded(object sender, RoutedEventArgs e)
+        {
+            //if (DdpmCommonHelper.DeviceManagerSA != null)
+            //{
+            //    DdpmCommonHelper.DeviceManagerSA.StopCopilotRegistryMonitor();
+            //    DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+            //}
         }
 
         private void MSUXSystemParametersChanged(object? sender, PropertyChangedEventArgs e)

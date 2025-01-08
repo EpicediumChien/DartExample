@@ -677,6 +677,8 @@ namespace DDPM.SA.Common
         Task<int> GetSnooze(Guid deviceId);
 
         Task<int> GetSnoozeLength(Guid deviceId);
+        Task<bool> StartCopilotRegistryMonitor();
+        Task<bool> StopCopilotRegistryMonitor();
 
         #endregion public for Peripherals
 
@@ -1134,12 +1136,10 @@ namespace DDPM.SA.Common
         Task<bool?> GetIsFocusOn(string Guid);
 
         Task<int> GetPriority(string Guid);
-
         Task<bool?> GetIsAutoFramingTransitionOn(string Guid);
-
         Task<int> GetAutoFramingFrameSize(string Guid);
-
         Task<int> GetAutoFramingSensitivity(string Guid);
+        Task<string> GetWebcamSerialNumber(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
 

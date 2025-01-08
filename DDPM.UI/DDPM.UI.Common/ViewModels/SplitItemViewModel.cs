@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.Easy.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.Interfaces;
 
@@ -44,6 +45,8 @@ namespace DDPM.UI.Common.ViewModels
         }
         */
 
+        private static bool? _isEAShowDebugInfoInTooltip = null;
+
         public string ToolTipText
         {
             get
@@ -52,7 +55,15 @@ namespace DDPM.UI.Common.ViewModels
                     return _split.Description;
                 else if (SplitCtrl != null)
                 {
-                    if (User32.IniReadInt("DDPMDebug", "EzArrange.SplitItem.Tooltip.ShowDebugInfo", 0, @"C:\temp\DDPMDebug.txt")==1)
+                    //Robert_Lin, 2025-1-7, Move all dev flags into DDPM.SA.Common.Settings.DevSettings class
+                    //NEW:
+                    //Read the DevSettings once at startup, instead of read for each time getter is called.
+                    if (_isEAShowDebugInfoInTooltip == null)
+                        _isEAShowDebugInfoInTooltip = DevSettings.IsEAShowDebugInfoInTooltip();
+
+                    if (_isEAShowDebugInfoInTooltip == true)
+                    //OLD:
+                    //if (User32.IniReadInt("DDPMDebug", "EzArrange.SplitItem.Tooltip.ShowDebugInfo", 0, @"C:\temp\DDPMDebug.txt")==1)
                     {
                         //Debug version
                         return $"[{SplitCtrl.EAID}]{SplitCtrl.FriendlyName}";
