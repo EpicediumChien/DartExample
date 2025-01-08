@@ -2877,6 +2877,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         //Quick Pause ToggleSwitch
+
         private string _isQuickPause_String = Strings.On;
 
         public string QuickPause_String
@@ -2903,6 +2904,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 //_debouncerHeadsetQuickPause.Debounce("QuickPauseCheck");
                 _debouncerHeadset.Debounce("QuickPauseCheck");
                 OnPropertyChanged(nameof(QuickPause_String));
+                OnPropertyChanged(nameof(QuickPauseStatus));
             }
         }
 

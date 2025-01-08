@@ -92,14 +92,39 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values[0] is bool isDarkTheme && values[1] is bool isChecked && values[2] is bool IsChecked2)
+            if (values[0] is bool isDarkTheme && values[1] is bool isChecked && values[2] is bool IsChecked2 && values[3] is bool quickPauseStatus)
             {
-                if(!IsChecked2)
+
+                if (!IsChecked2 || !quickPauseStatus)
                     return Brushes.Gray;
+                //if (!IsChecked2)
+                //    return Brushes.Gray;
                 if (isDarkTheme)
                     return isChecked ? Brushes.White : Brushes.White;
                 else
                     return isChecked ? Brushes.White : Brushes.Black;
+            }
+            return Brushes.Gray;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class BooleanToForegroundConverter3 : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] is bool isChecked && values[1] is bool isDarkTheme && values[2] is bool quickPauseStatus)
+            {
+                if (!quickPauseStatus)
+                    return Brushes.Gray;
+                if (isDarkTheme)
+                    return isChecked ? Brushes.White : Brushes.Gray;
+                else
+                    return isChecked ? Brushes.Black : Brushes.Gray;
             }
             return Brushes.Gray;
         }
