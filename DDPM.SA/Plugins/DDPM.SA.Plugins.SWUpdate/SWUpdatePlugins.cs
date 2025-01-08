@@ -84,8 +84,6 @@ namespace DDPM.SA.Plugins.SWUpdate
 
         //安裝更新檔使用的命名管道伺服器
         private Timer _downloadTimer = new Timer();
-
-        private Timer _checkUpdateScheduleTimer;
         private string _notificationStr = "";
         private SWUErrorCode _updateErrorCode;
         private bool _IsShowNotify = true;
@@ -97,12 +95,6 @@ namespace DDPM.SA.Plugins.SWUpdate
         private string? _applicationName;
 
         #region Events
-
-        /// <summary>
-        /// 呼叫DeviceManager呼叫我的檢查更新方法，用於排成定期檢查
-        /// </summary>
-        public event EventHandler? CollCheckUpdate;
-
         /// <summary>
         /// 將延遲更新包傳給DeviceManager進行儲存
         /// </summary>
@@ -127,13 +119,9 @@ namespace DDPM.SA.Plugins.SWUpdate
             _logs ??= new Logs(Log, PluginLogId);
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
             InitializeSettingsPlugin();
-            SystemEvents.PowerModeChanged += OnPowerModeChanged;
             _SWUpdateInfoPackage = new SWUpdateInfoPackage();
             _ForceSWUpdateInfoPackage = new SWUpdateInfoPackage();
             _ForceSWUpdateInfoPackage.SWUpdateInfo = new List<SWUpdateInfo>();
-            _checkUpdateScheduleTimer = new Timer();
-            _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
-            _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
         }
         #region Overriding methods
 
@@ -191,15 +179,6 @@ namespace DDPM.SA.Plugins.SWUpdate
         }
 
         #endregion Overriding methods
-
-        /// <summary>
-        /// 啟動檢查更新排程
-        /// </summary>
-        public void StartCheckUpdateScheduleTimer()
-        {
-            _checkUpdateScheduleTimer.Start();
-        }
-
         /// <summary>
         /// 設定檔儲存的延遲更新資訊包
         /// </summary>
@@ -589,47 +568,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 };
             }
         }
-        /// <summary>
-        /// 定期檢查更新排程
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CheckUpdateScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
-        {
-            _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} start");
-            _checkUpdateScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
-            if (_SettingsPlugin != null)
-            {
-                try
-                {
-                    DDPMITConfig data = _SettingsPlugin.GetITGlobalConfigs().Result;
-                    if (!data.Lock_Settings_Updates)
-                    {
-                        //TimeSpan difference = DateTime.Now - _fWUpdateInfoPackage.TheLastCheckTime;
-                        //int checkTime = 5;
-                        //if (difference.TotalMinutes > checkTime)
-                        {
-                            CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
-                        }
-                        _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} CollCheckUpdate");
-                    }
-                    else
-                    {
-                        _checkUpdateScheduleTimer.Stop();
-                        _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _checkUpdateScheduleTimer stop");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} exception: {ex.Message}");
-                }
-            }
-            else
-            {
-                _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _SettingsPlugin is null");
-            }
-        }
-
+        
         /// <summary>
         /// 跳出通知
         /// </summary>
@@ -787,25 +726,6 @@ namespace DDPM.SA.Plugins.SWUpdate
             _logs.DebugMsg_1($"SetSkipSHA isSkipSHA : {isSkipSHA}");
             _IsSkipSHA = isSkipSHA;
             _logs.DebugMsg_1("SetSkipSHA done");
-        }
-        private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
-        {
-            switch (e.Mode)
-            {
-                case PowerModes.Suspend:
-                    _checkUpdateScheduleTimer.Stop();
-                    _logs.DebugMsg_1("PC is sleep");
-                    break;
-
-                case PowerModes.Resume:
-                    _checkUpdateScheduleTimer.Start();
-                    _logs.DebugMsg_1("PC is wakeup");
-                    break;
-
-                case PowerModes.StatusChange:
-                    _logs.DebugMsg_1("PC is status change");
-                    break;
-            }
         }
         /// <summary>
         /// 安裝下載好的更新檔
@@ -1028,7 +948,6 @@ namespace DDPM.SA.Plugins.SWUpdate
                     else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
                     {
                         _logs.DebugMsg_1($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a running/started condition");
-                        _SettingsPlugin.FWSWUpdateSettingChange += UpdateLockSettingChange;
                     }
                     else
                     {
@@ -1036,26 +955,6 @@ namespace DDPM.SA.Plugins.SWUpdate
                     }
                 }
             });
-        }
-        private void UpdateLockSettingChange(object o, bool isLockUpdate)
-        {
-            _logs.DebugMsg_1($"UpdateLockSettingChange start");
-            if (_checkUpdateScheduleTimer != null)
-            {
-                _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer is no null");
-                _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer isLockUpdate:{isLockUpdate}");
-                if (isLockUpdate)
-                {
-                    _checkUpdateScheduleTimer.Stop();
-                    _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer is stop");
-                }
-                else
-                {
-                    _checkUpdateScheduleTimer.Start();
-                    _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer is start");
-                }
-            }
-            _logs.DebugMsg_1($"UpdateLockSettingChange done");
         }
         public bool WriteRegistryData(RegistryHive hive, string keyPath, string keyName, object value)
         {

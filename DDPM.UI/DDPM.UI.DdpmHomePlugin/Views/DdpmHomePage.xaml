@@ -239,6 +239,7 @@
                                             BorderThickness="{TemplateBinding BorderThickness}"
                                             Background="{TemplateBinding Background}"
                                             Padding="{TemplateBinding Padding}"
+                                            AutomationProperties.Name="Home device read"
                                             SnapsToDevicePixels="True">
                                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
@@ -299,7 +300,10 @@
                                 <Border Name="bdItem" BorderBrush="{StaticResource FocusDotBrush}" Background="#02000000"
                                         Margin="0" Padding="0"
                                         Width="auto" Height="auto"
-                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        Focusable="True"
+                                        AutomationProperties.Name="Home device object"
+                                        >
                                     <Border.Style>
                                         <Style TargetType="Border">
                                             <Setter Property="BorderThickness" Value="0" />

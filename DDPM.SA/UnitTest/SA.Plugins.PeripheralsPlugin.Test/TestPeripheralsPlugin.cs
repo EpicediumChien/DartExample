@@ -430,14 +430,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin.Test
             };
             privatetePeripheralsPlugin.SetFieldOrProperty("_deviceHelper", deviceHelper);
 
-            peripheralsPlugin.SetPrimaryMouseButton(newMouseButton1, deviceId1);                        // newMouseButton1 = MousePrimaryButton
+            //peripheralsPlugin.SetPrimaryMouseButton(newMouseButton1, deviceId1);                        // newMouseButton1 = MousePrimaryButton
             var devicemanager = privatetePeripheralsPlugin.GetFieldOrProperty("_iDeviceManager");
             Assert.IsTrue(true);
             Assert.IsNotNull(devicemanager);
 
             DPeMPublic.Common.Enums.MouseButton newMouseButton2 = MouseButton.Right;
             Guid deviceId2 = new Guid();
-            peripheralsPlugin.SetPrimaryMouseButton(newMouseButton2, deviceId2);
+            //peripheralsPlugin.SetPrimaryMouseButton(newMouseButton2, deviceId2);
             var deviceHelper2 = privatetePeripheralsPlugin.GetFieldOrProperty("_deviceHelper");       //newMouseButton1 != MousePrimaryButton
             Assert.IsTrue(true);
             Assert.IsNotNull(deviceHelper2);

@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Reflection;
 using DDPM.SA.Obfuscation;
 using DDPM.SA.Common.Method;
+using DDPM.SA.Common.Settings;
 
 namespace DDPM.Subagent
 {
@@ -51,6 +52,8 @@ namespace DDPM.Subagent
         ///     application. This should be unique to your product.
         /// </summary>
         private static readonly Guid UserProcessMutexGuid = new(IDs.DDPM_MUTEX_ID);
+
+        //private static readonly string LogLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Dell\\DDPM.Subagent");
 
         private static void Main(string[] args)
         {
@@ -118,12 +121,12 @@ namespace DDPM.Subagent
                  */
                 MultiSessionAgent = false,
 
-                LogDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Dell\\DDPM.Subagent")
+                LogDirectory = DDPMFileSecurity.SysLogLocation
 #if RELEASE
                 ,
                 ValidCertificateHashes = ThumbprintHash_CICD.certificateHash
 #endif
-            };
+            };            
 
             Console.WriteLine("DDPM.Subagent starting...");
             using (var agent = new Agent(agentConfig))

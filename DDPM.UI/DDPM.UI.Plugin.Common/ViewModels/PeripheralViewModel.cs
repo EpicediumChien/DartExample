@@ -138,7 +138,7 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
         }
 
-        public void CheckCopilot()
+        private void CheckCopilot()
         {
             //string regPath2 = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
             //string regKey2 = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
@@ -201,6 +201,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (di.DeviceName == "Headset Settings" || di.DeviceName == "Wired Audio Settings")
                 {
                     CurrentInstanceID = di.ID.GetHashCode();
+                    _log.Info($"[PeripheralViewModel] SetCurrentDevice Headset/Wired Audio Settings... InstanceId = {CurrentInstanceID.ToString()}");
                 }
                 else
                 {
@@ -215,6 +216,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
                 }
                 CurrentDeviceInfo = di;
+                if (di == null)
+                    return false;
             }
             else
             {

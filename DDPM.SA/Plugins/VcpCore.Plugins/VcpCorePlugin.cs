@@ -1375,7 +1375,7 @@ namespace VcpCore.Plugins
                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCode is " + BitConverter.ToString(new byte[] { code }));
                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] val is " + val.ToString());
 
-                        rc = Set_VCPCapability(monitorInfoX, code, val, IsOutInitialize);
+                            rc = Set_VCPCapability(monitorInfoX, code, val, IsOutInitialize);
 
                         if (rc)
                         {
@@ -2013,6 +2013,9 @@ namespace VcpCore.Plugins
                             _TaskQueueResult = new ResultLockPool();
                         }
                     }
+
+                    _AddSignalfor0X52 = 0;
+                    _AddSignalforStatusCheck = 0;
 
                     try
                     {
@@ -4031,7 +4034,9 @@ namespace VcpCore.Plugins
             VCPF0.Add("DisplayHDR", "36");
             VCPF0.Add("HDR10", "37");
             VCPF0.Add("HLG", "38");
-
+            VCPF0.Add("Custom Color HDR", "39"); // Jim add 2025 for [S3225QC] HDR list
+            VCPF0.Add("HDR Peak 1000", "3A"); // Jim add 2025 for [S3225QC] HDR list
+          
             Dictionary<string, string> VCP14 = new Dictionary<string, string>();
             VCP14.Add("sRGB", "01");
             VCP14.Add("sRGB D65 sRGB L120", "01"); // PIMS-327394 jim 20241211
@@ -4118,8 +4123,9 @@ namespace VcpCore.Plugins
             VCPE2.Add("DisplayHDR", "3A");
             VCPE2.Add("HDR10", "3B");
             VCPE2.Add("HLG", "3C");
-            VCPE2.Add("Presets Disabled", "7F");
-
+            VCPE2.Add("Custom Color HDR", "30"); // Jim add 2025 for [S3225QC] HDR list
+            VCPE2.Add("HDR Peak 1000", "31"); // Jim add 2025 for [S3225QC] HDR list
+          
             #endregion
 
             _ColorPresets.Add("DC", VCPDC);
@@ -5017,10 +5023,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 1;
-
                         else
                             return 5;
                     }
@@ -5032,10 +5036,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 1;
-
                         else
                             return 5;
                     }
@@ -5058,10 +5060,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 4;
-
                         else
                             return 5;
                     }
@@ -5070,10 +5070,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 1;
-
                         else
                             return 5;
                     }
@@ -5081,10 +5079,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 1;
-
                         else
                             return 5;
                     }
@@ -5093,10 +5089,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 1;
-
                         else
                             return 5;
                     }
@@ -5108,22 +5102,17 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Novatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                         {
                             if (SI.Equals("TPV"))
                                 return 1;
-
                             else if (SI.Equals("Qisda"))
                                 return 4;
-
                             else
                                 return 5;
                         }
-
                         else
                             return 5;
                     }
@@ -5131,10 +5120,8 @@ namespace VcpCore.Plugins
                     {
                         if (SI.Equals("TPV"))
                             return 1;
-
                         else if (SI.Equals("Qisda"))
                             return 4;
-
                         else
                             return 5;
                     }
@@ -5147,10 +5134,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 2;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 1;
-
                         else
                             return 5;
                     }
@@ -5164,10 +5149,8 @@ namespace VcpCore.Plugins
                     {
                         if (D_Ctrl.Equals("Mediatek"))
                             return 1;
-
                         else if (D_Ctrl.Equals("Realtek"))
                             return 4;
-
                         else
                             return 5;
                     }

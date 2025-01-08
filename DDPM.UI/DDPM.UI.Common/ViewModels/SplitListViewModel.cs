@@ -53,11 +53,11 @@ namespace DDPM.UI.Common.ViewModels
 
             foreach (SplitItem spItem in _splitList)
             {
-                if (spItem.ISplitCtrl != null)
+                if (spItem.ISplitCtrl != null &&
+                    spItem.ISplitCtrl.CellCount == cellCount &&
+                    spItem.ISplitCtrl.SplitKey == splitKey)
                 {
-                    if ((spItem.ISplitCtrl.CellCount == cellCount) &&
-                        (spItem.ISplitCtrl.SplitKey == splitKey))
-                        return spItem;
+                    return spItem;
                 }
             }
             return null;
@@ -70,9 +70,9 @@ namespace DDPM.UI.Common.ViewModels
 
             foreach (SplitItem spItem in _splitList)
             {
-                if (spItem.ISplitCtrl != null)
+                if (spItem.ISplitCtrl != null &&
+                    spItem.ISplitCtrl.FriendlyName.Equals(friendlyName, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (spItem.ISplitCtrl.FriendlyName.Equals(friendlyName, StringComparison.OrdinalIgnoreCase))
                         return spItem;
                 }
             }
@@ -100,10 +100,10 @@ namespace DDPM.UI.Common.ViewModels
             List<string> listOut = new List<string>();
             foreach (SplitItem spItem in _splitList)
             {
-                if (spItem.ISplitCtrl != null)
+                if (spItem.ISplitCtrl != null &&
+                    !String.IsNullOrWhiteSpace(spItem.ISplitCtrl.FriendlyName))
                 {
-                    if (!String.IsNullOrWhiteSpace(spItem.ISplitCtrl.FriendlyName))
-                        listOut.Add(spItem.ISplitCtrl.FriendlyName);
+                    listOut.Add(spItem.ISplitCtrl.FriendlyName);
                 }
             }
             return listOut;
@@ -144,10 +144,10 @@ namespace DDPM.UI.Common.ViewModels
 
             foreach (SplitItem spItem in _splitList)
             {
-                if (spItem.ISplitCtrl != null)
+                if (spItem.ISplitCtrl != null &&
+                    spItem.ISplitCtrl.EAID == eaid)
                 {
-                    if (spItem.ISplitCtrl.EAID == eaid)
-                        return spItem;
+                    return spItem;
                 }
             }
             return null;

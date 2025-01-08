@@ -37,6 +37,7 @@ using DDPM.SA.Obfuscation;
 using System.Net.NetworkInformation;
 using System.Windows.Interop;
 using DDPMSettings = DDPM.SA.Common.Settings;
+using Microsoft.VisualBasic.Logging;
 
 namespace DDPM.SA.Plugins.SettingsManager
 {
@@ -89,6 +90,15 @@ namespace DDPM.SA.Plugins.SettingsManager
         {
             _agent = agent;
             WriteLog($"SettingsManagerPlugin constructor ...(Admin:{_IsAdministrator})");
+
+            if(_agent != null)
+            {                
+                WriteLog($"SettingsManagerPlugin constructor ...(Data location: {DDPMFileSecurity.SysLogLocation})");
+                if (!DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(DDPMFileSecurity.SysLogLocation, out string info))
+                {
+                    WriteLog($"SettingsManagerPlugin constructor ... ACL failed...{info}");
+                }
+            }
         }
 
         #endregion
@@ -532,21 +542,24 @@ namespace DDPM.SA.Plugins.SettingsManager
                 catch (Exception ex)
                 {
                     WriteLog($"[{type}]System config: retrieve Directory got null return");
-                    Directory.Delete(folder, true);
-                    directoryInfo = System.IO.Directory.CreateDirectory(folder);
-                    WriteLog($"[{type}]re-create system settings folder success");
+                    try
+                    {
+                        Directory.Delete(folder, true);
+                        directoryInfo = System.IO.Directory.CreateDirectory(folder);
+                        WriteLog($"[{type}]re-create system settings folder success");
+                    }
+                    catch(Exception ex2)
+                    {
+                        WriteLog($"[{type}]re-create system settings folder failed: {ex2.Message}");
+                        return null;
+                    }
                 }
 
                 string info2 = string.Empty;
-                //if (DDPMFileSecurity.IsPathSymbolicLinked(folder, out info2))
                 if (!DDPMFileSecurity.IsFolderPathValid(folder, out info2))
                 {
                     //WriteLog($"[{type}]Directory ACLs for system setting contained unprivileged write access for one or more identity");
                     WriteLog($"[{type}] *** Directory path and symbolic check GOT ISSUE *** ({info2})");
-                    /*Directory.Delete(folder, true);
-                    WriteLog($"[{type}]Exist folder deleted.");
-                    directoryInfo = System.IO.Directory.CreateDirectory(folder);
-                    WriteLog($"[{type}]re-create system settings folder success");*/
                     return null;
                 }
             }
@@ -588,9 +601,10 @@ namespace DDPM.SA.Plugins.SettingsManager
                 }
                 catch (Exception ex)
                 {
-                    WriteLog($"[{type}]System config: retrieve FileInfo got null return");
-                    File.Delete(filePath);
-                    WriteLog($"[{type}]Exist file deleted.");
+                    WriteLog($"[{type}]System config: retrieve FileInfo got null return ({ex.Message})");
+                    //File.Delete(filePath);
+                    //WriteLog($"[{type}]Exist file deleted.");
+                    return null;
                 }
 
                 if (fileInfo != null)
@@ -602,6 +616,11 @@ namespace DDPM.SA.Plugins.SettingsManager
                         File.Delete(filePath);
                         WriteLog($"[{type}]Exist file deleted.");
                     }
+                }
+                else
+                {
+                    WriteLog($"[InitSysSettingsData] type({type}) using file info got null object");
+                    return null;
                 }
             }
 

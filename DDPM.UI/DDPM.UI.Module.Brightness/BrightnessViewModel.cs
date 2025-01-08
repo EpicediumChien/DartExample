@@ -444,6 +444,13 @@ namespace DDPM.UI.Module.Brightness
             NotifyPropertyChanged(nameof(BrightnessEnable));
         }
 
+        public bool AreAllConfigsNotBusy(List<ALSConfig> configs)
+        {
+            if (configs == null || configs.Count == 0)
+                return true;
+
+            return configs.All(config => !config.isBusy);
+        }
         /// <summary>
         /// Catch OSD menu event
         /// </summary>
@@ -477,8 +484,16 @@ namespace DDPM.UI.Module.Brightness
 
                     Start_ALSConfig = tmp[idx];
 
+                    IsBusyALS = true;
+                    NotifyPropertyChanged("IsBusyALS");
+
                     //2.if yes, then update the vcp value to each option
                     GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
+                    IsBusyALS = !AreAllConfigsNotBusy(tmp);
+                    if (!IsBusyALS)
+                        NotifyPropertyChanged("IsBusyALS");
+                    DdpmCommonHelper.WriteUILog($"[OnVCPChangedEvent][BrightnessViewModel] ModelName = {SelectedHomeDevice.MonitorInfo.modelName}, IsBusyALS = {IsBusyALS.ToString()}");
+
                 }
                 catch (Exception ex)
                 {
@@ -1343,6 +1358,7 @@ namespace DDPM.UI.Module.Brightness
                 }
                 NotifyPropertyChanged("isAlsSupported");
                 NotifyPropertyChanged("IsScheduledShow");
+                NotifyPropertyChanged("IsScheduledLuminanceShow");
             }
         }
 
@@ -3100,13 +3116,8 @@ namespace DDPM.UI.Module.Brightness
         {
             get
             {
-                if (isAlsSupported.Equals(Visibility.Collapsed) || isAlsSupported.Equals(Visibility.Hidden))
-                {
-                    if (isLuminanceSupport.Equals(Visibility.Visible))
-                        return Visibility.Visible;
-                    else
-                        return Visibility.Collapsed;
-                }
+                if (isLuminanceSupport.Equals(Visibility.Visible))
+                    return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
             }
@@ -3844,7 +3855,27 @@ namespace DDPM.UI.Module.Brightness
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
         }
+        private bool _isBusyALS = false;
 
+        public bool IsBusyALS
+        {
+            get => _isBusyALS;
+            set => SetProperty(ref _isBusyALS, value);
+        }
+        public void SetIsBusy(bool busy)
+        {
+            List<ALSConfig> tmp = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
+            if (tmp == null || tmp.Count <= 1)
+                return;
+
+            IsBusyALS = true;
+            NotifyPropertyChanged("IsBusyALS");
+
+            IsBusyALS = !AreAllConfigsNotBusy(tmp);
+            if (!IsBusyALS)
+                NotifyPropertyChanged("IsBusyALS");
+            DdpmCommonHelper.WriteUILog($"[SetIsBusy][BrightnessViewModel] ModelName = {SelectedHomeDevice.MonitorInfo.modelName}, IsBusyALS = {IsBusyALS.ToString()}");
+        }
         #endregion UI Enable Flags
     }
 }

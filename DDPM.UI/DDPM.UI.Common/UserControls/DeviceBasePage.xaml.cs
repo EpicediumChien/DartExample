@@ -60,20 +60,18 @@ namespace DDPM.UI.Common.UserControls
             rightViewHeaderCtrl.SetHeaders(viewModel.RightViewHeaders.ToArray());
 
             //Check if new selected header is not show (IsShown==false), then change the selection
-            if (viewModel.RightViewHeaders.Count > 0)
+            if (viewModel.RightViewHeaders.Count > 0 &&
+                !viewModel.RightViewHeaders[viewModel.RightViewHeaderSelectedIndex].IsShown)
             {
-                if (!viewModel.RightViewHeaders[viewModel.RightViewHeaderSelectedIndex].IsShown)
+                int newIndex = 0;
+                ModuleGroup? mg = viewModel.SelectedGroup;
+                if (mg != null)
                 {
-                    int newIndex = 0;
-                    ModuleGroup? mg = viewModel.SelectedGroup;
-                    if (mg != null)
-                    {
-                        newIndex = mg.HeaderSelectedIndex;
-                    }
-                    //Try to select [0] (NOTE. It's assume that the Headers[0] will be always isShown)
-                    if (viewModel.RightViewHeaders[newIndex].IsShown)
-                        viewModel.RightViewHeaderSelectedIndex = newIndex;
+                    newIndex = mg.HeaderSelectedIndex;
                 }
+                //Try to select [0] (NOTE. It's assume that the Headers[0] will be always isShown)
+                if (viewModel.RightViewHeaders[newIndex].IsShown)
+                    viewModel.RightViewHeaderSelectedIndex = newIndex;                
             }
             rightViewHeaderCtrl.SelectedIndex = viewModel.RightViewHeaderSelectedIndex;
         }
@@ -204,10 +202,10 @@ namespace DDPM.UI.Common.UserControls
 
         private void bdLeftArrow_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key == Key.Enter)
+            if (e.Key == Key.Enter &&
+                LeftArrowClick != null)
             {
-                if (LeftArrowClick != null)
-                    LeftArrowClick(sender, e);
+                LeftArrowClick(sender, e);
             }
         }
 

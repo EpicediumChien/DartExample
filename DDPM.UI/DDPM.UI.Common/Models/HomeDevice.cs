@@ -1262,6 +1262,10 @@ namespace DDPM.UI.Common.Models
             BleHost2Style = BleHostStyle_Gray; // "2";
             BleHost3Style = BleHostStyle_Gray; // "2";
 
+            //@ LaunchView:
+            //switch (_vm.Model)
+
+            //@ HomeDevice:
             switch (DeviceInfo.ModelNumber)
             {
                 case "KB700":
@@ -1413,7 +1417,7 @@ namespace DDPM.UI.Common.Models
                 if (string.IsNullOrEmpty(DeviceInfo.PairedHostName3))
                     PairedHostName2 = DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(DeviceInfo.ID.ToString()).Result; //DTP
                 else
-                    PairedHostName1 = DeviceInfo.PairedHostName3;  //DTH
+                    PairedHostName2 = DeviceInfo.PairedHostName3;  //DTH
                 BleHost1Text = string.IsNullOrEmpty(PairedHostName1) ? Strings.ReadyToBePaired : PairedHostName1;
                 BleHost2Text = string.IsNullOrEmpty(PairedHostName2) ? Strings.ReadyToBePaired : PairedHostName2;
                 //@ LaunchView:
@@ -1656,10 +1660,9 @@ namespace DDPM.UI.Common.Models
         {
             get
             {
-                if (MonitorInfo != null)
+                if (MonitorInfo != null && MonitorInfo.CapabilityDic != null)
                 {
-                    if (MonitorInfo.CapabilityDic != null)
-                        return MonitorInfo.CapabilityDic.ContainsKey("E9");
+                    return MonitorInfo.CapabilityDic.ContainsKey("E9");
                 }
                 return false;
             }

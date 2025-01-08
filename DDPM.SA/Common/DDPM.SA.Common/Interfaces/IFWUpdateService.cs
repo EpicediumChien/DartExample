@@ -8,7 +8,6 @@ namespace DDPM.SA.Common
 {
     public interface IFWUpdateService : IFrameworkPlugin
     {
-        event EventHandler CollCheckUpdate;
 
         event EventHandler<UpdateProgressInfo> ProgressUpdate_Notify;
 
@@ -26,8 +25,6 @@ namespace DDPM.SA.Common
         /// for CLI use
         /// </summary>
         event EventHandler<List<FWUpdateInfo>> DownloadAndInstall_Result_Notify;
-
-        void StartCheckUpdateScheduleTimer();
 
         //Task<FWUpdateInfoPackage> GetFWUpdateInfo(UpdateHelper updateHelper, bool isShowNotify, bool isForce, bool isDefer, List<DeviceType> deviceTypeList, bool isUODMode, DisplayUpdateHelper displayUpdateHelper);
 

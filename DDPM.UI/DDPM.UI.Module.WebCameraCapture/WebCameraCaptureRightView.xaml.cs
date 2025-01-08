@@ -33,14 +33,26 @@ namespace DDPM.UI.Module.WebCameraCapture
             btnOpen.Caption = LangHelper.Instance["WebCameraCapture.2"];
             InitializeResolution();
             InitializeFPS();
+
         }
         private void InitializeResolution()
         {
-            var Res = _vm.WebcamSettings.SupportedFPSs.Keys.ToList();
+            var Res = _vm.WebcamSettings?.SupportedFPSs?.Keys.ToList() ?? new List<string>();
             switch (Res.Count)
             {
                 case 2:
-                    btnRes0.Width = 201;
+
+                    _vm.btnRes0_width = 201;
+                    txtRes0.Text = Res[0];
+                    _vm.btnRes1_width = 201;
+                    txtRes1.Text = Res[1];
+                    _vm.btnRes1_radius_v = new CornerRadius(0, 5, 5, 0);
+                    btnRes2.Visibility = Visibility.Collapsed;
+                    btnRes2_Col.Width = new GridLength(0);
+                    btnRes3.Visibility = Visibility.Collapsed;
+                    btnRes3_Col.Width = new GridLength(0);
+
+                    /*btnRes0.Width = 201;
                     txtRes0.Text = Res[0];
                     btnRes1.Width = 201;
                     txtRes1.Text = Res[1];
@@ -48,7 +60,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     btnRes2.Visibility = Visibility.Collapsed;
                     btnRes2_Col.Width = new GridLength(0);
                     btnRes3.Visibility = Visibility.Collapsed;
-                    btnRes3_Col.Width = new GridLength(0);
+                    btnRes3_Col.Width = new GridLength(0);*/
                     break;
                 case 3:
                     _vm.btnRes0_width = 134;
@@ -76,7 +88,7 @@ namespace DDPM.UI.Module.WebCameraCapture
         }
         private void InitializeFPS()
         {
-            var FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.Selected_Resolution];
+            var FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
             switch (FPS.Count)
             {
                 case 1:
@@ -110,7 +122,7 @@ namespace DDPM.UI.Module.WebCameraCapture
                     btnFPS2.CornerRadius = new CornerRadius(0, 5, 5, 0);
                     break;
             }
-            _vm.SetFPS_Selected(_vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.Selected_Resolution].IndexOf(_vm.WebcamSettings.CurrentFPS));
+            _vm.SetFPS_Selected(_vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution].IndexOf(_vm.WebcamSettings.CurrentFPS));
         }
         private async void btnResolution_Click(object sender, MouseButtonEventArgs e)
         {

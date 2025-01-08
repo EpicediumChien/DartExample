@@ -31,13 +31,17 @@ internal class Program
                         LogManage.fromDDPM = false;
                         LogManage.LogMessage($"Is DDM call");
                     }
-                    string registryKey = @"SOFTWARE\Dell Display and Peripheral Manager";
+                    string registryKey = @"SOFTWARE\Dell\Dell Display and Peripheral Manager";
+                    ///Bruce added Test///
+                    string registryKey_test = @"SOFTWARE\Dell Display and Peripheral Manager";
                     try
                     {
-                        string exePath = Assembly.GetExecutingAssembly().Location;
-                        string folderPath = Path.GetDirectoryName(exePath);
-                        string folderName = Path.GetFileName(folderPath);
-                        DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater", folderName);
+                        string folderName = FindParentFolderName();
+                        if (!string.IsNullOrEmpty(folderName))
+                        {
+                            DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater", folderName);
+                            DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey_test, "DdpmSwUpdater", folderName);
+                        }
                     }
                     catch (Exception ex) { LogManage.LogMessage($"DDPMRegistryHelper.WriteRegistryKey error : {ex.Message}"); }
                     LaunchInstaller launchInstaller = new LaunchInstaller();
@@ -64,6 +68,13 @@ internal class Program
                             DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey, nameof(FailureMessage), FailureMessage);
                             DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey, nameof(SW_Update_date), SW_Update_date);
                             DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey, nameof(ErrorCode), ErrorCode);
+                            ///Bruce added Test///
+                            DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey_test, nameof(UpdateVersion), UpdateVersion);
+                            DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey_test, nameof(Results), Results);
+                            DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey_test, nameof(FailureMessage), FailureMessage);
+                            DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey_test, nameof(SW_Update_date), SW_Update_date);
+                            DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey_test, nameof(ErrorCode), ErrorCode);
+                            ///Bruce added Test///
                         }
                     }
                     catch (Exception ex) { LogManage.LogMessage($"DDPMRegistryHelper.WriteRegistryKey error : {ex.Message}"); }
@@ -139,5 +150,44 @@ internal class Program
             LogManage.LogMessage($"{nameof(CopyToProgram)} path_programdata get error");
         }
         return "";
+    }
+    static string FindParentFolderName()
+    {
+        string folderName = string.Empty;
+        try
+        {
+            // 取得執行檔所在的資料夾
+            string exePath = AppDomain.CurrentDomain.BaseDirectory;
+            // 取得執行檔的名稱（不包含副檔名）
+            string exeName = Path.GetFileNameWithoutExtension(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string currentFolder = exePath;
+            while (true)
+            {
+                currentFolder = Path.TrimEndingDirectorySeparator(currentFolder);
+                // 取得目前資料夾的名稱
+                folderName = Path.GetFileName(currentFolder);
+                LogManage.LogMessage($"currentFolder folder name {folderName}");
+                // 如果資料夾名稱與執行檔名稱不同，則輸出此資料夾名稱並結束
+                if (!string.IsNullOrEmpty(folderName) && folderName != exeName)
+                {
+                    LogManage.LogMessage($"finded folder name {folderName}");
+                    break;
+                }
+                string? parentFolder = Directory.GetParent(currentFolder)?.FullName;
+                // 如果到達最源頭則結束搜尋
+                if (string.IsNullOrEmpty(parentFolder) || parentFolder == currentFolder)
+                {
+                    LogManage.LogMessage("FindParentFolderName no matching sources found");
+                    break;
+                }
+                // 更新為父資料夾，繼續向上搜尋
+                currentFolder = parentFolder;
+            }
+        }
+        catch(Exception ex)
+        {
+            LogManage.LogMessage($"FindParentFolderName Error : {ex.Message}");
+        }
+        return folderName;
     }
 }

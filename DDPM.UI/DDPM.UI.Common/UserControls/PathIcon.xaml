@@ -7,8 +7,9 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
              Width="32" Height="32"
-             IsTabStop="True"
-             d:DesignHeight="32" d:DesignWidth="32">
+             d:DesignHeight="32" d:DesignWidth="32" 
+             KeyboardNavigation.TabNavigation="None"
+             PreviewKeyDown="UserControl_PreviewKeyDown" KeyDown="UserControl_KeyDown">
     <UserControl.Resources>
         <ResourceDictionary>
             <!-- Style to hide tool tips that have an empty content. -->

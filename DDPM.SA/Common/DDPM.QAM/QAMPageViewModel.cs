@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Collections.ObjectModel;
 using DDPM.SA.Resources.Helper;
-
+using DDPM.SA.Common.Settings;
 
 namespace DDPM.QAM
 {
@@ -44,11 +44,23 @@ namespace DDPM.QAM
             if (deviceInfos != null && deviceInfos.Count > 0)
             {
                 CurrentDeviceInfo = deviceInfos.FirstOrDefault(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
+
                 if (CurrentDeviceInfo != null)
                 {
                     //DeviceModel = CurrentDeviceInfo.Name;
                     DeviceModel = CurrentDeviceInfo.Name + " " + CurrentDeviceInfo.ModelNumber; //Derek 1213
-                    ImportWebcamProfiles(CurrentDeviceInfo.ModelNumber);
+
+                    var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), 
+                        @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{CurrentDeviceInfo.ModelNumber}.json");
+                    
+                    //Derek 0106 Add to create profile if not exist
+                    if (!File.Exists(filePath))
+                    {
+                        //wait for Dean implement this function by setting manager  0107
+                        CreateWebcamProfile(filePath, CurrentDeviceInfo.ModelNumber);
+                    }
+
+                    ImportWebcamProfiles(filePath);
                     ZoomMax = CurrentDeviceInfo.ZoomMax;
                     ZoomMin = CurrentDeviceInfo.ZoomMin;
 
@@ -236,22 +248,33 @@ namespace DDPM.QAM
         public ObservableCollection<UI_Profile> UI_ProfileList { get; set; }
         public Dictionary<string, WebcamProfile> Profiles = new Dictionary<string, WebcamProfile>();
         private WebcamProfile CurrentProfile;
-        public void ImportWebcamProfiles(string model)
+        public void ImportWebcamProfiles(string filePath)
         {
             try
             {
-                var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
+                //var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
 
                 if (File.Exists(filePath))
                 {
                     Dictionary<string, WebcamProfile> presetProfiles = new();
                     //Dictionary<string, WebcamProfile> customProfiles = new();
-                    string json = File.ReadAllText(filePath);
+                    //string json = File.ReadAllText(filePath);
+                    //Derek 20250106 use DDPMFileSecurity.GetSerializedJsonString to read file by SDL requirement
+                    string info = string.Empty;
+                    string json = DDPMFileSecurity.GetSerializedJsonString(filePath, out info);
                     var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(json);
-                    string presetProfilesString = jsonObject["PresetProfiles"].ToString();
-                    //Derek 1212
-                    selectedProfileName = jsonObject["SelectedProfileName"].ToString();
-                    LogMsg($"ImportWebcamProfiles current SelectedProfileName: {selectedProfileName}");
+
+                    string presetProfilesString = string.Empty;
+                    if (jsonObject != null)
+                    {
+                        //presetProfilesString = jsonObject["PresetProfiles"]!.ToString();
+                        //Derek 1212
+                        //selectedProfileName = jsonObject["SelectedProfileName"]!.ToString();
+                        presetProfilesString = jsonObject["PresetProfiles"]?.ToString() ?? string.Empty;
+                        selectedProfileName = jsonObject["SelectedProfileName"]?.ToString() ?? string.Empty;
+
+                        LogMsg($"ImportWebcamProfiles current SelectedProfileName: {selectedProfileName}, GetSerializedJsonString result is {info}");
+                    }
 
                     if (!string.IsNullOrEmpty(presetProfilesString))
                     {
@@ -297,6 +320,15 @@ namespace DDPM.QAM
             {
                 LogMsg($"Catch exception: {e.Message}");
             }
+        }
+
+        private bool CreateWebcamProfile(string filePath, string model)
+        {
+            //CurrentDeviceInfo = deviceInfos.FirstOrDefault(x => (x.PhysicalDeviceType.Equals(DeviceType.LogicalWebcam) || x.PhysicalDeviceType.Equals(DeviceType.PhysicalWebcam)));
+
+            //Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetSupportedResolutions(di.ID.ToString());
+
+            return true;
         }
 
         private bool SetProfile(string name)
@@ -681,6 +713,8 @@ namespace DDPM.QAM
             OnPropertyChanged(nameof(ZoomValue));
             OnPropertyChanged(nameof(FullView_Height));
             OnPropertyChanged(nameof(UI_ProfileList));
+
+            //DdpmCommonHelper.DeviceManagerSA!.WriteLog($"RefreshUI  --> ZoomValue = {ZoomValue}, FieldOfView = {FieldOfView}, _AutoFramingStatus = {_AutoFramingStatus}");
         }
     }
     public class UI_Profile
