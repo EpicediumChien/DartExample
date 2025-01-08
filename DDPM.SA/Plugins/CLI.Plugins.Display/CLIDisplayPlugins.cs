@@ -965,6 +965,8 @@ namespace DDPM.CLI.Plugins.Display
             output += $"\n  \"Device\": \"{g.LogicalDeviceType}\"";
             output += "}";
             PeripheralResponse cli_Response2 = new PeripheralResponse(index, g);
+            cli_Response2.Connectiontype = (g.PhysicalDeviceType.ToString().Contains("Dongle") || g.PhysicalDeviceType.ToString().Contains("Bluetooth")) ? "Wireless" : "Wired";
+
             switch (g.LogicalDeviceType)
             {
                 case "LogicalHeadset":
@@ -973,9 +975,6 @@ namespace DDPM.CLI.Plugins.Display
                     break;
                 case "LogicalWebcam":
                     cli_Response2.SerialNumber = _devMgr.GetWebcamSerialNumber(g.ID.ToString()).Result ?? "N/A";
-                    break;
-                default:
-                    cli_Response2.Connectiontype = (g.PhysicalDeviceType.ToString().Contains("Dongle") || g.PhysicalDeviceType.ToString().Contains("Bluetooth")) ? "Wireless" : "Wired";
                     break;
             }
             output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
