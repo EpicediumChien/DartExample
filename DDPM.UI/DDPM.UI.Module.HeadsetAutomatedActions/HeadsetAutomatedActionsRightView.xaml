@@ -89,6 +89,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <local:BooleanToForegroundConverter x:Key="BooleanToForegroundConverter" />
             <local:BooleanToForegroundConverter2 x:Key="BooleanToForegroundConverter2" />
+            <local:BooleanToForegroundConverter3 x:Key="BooleanToForegroundConverter3" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -374,9 +375,10 @@
                                             <!--<UXControls:UXTextBlock x:Name="SensitivityTextBlock" Text="{Binding [HeadsetAutomatedActions.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" FontSize="14" Margin="20,0,0,0" />-->
                                             <UXControls:UXTextBlock x:Name="SensitivityTextBlock" FontSize="14" Margin="20,0,0,0">
                                                 <UXControls:UXTextBlock.Foreground>
-                                                    <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
+                                                    <MultiBinding Converter="{StaticResource BooleanToForegroundConverter3}">
                                                         <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
                                                         <Binding Path="IsDarkTheme" />
+                                                        <Binding Path="QuickPauseStatus"/>
                                                     </MultiBinding>
                                                 </UXControls:UXTextBlock.Foreground>
                                                 <UXControls:UXTextBlock.Text>
@@ -398,6 +400,7 @@
                                                                                     <Binding Path="IsDarkTheme"/>
                                                                                     <Binding Path="IsNormalChecked"/>
                                                                                     <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
+                                                                                    <Binding Path="QuickPauseStatus"/>
                                                                                 </MultiBinding>
                                                                             </UXControls:UXTextBlock.Foreground>
                                                                             <UXControls:UXTextBlock.Text>
@@ -430,6 +433,7 @@
                                                                                     <Binding Path="IsDarkTheme"/>
                                                                                     <Binding Path="IsSensitiveChecked"/>
                                                                                     <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
+                                                                                    <Binding Path="QuickPauseStatus"/>
                                                                                 </MultiBinding>
                                                                             </UXControls:UXTextBlock.Foreground>
                                                                             <UXControls:UXTextBlock.Text>
