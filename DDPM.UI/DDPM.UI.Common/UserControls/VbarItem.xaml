@@ -94,9 +94,8 @@
                         </Style>
                     </ContentControl.Style>
                 </ContentControl>
-                <!--Chewlin 20250107 for PIMS-334922,Add TextWrapping="Wrap" TextTrimming="WordEllipsis"-->
-                <UXControls:UXTextBlock Grid.Column="1" Text="{Binding Text}" FontSize="14" TextWrapping="Wrap" TextTrimming="WordEllipsis"
-                                        VerticalAlignment="Center" HorizontalAlignment="Left"
+                <UXControls:UXTextBlock Grid.Column="1" Text="{Binding Text}" FontSize="14"
+                                        VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
                                         TextBlockType="Subtitle2" TextBlockSemanticColorType="Light">
                     <UXControls:UXTextBlock.Style>
                         <Style TargetType="UXControls:UXTextBlock">
