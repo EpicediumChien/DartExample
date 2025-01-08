@@ -535,14 +535,6 @@ namespace DDPM.UI.Common
 
             if (deviceInfo != null)
             {
-                // Handle EOL and non-dell peripherials return empty to show lineart
-                if (deviceInfo.Type == DPeMPublic.Common.Enums.DeviceType.LogicalKeyboard
-                    && EOLKBList.Contains(deviceInfo.ModelNumber))
-                    return string.Empty;
-                if (deviceInfo.Type == DPeMPublic.Common.Enums.DeviceType.LogicalMouse
-                    && EOLMouseList.Contains(deviceInfo.ModelNumber))
-                    return string.Empty;
-
                 //[#PeripheralModelMap] This mapping table has a duplicate code in
                 //1 DdpmCommonHelpers.cs    DeterminePeripheralProductImageFileName()
                 //2 HomeDevices             TooltipModelName property

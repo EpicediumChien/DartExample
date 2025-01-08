@@ -20,6 +20,7 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Windows.Devices.Geolocation;
 using static System.Net.Mime.MediaTypeNames;
@@ -260,20 +261,26 @@ namespace DDPM.UI.Plugin.ViewModels
             string imageFileName = DdpmCommonHelper.DeterminePeripheralProductImageFileName(CurrentDeviceInfo);
             if (!String.IsNullOrEmpty(imageFileName))
             {
-                ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}{colorCode}.png";
-            }
-            else if (CurrentDeviceInfo.Type == DeviceType.LogicalKeyboard || CurrentDeviceInfo.Type == DeviceType.LogicalMouse)
-            {
-                ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/";
-                if (!DdpmCommonHelper.isDarkMode())
+                if (CurrentDeviceInfo.Type == DeviceType.LogicalNotSupported)
                 {
-                    ImageFilePath += "LightMode/";
+                    ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/";
+                    if (!DdpmCommonHelper.isDarkMode())
+                    {
+                        ImageFilePath += "LightMode/";
+                    }
+                    if (DdpmCommonHelper.EOLKBList.Contains(CurrentDeviceInfo?.ModelNumber ?? string.Empty))
+                    {
+                        ImageFilePath += "Lineart-kb.png";
+                    }
+                    if (DdpmCommonHelper.EOLMouseList.Contains(CurrentDeviceInfo?.ModelNumber ?? string.Empty))
+                    {
+                        ImageFilePath += "Lineart-ms.png";
+                    }
                 }
-                if (CurrentDeviceInfo.Type == DeviceType.LogicalKeyboard)
-                    ImageFilePath += "Lineart-kb.png";
-                else if (CurrentDeviceInfo.Type == DeviceType.LogicalMouse)
-                    ImageFilePath += "Lineart-ms.png";
+                else
+                    ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}{colorCode}.png";
             }
+
             FirmwareVersion = CurrentDeviceInfo.FirmwareVersion;
             var fv = CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
             FirmwareVersion2 = $"Firmware Version {fv.Substring(0, 1)}.{fv.Substring(1, 1)}.{fv.Substring(2, 1)}.{fv.Substring(3, 1)}";
