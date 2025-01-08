@@ -3742,25 +3742,27 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             GetCurrentEaCondition();
         }
 
-        public Task<bool> SetEAFunctionEnabled(bool isEnabled)
-        {
-            if (_eaService != null)
-            {
-                _eaService.IsFunctionEnabled = isEnabled;
-                return Task.FromResult(true);
-            }
-            return Task.FromResult(false);
-        }
+        // Robert_Lin, 2025-1-7, EAPlugin.IsFunctionEnabled is deleted.
+        //public Task<bool> SetEAFunctionEnabled(bool isEnabled)
+        //{
+        //    if (_eaService != null)
+        //    {
+        //        _eaService.IsFunctionEnabled = isEnabled;
+        //        return Task.FromResult(true);
+        //    }
+        //    return Task.FromResult(false);
+        //}
 
-        public Task<ObjGetVCP> GetEAFunctionEnabled()
-        {
-            if (_eaService != null)
-            {
-                return Task.FromResult<ObjGetVCP>(new ObjGetVCP()
-                { result = false, value = _eaService.IsFunctionEnabled });
-            }
-            return Task.FromResult<ObjGetVCP>(new ObjGetVCP() { result = false, value = false });
-        }
+        //Robert_Lin, 2025-1-7, EAPlugin.IsFunctionEnabled is deleted.
+        //public Task<ObjGetVCP> GetEAFunctionEnabled()
+        //{
+        //    if (_eaService != null)
+        //    {
+        //        return Task.FromResult<ObjGetVCP>(new ObjGetVCP()
+        //        { result = false, value = _eaService.IsFunctionEnabled });
+        //    }
+        //    return Task.FromResult<ObjGetVCP>(new ObjGetVCP() { result = false, value = false });
+        //}
 
         public Task<bool> SetEAWrokSplit(MonitorInfo monitorInfo, int cellCount, char splitKey, List<double>? settings)
         {

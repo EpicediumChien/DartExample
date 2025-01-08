@@ -60,7 +60,8 @@ namespace DDPM.UI.Module.EzMemory.Tests
             easyArrangeMock = new Mock<IEasyArrangeService>();
             easyArrange = easyArrangeMock.Object;
             deviceManagerSAMock = new Mock<IDeviceManagerSA>();
-            deviceManagerSAMock.Setup(x => x.GetEAFunctionEnabled()).Returns(Task.FromResult(new ObjGetVCP() { result = true, value = true }));
+            //Robert_Lin, 2025-1-7, IsEAFunctionEnabled is deleted
+            //deviceManagerSAMock.Setup(x => x.GetEAFunctionEnabled()).Returns(Task.FromResult(new ObjGetVCP() { result = true, value = true }));
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             deviceManagerSA = deviceManagerSAMock.Object;
             HomeDevice.DeviceManagerSA = deviceManagerSAMock.Object;

@@ -328,6 +328,8 @@
 
                                     <Image x:Name="devImg" Source="{Binding DeviceImage}" Stretch="Uniform"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                                           Focusable="True"
+                                           AutomationProperties.Name="{Binding TooltipModelName}"
                                            Margin="0">
                                         <Image.Style>
                                             <Style TargetType="Image">
