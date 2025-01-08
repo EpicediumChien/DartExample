@@ -30,7 +30,7 @@ using Windows.Media.MediaProperties;
 using Windows.Storage;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-using WebcamProfile = DDPM.UI.Common.WebcamProfile;
+using WebcamProfile = DDPM.SA.Common.Settings.WebcamProfile;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
@@ -277,6 +277,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isEnable_Snooze = _isChecked_WalkAwayLock && _isChecked_ProximitySensor; // jim modify for PIMS - 328195
 
                 OnPropertyChanged("IsEnable_WalkAwayLock");
+                OnPropertyChanged("IsEnable_Snooze"); // jim modify for PIMS - 328195
             }
         }
 
@@ -544,7 +545,7 @@ namespace DDPM.UI.Plugin.ViewModels
             WebcamSettings.SelectedResolution = _resolutions[index];
             //if (!WebcamSettings.SelectedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
             //    WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, "30");
-            WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
             OnPropertyChanged(nameof(Resolution_IsSelected));
         }
 
@@ -556,7 +557,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             FPS_IsSelected[index] = true;
             WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution] = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][index];
-            WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
             OnPropertyChanged(nameof(FPS_IsSelected));
         }
 
@@ -571,7 +572,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 FOV_IsSelected[j] = false;
             }
             FOV_IsSelected[index] = true;
-            WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
             OnPropertyChanged(nameof(FOV_IsSelected));
         }
 
@@ -618,7 +619,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 IsChecked_ProximitySensor = false;
                 WebcamSettings.IsFirstTime = false;
-                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
                 _log.Info("WebCameraViewModel ExportWebcamSettings Finish");
             }
 
@@ -630,7 +631,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool IsUSB3 = false;
         private void InitializeWebcam()
         {
-            WebcamSettings = WebcamSettings.ImportWebcamSettings(Model, CurrentDeviceInfo!);
+            WebcamSettings = WebcamSettings.ImportWebcamSettings(Model, CurrentDeviceInfo!, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
             //WebcamSettings.SetJsonToResolution(WebcamSettings, CurrentDeviceInfo!);
 
             //if (WebcamSettings.SelectedProfileName == "")
@@ -733,8 +734,9 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 _fOVs[k] = int.Parse(CurrentDeviceInfo!.FOVValues[k]);
             }
-
+            _log.Info($"GetIsAllSupportedResolutionsFound Before :{IsUSB3}");
             IsUSB3 = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(CurrentDeviceInfo!.ID.ToString()).Result;
+            _log.Info($"GetIsAllSupportedResolutionsFound After :{IsUSB3}");
             if (!IsUSB3)
             {
                 _ = DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), false);
@@ -944,7 +946,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 WebcamSettings.SelectedProfileName = value;
-                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
             }
         }
 
@@ -1089,7 +1091,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 WebcamSettings.VideoCaptureFolder = value;
-                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
             }
         }
         public bool WebcamCountdown
@@ -1098,7 +1100,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 WebcamSettings.WebcamCountdown = value;
-                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
             }
         }
         public bool WebcamGrid
@@ -1110,12 +1112,27 @@ namespace DDPM.UI.Plugin.ViewModels
                     return;
 
                 WebcamSettings.WebcamGrid = value;
-                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(WebcamGridVisibity));
                 //WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
+        private bool _showGrid = true;
+        public bool ShowGrid
+        {
+            get => _showGrid;
+            set
+            {
+                _showGrid = value;
+                OnPropertyChanged(nameof(WebcamGridVisibity));
+            }
+        }
+        public Visibility WebcamGridVisibity
+        {
+            get => ShowGrid && WebcamGrid ? Visibility.Visible : Visibility.Collapsed;
+        }
         public string IsMicEnumerationOnText
         {
             get => CurrentDeviceInfo!.IsMicEnumerationOn ? Strings.On : Strings.Off;
@@ -1900,7 +1917,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void UpdateProperty(string property, object value)
         {
-            WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+            WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
             switch (property)
             {
                 case "IsFocusOn":

@@ -61,12 +61,13 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                 }
             }
 
+            //Robert_Lin, 2025-1-7, this Dev flag will be removed. unless it's need in future development.
             //Robert_Lin, 2024-12-8, force the Restore to default button be locked, for debugging and LightMode design
-            if (DDPM.UI.Common.User32.IniReadInt("DDPMDebug", "DisplayDefaultLeftView.RestoreToDefaultButton.IsLocked", 0, @"C:\temp\DDPMDebug.txt") == 1)
-            {
-                RestoreLockIcon.Visibility = Visibility.Visible;
-                txtRestore.IsEnabled = false;
-            }
+            //if (DDPM.UI.Common.User32.IniReadInt("DDPMDebug", "DisplayDefaultLeftView.RestoreToDefaultButton.IsLocked", 0, @"C:\temp\DDPMDebug.txt") == 1)
+            //{
+            //    RestoreLockIcon.Visibility = Visibility.Visible;
+            //    txtRestore.IsEnabled = false;
+            //}
         }
 
         ~DisplayDefaultLeftView()

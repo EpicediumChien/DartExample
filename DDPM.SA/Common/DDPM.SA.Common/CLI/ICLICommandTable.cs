@@ -975,7 +975,7 @@ namespace DDPM.SA.Common
                     Command = commandLineInput.Command,
                     TargetFeature = commandLineInput.TargetFeature,
                     Result = "PASS",
-                    Value = "On"
+                    Value = "ON"
                 }, Formatting.Indented)
             };
         }

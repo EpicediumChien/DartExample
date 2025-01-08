@@ -146,6 +146,8 @@ namespace DDPM.SA.Common
 
         int GetSnooze(Guid deviceId);
         int GetSnoozeLength(Guid deviceId);
+        Task<bool> StartCopilotRegistryMonitor();
+        Task<bool> StopCopilotRegistryMonitor();
 
         void UpdateDTPInstance(IDTPProxyPlugin DTPInstance);
         void UpdateSettingsInstance(ISettingsManagerDev SettingsInstance);

@@ -16,6 +16,7 @@ using DDPM.SA.Common.Settings;
 using Windows.System;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.Common;
+using DDPM.UI.Common.ViewModels;
 
 namespace DDPM.UI.Module.Kvm.Tests
 {
@@ -54,9 +55,9 @@ namespace DDPM.UI.Module.Kvm.Tests
             moduleOwner = moduleOwnerMock!.Object;
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
+            deviceManagerMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new ValueTuple<HotkeySettings, List<HotkeyData>>(new HotkeySettings() { HotkeyInfo = new List<HotkeyInfo>() { new HotkeyInfo() { Hotkey = new List<VirtualKey>() { VirtualKey.Q, VirtualKey.M } } } }, new List<HotkeyData>())));
             //DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo = new VcpCore.Common.MonitorInfo();
             //DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic = new Dictionary<string, List<string>>() { { "AA", new List<string>() }, { "EE", new List<string>() } };
-            //deviceManagerMock.Setup(x => x.ReadCurrentHotkey(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(new ValueTuple<HotkeySettings, List<HotkeyData>>(new HotkeySettings() { HotkeyInfo = new List<HotkeyInfo>() { new HotkeyInfo() { Hotkey = new List<VirtualKey>() { VirtualKey.Q, VirtualKey.M } } } }, new List<HotkeyData>())));
             kvmModule = new KvmModule(moduleOwner);
             kvmViewModel = new KvmViewModel();
             //kvmViewModel.KvmModule = kvmModule;
@@ -745,13 +746,21 @@ namespace DDPM.UI.Module.Kvm.Tests
         {
             var result = kvmViewModel.IsTogglePositionEnabled;
             Assert.That(result, Is.False);
+        }
 
+        [Test]
+        public void TestIsTogglePositionEnableda()
+        {
+            var splitmock = new Mock<ISplit>();
+            var splitItemViewModel = new SplitItemViewModel() { Split = splitmock.Object };
             privateObject = new PrivateObject(kvmViewModel);
             privateObject.SetFieldOrProperty("_pipPbpCaps", new UInt16[3] { 0x02, 0x21, 0x22 });
             var SelectedSplitItem = new SplitItem();
+            var pri = new PrivateObject(SelectedSplitItem);
+            pri.SetFieldOrProperty("vm", splitItemViewModel);
             kvmViewModel.SelectedSplitItem = SelectedSplitItem;
             SelectedSplitItem.SplitOwner = eSplitOwner.PipList;
-            result = kvmViewModel.IsTogglePositionEnabled;
+            var result = kvmViewModel.IsTogglePositionEnabled;
             Assert.That(result, Is.True);
         }
 

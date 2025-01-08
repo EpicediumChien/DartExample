@@ -15,494 +15,497 @@
              d:DesignHeight="671" d:DesignWidth="1374"
              SizeChanged="UserControl_SizeChanged">
 
-  <UserControl.Resources>
-    <ResourceDictionary>
-      <!--<ResourceDictionary.MergedDictionaries>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <!--<ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" />
       </ResourceDictionary.MergedDictionaries>-->
-      <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-      <PluginCommon:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
-      <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
-      <Storyboard x:Key="StoryGotoTwoView">
-        <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
+            <PluginCommon:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <PluginCommon:BoolToHiddenConverter x:Key="BoolToHiddenConverter" />
+            <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
+            <Storyboard x:Key="StoryGotoTwoView">
+                <DoubleAnimation Storyboard.TargetName="RightGrid" Storyboard.TargetProperty="Width"
                                  Duration="0:0:0.4" From="{Binding RightFrameWidthFrom}" To="{Binding RightFrameWidthTo}" FillBehavior="HoldEnd" />
-      </Storyboard>
-      <Storyboard x:Key="StoryShrink">
-        <DoubleAnimation Storyboard.TargetName="largeImage" Storyboard.TargetProperty="MaxWidth" From="900" To="500" Duration="0:0:0.4" AutoReverse="False" />
-        <!--<DoubleAnimation Storyboard.TargetName="BottomGrid" Storyboard.TargetProperty="MaxHeight" From="540" To="500" Duration="0:0:0.4" AutoReverse="False" />-->
-      </Storyboard>
-      <Storyboard x:Key="StoryEnlarge">
-        <DoubleAnimation Storyboard.TargetName="largeImage" Storyboard.TargetProperty="MaxWidth" Duration="0:0:0.4" From="500" To="900" />
-        <!--<DoubleAnimation Storyboard.TargetName="BottomGrid" Storyboard.TargetProperty="MaxHeight" Duration="0:0:0.4" From="500" To="540" />-->
-      </Storyboard>
-      <Style x:Key="KB555F" TargetType="Image">
-        <Setter Property="Width" Value="43" />
-        <Setter Property="Height" Value="43" />
-        <Setter Property="Margin" Value="0,-1,0,0" />
-      </Style>
-      <sys:Double x:Key="F1Width">43</sys:Double>
-      <sys:Double x:Key="F1Height">32</sys:Double>
-      <Style x:Key="F1Style" TargetType="Image">
-        <Setter Property="Width" Value="{DynamicResource F1Width}" />
-        <Setter Property="Height" Value="{DynamicResource F1Height}" />
-      </Style>
-      <!--<Style x:Key="F1Style" TargetType="Image">
+            </Storyboard>
+            <Storyboard x:Key="StoryShrink">
+                <DoubleAnimation Storyboard.TargetName="largeImage" Storyboard.TargetProperty="MaxWidth" From="900" To="500" Duration="0:0:0.4" AutoReverse="False" />
+                <!--<DoubleAnimation Storyboard.TargetName="BottomGrid" Storyboard.TargetProperty="MaxHeight" From="540" To="500" Duration="0:0:0.4" AutoReverse="False" />-->
+            </Storyboard>
+            <Storyboard x:Key="StoryEnlarge">
+                <DoubleAnimation Storyboard.TargetName="largeImage" Storyboard.TargetProperty="MaxWidth" Duration="0:0:0.4" From="500" To="900" />
+                <!--<DoubleAnimation Storyboard.TargetName="BottomGrid" Storyboard.TargetProperty="MaxHeight" Duration="0:0:0.4" From="500" To="540" />-->
+            </Storyboard>
+            <Style x:Key="KB555F" TargetType="Image">
+                <Setter Property="Width" Value="43" />
+                <Setter Property="Height" Value="43" />
+                <Setter Property="Margin" Value="0,-1,0,0" />
+            </Style>
+            <sys:Double x:Key="F1Width">43</sys:Double>
+            <sys:Double x:Key="F1Height">32</sys:Double>
+            <Style x:Key="F1Style" TargetType="Image">
+                <Setter Property="Width" Value="{DynamicResource F1Width}" />
+                <Setter Property="Height" Value="{DynamicResource F1Height}" />
+            </Style>
+            <!--<Style x:Key="F1Style" TargetType="Image">
             <Setter Property="Width" Value="42.5" />
             <Setter Property="Height" Value="32.5" />
             </Style>-->
-      <Thickness x:Key="SectionAMargin" />
-      <Style x:Key="SectionAStyle" TargetType="Image" BasedOn="{StaticResource F1Style}">
-        <Setter Property="Margin" Value="{DynamicResource SectionAMargin}" />
-      </Style>
-      <!--<Style x:Key="SectionAStyle" TargetType="Image" BasedOn="{StaticResource F1Style}">
+            <Thickness x:Key="SectionAMargin" />
+            <Style x:Key="SectionAStyle" TargetType="Image" BasedOn="{StaticResource F1Style}">
+                <Setter Property="Margin" Value="{DynamicResource SectionAMargin}" />
+            </Style>
+            <!--<Style x:Key="SectionAStyle" TargetType="Image" BasedOn="{StaticResource F1Style}">
             <Setter Property="Margin" Value="-1.6, 0, 0, 0" />
             </Style>-->
-      <Thickness x:Key="F5Margin" />
-      <Style x:Key="F5Style" TargetType="Image" BasedOn="{StaticResource F1Style}">
-        <Setter Property="Margin" Value="{DynamicResource F5Margin}" />
-      </Style>
-      <!--<Style x:Key="F5Style" TargetType="Image" BasedOn="{StaticResource F1Style}">
+            <Thickness x:Key="F5Margin" />
+            <Style x:Key="F5Style" TargetType="Image" BasedOn="{StaticResource F1Style}">
+                <Setter Property="Margin" Value="{DynamicResource F5Margin}" />
+            </Style>
+            <!--<Style x:Key="F5Style" TargetType="Image" BasedOn="{StaticResource F1Style}">
             <Setter Property="Margin" Value="0.2,0,0,0" />
             </Style>-->
-      <Thickness x:Key="F9Margin" />
-      <Style x:Key="F9Style" TargetType="Image" BasedOn="{StaticResource F1Style}">
-        <Setter Property="Margin" Value="{DynamicResource F9Margin}" />
-      </Style>
-      <!--<Style x:Key="F9Style" TargetType="Image" BasedOn="{StaticResource F1Style}">
+            <Thickness x:Key="F9Margin" />
+            <Style x:Key="F9Style" TargetType="Image" BasedOn="{StaticResource F1Style}">
+                <Setter Property="Margin" Value="{DynamicResource F9Margin}" />
+            </Style>
+            <!--<Style x:Key="F9Style" TargetType="Image" BasedOn="{StaticResource F1Style}">
             <Setter Property="Margin" Value="0.1,0,0,0" />
             </Style>-->
-      <sys:Double x:Key="PrtScWidth">40</sys:Double>
-      <sys:Double x:Key="PrtScHeight">32.5</sys:Double>
-      <Style x:Key="PrtScSize" TargetType="Image">
-        <Setter Property="Width" Value="{DynamicResource PrtScWidth}" />
-        <Setter Property="Height" Value="{DynamicResource PrtScHeight}" />
-      </Style>
-      <!--<Style x:Key="PrtScSize" TargetType="Image">
+            <sys:Double x:Key="PrtScWidth">40</sys:Double>
+            <sys:Double x:Key="PrtScHeight">32.5</sys:Double>
+            <Style x:Key="PrtScSize" TargetType="Image">
+                <Setter Property="Width" Value="{DynamicResource PrtScWidth}" />
+                <Setter Property="Height" Value="{DynamicResource PrtScHeight}" />
+            </Style>
+            <!--<Style x:Key="PrtScSize" TargetType="Image">
             <Setter Property="Width" Value="41.5" />
             <Setter Property="Height" Value="32.5" />
             </Style>-->
-      <Thickness x:Key="PrtScMargin" />
-      <Style x:Key="PrtScStyle" TargetType="Image" BasedOn="{StaticResource PrtScSize}">
-        <Setter Property="Margin" Value="{DynamicResource PrtScMargin}" />
-      </Style>
-      <!--<Style x:Key="PrtScStyle" TargetType="Image" BasedOn="{StaticResource PrtScSize}">
+            <Thickness x:Key="PrtScMargin" />
+            <Style x:Key="PrtScStyle" TargetType="Image" BasedOn="{StaticResource PrtScSize}">
+                <Setter Property="Margin" Value="{DynamicResource PrtScMargin}" />
+            </Style>
+            <!--<Style x:Key="PrtScStyle" TargetType="Image" BasedOn="{StaticResource PrtScSize}">
             <Setter Property="Margin" Value="2,0,0,0" />
             </Style>-->
-      <Thickness x:Key="SectionBMargin" />
-      <Style x:Key="SectionBStyle" TargetType="Image" BasedOn="{StaticResource PrtScSize}">
-        <Setter Property="Margin" Value="{DynamicResource SectionBMargin}" />
-      </Style>
-      <!--<Style x:Key="SectionBStyle" TargetType="Image" BasedOn="{StaticResource PrtScSize}">
+            <Thickness x:Key="SectionBMargin" />
+            <Style x:Key="SectionBStyle" TargetType="Image" BasedOn="{StaticResource PrtScSize}">
+                <Setter Property="Margin" Value="{DynamicResource SectionBMargin}" />
+            </Style>
+            <!--<Style x:Key="SectionBStyle" TargetType="Image" BasedOn="{StaticResource PrtScSize}">
             <Setter Property="Margin" Value="-3, 0, 0, 0" />
             </Style>-->
-      <sys:Double x:Key="CalculatorWidth">40</sys:Double>
-      <sys:Double x:Key="CalculatorHeight">32.5</sys:Double>
-      <Style x:Key="CalculatorSize" TargetType="Image">
-        <Setter Property="Width" Value="{DynamicResource CalculatorWidth}" />
-        <Setter Property="Height" Value="{DynamicResource CalculatorHeight}" />
-      </Style>
-      <!--<Style x:Key="CalculatorSize" TargetType="Image">
+            <sys:Double x:Key="CalculatorWidth">40</sys:Double>
+            <sys:Double x:Key="CalculatorHeight">32.5</sys:Double>
+            <Style x:Key="CalculatorSize" TargetType="Image">
+                <Setter Property="Width" Value="{DynamicResource CalculatorWidth}" />
+                <Setter Property="Height" Value="{DynamicResource CalculatorHeight}" />
+            </Style>
+            <!--<Style x:Key="CalculatorSize" TargetType="Image">
             <Setter Property="Width" Value="43" />
             <Setter Property="Height" Value="32.5" />
             </Style>-->
-      <Thickness x:Key="CalculatorMargin" />
-      <Style x:Key="CalculatorStyle" TargetType="Image" BasedOn="{StaticResource CalculatorSize}">
-        <Setter Property="Margin" Value="{DynamicResource CalculatorMargin}" />
-      </Style>
-      <!--<Style x:Key="CalculatorStyle" TargetType="Image" BasedOn="{StaticResource CalculatorSize}">
+            <Thickness x:Key="CalculatorMargin" />
+            <Style x:Key="CalculatorStyle" TargetType="Image" BasedOn="{StaticResource CalculatorSize}">
+                <Setter Property="Margin" Value="{DynamicResource CalculatorMargin}" />
+            </Style>
+            <!--<Style x:Key="CalculatorStyle" TargetType="Image" BasedOn="{StaticResource CalculatorSize}">
             <Setter Property="Margin" Value="-117, 0, 0, 0" />
             </Style>-->
-      <Style x:Key="KeyToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
-        <Setter Property="Placement" Value="Top" />
-        <Setter Property="VerticalOffset" Value="-5" />
-        <Setter Property="HorizontalOffset">
-          <Setter.Value>
-            <MultiBinding Converter="{StaticResource CenterToolTipConverter}">
-              <Binding RelativeSource="{RelativeSource Self}" Path="PlacementTarget.ActualWidth" />
-              <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth" />
-            </MultiBinding>
-          </Setter.Value>
-        </Setter>
-      </Style>
-    </ResourceDictionary>
-  </UserControl.Resources>
+            <Style x:Key="KeyToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+                <Setter Property="Placement" Value="Top" />
+                <Setter Property="VerticalOffset" Value="-5" />
+                <Setter Property="HorizontalOffset">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource CenterToolTipConverter}">
+                            <Binding RelativeSource="{RelativeSource Self}" Path="PlacementTarget.ActualWidth" />
+                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth" />
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
 
-  <Grid>
     <Grid>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="Auto" />
-      </Grid.ColumnDefinitions>
-      <!-- Right side: Header + RightView -->
-      <Grid Grid.Column="1" Name="RightGrid" Width="0">
-        <Grid.RowDefinitions>
-          <RowDefinition Height="Auto" />
-          <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <!-- RightViewHeader -->
-        <common:RightViewHeaderCtrl Grid.Row="0" Name="rightViewHeaderCtrl"
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <!-- Right side: Header + RightView -->
+            <Grid Grid.Column="1" Name="RightGrid" Width="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <!-- RightViewHeader -->
+                <common:RightViewHeaderCtrl Grid.Row="0" Name="rightViewHeaderCtrl"
                                             SelectedIndex="{Binding RightViewHeaderSelectedIndex, Mode=TwoWay}"
                                             ItemsSource="{Binding RightViewHeaders, Mode=TwoWay}"
                                             SelectionChanged="RightViewHeaderCtrl_SelectionChanged" />
-        <ContentControl Grid.Row="1" Name="RightFrame" Content="{Binding RightView, Mode=TwoWay}" SizeChanged="RightFrame_SizeChanged" />
-      </Grid>
-      <!-- Layer 2 : Nav -->
-      <Grid Grid.Column="0">
-        <Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
-        <!--Image-->
-        <Grid>
-          <Viewbox Name="largeImage" Margin="30,0" MaxWidth="900">
-            <Grid>
-              <Grid>
-                <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="900" />
-              </Grid>
-              <Grid Name="SectionA" Margin="75,146,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
-                <StackPanel Orientation="Horizontal">
-                  <Image x:Name="F1" Source="{Binding F1ImageFile}" Stretch="Fill" Style="{StaticResource F1Style}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F1Tooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="F2" Source="{Binding F2ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F2Tooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="F3" Source="{Binding F3ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F3Tooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="F4" Source="{Binding F4ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F4Tooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="F5" Source="{Binding F5ImageFile}" Stretch="Fill" Style="{StaticResource F5Style}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F5Tooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="F6" Source="{Binding F6ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F6Tooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="F7" Source="{Binding F7ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F7Tooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="F8" Source="{Binding F8ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
-                                           Visibility="{Binding IsF8Visible, Converter={StaticResource BoolToHiddenConverter}}">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F8Tooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="F9" Source="{Binding F9ImageFile}" Stretch="Fill" Style="{StaticResource F9Style}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F9Tooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="F10" Source="{Binding F10ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F10Tooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="F11" Source="{Binding F11ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F11Tooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="F12" Source="{Binding F12ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F12Tooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="PrtSc" Source="{Binding PrtScImageFile}" Stretch="Fill" Style="{StaticResource PrtScStyle}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
-                                           Visibility="{Binding IsPrtScVisible, Converter={StaticResource BoolToHiddenConverter}}">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PrtScTooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="ScrollLock" Source="{Binding ScrollLockImageFile}" Stretch="Fill" Style="{StaticResource SectionBStyle}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
-                                           Visibility="{Binding IsScrollLockVisible, Converter={StaticResource BoolToHiddenConverter}}">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollLockTooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="PauseBreak" Source="{Binding PauseBreakImageFile}" Stretch="Fill" Style="{StaticResource SectionBStyle}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
-                                           Visibility="{Binding IsPauseBreakVisible, Converter={StaticResource BoolToHiddenConverter}}">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PauseBreakTooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="Calculator" Source="{Binding CalculatorImageFile}" Stretch="Fill" Style="{StaticResource CalculatorStyle}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
-                                           Visibility="{Binding IsCalculatorVisible, Converter={StaticResource BoolToHiddenConverter}}">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding CalculatorTooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                </StackPanel>
-              </Grid>
-              <Grid x:Name="SectionF" Margin="655,180,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
-                <StackPanel Orientation="Vertical">
-                  <Image x:Name="Home" Source="{Binding HomeImageFile}" Stretch="Fill" Style="{StaticResource KB555F}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
-                                           Visibility="{Binding IsHomeVisible, Converter={StaticResource BoolToHiddenConverter}}">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding HomeTooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="End" Source="{Binding EndImageFile}" Stretch="Fill" Style="{StaticResource KB555F}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
-                                           Visibility="{Binding IsEndVisible, Converter={StaticResource BoolToHiddenConverter}}">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding EndTooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="PgUp" Source="{Binding PgUpImageFile}" Stretch="Fill" Style="{StaticResource KB555F}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
-                                           Visibility="{Binding IsPgUpVisible, Converter={StaticResource BoolToHiddenConverter}}">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PgUpTooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                  <Image x:Name="PgDown" Source="{Binding PgDownImageFile}" Stretch="Fill" Style="{StaticResource KB555F}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
-                                           Visibility="{Binding IsPgDownVisible, Converter={StaticResource BoolToHiddenConverter}}">
-                    <Image.ToolTip>
-                      <ToolTip Style="{StaticResource KeyToolTipStyle}">
-                        <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PgDownTooltip}" />
-                      </ToolTip>
-                    </Image.ToolTip>
-                  </Image>
-                </StackPanel>
-              </Grid>
+                <ContentControl Grid.Row="1" Name="RightFrame" Content="{Binding RightView, Mode=TwoWay}" SizeChanged="RightFrame_SizeChanged" />
             </Grid>
-          </Viewbox>
-        </Grid>
-      </Grid>
-      <!--Name & Model-->
-      <Grid Grid.Column="0" VerticalAlignment="Top" Height="200">
-        <Border Background="Transparent" MouseDown="PushBack"></Border>
-        <StackPanel Orientation="Vertical">
-          <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-            <Image Name="title_back"  Margin="64,21,0,0" Source="{DynamicResource title_back}" Stretch="Fill"
+            <!-- Layer 2 : Nav -->
+            <Grid Grid.Column="0">
+                <Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
+                <!--Image-->
+                <Grid>
+                    <Viewbox Name="largeImage" Margin="30,0" MaxWidth="900">
+                        <Grid>
+                            <Grid>
+                                <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="900" />
+                            </Grid>
+                            <Grid Name="SectionA" Margin="75,146,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image x:Name="F1" Source="{Binding F1ImageFile}" Stretch="Fill" Style="{StaticResource F1Style}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F1Tooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="F2" Source="{Binding F2ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F2Tooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="F3" Source="{Binding F3ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F3Tooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="F4" Source="{Binding F4ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F4Tooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="F5" Source="{Binding F5ImageFile}" Stretch="Fill" Style="{StaticResource F5Style}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F5Tooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="F6" Source="{Binding F6ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F6Tooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="F7" Source="{Binding F7ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F7Tooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="F8" Source="{Binding F8ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
+                                           Visibility="{Binding IsF8Visible, Converter={StaticResource BoolToHiddenConverter}}">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F8Tooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="F9" Source="{Binding F9ImageFile}" Stretch="Fill" Style="{StaticResource F9Style}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F9Tooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="F10" Source="{Binding F10ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F10Tooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="F11" Source="{Binding F11ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F11Tooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="F12" Source="{Binding F12ImageFile}" Stretch="Fill" Style="{StaticResource SectionAStyle}" MouseLeftButtonDown="KeyClicked" Visibility="{Binding IsAllKeysVisible}" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding F12Tooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="PrtSc" Source="{Binding PrtScImageFile}" Stretch="Fill" Style="{StaticResource PrtScStyle}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
+                                           Visibility="{Binding IsPrtScVisible, Converter={StaticResource BoolToHiddenConverter}}">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PrtScTooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="ScrollLock" Source="{Binding ScrollLockImageFile}" Stretch="Fill" Style="{StaticResource SectionBStyle}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
+                                           Visibility="{Binding IsScrollLockVisible, Converter={StaticResource BoolToHiddenConverter}}">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding ScrollLockTooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="PauseBreak" Source="{Binding PauseBreakImageFile}" Stretch="Fill" Style="{StaticResource SectionBStyle}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
+                                           Visibility="{Binding IsPauseBreakVisible, Converter={StaticResource BoolToHiddenConverter}}">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PauseBreakTooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="Calculator" Source="{Binding CalculatorImageFile}" Stretch="Fill" Style="{StaticResource CalculatorStyle}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
+                                           Visibility="{Binding IsCalculatorVisible, Converter={StaticResource BoolToHiddenConverter}}">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding CalculatorTooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                </StackPanel>
+                            </Grid>
+                            <Grid x:Name="SectionF" Margin="655,180,0,0" VerticalAlignment="Top" HorizontalAlignment="Left">
+                                <StackPanel Orientation="Vertical">
+                                    <Image x:Name="Home" Source="{Binding HomeImageFile}" Stretch="Fill" Style="{StaticResource KB555F}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
+                                           Visibility="{Binding IsHomeVisible, Converter={StaticResource BoolToHiddenConverter}}">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding HomeTooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="End" Source="{Binding EndImageFile}" Stretch="Fill" Style="{StaticResource KB555F}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
+                                           Visibility="{Binding IsEndVisible, Converter={StaticResource BoolToHiddenConverter}}">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding EndTooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="PgUp" Source="{Binding PgUpImageFile}" Stretch="Fill" Style="{StaticResource KB555F}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
+                                           Visibility="{Binding IsPgUpVisible, Converter={StaticResource BoolToHiddenConverter}}">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PgUpTooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                    <Image x:Name="PgDown" Source="{Binding PgDownImageFile}" Stretch="Fill" Style="{StaticResource KB555F}" MouseLeftButtonDown="KeyClicked" MouseEnter="KeyHoverIn" MouseLeave="KeyHoverOut"
+                                           Visibility="{Binding IsPgDownVisible, Converter={StaticResource BoolToHiddenConverter}}">
+                                        <Image.ToolTip>
+                                            <ToolTip Style="{StaticResource KeyToolTipStyle}">
+                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding PgDownTooltip}" />
+                                            </ToolTip>
+                                        </Image.ToolTip>
+                                    </Image>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                    </Viewbox>
+                </Grid>
+            </Grid>
+            <!--Name & Model-->
+            <Grid Grid.Column="0" VerticalAlignment="Top" Height="200">
+                <Border Background="Transparent" MouseDown="PushBack"></Border>
+                <StackPanel Orientation="Vertical">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <Image Name="title_back"  Margin="64,21,0,0" Source="{DynamicResource title_back}" Stretch="Fill"
                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="24" Height="24">
-              <Image.InputBindings>
-                <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
-              </Image.InputBindings>
-            </Image>
-            <UXControls:UXTextBlock Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
+                            <Image.InputBindings>
+                                <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
+                            </Image.InputBindings>
+                        </Image>
+                        <UXControls:UXTextBlock Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
                                                 x:Name="devName" Style="{StaticResource ProductNameTextStyle}" />
-          </StackPanel>
-          <StackPanel Orientation="Horizontal">
-            <UXControls:UXTextBlock Text="{Binding Model2}" Margin="101,18,0,0" HorizontalAlignment="Left"
-                                                Style="{StaticResource ModelNumberTextStyle}" />
-            <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
-                               VerticalAlignment="Top" Cursor="" Width="16" Height="16">
-              <Image.InputBindings>
-                <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
-              </Image.InputBindings>
-              <Image.ToolTip>
-                <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                  <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                    <Border.Resources>
-                      <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                    </Border.Resources>
-                    <StackPanel Orientation="Horizontal">
-                      <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
                     </StackPanel>
-                  </Border>
-                </ToolTip>
-              </Image.ToolTip>
-            </Image>
-            <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/MultiDevice.png" Stretch="Fill"
+                    <StackPanel Orientation="Horizontal">
+                        <UXControls:UXTextBlock Text="{Binding Model2}" Margin="101,18,0,0" HorizontalAlignment="Left"
+                                                Style="{StaticResource ModelNumberTextStyle}" />
+                        <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Stretch="Fill"
+                               VerticalAlignment="Top" Cursor="" Width="16" Height="16">
+                            <Image.InputBindings>
+                                <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
+                            </Image.InputBindings>
+                            <Image.ToolTip>
+                                <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <Border.Resources>
+                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                        </Border.Resources>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
+                                        </StackPanel>
+                                    </Border>
+                                </ToolTip>
+                            </Image.ToolTip>
+                        </Image>
+                        <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/MultiDevice.png" Stretch="Fill"
                                VerticalAlignment="Top" Width="16" Height="16" Visibility="{Binding MultiDevicesInfoVisibility}">
-              <Image.ToolTip>
-                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                  <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding MultiDeviceTooltip}" TextWrapping="Wrap" Width="350" />
-                </ToolTip>
-              </Image.ToolTip>
-            </Image>
-            <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Alert.png" Stretch="Fill"
+                            <Image.ToolTip>
+                                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                                    <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding MultiDeviceTooltip}" TextWrapping="Wrap" Width="350" />
+                                </ToolTip>
+                            </Image.ToolTip>
+                        </Image>
+                        <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Alert.png" Stretch="Fill"
                                VerticalAlignment="Top" Width="16" Height="16" Visibility="{Binding CopilotInfoVisibility}">
-              <Image.ToolTip>
-                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8" Background="Wheat">
-                  <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding CopilotTooltip}" TextWrapping="Wrap" Width="346" />
-                </ToolTip>
-              </Image.ToolTip>
-            </Image>
-          </StackPanel>
-          <UXControls:UXTextBlock Name="txtEOL" Text="{Binding [EOL.0], Source={x:Static lang:LangHelper.Instance}}" Margin="101,18,0,0" HorizontalAlignment="Left" Style="{StaticResource ModelNumberTextStyle}" Visibility="Collapsed" />
-        </StackPanel>
-      </Grid>
-      <!-- Vbar -->
-      <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
-        <ItemsControl Name="vbarList" Margin="0,10,0,0"
+                            <Image.ToolTip>
+                                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8" Background="Wheat">
+                                    <TextBlock Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding CopilotTooltip}" TextWrapping="Wrap" Width="346" />
+                                </ToolTip>
+                            </Image.ToolTip>
+                        </Image>
+                    </StackPanel>
+                    <UXControls:UXTextBlock Name="txtEOL" Text="{Binding [EOL.0], Source={x:Static lang:LangHelper.Instance}}" Margin="101,18,0,0" HorizontalAlignment="Left" Style="{StaticResource ModelNumberTextStyle}" Visibility="Collapsed" />
+                </StackPanel>
+            </Grid>
+            <!-- Vbar -->
+            <Grid HorizontalAlignment="Right" VerticalAlignment="Top" Name="VbarGrid">
+                <ItemsControl Name="vbarList" Margin="0,10,0,0"
                                   HorizontalAlignment="Right" VerticalAlignment="Top"
                                   ItemsSource="{Binding VbarItems}">
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <Grid>
-                <ContentPresenter />
-              </Grid>
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-        </ItemsControl>
-      </Grid>
-      <!--Battery-->
-      <Grid VerticalAlignment="Bottom" MinHeight="200">
-        <Border Background="Transparent" MouseDown="PushBack"></Border>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-          <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-            <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
-              <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" Margin="20,18,0,0">
-                  <ContentControl Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
-                  <!-- <Image Margin="4,0,0,0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" /> -->
-                  <UXControls:UXTextBlock Name="txtDongleHost" Foreground="{DynamicResource DefaultTheme_TxtColor}" VerticalAlignment="Center" Margin="7,0,0,0"
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <ContentPresenter />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+            <!--Battery-->
+            <Grid VerticalAlignment="Bottom" MinHeight="200">
+                <Border Background="Transparent" MouseDown="PushBack"></Border>
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal" Margin="20,18,0,0">
+                                    <ContentControl Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
+                                    <!-- <Image Margin="4,0,0,0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" /> -->
+                                    <UXControls:UXTextBlock Name="txtDongleHost" Foreground="{DynamicResource DefaultTheme_TxtColor}" VerticalAlignment="Center" Margin="7,0,0,0"
                                                             HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" FontWeight="Bold" Text="{Binding [USBWirelessReceiver], Source={x:Static lang:LangHelper.Instance}}"/>
-                </StackPanel>
-                <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
-                <UXControls:UXTextBlock Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" Margin="20,13,0,0" />
-                <UXControls:UXTextBlock Name="txtSlot" Style="{StaticResource ConnectionStyle3}" Margin="20,15,0,0" />
-              </StackPanel>
-            </Border>
-            <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="BLConnection" VerticalAlignment="Bottom">
-              <StackPanel Orientation="Vertical">
-                <StackPanel Name="Host1" Orientation="Horizontal" Margin="20,18,0,0">
-                  <UXControls:UXTextBlock Name="txt1" Text="1" />
-                  <ContentControl x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}">
-                    <ContentControl.Style>
-                      <Style TargetType="ContentControl">
-                        <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}"/>
-                        <Style.Triggers>
-                          <DataTrigger Binding="{Binding ImgBL1}" Value="True">
-                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}"/>
-                          </DataTrigger>
-                        </Style.Triggers>
-                      </Style>
-                    </ContentControl.Style>
-                  </ContentControl>
-                  <!-- <Image x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" /> -->
-                  <UXControls:UXTextBlock Name="txtBLHost1" Margin="4,0,0,0" />
-                </StackPanel>
-                <StackPanel Name="Host2" Orientation="Horizontal" Margin="20,18,0,18">
-                  <UXControls:UXTextBlock Name="txt2" Text="2" />
-                  <ContentControl x:Name="imgBL2" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}">
-                    <ContentControl.Style>
-                      <Style TargetType="ContentControl">
-                        <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}"/>
-                        <Style.Triggers>
-                          <DataTrigger Binding="{Binding ImgBL2}" Value="True">
-                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}"/>
-                          </DataTrigger>
-                        </Style.Triggers>
-                      </Style>
-                    </ContentControl.Style>
-                  </ContentControl>
-                  <!-- <Image x:Name="imgBL2" Margin="4,0,0,0" Width="16" Height="16" /> -->
-                  <UXControls:UXTextBlock Name="txtBLHost2" Margin="4,0,0,0" />
-                </StackPanel>
-                <StackPanel Name="Host3" Orientation="Horizontal" Margin="20,0,0,18">
-                  <UXControls:UXTextBlock Name="txt3" Text="3" />
-                  <ContentControl x:Name="imgBL3" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}">
-                    <ContentControl.Style>
-                      <Style TargetType="ContentControl">
-                        <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}"/>
-                        <Style.Triggers>
-                          <DataTrigger Binding="{Binding ImgBL3}" Value="True">
-                            <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}"/>
-                          </DataTrigger>
-                        </Style.Triggers>
-                      </Style>
-                    </ContentControl.Style>
-                  </ContentControl>
-                  <!-- <Image x:Name="imgBL3" Margin="4,0,0,0" Width="16" Height="16" /> -->
-                  <UXControls:UXTextBlock Name="txtBLHost3" Margin="4,0,0,0" />
-                </StackPanel>
-              </StackPanel>
-            </Border>
-          </StackPanel>
-          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <DDPMUserControls:BatteryIndicator Name="Battery" Margin="0,0,0,70" HorizontalAlignment="Center" MouseEnter="BatteryIndicator_MouseEnter"
+                                </StackPanel>
+                                <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
+                                <UXControls:UXTextBlock Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" Margin="20,13,0,0" />
+                                <UXControls:UXTextBlock Name="txtSlot" Style="{StaticResource ConnectionStyle3}" Margin="20,15,0,0" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="BLConnection" VerticalAlignment="Bottom">
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Name="Host1" Orientation="Horizontal" Margin="20,18,0,0">
+                                    <UXControls:UXTextBlock Name="txt1" Text="1" />
+                                    <ContentControl x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}">
+                                        <ContentControl.Style>
+                                            <Style TargetType="ContentControl">
+                                                <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ImgBL1}" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContentControl.Style>
+                                    </ContentControl>
+                                    <!-- <Image x:Name="imgBL1" Margin="4,0,0,0" Width="16" Height="16" /> -->
+                                    <UXControls:UXTextBlock Name="txtBLHost1" Margin="4,0,0,0" />
+                                </StackPanel>
+                                <StackPanel Name="Host2" Orientation="Horizontal" Margin="20,18,0,18">
+                                    <UXControls:UXTextBlock Name="txt2" Text="2" />
+                                    <ContentControl x:Name="imgBL2" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}">
+                                        <ContentControl.Style>
+                                            <Style TargetType="ContentControl">
+                                                <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ImgBL2}" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContentControl.Style>
+                                    </ContentControl>
+                                    <!-- <Image x:Name="imgBL2" Margin="4,0,0,0" Width="16" Height="16" /> -->
+                                    <UXControls:UXTextBlock Name="txtBLHost2" Margin="4,0,0,0" />
+                                </StackPanel>
+                                <StackPanel Name="Host3" Orientation="Horizontal" Margin="20,0,0,18">
+                                    <UXControls:UXTextBlock Name="txt3" Text="3" />
+                                    <ContentControl x:Name="imgBL3" Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Bluetooth}">
+                                        <ContentControl.Style>
+                                            <Style TargetType="ContentControl">
+                                                <Setter Property="Foreground" Value="{DynamicResource ConnHover_DeactiveTextColor}"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ImgBL3}" Value="True">
+                                                        <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_PathColor}"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContentControl.Style>
+                                    </ContentControl>
+                                    <!-- <Image x:Name="imgBL3" Margin="4,0,0,0" Width="16" Height="16" /> -->
+                                    <UXControls:UXTextBlock Name="txtBLHost3" Margin="4,0,0,0" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <DDPMUserControls:BatteryIndicator Name="Battery" Margin="0,0,0,70" HorizontalAlignment="Center" MouseEnter="BatteryIndicator_MouseEnter"
                                                            BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}" MouseLeave="BatteryIndicator_MouseLeave"
                                                            ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
-            <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="{Binding IsRestoreEnable, Converter={StaticResource BoolToVisibilityConverter}}" x:Name="btnRestore"
+                        <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="{Binding IsRestoreEnable, Converter={StaticResource BoolToVisibilityConverter}}" x:Name="btnRestore"
                                 BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="*"/>
-                  <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <UXControls:UXTextBlock Name="txtRestore" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}" VerticalAlignment="Center" Grid.Column="0"
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+                                <UXControls:UXTextBlock Name="txtRestore" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}" VerticalAlignment="Center" Grid.Column="0"
                                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [RestoreToDefault], Source={x:Static lang:LangHelper.Instance}}"/>
-                <Image Grid.Column="1" Name="RestoreLockIcon" Visibility="Collapsed" Margin="0,0,6,0"
+                                <Image Grid.Column="1" Name="RestoreLockIcon" Visibility="Collapsed" Margin="0,0,6,0"
                                        Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
                                        VerticalAlignment="Center" HorizontalAlignment="Center" Width="12" Height="12">
-                  <Image.ToolTip>
-                    <ToolTip>
-                      <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                        <Border.Resources>
-                          <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                        </Border.Resources>
-                        <StackPanel>
-                          <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
-                          </StackPanel>
-                        </StackPanel>
-                      </Border>
-                    </ToolTip>
-                  </Image.ToolTip>
-                </Image>
-              </Grid>
-            </Border>
-            <ContentControl Name="EOLDongle" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Height="40" Visibility="Collapsed" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
-            <!-- <Image Name="EOLDongle" Source="/DDPM.UI.Resources;component/Resources/Images/EOLDongle.png" Stretch="Fill" Visibility="Collapsed"
+                                    <Image.ToolTip>
+                                        <ToolTip>
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <Border.Resources>
+                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                </Border.Resources>
+                                                <StackPanel>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Border>
+                                        </ToolTip>
+                                    </Image.ToolTip>
+                                </Image>
+                            </Grid>
+                        </Border>
+                        <ContentControl Name="EOLDongle" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Height="40" Visibility="Collapsed" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
+                        <!-- <Image Name="EOLDongle" Source="/DDPM.UI.Resources;component/Resources/Images/EOLDongle.png" Stretch="Fill" Visibility="Collapsed"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="40" Height="40" /> -->
-            <Border Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair"
+                        <Border Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair"
                                 BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
-              <UXControls:UXTextBlock Name="txtUnpair" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
-            </Border>
-          </StackPanel>
-        </StackPanel>
-      </Grid>
+                            <UXControls:UXTextBlock Name="txtUnpair" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}" 
+                                      Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}"
+                                      TextWrapping="Wrap"
+                                      VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Grid>
     </Grid>
-  </Grid>
 </UserControl>

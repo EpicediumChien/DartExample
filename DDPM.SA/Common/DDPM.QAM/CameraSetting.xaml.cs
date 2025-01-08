@@ -11,6 +11,9 @@ namespace DDPM.QAM
     {
         QAMPage QAMPage;
 
+        //Derek 2025/01/06 to fix bug that QAM UI will set to default when click Presets button angin
+        private bool bFirstClick = true;
+
         public CameraSetting(QAMPage qam)
         {
             InitializeComponent();
@@ -48,6 +51,8 @@ namespace DDPM.QAM
         }
         private void Presets_Click(object sender, MouseButtonEventArgs e)
         {
+            DdpmCommonHelper.DeviceManagerSA!.WriteLog($"Presets_Click, bFirstClick = {bFirstClick}");
+
             if (DataContext is QAMPageViewModel vm)
             {
                 PresetsPage presetsPage = new PresetsPage();
@@ -58,6 +63,13 @@ namespace DDPM.QAM
                 vm.Settings_Selected(0);
                 vm.RefreshUI();
                 vm.OpenFullView(presetsPage);
+
+                //select profile for first load
+                if (bFirstClick)
+                {
+                    bFirstClick = false;
+                    vm.SetProfile(); 
+                }
             }
         }
 

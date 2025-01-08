@@ -447,7 +447,7 @@ namespace DDPM.UI.Module.Brightness
         public bool AreAllConfigsNotBusy(List<ALSConfig> configs)
         {
             if (configs == null || configs.Count == 0)
-                return true; 
+                return true;
 
             return configs.All(config => !config.isBusy);
         }
@@ -1358,6 +1358,7 @@ namespace DDPM.UI.Module.Brightness
                 }
                 NotifyPropertyChanged("isAlsSupported");
                 NotifyPropertyChanged("IsScheduledShow");
+                NotifyPropertyChanged("IsScheduledLuminanceShow");
             }
         }
 
@@ -3115,13 +3116,8 @@ namespace DDPM.UI.Module.Brightness
         {
             get
             {
-                if (isAlsSupported.Equals(Visibility.Collapsed) || isAlsSupported.Equals(Visibility.Hidden))
-                {
-                    if (isLuminanceSupport.Equals(Visibility.Visible))
-                        return Visibility.Visible;
-                    else
-                        return Visibility.Collapsed;
-                }
+                if (isLuminanceSupport.Equals(Visibility.Visible))
+                    return Visibility.Visible;
                 else
                     return Visibility.Collapsed;
             }

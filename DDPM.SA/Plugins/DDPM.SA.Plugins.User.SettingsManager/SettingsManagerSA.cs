@@ -305,6 +305,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             updateITandGlobalSetting();
 
+            
+
             SettingReadyEvent?.Invoke(this, new EventArgs());
             _isAllSettingsReady = true;
         }
@@ -1332,7 +1334,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                                 {
                                     //if ((settings.ServiceTag == monitorSettings.ServiceTag && isSameModel == false) || 
                                     //(settings.ServiceTag == serviceTag && isSameModel == true))
-                                    if ((isSameModel == false) || (isSameModel == true))//Elsa add to fix PIMS-313793
+                                    WriteLog($"[DisplayImportSettings] isSameModel : {isSameModel}. ");
+                                    WriteLog($"[DisplayImportSettings] current settings.ServiceTag : {serviceTag}, profile data serviceTag: {settings.ServiceTag}. ");
+                                    // SameModel flag on will override all same model
+                                    if (isSameModel || settings.ServiceTag == serviceTag)
                                     {
                                         settings.Input = monitorSettings.Input;
                                         settings.KVM = monitorSettings.KVM;
@@ -2197,9 +2202,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 retList = JsonConvert.DeserializeObject<InterruptScreenRoot>(value);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                WriteLog($"[RunInterruptScreenDeserializeObject] exception: {e.Message}");
             }
             return retList;
         }
