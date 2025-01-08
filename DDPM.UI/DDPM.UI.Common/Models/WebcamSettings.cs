@@ -295,7 +295,49 @@ namespace DDPM.UI.Common
                         DdpmCommonHelper.WriteUILog(@$"[WebcamSettings] ImportWebcamSettings jsonString:{jsonString}!");
                     }
                     if (!string.IsNullOrEmpty(jsonString))
+                    {
+                        //leo fixed start 2025/01/07
+                        //Always reread the resolution and FPS information.
+                        try
+                        {
+                            var json = File.ReadAllText(filePath);
+                            WebcamSettings tmp = JsonConvert.DeserializeObject<WebcamSettings>(json) ?? new WebcamSettings();
+                            tmp.SupportedFPSs.Clear();
+                            tmp.SelectedFPSs.Clear();
+                            tmp.Resolutions.Clear();
+                            Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetSupportedResolutions(di.ID.ToString());
+                            var str = task.Result;
+                            var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
+                            if (resolutions != null)
+                            {
+                                foreach (var res in resolutions.OrderByDescending(x => x.Resolution))
+                                {
+                                    var resName = res.Resolution switch
+                                    {
+                                        "1280x720" => "HD",
+                                        "720x1280" => "HD",
+                                        "1920x1080" => "Full HD",
+                                        "1080x1920" => "Full HD",
+                                        "2560x1440" => "2K QHD",
+                                        "1440x2560" => "2K QHD",
+                                        "3840x2160" => "4K UHD",
+                                        "2160x3840" => "4K UHD",
+                                        _ => "8K UHD"
+                                    };
+                                    tmp.SupportedFPSs.Add(resName, res.FPS);
+                                    tmp.SelectedFPSs.Add(resName, "30");
+                                    tmp.Resolutions.Add(resName, res.Resolution);
+                                }
+                            }
+                            File.WriteAllText(filePath, JsonConvert.SerializeObject(tmp));
+                        }
+                        catch ( Exception ex )  
+                        {
+                            DdpmCommonHelper.WriteUILog("ImportWebcamSettings error :　" + ex.Message);
+                        }
+                        //leo fixed end
                         return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
+                    }
                 }
                 else
                 {
