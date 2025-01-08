@@ -1,4 +1,6 @@
-﻿using DDPM.UI.Plugin.ViewModels;
+﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
+using DDPM.UI.Plugin.ViewModels;
 using Microsoft.Win32;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -22,11 +24,17 @@ namespace DDPM.UI.Module.SpeakerInteractions
             InitializeComponent();
             _vm = vm;
 
-            if (!isTeamsInstalled)
+            Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.GetAllAppList().Result;
+
+            var matchingTeams = data.Values.Where(app => "teams".Any(keyword => app.AppName.ToLower().Contains("Teams", StringComparison.OrdinalIgnoreCase)));
+            var matchingZoom = data.Values.Where(app => "zoom".Any(keyword => app.AppName.ToLower().Contains("Zoom", StringComparison.OrdinalIgnoreCase)));
+            var matchingMeet = data.Values.Where(app => "meet".Any(keyword => app.AppName.ToLower().Contains("Meet", StringComparison.OrdinalIgnoreCase)));
+
+            if (!matchingTeams.Any())//!isTeamsInstalled)
                 MicrosoftTeamsButton.Visibility = System.Windows.Visibility.Collapsed;
-            if (!isZoomInstalled)
+            if (!matchingZoom.Any())//!isZoomInstalled)
                 ZoomButton.Visibility = System.Windows.Visibility.Collapsed;
-            if (!isMeetInstalled)
+            if (!matchingMeet.Any())//!isMeetInstalled)
                 GoogleMeetButton.Visibility = System.Windows.Visibility.Collapsed;
         }
 
