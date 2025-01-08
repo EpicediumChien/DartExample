@@ -7,8 +7,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using DDPM.SA.Common;
 using Dell.Client.Framework.Common;
+using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using VcpCore.Common;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -41,9 +43,17 @@ namespace DDPM.SA.Common.Settings
         public int AutoWhiteBalance { get; set; } = -1;
         public string SelectedProfile { get; set; } = string.Empty;
         public string SelectedProfileName { get; set; } = string.Empty;
+
+
         public Dictionary<string, WebcamProfile> PresetProfiles = new();
         public Dictionary<string, WebcamProfile> CustomProfiles = new();
 
+        //import 
+        public ResolutionItem resolution = null;
+        public string SelectedcurrentFPS = string.Empty;
+        public string ImportSelectedResolution { get; set; } = string.Empty;
+        public List<string> WebcamProfileNames = new List<string>() { "Default", "Smooth", "Vibrant", "Warm" };
+        //
         public string CurrentResolution { get => Resolutions[SelectedResolution]; }
         public string CurrentFPS { get => SelectedFPSs[SelectedResolution]; }
         public bool IsFirstTime = true;
@@ -101,31 +111,55 @@ namespace DDPM.SA.Common.Settings
                         Resolutions.Add(resName, res.Resolution);
                     }
                 }
-
-                task = devMgr.GetSelectedResolution(di.ID.ToString());
-                str = task.Result;
-                if (string.IsNullOrEmpty(str))
+                log?.Info(@$"task = devMgr.GetSelectedResolution(di.ID.ToString());");
+                try
                 {
-                    log?.Error("DTP GetSelectedResolution fail!");
-                    str = "{\"Resolution\":\"1280x720\",\"FPS\":[\"30\"]}";
+                    task = devMgr.GetSelectedResolution(di.ID.ToString());
+                    str = task.Result;
+                    log?.Info(@$"GetSelectedResolution str:{str}");
+                    if (string.IsNullOrEmpty(str))
+                    {
+                        log?.Error("DTP GetSelectedResolution fail!");
+                        str = "{\"Resolution\":\"1280x720\",\"FPS\":[\"30\"]}";
+                    }
                 }
-
-                var currentRes = JsonConvert.DeserializeObject<ResolutionItem>(str);
-                if (currentRes != null)
+                catch (Exception ex)
                 {
-                    SelectedResolution = Resolutions.FirstOrDefault(x => x.Value == currentRes.Resolution).Key;
-                    SelectedFPSs[SelectedResolution] = currentRes.FPS?.Count > 0 ? currentRes.FPS[0] : "30";
+                    log?.Info(@$"GetSelectedResolution Ex:{ex.Message}");
                 }
-
+                try
+                {
+                    log?.Info(@$"currentRes str:{str}");
+                    var currentRes = JsonConvert.DeserializeObject<ResolutionItem>(str);
+                    if (currentRes != null)
+                    {
+                        string resName = GetResolutionName(log, currentRes);
+                        SelectedResolution = Resolutions.FirstOrDefault(x => x.Key == resName).Key;
+                        log?.Info(@$"currentRes SelectedResolution:{SelectedResolution}");
+                        if (SelectedFPSs.ContainsKey(SelectedResolution))
+                        {
+                            SelectedFPSs[SelectedResolution] = currentRes.FPS?.Count > 0 ? currentRes.FPS[0] : "30";
+                        }
+                        log?.Info(@$"currentRes currentRes.FPS:{currentRes.FPS}");
+                    }
+                }
+                catch (Exception e)
+                {
+                    log?.Info(@$"currentRes Ex:{e.Message}");
+                }
+                log?.Info(@$"Get customProfiles");
                 var customProfiles = di.CustomProfiles.ToObject<List<WebcamProfile>>()?.ToList();
                 if (customProfiles != null)
                 {
                     for (var l = customProfiles.Count - 1; l >= 0; l--)
                     {
-                        CustomProfiles.Add(customProfiles[l].Name, customProfiles[l]);
+                        CustomProfiles.TryAdd(customProfiles[l].Name, customProfiles[l]);
                     }
                 }
-
+                log?.Info(@$"Get PresetProfiles {CustomProfiles.Keys}");
+                PresetProfiles.Clear();
+                var presetProfiles = di.PresetProfiles?.ToObject<List<WebcamProfile>>()?.ToList();
+                log?.Error($"presetProfiles count {presetProfiles?.Count}!");
                 WebcamProfile profile = new();
                 profile.Name = "Default";
                 profile.Description = "default";
@@ -138,7 +172,7 @@ namespace DDPM.SA.Common.Settings
                 profile.FieldOfView = 78;
                 profile.IsAutoWhiteBalanceOn = true;
                 profile.AutoWhiteBalance = 5000;
-                PresetProfiles.Add(profile.Name, profile);
+                PresetProfiles.TryAdd(profile.Name, profile);
 
                 profile = new();
                 profile.Name = "Smooth";
@@ -152,7 +186,7 @@ namespace DDPM.SA.Common.Settings
                 profile.FieldOfView = 78;
                 profile.IsAutoWhiteBalanceOn = true;
                 profile.AutoWhiteBalance = 5000;
-                PresetProfiles.Add(profile.Name, profile);
+                PresetProfiles.TryAdd(profile.Name, profile);
 
                 profile = new();
                 profile.Name = "Vibrant";
@@ -166,7 +200,7 @@ namespace DDPM.SA.Common.Settings
                 profile.FieldOfView = 78;
                 profile.IsAutoWhiteBalanceOn = true;
                 profile.AutoWhiteBalance = 5000;
-                PresetProfiles.Add(profile.Name, profile);
+                PresetProfiles.TryAdd(profile.Name, profile);
 
                 profile = new();
                 profile.Name = "Warm";
@@ -180,7 +214,7 @@ namespace DDPM.SA.Common.Settings
                 profile.FieldOfView = 78;
                 profile.IsAutoWhiteBalanceOn = true;
                 profile.AutoWhiteBalance = 5950;
-                PresetProfiles.Add(profile.Name, profile);
+                PresetProfiles.TryAdd(profile.Name, profile);
 
                 switch (di.ModelNumber.ToUpper())
                 {
@@ -227,9 +261,58 @@ namespace DDPM.SA.Common.Settings
                     default:
                         break;
                 }
-
+                log?.Error($"if (presetProfiles != null) {PresetProfiles.Keys}");
                 SelectedProfileName = "Default";
+                SetDPeMDefaultSettings(presetProfiles);
             }
+        }
+
+        private void SetDPeMDefaultSettings(List<WebcamProfile> presetProfiles)
+        {
+            if (presetProfiles != null)
+            {
+                foreach (var PresetProfile in presetProfiles)
+                {
+                    if (PresetProfile.Name.ToUpper() == "Default".ToUpper())
+                    {
+                        continue;
+                    }
+                    WebcamProfile newprofile = new();
+                    newprofile.Name = PresetProfile.Name + "*";
+                    newprofile.Description = PresetProfile.Description;
+                    newprofile.IsHDROn = PresetProfile.IsHDROn;
+                    newprofile.Brightness = PresetProfile.Brightness;
+                    newprofile.Contrast = PresetProfile.Contrast;
+                    newprofile.Saturation = PresetProfile.Saturation;
+                    newprofile.Sharpness = PresetProfile.Sharpness;
+                    newprofile.IsAutoFramingOn = PresetProfile.IsAutoFramingOn;
+                    newprofile.FieldOfView = PresetProfile.FieldOfView;
+                    newprofile.IsAutoWhiteBalanceOn = PresetProfile.IsAutoWhiteBalanceOn;
+                    newprofile.AutoWhiteBalance = PresetProfile.AutoWhiteBalance;
+                    newprofile.Zoom = PresetProfile.Zoom;
+                    CustomProfiles.TryAdd(newprofile.Name, newprofile);
+                }
+                //var FindSelectedProfile = PresetProfiles.ToList().Where(x => x.Value.Description == di.ProfileDescription).FirstOrDefault();
+                //SelectedProfileName = FindSelectedProfile.Value.Name;
+            }
+        }
+
+        private static string GetResolutionName(ILog log, ResolutionItem currentRes)
+        {
+            log?.Info(@$"currentRes currentRes:{currentRes}");
+            var resName = currentRes.Resolution switch
+            {
+                "1280x720" => "HD",
+                "720x1280" => "HD",
+                "1920x1080" => "Full HD",
+                "1080x1920" => "Full HD",
+                "2560x1440" => "2K QHD",
+                "1440x2560" => "2K QHD",
+                "3840x2160" => "4K UHD",
+                "2160x3840" => "4K UHD",
+                _ => "8K UHD"
+            };
+            return resName;
         }
 
         //Target folder should be: Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
@@ -276,7 +359,7 @@ namespace DDPM.SA.Common.Settings
             if (devMgr != null)
             {
                 log?.Info(@$"[WebcamSettings] ImportWebcamSettings Start  !");
-                var filePath = target_folder;
+                var filePath = Path.Combine(target_folder,$"{model}.json");
                 var hasFile = File.Exists(filePath);
                 string jsonString = string.Empty;
                 if (hasFile && devMgr != null)
@@ -303,9 +386,9 @@ namespace DDPM.SA.Common.Settings
                 log?.Error("[ExportWebcamSettings] The input devMgr is null");
             }
             //Init a new data
-            var wc = new WebcamSettings(di, devMgr, log);
             log?.Info(@$"[WebcamSettings] ImportWebcamSettings di jsonString:{JsonConvert.SerializeObject(di)}!");
-            if(!ExportWebcamSettings(wc, model, devMgr, log))
+            var wc = new WebcamSettings(di, devMgr, log);
+            if (!ExportWebcamSettings(wc, model, devMgr, log))
             {
                 log?.Info(@$"[WebcamSettings][ImportWebcamSettings] try to use ExportWebcamSettings to init file fail");
             }

@@ -733,8 +733,9 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 _fOVs[k] = int.Parse(CurrentDeviceInfo!.FOVValues[k]);
             }
-
+            _log.Info($"GetIsAllSupportedResolutionsFound Before :{IsUSB3}");
             IsUSB3 = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(CurrentDeviceInfo!.ID.ToString()).Result;
+            _log.Info($"GetIsAllSupportedResolutionsFound After :{IsUSB3}");
             if (!IsUSB3)
             {
                 _ = DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), false);

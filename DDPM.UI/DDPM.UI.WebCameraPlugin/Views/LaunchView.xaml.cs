@@ -353,10 +353,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             if (!SpecialCase.Contains(model))
                 return;
-
+            DdpmCommonHelper.WriteUILog($"GetIsAllSupportedResolutionsFound Before {AllSupportedResolutions}");
             //check usb 2.0 / 3.0
             AllSupportedResolutions = DdpmCommonHelper.DeviceManagerSA!.GetIsAllSupportedResolutionsFound(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
-
+            DdpmCommonHelper.WriteUILog($"GetIsAllSupportedResolutionsFound After {AllSupportedResolutions}");
             //api回傳camera硬體是否支援windows hello
             bool is_WindwosHelloSupport = DdpmCommonHelper.DeviceManagerSA!.GetIsWindowsHelloCapabilityVerified(_vm.CurrentDeviceInfo!.ID.ToString()).Result;
 
