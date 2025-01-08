@@ -14,8 +14,8 @@ namespace DDPM.QAM
 {
     public class QAMPageViewModel : INotifyPropertyChanged
     {
-        public DeviceInfo CurrentDeviceInfo { get; set; }
-        public string DeviceModel { get; set; }
+        public DeviceInfo? CurrentDeviceInfo { get; set; }
+        public string DeviceModel { get; set; } = string.Empty;
         public bool[] Settings_IsEnable { get; set; } = { true, true, true, true };
         public bool[] Settings_IsSelected { get; set; } = { false, false, false, false };
         public Visibility[] Settings_IsVisibility { get; set; } = { Visibility.Visible, Visibility.Visible, Visibility.Visible, Visibility.Visible };
@@ -38,7 +38,7 @@ namespace DDPM.QAM
 
 
         public bool isStatusChagneByDDPM = false;
-        public QAMPageViewModel(IDeviceManagerSA devMgr = null, ILog log = null)
+        public QAMPageViewModel(IDeviceManagerSA? devMgr = null, ILog? log = null)
         {
             try
             {
@@ -64,9 +64,9 @@ namespace DDPM.QAM
                             LogMsg($"Create webcam profile:{filePath} due to it not exit, result is {ws}");
                         }
 
-                    ImportWebcamProfiles(CurrentDeviceInfo.ModelNumber, devMgr, log);// filePath);
-                    ZoomMax = CurrentDeviceInfo.ZoomMax;
-                    ZoomMin = CurrentDeviceInfo.ZoomMin;
+                        ImportWebcamProfiles(CurrentDeviceInfo.ModelNumber, devMgr, log);// filePath);
+                        ZoomMax = CurrentDeviceInfo.ZoomMax;
+                        ZoomMin = CurrentDeviceInfo.ZoomMin;
 
                         //if (!CurrentDeviceInfo.IsPropertyAutoFramingSupported)
                         if (!IsAutoFramingVisable())
@@ -92,7 +92,7 @@ namespace DDPM.QAM
                     DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += QAMPageViewModel_UIUpdateNotify;
                     isQAMPageViewModel_UIUpdateNotifyExist = true;
 
-                    LogMsg($"Add event QAMPageViewModel_UIUpdateNotify, isQAMPageViewModel_UIUpdateNotifyExist={isQAMPageViewModel_UIUpdateNotifyExist}");
+                    LogMsg($"Add event QAMPageViewModel_UIUpdateNotify, isQAMPageViewModel_UIUpdateNotifyExist = {isQAMPageViewModel_UIUpdateNotifyExist}");
                 }
 
                 LoadCurrentStatus();
@@ -257,31 +257,31 @@ namespace DDPM.QAM
         public ObservableCollection<UI_Profile> UI_ProfileList { get; set; }
         public Dictionary<string, WebcamProfile> Profiles = new Dictionary<string, WebcamProfile>();
         private WebcamProfile CurrentProfile;
-        public void ImportWebcamProfiles(string model, IDeviceManagerSA devMgr, ILog log)// filePath)
+        public void ImportWebcamProfiles(string model, IDeviceManagerSA? devMgr, ILog? log)// filePath)
         {
             try
             {
-                //var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
+                var filePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings\{model}.json");
 
-                //if (File.Exists(filePath))
-                //{
+                if (File.Exists(filePath))
+                {
                     Dictionary<string, WebcamProfile> presetProfiles = new();
                     //Dictionary<string, WebcamProfile> customProfiles = new();
                     //string json = File.ReadAllText(filePath);
                     //Derek 20250106 use DDPMFileSecurity.GetSerializedJsonString to read file by SDL requirement
                     string info = string.Empty;
-                //string json = DDPMFileSecurity.GetSerializedJsonString(filePath, out info);
-                WebcamSettings data = WebcamSettings.ImportWebcamSettings(model, CurrentDeviceInfo, devMgr, log);
+                    //string json = DDPMFileSecurity.GetSerializedJsonString(filePath, out info);
+                    WebcamSettings data = WebcamSettings.ImportWebcamSettings(model, CurrentDeviceInfo, devMgr, log);
                     //var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(json);
 
                     string presetProfilesString = string.Empty;
                     if (data != null)
                     {
-                    //presetProfilesString = jsonObject["PresetProfiles"]!.ToString();
-                    //Derek 1212
-                    //selectedProfileName = jsonObject["SelectedProfileName"]!.ToString();
-                    presetProfilesString = data.PresetProfiles?.ToString() ?? string.Empty;// jsonObject["PresetProfiles"]?.ToString() ?? string.Empty;
-                    selectedProfileName = data.SelectedProfileName?.ToString() ?? string.Empty;// jsonObject["SelectedProfileName"]?.ToString() ?? string.Empty;
+                        //presetProfilesString = jsonObject["PresetProfiles"]!.ToString();
+                        //Derek 1212
+                        //selectedProfileName = jsonObject["SelectedProfileName"]!.ToString();
+                        presetProfilesString = data.PresetProfiles?.ToString() ?? string.Empty;// jsonObject["PresetProfiles"]?.ToString() ?? string.Empty;
+                        selectedProfileName = data.SelectedProfileName?.ToString() ?? string.Empty;// jsonObject["SelectedProfileName"]?.ToString() ?? string.Empty;
 
                         LogMsg($"ImportWebcamProfiles current SelectedProfileName: {selectedProfileName}, GetSerializedJsonString result is {info}");
                     }
@@ -320,11 +320,11 @@ namespace DDPM.QAM
                             Profile_Name_Key = profile.Key,
                         });
                     }
-                //}
-                //else
-                //{
-                //    LogMsg($"Webcam profile {filePath} not exist!!");
-                //}
+                }
+                else
+                {
+                    LogMsg($"Webcam profile {filePath} not exist!!");
+                }
             }
             catch (Exception e)
             {
