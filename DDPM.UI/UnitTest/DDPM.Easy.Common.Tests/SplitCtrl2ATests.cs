@@ -36,6 +36,61 @@ namespace DDPM.Easy.Common.Tests
         }
 
         [Test]
+        public void TestCtrlClass()
+        {
+            // Act
+            var result = splitCtrl2A.CtrlClass;
+            // Assert
+            Assert.That(result, Is.EqualTo("SplitCtrl2A"));
+        }
+
+        [Test]
+        public void TestCellCount()
+        {
+            // Act
+            var result = splitCtrl2A.CellCount;
+            // Assert
+            Assert.That(result, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void TestSplitKey()
+        {
+            // Act
+            var result = splitCtrl2A.SplitKey;
+            // Assert
+            Assert.That(result, Is.EqualTo('A'));
+        }
+
+        [Test]
+        public void TestUC()
+        {
+            // Act
+            var result = splitCtrl2A.UC;
+            // Assert
+            Assert.That(result, Is.Not.Null);
+        }
+
+        [Test]
+        public void TestEAID()
+        {
+            // Act
+            splitCtrl2A.EAID = 2;
+            var result = splitCtrl2A.EAID;
+            // Assert
+            Assert.That(result, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void TestVM()
+        {
+            // Act
+            var result = splitCtrl2A.VM;
+            // Assert
+            Assert.That(result, Is.InstanceOf<SplitCtrlVM>());
+        }
+
+        [Test]
         public void TestNew()
         {
             // Act
