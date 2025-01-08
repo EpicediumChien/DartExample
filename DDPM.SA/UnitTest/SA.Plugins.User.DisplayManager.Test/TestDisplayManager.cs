@@ -2491,14 +2491,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
             Mock<IVcpCoreService> mockVcpCoreService = new Mock<IVcpCoreService>();
             if (vcpcode != "67" || vcpcode != "68")
             {
-                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val).Result;  // vcpcode = "60"
+                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val.ToString()).Result;  // vcpcode = "60"
                 Assert.IsTrue(result);
             }
 
             vcpcode = "67";
             if (vcpcode != "67" || vcpcode != "68")
             {
-                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val).Result;  // aconfig == null
+                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val.ToString()).Result;  // aconfig == null
                 Assert.IsFalse(result);
             }
 
@@ -2514,14 +2514,14 @@ namespace DDPM.SA.Plugins.User.DisplayManager.Test
 
             if (vcpcode == "67" || vcpcode == "68")
             {
-                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val).Result; // vcpcode = "68"
+                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val.ToString()).Result; // vcpcode = "68"
                 Assert.IsTrue(result);
             }
 
             vcpcode = "67";
             if (vcpcode == "67" || vcpcode == "68")
             {
-                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val).Result; //vcpcode = "67"
+                var result = displayPlugin.SyncPrimaryMonitorBrightnessAndColorTemp(monitorInfoMain, monitorvalue, vcpcode, val.ToString()).Result; //vcpcode = "67"
                 Assert.IsTrue(result);
             }
         }
