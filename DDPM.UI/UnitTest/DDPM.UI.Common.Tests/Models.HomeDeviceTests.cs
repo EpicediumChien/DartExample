@@ -24,6 +24,10 @@ namespace DDPM.UI.Common.Tests
         [SetUp]
         public void Setup()
         {
+            if (System.Windows.Application.Current == null)
+            {
+                new System.Windows.Application();
+            }
             homeDevice = new HomeDevice();
         }
 
@@ -170,42 +174,56 @@ namespace DDPM.UI.Common.Tests
         }
 
         [Test]
-        public void TestTooltipModelName()
+        public void TestTooltipModelNameKB()
         {
             // Assert
             homeDevice.DeviceCategory = eDeviceCategory.KB;
             var result = homeDevice.TooltipModelName;
             Assert.That(result, Is.EqualTo("KB"));
-
-            // Act
-            var monitorinfo = new MonitorInfo() { MarketingName = "" };
-            homeDevice.MonitorInfo = monitorinfo;
-            result = homeDevice.TooltipModelName;
-            // Assert
-            Assert.That(result, Is.EqualTo(""));
-
-            // Act
-            monitorinfo = new MonitorInfo() { MarketingName="Aa" };
-            homeDevice.MonitorInfo = monitorinfo;
-            result = homeDevice.TooltipModelName;
-            // Assert
-            Assert.That(result, Is.EqualTo("Aa"));
-
-            // Act
-            var deviceInfo = new DeviceInfo() { Name= "WD19" };
-            homeDevice.DeviceInfo = deviceInfo;
-            result = homeDevice.TooltipModelName;
-            // Assert
-            Assert.That(result, Is.EqualTo("WD19 "));
-
-            // Act
-            deviceInfo = new DeviceInfo() { Name = " WD19S" };
-            homeDevice.DeviceInfo = deviceInfo;
-            result = homeDevice.TooltipModelName;
-            // Assert
-            Assert.That(result, Is.EqualTo(" WD19S "));
         }
 
+        [Test]
+        public void TestTooltipModelName()
+        {
+            var monitorinfo = new MonitorInfo() { MarketingName = "" };
+            homeDevice.MonitorInfo = monitorinfo;
+            var result = homeDevice.TooltipModelName;
+            // Assert
+            Assert.That(result, Is.EqualTo(""));
+        }
+
+        [Test]
+        public void TestTooltipModelNameAa()
+        {
+            // Act
+            var monitorinfo = new MonitorInfo() { MarketingName = "Aa" };
+            homeDevice.MonitorInfo = monitorinfo;
+            var result = homeDevice.TooltipModelName;
+            // Assert
+            Assert.That(result, Is.EqualTo("Aa"));
+        }
+
+        [Test]
+        public void TestTooltipModelNameWD19()
+        {
+            // Act
+            var deviceInfo = new DeviceInfo() { Name = "WD19", ModelNumber = "KB7120W" };
+            homeDevice.DeviceInfo = deviceInfo;
+            var result = homeDevice.TooltipModelName;
+            // Assert
+            Assert.That(result, Is.EqualTo("WD19 KB740"));
+        }
+
+        [Test]
+        public void TestTooltipModelNameWD19S()
+        {
+            // Act
+            var deviceInfo = new DeviceInfo() { Name = " WD19S", ModelNumber = "WK717" };
+            homeDevice.DeviceInfo = deviceInfo;
+            var result = homeDevice.TooltipModelName;
+            // Assert
+            Assert.That(result, Is.EqualTo(" WD19S"));
+        }
 
         [Test]
         public void TestUpdateBatteryIndicator()

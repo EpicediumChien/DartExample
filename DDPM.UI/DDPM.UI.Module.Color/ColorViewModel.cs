@@ -308,8 +308,10 @@ namespace DDPM.UI.Module.Color
                                 {
                                     foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
                                     {
+                                        // Jim 20250107 modify for PIMS-314608 U2725QEt Wistron- P3:DDPM(Windows)-Shine a torch or cover the sensor of DUT1,DUT2 screen has not changed
                                         if (hd.MonitorInfo.IsDellMonitor)
-                                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, Is_Game_DeviceName, SmartHDR_ON, null, false);
+                                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, Is_Game_DeviceName, SmartHDR_ON, null, true);
+                                       
                                     }
                                 }
                             }

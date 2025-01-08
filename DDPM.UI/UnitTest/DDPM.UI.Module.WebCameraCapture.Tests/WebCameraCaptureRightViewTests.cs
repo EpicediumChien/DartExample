@@ -1,4 +1,5 @@
 ﻿using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Plugin.ViewModels;
 using Dell.Client.Framework.Common;

@@ -12,10 +12,11 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.Common.DataModel;
 using Dell.Client.Framework.UX.WPF;
 using NGA.Common;
+using System.Runtime.CompilerServices;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using static Dell.Client.Framework.UX.WPF.WindowHelper;
-
+[assembly: InternalsVisibleTo("Dell.UCA.ThickClientCore.Tests")]
 namespace NGA.ThickClientCore
 {
     /// <summary>
