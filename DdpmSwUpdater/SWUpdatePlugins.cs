@@ -912,7 +912,7 @@ namespace DdpmSwUpdater
             RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
             if (localKey64 != null)
             {
-                RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell Display and Peripheral Manager\\", false);
+                RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\Dell Display and Peripheral Manager\\", false);
                 if (registryKey != null)
                 {
                     string curProcess = (registryKey.GetValue("Process")?.ToString());
@@ -925,6 +925,23 @@ namespace DdpmSwUpdater
                         ProcessProgress = nextProcess != null ? int.Parse(nextProcess) : 0.0,
                     };
                     sendMessageToEvent(updateProgressInfo);
+                }
+                else/// Bruce added test
+                {
+                    RegistryKey registryKey_Test = localKey64.OpenSubKey("SOFTWARE\\Dell Display and Peripheral Manager\\", false);
+                    if (registryKey_Test != null)
+                    {
+                        string curProcess = (registryKey_Test.GetValue("Process")?.ToString());
+                        string nextProcess = (registryKey_Test.GetValue("NextProcess")?.ToString());
+                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                        {
+                            DeviceName = _SWUpdateInfo.SoftwareName,
+                            TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
+                            ProcessName = LangHelper.Instance["Installing"],
+                            ProcessProgress = nextProcess != null ? int.Parse(nextProcess) : 0.0,
+                        };
+                        sendMessageToEvent(updateProgressInfo);
+                    }
                 }
             }
         }
