@@ -993,6 +993,8 @@ namespace DDPM.CLI.Plugins.Display
                 case "LogicalWebcam":
                     writelog("LogicalWebcam entry");
                     var webcam = new DeviceDataWebcamResponse(index, device);
+                    writelog("_devMgr.GetWebcamSerialNumber entry");
+                    webcam.SerialNumber = _devMgr.GetWebcamSerialNumber(guid).Result ?? "N/A";
 
                     writelog("_devMgr.GetIsPropertyFOVSupportedByDTP entry");
                     if (_devMgr.GetIsPropertyFOVSupportedByDTP(guid).Result)
@@ -1049,6 +1051,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     writelog("_devMgr.GetConnectionTypeAsync entry");
                     audio.Connectiontype = get_headsetconnection_type(_devMgr.GetConnectionTypeAsync(guid).Result);
+                    //audio.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(guid).Result ?? "N/A";
                     writelog("_devMgr.GetIsANCSupportedAsync entry");
                     if (_devMgr.GetIsANCSupportedAsync(guid).Result)
                     {
