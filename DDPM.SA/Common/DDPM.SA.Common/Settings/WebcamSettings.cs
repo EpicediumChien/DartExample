@@ -372,16 +372,51 @@ namespace DDPM.SA.Common.Settings
                         log?.Info(@$"[WebcamSettings] ImportWebcamSettings jsonString:{jsonString}!");
                         if (!string.IsNullOrEmpty(jsonString))
                         {
-                            //return JsonConvert.DeserializeObject<WebcamSettings>(File.ReadAllText(filePath))!;
-                            WebcamSettings obj = JsonConvert.DeserializeObject<WebcamSettings>(jsonString);
-                            if (obj != null)
+                            //leo fixed start 2025/01/07
+                            //Always re-read the resolution and FPS information.
+                            try
                             {
-                                return obj;
+                                WebcamSettings tmp = JsonConvert.DeserializeObject<WebcamSettings>(jsonString) ?? new WebcamSettings(di, devMgr, log);                                
+                                tmp.SupportedFPSs.Clear();
+                                tmp.SelectedFPSs.Clear();
+                                tmp.Resolutions.Clear();
+                                Task<string> task = devMgr.GetSupportedResolutions(di.ID.ToString());
+                                var str = task.Result;
+                                var resolutions = JsonConvert.DeserializeObject<List<ResolutionItem>>(str)!;
+                                if (resolutions != null)
+                                {
+                                    foreach (var res in resolutions.OrderByDescending(x => x.Resolution))
+                                    {
+                                        var resName = res.Resolution switch
+                                        {
+                                            "1280x720" => "HD",
+                                            "720x1280" => "HD",
+                                            "1920x1080" => "Full HD",
+                                            "1080x1920" => "Full HD",
+                                            "2560x1440" => "2K QHD",
+                                            "1440x2560" => "2K QHD",
+                                            "3840x2160" => "4K UHD",
+                                            "2160x3840" => "4K UHD",
+                                            _ => "8K UHD"
+                                        };
+                                        tmp.SupportedFPSs.Add(resName, res.FPS);
+                                        tmp.SelectedFPSs.Add(resName, "30");
+                                        tmp.Resolutions.Add(resName, res.Resolution);
+                                    }
+                                    if (!ExportWebcamSettings(tmp, model, devMgr, log))
+                                    {
+                                        log?.Info("[WebcamSettings][ImportWebcamSettings] resolutions change, ExportWebcamSettings to file fail");
+                                    }
+                                    else
+                                        log?.Info("[WebcamSettings][ImportWebcamSettings] resolutions change, ExportWebcamSettings to file OK");
+                                }
+                                return tmp;
                             }
-                            else
+                            catch (Exception ex)
                             {
-                                log?.Error($"[ImportWebcamSettings][JsonConvert.DeserializeObject] null object (model:{model})");
+                                log?.Error("[ImportWebcamSettings][DeserializeObject] exception :　" + ex.Message);
                             }
+                            //leo fixed end
                         }
                         else
                             log?.Error($"[ImportWebcamSettings][ReadSerializedContentFromFile] empty string output(model:{model})");
