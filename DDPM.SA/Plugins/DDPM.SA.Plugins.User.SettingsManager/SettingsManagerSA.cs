@@ -305,6 +305,8 @@ namespace DDPM.SA.Plugins.User.SettingsManager
 
             updateITandGlobalSetting();
 
+            
+
             SettingReadyEvent?.Invoke(this, new EventArgs());
             _isAllSettingsReady = true;
         }
@@ -2200,9 +2202,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             {
                 retList = JsonConvert.DeserializeObject<InterruptScreenRoot>(value);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                WriteLog($"[RunInterruptScreenDeserializeObject] exception: {e.Message}");
             }
             return retList;
         }

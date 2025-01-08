@@ -104,7 +104,8 @@ namespace DDPM.QAM
         {
             InitializeComponent();
             DdpmCommonHelper.DeviceManagerSA = deviceMangerPlugin;
-            DdpmCommonHelper.QAMPageViewModel = new QAMPageViewModel();
+            DdpmCommonHelper.Log = log;
+            DdpmCommonHelper.QAMPageViewModel = new QAMPageViewModel(deviceMangerPlugin, log);
             DataContext = DdpmCommonHelper.QAMPageViewModel;
 
             Microsoft.Win32.SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
