@@ -11920,6 +11920,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 string ddpmExePath = //@"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
                                      System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Dell\Dell Display and Peripheral Manager\DDPM.exe");
                 //string debugPath = @"D:\\NEW\DDPM\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+                
+                if (!File.Exists(ddpmExePath))
+                {
+                    writelog($"CheckDeviceFirstTimesToConnect File not found at path: {ddpmExePath} ... ");
+                    return;
+                }
 
                 regValue = ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
                 //Trace.WriteLine($"regValue {regValue.ToString()}");
