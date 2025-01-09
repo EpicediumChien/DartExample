@@ -969,13 +969,13 @@ namespace DDPM.SA.Plugin.CLIManager
         private const int MAX_DEFER_WAIT_TIME_SEC = 5;
         private Dictionary<string, bool> deferResponse = new Dictionary<string, bool>();
 
-        public void sendToastResult(string _defer_id, bool isDefer)
+        public void sendToastResult(string defer_id, bool isDefer)
         {
-            WriteLog("@@stephen CLIManagerPlugin::sendToastResult _defer_id = " + _defer_id);
+            WriteLog("@@stephen CLIManagerPlugin::sendToastResult defer_id = " + defer_id);
             WriteLog("@@stephen CLIManagerPlugin::sendToastResult isDefer = " + isDefer);
-            if (!deferResponse.ContainsKey(_defer_id))
+            if (!deferResponse.ContainsKey(defer_id))
             {
-                deferResponse.Add(_defer_id, isDefer);
+                deferResponse.Add(defer_id, isDefer);
             }
         }
         public Task<bool> checkDefer(int from, string guid, string commanddata)
