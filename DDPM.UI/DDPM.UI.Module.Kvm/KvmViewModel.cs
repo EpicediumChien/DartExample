@@ -457,7 +457,7 @@ namespace DDPM.UI.Module.Kvm
 
         public bool isNKVMEanble { get; set; } = true;
         public double NKVM_Opacity { get; set; } = 1;
-        public Visibility LockNKVM_Visibility { get; set; } = Visibility.Collapsed;
+        //public Visibility LockNKVM_Visibility { get; set; } = Visibility.Collapsed;
 
         public bool isUSBKVMEanble { get; set; } = true;
         public double USBKVM_Opacity { get; set; } = 1;
@@ -1916,7 +1916,7 @@ namespace DDPM.UI.Module.Kvm
         {
             OnPropertyChanged("isNKVMEanble");
             OnPropertyChanged("NKVM_Opacity");
-            OnPropertyChanged("LockNKVM_Visibility");
+            //OnPropertyChanged("LockNKVM_Visibility");
             OnPropertyChanged("isUSBKVMEanble");
             OnPropertyChanged("USBKVM_Opacity");
             OnPropertyChanged("LockUSBKVM_Visibility");
