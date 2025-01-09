@@ -103,7 +103,7 @@
                             -->
                                 <!-- Robert_Lin, 2024-6-10, new approach -->
                                 <!-- Robert_Lin, 2024-8-8, change for support keyboard tab stop -->
-                                <Border Focusable="True" KeyboardNavigation.TabNavigation="None"
+                                <Border Focusable="True" AutomationProperties.Name="Return to home page"
                                     BorderBrush="{StaticResource FocusDotBrush}" PreviewKeyDown="bdLeftArrow_PreviewKeyDown">
                                     <Border.Style>
                                         <Style TargetType="Border">

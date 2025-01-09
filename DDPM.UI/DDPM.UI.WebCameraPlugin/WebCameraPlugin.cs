@@ -710,9 +710,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     }
                 }
             }
-            catch
+            catch (Exception ex) // Jim 20250108 add exception handling for PIMS-335905 on ARM has crash
             {
-
+                _log.Debug(ex, $"deal_param {ex.Message}");
+                tmp.Clear();
             }
             return tmp;
         }

@@ -7033,6 +7033,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         #region EAFunctionEanbled - EasyArrange
 
         /// <summary>
+        /// Robert_Lin, 2025-1-7, EAPlugin.IsFunctionEnabled is deleted.
         /// Robert_Lin, 2024-12-12, To be removed. Use
         /// Enable/Disable EasyArrange function for all monitors.
         /// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
@@ -7040,28 +7041,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// </summary>
         /// <param name="isEnabled"></param>
         /// <returns></returns>
-        public Task<bool> SetEAFunctionEnabled(bool isEnabled)
-        {
-            if (_DisplayManagerPlugin != null)
-            {
-                return _DisplayManagerPlugin.SetEAFunctionEnabled(isEnabled);
-            }
-            return Task.FromResult(false);
-        }
+        //public Task<bool> SetEAFunctionEnabled(bool isEnabled)
+        //{
+        //    if (_DisplayManagerPlugin != null)
+        //    {
+        //        return _DisplayManagerPlugin.SetEAFunctionEnabled(isEnabled);
+        //    }
+        //    return Task.FromResult(false);
+        //}
 
         /// <summary>
+        /// Robert_Lin, 2025-1-7, EAPlugin.IsFunctionEnabled is deleted.
         /// Robert_Lin, 2024-12-12, To be removed.
         /// Old method for CLI
         /// </summary>
         /// <returns></returns>
-        public Task<ObjGetVCP> GetEAFunctionEnabled()
-        {
-            if (_DisplayManagerPlugin != null)
-            {
-                return _DisplayManagerPlugin.GetEAFunctionEnabled();
-            }
-            return Task.FromResult<ObjGetVCP>(new ObjGetVCP() { result = false, value = false });
-        }
+        //public Task<ObjGetVCP> GetEAFunctionEnabled()
+        //{
+        //    if (_DisplayManagerPlugin != null)
+        //    {
+        //        return _DisplayManagerPlugin.GetEAFunctionEnabled();
+        //    }
+        //    return Task.FromResult<ObjGetVCP>(new ObjGetVCP() { result = false, value = false });
+        //}
 
         #endregion EAFunctionEanbled - EasyArrange
 

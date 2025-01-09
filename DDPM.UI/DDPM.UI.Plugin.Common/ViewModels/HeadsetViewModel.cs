@@ -641,37 +641,33 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         private void CheckOutgoingAudioUI(bool PropertyChange)
         {
-            if (DeviceInfoDTP!.IsMicNoiseCancellationSupported)
+            if (DeviceInfoDTP!.IsMicNoiseCancellationSupported &&
+                _isOutgoingAudioStatus != DeviceInfoDTP.MicNoiseCancellation)
             {
-                if (_isOutgoingAudioStatus != DeviceInfoDTP.MicNoiseCancellation)
-                {
-                    _isOutgoingAudioStatus = DeviceInfoDTP.MicNoiseCancellation;
+                _isOutgoingAudioStatus = DeviceInfoDTP.MicNoiseCancellation;
 
-                    if (PropertyChange)
-                    {
-                        OnPropertyChanged(nameof(OutgoingAudioStatus));
-                        OnPropertyChanged(nameof(OutgoingAudio_String));
-                        UpdateCollaborationAndultimediaUI(true, false);
-                    }
-                }
+                if (PropertyChange)
+                {
+                    OnPropertyChanged(nameof(OutgoingAudioStatus));
+                    OnPropertyChanged(nameof(OutgoingAudio_String));
+                    UpdateCollaborationAndultimediaUI(true, false);
+                }                
             }
         }
 
         private void CheckMicNCIncomingUI(bool PropertyChange)
         {
-            if (DeviceInfoDTP!.IsMicNCIncomingSupported)
+            if (DeviceInfoDTP!.IsMicNCIncomingSupported &&
+                _isIncomingAudioStatus != DeviceInfoDTP.MicNCIncoming)
             {
-                if (_isIncomingAudioStatus != DeviceInfoDTP.MicNCIncoming)
-                {
-                    _isIncomingAudioStatus = DeviceInfoDTP.MicNCIncoming;
+                _isIncomingAudioStatus = DeviceInfoDTP.MicNCIncoming;
 
-                    if (PropertyChange)
-                    {
-                        OnPropertyChanged(nameof(IncomingAudioStatus));
-                        OnPropertyChanged(nameof(IncomingAudio_String));
-                        UpdateCollaborationAndultimediaUI(true, false);
-                    }
-                }
+                if (PropertyChange)
+                {
+                    OnPropertyChanged(nameof(IncomingAudioStatus));
+                    OnPropertyChanged(nameof(IncomingAudio_String));
+                    UpdateCollaborationAndultimediaUI(true, false);
+                }                
             }
         }
 
@@ -2877,6 +2873,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         //Quick Pause ToggleSwitch
+
         private string _isQuickPause_String = Strings.On;
 
         public string QuickPause_String
@@ -2903,6 +2900,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 //_debouncerHeadsetQuickPause.Debounce("QuickPauseCheck");
                 _debouncerHeadset.Debounce("QuickPauseCheck");
                 OnPropertyChanged(nameof(QuickPause_String));
+                OnPropertyChanged(nameof(QuickPauseStatus));
             }
         }
 
