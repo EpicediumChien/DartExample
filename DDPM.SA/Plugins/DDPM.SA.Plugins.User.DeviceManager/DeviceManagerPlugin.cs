@@ -8745,7 +8745,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if ((int)backendImportResult > 0)
                 {
                     // Apply new Hotkey setting
-                    RegistHotkey(false);
+                    ReloadHotkeyConfigData();
+                    RegistHotkey(true);
                     if (ImpExpSettings != null)
                     {
                         if (ImpExpSettings.MonitorSettings != null)
