@@ -51,6 +51,7 @@ using MessageBox = System.Windows.MessageBox;
 using WebcamProfile = DDPM.SA.Common.Settings.WebcamProfile;
 using static Windows.Foundation.UniversalApiContract;
 using Dell.Client.Framework.Common;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -1748,10 +1749,21 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             try
             {
-                softwareBitmap = (sender.TryAcquireLatestFrame()?.VideoMediaFrame)?.SoftwareBitmap;
+                var latestFrame = sender.TryAcquireLatestFrame();
+                if (latestFrame != null)
+                {
+                    var videoMediaFrame = latestFrame.VideoMediaFrame;
+                    if (videoMediaFrame != null)
+                    {
+                        softwareBitmap = videoMediaFrame.SoftwareBitmap;
+                    }
+                }
             }
-            catch
+            catch (Exception ex)
             {
+
+                // Log the exception details for further analysis
+                Debug.WriteLine($"Exception occurred: {ex.Message}");
                 _running = false;
                 return;
             }
