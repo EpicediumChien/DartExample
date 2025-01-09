@@ -20,10 +20,16 @@ namespace DDPM.QAM
         }
         private void SetProfile_Click(object sender, MouseButtonEventArgs e)
         {
+            //DdpmCommonHelper.DeviceManagerSA!.WriteLog($"PresetsPage -> SetProfile_Click");
+
             if (sender is Border border && border.DataContext is UI_Profile selectedProfile)
             {
+                //DdpmCommonHelper.DeviceManagerSA!.WriteLog($"border.DataContext is UI_Profile, {selectedProfile.Profile_Name}");
+
                 if (DataContext is QAMPageViewModel vm)
                 {
+                    //DdpmCommonHelper.DeviceManagerSA!.WriteLog($"DataContext is QAMPageViewModel");
+
                     vm.isStatusChagneByDDPM = false;
                     vm.SetProfile(selectedProfile);
                     vm.SendSelectProfileToDDPM();
