@@ -2654,8 +2654,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                //Debug.WriteLine(arg2.ToString());                
-                writelog(arg2.ToString());
                 if (deviceInfo == null)
                 {
                     writelog($"DpiLevelChanged: Error: deviceInfo is null");
@@ -2665,13 +2663,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     return;
                 //deviceInfo.DpiLevel = arg2 - 1;
                 deviceInfo.DpiLevel = arg2;
-                //Debug.WriteLine($"New DpiLevel: {arg2}");
-                writelog($"New DpiLevel: {arg2}");
-
-                DeviceChangedEventArgs _EventArgs = new();
-                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                _EventArgs.device_peripherals = deviceInfo;
-                _EventArgs.changedProperty = "DpiLevelChanged";
+                Debug.WriteLine($"DpiLevelChanged: New DpiLevel: {arg2}");
+                writelog($"DpiLevelChanged: New DpiLevel: {arg2}");
+                DeviceChangedEventArgs _EventArgs = new()
+                {
+                    type = DeviceChangedType.Peripherals_SettingsChange,
+                    device_peripherals = deviceInfo,
+                    changedProperty = "DpiLevelChanged"
+                };
                 OnNotify(_EventArgs);
             }
         }
@@ -2681,21 +2680,21 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                //Debug.WriteLine(arg2.ToString());
-                writelog(arg2.ToString());
-                if (deviceInfo != null)
-                {
-                    deviceInfo.DpiValue = arg2.ToString();
-                    DeviceChangedEventArgs _EventArgs = new();
-                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                    _EventArgs.device_peripherals = deviceInfo;
-                    _EventArgs.changedProperty = "DpiValueChanged";
-                    OnNotify(_EventArgs);
-                }
-                else
+                if (deviceInfo == null)
                 {
                     writelog($"DpiValueChanged: Error: deviceInfo is null");
+                    return;
                 }
+                deviceInfo.DpiValue = arg2.ToString();
+                Debug.WriteLine($"DpiValueChanged: New DpiValue: {arg2}");
+                writelog($"DpiValueChanged: New DpiValue: {arg2}");
+                DeviceChangedEventArgs _EventArgs = new()
+                {
+                    type = DeviceChangedType.Peripherals_SettingsChange,
+                    device_peripherals = deviceInfo,
+                    changedProperty = "DpiValueChanged"
+                };
+                OnNotify(_EventArgs);
             }
         }
 

@@ -569,6 +569,24 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return new JArray();
             }
         }
+        public async Task<JArray> GetMouseAssignedActions(string Guid)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return new JArray(); }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "AssignedActions");
+                Debug.WriteLine($"{value ?? ""}");
+                return value == null ? new JArray() : (JArray)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return new JArray();
+            }
+        }
         public async Task<JArray> GetMouseProgrammableKeys(string Guid)
         {
             Debug.Write($"GetMouseProgrammableKeys - Guid: {Guid}");
@@ -923,16 +941,34 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Keyboard", Guid))
             { return new JArray(); }
 
-            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
             {
-                var value = GetPropertyValue(_mouseInterfaceType, commodity, "AssignableActions");
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "AssignableActions");
                 Debug.WriteLine($"{value ?? ""}");
                 return value == null ? new JArray() : (JArray)value;
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardMethodInfo} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardMethodInfo} for the {_itemID} item.");
+                return new JArray();
+            }
+        }
+        public async Task<JArray> GetKbAssignedActions(string Guid)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return new JArray(); }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "AssignedActions");
+                Debug.WriteLine($"{value ?? ""}");
+                return value == null ? new JArray() : (JArray)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardMethodInfo} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardMethodInfo} for the {_itemID} item.");
                 return new JArray();
             }
         }
