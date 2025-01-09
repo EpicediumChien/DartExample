@@ -1399,7 +1399,7 @@
     <value>هذا الجهاز الذي تقوم بإقرانه غير مدعوم بجهاز استقبال USB لاسلكي متصل. استخدم جهاز الاستقبال المرفق مع الجهاز.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>الفتحات المتوفرة على جهاز الاستقبال اللاسلكي USB هذا ممتلئة. لاستخدامها، قم بإلغاء إقران جهاز منها بالنقر فوق الزر \"إلغاء الإقران\" في صفحة إعدادات الجهاز.</value>
+    <value>الفتحات المتوفرة على جهاز الاستقبال اللاسلكي USB هذا ممتلئة. لاستخدامها، قم بإلغاء إقران جهاز منها بالنقر فوق الزر "إلغاء الإقران" في صفحة إعدادات الجهاز.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>انقر لتعيين إجراء</value>
@@ -2416,7 +2416,7 @@
     <value>مفتاح التشغيل السريع: المستخدم حديثًا</value>
   </data>
   <data name="EazyMemorySettings.1" xml:space="preserve">
-    <value>مثال: &quot;Alt + P&quot;، ‏&quot;Shift + F&quot;، ‏&quot;Ctrl + Shift + F&quot;.</value>
+    <value>مثال: "Alt + P"، ‏"Shift + F"، ‏"Ctrl + Shift + F".</value>
   </data>
   <data name="EazyMemorySettings.2" xml:space="preserve">
     <value>ثبّت أي تطبيق في تخطيط تقسيم الشاشة بسهولة عن طريق سحبه إلى قسم</value>
@@ -2446,7 +2446,7 @@
     <value>انقر فوق زر الاستعراض لتحديد ملف</value>
   </data>
   <data name="Action.3" xml:space="preserve">
-    <value>انقر فوق زر ‎‏‏\&quot;الاستعراض\&quot; لتحديد مجلد</value>
+    <value>انقر فوق زر ‎‏‏"الاستعراض" لتحديد مجلد</value>
   </data>
   <data name="Action.4" xml:space="preserve">
     <value>اكتب عنوان URL لصفحة الويب في المربع أدناه</value>
@@ -2485,7 +2485,7 @@
     <value>التعاون</value>
   </data>
   <data name="Collab.10" xml:space="preserve">
-    <value>لا يمكن اتصال لوحة المفاتيح التعاونية بتطبيق Microsoft Teams لأنك قمت بحظر الطلب. لاستخدام Microsoft Teams مع لوحة المفاتيح التعاونية، انقر فوق \&quot;معرفة المزيد\&quot; للحصول على إرشادات حول كيفية إعادة الاتصال.</value>
+    <value>لا يمكن اتصال لوحة المفاتيح التعاونية بتطبيق Microsoft Teams لأنك قمت بحظر الطلب. لاستخدام Microsoft Teams مع لوحة المفاتيح التعاونية، انقر فوق "معرفة المزيد" للحصول على إرشادات حول كيفية إعادة الاتصال.</value>
   </data>
   <data name="Collab.11" xml:space="preserve">
     <value>لاستخدام لوحة المفاتيح التعاونية مع Zoom، ثبت أحدث إصدار لسطح المكتب من Zoom</value>
@@ -2818,7 +2818,7 @@
     <value>اللصق ودمج التنسيق</value>
   </data>
   <data name="Camera.25" xml:space="preserve">
-    <value>وصل شاشتك عبر منفذ USB 3.0 وحدد &quot;سرعة بيانات عالية&quot; ضمن تحديد أولويات منفذ USB-C لتمكين دقة 4K UHD.</value>
+    <value>وصل شاشتك عبر منفذ USB 3.0 وحدد "سرعة بيانات عالية" ضمن تحديد أولويات منفذ USB-C لتمكين دقة 4K UHD.</value>
   </data>
   <data name="HeadsetAutomatedActions.14" xml:space="preserve">
     <value>الحساسية</value>
@@ -3259,7 +3259,7 @@
     <value>فشل حفظ تقرير مراقبة الأصول</value>
   </data>
   <data name="USBKVM.Tips" xml:space="preserve">
-    <value>مثال: &quot;Alt + P&quot; و&quot;Shift + F&quot; و&quot;Ctrl + Shift + F&quot;‏\nملاحظة: بالنسبة إلى الشاشات المتعددة، يجب أن يكون مؤشر الماوس على الشاشة المستهدفة لتشغيل وظيفة مفتاح التشغيل السريع.</value>
+    <value>مثال: "Alt + P" و"Shift + F" و"Ctrl + Shift + F"‏\nملاحظة: بالنسبة إلى الشاشات المتعددة، يجب أن يكون مؤشر الماوس على الشاشة المستهدفة لتشغيل وظيفة مفتاح التشغيل السريع.</value>
   </data>
   <data name="BrightnessLevel" xml:space="preserve">
     <value>مستوى السطوع</value>

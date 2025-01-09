@@ -1399,7 +1399,7 @@
     <value>페어링하려는 이 디바이스는 현재 연결된 USB 무선 수신기에서 지원되지 않습니다. 디바이스와 함께 제공된 수신기를 사용하십시오.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>이 USB 무선 수신기의 사용 가능한 슬롯이 가득 찼습니다. 사용하려면 디바이스 설정 페이지에서 \"페어링 해제\" 버튼을 클릭하여 디바이스의 페어링을 해제하십시오.</value>
+    <value>이 USB 무선 수신기의 사용 가능한 슬롯이 가득 찼습니다. 사용하려면 디바이스 설정 페이지에서 "페어링 해제" 버튼을 클릭하여 디바이스의 페어링을 해제하십시오.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>작업을 할당하려면 클릭합니다.</value>
@@ -2416,7 +2416,7 @@
     <value>핫키: 최신</value>
   </data>
   <data name="EazyMemorySettings.1" xml:space="preserve">
-    <value>예: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;</value>
+    <value>예: "Alt + P", "Shift + F", "Ctrl + Shift + F"</value>
   </data>
   <data name="EazyMemorySettings.2" xml:space="preserve">
     <value>애플리케이션을 파티션으로 끌어서 놓아 분할 화면 레이아웃에 쉽게 스냅</value>
@@ -2425,7 +2425,7 @@
     <value>앱을 틈 없이 나란히 분할할 수 있도록 허용</value>
   </data>
   <data name="EazyMemorySettings.4" xml:space="preserve">
-    <value>&quot;SHIFT&quot; 키를 눌렀을 때만 존 위치 지정 허용</value>
+    <value>"SHIFT" 키를 눌렀을 때만 존 위치 지정 허용</value>
   </data>
   <data name="EazyMemorySettings.5" xml:space="preserve">
     <value>여러 모니터에 걸쳐 스냅</value>
@@ -2446,7 +2446,7 @@
     <value>탐색 버튼을 클릭하여 파일을 선택하십시오.</value>
   </data>
   <data name="Action.3" xml:space="preserve">
-    <value>\&quot;탐색\&quot; 버튼을 클릭하여 폴더를 선택하십시오.</value>
+    <value>"탐색" 버튼을 클릭하여 폴더를 선택하십시오.</value>
   </data>
   <data name="Action.4" xml:space="preserve">
     <value>아래 상자에 웹 페이지의 URL을 입력하십시오.</value>
@@ -2485,7 +2485,7 @@
     <value>협업</value>
   </data>
   <data name="Collab.10" xml:space="preserve">
-    <value>요청을 차단했기 때문에 협업 키보드를 Microsoft Teams에 연결할 수 없습니다. Microsoft Teams에서 협업 키보드를 사용하려면 \&quot;자세히 알아보기\&quot;를 클릭하여 다시 연결하는 방법에 대한 지침을 확인하십시오.</value>
+    <value>요청을 차단했기 때문에 협업 키보드를 Microsoft Teams에 연결할 수 없습니다. Microsoft Teams에서 협업 키보드를 사용하려면 "자세히 알아보기"를 클릭하여 다시 연결하는 방법에 대한 지침을 확인하십시오.</value>
   </data>
   <data name="Collab.11" xml:space="preserve">
     <value>Zoom에서 협업 키보드를 사용하려면 Zoom의 최신 데스크탑 버전을 설치합니다.</value>
@@ -3259,7 +3259,7 @@
     <value>자산 보고서 저장 실패 모니터링</value>
   </data>
   <data name="USBKVM.Tips" xml:space="preserve">
-    <value>예: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;\n참고: 다중 모니터의 경우 마우스 커서가 대상 모니터 화면에 있어야 핫키 기능을 실행할 수 있습니다.</value>
+    <value>예: "Alt + P", "Shift + F", "Ctrl + Shift + F"\n참고: 다중 모니터의 경우 마우스 커서가 대상 모니터 화면에 있어야 핫키 기능을 실행할 수 있습니다.</value>
   </data>
   <data name="BrightnessLevel" xml:space="preserve">
     <value>밝기 수준</value>

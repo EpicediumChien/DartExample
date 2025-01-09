@@ -241,7 +241,7 @@
     <value>Bellenim güncelleştirmesini başlatmak için lütfen farenin sol düğmesine çift tıklayın</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Bellenim güncelleştirmesini başlatmak için lütfen klavyedeki \"U\" tuşuna basın</value>
+    <value>Bellenim güncelleştirmesini başlatmak için lütfen klavyedeki "U" tuşuna basın</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Aygıt bağlı</value>

@@ -1399,7 +1399,7 @@
     <value>To urządzenie, które chcesz sparować, nie jest obsługiwane z podłączonym bezprzewodowym odbiornikiem USB. Użyj odbiornika dostarczonego z urządzeniem.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>Dostępne gniazda w tym bezprzewodowym odbiorniku USB są pełne. Aby użyć, usuń sparowanie urządzenia z nim, klikając przycisk \„Usuń sparowanie\” na stronie ustawień urządzenia.</value>
+    <value>Dostępne gniazda w tym bezprzewodowym odbiorniku USB są pełne. Aby użyć, usuń sparowanie urządzenia z nim, klikając przycisk „Usuń sparowanie” na stronie ustawień urządzenia.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>Kliknij, aby przypisać działanie</value>

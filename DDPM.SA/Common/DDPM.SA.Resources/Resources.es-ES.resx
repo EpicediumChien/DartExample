@@ -241,7 +241,7 @@
     <value>Haga doble clic con el botón izquierdo del ratón para iniciar la actualización del firmware</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Pulse la tecla \"U\" del teclado para iniciar la actualización del firmware</value>
+    <value>Pulse la tecla "U" del teclado para iniciar la actualización del firmware</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Dispositivo conectado</value>
