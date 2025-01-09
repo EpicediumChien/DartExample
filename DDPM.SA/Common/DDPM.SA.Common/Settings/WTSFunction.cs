@@ -148,7 +148,46 @@ namespace DDPM.SA.Common.Settings
                 else
                     Log.Error(text);
             }
-        }               
+        }
+
+        public static string DirectGetUserID(ILog log)
+        {
+            int sessionId = _WTSGetActiveConsoleSessionId(); // This gets the session ID of the user logged into the console
+            WriteLog(log, $"DirectGetUserID: {sessionId}");
+
+            if (_WTSQuerySessionInformation(IntPtr.Zero, sessionId, WTS_INFO_CLASS.WTSUserName, out IntPtr buffer, out int bytesReturned))
+            {
+                try
+                {
+                    string userName = Marshal.PtrToStringAnsi(buffer);
+                    WriteLog(log, $"DirectGetUserID: user name ({userName})");
+
+                    if (!string.IsNullOrEmpty(userName))
+                    {
+                        string userSid = GetUserSid(log, userName);
+                        if (!string.IsNullOrEmpty(userSid))
+                        {
+                            WriteLog(log, $"DirectGetUserID: userSid : {userSid}");
+                            return userSid;
+                        }
+                    }
+                    else
+                    {
+                        WriteLog(log, "DirectGetUserID: Got null user name");
+                    }
+                }
+                finally
+                {
+                    _WTSFreeMemory(buffer);
+                }
+            }
+            else
+            {
+                WriteLog(log, "DirectGetUserID: return false");
+            }
+
+            return null;
+        }
 
         //
         //At system session (0) to query user's Sid from active session

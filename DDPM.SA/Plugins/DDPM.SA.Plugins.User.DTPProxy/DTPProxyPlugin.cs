@@ -6202,6 +6202,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged += Headset_IsWearDetectionPauseMusicEnabledChanged;
                     _Headsetcom.IsWearDetectionMuteMicEnabledChanged += Headset_IsWearDetectionMuteMicEnabledChanged;
                     _Headsetcom.WearDetectionQuickPauseChanged += Headset_WearDetectionQuickPauseChanged;
+                    _Headsetcom.IsBoomMicSupportedChanged += Headset_BoomMicSupportedChangedArgs;
+                    _Headsetcom.FirmwareVersionChanged += Headset_FirmwareVersionChanged;
+                    _Headsetcom.IsDirtyChanged += Headset_IsDirtyChanged;
+                    _Headsetcom.IsReadyChanged += Headset_IsReadyChanged;
+                    _Headsetcom.MuteStatusChanged += Headset_MuteStatusChanged;
+
                     writelog($"Headset{index} Commodity events registered successfully");
                     return true;
                 }
@@ -6233,6 +6239,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged -= Headset_IsWearDetectionPauseMusicEnabledChanged;
                     _Headsetcom.IsWearDetectionMuteMicEnabledChanged -= Headset_IsWearDetectionMuteMicEnabledChanged;
                     _Headsetcom.WearDetectionQuickPauseChanged -= Headset_WearDetectionQuickPauseChanged;
+                    _Headsetcom.IsBoomMicSupportedChanged -= Headset_BoomMicSupportedChangedArgs;
+                    _Headsetcom.FirmwareVersionChanged -= Headset_FirmwareVersionChanged;
+                    _Headsetcom.IsDirtyChanged -= Headset_IsDirtyChanged;
+                    _Headsetcom.IsReadyChanged -= Headset_IsReadyChanged;
+                    _Headsetcom.MuteStatusChanged -= Headset_MuteStatusChanged;
+
                     writelog($"[Headset] Headset{index} Commodity events unregistered successfully");
                     return true;
                 }
@@ -6266,6 +6278,46 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             writelog($"[Headset] Catch event _Headset_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
+
+        private void Headset_MuteStatusChanged(object sender, MuteStatusChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_MuteStatusChanged",
+                                    e.DeviceId, $"Headset_MuteStatusChanged:{e.MuteStatus.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_MuteStatusChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_IsReadyChanged(object sender, IsReadyChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_IsReadyChanged",
+                                    e.DeviceId, $"Headset_IsReadyChanged:{e.IsReady.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_IsReadyChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_IsDirtyChanged(object sender, IsDirtyChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_IsDirtyChanged",
+                                    e.DeviceId, $"Headset_IsDirtyChanged:{e.IsDirty.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_IsDirtyChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_FirmwareVersionChanged(object sender, FirmwareVersionChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_FirmwareVersionChanged",
+                                    e.DeviceId, $"Headset_FirmwareVersionChanged:{e.FirmwareVersion}"));
+
+            writelog($"[Headset] Catch event Headset_FirmwareVersionChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_BoomMicSupportedChangedArgs(object sender, IsBoomMicSupportedChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_BoomMicSupportedChangedArgs",
+                                    e.DeviceId, $"Headset_BoomMicSupportedChangedArgs:{e.IsBoomMicSupported.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_BoomMicSupportedChangedArgs : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }       
 
         private void Headset_BandsGainChanged(object sender, BandsGainChangedArgs e)
         {
@@ -8471,25 +8523,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             writelog($"Dock Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
-
-        #region Headset Event
-
-        private void _headsetcomdity_IsReadyChanged(object sender, IsReadyChangedArgs e)
-        {
-            Debug.WriteLine($"[DTPProxyPlugin] [Headset] IsReadyChanged {e.IsReady} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[DTPProxyPlugin] [Headset] IsReadyChanged {e.IsReady} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-        }
-        private void _headsetcomdity_FirmwareVersionChanged(object sender, FirmwareVersionChangedArgs e)
-        {
-            Debug.WriteLine($"[Headset]FirmwareVersionChanged {e.FirmwareVersion} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Headset]FirmwareVersionChanged {e.FirmwareVersion} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-        }
-        private void _headsetcomdity_AncModeChange(object sender, AncModeChangedArgs e)
-        {
-            Debug.WriteLine($"[Headset]AncModeChange {e.AncMode} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Headset]AncModeChange {e.AncMode} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-        }
-        #endregion
 
         #region Speaker
 
