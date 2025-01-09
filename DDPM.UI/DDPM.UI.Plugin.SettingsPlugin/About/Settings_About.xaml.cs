@@ -39,7 +39,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
 
         private void LearnMore_Click(object sender, RoutedEventArgs e)
         {
-            string url = "https://www.dell.com/support/home";
+            string url = "https://www.dell.com/ddpm";
             try
             {
                 /*Process.Start(new ProcessStartInfo
