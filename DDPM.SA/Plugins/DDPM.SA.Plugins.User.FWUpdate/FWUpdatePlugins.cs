@@ -107,9 +107,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// </summary>
         private List<DeviceInfo> _DeviceInfos;
         /// <summary>
-        /// 從DeviceManager取得的連接的Dongle，用於更新韌體前確認是否有插入多個Dongle
+        /// 從DeviceManager取得的連接的IO Dongle，用於更新韌體前確認是否有插入多個Dongle
         /// </summary>
-        private int _DongleCount;
+        private int _IODongleCount;
+        /// <summary>
+        /// 從DeviceManager取得的連接的Audio Dongle，用於更新韌體前確認是否有插入多個Dongle
+        /// </summary>
+        private int _AudioDongleCount;
 
         /// <summary>
         /// 要取得更新的裝置列表
@@ -254,9 +258,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         #endregion Overriding methods
 
 
-        public void SetDeviceinfo(List<DeviceInfo> DeviceInfos, int DongleCount)
+        public void SetDeviceinfo(List<DeviceInfo> DeviceInfos, int IODongleCount, int AudioDongle)
         {
-            _DongleCount = DongleCount;
+            _IODongleCount = IODongleCount;
+            _IODongleCount = AudioDongle;
             if (DeviceInfos != null && DeviceInfos.Count > 0)
             {
                 _DeviceInfos = DeviceInfos;
@@ -1306,16 +1311,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                     }
                 }
-                else if (currentFWInfo.DeviceType == DeviceType.PhysicalAudioDongle ||
-                    currentFWInfo.DeviceType == DeviceType.PhysicalDongle)
+                else if (currentFWInfo.DeviceType == DeviceType.PhysicalDongle)
                 {
                     //List<DeviceInfo> dongle_deviceInfos = _DeviceInfos.FindAll(o => o.PhysicalDeviceType.Equals(DeviceType.PhysicalAudioDongle) ||
                     //o.PhysicalDeviceType.Equals(DeviceType.PhysicalDongle));
                     //_logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} dongle_deviceInfos is null : {(dongle_deviceInfos == null ? "Yes" : "No")}");
                     //if (dongle_deviceInfos != null)
                     {
-                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} _DongleCount : {_DongleCount}");
-                        if (_DongleCount >= 2)
+                        _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} _DongleCount : {_IODongleCount}");
+                        if (_IODongleCount >= 2)
                         {
                             fWUErrorCode = FWUErrorCode.ConnectMultipleSameModels;
                             _notificationStr = LangHelper.Instance["Firmware_update_aborted_same_model_is_connected"];

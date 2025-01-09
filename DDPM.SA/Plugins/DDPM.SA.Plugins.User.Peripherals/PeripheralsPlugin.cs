@@ -63,7 +63,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private DeviceHelper _deviceHelper;
         private UpdateHelper _updateHelper;
         //Bruce, FWU need it
-        private int _DongleCount;
+        private int _IODongleCount;
+        //Bruce, FWU need it
+        private int _AudioDongleCount;
         private RFDeviceHelper _rfDeviceHelper;
         private ClientInfo _clientInfo;
         private static Logs _logs;
@@ -1408,8 +1410,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     if (_iDeviceManager == null)
                         return;
                     //Bruce, FWU need it
-                    _DongleCount = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalAudioDongle) || o.Type.Equals(DeviceType.PhysicalDongle)).Count;
-                    _logs.DebugMsg_1("[PeripheralsPlugin] _DongleCount " + _DongleCount);
+                    _IODongleCount = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalDongle)).Count;
+                    _AudioDongleCount = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalAudioDongle)).Count;
+                    _logs.DebugMsg_1("[PeripheralsPlugin] _IODongleCount " + _IODongleCount);
+                    _logs.DebugMsg_1("[PeripheralsPlugin] _HeadsetDongleCount " + _AudioDongleCount);
                     //_deviceHelper.DPeMSDKVersion = IndiLogic.DPeM.Broker.Assembly.GetName();
                     foreach (var device in _iDeviceManager.Devices)
                     {
@@ -1443,6 +1447,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... BatteryLevel " + item.BatteryLevel);
                             _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... FirmwareVersion " + item.FirmwareVersion.ToString("X4"));
                             _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... PhysicalDeviceFirmwareVersion " + item.ParentPhysicalDevice.FirmwareVersion.ToString("X4"));
+                            string newModel = JudgmentList.ModelRename(item.ModelNumber);
+                            if (string.IsNullOrEmpty(newModel))
+                            {
+                                _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... newModel " + newModel);
+                                newModel = item.ModelNumber;
+                            }
                             DeviceInfo info = new()
                             {
                                 ID = item.Id,
@@ -1458,7 +1468,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 Type = item.Type,
                                 PluginId = item.PluginId,
                                 OdmId = item.ODMId,
-                                ModelNumber = item.ModelNumber,
+                                ModelNumber = newModel,
                                 IsBatteryLevelSupported = item.IsBatteryLevelSupported,
                                 ThumbnailImageRawData = item.ThumbnailImageRawData,
                             };
@@ -3401,7 +3411,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_WearDetectionChanged ... out " + newValue.ToString());
             }
         }
-
         private void IUpdateManager_IsAnyUpdateAvailableChanged(bool isAnyUpdateAvailable)
         {
             lock (_lock)
@@ -3423,6 +3432,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _updateItems.DeviceId = updateItem.DeviceId;
                             _updateItems.DeviceIndex = updateItem.DeviceIndex;
                             _updateItems.DeviceModelNumber = updateItem.DeviceModelNumber;
+                            string newModel = JudgmentList.ModelRename(updateItem.DeviceModelNumber);
+                            if (!string.IsNullOrEmpty(newModel))
+                            {
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] newModel = {newModel}");
+                                _updateItems.DeviceModelNumber = newModel;
+                            }
                             _logs.DebugMsg_1($"[PeripheralsPlugin] _updateItems.DeviceModelNumber = {_updateItems.DeviceModelNumber}");
                             _updateItems.DeviceName = updateItem.DeviceName;
                             _logs.DebugMsg_1($"[PeripheralsPlugin] _updateItems.DeviceName = {_updateItems.DeviceName}");
@@ -3440,7 +3455,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _updateItems.Thumbprint = updateItem.Thumbprint;
 
                             _updateHelper.UpdateItems.Add(_updateItems);
-                        }
+                        }        
                     }
                     else
                     {
@@ -3663,9 +3678,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             };
         }
         //Bruce, FWU need it
-        public int GetDongleCount()
+        public Task<int> GetIODongleCount()
         {
-            return _DongleCount;
+            return System.Threading.Tasks.Task.FromResult(_IODongleCount);
+        }
+        //Bruce, FWU need it
+        public Task<int> GetAudioDongleCount()
+        {
+            return System.Threading.Tasks.Task.FromResult(_AudioDongleCount);
         }
 
         public void DisplayNotification(string bannerInfo, string hyperlinkText, string bannerItemType)

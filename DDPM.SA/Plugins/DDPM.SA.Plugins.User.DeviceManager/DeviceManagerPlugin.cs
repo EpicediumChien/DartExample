@@ -2956,6 +2956,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.Run(() => _PeripheralsPlugin.StopCopilotRegistryMonitor());
         }
 
+        public Task<int> GetIODongleCount()//Bruce Added 01/09
+        {
+            int retCount = 0;
+            if (_PeripheralsPlugin != null)
+            {
+                retCount = _PeripheralsPlugin.GetIODongleCount().Result;
+            }
+            return Task.FromResult(retCount);
+        }
+        public Task<int> GetAudioDongleCount()//Bruce Added 01/09
+        {
+            int retCount = 0;
+            if (_PeripheralsPlugin != null)
+            {
+                retCount = _PeripheralsPlugin.GetAudioDongleCount().Result;
+            }
+            return Task.FromResult(retCount);
+        }
         #endregion
 
         #region Headset
@@ -6190,7 +6208,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null)
             {
-                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo, _PeripheralsPlugin.GetDongleCount());
+                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo, _PeripheralsPlugin.GetIODongleCount().Result, _PeripheralsPlugin.GetAudioDongleCount().Result);
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);
