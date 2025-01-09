@@ -8744,6 +8744,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 DisplayImportResultCode backendImportResult = _SettingsPlugin.DisplayImportSettings(path, isSameModel, monitorInfo.edid.ServiceTag, out DDPMImpExpSettings ImpExpSettings).Result;
                 if ((int)backendImportResult > 0)
                 {
+                    // Apply new Hotkey setting
+                    RegistHotkey(false);
                     if (ImpExpSettings != null)
                     {
                         if (ImpExpSettings.MonitorSettings != null)
@@ -8802,7 +8804,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         SetVCPSequence(monitorInfo, impVCPSequence, vcps);
                                         foreach (VCPCode code in vcps)
                                         {
-                                            writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
+                                            writelog($"[DisplayImportSettings] VCP code : {code.Code.ToString()}, First Value: {code.Value[0]}");
                                             if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
                                                 importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
                                             {
