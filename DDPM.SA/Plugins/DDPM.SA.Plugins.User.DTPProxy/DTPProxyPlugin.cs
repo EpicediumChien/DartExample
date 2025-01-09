@@ -6170,6 +6170,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.FirmwareVersionChanged += Headset_FirmwareVersionChanged;
                     _Headsetcom.IsDirtyChanged += Headset_IsDirtyChanged;
                     _Headsetcom.IsReadyChanged += Headset_IsReadyChanged;
+                    _Headsetcom.MuteStatusChanged += Headset_MuteStatusChanged;
 
                     writelog($"Headset{index} Commodity events registered successfully");
                     return true;
@@ -6206,6 +6207,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.FirmwareVersionChanged -= Headset_FirmwareVersionChanged;
                     _Headsetcom.IsDirtyChanged -= Headset_IsDirtyChanged;
                     _Headsetcom.IsReadyChanged -= Headset_IsReadyChanged;
+                    _Headsetcom.MuteStatusChanged -= Headset_MuteStatusChanged;
+
                     writelog($"[Headset] Headset{index} Commodity events unregistered successfully");
                     return true;
                 }
@@ -6238,6 +6241,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Connected", e.DeviceId));
 
             writelog($"[Headset] Catch event _Headset_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_MuteStatusChanged(object sender, MuteStatusChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_MuteStatusChanged",
+                                    e.DeviceId, $"Headset_MuteStatusChanged:{e.MuteStatus.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_MuteStatusChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
 
         private void Headset_IsReadyChanged(object sender, IsReadyChangedArgs e)
@@ -8476,25 +8487,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             writelog($"Dock Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
-
-        #region Headset Event
-
-        private void _headsetcomdity_IsReadyChanged(object sender, IsReadyChangedArgs e)
-        {
-            Debug.WriteLine($"[DTPProxyPlugin] [Headset] IsReadyChanged {e.IsReady} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[DTPProxyPlugin] [Headset] IsReadyChanged {e.IsReady} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-        }
-        private void _headsetcomdity_FirmwareVersionChanged(object sender, FirmwareVersionChangedArgs e)
-        {
-            Debug.WriteLine($"[Headset]FirmwareVersionChanged {e.FirmwareVersion} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Headset]FirmwareVersionChanged {e.FirmwareVersion} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-        }
-        private void _headsetcomdity_AncModeChange(object sender, AncModeChangedArgs e)
-        {
-            Debug.WriteLine($"[Headset]AncModeChange {e.AncMode} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Headset]AncModeChange {e.AncMode} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-        }
-        #endregion
 
         #region Speaker
 

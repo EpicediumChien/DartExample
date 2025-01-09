@@ -152,29 +152,33 @@ namespace DDPM.SA.Common.Settings
 
         public static string DirectGetUserID(ILog log)
         {
-            IntPtr buffer;
-            int bytesReturned = 0;
             int sessionId = _WTSGetActiveConsoleSessionId(); // This gets the session ID of the user logged into the console
             WriteLog(log, $"DirectGetUserID: {sessionId}");
 
-            if (_WTSQuerySessionInformation(IntPtr.Zero, sessionId, WTS_INFO_CLASS.WTSUserName, out buffer, out bytesReturned))
+            if (_WTSQuerySessionInformation(IntPtr.Zero, sessionId, WTS_INFO_CLASS.WTSUserName, out IntPtr buffer, out int bytesReturned))
             {
-                string userName = Marshal.PtrToStringAnsi(buffer);
-                _WTSFreeMemory(buffer);
-                WriteLog(log, $"DirectGetUserID: user name ({userName})");
-
-                if (!string.IsNullOrEmpty(userName))
+                try
                 {
-                    string userSid = GetUserSid(log, userName);
-                    if (!string.IsNullOrEmpty(userSid))
+                    string userName = Marshal.PtrToStringAnsi(buffer);
+                    WriteLog(log, $"DirectGetUserID: user name ({userName})");
+
+                    if (!string.IsNullOrEmpty(userName))
                     {
-                        WriteLog(log, $"userSid : {userSid}");
-                        return userSid;
+                        string userSid = GetUserSid(log, userName);
+                        if (!string.IsNullOrEmpty(userSid))
+                        {
+                            WriteLog(log, $"DirectGetUserID: userSid : {userSid}");
+                            return userSid;
+                        }
+                    }
+                    else
+                    {
+                        WriteLog(log, "DirectGetUserID: Got null user name");
                     }
                 }
-                else
+                finally
                 {
-                    WriteLog(log, "Got null user name");
+                    _WTSFreeMemory(buffer);
                 }
             }
             else

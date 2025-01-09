@@ -2906,6 +2906,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     else if (deviceType.Contains("HEADSET"))
                     {
                         type = OSDType_Device.Headset;
+                        message = "Dell Headset ";
                     }
                     else if (SACommonHelper.EOLKBList.Contains(deviceInfo.ModelNumber))
                     {
@@ -3220,7 +3221,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         Requester = "Mute.Status",
                         DeviceName = Screen.PrimaryScreen.DeviceName,
                         osd_type = OSDType.Mute,
-                        Message = deviceInfo.Name,
+                        Message = "Dell Headset " + deviceInfo.ModelNumber,
                         Status = newValue
                     };
                     OnOSDNotify(args);
