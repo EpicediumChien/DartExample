@@ -982,11 +982,13 @@ namespace DDPM.SA.Common
 
         public static int ResponseDefer(CommandLineInput commandLineInput)
         {
-            CLI_RESPONSE3 result = new CLI_RESPONSE3()
+            APP_RESPONSE result = new APP_RESPONSE()
             {
                 Command = commandLineInput.Command,
                 TargetFeature = commandLineInput.TargetFeature,
-                Result = "Defer"
+                Result = "PASS",
+                Value = commandLineInput.Options.Count > 0 ? commandLineInput.Options[0].Option_Value : "N/A",
+                Message = "Set defer operation completed"
             };
             Console.WriteLine(result.ToJson());
             return (int)CLI_ExitCode.success;
