@@ -196,7 +196,7 @@
                                         </Style>
                                     </UXControls:UXRadioButton.Resources>
                                 </UXControls:UXRadioButton>
-                                <Grid Grid.Column="1" Margin="8" VerticalAlignment="Center" Visibility="{Binding LockNKVM_Visibility}" Background="#00000000">
+                                <!--<Grid Grid.Column="1" Margin="8" VerticalAlignment="Center" Visibility="{Binding LockNKVM_Visibility}" Background="#00000000">
                                     <Path Data="M11.0998 6.4V4C11.1998 1.8 9.4998 0.1 7.2998 0H7.0998C4.89981 0 3.0998 1.8 3.0998 4V6.4H0.799805V16H13.0998V6.4H11.0998ZM4.2998 4C4.19981 2.5 5.3998 1.3 6.7998 1.2H7.1998C8.7998 1.2 9.9998 2.5 9.9998 4V6.4H4.2998V4ZM12.0998 14.9H1.9998V7.5H12.0998V14.9Z" />
                                     <Path Data="M6.5998 12.5H7.5998V9.3H5.7998V10.3H6.5998V12.5Z" />
                                     <Grid.ToolTip>
@@ -213,7 +213,7 @@
                                             </Border>
                                         </ToolTip>
                                     </Grid.ToolTip>
-                                </Grid>
+                                </Grid>-->
                             </Grid>
                             <Grid Grid.Row="1">
                                 <UXControls:UXTextBlock Text="{Binding [Kvm.28], Source={x:Static lang:LangHelper.Instance},StringFormat={} •  {0}}"

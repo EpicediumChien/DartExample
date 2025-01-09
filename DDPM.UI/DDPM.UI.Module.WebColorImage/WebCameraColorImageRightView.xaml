@@ -160,7 +160,7 @@
                     <StackPanel Orientation="Vertical" Margin="18,21,16,21">
                       <StackPanel Orientation="Horizontal">
                         <UXControls:UXTextBlock Text="{Binding [WebCameraColorImage.7], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
-                        <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
+                        <Border ToolTipService.Placement="Center" ToolTipService.VerticalOffset="-50" Background="{StaticResource FakeTransparent}" Cursor="Hand">
                           <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                           <Border.ToolTip>
                             <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">

@@ -2686,6 +2686,72 @@ namespace NetworkKVM.Plugins
                 return;
         }
 
+        public Task<bool> GetOnNKVM(MonitorInfo monitorInfo, ISettingsManagerDev _SettingsPlugin)
+        {
+            _logs.DebugMsg("[GetOnNKVM] GetOnNKVM");
+            DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
+            if (config != null)
+            {
+                if (config.LockSettings.Enable_Display_NetworkKVM)
+                {
+                    _logs.DebugMsg("[GetOnNKVM] Enable_Display_NetworkKVM is true");
+                    return Task.FromResult(true);
+                }
+            }
+            else
+            {
+                _logs.DebugMsg("[GetOnNKVM] DDPMSettings is null");
+            }
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+            if (settings != null)
+            {
+                DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
+                if (monitorSetting != null)
+                {
+                    return Task.FromResult(monitorSetting.KVM.isOnNKVM);
+                }
+            }
+            return Task.FromResult(false);
+        }
+
+        public Task SetOnNKVM(MonitorInfo monitorInfo, bool ison, ISettingsManagerDev _SettingsPlugin)
+        {
+            _logs.DebugMsg("[SetOnNKVM] SetOnNKVM");
+            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+            if (settings != null) //Robert_Lin 0731
+            {
+                foreach (DDPMMonitorSettings setting in settings)
+                {
+                    if (setting != null)
+                    {
+                        if (setting.ServiceTag == monitorInfo.edid.ServiceTag)
+                        {
+                            setting.KVM.isOnNKVM = ison;
+                            bool b = _SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result;
+                            if (ison)
+                            {
+                                //_SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
+                                OnNKVM().Wait();
+                                //bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
+                            }
+                            else
+                            {
+                                OffNKVM().Wait();
+                                DDPMSettings config = _SettingsPlugin.ReloadAppConfigData().Result;
+                                if (config != null)
+                                {
+                                    config.LockSettings.Enable_Display_NetworkKVM = false;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return Task.CompletedTask;
+        }
+
         private void VCPchangedEvent(object sender, VCPchangedEventArgs e)
         {
             _logs.DebugMsg("[NetworkKVM] VCPchangedEvent.....");
