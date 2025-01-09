@@ -9247,6 +9247,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetMouseAssignableActions(Guid));
         }
+        public async Task<JArray> GetMouseAssignedActions(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetMouseAssignedActions(Guid));
+        }
 
         public async Task<JArray> GetMouseProgrammableKeys(string Guid)
         {
@@ -9595,6 +9599,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<JArray> GetKbAssignableActions(string Guid)
         {
             return Task.Run(() => _DTPProxyPlugin.GetKbAssignableActions(Guid));
+        }
+        public Task<JArray> GetKbAssignedActions(string Guid)
+        {
+            return Task.Run(() => _DTPProxyPlugin.GetKbAssignedActions(Guid));
         }
 
         public async Task<string> GetKeyboardKeystrokeDisplayData(string Guid)
