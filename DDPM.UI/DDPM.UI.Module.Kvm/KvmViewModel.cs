@@ -2023,15 +2023,15 @@ namespace DDPM.UI.Module.Kvm
                         }
                         else
                         {
-                            if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
-                            {
+                            //if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
+                            //{
                                 bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
                                 _log.Debug($"[KvmViewModel] SetUSBUpstream {pcs.Key}-{pcs.Value.InputType}: {pcs.Value.USBUpstream} Done");
                                 if (bUSBuptream)
                                 {
                                     Thread.Sleep(1000);
                                 }
-                            }
+                            //}
                         }
                     }
                     USBDisenable();
