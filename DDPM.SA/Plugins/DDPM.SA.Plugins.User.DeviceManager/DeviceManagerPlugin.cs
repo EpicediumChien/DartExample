@@ -11887,6 +11887,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         private void CheckDeviceFirstTimesToConnect(MonitorInfo mo, DeviceInfo di)
         {
+            if (_DisplayManagerPlugin.GetIsDDPMLaunch().Result)
+            {
+                writelog($"CheckDeviceFirstTimesToConnect isDDPMlaunch true ... ");
+                return;
+            }
             if (di == null)
             {
                 writelog($"CheckDeviceFirstTimesToConnect DeviceInfo null ... ");
@@ -12662,6 +12667,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //LoadGlobalSettingParam(); //here is too early, please refer to function "SettingsReady"
                         UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
                         _PeripheralsPlugin.Peripheral_OSD_Notify += OnPeripheralOSDNotify;
+
+                        var di = GetDevices(true).Result;
+                        if (di != null)
+                        {
+                            foreach (var item in di.deviceInfo)
+                            {
+                                CheckDeviceFirstTimesToConnect(null, item);
+                            }
+                        }
                     }
                 }
             });
