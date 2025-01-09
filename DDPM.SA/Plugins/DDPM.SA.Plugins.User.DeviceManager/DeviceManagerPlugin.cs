@@ -11887,59 +11887,70 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
         private void CheckDeviceFirstTimesToConnect(MonitorInfo mo, DeviceInfo di)
         {
-            if (_DisplayManagerPlugin.GetIsDDPMLaunch().Result)
+            try
             {
-                writelog($"CheckDeviceFirstTimesToConnect isDDPMlaunch true ... ");
-                return;
-            }
-            if (di == null)
-            {
-                writelog($"CheckDeviceFirstTimesToConnect DeviceInfo null ... ");
-                return;
-            }
-            bool result = false;
-            object regValue;
-
-            string UserId = WTSFunction.DirectGetUserID(Log);
-
-            string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
-            string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{di.ModelNumber}";
-            string ddpmExePath = //@"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
-                                 System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Dell\Dell Display and Peripheral Manager\DDPM.exe");
-            string debugPath = @"D:\\NEW\DDPM\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
-
-            regValue = ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
-            //Trace.WriteLine($"regValue {regValue.ToString()}");
-            // mean null or "" or is false, add to the queue and set it to true
-            if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
-            {
-                writelog($"CheckDeviceFirstTimesToConnect ReadRegistryData UserId : {UserId}, can not find ModelNumber : {di.ModelNumber}, StartProcess ... ");
-                result = DDPMFileSecurity.ValidateFilePath(debugPath, out string info);
-                if (result)
+                if (_DisplayManagerPlugin == null)
                 {
-                    result = DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
-                        null,
-                        new ProcessStartInfo
-                        {
-                            FileName = debugPath,
-                            UseShellExecute = true
-                        });
+                    writelog($"CheckDeviceFirstTimesToConnect _DisplayManagerPlugin NULL ... ");
+                    return;
+                }
+                if (_DisplayManagerPlugin.GetIsDDPMLaunch().Result)
+                {
+                    writelog($"CheckDeviceFirstTimesToConnect isDDPMlaunch true ... ");
+                    return;
+                }
+                if (di == null)
+                {
+                    writelog($"CheckDeviceFirstTimesToConnect DeviceInfo null ... ");
+                    return;
+                }
+                bool result = false;
+                object regValue;
 
-                    if (!result)
+                string UserId = WTSFunction.DirectGetUserID(Log);
+
+                string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
+                string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{di.ModelNumber}";
+                string ddpmExePath = //@"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
+                                     System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Dell\Dell Display and Peripheral Manager\DDPM.exe");
+                string debugPath = @"D:\\NEW\DDPM\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+
+                regValue = ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
+                //Trace.WriteLine($"regValue {regValue.ToString()}");
+                // mean null or "" or is false, add to the queue and set it to true
+                if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
+                {
+                    writelog($"CheckDeviceFirstTimesToConnect ReadRegistryData UserId : {UserId}, can not find ModelNumber : {di.ModelNumber}, StartProcess ... ");
+                    result = DDPMFileSecurity.ValidateFilePath(debugPath, out string info);
+                    if (result)
                     {
-                        writelog($"CheckDeviceFirstTimesToConnect StartProcessSafely fail");
+                        result = DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                            null,
+                            new ProcessStartInfo
+                            {
+                                FileName = debugPath,
+                                UseShellExecute = true
+                            });
+
+                        if (!result)
+                        {
+                            writelog($"CheckDeviceFirstTimesToConnect StartProcessSafely fail");
+                        }
+                    }
+                    else
+                    {
+                        writelog($"CheckDeviceFirstTimesToConnect ValidateFilePath fail");
                     }
                 }
                 else
                 {
-                    writelog($"CheckDeviceFirstTimesToConnect ValidateFilePath fail");
+                    writelog($"CheckDeviceFirstTimesToConnect ReadRegistryData UserId : {UserId}, find ModelNumber : {di.ModelNumber}");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                writelog($"CheckDeviceFirstTimesToConnect ReadRegistryData UserId : {UserId}, find ModelNumber : {di.ModelNumber}");
+                writelog($"CheckDeviceFirstTimesToConnect Exception : {ex.Message}");
             }
-
         }
         //0613 Bruce 用於看是否連接超過2個dock
         private void CheckDocks()
