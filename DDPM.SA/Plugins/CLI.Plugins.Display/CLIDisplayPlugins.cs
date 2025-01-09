@@ -12982,16 +12982,14 @@ namespace DDPM.CLI.Plugins.Display
                                     {
                                         string[] ss = capability.Split(ss_1[1] + "(");
                                         ss = ss[1].Split(")");
-                                        if (commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
-                                        {
-                                            if (ss[0].Contains(commandLineInput.Options[1].Option_Value))
-                                            {
-                                                retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
+                                        if (commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE") &&
+                                            ss[0].Contains(commandLineInput.Options[1].Option_Value))
+                                        {  
+                                            retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
 
-                                                cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
-                                                vcp_value = true;
-                                                Trace.WriteLine($"retcode : {retcode}");
-                                            }
+                                            cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
+                                            vcp_value = true;
+                                            Trace.WriteLine($"retcode : {retcode}");                                            
                                         }
                                     }
                                     else if (capability.Contains(ss_1[1]))

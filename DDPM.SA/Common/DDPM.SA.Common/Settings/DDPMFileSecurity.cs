@@ -113,13 +113,11 @@ namespace DDPM.SA.Common.Settings
 
             //Elsa Add Security
             //Dean 0913 if file not exist, this check will cause the fail and never init
-            if (File.Exists(target_file))
+            if (File.Exists(target_file) &&
+                !IsFilePathValid(target_file, out info))
             {
-                if (!IsFilePathValid(target_file, out info))
-                {
-                    info = $"[SetJsonContentFromSerializedString] {info}";
-                    return false;
-                }
+                info = $"[SetJsonContentFromSerializedString] {info}";
+                return false;                
             }
 
             //Dean 1225 add Security code to drop data save if path include symlink

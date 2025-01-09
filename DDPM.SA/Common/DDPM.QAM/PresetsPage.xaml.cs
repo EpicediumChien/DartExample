@@ -20,14 +20,12 @@ namespace DDPM.QAM
         }
         private void SetProfile_Click(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Border border && border.DataContext is UI_Profile selectedProfile)
-            {
-                if (DataContext is QAMPageViewModel vm)
-                {
-                    vm.isStatusChagneByDDPM = false;
-                    vm.SetProfile(selectedProfile);
-                    vm.SendSelectProfileToDDPM();
-                }
+            if (sender is Border border && border.DataContext is UI_Profile selectedProfile &&
+                DataContext is QAMPageViewModel vm)
+            { 
+                vm.isStatusChagneByDDPM = false;
+                vm.SetProfile(selectedProfile);
+                vm.SendSelectProfileToDDPM();                
             }
         }
 
