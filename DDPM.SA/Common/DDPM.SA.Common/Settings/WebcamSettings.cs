@@ -74,7 +74,7 @@ namespace DDPM.SA.Common.Settings
             {
                 Task<string> task = devMgr.GetSupportedResolutions(di.ID.ToString());
                 var str = task.Result;
-                log?.Info(@$"WebcamSettings Json str{str}!");
+                log?.Info(@$"WebcamSettings Json str {str}, device id is {di.ID.ToString()}");
                 if (string.IsNullOrEmpty(str))
                 {
                     log?.Info("DTP GetSupportedResolutions fail!");
@@ -414,6 +414,8 @@ namespace DDPM.SA.Common.Settings
                 log?.Info(@$"[WebcamSettings] ImportWebcamSettings Start  !");
                 var filePath = Path.Combine(target_folder, $"{model}.json");
                 var hasFile = File.Exists(filePath);
+                log?.Info(@$"[WebcamSettings] file {filePath} exist = {hasFile}");
+
                 string jsonString = string.Empty;
                 if (hasFile && devMgr != null)
                 {
