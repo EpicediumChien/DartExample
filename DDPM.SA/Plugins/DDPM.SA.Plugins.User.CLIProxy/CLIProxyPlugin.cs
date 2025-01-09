@@ -871,10 +871,10 @@ namespace DDPM.SA.Plugin.User.CLIManager
         */
 
         private const string NOTIFICATION_MSG_HEADER = @"Update available";
-        private const string NOTIFICATION_MSG_BODY = @"There is a required firmware update for [Device Marketing Name with Model in parenthesis]. During update, device may be intermittently available. Do not disconnect the device during the update.";
+        private const string NOTIFICATION_MSG_BODY = @"There is a required update for Device. During update, device may be intermittently available. Do not disconnect the device during the update.";
 
         private const string DEFER_MSG_HEADER = @"Update available";
-        private const string DEFER_MSG_BODY = @"[Device Marketing Name with Model in parenthesis] has a pending firmware update. During update, device may be intermittently available. Do not disconnect the device during the update. This update can be deferred [x] times before it is required.";
+        private const string DEFER_MSG_BODY = @"There has a pending update. During update, device may be intermittently available. Do not disconnect the device during the update. This update can be deferred before it is required.";
 
         public void showNotification(string id, string msg)
         {
