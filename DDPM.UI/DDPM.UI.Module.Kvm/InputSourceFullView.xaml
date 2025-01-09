@@ -80,12 +80,14 @@
                                                 FontSize="20" LineHeight="28" />
                     </Grid>
                     <Grid Grid.Row="2" Margin="0, 8, 0 ,0" Width="476" Height="150" HorizontalAlignment="Left">
+                        <!-- Elsa 20250108 For PIMS [PIMS-334050] change FontSize="48" LineHeight="76" to FontSize="42" LineHeight="40" add TextWrapping="WrapWithOverflow" -->
                         <UXControls:UXTextBlock Text="{Binding [Kvm.6], Source={x:Static lang:LangHelper.Instance}}"
-                                                FontSize="48" LineHeight="76" />
+                                                FontSize="42" LineHeight="40" TextWrapping="WrapWithOverflow"/>
                     </Grid>
                     <Grid Grid.Row="3" Margin="0, 16, 0, 0" Width="476" Height="120" HorizontalAlignment="Left">
+                        <!-- Elsa 20250108 For PIMS [PIMS-334050] change FontSize="16" to FontSize="15" and add TextWrapping="WrapWithOverflow" -->
                         <UXControls:UXTextBlock Text="{Binding [Kvm.7], Source={x:Static lang:LangHelper.Instance}}"
-                                                FontSize="16" LineHeight="24" />
+                                                FontSize="15" LineHeight="24" TextWrapping="WrapWithOverflow"/>
                     </Grid>
                     <Grid Grid.Row="4" Margin="0, 93, 0 ,0">
                         <Grid.ColumnDefinitions>
@@ -97,10 +99,11 @@
                             NormalContent="Next"
                             ProgressButtonState="Normal"
                             Click="OpenMKFullView" />-->
+                            <!-- Elsa 20250108 For PIMS [PIMS-334050] change Width="164" to Width="Auto"-->
                             <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
                                                  ButtonType="Primary" Padding="40, 8"
                                                  ButtonSize="Medium" VerticalContentAlignment="Center"
-                                                 IconAnimation="Move" Width="164" Height="40"
+                                                 IconAnimation="Move" Width="Auto" Height="40"
                                                  ContentStringFormat="{}{0}"
                                                  Click="OpenMKFullView" Visibility="{Binding SetInput}">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -208,7 +211,8 @@
                                                   SelectedItem="{Binding PC1USB_Selected, Mode=TwoWay}"
                                                   DisplayMemberPath="inputDisplayText"
                                                   Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
-                                                  BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"/>
+                                                  BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
+                                                  IsEnabled="{Binding PC1USB_Enable}"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Grid>
@@ -252,12 +256,12 @@
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
                                         <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
-                                          HorizontalAlignment="Center" VerticalAlignment="Top"
-                                          ItemsSource="{Binding PCInputsList}" 
-                                          SelectedItem="{Binding PC2Inputs_Selected, Mode=TwoWay}"
-                                          DisplayMemberPath="inputDisplayText"
-                                          Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
-                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
+                                                HorizontalAlignment="Center" VerticalAlignment="Top"
+                                                ItemsSource="{Binding PCInputsList}" 
+                                                SelectedItem="{Binding PC2Inputs_Selected, Mode=TwoWay}"
+                                                DisplayMemberPath="inputDisplayText"
+                                                Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                                BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
                                     </StackPanel>
                                     <StackPanel x:Name="SecondPort_StackPanel_1">
                                         <StackPanel.Style>
@@ -275,12 +279,13 @@
                                                         FontSize="16" LineHeight="24"
                                                         HorizontalAlignment="Center" />
                                         <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
-                                          HorizontalAlignment="Center" VerticalAlignment="Center"
-                                          ItemsSource="{Binding USBsList}" 
-                                          SelectedItem="{Binding PC2USB_Selected, Mode=TwoWay}"
-                                          DisplayMemberPath="inputDisplayText"
-                                          Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
-                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"/>
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                  ItemsSource="{Binding USBsList}" 
+                                                  SelectedItem="{Binding PC2USB_Selected, Mode=TwoWay}"
+                                                  DisplayMemberPath="inputDisplayText"
+                                                  Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
+                                                  BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
+                                                  IsEnabled="{Binding PC2USB_Enable}"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Grid>
@@ -334,7 +339,8 @@
                                           SelectedItem="{Binding PC3USB_Selected, Mode=TwoWay}"
                                           DisplayMemberPath="inputDisplayText"
                                           Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
-                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"/>
+                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
+                                          IsEnabled="{Binding PC3USB_Enable}"/>
                             </Grid>
                         </Grid>
                         <Grid Grid.Column="3" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" Visibility="{Binding PC4_Visibility}">
@@ -386,7 +392,8 @@
                                           SelectedItem="{Binding PC4USB_Selected, Mode=TwoWay}"
                                           DisplayMemberPath="inputDisplayText" 
                                           Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
-                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"/>
+                                          BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
+                                          IsEnabled="{Binding PC4USB_Enable}"/>
                             </Grid>
                         </Grid>
                     </Grid>

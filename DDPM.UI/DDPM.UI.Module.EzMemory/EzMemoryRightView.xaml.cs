@@ -529,16 +529,13 @@ namespace DDPM.UI.Module.EzMemory
         {
             _vm.IsAddPageBack = true; //If add btn trigger, it is mean do not sync any profile
             List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
-            if (checkEAProfileDDPM != null)
+            if (checkEAProfileDDPM != null &&
+                checkEAProfileDDPM.Count >= 9)
             {
-                if (checkEAProfileDDPM.Count >= 9)
-                {
-                    Thickness headMargin = new Thickness(24, 30, 45, 24);
-                    Thickness subMargin = new Thickness(24, -16, 24, 8);
-                    DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitle, Strings.subTitle, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
-                    return;
-
-                }
+                Thickness headMargin = new Thickness(24, 30, 45, 24);
+                Thickness subMargin = new Thickness(24, -16, 24, 8);
+                DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitle, Strings.subTitle, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                return;
             }
             EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay, _vm, _homeDeviceSelect);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);

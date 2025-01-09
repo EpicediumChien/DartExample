@@ -116,6 +116,15 @@ namespace DDPM.UI.Module.DisplayOthers
             {
                 SetProperty(ref _autoApply_Checked, value);
                 DdpmCommonHelper.DeviceManagerSA.SetSameModel(DisplayOthersModule.SelectedHomeDevice.MonitorInfo, _autoApply_Checked).Wait();
+                if (_autoApply_Checked)
+                {
+                    Tooltip_Settings = Strings.ImpExp_Tooltip2;
+                }
+                else
+                {
+                    Tooltip_Settings = Strings.ImpExp_Tooltip1;
+                }
+                OnPropertyChanged("Tooltip_Settings");
             }
         }
 
@@ -131,7 +140,7 @@ namespace DDPM.UI.Module.DisplayOthers
 
         public double LockPowerNap_Opacity { get; set; } = 1;
 
-        public string Tooltip_Settings { get; set; } = Strings.ImpExp_Tooltip2;
+        public string Tooltip_Settings { get; set; } = Strings.ImpExp_Tooltip1;
 
         #region UI Enable Flags
 
@@ -165,17 +174,14 @@ namespace DDPM.UI.Module.DisplayOthers
                 BackgroundWorker bwk = (BackgroundWorker)sender;
                 AutoApply_Checked = DdpmCommonHelper.DeviceManagerSA.GetSameModel(DisplayOthersModule.SelectedHomeDevice.MonitorInfo).Result;
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null)
+                if (data != null &&
+                    data.LockSettings.Lock_Display_PowerNap)
                 {
-                    if (data.LockSettings.Lock_Display_PowerNap)
-                    {
-                        //Do lock ui init here (direct set or binding via vm)
-                        LockPowerNap_Visibility = Visibility.Visible;
-                        isLockPowerNapEnable = true;
-                        LockPowerNap_Opacity = 0.5;
-                    }
+                    //Do lock ui init here (direct set or binding via vm)
+                    LockPowerNap_Visibility = Visibility.Visible;
+                    isLockPowerNapEnable = true;
+                    LockPowerNap_Opacity = 0.5;
                 }
-                OnPropertyChanged("AutoApply_Checked");
                 updatePowerNapUISetting();
             }
             catch (Exception)
@@ -217,6 +223,16 @@ namespace DDPM.UI.Module.DisplayOthers
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             //Handling the result and final process
+            if (AutoApply_Checked)
+            {
+                Tooltip_Settings = Strings.ImpExp_Tooltip2;
+            }
+            else
+            {
+                Tooltip_Settings = Strings.ImpExp_Tooltip1;
+            }
+            OnPropertyChanged("AutoApply_Checked");
+            OnPropertyChanged("Tooltip_Settings");
             IsBusy = false;
         }
 

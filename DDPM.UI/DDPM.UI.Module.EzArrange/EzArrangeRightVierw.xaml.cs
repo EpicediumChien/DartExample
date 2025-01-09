@@ -1042,26 +1042,24 @@ namespace DDPM.UI.Module.EzArrange
                 if (itemCustom == null)
                     return;
 
-                if (itemCustom.IsOverlapCustomLayout)
+                if (itemCustom.IsOverlapCustomLayout &&
+                    itemCustom.ISplitCtrl != null)
                 {
-                    if (itemCustom.ISplitCtrl != null)
-                    {
-                        SplitCtrl0B sp0B = (SplitCtrl0B)itemCustom.ISplitCtrl;
+                    SplitCtrl0B sp0B = (SplitCtrl0B)itemCustom.ISplitCtrl;
 
-                        List<CellBorder> cellBorders = new List<CellBorder>();
-                        if (e.SplitJson.Cells != null)
+                    List<CellBorder> cellBorders = new List<CellBorder>();
+                    if (e.SplitJson.Cells != null)
+                    {
+                        foreach (CellJson cellJson in e.SplitJson.Cells)
                         {
-                            foreach (CellJson cellJson in e.SplitJson.Cells)
-                            {
-                                CellBorder cellBorder = new CellBorder();
-                                cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
-                                cellBorder.CellName = cellJson.Name;
-                                cellBorders.Add(cellBorder);
-                            }
+                            CellBorder cellBorder = new CellBorder();
+                            cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+                            cellBorder.CellName = cellJson.Name;
+                            cellBorders.Add(cellBorder);
                         }
-                        sp0B.CellBorders.Clear();
-                        sp0B.CellBorders.AddRange(cellBorders);
                     }
+                    sp0B.CellBorders.Clear();
+                    sp0B.CellBorders.AddRange(cellBorders);                    
                 }
 
                 splitListView_Recent.MoveSelectedItemToSecondPosition();
@@ -1262,8 +1260,8 @@ namespace DDPM.UI.Module.EzArrange
             listOut.AddRange(existNames);
 
             //Step B. If all custom names are in ListOut
-            const int MaxCustomItems = DDPM.SA.Common.Display.EAEMConstants.MaxCustomItems; //=5
-            if (listOut.Count >= MaxCustomItems)
+            const int localMaxCustomItems = DDPM.SA.Common.Display.EAEMConstants.MaxCustomItems; //=5
+            if (listOut.Count >= localMaxCustomItems)
             {
                 idxFirstUnused = -1; //No unused name in listOut
                 return listOut;
@@ -1273,10 +1271,10 @@ namespace DDPM.UI.Module.EzArrange
             //C1. SelectedIndex <- the first available index
             idxFirstUnused = listOut.Count;
             //C2. Generate unused names
-            for (int i = idxFirstUnused; i < MaxCustomItems; i++)
+            for (int i = idxFirstUnused; i < localMaxCustomItems; i++)
             {
                 //C3. Get the next available custom name
-                for (int j = 1; j <= MaxCustomItems; j++)
+                for (int j = 1; j <= localMaxCustomItems; j++)
                 {
                     //C3.1. Generate a customName
                     string customName = $"Custom Layout ({j})";
@@ -1656,15 +1654,13 @@ namespace DDPM.UI.Module.EzArrange
             if (itemOut != null)
                 return itemOut;
 
-            if (_homeDevice != null)
+            if (_homeDevice != null &&
+                _homeDevice.MonitorInfo != null)
             {
-                if (_homeDevice.MonitorInfo != null)
-                {
-                    float monitorSize = _homeDevice.MonitorInfo.edid.Size;
-                    bool isSmallSizeMonitor = monitorSize < 19.0000;
-                    if (isSmallSizeMonitor)
-                        return null;
-                }
+                float monitorSize = _homeDevice.MonitorInfo.edid.Size;
+                bool isSmallSizeMonitor = monitorSize < 19.0000;
+                if (isSmallSizeMonitor)
+                    return null;                
             }
 
             itemOut = splitListView_5w.FindFirstNoBuddyItem();

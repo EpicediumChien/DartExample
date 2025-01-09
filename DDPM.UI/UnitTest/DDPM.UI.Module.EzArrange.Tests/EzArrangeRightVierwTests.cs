@@ -54,7 +54,8 @@ namespace DDPM.UI.Module.EzArrange.Tests
             DdpmCommonHelper.ModuleOwner = moduleOwner;
             moduleOwnerMock.Setup(x => x.SelectedHomeDevice).Returns(new HomeDevice());
             deviceManagerMock = new Mock<IDeviceManagerSA>();
-            deviceManagerMock.Setup(x => x.GetEAFunctionEnabled()).Returns(Task.FromResult(new VcpCore.Common.ObjGetVCP()));
+            //Robert_Lin, 2025-1-7, IsEAFunctionEnabled is deleted.
+            //deviceManagerMock.Setup(x => x.GetEAFunctionEnabled()).Returns(Task.FromResult(new VcpCore.Common.ObjGetVCP()));
             deviceManagerSA = deviceManagerMock.Object;
             DdpmCommonHelper.DeviceManagerSA = deviceManagerSA;
             consoleMock = new Mock<IConsole>();

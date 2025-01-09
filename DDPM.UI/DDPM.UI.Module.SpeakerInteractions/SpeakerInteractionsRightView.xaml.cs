@@ -1,4 +1,6 @@
-﻿using DDPM.UI.Plugin.ViewModels;
+﻿using DDPM.SA.Common;
+using DDPM.UI.Common;
+using DDPM.UI.Plugin.ViewModels;
 using Microsoft.Win32;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -22,12 +24,47 @@ namespace DDPM.UI.Module.SpeakerInteractions
             InitializeComponent();
             _vm = vm;
 
-            if (!isTeamsInstalled)
-                MicrosoftTeamsButton.Visibility = System.Windows.Visibility.Collapsed;
-            if (!isZoomInstalled)
-                ZoomButton.Visibility = System.Windows.Visibility.Collapsed;
-            if (!isMeetInstalled)
-                GoogleMeetButton.Visibility = System.Windows.Visibility.Collapsed;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.GetAllAppList().Result;
+                var matchingTeams = data.Values.Where(app => "teams".Any(keyword => app.AppName.ToLower().Contains("teams", StringComparison.OrdinalIgnoreCase)));
+                var matchingZoom = data.Values.Where(app => "zoom".Any(keyword => app.AppName.ToLower().Contains("zoom", StringComparison.OrdinalIgnoreCase)));
+                var matchingMeet = data.Values.Where(app => "meet".Any(keyword => app.AppName.ToLower().Contains("meet", StringComparison.OrdinalIgnoreCase)));
+                if (!matchingTeams.Any())//!isTeamsInstalled)
+                {
+                    MicrosoftTeamsButton.Visibility = System.Windows.Visibility.Collapsed;
+                    DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] MicrosoftTeamsButton Collapsed");
+                }
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] MicrosoftTeamsButton Visibility");
+                }
+                if (!matchingZoom.Any())//!isZoomInstalled)
+                { 
+                    ZoomButton.Visibility = System.Windows.Visibility.Collapsed;
+                    DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] ZoomButton Collapsed");
+                }
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] ZoomButton Visibility");
+                }
+                if (!matchingMeet.Any())//!isMeetInstalled)
+                { 
+                    GoogleMeetButton.Visibility = System.Windows.Visibility.Collapsed;
+                    DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] GoogleMeetButton Collapsed");
+                }
+                else
+                {
+                    DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] GoogleMeetButton Visibility");
+                }
+            }
+            else
+            {
+                MicrosoftTeamsButton.Visibility = System.Windows.Visibility.Visible;
+                ZoomButton.Visibility = System.Windows.Visibility.Visible;
+                GoogleMeetButton.Visibility = System.Windows.Visibility.Visible;
+                DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] DdpmCommonHelper.DeviceManagerSA  null, Button All Visibility");
+            }
         }
 
         private void MicrosoftTeamsButton_MouseMove(object sender, MouseEventArgs e)

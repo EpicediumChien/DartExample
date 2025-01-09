@@ -17,7 +17,7 @@ namespace DDPM.UI.Common
 
             //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("pl-PL");
             // string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
-            string str = resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+            string str = resManager.GetString(key, CultureInfo.CurrentUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
             return System.Text.RegularExpressions.Regex.Unescape(str);
         }
         //private static string GetString(string key, string culture = "en-US")
@@ -95,7 +95,7 @@ namespace DDPM.UI.Common
         public static readonly string PenButtonCustomizeMessage = GetString("PenButtonSettings.7");
         public static readonly string HoverClick = GetString("PenButtonSettings.6");
         public static readonly string Slots = GetString("slot");
-        
+
         //Robert_Lin, 2024-7-25, Vbar Text for DisplayPlugin
         public static readonly string VbarText_DisplaySettings = GetString("DisplaySettings");
 

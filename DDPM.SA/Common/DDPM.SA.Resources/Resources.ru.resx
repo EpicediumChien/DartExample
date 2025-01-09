@@ -477,4 +477,61 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Блокировка при выходе из поля обзора</value>
   </data>
+  <data name="Caps_Lock_Off" xml:space="preserve">
+    <value>Caps Lock выключен</value>
+  </data>
+  <data name="App_Name" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="ImpExp_Message.0" xml:space="preserve">
+    <value>Обнаружен тот же монитор. Импортировать настройки для %1?</value>
+  </data>
+  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
+    <value>Обновление микропрограммы прервано. Убедитесь, что к системе подключено только одно устройство этой модели.</value>
+  </data>
+  <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
+    <value>Микропрограмма беспроводного USB-приемника не поддерживает модернизацию микропрограммы устройства</value>
+  </data>
+  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
+    <value>Выполняется обновление микропрограммы. Не удалось прервать операцию.</value>
+  </data>
+  <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
+    <value>Не удается синхронизировать соответствующий профиль ICC для</value>
+  </data>
+  <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
+    <value>С этим пользовательским макетом связаны профили Easy Memory.\nСохранение этого пользовательского макета приведет к обновлению макета для всех связанных с ним профилей.\nСохранить макет?</value>
+  </data>
+  <data name="CollabMultipleCalls" xml:space="preserve">
+    <value>Элементы управления совместной работой недоступны во время нескольких конференц-вызовов</value>
+  </data>
+  <data name="Custom_Color_HDR" xml:space="preserve">
+    <value>Custom Color HDR</value>
+  </data>
+  <data name="Display_P3" xml:space="preserve">
+    <value>Display P3</value>
+  </data>
+  <data name="FPS_Game" xml:space="preserve">
+    <value>Игровой режим «Шутер от первого лица»</value>
+  </data>
+  <data name="HDR_Peak_1000" xml:space="preserve">
+    <value>HDR Peak 1000</value>
+  </data>
+  <data name="Multiscreen_Match" xml:space="preserve">
+    <value>Согласование на нескольких экранах</value>
+  </data>
+  <data name="Off_0" xml:space="preserve">
+    <value>Выкл.</value>
+  </data>
+  <data name="Presets_Disabled" xml:space="preserve">
+    <value>Предустановки отключены</value>
+  </data>
+  <data name="RTS_Game" xml:space="preserve">
+    <value>Игровой режим «Стратегия в реальном времени»</value>
+  </data>
+  <data name="RPG_Game" xml:space="preserve">
+    <value>Игровой режим «РПГ»</value>
+  </data>
 </root>

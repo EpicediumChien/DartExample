@@ -40,15 +40,15 @@ namespace DDPM.UI.Module.GamingVisionEngine
         #endregion UI Enable Flags
         public void GamingParamChang(object o, GamingDisplayPropertiesInfo e)
         {
-            if (e != null)
+            if (e != null &&
+                VisionEngineList != null && 
+                e.IsEnable_VisionEngineType != null && 
+                VisionEngineList.Count == e.IsEnable_VisionEngineType.Length)
             {
-                if (VisionEngineList != null && e.IsEnable_VisionEngineType != null && VisionEngineList.Count == e.IsEnable_VisionEngineType.Length)
+                for (int i = 0; i < VisionEngineList.Count; i++)
                 {
-                    for (int i = 0; i < VisionEngineList.Count; i++)
-                    {
-                        VisionEngineList[i].VisionEngine_Enable = e.IsEnable_VisionEngineType[i];
-                    }
-                }
+                    VisionEngineList[i].VisionEngine_Enable = e.IsEnable_VisionEngineType[i];
+                }                
             }
             RefreshUI();
         }

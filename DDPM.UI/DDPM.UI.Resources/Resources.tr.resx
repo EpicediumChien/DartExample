@@ -2271,4 +2271,1192 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>Bu özellik, gözlerimizin istenilen bir ortama uyum sağlamasını sağlar.</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>Favori yapılandırmanızı buradan dışa aktarabilir ve aynı modelin başka bir monitörüne sorunsuz bir şekilde aktarabilirsiniz.</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>Giriş Kaynağını Yeniden Adlandırma</value>
+  </data>
+  <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
+    <value>Tüm USB depolama aygıtlarının monitörle bağlantısını kesin.</value>
+  </data>
+  <data name="AddDevice.KnM.14" xml:space="preserve">
+    <value>Kablosuz Alıcı Bağlantısı</value>
+  </data>
+  <data name="ConsentNo" xml:space="preserve">
+    <value>Hayır, izin vermiyorum</value>
+  </data>
+  <data name="ConsentYes" xml:space="preserve">
+    <value>Evet, izin veriyorum</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="Consent.1" xml:space="preserve">
+    <value>Geliştirmemize yardımcı olun</value>
+  </data>
+  <data name="Consent.2" xml:space="preserve">
+    <value>Tanılama ve kullanım verilerini otomatik olarak göndererek Dell&apos;in ürün ve hizmetlerini geliştirmesine yardımcı olun. Daha fazla bilgi edinin </value>
+  </data>
+  <data name="ImpExp_CheckBox.0" xml:space="preserve">
+    <value>Aynı model için tekrar sorma</value>
+  </data>
+  <data name="ImpExp_Message.1" xml:space="preserve">
+    <value>Kullanım kolaylığı için uygulama ayarlarını içe aktarmak istiyor musunuz?</value>
+  </data>
+  <data name="ImpExp_Title.0" xml:space="preserve">
+    <value>Yeni bir %1 monitörü algılandı.</value>
+  </data>
+  <data name="Wait_DevMgr" xml:space="preserve">
+    <value>DDPM Alt Aracısına Bağlanılıyor...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="Wait_DTH" xml:space="preserve">
+    <value>Dell.TechHub&apos;a bağlanılıyor...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="Wait_NoDevice" xml:space="preserve">
+    <value>Aygıt algılanıyor...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="InvalidURL" xml:space="preserve">
+    <value>Geçersiz URL</value>
+  </data>
+  <data name="Left" xml:space="preserve">
+    <value>Sol</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>Sağ</value>
+  </data>
+  <data name="WalkThrough.1" xml:space="preserve">
+    <value>Atla</value>
+  </data>
+  <data name="WalkThrough.2" xml:space="preserve">
+    <value>Uygulamaya Git</value>
+  </data>
+  <data name="HeadsetAudioSettings.29" xml:space="preserve">
+    <value>Konferans çağrısında olduğunuzda geçerlidir</value>
+  </data>
+  <data name="HeadsetAudioSettings.30" xml:space="preserve">
+    <value>Müzik veya podcast gibi multimedya dinlerken geçerlidir</value>
+  </data>
+  <data name="Brightness.19" xml:space="preserve">
+    <value>Otomatik Parlaklık etkin durumda. Geçersiz kılmak istiyor musunuz?</value>
+  </data>
+  <data name="Brightness.20" xml:space="preserve">
+    <value>Bu, sizin birincil monitörünüz değil. Değişikliğe devam etmek ve bunu Senkronizasyon için birincil Monitörünüz olarak ayarlamak istiyor musunuz?</value>
+  </data>
+  <data name="ThirdPartyLicense.Title" xml:space="preserve">
+    <value>Üçüncü Taraf Lisansı</value>
+  </data>
+  <data name="Illumination.2" xml:space="preserve">
+    <value>Parlaklık seviyesini değiştirmek için F8 tuşuna basın</value>
+  </data>
+  <data name="Illumination.3" xml:space="preserve">
+    <value>Ortamdaki ışık miktarına bağlı olarak klavyenin parlaklık düzeylerini ayarlar</value>
+  </data>
+  <data name="Illumination.4" xml:space="preserve">
+    <value>Klavyenizin parlaklığını manuel olarak ayarlayın</value>
+  </data>
+  <data name="Off2" xml:space="preserve">
+    <value>Kapalı</value>
+  </data>
+  <data name="EazyMemory.40" xml:space="preserve">
+    <value>Lütfen profil adını girin.</value>
+  </data>
+  <data name="hotkey.7" xml:space="preserve">
+    <value>Kısayol Tuşu Uyarısı</value>
+  </data>
+  <data name="hotkey.8" xml:space="preserve">
+    <value>Yapılandırdığınız kısayol tuşu tek bir tuştur. Bu yapılandırma, söz konusu tuşun diğer uygulamalarda nasıl çalışmasını istediğinizi etkileyebilir. Devam etmek istediğinizden emin misiniz?</value>
+  </data>
+  <data name="hotkey.9" xml:space="preserve">
+    <value>Bu kısayol tuşu başka bir Dell Display and Peripheral Manager işlevi tarafından kullanılıyor. Değiştirmek istiyor musunuz?</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="Update_Available_Version" xml:space="preserve">
+    <value>Mevcut Sürümü Güncelleştir</value>
+  </data>
+  <data name="New_Supported_Devices" xml:space="preserve">
+    <value>Desteklenen Yeni Aygıtlar</value>
+  </data>
+  <data name="New_Features" xml:space="preserve">
+    <value>Yeni Özellikler</value>
+  </data>
+  <data name="Bug_Fixes" xml:space="preserve">
+    <value>Hata Düzeltmeleri</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Güncelleştirme</value>
+  </data>
+  <data name="UI_Orientation.0" xml:space="preserve">
+    <value>Yatay</value>
+  </data>
+  <data name="UI_Orientation.1" xml:space="preserve">
+    <value>Dikey</value>
+  </data>
+  <data name="UI_Orientation.2" xml:space="preserve">
+    <value>Yatay (ters dönmüş)</value>
+  </data>
+  <data name="UI_Orientation.3" xml:space="preserve">
+    <value>Dikey (ters dönmüş)</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.0" xml:space="preserve">
+    <value>Düşük</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.1" xml:space="preserve">
+    <value>Orta</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.2" xml:space="preserve">
+    <value>Yüksek</value>
+  </data>
+  <data name="EazyMemorySettings.0" xml:space="preserve">
+    <value>Kısayol Tuşu: Son</value>
+  </data>
+  <data name="EazyMemorySettings.1" xml:space="preserve">
+    <value>Örnek: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.</value>
+  </data>
+  <data name="EazyMemorySettings.2" xml:space="preserve">
+    <value>Bir bölüme sürükleyerek herhangi bir uygulamayı kolayca bölünmüş ekran düzeninde tutturun</value>
+  </data>
+  <data name="EazyMemorySettings.3" xml:space="preserve">
+    <value>Uygulamanın boşluk olmadan yan yana bölünmesine izin ver</value>
+  </data>
+  <data name="EazyMemorySettings.4" xml:space="preserve">
+    <value>Yalnızca SHIFT tuşuna basıldığında bölge konumlandırmaya izin verir</value>
+  </data>
+  <data name="EazyMemorySettings.5" xml:space="preserve">
+    <value>Birden fazla monitörde tutturun</value>
+  </data>
+  <data name="EazyMemorySettings.6" xml:space="preserve">
+    <value>Uygulama Penceresi Tutturma</value>
+  </data>
+  <data name="PairedInfo.0" xml:space="preserve">
+    <value>Bu aygıt, {0} ana bilgisayarlarla aynı anda eşleştirilebilir</value>
+  </data>
+  <data name="EazyMemory.41" xml:space="preserve">
+    <value>Başka bir profil aynı saati kullanacak şekilde yapılandırılmış. Lütfen başka bir saat kullanın.</value>
+  </data>
+  <data name="Action.1" xml:space="preserve">
+    <value>Kısayol oluşturmak için bir tuş kombinasyonu girin</value>
+  </data>
+  <data name="Action.2" xml:space="preserve">
+    <value>Bir dosya seçmek için gözat düğmesine tıklayın</value>
+  </data>
+  <data name="Action.3" xml:space="preserve">
+    <value>Bir klasör seçmek için \&quot;Gözat\&quot; düğmesine tıklayın</value>
+  </data>
+  <data name="Action.4" xml:space="preserve">
+    <value>Aşağıdaki kutuya web sayfasının URL&apos;sini yazın</value>
+  </data>
+  <data name="Action.5" xml:space="preserve">
+    <value>Dosya Adı</value>
+  </data>
+  <data name="Action.6" xml:space="preserve">
+    <value>Klasör Adı</value>
+  </data>
+  <data name="Camera.14" xml:space="preserve">
+    <value>Ön Ayar</value>
+  </data>
+  <data name="Camera.15" xml:space="preserve">
+    <value>Ön ayarı düzenle</value>
+  </data>
+  <data name="Camera.19" xml:space="preserve">
+    <value>Adı</value>
+  </data>
+  <data name="Camera.20" xml:space="preserve">
+    <value>Bu ad kullanılıyor</value>
+  </data>
+  <data name="Camera.21" xml:space="preserve">
+    <value>Kamera görüntünüzü nötrleştirin ve orijinal ayarlara geri yükleyin</value>
+  </data>
+  <data name="Camera.22" xml:space="preserve">
+    <value>Dokunun ve görünümünüzü düzeltin</value>
+  </data>
+  <data name="Camera.23" xml:space="preserve">
+    <value>Görüntünüzün renk ve canlılık özelliklerini daha da güçlendirin</value>
+  </data>
+  <data name="Camera.24" xml:space="preserve">
+    <value>Daha sıcak tonlarla görünümünüzü canlandırın</value>
+  </data>
+  <data name="Collab.1" xml:space="preserve">
+    <value>İş Birliği</value>
+  </data>
+  <data name="Collab.10" xml:space="preserve">
+    <value>İsteği engellediğiniz için Collaboration Klavye Microsoft Teams&apos;e bağlanamıyor. Microsoft Teams&apos;i Collaboration Klavye ile kullanmak üzere yeniden bağlanma talimatları için \&quot;Daha fazla bilgi\&quot; öğesine tıklayın.</value>
+  </data>
+  <data name="Collab.11" xml:space="preserve">
+    <value>Collaboration Klavyeyi Zoom ile kullanmak için Zoom&apos;un en son masaüstü sürümünü yükleyin</value>
+  </data>
+  <data name="Collab.12" xml:space="preserve">
+    <value>Collaboration Klavyeyi Microsoft Teams ile kullanmak için Microsoft Teams&apos;de en son sürümü kullanarak oturum açtığınızdan ve Üçüncü taraf uygulama API&apos;sinin etkinleştirildiğinden emin olun</value>
+  </data>
+  <data name="Collab.13" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="Collab.14" xml:space="preserve">
+    <value>Paylaşma</value>
+  </data>
+  <data name="Collab.15" xml:space="preserve">
+    <value>Sohbet</value>
+  </data>
+  <data name="Collab.16" xml:space="preserve">
+    <value>Mikrofon</value>
+  </data>
+  <data name="Collab.17" xml:space="preserve">
+    <value>Tamam</value>
+  </data>
+  <data name="Collab.2" xml:space="preserve">
+    <value>Konferans denetimlerine hızlı erişim sağlar.\nTuşları açmak/kapatmak, Microsoft Teams veya\nZoom araması sırasında tuşları klavyede gösterir veya gizler.</value>
+  </data>
+  <data name="Collab.3" xml:space="preserve">
+    <value>Konferans\ngörüşmesinde yeni bir sohbet mesajı olduğunda göz kırpma efektini etkinleştirin</value>
+  </data>
+  <data name="Collab.4" xml:space="preserve">
+    <value>Klavyedeki simgeleri tek\ndokunma yerine çift dokunma ile etkinleştirin</value>
+  </data>
+  <data name="Collab.5" xml:space="preserve">
+    <value>Daha Fazla Bilgi Edinin</value>
+  </data>
+  <data name="Collab.6" xml:space="preserve">
+    <value>Collaboration Klavyeyi Microsoft Teams ile kullanmak için:\r\n1. Teams&apos;i açın ve gizlilik ayarlarına gidin.\n\n2. Üçüncü taraf uygulama API&apos;sini seçin ve Dell Display and Peripheral Manager&apos;ın engellenenler listesinde olmadığından emin olun.\n\n3. Bir Microsoft Teams konferans araması başlatarak Microsoft Teams&apos;i Dell Display and Peripheral Manager ile eşleştirin.</value>
+  </data>
+  <data name="Collab.7" xml:space="preserve">
+    <value>Hala sorun yaşıyorsanız BT departmanınızla (varsa) iletişime geçin. Bu departman tarafından, Collaboration Klavyenin Microsoft Teams&apos;e bağlanmasını yasaklayan politikalar uygulanıyor olabilir.</value>
+  </data>
+  <data name="Collab.8" xml:space="preserve">
+    <value>Collaboration Klavyeyi kullanmak için Zoom veya Microsoft Teams&apos;in en son sürümüne ihtiyacınız vardır</value>
+  </data>
+  <data name="Collab.9" xml:space="preserve">
+    <value>Bir konferans araması başlatarak ve bağlantı isteğini kabul ederek Collaboration Klavyeyi Microsoft Teams&apos;e bağlayın</value>
+  </data>
+  <data name="Common.0" xml:space="preserve">
+    <value>Gözat</value>
+  </data>
+  <data name="Common.1" xml:space="preserve">
+    <value>Temizle</value>
+  </data>
+  <data name="Common.2" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="Common.3" xml:space="preserve">
+    <value>Uygulamalar listesinden uygulamayı seçin</value>
+  </data>
+  <data name="Common.4" xml:space="preserve">
+    <value>Bir dosya seçin</value>
+  </data>
+  <data name="Common.5" xml:space="preserve">
+    <value>Seçili dosya</value>
+  </data>
+  <data name="DisplayDefault.1" xml:space="preserve">
+    <value>Aygıtınızdaki tüm varsayılan ayarları geri yüklemek istediğinizden emin misiniz?</value>
+  </data>
+  <data name="Dock.2" xml:space="preserve">
+    <value>USB-C (DP 1.4)</value>
+  </data>
+  <data name="Dock.3" xml:space="preserve">
+    <value>Çift USB-C (DP 1.4)</value>
+  </data>
+  <data name="Dock.4" xml:space="preserve">
+    <value>USB-C (TB 4)</value>
+  </data>
+  <data name="Dock.5" xml:space="preserve">
+    <value>USB-C (TB 5)</value>
+  </data>
+  <data name="Excel.1" xml:space="preserve">
+    <value>Merkeze Hizala</value>
+  </data>
+  <data name="Excel.10" xml:space="preserve">
+    <value>Yalnızca Biçimi Yapıştır</value>
+  </data>
+  <data name="Excel.11" xml:space="preserve">
+    <value>Formülleri Yapıştır</value>
+  </data>
+  <data name="Excel.12" xml:space="preserve">
+    <value>Yalnızca Değeri Yapıştır</value>
+  </data>
+  <data name="Excel.13" xml:space="preserve">
+    <value>Önceki Sayfa</value>
+  </data>
+  <data name="Excel.14" xml:space="preserve">
+    <value>A&apos;dan Z&apos;ye Sırala</value>
+  </data>
+  <data name="Excel.2" xml:space="preserve">
+    <value>Sola Hizala</value>
+  </data>
+  <data name="Excel.3" xml:space="preserve">
+    <value>Sağa Hizala</value>
+  </data>
+  <data name="Excel.4" xml:space="preserve">
+    <value>Girintiyi Azalt</value>
+  </data>
+  <data name="Excel.5" xml:space="preserve">
+    <value>Veri Bölgesinin En Altına Git</value>
+  </data>
+  <data name="Excel.6" xml:space="preserve">
+    <value>Veri Bölgesinin En Üstüne Git</value>
+  </data>
+  <data name="Excel.7" xml:space="preserve">
+    <value>Grafik Ekle</value>
+  </data>
+  <data name="Excel.8" xml:space="preserve">
+    <value>Üste Satır Ekle</value>
+  </data>
+  <data name="Excel.9" xml:space="preserve">
+    <value>Kaydır (Fareyi Basılı Tutarak Hareket Ettirme)</value>
+  </data>
+  <data name="Multimedia.1" xml:space="preserve">
+    <value>Ortam Sonraki Parça</value>
+  </data>
+  <data name="Multimedia.2" xml:space="preserve">
+    <value>Ortam Oynat/Duraklat</value>
+  </data>
+  <data name="Multimedia.3" xml:space="preserve">
+    <value>Ortam Önceki Parça</value>
+  </data>
+  <data name="Multimedia.4" xml:space="preserve">
+    <value>Müzik</value>
+  </data>
+  <data name="Multimedia.5" xml:space="preserve">
+    <value>Resimler</value>
+  </data>
+  <data name="Multimedia.6" xml:space="preserve">
+    <value>Sesi Azalt</value>
+  </data>
+  <data name="Multimedia.7" xml:space="preserve">
+    <value>Sessize Al</value>
+  </data>
+  <data name="Multimedia.8" xml:space="preserve">
+    <value>Sesi Artır</value>
+  </data>
+  <data name="Outlook.1" xml:space="preserve">
+    <value>Dosya Ekle</value>
+  </data>
+  <data name="Outlook.2" xml:space="preserve">
+    <value>E-postayı İlet</value>
+  </data>
+  <data name="Outlook.3" xml:space="preserve">
+    <value>Yeni E-posta</value>
+  </data>
+  <data name="Outlook.4" xml:space="preserve">
+    <value>Yeni Toplantı</value>
+  </data>
+  <data name="Outlook.5" xml:space="preserve">
+    <value>Yanıtla</value>
+  </data>
+  <data name="Outlook.6" xml:space="preserve">
+    <value>Tümünü Yanıtla</value>
+  </data>
+  <data name="PairedInfo.1" xml:space="preserve">
+    <value>Emin misiniz?</value>
+  </data>
+  <data name="PairedInfo.10" xml:space="preserve">
+    <value>Kaleminizi sisteminizle eşleştirmek ister misiniz?</value>
+  </data>
+  <data name="PairedInfo.2" xml:space="preserve">
+    <value>Farenizin eşleştirmesini kaldırmak, bu bilgisayarı kullanma yeteneğinizi sınırlayabilir. Eşleştirmeyi kaldırmadan önce alternatif bir fare kurulumunuz olduğundan emin olun.</value>
+  </data>
+  <data name="PairedInfo.3" xml:space="preserve">
+    <value>Klavyenizin eşleştirmesini kaldırmak, bu bilgisayarı kullanma yeteneğinizi sınırlayabilir. Eşleştirmeyi kaldırmadan önce alternatif bir klavye kurulumunuz olduğundan emin olun.</value>
+  </data>
+  <data name="PairedInfo.4" xml:space="preserve">
+    <value>Kaleminizin eşleştirmesini kaldırmak, bu bilgisayarı kullanma yeteneğinizi sınırlayabilir. Eşleştirmeyi kaldırmadan önce alternatif bir kalem kurulumunuz olduğundan emin olun.</value>
+  </data>
+  <data name="PairedInfo.5" xml:space="preserve">
+    <value>Bu işlem, kulaklığınızın USB kablosuz alıcısıyla eşleştirmesini kaldırır. Kulaklığı bu sistemde Bluetooth aracılığıyla eşleştirmeye ve kullanmaya devam edebilirsiniz. Gerekirse kulaklığı, DDPM ana ekranının sağ üst köşesindeki + simgesinden kablosuz alıcıyla tekrar eşleştirebilirsiniz.</value>
+  </data>
+  <data name="PairedInfo.6" xml:space="preserve">
+    <value>Devam</value>
+  </data>
+  <data name="PairedInfo.7" xml:space="preserve">
+    <value>Bu aygıt aşağıdakilerle uyumlu değil:</value>
+  </data>
+  <data name="PairedInfo.8" xml:space="preserve">
+    <value>Bu aygıt zaten eşleştirilmiş. Yeniden eşleştirmek isterseniz önce aygıtın eşlemesini kaldırın.</value>
+  </data>
+  <data name="PairedInfo.9" xml:space="preserve">
+    <value>Kaleminizi eşleştirin</value>
+  </data>
+  <data name="PenSettings.10" xml:space="preserve">
+    <value>Kalemi Tile ile eşleştirmek için kalemin üzerindeki iki yan düğmeyi 3 saniye basılı tutun.</value>
+  </data>
+  <data name="PenSettings.11" xml:space="preserve">
+    <value>Tile indir</value>
+  </data>
+  <data name="PenSettings.8" xml:space="preserve">
+    <value>Aygıtınızda Bluetooth&apos;u etkinleştirin.</value>
+  </data>
+  <data name="PenSettings.9" xml:space="preserve">
+    <value>Tile uygulamasını mobil aygıtınıza indirmek için QR Kodunu tarayın.</value>
+  </data>
+  <data name="PowerPoint.1" xml:space="preserve">
+    <value>Merkeze Hizalamayı Düzenle</value>
+  </data>
+  <data name="PowerPoint.10" xml:space="preserve">
+    <value>Arkaya Gönder</value>
+  </data>
+  <data name="PowerPoint.2" xml:space="preserve">
+    <value>Sola Hizalamayı Düzenle</value>
+  </data>
+  <data name="PowerPoint.3" xml:space="preserve">
+    <value>Sağa Hizalamayı Düzenle</value>
+  </data>
+  <data name="PowerPoint.4" xml:space="preserve">
+    <value>Öne Getir</value>
+  </data>
+  <data name="PowerPoint.5" xml:space="preserve">
+    <value>Liste Düzeyini Azalt</value>
+  </data>
+  <data name="PowerPoint.6" xml:space="preserve">
+    <value>Seçili Slaytları Çoğalt</value>
+  </data>
+  <data name="PowerPoint.7" xml:space="preserve">
+    <value>Liste Düzeyini Artır</value>
+  </data>
+  <data name="PowerPoint.8" xml:space="preserve">
+    <value>Geçerli Slayttan Oynat</value>
+  </data>
+  <data name="PowerPoint.9" xml:space="preserve">
+    <value>Önceki Slayt</value>
+  </data>
+  <data name="RadialMenu.1" xml:space="preserve">
+    <value>Devre Dışı</value>
+  </data>
+  <data name="RadialMenu.2" xml:space="preserve">
+    <value>Geri Git</value>
+  </data>
+  <data name="RadialMenu.3" xml:space="preserve">
+    <value>İleri Git</value>
+  </data>
+  <data name="RadialMenu.4" xml:space="preserve">
+    <value>Oynat/Duraklat</value>
+  </data>
+  <data name="RadialMenu.5" xml:space="preserve">
+    <value>Önceki Parça</value>
+  </data>
+  <data name="RadialMenu.6" xml:space="preserve">
+    <value>Sessiz</value>
+  </data>
+  <data name="RadialMenu.7" xml:space="preserve">
+    <value>Seçili radyal için işlev</value>
+  </data>
+  <data name="RadialMenu.8" xml:space="preserve">
+    <value>Seçili radyal için etiket</value>
+  </data>
+  <data name="RadialMenu.9" xml:space="preserve">
+    <value>Sağ tıklamayı taklit etmek için merkezi kullan</value>
+  </data>
+  <data name="Smooth" xml:space="preserve">
+    <value>Düzgün</value>
+  </data>
+  <data name="Vibrant" xml:space="preserve">
+    <value>Canlı</value>
+  </data>
+  <data name="Warm" xml:space="preserve">
+    <value>Sıcak</value>
+  </data>
+  <data name="Word.1" xml:space="preserve">
+    <value>Otomatik kaydır</value>
+  </data>
+  <data name="Word.10" xml:space="preserve">
+    <value>Biçimlendirmeyi Yapıştır ve Eşleştir</value>
+  </data>
+  <data name="Word.11" xml:space="preserve">
+    <value>Önceki Değişiklik</value>
+  </data>
+  <data name="Word.12" xml:space="preserve">
+    <value>Önceki Yorum</value>
+  </data>
+  <data name="Word.13" xml:space="preserve">
+    <value>Yazdır</value>
+  </data>
+  <data name="Word.14" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="Word.15" xml:space="preserve">
+    <value>Üstü çizili</value>
+  </data>
+  <data name="Word.16" xml:space="preserve">
+    <value>Metin Boyutu -</value>
+  </data>
+  <data name="Word.17" xml:space="preserve">
+    <value>Metin Boyutu +</value>
+  </data>
+  <data name="Word.18" xml:space="preserve">
+    <value>Seçili Metni Çevir</value>
+  </data>
+  <data name="Word.19" xml:space="preserve">
+    <value>Bir Sayfayı Görüntüle</value>
+  </data>
+  <data name="Word.2" xml:space="preserve">
+    <value>Bul</value>
+  </data>
+  <data name="Word.20" xml:space="preserve">
+    <value>Sayfa Genişliğini Görüntüle</value>
+  </data>
+  <data name="Word.3" xml:space="preserve">
+    <value>Girintiyi Artır</value>
+  </data>
+  <data name="Word.4" xml:space="preserve">
+    <value>Yorum Ekle</value>
+  </data>
+  <data name="Word.5" xml:space="preserve">
+    <value>Sonraki Değişiklik</value>
+  </data>
+  <data name="Word.6" xml:space="preserve">
+    <value>Sonraki Yorum</value>
+  </data>
+  <data name="Word.7" xml:space="preserve">
+    <value>Kaynak Biçimlendirmesini Yapıştır ve Tut</value>
+  </data>
+  <data name="Word.8" xml:space="preserve">
+    <value>Yalnızca Metni Yapıştır ve Tut</value>
+  </data>
+  <data name="Word.9" xml:space="preserve">
+    <value>Biçimlendirmeyi Yapıştır ve Birleştir</value>
+  </data>
+  <data name="Camera.25" xml:space="preserve">
+    <value>Monitörünüzü USB 3.0 üzerinden bağlayın ve 4K UHD çözünürlüğü etkinleştirmek için USB-C Önceliği altında &quot;Yüksek Veri Hızı&quot; öğesini seçin.</value>
+  </data>
+  <data name="HeadsetAutomatedActions.14" xml:space="preserve">
+    <value>Hassasiyet</value>
+  </data>
+  <data name="File_corrupted" xml:space="preserve">
+    <value>Dosya bozuk</value>
+  </data>
+  <data name="File_corruptedMsg" xml:space="preserve">
+    <value>Dosya bozuk. Lütfen başka bir dosya seçin</value>
+  </data>
+  <data name="ImportFail" xml:space="preserve">
+    <value>Başarısız</value>
+  </data>
+  <data name="ImportFailMsg" xml:space="preserve">
+    <value>Farklı model içe aktarılamıyor</value>
+  </data>
+  <data name="Update_Webcam_Alert" xml:space="preserve">
+    <value>Bu güncelleştirme, Win 11 22H2 veya üzeri ve işletim sistemi derlemesi \r\n22621 veya üzeri olan sistemlerde Windows Ayarları aracılığıyla varlık algılama kontrollerini etkinleştirir</value>
+  </data>
+  <data name="Update_BatteryLow_Alert" xml:space="preserve">
+    <value>Aygıttaki pil seviyesi düşük. Bu güncelleştirmeyi etkinleştirmek için pili değiştirin/şarj edin.</value>
+  </data>
+  <data name="Update_Dock_Alert" xml:space="preserve">
+    <value>Sisteminize yalnızca bir bağlantı istasyonunun bağlı olduğundan emin olun. Bağlantı istasyonuna bağlı aygıtlar, güncelleştirme sırasında kullanılamayabilir.</value>
+  </data>
+  <data name="Update_PCBatteryLow_Alert" xml:space="preserve">
+    <value>Bilgisayarı güç kaynağına bağlayın ve güncelleştirmeye devam etmek için bilgisayar pil şarjının %10&apos;un üzerinde olduğundan emin olun</value>
+  </data>
+  <data name="Update_Mouse_Alert" xml:space="preserve">
+    <value>Bu güncelleştirmeyi etkinleştirmek için aygıttaki bir düğmeye veya tuşa basın</value>
+  </data>
+  <data name="Landscape" xml:space="preserve">
+    <value>Yatay</value>
+  </data>
+  <data name="Portrait" xml:space="preserve">
+    <value>Dikey</value>
+  </data>
+  <data name="Landscape_flipped" xml:space="preserve">
+    <value>Yatay (ters dönmüş)</value>
+  </data>
+  <data name="Portrait_flipped" xml:space="preserve">
+    <value>Dikey (ters dönmüş)</value>
+  </data>
+  <data name="Frame_Rate" xml:space="preserve">
+    <value>Kare Hızı</value>
+  </data>
+  <data name="Display_Alignment" xml:space="preserve">
+    <value>Ekran Hizalaması</value>
+  </data>
+  <data name="Timer__30min" xml:space="preserve">
+    <value>Zamanlayıcı/30 dk.</value>
+  </data>
+  <data name="Timer__40min" xml:space="preserve">
+    <value>Zamanlayıcı/40 dk.</value>
+  </data>
+  <data name="Timer__50min" xml:space="preserve">
+    <value>Zamanlayıcı/50 dk.</value>
+  </data>
+  <data name="Timer__60min" xml:space="preserve">
+    <value>Zamanlayıcı/60 dk.</value>
+  </data>
+  <data name="Timer__90min" xml:space="preserve">
+    <value>Zamanlayıcı/90 dk.</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>Devre dışı bırak</value>
+  </data>
+  <data name="Extreme" xml:space="preserve">
+    <value>Aşırı</value>
+  </data>
+  <data name="Super_Fast" xml:space="preserve">
+    <value>Süper Hızlı</value>
+  </data>
+  <data name="Fast" xml:space="preserve">
+    <value>Hızlı</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="Level_0" xml:space="preserve">
+    <value>Düzey 0</value>
+  </data>
+  <data name="Level_1" xml:space="preserve">
+    <value>Düzey 1</value>
+  </data>
+  <data name="Level_2" xml:space="preserve">
+    <value>Düzey 2</value>
+  </data>
+  <data name="Level_3" xml:space="preserve">
+    <value>Düzey 3</value>
+  </data>
+  <data name="Desktop" xml:space="preserve">
+    <value>Masaüstü</value>
+  </data>
+  <data name="Movie_HDR" xml:space="preserve">
+    <value>Film HDR</value>
+  </data>
+  <data name="Game_HDR" xml:space="preserve">
+    <value>Oyun HDR</value>
+  </data>
+  <data name="Display_HDR" xml:space="preserve">
+    <value>Ekran HDR</value>
+  </data>
+  <data name="Custom_Color_HDR" xml:space="preserve">
+    <value>Özel Renk HDR</value>
+  </data>
+  <data name="HDRPeak1000" xml:space="preserve">
+    <value>HDRPeak1000</value>
+  </data>
+  <data name="_4K" xml:space="preserve">
+    <value>4K</value>
+  </data>
+  <data name="_FHD" xml:space="preserve">
+    <value>FHD</value>
+  </data>
+  <data name="Steady_Vision" xml:space="preserve">
+    <value>Steady Vision</value>
+  </data>
+  <data name="VisionEngine_Steady" xml:space="preserve">
+    <value>Steady Vision</value>
+  </data>
+  <data name="Software_update" xml:space="preserve">
+    <value>Yazılım güncelleştirmesi</value>
+  </data>
+  <data name="Firmware_update" xml:space="preserve">
+    <value>Bellenim güncelleştirmesi</value>
+  </data>
+  <data name="Color.10" xml:space="preserve">
+    <value>Otomatik Renk Sıcaklığı etkin durumda. Geçersiz kılmak istiyor musunuz?</value>
+  </data>
+  <data name="Mouse.16" xml:space="preserve">
+    <value>Farenin konumunun saniyede kaç kez sisteme bildirildiği. Daha yüksek yoklama hızları için USB üzerinden bağlanın.</value>
+  </data>
+  <data name="EATooltip_00" xml:space="preserve">
+    <value>Boş Düzen</value>
+  </data>
+  <data name="EATooltip_21H" xml:space="preserve">
+    <value>Seçenek 2.1: 2 sütun, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_21V" xml:space="preserve">
+    <value>Seçenek 2.1: 2 satır, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_22H" xml:space="preserve">
+    <value>Seçenek 2.2: 2 satır, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_22V" xml:space="preserve">
+    <value>Seçenek 2.2: 2 sütun, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_23H" xml:space="preserve">
+    <value>Seçenek 2.3: 2 sütun, %70/30 oranında bölünmüş.</value>
+  </data>
+  <data name="EATooltip_23V" xml:space="preserve">
+    <value>Seçenek 2.3: 2 satır, %30/70 oranında bölünmüş.</value>
+  </data>
+  <data name="EATooltip_24H" xml:space="preserve">
+    <value>Seçenek 2.4: 2 sütun, %30/70 oranında bölünmüş.</value>
+  </data>
+  <data name="EATooltip_24V" xml:space="preserve">
+    <value>Seçenek 2.4: 2 satır, %70/30 oranında bölünmüş.</value>
+  </data>
+  <data name="EATooltip_31H" xml:space="preserve">
+    <value>Seçenek 3.1: 3 satır, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_31V" xml:space="preserve">
+    <value>Seçenek 3.1: 3 sütun, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_32H" xml:space="preserve">
+    <value>Seçenek 3.2: 3 sütun, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_32V" xml:space="preserve">
+    <value>Seçenek 3.2: 3 satır, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_33H" xml:space="preserve">
+    <value>Seçenek 3.3: 3 sütun, %30/40/30 oranında bölünmüş.</value>
+  </data>
+  <data name="EATooltip_33V" xml:space="preserve">
+    <value>Seçenek 3.3: 3 satır, %30/40/30 oranında bölünmüş.</value>
+  </data>
+  <data name="EATooltip_34H" xml:space="preserve">
+    <value>Seçenek 3.4: 2 satır, eşit olarak bölünmüş. Sütun 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_34V" xml:space="preserve">
+    <value>Seçenek 3.4: 2 satır, eşit olarak bölünmüş. Satır 1, bölünme yok. Satır 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_35H" xml:space="preserve">
+    <value>Seçenek 3.5: 2 satır, eşit olarak bölünmüş. Sütun 1, bölünme yok. Sütun 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_35V" xml:space="preserve">
+    <value>Seçenek 3.5: 2 satır, eşit olarak bölünmüş. Satır 1, eşit olarak bölünmüş. Satır 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_36H" xml:space="preserve">
+    <value>Seçenek 3.6: 2 satır, eşit olarak bölünmüş. Sütun 1, %30/70 oranında bölünmüş. Sütun 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_36V" xml:space="preserve">
+    <value>Seçenek 3.6: 2 satır, %70/30 oranında bölünmüş. Satır 1, bölünme yok, Satır 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_37H" xml:space="preserve">
+    <value>Seçenek 3.7: 2 satır, eşit olarak bölünmüş. Sütun 1, %70/30 oranında bölünmüş. Sütun 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_37V" xml:space="preserve">
+    <value>Seçenek 3.7: 2 satır, %30/70 oranında bölünmüş. Satır 1, eşit olarak bölünmüş, Satır 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_38H" xml:space="preserve">
+    <value>Seçenek 3.8: 2 satır, eşit olarak bölünmüş. Satır 1, bölünme yok. Satır 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_38V" xml:space="preserve">
+    <value>Seçenek 3.8: 2 sütun, eşit olarak bölünmüş. Sütun 1, bölünme yok. Sütun 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_39H" xml:space="preserve">
+    <value>Seçenek 3.9: 2 satır, eşit olarak bölünmüş. Satır 1, eşit olarak bölünmüş. Satır 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_39V" xml:space="preserve">
+    <value>Seçenek 3.9: 2 sütun, eşit olarak bölünmüş. Sütun 1, eşit olarak bölünmüş. Sütun 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_41H" xml:space="preserve">
+    <value>Seçenek 4.1: 4 çeyreğe bölünmüş.</value>
+  </data>
+  <data name="EATooltip_41V" xml:space="preserve">
+    <value>Seçenek 4.1: 4 çeyreğe bölünmüş.</value>
+  </data>
+  <data name="EATooltip_42H" xml:space="preserve">
+    <value>Seçenek 4.2: 2 sütun, eşit olarak bölünmüş. Sütun 1, 3 bölüme eşit olarak bölünmüş. Sütun 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_42V" xml:space="preserve">
+    <value>Seçenek 4.2: 2 satır, eşit olarak bölünmüş. Satır 1, bölünme yok. Satır 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_43H" xml:space="preserve">
+    <value>Seçenek 4.3: 2 sütun, eşit olarak bölünmüş. Sütun 1, bölünme yok. Sütun 2, 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_43V" xml:space="preserve">
+    <value>Seçenek 4.3: 2 satır, eşit olarak bölünmüş. Satır 1, 3 bölüme eşit olarak bölünmüş. Sütun 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_44H" xml:space="preserve">
+    <value>Seçenek 4.4: 4 sütun eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_44V" xml:space="preserve">
+    <value>Seçenek 4.4: 4 satır, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_45H" xml:space="preserve">
+    <value>Seçenek 4.5: 3 sütun eşit olarak bölünmüş. Sütun 1, eşit olarak bölünmüş. Sütun 2 ve 3, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_45V" xml:space="preserve">
+    <value>Seçenek 4.5: 3 satır, eşit olarak bölünmüş. Satır 1 ve 2, bölünme yok. Satır 3, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_46H" xml:space="preserve">
+    <value>Seçenek 4.6: 3 sütun, eşit olarak bölünmüş. Sütun 1 ve 2, bölünme yok. Sütun 3, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_46V" xml:space="preserve">
+    <value>Seçenek 4.6: 3 satır, eşit olarak bölünmüş, Satır 1, eşit olarak bölünmüş, Satır 2 ve 3, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_51H" xml:space="preserve">
+    <value>Seçenek 5.1: 2 satır, eşit olarak bölünmüş. Satır 1, 3 bölüme eşit olarak bölünmüş. Satır 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_51V" xml:space="preserve">
+    <value>Seçenek 5.1: 2 sütun, eşit olarak bölünmüş. Sütun 1, 3 bölüme eşit olarak bölünmüş. Sütun 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_52H" xml:space="preserve">
+    <value>Seçenek 5.2: 2 satır, eşit olarak bölünmüş. Satır 1, eşit olarak bölünmüş. Satır 2, 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_52V" xml:space="preserve">
+    <value>Seçenek 5.2: 2 sütun, eşit olarak bölünmüş. Sütun 1, eşit olarak bölünmüş. Sütun 2, 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_53H" xml:space="preserve">
+    <value>Seçenek 5.3: 2 satır, %30/70 oranında bölünmüş. Satır 1, 3 bölüme eşit olarak bölünmüş. Satır 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_53V" xml:space="preserve">
+    <value>Seçenek 5.3: 2 sütun, %30/70 oranında bölünmüş, Satır 1, 3 bölüme eşit olarak bölünmüş. Satır 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_54H" xml:space="preserve">
+    <value>Seçenek 5.4: 2 satır, %70/30 oranında bölünmüş. Satır 1, eşit olarak bölünmüş. Satır 2, 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_54V" xml:space="preserve">
+    <value>Seçenek 5.4: 2 sütun, %70/30 oranında bölünmüş. Satır 1, eşit olarak bölünmüş, Satır 2, 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_55H" xml:space="preserve">
+    <value>Seçenek 5.5: 2 satır, %30/70 oranında bölünmüş. Satır 1 ve 2, her biri eşit olarak bölünmüş. Sütun 1, bölünme yok. Sütun 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_55V" xml:space="preserve">
+    <value>Seçenek 5.5: 2 satır, eşit olarak bölünmüş. Satır 1, 3 bölüme eşit olarak bölünmüş. 2 Satır, %30/70 oranında bölünmüş.</value>
+  </data>
+  <data name="EATooltip_56H" xml:space="preserve">
+    <value>Seçenek 5.6: 2 sütun, eşit olarak bölünmüş. Sütun 1, 3 bölüme eşit olarak bölünmüş. Sütun 2, %30/70 oranında bölünmüş.</value>
+  </data>
+  <data name="EATooltip_56V" xml:space="preserve">
+    <value>Seçenek 5.6: 2 satır, eşit olarak bölünmüş, Satır 1, %30/70 oranında bölünmüş. Satır 2, 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_57H" xml:space="preserve">
+    <value>Seçenek 5.7: 3 sütun, eşit olarak bölünmüş, Sütun 1 ve 3, her biri eşit olarak bölünmüş, Sütun 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_57V" xml:space="preserve">
+    <value>Seçenek 5.7: 3 satır, eşit olarak bölünmüş, Satır 1 ve 3, her biri eşit olarak bölünmüş, Satır 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_58H" xml:space="preserve">
+    <value>Seçenek 5.8: 2 satır, %70/30 oranında bölünmüş. Satır 1, %70/30 oranında bölünmüş. Satır 2, 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_58V" xml:space="preserve">
+    <value>Seçenek 5.8: 2 sütun, %30/70 oranında bölünmüş. Sütun 1, %70/30 oranında bölünmüş, Sütun 2, 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_59H" xml:space="preserve">
+    <value>Seçenek 5.9: 2 satır, %70/30 bölünmüş. Satır 1, %70/30 bölünmüş, Satır 2, 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_59V" xml:space="preserve">
+    <value>Seçenek 5.9: 2 sütun, %70/30 oranında bölünmüş. Sütun 1, %70/30 oranında bölünmüş, Sütun 2, 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_61H" xml:space="preserve">
+    <value>Seçenek 6.1: 3 sütun, eşit olarak bölünmüş. Sütun 1, 2 ve 3, her biri eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_61V" xml:space="preserve">
+    <value>Seçenek 6.1: 2 sütun, eşit olarak bölünmüş. Sütun 1 ve 2, her biri 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_62H" xml:space="preserve">
+    <value>Seçenek 6.2: 2 satır, %70/30 oranında bölünmüş. Satır 1, %70/30 oranında bölünmüş. Satır 2, 3 bölüme eşit olarak bölünmüş. Sütun 1, bölünme yok. Sütun 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_62V" xml:space="preserve">
+    <value>Seçenek 6.2: 2 satır, %30/70 oranında bölünmüş. Satır 1, 3 bölüme eşit olarak bölünmüş. Satır 2, %30/70 oranında bölünmüş. Sütun 1, bölünme yok. Sütun 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_63H" xml:space="preserve">
+    <value>Seçenek 6.3: 2 satır, %30/70 oranında bölünmüş. Satır 1, 4 bölüme eşit olarak bölünmüş. Satır 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_63V" xml:space="preserve">
+    <value>Seçenek 6.3: 2 sütun, %30/70 oranında bölünmüş. Sütun 1, 4 bölüme eşit olarak bölünmüş. Sütun 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_64H" xml:space="preserve">
+    <value>Seçenek 6.4: 2 satır, %30/70 oranında bölünmüş. Satır 1, 3 bölüme eşit olarak bölünmüş. Satır 2, %70/30 oranında bölünmüş. Sütun 1, bölünme yok. Sütun 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_64V" xml:space="preserve">
+    <value>Seçenek 6.4: 2 sütun, %30/70 oranında bölünmüş. Satır 1, 3 bölüme eşit olarak bölünmüş. Satır 2, %30/70 oranında bölünmüş. Sütun 1, eşit olarak bölünmüş. Sütun 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_65H" xml:space="preserve">
+    <value>Seçenek 6.5: 2 satır, %30/70 oranında bölünmüş. Satır 1, 3 bölüme eşit olarak bölünmüş. Satır 2, %30/70 oranında bölünmüş. Sütun 1, eşit olarak bölünmüş. Sütun 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_65V" xml:space="preserve">
+    <value>Seçenek 6.5: 2 sütun, %30/70 oranında bölünmüş. Satır 1, %30/70 oranında bölünmüş. Satır 2, 3 bölüme eşit olarak bölünmüş. Sütun 1, eşit olarak bölünmüş. Sütun 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_66H" xml:space="preserve">
+    <value>Seçenek 6.6: 2 satır, %30/70 oranında bölünmüş. Satır 1, %30/70 oranında bölünmüş. Sütun 1, eşit olarak bölünmüş. Sütun 2, bölünme yok. Satır 1, 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_66V" xml:space="preserve">
+    <value>Seçenek 6.6: 2 satır, %30/70 oranında bölünmüş. Satır 1, %30/70 oranında bölünmüş. Satır 2, 3 bölüme eşit olarak bölünmüş. Sütun 1, bölünme yok. Sütun 2, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_67H" xml:space="preserve">
+    <value>Seçenek 6.7: 2 sütun, eşit olarak bölünmüş. Satır 1, 2 ve 3, 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_67V" xml:space="preserve">
+    <value>Seçenek 6.7: 3 sütun, eşit olarak bölünmüş. Sütun 1, 2 ve 3, her biri eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_68H" xml:space="preserve">
+    <value>Seçenek 6.8: 4 sütun, eşit olarak bölünmüş. Satır 1 ve 4, eşit olarak bölünmüş. Satır 2 ve 3, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_68V" xml:space="preserve">
+    <value>Seçenek 6.8: 4 satır, eşit olarak bölünmüş. Satır 1 ve 4, eşit olarak bölünmüş. Satır 2 ve 3, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_69H" xml:space="preserve">
+    <value>Seçenek 6.9: 2 satır, %70/30 oranında bölünmüş. Satır 1, eşit olarak bölünmüş. Satır 2, 4 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_69V" xml:space="preserve">
+    <value>Seçenek 6.9: 2 satır, eşit olarak bölünmüş. Satır 1, %70/30 oranında bölünmüş. Sütun 1, bölünme yok, Sütun 2, eşit olarak bölünmüş. Satır 2, %70/30 oranında bölünmüş.</value>
+  </data>
+  <data name="EATooltip_6AH" xml:space="preserve">
+    <value>Seçenek 6.10: 2 sütun, %70/30 oranında bölünmüş. Sütun 1, 2 ve 3, her biri eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_6AV" xml:space="preserve">
+    <value>Seçenek 6.10: 2 satır, %70/30 oranında bölünmüş. Satır 1 ve 2, her biri 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_71H" xml:space="preserve">
+    <value>Seçenek 7.1: 2 satır, %30/70 oranında bölünmüş. Satır 1, 3 bölüme eşit olarak bölünmüş. Satır 2, %30/70 oranında bölünmüş. Sütun 1, eşit olarak bölünmüş. Sütun 2 ve 3, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_71V" xml:space="preserve">
+    <value>Seçenek 7.1: 3 satır, eşit olarak bölünmüş. Satır 1 ve 2, her biri %30/70 oranında bölünmüş, Satır 3, 3 eşit bölüme bölünmüş.</value>
+  </data>
+  <data name="EATooltip_72H" xml:space="preserve">
+    <value>Seçenek 7.2: 2 satır, %30/70 oranında bölünmüş. Satır 1 ve 2, her biri 3 bölüme eşit olarak bölünmüş. Sütun 1 ve 2, bölünme yok. Sütun 3, eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_72V" xml:space="preserve">
+    <value>Seçenek 7.2: 3 satır, eşit olarak bölünmüş. Satır 1 ve 3, her biri 3 bölüme eşit olarak bölünmüş. Satır 2, %30/70 oranında bölünmüş.</value>
+  </data>
+  <data name="EATooltip_73H" xml:space="preserve">
+    <value>Seçenek 7.3: 2 satır, eşit olarak bölünmüş. Satır 1, 4 bölüme eşit olarak bölünmüş. Satır 2, 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_73V" xml:space="preserve">
+    <value>Seçenek 7.3: 2 sütun, eşit olarak bölünmüş. Sütun 1, 4 bölüme eşit olarak bölünmüş. Sütun 2, 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_74H" xml:space="preserve">
+    <value>Seçenek 7.4: 2 satır, eşit olarak bölünmüş. Satır 1 ve 3, her biri eşit olarak bölünmüş. Satır 2, 4 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_74V" xml:space="preserve">
+    <value>Seçenek 7.4: 2 sütun, eşit olarak bölünmüş. Sütun 1, 3 bölüme eşit olarak bölünmüş. Sütun 2, 4 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_75H" xml:space="preserve">
+    <value>Seçenek 7.5: 2 satır, eşit olarak bölünmüş. Satır 1, 4 bölüme eşit olarak bölünmüş. Satır 2, %25/50/25 oranında bölünmüş. Sütun 1 ve 3, her biri eşit olarak bölünmüş. Sütun 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_75V" xml:space="preserve">
+    <value>Seçenek 7.5: 3 satır, %25/50/25 bölünmüş. Satır 1, 3 bölüme eşit olarak bölünmüş. Satır 2, %30/70 oranında bölünmüş. Sütun 1, eşit olarak bölünmüş. Sütun 2, bölünme yok. Satır 3, 3 eşit bölüme bölünmüş.</value>
+  </data>
+  <data name="EATooltip_76H" xml:space="preserve">
+    <value>Seçenek 7.6: 2 satır, %30/70 oranında bölünmüş. Satır 1, %25/50/25 oranında bölünmüş. Sütun 1 ve 3, her biri eşit olarak bölünmüş. Sütun 2, bölünme yok. Satır 2, 4 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_76V" xml:space="preserve">
+    <value>Seçenek 7.6: 3 satır, %25/50/25 oranında bölünmüş. Satır 1, 3 bölüme eşit olarak bölünmüş. Satır 2, %70/30 oranında bölünmüş. Satır 3, 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_77H" xml:space="preserve">
+    <value>Seçenek 7.7: 2 satır, %30/70 oranında bölünmüş. Satır 1, 4 bölüme eşit olarak bölünmüş. Satır 2, %50/25/25 oranında bölünmüş. Sütun 1, bölünme yok. Sütun 2 ve 3, her biri eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_77V" xml:space="preserve">
+    <value>Seçenek 7.7: 3 satır, %25/25/50 oranında bölünmüş. Satır 1 ve 2, her biri 3 bölüme eşit olarak bölünmüş. Satır 3, %30/70 oranında bölünmüş. Sütun 1, eşit olarak bölünmüş. Sütun 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_78H" xml:space="preserve">
+    <value>Seçenek 7.8: 2 satır, %30/70 oranında bölünmüş. Satır 1 ve 4, her biri eşit olarak bölünmüş. Satır 2, %25/25/50 oranında bölünmüş. Sütun 1 ve 2, her biri eşit olarak bölünmüş. Sütun 3, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_78V" xml:space="preserve">
+    <value>Seçenek 7.8: 3 satır, %30/70 oranında bölünmüş. Satır 1, %30/70 oranında bölünmüş. Sütun 1, eşit olarak bölünmüş. Sütun 2, bölünme yok. Satır 2 ve 3, her biri 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_79H" xml:space="preserve">
+    <value>Seçenek 7.9: 4 sütun, eşit olarak bölünmüş. Sütun 1, 2, 3 ve 4, her biri eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_79V" xml:space="preserve">
+    <value>Seçenek 7.9: 4 sütun, eşit olarak bölünmüş. Satır 1, 2, 3 ve 4, her biri eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_7AH" xml:space="preserve">
+    <value>Seçenek 7.10: 4 sütun, eşit olarak bölünmüş, Sütun 1, 2, 3 ve 4, her biri 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_7AV" xml:space="preserve">
+    <value>Seçenek 7.10: 4 sütun, eşit olarak bölünmüş, Sütun 1, 2, 3 ve 4, her biri 3 bölüme eşit olarak bölünmüş.</value>
+  </data>
+  <data name="EATooltip_7BH" xml:space="preserve">
+    <value>Seçenek 7.11: 2 satır, %30/70 oranında bölünmüş. Satır 1 ve 2, her biri %25/50/25 oranında bölünmüş. Sütun 1 ve 3, her biri eşit olarak bölünmüş. Sütun 2, bölünme yok.</value>
+  </data>
+  <data name="EATooltip_7BV" xml:space="preserve">
+    <value>Seçenek 7.11: 3 sütun, %30/70 oranında bölünmüş. Sütun 1, 2 ve 3, %25/50/25 oranında bölünmüş. Satır 1 ve 3, eşit olarak bölünmüş. Satır 2, bölünme yok.</value>
+  </data>
+  <data name="EazyMemory.42" xml:space="preserve">
+    <value>İlgili Easy Memory profili de silinecektir. Devam etmek istiyor musunuz?</value>
+  </data>
+  <data name="DiagnosticReport_SaveFail" xml:space="preserve">
+    <value>Tanılama raporu kaydetme işlemi başarısız</value>
+  </data>
+  <data name="MonitorAssetReport_SaveFail" xml:space="preserve">
+    <value>Monitör varlık raporunu kaydetme işlemi başarısız</value>
+  </data>
+  <data name="USBKVM.Tips" xml:space="preserve">
+    <value>Örnek: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.\nNot: Birden fazla monitörde kısayol tuşu işlevini tetiklemek için fare imleci, hedeflenen monitör ekranında olmalıdır.</value>
+  </data>
+  <data name="BrightnessLevel" xml:space="preserve">
+    <value>Parlaklık düzeyi</value>
+  </data>
+  <data name="USBKVM" xml:space="preserve">
+    <value>USB KVM</value>
+  </data>
+  <data name="Mouse" xml:space="preserve">
+    <value>Fare</value>
+  </data>
+  <data name="Keyboard" xml:space="preserve">
+    <value>Klavye</value>
+  </data>
+  <data name="Calendar" xml:space="preserve">
+    <value>Takvim</value>
+  </data>
+  <data name="Camera" xml:space="preserve">
+    <value>Kamera</value>
+  </data>
+  <data name="Clock" xml:space="preserve">
+    <value>Saat</value>
+  </data>
+  <data name="Cortana" xml:space="preserve">
+    <value>Cortana</value>
+  </data>
+  <data name="DellCommandUpdate" xml:space="preserve">
+    <value>Dell Command Update</value>
+  </data>
+  <data name="DellDigitalDelivery" xml:space="preserve">
+    <value>Dell Digital Delivery</value>
+  </data>
+  <data name="DellOptimizer" xml:space="preserve">
+    <value>Dell Optimizer</value>
+  </data>
+  <data name="Family" xml:space="preserve">
+    <value>Ailesi</value>
+  </data>
+  <data name="FeedbackHub" xml:space="preserve">
+    <value>Geri Bildirim Merkezi</value>
+  </data>
+  <data name="GameBar" xml:space="preserve">
+    <value>Oyun Çubuğu</value>
+  </data>
+  <data name="GetHelp" xml:space="preserve">
+    <value>Yardım Al</value>
+  </data>
+  <data name="GetStarted" xml:space="preserve">
+    <value>İlk Adımı Atın</value>
+  </data>
+  <data name="IntelManagementAndSecurityStatus" xml:space="preserve">
+    <value>Intel (R) Yönetim ve Güvenlik Durumu</value>
+  </data>
+  <data name="IntelGraphicsCommandCenter" xml:space="preserve">
+    <value>Intel® Grafikleri Komut Merkezi</value>
+  </data>
+  <data name="IntelOptaneMemoryAndStorageManagement" xml:space="preserve">
+    <value>Intel® Optane™ Bellek ve Depolama Yönetimi</value>
+  </data>
+  <data name="Mail" xml:space="preserve">
+    <value>Posta</value>
+  </data>
+  <data name="Maps" xml:space="preserve">
+    <value>Haritalar</value>
+  </data>
+  <data name="MediaPlayer" xml:space="preserve">
+    <value>Ortam Yürütücüsü</value>
+  </data>
+  <data name="Microsoft365Office" xml:space="preserve">
+    <value>Microsoft 365 (Office)</value>
+  </data>
+  <data name="MicrosoftClipchamp" xml:space="preserve">
+    <value>Microsoft Clipchamp</value>
+  </data>
+  <data name="MicrosoftDefender" xml:space="preserve">
+    <value>Microsoft Defender</value>
+  </data>
+  <data name="MicrosoftStore" xml:space="preserve">
+    <value>Microsoft Store</value>
+  </data>
+  <data name="MicrosoftTeams" xml:space="preserve">
+    <value>Microsoft Teams</value>
+  </data>
+  <data name="MicrosoftTeamsWorkSchool" xml:space="preserve">
+    <value>Microsoft Teams (iş veya okul)</value>
+  </data>
+  <data name="MicrosoftToDo" xml:space="preserve">
+    <value>Microsoft To Do</value>
+  </data>
+  <data name="MoviesTV" xml:space="preserve">
+    <value>Filmler ve TV</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Haberler</value>
+  </data>
+  <data name="Notepad" xml:space="preserve">
+    <value>Not defteri</value>
+  </data>
+  <data name="Paint" xml:space="preserve">
+    <value>Paint</value>
+  </data>
+  <data name="PhoneLink" xml:space="preserve">
+    <value>Telefon Bağlantısı</value>
+  </data>
+  <data name="Photos" xml:space="preserve">
+    <value>Fotoğraflar</value>
+  </data>
+  <data name="PowerAutomate" xml:space="preserve">
+    <value>Power Automate</value>
+  </data>
+  <data name="SnippingTool" xml:space="preserve">
+    <value>Ekran Alıntısı Aracı</value>
+  </data>
+  <data name="SolitaireCasualGames" xml:space="preserve">
+    <value>Solitaire ve Gündelik Oyunlar</value>
+  </data>
+  <data name="SoundRecorder" xml:space="preserve">
+    <value>Ses Kaydedici</value>
+  </data>
+  <data name="Spotify" xml:space="preserve">
+    <value>Spotify</value>
+  </data>
+  <data name="SupportAssist" xml:space="preserve">
+    <value>SupportAssist</value>
+  </data>
+  <data name="Terminal" xml:space="preserve">
+    <value>Terminal</value>
+  </data>
+  <data name="Tips" xml:space="preserve">
+    <value>İpuçları</value>
+  </data>
+  <data name="Weather" xml:space="preserve">
+    <value>Hava Durumu</value>
+  </data>
+  <data name="WindowsBackup" xml:space="preserve">
+    <value>Windows yedekleme</value>
+  </data>
+  <data name="WindowsSecurity" xml:space="preserve">
+    <value>Windows Güvenliği</value>
+  </data>
+  <data name="Xbox" xml:space="preserve">
+    <value>Xbox</value>
+  </data>
+  <data name="NextTrack" xml:space="preserve">
+    <value>Sonraki Parça</value>
+  </data>
+  <data name="PrtSc" xml:space="preserve">
+    <value>Print Screen</value>
+  </data>
+  <data name="ScrollLock" xml:space="preserve">
+    <value>Scroll Lock</value>
+  </data>
+  <data name="PauseBreak" xml:space="preserve">
+    <value>Pause Break</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Ana Sayfa</value>
+  </data>
+  <data name="End" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="PageDown" xml:space="preserve">
+    <value>Page Down</value>
+  </data>
+  <data name="PageUp" xml:space="preserve">
+    <value>Page Up</value>
+  </data>
+  <data name="WebBrowser" xml:space="preserve">
+    <value>Web Tarayıcı</value>
+  </data>
+  <data name="DTPUnavailable" xml:space="preserve">
+    <value>DTP hizmeti kullanılamıyor!</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>(İsim yok)</value>
+  </data>
+  <data name="Keyboard.20" xml:space="preserve">
+    <value>Dell Premier Kablosuz Klavye</value>
+  </data>
+  <data name="Keyboard.21" xml:space="preserve">
+    <value>Dell {0} Kablosuz Fare</value>
+  </data>
+  <data name="EzArrange.10" xml:space="preserve">
+    <value>Bir klasör seç</value>
+  </data>
+  <data name="Fullscreen.1" xml:space="preserve">
+    <value>Tam ekran</value>
+  </data>
+  <data name="PIPSmall" xml:space="preserve">
+    <value>PIP Küçük</value>
+  </data>
+  <data name="PIPLarge" xml:space="preserve">
+    <value>PIP Büyük</value>
+  </data>
+  <data name="Learn_more_for_firmware" xml:space="preserve">
+    <value>Ürün yazılımı için daha fazla bilgi edinin</value>
+  </data>
+  <data name="Learn_more_for_software" xml:space="preserve">
+    <value>Yazılım için daha fazla bilgi edinin</value>
+  </data>
 </root>

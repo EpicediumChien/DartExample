@@ -77,13 +77,17 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
         [Test]
         public void TestIsFunctionEnabled()
         {
-            privateArrangeVMObject.SetFieldOrProperty("_isFunctionEnabled", false);
-            var Result1 = arrangeVM.IsFunctionEnabled;       //IsFunctionEnabled false
-            Assert.IsFalse(Result1);
+            //Robert_Lin, 2025-1-7, most of classes in DDPM.SA.Plugins.User.EasyArrange are deleted,
+            // Please use DDPM.SA/Common/DDPM.EABroker project instead.
+            // _isFunctionEnabled is unused properties, to be deleted, please do not test it.
 
-            privateArrangeVMObject.SetFieldOrProperty("_isFunctionEnabled", true);
-            var Result2 = arrangeVM.IsFunctionEnabled;      //IsFunctionEnabled true
-            Assert.IsTrue(Result2);
+            //privateArrangeVMObject.SetFieldOrProperty("_isFunctionEnabled", false);
+            //var Result1 = arrangeVM.IsFunctionEnabled;       //IsFunctionEnabled false
+            //Assert.IsFalse(Result1);
+
+            //privateArrangeVMObject.SetFieldOrProperty("_isFunctionEnabled", true);
+            //var Result2 = arrangeVM.IsFunctionEnabled;      //IsFunctionEnabled true
+            //Assert.IsTrue(Result2);
         }
 
         [Test]
@@ -113,6 +117,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
         [Test]
         public void TestEzSettings()
         {
+            //Robert_Lin, 2025-1-7, most of classes in DDPM.SA.Plugins.User.EasyArrange are deleted,
+            // Please use DDPM.SA/Common/DDPM.EABroker project instead.
+            /*
             EzSettings ezSettings = new EzSettings()
             {
                 IsWidthoutGap = true,
@@ -124,6 +131,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             var EzSettings_Result1 = arrangeVM.EzSettings;
             Assert.NotNull(EzSettings_Result1);
             Assert.That(ezSettings, Is.EqualTo(EzSettings_Result1));
+            */
         }
 
         [Test]
@@ -141,6 +149,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
         [Test]
         public void TestIsWorkUIShowing()
         {
+            //Robert_Lin, 2025-1-7, most of classes in DDPM.SA.Plugins.User.EasyArrange are deleted,
+            // Please use DDPM.SA/Common/DDPM.EABroker project instead.
+
+            /*
             privateArrangeVMObject.SetFieldOrProperty("_isMoving", false);
             var IsWorkUIShowing_Result1 = arrangeVM.IsWorkUIShowing;  //_isMoving false
             Assert.IsFalse(IsWorkUIShowing_Result1);
@@ -167,6 +179,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             privateArrangeVMObject.SetFieldOrProperty("_isShiftPressed", true);
             var IsWorkUIShowing_Result4 = arrangeVM.IsWorkUIShowing; //_isMoving true, _isWorkUIEnabled true,  IsOnlyAllowWhenShiftKeyPressed true, _isShiftPressed true
             Assert.IsTrue(IsWorkUIShowing_Result4);
+            */
         }
 
         [Test]
@@ -214,6 +227,10 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
         [Test]
         public void TestWorkingScreen()
         {
+            //Robert_Lin, 2025-1-7, most of classes in DDPM.SA.Plugins.User.EasyArrange are deleted,
+            // Please use DDPM.SA/Common/DDPM.EABroker project instead.
+
+            /*
             Screen? Primaryscreen;
             Primaryscreen = Screen.PrimaryScreen;
             privateArrangeVMObject.SetFieldOrProperty("_workingScreen", null);
@@ -225,6 +242,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             var WorkingScreen_Result2 = arrangeVM.WorkingScreen;         //_workingScreen as Primaryscreen
             Assert.IsNotNull(WorkingScreen_Result2);
             Assert.That(Primaryscreen, Is.EqualTo(WorkingScreen_Result2));
+            */
         }
 
         [Test]
@@ -276,6 +294,9 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
         [Test]
         public void TestHoveringScreen()
         {
+            //Robert_Lin, 2025-1-7, most of classes in DDPM.SA.Plugins.User.EasyArrange are deleted,
+            // Please use DDPM.SA/Common/DDPM.EABroker project instead.
+            /*
             string HoveringScreen1 = "Test HoveringScreen";
             privateArrangeVMObject.SetFieldOrProperty("_hoveringScreen", HoveringScreen1);
             var HoveringScreen_Result1 = arrangeVM.HoveringScreen;          //_hoveringScreen "Test HoveringScreen";
@@ -285,6 +306,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             privateArrangeVMObject.SetFieldOrProperty("_hoveringScreen", HoveringScreen2);
             var HoveringScreen_Result2 = arrangeVM.HoveringScreen;          //_hoveringScreen default
             Assert.That(HoveringScreen2, Is.EqualTo(HoveringScreen_Result2));
+            */
         }
 
         [Test]
@@ -335,12 +357,15 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
         [Test]
         public void TestAwsWindow()
         {
-            ArrangeVM vm = new ArrangeVM();
-            AwsWindow awsWindow;
-            awsWindow = new AwsWindow(vm);
-            arrangeVM.AwsWindow = awsWindow;  //set AwsWindow
-            var AwsWindow_Result1 = arrangeVM.AwsWindow;     //get AwsWindow     
-            Assert.IsNotNull(AwsWindow_Result1);
+            //Robert_Lin, 2025-1-7, DDPM.SA.Plugins.User.EasyArrange.ArrangeVM and AwsWindow is removed.
+            //Please use DDPM.SA/Common/DDPM.EABroker project instead.
+
+            //ArrangeVM vm = new ArrangeVM();
+            //AwsWindow awsWindow;
+            //awsWindow = new AwsWindow(vm);
+            //arrangeVM.AwsWindow = awsWindow;  //set AwsWindow
+            //var AwsWindow_Result1 = arrangeVM.AwsWindow;     //get AwsWindow     
+            //Assert.IsNotNull(AwsWindow_Result1);
         }
 
         [Test]
@@ -365,20 +390,24 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
         [Test]
         public void TestAddWorkWindow()
         {
-            List<EAWorkWindow> workWindows2 = new List<EAWorkWindow>();
-            privateArrangeVMObject.SetFieldOrProperty("_workWindows2", workWindows2);
-            List<MonitorInfo> _monitors = new List<MonitorInfo>();
-            Screen screen = Screen.PrimaryScreen;
-            string displayName = Screen.PrimaryScreen.DeviceName;
-            monitorInfo1.DisplayName = displayName;
-            _monitors.Add(monitorInfo1);
+            //Robert_Lin, 2025-1-7, EAWorkWindow in DDPM.SA.Plugins.User.EasyArrange is deleted,
+            // Please use DDPM.SA/Common/DDPM.EABroker project instead
+            //
 
-            ArrangeVM arrangeVM1 = new ArrangeVM();
-            EAWorkWindow workWindow1 = new EAWorkWindow(arrangeVM1, screen, _monitors);
+            //List<EAWorkWindow> workWindows2 = new List<EAWorkWindow>();
+            //privateArrangeVMObject.SetFieldOrProperty("_workWindows2", workWindows2);
+            //List<MonitorInfo> _monitors = new List<MonitorInfo>();
+            //Screen screen = Screen.PrimaryScreen;
+            //string displayName = Screen.PrimaryScreen.DeviceName;
+            //monitorInfo1.DisplayName = displayName;
+            //_monitors.Add(monitorInfo1);
 
-            arrangeVM.AddWorkWindow(workWindow1);   //Add workWindow1 to WorkWindow list
-            var AddWorkWindow_Result = (List<EAWorkWindow>)privateArrangeVMObject.GetFieldOrProperty("_workWindows2");
-            Assert.IsNotNull(AddWorkWindow_Result);
+            //ArrangeVM arrangeVM1 = new ArrangeVM();
+            //EAWorkWindow workWindow1 = new EAWorkWindow(arrangeVM1, screen, _monitors);
+
+            //arrangeVM.AddWorkWindow(workWindow1);   //Add workWindow1 to WorkWindow list
+            //var AddWorkWindow_Result = (List<EAWorkWindow>)privateArrangeVMObject.GetFieldOrProperty("_workWindows2");
+            //Assert.IsNotNull(AddWorkWindow_Result);
         }
 
     }

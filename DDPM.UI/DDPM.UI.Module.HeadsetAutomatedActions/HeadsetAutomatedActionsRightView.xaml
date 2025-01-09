@@ -89,6 +89,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <local:BooleanToForegroundConverter x:Key="BooleanToForegroundConverter" />
             <local:BooleanToForegroundConverter2 x:Key="BooleanToForegroundConverter2" />
+            <local:BooleanToForegroundConverter3 x:Key="BooleanToForegroundConverter3" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -130,10 +131,10 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <UXControls:UXTextBlock x:Name="WearDetectionText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAutomatedActions.0], Source={x:Static lang:LangHelper.Instance}}" Margin="18,0,0,0" />
-                                <Image x:Name="WearDetectionImage" Grid.Column="1" Width="16" Height="16" Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                                <Image ToolTipService.HorizontalOffset="-100" x:Name="WearDetectionImage" Grid.Column="1" Width="16" Height="16" Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                     <Image.ToolTip>
                                         <ToolTip x:Name="WearDetectionToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                            <TextBlock x:Name="WearDetectionToolTipText" Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding WearDetectionToolTip}" />
+                                            <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" x:Name="WearDetectionToolTipText" Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding WearDetectionToolTip}" />
                                         </ToolTip>
                                     </Image.ToolTip>
                                 </Image>
@@ -273,10 +274,13 @@
                                                 </UXControls:UXTextBlock.Text>
                                             </UXControls:UXTextBlock>
 
-                                            <Image x:Name="PauseMusicImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                                            <Image ToolTipService.HorizontalOffset="-180" x:Name="PauseMusicImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
                                                     <ToolTip x:Name="PauseMusicToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                        <TextBlock x:Name="PauseMusicToolTipText" Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding PauseMusicToolTip}" />
+                                                        <TextBlock x:Name="PauseMusicToolTipText" 
+                                                                   Style="{StaticResource TabInfoToolTipTextStyle}" 
+                                                                   Text="{Binding PauseMusicToolTip}" 
+                                                                   MaxWidth="350" TextWrapping="WrapWithOverflow"/>
                                                     </ToolTip>
                                                 </Image.ToolTip>
                                             </Image>
@@ -309,7 +313,7 @@
                                                     <Binding Path="[HeadsetAutomatedActions.6]" Source="{x:Static lang:LangHelper.Instance}" />
                                                 </UXControls:UXTextBlock.Text>
                                             </UXControls:UXTextBlock>
-                                            <Image x:Name="MuteMicrophoneImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                                            <Image ToolTipService.HorizontalOffset="-200" x:Name="MuteMicrophoneImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
                                                     <ToolTip x:Name="MuteMicrophoneToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                                         <!-- Derek_0106 for PIMS-335217 -->
@@ -349,7 +353,7 @@
                                                     <Binding Path="[HeadsetAutomatedActions.7]" Source="{x:Static lang:LangHelper.Instance}" />
                                                 </UXControls:UXTextBlock.Text>
                                             </UXControls:UXTextBlock>
-                                            <Image x:Name="QuickPauseImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                                            <Image ToolTipService.HorizontalOffset="-250" x:Name="QuickPauseImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
                                                     <ToolTip x:Name="QuickPauseToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                                         <TextBlock x:Name="QuickPauseToolTipText" Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding QuickPauseToolTip}" />
@@ -371,9 +375,10 @@
                                             <!--<UXControls:UXTextBlock x:Name="SensitivityTextBlock" Text="{Binding [HeadsetAutomatedActions.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter}}" FontSize="14" Margin="20,0,0,0" />-->
                                             <UXControls:UXTextBlock x:Name="SensitivityTextBlock" FontSize="14" Margin="20,0,0,0">
                                                 <UXControls:UXTextBlock.Foreground>
-                                                    <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
+                                                    <MultiBinding Converter="{StaticResource BooleanToForegroundConverter3}">
                                                         <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
                                                         <Binding Path="IsDarkTheme" />
+                                                        <Binding Path="QuickPauseStatus"/>
                                                     </MultiBinding>
                                                 </UXControls:UXTextBlock.Foreground>
                                                 <UXControls:UXTextBlock.Text>
@@ -395,6 +400,7 @@
                                                                                     <Binding Path="IsDarkTheme"/>
                                                                                     <Binding Path="IsNormalChecked"/>
                                                                                     <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
+                                                                                    <Binding Path="QuickPauseStatus"/>
                                                                                 </MultiBinding>
                                                                             </UXControls:UXTextBlock.Foreground>
                                                                             <UXControls:UXTextBlock.Text>
@@ -427,6 +433,7 @@
                                                                                     <Binding Path="IsDarkTheme"/>
                                                                                     <Binding Path="IsSensitiveChecked"/>
                                                                                     <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
+                                                                                    <Binding Path="QuickPauseStatus"/>
                                                                                 </MultiBinding>
                                                                             </UXControls:UXTextBlock.Foreground>
                                                                             <UXControls:UXTextBlock.Text>

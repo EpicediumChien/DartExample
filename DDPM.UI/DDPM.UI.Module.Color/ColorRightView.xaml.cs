@@ -249,41 +249,39 @@ namespace DDPM.UI.Module.Color
             {
                 object item = cb.DataContext;
 
-                if (item != null)
+                if (item != null &&
+                    Expander_Auto.IsExpanded == true)
                 {
-                    if (Expander_Auto.IsExpanded == true)
+                    int index = this.lb_AppList.Items.IndexOf(item);
+                    selected_app = (AppData)lb_AppList.Items[index];
+
+                    // jim add 20240627
+                    Test_AddAppCollectionData.GetInstance()._monitorConfigs = DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result;
+
+                    int index_config = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+                    if (index_config >= 0)
                     {
-                        int index = this.lb_AppList.Items.IndexOf(item);
-                        selected_app = (AppData)lb_AppList.Items[index];
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].RunType = (int)ColorPresetRunType.Auto;
+                        //Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].ColorPresetName = vm.SupportColorPresets[cb.SelectedIndex];
+
+                        string colorPresetName = vm.SupportColorPresets[cb.SelectedIndex];
+
+                        var nColorVCPCoreValue = DdpmCommonHelper.DeviceManagerSA.GetColorVCPCoreValue(colorPresetName).Result;
+                            
+                        if (vm.SmartHDR_ON )
+                            Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].HDRColor = nColorVCPCoreValue;
+                        else
+                            Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].Color = nColorVCPCoreValue;
+
+                        DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
+                        Thread.Sleep(500);
 
                         // jim add 20240627
-                        Test_AddAppCollectionData.GetInstance()._monitorConfigs = DdpmCommonHelper.DeviceManagerSA.ReadColorPresetSettings().Result;
+                        DdpmCommonHelper.DeviceManagerSA.Notify_refresh_app_list();
 
-                        int index_config = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
-                        if (index_config >= 0)
-                        {
-                            Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].RunType = (int)ColorPresetRunType.Auto;
-                            //Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].ColorPresetName = vm.SupportColorPresets[cb.SelectedIndex];
-
-                            string colorPresetName = vm.SupportColorPresets[cb.SelectedIndex];
-
-                            var nColorVCPCoreValue = DdpmCommonHelper.DeviceManagerSA.GetColorVCPCoreValue(colorPresetName).Result;
-                            
-                            if (vm.SmartHDR_ON )
-                                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].HDRColor = nColorVCPCoreValue;
-                            else
-                                Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo[selected_app.AppName].Color = nColorVCPCoreValue;
-
-                            DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
-                            Thread.Sleep(500);
-
-                            // jim add 20240627
-                            DdpmCommonHelper.DeviceManagerSA.Notify_refresh_app_list();
-
-                            // jim add 20240806
-                            Thread.Sleep(500);
-                        }
-                    }
+                        // jim add 20240806
+                        Thread.Sleep(500);
+                    }                    
                 }
             }
         }
@@ -298,26 +296,23 @@ namespace DDPM.UI.Module.Color
             {
                 object item = btn.DataContext;
 
-                if (item != null)
+                if (item != null &&
+                    Expander_Auto.IsExpanded == true)
                 {
-                    if (Expander_Auto.IsExpanded == true)
+                    int index = this.lb_AppList.Items.IndexOf(item);
+                    selected_app = (AppData)lb_AppList.Items[index];
+                    int index_config = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
+                    if (index_config >= 0)
                     {
-                        int index = this.lb_AppList.Items.IndexOf(item);
-                        selected_app = (AppData)lb_AppList.Items[index];
-                        int index_config = get_index_of_json_config_for_cur_monitor(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
-                        if (index_config >= 0)
-                        {
-                            Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].RunType = (int)ColorPresetRunType.Auto;
-                            Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo.Remove(selected_app.AppName);
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].RunType = (int)ColorPresetRunType.Auto;
+                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index_config].AppInfo.Remove(selected_app.AppName);
 
-                            DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
-                            Thread.Sleep(500);
-                        }
-                                       
-                        Test_AddAppCollectionData.GetInstance().AppsList.Remove(selected_app);
-                        Thread.Sleep(100);
-
+                        DdpmCommonHelper.DeviceManagerSA.WriteColorPresetSettings(Test_AddAppCollectionData.GetInstance()._monitorConfigs);
+                        Thread.Sleep(500);
                     }
+                                       
+                    Test_AddAppCollectionData.GetInstance().AppsList.Remove(selected_app);
+                    Thread.Sleep(100);
                 }
             }
         }
@@ -683,10 +678,10 @@ namespace DDPM.UI.Module.Color
         {
             var comboBox = sender as System.Windows.Controls.ComboBox;
             ColorViewModel vm = (ColorViewModel)DataContext;
-            if(vm != null && comboBox != null)
+            if(vm != null && comboBox != null &&
+               !string.IsNullOrEmpty(vm.last_selected_value))
             {
-                if(!string.IsNullOrEmpty(vm.last_selected_value))
-                    comboBox.SelectedValue = vm.last_selected_value;
+                comboBox.SelectedValue = vm.last_selected_value;
             }
         }
     }

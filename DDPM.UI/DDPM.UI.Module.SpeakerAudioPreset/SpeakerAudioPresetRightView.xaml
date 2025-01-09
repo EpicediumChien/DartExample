@@ -39,7 +39,8 @@
                         <Border x:Name="AudioPresetBorder" CornerRadius="6" Width="488" Height="Auto" VerticalAlignment="Top">
                             <StackPanel x:Name="AudioModesStackPanel" Orientation="Vertical">
                                 <Grid x:Name="TitleGrid" VerticalAlignment="Top" Margin="20,0,0,0">
-                                    <UXControls:UXTextBlock x:Name="AudioSettingsTextBlock" Text="{Binding [SpeakerAudioPreset.0], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
+                                    <!--Chewlin 20250108 change Width="200" to Width="280" Fix ES language Audio Preset Title Clipping issue(No Pims Number) -->
+                                    <UXControls:UXTextBlock x:Name="AudioSettingsTextBlock" Text="{Binding [SpeakerAudioPreset.0], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Height="28" Width="280" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
                                 </Grid>
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -159,7 +160,8 @@
                             <UXControls:UXTextBlock Text="{Binding [HeadsetAudioSettings.10], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" />
                         </StackPanel>
                         <StackPanel Grid.Row="1" HorizontalAlignment="Left" Margin="20,20,0,20">
-                            <UXControls:UXTextBlock Text="{Binding [SpeakerAudioPreset.3], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="Wrap" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="14" />
+                            <!--Chewlin 20250108 for PIMS-334383 change TextWrapping="Wrap" to TextWrapping="WrapWithOverflow",ADD Width="430"(default 435.287)-->
+                            <UXControls:UXTextBlock Text="{Binding [SpeakerAudioPreset.3], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" Width="430" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="14" />
                         </StackPanel>
                         <StackPanel Grid.Row="2" HorizontalAlignment="Left" Margin="20,20,0,0">
                             <Canvas x:Name="EqualizerCanvas" HorizontalAlignment="Center" VerticalAlignment="Center" Width="456" Height="324" Margin="0,0,0,0">
