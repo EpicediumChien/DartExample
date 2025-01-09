@@ -17,10 +17,10 @@ namespace DDPM.SA.Common
 
             //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("pl-PL");
             // string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
-            string str = resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+            string str = resManager.GetString(key, CultureInfo.CurrentUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
             return System.Text.RegularExpressions.Regex.Unescape(str);
-        }        
-        
+        }
+
         public static readonly string A0_Device_connected0 = GetString("A0_Device_connected");
         public static readonly string A1_Firmware_update_started0 = GetString("A1_Firmware_update_started");
         public static readonly string A2_Firmware_update_successful0 = GetString("A2_Firmware_update_successful");
