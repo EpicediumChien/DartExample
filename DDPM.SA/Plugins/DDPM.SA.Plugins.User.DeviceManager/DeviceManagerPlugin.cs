@@ -11913,7 +11913,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{di.ModelNumber}";
                 string ddpmExePath = //@"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
                                      System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Dell\Dell Display and Peripheral Manager\DDPM.exe");
-                string debugPath = @"D:\\NEW\DDPM\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+                //string debugPath = @"D:\\NEW\DDPM\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
 
                 regValue = ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
                 //Trace.WriteLine($"regValue {regValue.ToString()}");
@@ -11921,14 +11921,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
                 {
                     writelog($"CheckDeviceFirstTimesToConnect ReadRegistryData UserId : {UserId}, can not find ModelNumber : {di.ModelNumber}, StartProcess ... ");
-                    result = DDPMFileSecurity.ValidateFilePath(debugPath, out string info);
+                    result = DDPMFileSecurity.ValidateFilePath(ddpmExePath, out string info);
                     if (result)
                     {
                         result = DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
                             null,
                             new ProcessStartInfo
                             {
-                                FileName = debugPath,
+                                FileName = ddpmExePath,
                                 UseShellExecute = true
                             });
 
