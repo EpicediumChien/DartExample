@@ -316,13 +316,22 @@ namespace DDPM.ColorApp
                     MonitorInfo actived_mi = null;
                     if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
                     {
-                        actived_mi = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(screen.DeviceName.ToUpper()));
-
+                        // Jim 20250109 add exception handling 
+                        try
+                        {
+                            actived_mi = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(screen.DeviceName.ToUpper()));
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"[EventAppStatus_SendValue(] Find matched Monitor has error = {ex.Message}");
+                            actived_mi = null;
+                        }
                     }
                     else
                     {
                         writelog($"_AllInfoMonitors.Count = {_AllInfoMonitors.Count} ");
                         writelog("No any Monitors is matched");
+                        actived_mi = null;
                         return;
                     }
 
@@ -332,10 +341,14 @@ namespace DDPM.ColorApp
 
                     //MonitorInfo actived_mi = Mi;
 
-                    if (actived_mi != null && !actived_mi.IsDellMonitor)
+                    if (actived_mi != null)
                     {
-                            writelog("actived_mi.IsDellMonitor is False");
+                        if (!actived_mi.IsDellMonitor || actived_mi.DisplayName == "\\\\.\\DISPLAY1") // Jim 20250109 modify
+                        {
+
+                            writelog("the actived monitor do not meet");
                             return;
+                        }
                     }
                     else // Jim 20241223 add check if null to avoid Exception
                     {
