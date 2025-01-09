@@ -175,6 +175,11 @@
     <None Remove="WalkThrough\Webcam\Light_Mode\U3224KBA\U3224KBA_3.png" />
     <None Remove="WalkThrough\Webcam\Light_Mode\U3224KBA\U3224KBA_4.png" />
     <None Remove="WalkThrough\Webcam\Light_Mode\U3224KBA\U3224KBA_5.png" />
+    <None Remove="WalkThrough\Webcam\Light_Mode\U3224KB\U3224KB_1.png" />
+    <None Remove="WalkThrough\Webcam\Light_Mode\U3224KB\U3224KB_2.png" />
+    <None Remove="WalkThrough\Webcam\Light_Mode\U3224KB\U3224KB_3.png" />
+    <None Remove="WalkThrough\Webcam\Light_Mode\U3224KB\U3224KB_4.png" />
+    <None Remove="WalkThrough\Webcam\Light_Mode\U3224KB\U3224KB_5.png" />
     <None Remove="WalkThrough\Webcam\Light_Mode\WB3023\WB3023_1.png" />
     <None Remove="WalkThrough\Webcam\Light_Mode\WB3023\WB3023_2.png" />
     <None Remove="WalkThrough\Webcam\Light_Mode\WB3023\WB3023_3.png" />
@@ -212,6 +217,11 @@
     <None Remove="WalkThrough\Webcam\U3224KBA\U3224KBA_3.png" />
     <None Remove="WalkThrough\Webcam\U3224KBA\U3224KBA_4.png" />
     <None Remove="WalkThrough\Webcam\U3224KBA\U3224KBA_5.png" />
+    <None Remove="WalkThrough\Webcam\U3224KB\U3224KB_1.png" />
+    <None Remove="WalkThrough\Webcam\U3224KB\U3224KB_2.png" />
+    <None Remove="WalkThrough\Webcam\U3224KB\U3224KB_3.png" />
+    <None Remove="WalkThrough\Webcam\U3224KB\U3224KB_4.png" />
+    <None Remove="WalkThrough\Webcam\U3224KB\U3224KB_5.png" />
     <None Remove="WalkThrough\Webcam\WB3023\WB3023_1.png" />
     <None Remove="WalkThrough\Webcam\WB3023\WB3023_2.png" />
     <None Remove="WalkThrough\Webcam\WB3023\WB3023_3.png" />
@@ -657,6 +667,21 @@
     <Resource Include="WalkThrough\Webcam\Light_Mode\U3224KBA\U3224KBA_5.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="WalkThrough\Webcam\Light_Mode\U3224KB\U3224KB_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\Webcam\Light_Mode\U3224KB\U3224KB_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\Webcam\Light_Mode\U3224KB\U3224KB_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\Webcam\Light_Mode\U3224KB\U3224KB_4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\Webcam\Light_Mode\U3224KB\U3224KB_5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="WalkThrough\Webcam\Light_Mode\WB3023\WB3023_1.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
@@ -766,6 +791,21 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="WalkThrough\Webcam\U3224KBA\U3224KBA_5.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\Webcam\U3224KB\U3224KB_1.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\Webcam\U3224KB\U3224KB_2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\Webcam\U3224KB\U3224KB_3.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\Webcam\U3224KB\U3224KB_4.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="WalkThrough\Webcam\U3224KB\U3224KB_5.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="WalkThrough\Webcam\WB3023\WB3023_1.png">
