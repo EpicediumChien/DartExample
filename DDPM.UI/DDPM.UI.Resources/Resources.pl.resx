@@ -937,7 +937,7 @@
     <value>Podłączanie myszy\n i klawiatury</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>W przypadku myszy i klawiatury podłącz urządzenie z tyłu monitora (USB-A).\n Uwaga: Możesz także podłączyć inne urządzenia peryferyjne USB, takie jak\n kamera internetowa.</value>
+    <value>W przypadku myszy i klawiatury podłącz urządzenie z tyłu monitora (USB-A).\n Uwaga: Możesz także podłączyć inne urządzenia peryferyjne USB, takie jak kamera internetowa.</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>

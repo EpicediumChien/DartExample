@@ -937,7 +937,7 @@
     <value>Ligar o Rato\n e o Teclado</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>Para o Rato e o Teclado, ligue-os à parte traseira do monitor (USB-A).\n Nota: também pode ligar outros Periféricos USB, tais \numa Câmara Web.</value>
+    <value>Para o Rato e o Teclado, ligue-os à parte traseira do monitor (USB-A).\n Nota: também pode ligar outros Periféricos USB, tais uma Câmara Web.</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>
