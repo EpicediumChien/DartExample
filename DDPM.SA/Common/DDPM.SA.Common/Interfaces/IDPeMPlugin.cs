@@ -63,9 +63,9 @@ namespace DDPM.SA.Common
 
         Task<UpdateHelper> GetFWUpdateInfo();
         //Bruce, FWU need it
-        int GetIODongleCount();
+        Task<int> GetIODongleCount();
         //Bruce, FWU need it
-        int GetAudioDongleCount();
+        Task<int> GetAudioDongleCount();
 
         void SetDPIValue(int newDPIValue, Guid deviceId);
 

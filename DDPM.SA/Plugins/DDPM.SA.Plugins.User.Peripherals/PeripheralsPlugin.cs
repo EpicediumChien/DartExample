@@ -1448,13 +1448,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... FirmwareVersion " + item.FirmwareVersion.ToString("X4"));
                             _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... PhysicalDeviceFirmwareVersion " + item.ParentPhysicalDevice.FirmwareVersion.ToString("X4"));
                             string newModel = JudgmentList.ModelRename(item.ModelNumber);
-                            if (!string.IsNullOrEmpty(newModel))
+                            if (string.IsNullOrEmpty(newModel))
                             {
                                 _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... newModel " + newModel);
-                                _updateItems.DeviceModelNumber = newModel;
-                            }
-                            else
-                            {
                                 newModel = item.ModelNumber;
                             }
                             DeviceInfo info = new()
@@ -3434,12 +3430,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _updateItems.DeviceId = updateItem.DeviceId;
                             _updateItems.DeviceIndex = updateItem.DeviceIndex;
                             _updateItems.DeviceModelNumber = updateItem.DeviceModelNumber;
-                            //string newModel = JudgmentList.ModelRename(updateItem.DeviceModelNumber);
-                            //if (!string.IsNullOrEmpty(newModel))
-                            //{
-                            //    _logs.DebugMsg_1($"[PeripheralsPlugin] newModel = {newModel}");
-                            //    _updateItems.DeviceModelNumber = newModel;
-                            //}
+                            string newModel = JudgmentList.ModelRename(updateItem.DeviceModelNumber);
+                            if (!string.IsNullOrEmpty(newModel))
+                            {
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] newModel = {newModel}");
+                                _updateItems.DeviceModelNumber = newModel;
+                            }
                             _logs.DebugMsg_1($"[PeripheralsPlugin] _updateItems.DeviceModelNumber = {_updateItems.DeviceModelNumber}");
                             _updateItems.DeviceName = updateItem.DeviceName;
                             _logs.DebugMsg_1($"[PeripheralsPlugin] _updateItems.DeviceName = {_updateItems.DeviceName}");
@@ -3653,10 +3649,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             {
                 _logs.DebugMsg_1($"[PeripheralsPlugin] GetFWUpdateInfo, _updateHelper.UpdateItems = {_updateHelper.UpdateItems.Count}");
                 _logs.DebugMsg_1($"[PeripheralsPlugin] GetFWUpdateInfo done and _updateHelper is no null");
-                for (int i = 0; i < _updateHelper.UpdateItems.Count; i++)
-                {
-                    _logs.DebugMsg_1($"[PeripheralsPlugin] _updateHelper.UpdateItems{i}.DeviceModelNumber = {_updateHelper.UpdateItems[i].DeviceModelNumber}");
-                }
                 return await Task.Run(() =>
                 {
                     lock (_lock)
@@ -3684,14 +3676,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             };
         }
         //Bruce, FWU need it
-        public int GetIODongleCount()
+        public Task<int> GetIODongleCount()
         {
-            return _IODongleCount;
+            return System.Threading.Tasks.Task.FromResult(_IODongleCount);
         }
         //Bruce, FWU need it
-        public int GetAudioDongleCount()
+        public Task<int> GetAudioDongleCount()
         {
-            return _AudioDongleCount;
+            return System.Threading.Tasks.Task.FromResult(_AudioDongleCount);
         }
 
         public void DisplayNotification(string bannerInfo, string hyperlinkText, string bannerItemType)

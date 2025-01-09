@@ -2961,7 +2961,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             int retCount = 0;
             if (_PeripheralsPlugin != null)
             {
-                retCount = _PeripheralsPlugin.GetIODongleCount();
+                retCount = _PeripheralsPlugin.GetIODongleCount().Result;
             }
             return Task.FromResult(retCount);
         }
@@ -2970,7 +2970,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             int retCount = 0;
             if (_PeripheralsPlugin != null)
             {
-                retCount = _PeripheralsPlugin.GetAudioDongleCount();
+                retCount = _PeripheralsPlugin.GetAudioDongleCount().Result;
             }
             return Task.FromResult(retCount);
         }
@@ -6208,7 +6208,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null)
             {
-                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo, _PeripheralsPlugin.GetIODongleCount(), _PeripheralsPlugin.GetAudioDongleCount());
+                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo, _PeripheralsPlugin.GetIODongleCount().Result, _PeripheralsPlugin.GetAudioDongleCount().Result);
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);
