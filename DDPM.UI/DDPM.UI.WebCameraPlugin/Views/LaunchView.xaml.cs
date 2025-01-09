@@ -51,7 +51,6 @@ using MessageBox = System.Windows.MessageBox;
 using WebcamProfile = DDPM.SA.Common.Settings.WebcamProfile;
 using static Windows.Foundation.UniversalApiContract;
 using Dell.Client.Framework.Common;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
