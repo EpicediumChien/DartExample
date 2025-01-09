@@ -94,13 +94,22 @@
                         </Style>
                     </ContentControl.Style>
                 </ContentControl>
+                <!--Chewlin 20250109 for PIMS 334922 fix VarItem Animation slow loading issue,remove TextWrapping="Wrap"-->
                 <UXControls:UXTextBlock Grid.Column="1" Text="{Binding Text}" FontSize="14"
-                                        VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="Wrap" TextTrimming="CharacterEllipsis"
+                                        VerticalAlignment="Center" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"
                                         TextBlockType="Subtitle2" TextBlockSemanticColorType="Light">
                     <UXControls:UXTextBlock.Style>
                         <Style TargetType="UXControls:UXTextBlock">
                             <Setter Property="Foreground" Value="{DynamicResource Vbar_FgBrush_Default}" />
                             <Style.Triggers>
+                                <!--Chewlin 20250109 for PIMS 334922 fix VarItem Animation slow loading issue,ADD 
+                                <DataTrigger Binding="{Binding Width, ElementName=bdRoot}"  Value="212">
+                                <Setter Property="TextWrapping"  Value="WrapWithOverflow" />
+                                </DataTrigger>
+                                -->
+                                <DataTrigger Binding="{Binding Width, ElementName=bdRoot}"  Value="212">
+                                    <Setter Property="TextWrapping"  Value="WrapWithOverflow" />
+                                </DataTrigger>
                                 <DataTrigger Binding="{Binding IsSelected}"  Value="True">
                                     <Setter Property="Foreground"  Value="#FFFFFF" />
                                 </DataTrigger>
