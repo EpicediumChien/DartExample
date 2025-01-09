@@ -8026,6 +8026,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Firmware update of multiple USB wireless receivers of same kind is not supported. Keep one target USB wireless receiver connected..
+        /// </summary>
+        internal static string Update_Firmware_update_of_multiple_USB_wireless_receivers {
+            get {
+                return ResourceManager.GetString("Update_Firmware_update_of_multiple_USB_wireless_receivers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Press a button or a key on the device to enable this update.
         /// </summary>
         internal static string Update_Mouse_Alert {

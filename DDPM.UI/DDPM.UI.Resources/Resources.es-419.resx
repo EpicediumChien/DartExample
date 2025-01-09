@@ -994,7 +994,7 @@
     <value>Configurar PIP/PBP\npara el monitor</value>
   </data>
   <data name="Kvm.18" xml:space="preserve">
-    <value>El monitor puede mostrar una PC o una fuente a la vez (pantalla completa)\no dividirse entre fuentes (imagen en/por imagen).</value>
+    <value>El monitor puede mostrar una PC o una fuente a la vez (pantalla completa) o dividirse entre fuentes (imagen en/por imagen).</value>
   </data>
   <data name="Kvm.19" xml:space="preserve">
     <value>Sin KVM</value>

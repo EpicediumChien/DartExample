@@ -206,9 +206,8 @@
                 </ContentControl>
 
                 <!-- Text -->
-                <!-- Elsa 20250106 For PIMS [PIMS-334921] add Width="145" TextTrimming="CharacterEllipsis" -->
-                <!--<UXControls:UXTextBlock Grid.Column="1" FontSize="14" Width="145" TextTrimming="CharacterEllipsis"-->
-                <UXControls:UXTextBlock Grid.Column="1" FontSize="14" Focusable="False"
+                <!-- Elsa 20250106 For PIMS [PIMS-334921] add Width="145" TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow"-->
+                <UXControls:UXTextBlock Grid.Column="1" FontSize="14" Focusable="False" Width="145" TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow"
                                         Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                         VerticalAlignment="Center" HorizontalAlignment="Left">
                     <UXControls:UXTextBlock.Style>

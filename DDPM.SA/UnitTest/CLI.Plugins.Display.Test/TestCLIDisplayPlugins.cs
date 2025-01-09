@@ -2420,7 +2420,8 @@ namespace DDPM.CLI.Plugins.Display.Test
             devMgr.Setup(m => m.SetAppConfigData(It.IsAny<DDPMSettings>())).Returns(Task.FromResult(SetAppConfigDataDDPMSettings));
             devMgr.Setup(m => m.AutoSetColorPresetForMonitorConfig(It.IsAny<MonitorInfo>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>())).Returns(Task.FromResult(AutoSetColorPresetForMonitorConfig));
             devMgr.Setup(m => m.GetVCPCapabilities(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(GetVCPCapabilities));
-            devMgr.Setup(m => m.GetEAFunctionEnabled()).Returns(Task.FromResult(objGetGetEAFunctionEnabled));
+            //Robert_Lin, 2025-1-7 comment-out due to GetEAFunctionEnabled() is deleted.
+            //devMgr.Setup(m => m.GetEAFunctionEnabled()).Returns(Task.FromResult(objGetGetEAFunctionEnabled));
             devMgr.Setup(m => m.GetOnUSBKVM(It.IsAny<MonitorInfo>())).Returns(Task.FromResult(objGetOnUSBKVM));
             devMgr.Setup(m => m.GetNKVMStatus()).Returns(Task.FromResult(Task.CompletedTask));
             devMgr.Setup(m => m.DisplayExportSettings(It.IsAny<MonitorInfo>(), It.IsAny<string>())).Returns(Task.FromResult(DisplayExportSettings));

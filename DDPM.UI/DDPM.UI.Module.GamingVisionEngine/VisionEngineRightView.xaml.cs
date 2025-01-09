@@ -28,8 +28,8 @@ namespace DDPM.UI.Module.GamingVisionEngine
 
         private void RefreshUI()
         {
-            VisionEngineViewModel vm = (VisionEngineViewModel)DataContext;
-            vm.RefreshUI();
+            VisionEngineViewModel localVm = (VisionEngineViewModel)DataContext;
+            localVm.RefreshUI();
         }
         private VisionEngineViewModel vm
         {
@@ -42,11 +42,11 @@ namespace DDPM.UI.Module.GamingVisionEngine
         {
             if (isTrigger)
             {
-                VisionEngineViewModel vm = (VisionEngineViewModel)DataContext;
-                List<UI_VisionEngine> tempList = vm.VisionEngineList.ToList().FindAll(o => o.VisionEngine_Enable);
-                vm.VisionEngineIsEnable = false;
-                vm.RefreshUI();
-                vm.SetVisionEngine();
+                VisionEngineViewModel localVm = (VisionEngineViewModel)DataContext;
+                List<UI_VisionEngine> tempList = localVm.VisionEngineList.ToList().FindAll(o => o.VisionEngine_Enable);
+                localVm.VisionEngineIsEnable = false;
+                localVm.RefreshUI();
+                localVm.SetVisionEngine();
             }
             isTrigger = true;
         }
@@ -58,8 +58,8 @@ namespace DDPM.UI.Module.GamingVisionEngine
                 var selectedItem = checkBox.DataContext as UI_VisionEngine;
                 if (selectedItem != null)
                 {
-                    var vm = (VisionEngineViewModel)DataContext;
-                    List<UI_VisionEngine> tempList = vm.VisionEngineList.ToList().FindAll(o => o.VisionEngine_Enable);
+                    var localVm = (VisionEngineViewModel)DataContext;
+                    List<UI_VisionEngine> tempList = localVm.VisionEngineList.ToList().FindAll(o => o.VisionEngine_Enable);
                     if (tempList.Count <= 0)
                     {
                         checkBox.IsChecked = true;
