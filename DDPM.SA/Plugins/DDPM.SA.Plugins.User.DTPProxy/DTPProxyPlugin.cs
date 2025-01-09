@@ -6537,9 +6537,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
 
         /////////////////////////Get////////////////////////////////
-        public async Task<string> GetProfileNameAsync(string Guid)
+        public async Task<string> GetProfileNameAsync(string item)
         {
-            string guid = Guid;
+            string guid = item;
 
             try
             {

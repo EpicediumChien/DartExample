@@ -4927,11 +4927,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
-        public async Task<bool> GetIsIMicNSSupportedAsync(string guid)
+        public async Task<bool> GetIsIMicNSSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsIMicNSSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsIMicNSSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Speaker] GetIsIMicNSSupportedAsync Success");
                 else
@@ -4940,16 +4940,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsIMicNSSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsIMicNSSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsVolumeAdjustmentToneSupportedAsync(string guid)
+        public async Task<bool> GetIsVolumeAdjustmentToneSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsVolumeAdjustmentToneSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsVolumeAdjustmentToneSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Speaker] GetIsVolumeAdjustmentToneSupportedAsync Success");
                 else
@@ -4958,16 +4958,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsVolumeAdjustmentToneSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsVolumeAdjustmentToneSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsMicMuteSoundSupportedAsync(string guid)
+        public async Task<bool> GetIsMicMuteSoundSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsMicMuteSoundSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsMicMuteSoundSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Speaker] GetIsMicMuteSoundSupportedAsync Success");
                 else
@@ -4976,16 +4976,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsMicMuteSoundSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsMicMuteSoundSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetPresetProfilesAsync(string guid)
+        public async Task<bool> GetPresetProfilesAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetPresetProfilesAsync(guid);
+                var result = await _DTPProxyPlugin.GetPresetProfilesAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Speaker] GetPresetProfilesAsync Success");
                 else
@@ -4994,16 +4994,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetPresetProfilesAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetPresetProfilesAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsBassEqualizerSupportedAsync(string guid)
+        public async Task<bool> GetIsBassEqualizerSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsBassEqualizerSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsBassEqualizerSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Speaker] GetIsBassEqualizerSupportedAsync Success");
                 else
@@ -5012,16 +5012,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsBassEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsBassEqualizerSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsMidRangeEqualizerSupportedAsync(string guid)
+        public async Task<bool> GetIsMidRangeEqualizerSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsMidRangeEqualizerSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsMidRangeEqualizerSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Speaker] GetIsMidRangeEqualizerSupportedAsync Success");
                 else
@@ -5030,16 +5030,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsMidRangeEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsMidRangeEqualizerSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
 
-        public async Task<bool> GetIsTrebleEqualizerSupportedAsync(string guid)
+        public async Task<bool> GetIsTrebleEqualizerSupportedAsync(string Guid)
         {
             try
             {
-                var result = await _DTPProxyPlugin.GetIsTrebleEqualizerSupportedAsync(guid);
+                var result = await _DTPProxyPlugin.GetIsTrebleEqualizerSupportedAsync(Guid);
                 if (result)
                     writelog($"[DeviceManagerPlugin] [Speaker] GetIsTrebleEqualizerSupportedAsync Success");
                 else
@@ -5048,7 +5048,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             catch (Exception ex)
             {
-                writelog($"[DeviceManagerPlugin] [Speaker] GetIsTrebleEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                writelog($"[DeviceManagerPlugin] [Speaker] GetIsTrebleEqualizerSupportedAsync failed for {Guid} - Exception: {ex.Message}");
                 return false;
             }
         }
