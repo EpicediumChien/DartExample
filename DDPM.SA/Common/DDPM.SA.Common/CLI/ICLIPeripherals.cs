@@ -260,8 +260,9 @@ namespace DDPM.SA.Common
                         Value = "N/A";
                         Result = "FAIL";
                         Message = "Audio not support ANCMODE";
+                        return;
                     }
-                    return;
+                    break;
                 case "MICNOISECANCELLATION":
                     TargetFeature = targetFeature;
                     if (!di.IsMicNoiseCancellationSupported)
@@ -269,8 +270,9 @@ namespace DDPM.SA.Common
                         Value = "N/A";
                         Result = "FAIL";
                         Message = "Audio not support MICNOISECANCELLATION";
+                        return;
                     }
-                    return;
+                    break;
                 case "WEARDETECTION":
                     TargetFeature = targetFeature;
                     if (!di.IsWearDetectionSupported)
@@ -278,8 +280,9 @@ namespace DDPM.SA.Common
                         Value = "N/A";
                         Result = "FAIL";
                         Message = "Audio not support WEARDETECTION";
+                        return;
                     }
-                    return;
+                    break;
                 default:
                     TargetFeature = targetFeature;
                     break;
