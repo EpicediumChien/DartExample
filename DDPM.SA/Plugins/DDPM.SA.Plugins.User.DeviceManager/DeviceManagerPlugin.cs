@@ -11909,6 +11909,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 string UserId = WTSFunction.DirectGetUserID(Log);
 
+                if(UserId == null)
+                {
+                    writelog($"CheckDeviceFirstTimesToConnect UserId null ... ");
+                    return;
+                }
+
                 string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
                 string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{di.ModelNumber}";
                 string ddpmExePath = //@"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
