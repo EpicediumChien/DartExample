@@ -904,11 +904,13 @@ namespace DDPM.EABroker
                 Rect rcActualArranged = _vm.SetEAWindowPos(hWnd, rcArrange, _workingArea);
 
                 _alreadyArrangedCount++;
-                if (AreAllAppsArranged &&
-                    ArrangeDone != null)
-                {                    
-                    _vm.WriteLog($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Send ArrangeDone event.");
-                    ArrangeDone(this, EventArgs.Empty);                    
+                if (AreAllAppsArranged)
+                {
+                    if (ArrangeDone != null)
+                    {
+                        _vm.WriteLog($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Send ArrangeDone event.");
+                        ArrangeDone(this, EventArgs.Empty);
+                    }
                 }
             }));
 

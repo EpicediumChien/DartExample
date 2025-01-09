@@ -1690,20 +1690,22 @@ namespace DDPM.EABroker
         #region Telemetry
         public void SendTelemetry_EasyArrangeLayout()
         {
-            if (_easyArrangeService != null &&
-                HoveringSplit != null)
+            if (_easyArrangeService != null)
             {
-                MonitorInfo? monitorInfo = null;
-                if (WorkScreen != null)
+                if (HoveringSplit != null)
                 {
-                    List<MonitorInfo> monitorInfos = GetMonitorsFromDeviceName(WorkScreen.DeviceName);
-                    if ((monitorInfos != null) && (monitorInfos.Count > 0))
+                    MonitorInfo? monitorInfo = null;
+                    if (WorkScreen != null)
                     {
-                        monitorInfo = monitorInfos[0];
+                        List<MonitorInfo> monitorInfos = GetMonitorsFromDeviceName(WorkScreen.DeviceName);
+                        if ((monitorInfos != null) && (monitorInfos.Count > 0))
+                        {
+                            monitorInfo = monitorInfos[0];
+                        }
                     }
+                    string eventValue = GetEasyArrangeLayoutTelemetryEventValueFromISplitCtrl(HoveringSplit);
+                    _easyArrangeService.SendEasyArrangeLayoutTelemetry(eventValue, monitorInfo);
                 }
-                string eventValue = GetEasyArrangeLayoutTelemetryEventValueFromISplitCtrl(HoveringSplit);
-                _easyArrangeService.SendEasyArrangeLayoutTelemetry(eventValue, monitorInfo);                
             }
         }
         /// <summary>

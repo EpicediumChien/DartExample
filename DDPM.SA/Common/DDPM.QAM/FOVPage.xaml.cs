@@ -50,16 +50,18 @@ namespace DDPM.QAM
         }
         private void FOV_Click(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Border bdr &&
-                DataContext is QAMPageViewModel vm)
+            if (sender is Border bdr)
             {
-                var index = int.Parse(bdr.Tag.ToString()!);
-                var val = vm.FOVs[index];
-                if (val == vm.FieldOfView)
-                { return; }
-                vm.FOV_Selected(index);
-                vm.isStatusChagneByDDPM = false;
-                vm.FieldOfView = val;                
+                if (DataContext is QAMPageViewModel vm)
+                {
+                    var index = int.Parse(bdr.Tag.ToString()!);
+                    var val = vm.FOVs[index];
+                    if (val == vm.FieldOfView)
+                    { return; }
+                    vm.FOV_Selected(index);
+                    vm.isStatusChagneByDDPM = false;
+                    vm.FieldOfView = val;
+                }
             }
         }
     }

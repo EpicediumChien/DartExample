@@ -403,10 +403,12 @@ namespace DDPM.EABroker
                 }
                 else
                 {
-                    if (targetScreen != null &&
-                        targetScreen.DeviceName.Equals(deviceNmaeOfHwnd))
+                    if (targetScreen != null)
                     {
-                        isWndInsideTargetScreen = true;                        
+                        if (targetScreen.DeviceName.Equals(deviceNmaeOfHwnd))
+                        {
+                            isWndInsideTargetScreen = true;
+                        }
                     }
                 }
                 if (!isWndInsideTargetScreen)
