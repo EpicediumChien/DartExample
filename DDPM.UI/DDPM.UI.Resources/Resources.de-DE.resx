@@ -1399,7 +1399,7 @@
     <value>Das Gerät, das Sie koppeln, wird nicht mit dem angeschlossenen kabellosen USB-Empfänger unterstützt. Verwenden Sie den Empfänger, der mit dem Gerät geliefert wurde.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>Die verfügbaren Steckplätze dieses kabellosen USB-Empfängers sind voll. Um ein Gerät zu verwenden, entkoppeln Sie es durch Klicken auf die Schaltfläche \„Entkoppeln\“ auf der Seite mit den Geräteeinstellungen.</value>
+    <value>Die verfügbaren Steckplätze dieses kabellosen USB-Empfängers sind voll. Um ein Gerät zu verwenden, entkoppeln Sie es durch Klicken auf die Schaltfläche „Entkoppeln“ auf der Seite mit den Geräteeinstellungen.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>Hier klicken, um eine Aktion zuzuweisen</value>
@@ -2446,7 +2446,7 @@
     <value>Klicken Sie auf die Schaltfläche Durchsuchen, um eine Datei auszuwählen.</value>
   </data>
   <data name="Action.3" xml:space="preserve">
-    <value>Klicken Sie auf die Schaltfläche \&quot;Durchsuchen\&quot;, um einen Ordner auszuwählen</value>
+    <value>Klicken Sie auf die Schaltfläche "Durchsuchen", um einen Ordner auszuwählen</value>
   </data>
   <data name="Action.4" xml:space="preserve">
     <value>Geben Sie die URL der Webseite in das Feld unten ein.</value>
@@ -2485,7 +2485,7 @@
     <value>Zusammenarbeit</value>
   </data>
   <data name="Collab.10" xml:space="preserve">
-    <value>Die Tastatur für die Zusammenarbeit kann keine Verbindung zu Microsoft Teams herstellen, weil Sie die Anfrage blockiert haben. Wenn Sie Microsoft Teams mit der Tastatur für die Zusammenarbeit verwenden möchten, klicken Sie auf \“Weitere Informationen\&quot;, um Anweisungen zum erneuten Herstellen der Verbindung zu erhalten.</value>
+    <value>Die Tastatur für die Zusammenarbeit kann keine Verbindung zu Microsoft Teams herstellen, weil Sie die Anfrage blockiert haben. Wenn Sie Microsoft Teams mit der Tastatur für die Zusammenarbeit verwenden möchten, klicken Sie auf "Weitere Informationen", um Anweisungen zum erneuten Herstellen der Verbindung zu erhalten.</value>
   </data>
   <data name="Collab.11" xml:space="preserve">
     <value>Um die Tastatur für die Zusammenarbeit mit Zoom zu verwenden, installieren Sie die neueste Desktopversion von Zoom.</value>

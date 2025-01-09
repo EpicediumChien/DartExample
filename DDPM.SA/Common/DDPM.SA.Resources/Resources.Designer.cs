@@ -637,7 +637,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please press \&quot;U\&quot; key on keyboard to start firmware update.
+        ///   Looks up a localized string similar to Please press &quot;U&quot; key on keyboard to start firmware update.
         /// </summary>
         internal static string M2_Please_press_key_on_keyboard_to_start_firmware_update {
             get {

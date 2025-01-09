@@ -241,7 +241,7 @@
     <value>請按兩下滑鼠左鍵以開始韌體更新</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>請按下鍵盤上的 \"U\" 鍵以開始韌體更新</value>
+    <value>請按下鍵盤上的 "U" 鍵以開始韌體更新</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>已連接裝置</value>

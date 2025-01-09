@@ -1399,7 +1399,7 @@
     <value>连接的 USB 无线接收器不支持您要配对的设备。请使用设备随附的接收器。</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>此 USB 无线接收器上的可用插槽已满。要使用，请单击设备设置页面中的\“取消配对\”按钮，取消设备与其的配对。</value>
+    <value>此 USB 无线接收器上的可用插槽已满。要使用，请单击设备设置页面中的“取消配对”按钮，取消设备与其的配对。</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>单击以分配操作</value>
