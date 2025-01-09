@@ -6871,44 +6871,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> GetOnNKVM(MonitorInfo monitorInfo)
         {
-            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-            if (settings != null)
+            if (_NKVMPlugin != null)
             {
-                DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (monitorSetting != null)
-                {
-                    return Task.FromResult(monitorSetting.KVM.isOnNKVM);
-                }
+                return _NKVMPlugin.GetOnNKVM(monitorInfo, _SettingsPlugin);
             }
             return Task.FromResult(false);
         }
 
         public Task SetOnNKVM(MonitorInfo monitorInfo, bool ison)
         {
-            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-            if (settings != null && _NKVMPlugin != null) //Robert_Lin 0731
+            if (_NKVMPlugin != null)
             {
-                foreach (DDPMMonitorSettings setting in settings)
+                _NKVMPlugin.SetOnNKVM(monitorInfo, ison, _SettingsPlugin).Wait();
+                if (ison)
                 {
-                    if (setting != null)
-                    {
-                        if (setting.ServiceTag == monitorInfo.edid.ServiceTag)
-                        {
-                            setting.KVM.isOnNKVM = ison;
-                            bool b = _SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result;
-                            if (ison)
-                            {
-                                //_SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
-                                _NKVMPlugin.OnNKVM().Wait();
-                                bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
-                            }
-                            else
-                            {
-                                _NKVMPlugin.OffNKVM().Wait();
-                            }
-                            break;
-                        }
-                    }
+                    bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
                 }
             }
 

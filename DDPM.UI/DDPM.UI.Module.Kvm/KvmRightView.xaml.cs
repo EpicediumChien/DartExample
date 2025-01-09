@@ -74,7 +74,7 @@ namespace DDPM.UI.Module.Kvm
         {
             if (vm != null)
             {
-                vm.LockNKVM_Visibility = isLocked ? Visibility.Visible : Visibility.Collapsed;
+                //vm.LockNKVM_Visibility = isLocked ? Visibility.Visible : Visibility.Collapsed;
                 vm.isNKVMEanble = isLocked ? false : true;
                 vm.NKVM_Opacity = isLocked ? 0.5 : 1;
             }
@@ -127,6 +127,20 @@ namespace DDPM.UI.Module.Kvm
                     }
                 }));
             }
+            //NKVM CLI ON
+            bool? isNKVMOn = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Enable_Display_NetworkKVM", e);
+            if (isNKVMOn != null)
+            {
+                if ((bool)isNKVMOn)
+                {
+                    vm.isNKVM = true;
+                }
+                else
+                {
+                    vm.isNoKVM = true;
+                }
+            }
+
         }
 
         private void OpenUSBKVM(object sender, RoutedEventArgs e)
