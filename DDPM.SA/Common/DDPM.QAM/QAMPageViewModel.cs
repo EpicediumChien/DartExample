@@ -269,35 +269,53 @@ namespace DDPM.QAM
                     //Dictionary<string, WebcamProfile> customProfiles = new();
                     //string json = File.ReadAllText(filePath);
                     //Derek 20250106 use DDPMFileSecurity.GetSerializedJsonString to read file by SDL requirement
-                    string info = string.Empty;
+                    //string info = string.Empty;
                     //string json = DDPMFileSecurity.GetSerializedJsonString(filePath, out info);
                     WebcamSettings data = WebcamSettings.ImportWebcamSettings(model, CurrentDeviceInfo, devMgr, log);
                     //var jsonObject = Newtonsoft.Json.Linq.JObject.Parse(json);
 
-                    string presetProfilesString = string.Empty;
+                    //string presetProfilesString = string.Empty;
                     if (data != null)
                     {
                         //presetProfilesString = jsonObject["PresetProfiles"]!.ToString();
                         //Derek 1212
                         //selectedProfileName = jsonObject["SelectedProfileName"]!.ToString();
-                        presetProfilesString = data.PresetProfiles?.ToString() ?? string.Empty;// jsonObject["PresetProfiles"]?.ToString() ?? string.Empty;
+                        //presetProfilesString = data.PresetProfiles?.ToString() ?? string.Empty;// jsonObject["PresetProfiles"]?.ToString() ?? string.Empty;
                         selectedProfileName = data.SelectedProfileName?.ToString() ?? string.Empty;// jsonObject["SelectedProfileName"]?.ToString() ?? string.Empty;
 
-                        LogMsg($"ImportWebcamProfiles current SelectedProfileName: {selectedProfileName}, GetSerializedJsonString result is {info}");
-                    }
-
-                    if (!string.IsNullOrEmpty(presetProfilesString))
-                    {
-                        presetProfiles = JsonConvert.DeserializeObject<Dictionary<string, WebcamProfile>>(presetProfilesString);
-
-                        if (presetProfiles != null)
+                        foreach (var profile in presetProfiles) 
                         {
-                            foreach (var profile in presetProfiles)
+                            Profiles.Add(profile.Key, profile.Value);
+                            LogMsg($"QAM ImportWebcamProfiles -> Add {profile.Key}/{profile.Value}");
+                        }
+
+                        LogMsg($"ImportWebcamProfiles current SelectedProfileName: {selectedProfileName}, GetSerializedJsonString result is {data}");
+
+                        UI_ProfileList = new ObservableCollection<UI_Profile>();
+                        foreach (var profile in Profiles)
+                        {
+                            UI_ProfileList.Add(new UI_Profile
                             {
-                                Profiles.Add(profile.Key, profile.Value);
-                            }
+                                //Profile_Name = profile.Key,
+                                Profile_Name = LangHelper.Instance[profile.Key],
+                                Profile_Name_Key = profile.Key,
+                            });
                         }
                     }
+
+                    //if (!string.IsNullOrEmpty(presetProfilesString))
+                    //{
+                    //    presetProfiles = JsonConvert.DeserializeObject<Dictionary<string, WebcamProfile>>(presetProfilesString);
+
+                    //    if (presetProfiles != null)
+                    //    {
+                    //        foreach (var profile in presetProfiles)
+                    //        {
+                    //            Profiles.Add(profile.Key, profile.Value);
+                    //        }
+                    //    }
+                    //}
+
                     //string customProfilesString = jsonObject["CustomProfiles"].ToString();
                     //if (!string.IsNullOrEmpty(customProfilesString))
                     //{
@@ -310,16 +328,17 @@ namespace DDPM.QAM
                     //        }
                     //    }
                     //}
-                    UI_ProfileList = new ObservableCollection<UI_Profile>();
-                    foreach (var profile in Profiles)
-                    {
-                        UI_ProfileList.Add(new UI_Profile
-                        {
-                            //Profile_Name = profile.Key,
-                            Profile_Name = LangHelper.Instance[profile.Key],
-                            Profile_Name_Key = profile.Key,
-                        });
-                    }
+
+                    //UI_ProfileList = new ObservableCollection<UI_Profile>();
+                    //foreach (var profile in Profiles)
+                    //{
+                    //    UI_ProfileList.Add(new UI_Profile
+                    //    {
+                    //        //Profile_Name = profile.Key,
+                    //        Profile_Name = LangHelper.Instance[profile.Key],
+                    //        Profile_Name_Key = profile.Key,
+                    //    });
+                    //}
                 }
                 else
                 {
