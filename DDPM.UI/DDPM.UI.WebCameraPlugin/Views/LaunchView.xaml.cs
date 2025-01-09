@@ -1762,7 +1762,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
 
                 // Log the exception details for further analysis
-                Debug.WriteLine($"Exception occurred: {ex.Message}");
+                DdpmCommonHelper.WriteUILog($"Exception occurred: {ex.Message}");
                 _running = false;
                 return;
             }
