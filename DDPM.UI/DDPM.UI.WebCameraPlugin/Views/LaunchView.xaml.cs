@@ -1748,10 +1748,21 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             try
             {
-                softwareBitmap = (sender.TryAcquireLatestFrame()?.VideoMediaFrame)?.SoftwareBitmap;
+                var latestFrame = sender.TryAcquireLatestFrame();
+                if (latestFrame != null)
+                {
+                    var videoMediaFrame = latestFrame.VideoMediaFrame;
+                    if (videoMediaFrame != null)
+                    {
+                        softwareBitmap = videoMediaFrame.SoftwareBitmap;
+                    }
+                }
             }
-            catch
+            catch (Exception ex)
             {
+
+                // Log the exception details for further analysis
+                DdpmCommonHelper.WriteUILog($"Exception occurred: {ex.Message}");
                 _running = false;
                 return;
             }
