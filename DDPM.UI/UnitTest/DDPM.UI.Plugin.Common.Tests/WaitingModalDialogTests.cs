@@ -1,4 +1,7 @@
 ﻿using DDPM.UI.Common.UserControls;
+using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
+using Moq;
 using NGA.UnitTest.PrivateObject;
 using System;
 using System.Collections.Generic;
@@ -13,11 +16,16 @@ namespace DDPM.UI.Plugin.Common.Tests
     public class WaitingModalDialogTests
     {
         private WaitingModalDialog? waitingModalDialog;
-
+        private Mock<IShowPluginManager>? showPluginManagerMock;
+        private Mock<IConsole>? consoleMock;
+        private Mock<ILog>? logMock;
         [SetUp]
         public void Setup()
         {
-            //waitingModalDialog = new WaitingModalDialog("caption", "message", "alert");
+            showPluginManagerMock=new Mock<IShowPluginManager>();
+            consoleMock=new Mock<IConsole>();
+            logMock=new Mock<ILog>();
+            waitingModalDialog = new WaitingModalDialog("caption", "message", "alert",new Plugin.ViewModels.AddDeviceViewModel(showPluginManagerMock.Object, consoleMock.Object, logMock.Object));
         }
 
         [Test]

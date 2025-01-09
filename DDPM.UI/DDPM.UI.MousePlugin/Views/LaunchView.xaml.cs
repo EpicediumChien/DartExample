@@ -118,13 +118,11 @@ namespace DDPM.UI.Plugin.MousePlugin
                     }
                     //Lock Functionality 9/7
                     //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Mouse]
-                    if (data.LockSettings != null)
+                    if (data.LockSettings != null &&
+                        DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Mouse"))
                     {
-                        if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Mouse"))
-                        {
-                            //RestoreLockIcon.Visibility = Visibility.Visible;
-                            //txtRestore.IsEnabled = false;
-                        }
+                        //RestoreLockIcon.Visibility = Visibility.Visible;
+                        //txtRestore.IsEnabled = false;
                     }
                 }
             }
@@ -209,13 +207,11 @@ namespace DDPM.UI.Plugin.MousePlugin
                 //Lock Functionality 9/7
                 //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Mouse]
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null && data.LockSettings != null)
+                if (data != null && data.LockSettings != null &&
+                DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Mouse"))
                 {
-                    if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Mouse"))
-                    {
-                        //RestoreLockIcon.Visibility = Visibility.Visible;
-                        //txtRestore.IsEnabled = false;
-                    }
+                    //RestoreLockIcon.Visibility = Visibility.Visible;
+                    //txtRestore.IsEnabled = false;
                 }
             }));
         }

@@ -483,9 +483,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
             UIUpdateInfo uIUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
             Assert.That(uIUpdateInfo, Is.Not.Null);
-            Assert.That(uIUpdateInfo.UXAlertItemVisibility, Is.EqualTo(Visibility.Visible));
-            Assert.That(uIUpdateInfo.UXAlertItemMessage, Is.EqualTo("Press a button or a key on the device to enable this update"));
-            Assert.That(uIUpdateInfo.UpdateInfo, Is.EqualTo("Firmware update 1A - ST"));
+            Assert.That(uIUpdateInfo.UXAlertItemVisibility, Is.EqualTo(Visibility.Collapsed));
+            Assert.That(uIUpdateInfo.UXAlertItemMessage, Is.EqualTo(""));
+            Assert.That(uIUpdateInfo.UpdateInfo, Is.EqualTo("Firmware update 1A - ST "));
         }
 
         [Test]

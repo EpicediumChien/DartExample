@@ -97,21 +97,19 @@ namespace DDPM.UI.Plugin.DockPlugin
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if (e != null && e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Dock"))
+            if (e != null && e.device_peripherals != null && e.device_peripherals.LogicalDeviceType.Contains("Dock") &&
+                _viewModel != null)
             {
-                if (_viewModel != null)
+                if (e.type == DeviceChangedType.Peripherals_UnPlug)
                 {
-                    if (e.type == DeviceChangedType.Peripherals_UnPlug)
+                    if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
                     {
-                        if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
-                        {
-                            _viewModel.OnGoBackClicked();
-                            return;
-                        }
-                        GetPeripheralsAsync();
+                        _viewModel.OnGoBackClicked();
+                        return;
                     }
-                    _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
+                    GetPeripheralsAsync();
                 }
+                _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);                
             }
         }
 

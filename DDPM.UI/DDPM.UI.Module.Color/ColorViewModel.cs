@@ -308,8 +308,10 @@ namespace DDPM.UI.Module.Color
                                 {
                                     foreach (HomeDevice hd in DdpmCommonHelper.ModuleOwner.HomeDevices)
                                     {
+                                        // Jim 20250107 modify for PIMS-314608 U2725QEt Wistron- P3:DDPM(Windows)-Shine a torch or cover the sensor of DUT1,DUT2 screen has not changed
                                         if (hd.MonitorInfo.IsDellMonitor)
-                                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, Is_Game_DeviceName, SmartHDR_ON, null, false);
+                                            DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(hd.MonitorInfo, SupportColorPresets[idex], 0, Is_Game_DeviceName, SmartHDR_ON, null, true);
+                                       
                                     }
                                 }
                             }
@@ -330,22 +332,15 @@ namespace DDPM.UI.Module.Color
 
                     // if Auto-adjust the ICC color profile based on Color preset
 
-                    if (_ICC_Metadata.Is_Support_ICC_DeviceName)
-                    {
-                        // add jim 20240604
-                        if (DCM_Visibility == Visibility.Hidden)
-                        {
-                            if (ColorManagement_isChecked)
-                            {
-                                if (ICCprofile_based_Colorpreset_enable)
-                                {
-                                    // add jim 20240830
-                                    DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex], 0, Is_Game_DeviceName, SmartHDR_ON); // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
-                                    //DdpmCommonHelper.DeviceManagerSA?.SetMonitorProfile(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
-                                    //DdpmCommonHelper.DeviceManagerSA?.AutoColorManagementForMonitorConfig(MyModule.SelectedHomeDevice?.MonitorInfo,"BYMONITOR", SupportColorPresets[idex]);
-                                }
-                            }
-                        }
+                    if (_ICC_Metadata.Is_Support_ICC_DeviceName &&
+                        DCM_Visibility == Visibility.Hidden && // add jim 20240604
+                        ColorManagement_isChecked &&
+                        ICCprofile_based_Colorpreset_enable)
+                    {                                             
+                        // add jim 20240830
+                        DdpmCommonHelper.DeviceManagerSA?.WriteColorPreset(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex], 0, Is_Game_DeviceName, SmartHDR_ON); // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
+                        //DdpmCommonHelper.DeviceManagerSA?.SetMonitorProfile(MyModule.SelectedHomeDevice?.MonitorInfo, SupportColorPresets[idex]);
+                        //DdpmCommonHelper.DeviceManagerSA?.AutoColorManagementForMonitorConfig(MyModule.SelectedHomeDevice?.MonitorInfo,"BYMONITOR", SupportColorPresets[idex]);                             
                     }
                 }
                 //}));
@@ -374,28 +369,26 @@ namespace DDPM.UI.Module.Color
         private bool CheckIfDisableALSFeature()
         {
             ALSConfig cfg = DdpmCommonHelper.DeviceManagerSA?.GetALSFeatureValue(MyModule.SelectedHomeDevice?.MonitorInfo, ALSFeatureQueryType.All, 0).Result;
-            if (cfg != null && cfg.isSupportALS > 0)
+            if (cfg != null && cfg.isSupportALS > 0 &&
+                cfg.isAutoColorTemp)
             {
-                if (cfg.isAutoColorTemp)
+                //Dean 0614 modify to meet figma
+                //if(MessageBox.Show("Auto Color Temperature is currently enabled. Do you wish to disable it to continue?", "Warning", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                if (DdpmCommonHelper.DDPMMesssageBox(Strings.ImpExp_Warning, Strings.Auto_Color_Temperature_MSG))
                 {
-                    //Dean 0614 modify to meet figma
-                    //if(MessageBox.Show("Auto Color Temperature is currently enabled. Do you wish to disable it to continue?", "Warning", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
-                    if (DdpmCommonHelper.DDPMMesssageBox(Strings.ImpExp_Warning, Strings.Auto_Color_Temperature_MSG))
-                    {
-                        //disable Auto color temp and return true to change color preset
-                        cfg.isAutoColorTemp = false;
-                        DdpmCommonHelper.DeviceManagerSA?.SetALSFeatureValue(
-                            MyModule.SelectedHomeDevice?.MonitorInfo,
-                            cfg, ALSFeatureQueryType.All, ""
-                            );
-                        return true;
-                    }
-                    else
-                    {
-                        //keep auto color temp on and return false that do not change color preset
-                        return false;
-                    }
+                    //disable Auto color temp and return true to change color preset
+                    cfg.isAutoColorTemp = false;
+                    DdpmCommonHelper.DeviceManagerSA?.SetALSFeatureValue(
+                        MyModule.SelectedHomeDevice?.MonitorInfo,
+                        cfg, ALSFeatureQueryType.All, ""
+                        );
+                    return true;
                 }
+                else
+                {
+                    //keep auto color temp on and return false that do not change color preset
+                    return false;
+                }                
             }
             return true;
         }

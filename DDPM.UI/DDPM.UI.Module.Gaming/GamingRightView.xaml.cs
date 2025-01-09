@@ -52,10 +52,10 @@ namespace DDPM.UI.Module.Gaming
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
-                    GamingViewModel vm = (GamingViewModel)this.DataContext;
-                    if (vm != null)
+                    GamingViewModel localVm = (GamingViewModel)this.DataContext;
+                    if (localVm != null)
                     {
-                        vm.Lock_RefreshRate = (bool)isLocked;
+                        localVm.Lock_RefreshRate = (bool)isLocked;
                         Trace.WriteLine($"[SettingsPage] DisplayProperty RefreshRate(Lock) : {isLocked}");
                     }
                 }));
@@ -68,8 +68,8 @@ namespace DDPM.UI.Module.Gaming
 
         private void RefreshUI()
         {
-            GamingViewModel vm = (GamingViewModel)DataContext;
-            vm.RefreshUI();
+            GamingViewModel localVm = (GamingViewModel)DataContext;
+            localVm.RefreshUI();
         }
 
         private GamingViewModel vm

@@ -37,9 +37,11 @@ namespace DDPM.UI.Module.EzSettings
             //Robert_Lin, 2024-11-28, to get the Span across multiple monitor state changed,
             //Add IDeviceManagerSA, and add a handler for EANotify event
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
-            if (_deviceManagerSA == null)
-                if (DdpmCommonHelper.DeviceManagerSA != null)
-                    _deviceManagerSA = DdpmCommonHelper.DeviceManagerSA;
+            if (_deviceManagerSA == null &&
+                DdpmCommonHelper.DeviceManagerSA != null)
+            { 
+                _deviceManagerSA = DdpmCommonHelper.DeviceManagerSA;
+            }
 
             if (_deviceManagerSA != null)
             {

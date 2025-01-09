@@ -1564,12 +1564,10 @@ namespace DDPM.UI.Module.PipPbp
 
         public bool ExecuteVideoSwap()
         {
-            if (DeviceManagerSA != null)
+            if (DeviceManagerSA != null &&
+                SelectedHomeDevice != null)
             {
-                if (SelectedHomeDevice != null)
-                {
-                    return DeviceManagerSA.VideoSwap(SelectedHomeDevice.MonitorInfo, 0, 1).Result;
-                }
+                return DeviceManagerSA.VideoSwap(SelectedHomeDevice.MonitorInfo, 0, 1).Result;
             }
             return false;
         }
@@ -1587,10 +1585,10 @@ namespace DDPM.UI.Module.PipPbp
 
                 if (SelectedHomeDevice.HasCapability_UsbKvm)
                     return true;
-                if (SelectedHomeDevice.HasCapability_NetworkKvm)
+                if (SelectedHomeDevice.HasCapability_NetworkKvm &&
+                    IsNetworkKvmOn)
                 {
-                    if (IsNetworkKvmOn)
-                        return true;
+                    return true;
                 }
                 return false;
             }
@@ -1640,12 +1638,10 @@ namespace DDPM.UI.Module.PipPbp
 
         public bool ExecuteUsbSwitch()
         {
-            if (DeviceManagerSA != null)
+            if (DeviceManagerSA != null &&
+                SelectedHomeDevice != null)
             {
-                if (SelectedHomeDevice != null)
-                {
-                    return DeviceManagerSA.UsbSwitch1(SelectedHomeDevice.MonitorInfo).Result; ;
-                }
+                return DeviceManagerSA.UsbSwitch1(SelectedHomeDevice.MonitorInfo).Result; ;
             }
             return false;
         }

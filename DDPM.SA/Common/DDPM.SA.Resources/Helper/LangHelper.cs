@@ -48,7 +48,7 @@ namespace DDPM.SA.Resources.Helper
                 //resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
                 //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("ja-JP");
                 //string str = _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
-                string str = _resourceManager.GetString(name, CultureInfo.InstalledUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+                string str = _resourceManager.GetString(name, CultureInfo.CurrentUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
                 return System.Text.RegularExpressions.Regex.Unescape(str);
 #endif
             }

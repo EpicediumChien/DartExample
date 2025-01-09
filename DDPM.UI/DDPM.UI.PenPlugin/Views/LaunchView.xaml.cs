@@ -71,13 +71,11 @@ namespace DDPM.UI.Plugin.PenPlugin
 
                         //Lock Functionality 9/7
                         //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Pen]
-                        if (data.LockSettings != null)
+                        if (data.LockSettings != null &&
+                            DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Pen"))
                         {
-                            if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Pen"))
-                            {
-                                RestoreLockIcon.Visibility = Visibility.Visible;
-                                txtRestore.IsEnabled = false;
-                            }
+                            RestoreLockIcon.Visibility = Visibility.Visible;
+                            txtRestore.IsEnabled = false;
                         }
                     }
                 }
