@@ -994,7 +994,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         DeviceName = fwUpdateInfos[i].DeviceName,
                         Model = fwUpdateInfos[i].Model,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                        ProcessName = LangHelper.Instance["Downloading_and_installing"],
+                        ProcessName = "Downloading",
                         ProcessProgress = 100,
                     };
                     sendMessageToEvent(updateProgressInfo);
@@ -1268,7 +1268,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     DeviceName = _fWUpdateInfo.DeviceName,
                     Model = _fWUpdateInfo.Model,
                     TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                    ProcessName = LangHelper.Instance["Downloading_and_installing"],
+                    ProcessName = "Downloading",
                     ProcessProgress = download.GetProgress(),
                 };
                 sendMessageToEvent(updateProgressInfo);
@@ -1689,7 +1689,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             DeviceName = _fWUpdateInfo.DeviceName,
                             Model = _fWUpdateInfo.Model,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                            ProcessName = LangHelper.Instance["Installing"],
+                            ProcessName = "Installing",
                             ProcessProgress = 50,
                         };
                         sendMessageToEvent(updateProgressInfo);
@@ -1822,9 +1822,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 if (fwUpdateInfo.IsUOD)
                 {
                     string ret = "";
+                    string ret_2 = "";
                     if (_updateErrorCode == FWUErrorCode.NoError)
                     {
                         ret = LangHelper.Instance["Dock_FW_is_loaded_successful"];
+                        ret_2 = "Dock FW is loaded successful";
                         _updateErrorCode = FWUErrorCode.NoError;
                         fwUpdateInfo.PNPDeviceID = GetDevicePNPDeviceID(fwUpdateInfo.Model);
                         DokcUODUpdateInfoPackage dokcUODUpdateInfoPackage = new DokcUODUpdateInfoPackage();
@@ -1834,6 +1836,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     else
                     {
                         ret = LangHelper.Instance["Dock_FW_loaded_failed"];
+                        ret_2 = "Dock FW loaded failed";
                         _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
                     }
                     UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
@@ -1841,7 +1844,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         DeviceName = _fWUpdateInfo.DeviceName,
                         Model = _fWUpdateInfo.Model,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                        ProcessName = ret
+                        ProcessName = ret_2
                     };
                     _notificationStr = ret;
                     sendMessageToEvent(updateProgressInfo);
@@ -1952,7 +1955,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     DeviceName = _fWUpdateInfo.DeviceName,
                     Model = _fWUpdateInfo.Model,
                     TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                    ProcessName = LangHelper.Instance["Timeout"],
+                    ProcessName = "Timeout",
                     ProcessProgress = _timeOutCount,
                 };
                 sendMessageToEvent(fWUpdateInfo);
@@ -2023,9 +2026,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 DeviceName = _fWUpdateInfo.DeviceName,
                                 Model = _fWUpdateInfo.Model,
                                 TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                                ProcessName = LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"]
+                                ProcessName = "M1"
                             };
                             sendMessageToEvent(updateProgressInfo);
+                            NotificationFWupdate(LangHelper.Instance["FW_info"], LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"]);
                             _logs.DebugMsg_1("Get M1:Please double click mouse left button to start firmware update");
                         }
                         else
@@ -2042,9 +2046,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 DeviceName = _fWUpdateInfo.DeviceName,
                                 Model = _fWUpdateInfo.Model,
                                 TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                                ProcessName = LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"]
+                                ProcessName = "M2"
                             };
                             sendMessageToEvent(updateProgressInfo);
+                            NotificationFWupdate(LangHelper.Instance["FW_info"], LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"]);
                             _logs.DebugMsg_1("Get M2:Please press \"U\" key on keyboard to start firmware update");
                         }
                         else
@@ -2084,7 +2089,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             DeviceName = _fWUpdateInfo.DeviceName,
                             Model = _fWUpdateInfo.Model,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                            ProcessName = LangHelper.Instance["A0_Device_connected"],
+                            ProcessName = "A0 Device connected",
                         };
                         sendMessageToEvent(updateProgressInfo);
                     }
@@ -2096,7 +2101,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             DeviceName = _fWUpdateInfo.DeviceName,
                             Model = _fWUpdateInfo.Model,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                            ProcessName = LangHelper.Instance["A1_Firmware_update_started"],
+                            ProcessName = "A1 Firmware update started",
                         };
                         sendMessageToEvent(updateProgressInfo);
                     }
@@ -2110,7 +2115,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             DeviceName = _fWUpdateInfo.DeviceName,
                             Model = _fWUpdateInfo.Model,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                            ProcessName = LangHelper.Instance["A2_Firmware_update_successful"],
+                            ProcessName = "A2 Firmware update successful",
                         };
                         sendMessageToEvent(updateProgressInfo);
                         resetState();
@@ -2197,7 +2202,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             DeviceName = _fWUpdateInfo.DeviceName,
                             Model = _fWUpdateInfo.Model,
                             TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                            ProcessName = LangHelper.Instance["A2_Firmware_update_successful"],
+                            ProcessName = "A2 Firmware update successful",
                         };
                         sendMessageToEvent(updateProgressInfo);
                         resetState();
@@ -2214,7 +2219,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         DeviceName = _fWUpdateInfo.DeviceName,
                         Model = _fWUpdateInfo.Model,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                        ProcessName = LangHelper.Instance["Installing"],
+                        ProcessName = "Installing",
                         ProcessProgress = int.Parse(progressNode.InnerText),
                     };
                     sendMessageToEvent(updateProgressInfo);
@@ -2232,7 +2237,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         DeviceName = _fWUpdateInfo.DeviceName,
                         Model = _fWUpdateInfo.Model,
                         TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                        ProcessName = LangHelper.Instance["Timeout"],
+                        ProcessName = "Timeout",
                         ProcessProgress = _fwTimeOutCount,
                     };
                     sendMessageToEvent(updateProgressInfo);
