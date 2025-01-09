@@ -965,10 +965,17 @@ namespace DDPM.CLI.Plugins.Display
             output += $"\n  \"Device\": \"{g.LogicalDeviceType}\"";
             output += "}";
             PeripheralResponse cli_Response2 = new PeripheralResponse(index, g);
-            if (g.LogicalDeviceType == "LogicalHeadset")
+            cli_Response2.Connectiontype = (g.PhysicalDeviceType.ToString().Contains("Dongle") || g.PhysicalDeviceType.ToString().Contains("Bluetooth")) ? "Wireless" : "Wired";
+
+            switch (g.LogicalDeviceType)
             {
-                //cli_Response2.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(g.ID.ToString()).Result ?? "N/A";
-                cli_Response2.Connectiontype = get_headsetconnection_type(_devMgr.GetConnectionTypeAsync(g.ID.ToString()).Result);
+                case "LogicalHeadset":
+                    //cli_Response2.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(g.ID.ToString()).Result ?? "N/A";
+                    cli_Response2.Connectiontype = get_headsetconnection_type(_devMgr.GetConnectionTypeAsync(g.ID.ToString()).Result);
+                    break;
+                case "LogicalWebcam":
+                    cli_Response2.SerialNumber = _devMgr.GetWebcamSerialNumber(g.ID.ToString()).Result ?? "N/A";
+                    break;
             }
             output += "\n" + JsonConvert.SerializeObject(cli_Response2, Formatting.Indented);
 
@@ -985,6 +992,8 @@ namespace DDPM.CLI.Plugins.Display
                 case "LogicalWebcam":
                     writelog("LogicalWebcam entry");
                     var webcam = new DeviceDataWebcamResponse(index, device);
+                    writelog("_devMgr.GetWebcamSerialNumber entry");
+                    webcam.SerialNumber = _devMgr.GetWebcamSerialNumber(guid).Result ?? "N/A";
 
                     writelog("_devMgr.GetIsPropertyFOVSupportedByDTP entry");
                     if (_devMgr.GetIsPropertyFOVSupportedByDTP(guid).Result)
@@ -1041,6 +1050,7 @@ namespace DDPM.CLI.Plugins.Display
 
                     writelog("_devMgr.GetConnectionTypeAsync entry");
                     audio.Connectiontype = get_headsetconnection_type(_devMgr.GetConnectionTypeAsync(guid).Result);
+                    //audio.SerialNumber = _devMgr.GetHeadsetSerialNumberAsync(guid).Result ?? "N/A";
                     writelog("_devMgr.GetIsANCSupportedAsync entry");
                     if (_devMgr.GetIsANCSupportedAsync(guid).Result)
                     {

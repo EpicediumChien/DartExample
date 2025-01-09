@@ -269,14 +269,14 @@ namespace DDPM.UI.Common
         // StringBuilder sb1=new StringBuilder(255);
         // int charsRet=GetPrivateProfileString("secName","key","defValue",sb1,sb1.Capacity,@"C:\temp\a.ini");
         // string result=sb1.ToString();
-        [DllImport("kernel32", SetLastError = true)]
+        /*[DllImport("kernel32", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
 
         public static int _GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath)
         {
             return GetPrivateProfileString(section, key, def, retVal, size, filePath);
-        }
+        }*/
 
         #endregion Read/Write INI file
 

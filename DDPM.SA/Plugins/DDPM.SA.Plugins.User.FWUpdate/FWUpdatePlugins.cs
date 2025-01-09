@@ -78,7 +78,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         static bool _IsSkipCA = false;
         static bool _IsSkipSHA = false;
-        private ISettingsManagerSA _SettingsPlugin;
         private readonly object _PluginConditionLock_Settings = new object();
         /// <summary>
         /// 現在正在進行下載或安裝流程的裝置資訊
@@ -124,7 +123,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         private Process _clientProcess = new Process();
         private Timer _downloadTimer = new Timer();
-        private Timer _checkUpdateScheduleTimer;
         private Timer _checkUODTimer;
         private Timer _timerTimeOut;
         private string _notificationStr = "";
@@ -144,13 +142,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// 用於設定逾時時間預設60次/秒
         /// </summary>
         private int _fwTimeOutCount = 60;
+        private bool _IsDownloadAndInsytall = false;
 
         #region Events
-
-        /// <summary>
-        /// 呼叫DeviceManager呼叫我的檢查更新方法，用於排成定期檢查
-        /// </summary>
-        public event EventHandler? CollCheckUpdate;
 
         /// <summary>
         /// 回傳更新事件進度
@@ -194,15 +188,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             _agent = agent;
             _logs ??= new Logs(Log, PluginLogId);
-            SystemEvents.PowerModeChanged += OnPowerModeChanged;
-            InitializeSettingsPlugin();
             _fWUpdateInfoPackage = new FWUpdateInfoPackage();
             _forCLI_FWUpdateInfoPackage = new FWUpdateInfoPackage();
             _ForceFWUpdateInfoPackage = new FWUpdateInfoPackage();
             _ForceFWUpdateInfoPackage.FWUpdateInfo = new List<FWUpdateInfo>();
-            _checkUpdateScheduleTimer = new Timer();
-            _checkUpdateScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
-            _checkUpdateScheduleTimer.Elapsed += new ElapsedEventHandler(CheckUpdateScheduleTimer_Elapsed);
         }
 
         #region Overriding methods
@@ -247,8 +236,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             if (e.ChangedPlugins.Any() == false)
                 return;
 
-            if (e.ChangedPlugins.OfType<ISettingsManagerSA>().Any())
-                InitializeSettingsPlugin();
             if (e.ChangedPlugins.OfType<IFWUpdateService>().Any())
             {
                 Console.WriteLine("IFWUpdateService plugin started.");
@@ -266,13 +253,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         #endregion Overriding methods
 
-        /// <summary>
-        /// 啟動檢查更新排程
-        /// </summary>
-        public void StartCheckUpdateScheduleTimer()
-        {
-            _checkUpdateScheduleTimer.Start();
-        }
 
         public void SetDeviceinfo(List<DeviceInfo> DeviceInfos, int DongleCount)
         {
@@ -380,7 +360,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _isForce = isForce;
             _DeviceTypeList = deviceTypeList;
             _IsUITrigger = isUItrigger;
-            if (reScan)
+            if (reScan && !_IsDownloadAndInsytall)
             {
                 _ = CheckUpdate(updateHelper, deviceInfos, isShowNotify, _DeviceTypeList, isUODMode, displayUpdateHelper, isOnlyDisplay, giuds, serviceTags, models, minVersion).Result;
             }
@@ -900,6 +880,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <returns>回傳裝置資訊表(在這個方法裡將原本傳入的裝置資訊表，再寫入對應裝置的下載安裝的結果碼)</returns>
         public Task<List<FWUpdateInfo>> DownloadAndInstall(List<FWUpdateInfo> fwUpdateInfos, bool isUITrigger, string installPath)
         {
+            _IsDownloadAndInsytall = true;
             Method method = new Method(_logs);
             try
             {
@@ -1120,6 +1101,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _isDefer = false;
                 _isForce = false;
                 _IsUITrigger = false;
+                _IsDownloadAndInsytall = false;
                 return Task.FromResult(fwUpdateInfos);
             }
             catch (Exception ex)
@@ -1142,6 +1124,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _isDefer = false;
                 _isForce = false;
                 _IsUITrigger = false;
+                _IsDownloadAndInsytall = false;
                 return Task.FromResult(fwUpdateInfos);
             }
         }
@@ -1404,46 +1387,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             return ret;
         }
 
-        /// <summary>
-        /// 定期檢查更新排程
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CheckUpdateScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
-        {
-            _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} start");
-            _checkUpdateScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
-            if (_SettingsPlugin != null)
-            {
-                try
-                {
-                    DDPMITConfig data = _SettingsPlugin.GetITGlobalConfigs().Result;
-                    if (!data.Lock_Settings_Updates)
-                    {
-                        //TimeSpan difference = DateTime.Now - _fWUpdateInfoPackage.TheLastCheckTime;
-                        //int checkTime = 5;
-                        //if (difference.TotalMinutes > checkTime)
-                        {
-                            CollCheckUpdate?.AsyncFireAndForget(this, e, System.Threading.CancellationToken.None);
-                        }
-                        _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} CollCheckUpdate");
-                    }
-                    else
-                    {
-                        _checkUpdateScheduleTimer.Stop();
-                        _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _checkUpdateScheduleTimer stop");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} exception: {ex.Message}");
-                }
-            }
-            else
-            {
-                _logs.DebugMsg_1($"{nameof(CheckUpdateScheduleTimer_Elapsed)} _SettingsPlugin is null");
-            }
-        }
+
 
         /// <summary>
         /// 定期檢查是否有Dock韌體載入完成但還沒完成安裝
@@ -1635,25 +1579,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _IsSkipSHA = isSkipSHA;
             _logs.DebugMsg_1("SetSkipSHA done");
         }
-        private void OnPowerModeChanged(object sender, PowerModeChangedEventArgs e)
-        {
-            switch (e.Mode)
-            {
-                case PowerModes.Suspend:
-                    _checkUpdateScheduleTimer.Stop();
-                    _logs.DebugMsg_1("PC is sleep");
-                    break;
 
-                case PowerModes.Resume:
-                    _checkUpdateScheduleTimer.Start();
-                    _logs.DebugMsg_1("PC is wakeup");
-                    break;
-
-                case PowerModes.StatusChange:
-                    _logs.DebugMsg_1("PC is status change");
-                    break;
-            }
-        }
         /// <summary>
         /// 安裝下載好的更新檔
         /// </summary>
@@ -2382,32 +2308,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1($"WriteLog Error : {ex.Message}");
             }
         }
-        /*private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
-        {
-            folderInfo = "Error";
-            pathSymbolicLinInfo = "Error";
-            int count = 0;
-            bool folderValid = false;
-            do
-            {
-                folderInfo = string.Empty;
-                pathSymbolicLinInfo = string.Empty;
-                folderValid = false;
-                folderValid = DDPMFileSecurity.SRemoveSymbolicFolder(path, out pathSymbolicLinInfo);//0924 Bruce Add Security
-                if (!folderValid)
-                {
-                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + pathSymbolicLinInfo + " Retry:" + (count++));
-                }
-                folderValid = DDPMFileSecurity.IsFolderPathValid(path, out folderInfo) && folderValid;
-                if (!folderValid)
-                {
-                    _logs.DebugMsg_1(nameof(DownloadAndInstall) + " FolderIsNotSafe:" + folderInfo + " Retry:" + (count++));
-                    Directory.Delete(path, true);
-                    Directory.CreateDirectory(path);
-                }
-            } while (!folderValid && count < 2);
-            return folderValid;
-        }*/
+
         private bool CheckSHA(string filePath, out string fileCAInfo)
         {
             CertificateCheck certificateCheck = new CertificateCheck(_logs);
@@ -2503,69 +2404,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} {nameof(Unzip)} done");
             return ret;
         }
-        private void InitializeSettingsPlugin()
-        {
-            _logs.DebugMsg_1(nameof(InitializeSettingsPlugin) + " start");
-            if (_SettingsPlugin != null)
-                return;
-            _logs.DebugMsg_1(nameof(InitializeSettingsPlugin) + " FindPluginByType");
-            _SettingsPlugin = _agent.PluginManager.FindPluginByType<ISettingsManagerSA>(PluginResolution.Dynamic);
 
-            if (_SettingsPlugin is IFrameworkPluginConditionNotification pluginCondition)
-            {
-                pluginCondition.PluginConditionChangeHandler += OnSettingsPluginConditionChangeHandler;
-                GetCurrentSettingsPluginCondition();
-            }
-        }
-        private void OnSettingsPluginConditionChangeHandler(object sender, EventArgs e)
-        {
-            GetCurrentSettingsPluginCondition();
-        }
-        private void GetCurrentSettingsPluginCondition()
-        {
-            _logs.DebugMsg_1($"{nameof(GetCurrentSettingsPluginCondition)} - start");
-            _ = Task.Run(async () =>
-            {
-                var pluginCondition = await (_SettingsPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
-                //PluginCondition _SettingsPluginCondition;
-                lock (_PluginConditionLock_Settings)
-                {
-                    if (pluginCondition is PluginErrorCondition)
-                    {
-                        _logs.DebugMsg_1($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in an error condition");
-                    }
-                    else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
-                    {
-                        _logs.DebugMsg_1($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a running/started condition");
-                        _SettingsPlugin.FWSWUpdateSettingChange += UpdateLockSettingChange;
-                    }
-                    else
-                    {
-                        _logs.DebugMsg_1($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in unknow condition: {pluginCondition}");
-                    }
-                }
-            });
-        }
-        private void UpdateLockSettingChange(object o, bool isLockUpdate)
-        {
-            _logs.DebugMsg_1($"UpdateLockSettingChange start");
-            if (_checkUpdateScheduleTimer != null)
-            {
-                _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer is no null");
-                _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer isLockUpdate:{isLockUpdate}");
-                if (isLockUpdate)
-                {
-                    _checkUpdateScheduleTimer.Stop();
-                    _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer is stop");
-                }
-                else
-                {
-                    _checkUpdateScheduleTimer.Start();
-                    _logs.DebugMsg_1($"UpdateLockSettingChange _checkUpdateScheduleTimer is start");
-                }
-            }
-            _logs.DebugMsg_1($"UpdateLockSettingChange done");
-        }
         private string GetODM(int index)
         {
             _logs.DebugMsg_1($"GetODM start");

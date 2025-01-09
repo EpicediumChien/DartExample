@@ -178,6 +178,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
         }
 
 
+        //Robert_Lin, 2025-1-7 EAPlugin.IsFunctionEnabled has been deleted.
         [Test]
         public void TestIsFunctionEnabled()
         {
@@ -188,14 +189,19 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             //Assert.IsFalse(Result1);
             //ArrangeVM arrangeVM2 = new ArrangeVM() { IsFunctionEnabled = true };
             //privateEApluginObject.SetFieldOrProperty("_vmArrange", arrangeVM2);
-            var Result2 = EAplugin.IsFunctionEnabled;  //method update
-            Assert.IsTrue(Result2);
+
+            //var Result2 = EAplugin.IsFunctionEnabled;  //method update
+            //Assert.IsTrue(Result2);
         }
 
+        //Robert_Lin, 2025-1-7, EAPlugin.SetEAWorkSplit() to be removed.
+        // Most of classes in DDPM.SA.Plugins.User.EasyArrange will be removed, and use DDPM.SA/Common/DDPM.EABroker instead
+        //
         //Robert_Lin 2024-12-4 comment-out due to EABroker.EABroker add one argument
         [Test]
         public void TestSetEAWrokSplit()
         {
+            /*
             bool SetEAWrokSplit1 = false;
             bool SetEAWrokSplit2 = true;
             int cellCount = 1;
@@ -240,6 +246,7 @@ namespace DDPM.SA.Plugins.User.EasyArrange.Test
             //privateEApluginObject.SetFieldOrProperty("_eaBroker", EaBroker);
             var SetEAWrokSplit1_Result2 = EAplugin.SetEAWrokSplit(monitorInfo1, cellCount, splitKey, settings).Result;  //_eaBroker not null
             Assert.That(SetEAWrokSplit2, Is.EqualTo(SetEAWrokSplit1_Result2));
+            */
         }
 
         [Test]

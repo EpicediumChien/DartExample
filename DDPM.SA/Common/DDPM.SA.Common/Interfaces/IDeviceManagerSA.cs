@@ -344,16 +344,18 @@ namespace DDPM.SA.Common
 
         #region EAFunctionEnabled - EasyArrange
 
-        /// <summary>
-        /// Enable/Disable EasyArrange function for all monitors.
-        /// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
-        /// but user can edit/setup in DDPM.UI and save their settings.
-        /// </summary>
-        /// <param name="isEnabled"></param>
-        /// <returns></returns>
-        public Task<bool> SetEAFunctionEnabled(bool isEnabled);
+        //Robert_Lin, 2025-1-7 EAPlugin.IsFunctionEnabled is deleted.
+        // All related calling chain should be deleted, too.
+        ///// <summary>
+        ///// Enable/Disable EasyArrange function for all monitors.
+        ///// When Disabled (isEnable=false), DDPM will not show the WorkWindow (to arrange window),
+        ///// but user can edit/setup in DDPM.UI and save their settings.
+        ///// </summary>
+        ///// <param name="isEnabled"></param>
+        ///// <returns></returns>
+        //public Task<bool> SetEAFunctionEnabled(bool isEnabled);
 
-        public Task<ObjGetVCP> GetEAFunctionEnabled();
+        //public Task<ObjGetVCP> GetEAFunctionEnabled();
 
         #endregion EAFunctionEnabled - EasyArrange
 
@@ -677,6 +679,8 @@ namespace DDPM.SA.Common
         Task<int> GetSnooze(Guid deviceId);
 
         Task<int> GetSnoozeLength(Guid deviceId);
+        Task<bool> StartCopilotRegistryMonitor();
+        Task<bool> StopCopilotRegistryMonitor();
 
         #endregion public for Peripherals
 
@@ -1134,12 +1138,10 @@ namespace DDPM.SA.Common
         Task<bool?> GetIsFocusOn(string Guid);
 
         Task<int> GetPriority(string Guid);
-
         Task<bool?> GetIsAutoFramingTransitionOn(string Guid);
-
         Task<int> GetAutoFramingFrameSize(string Guid);
-
         Task<int> GetAutoFramingSensitivity(string Guid);
+        Task<string> GetWebcamSerialNumber(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
 

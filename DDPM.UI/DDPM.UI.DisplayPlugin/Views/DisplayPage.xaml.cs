@@ -851,7 +851,10 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
         private void leftView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             // For hiding restore to default button.
-            _ivm.SelectedHomeDevice.IsRestoreBtnVisible = Visibility.Collapsed;
+            //_ivm.SelectedHomeDevice.IsRestoreBtnVisible = Visibility.Collapsed;
+
+            // Jim 20250108 to fix PIMS-340036 [DDPM Win 2.0][R19]Connect two monitors,switch the drop-down menu. One DUT of the Restore to default icons disappears.
+            _ivm.SelectedHomeDevice.IsRestoreBtnVisible = Visibility.Visible;
         }
 
         #endregion Nav

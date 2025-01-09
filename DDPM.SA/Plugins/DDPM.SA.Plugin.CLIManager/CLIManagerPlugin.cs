@@ -294,10 +294,24 @@ namespace DDPM.SA.Plugin.CLIManager
                         }
                         else if (commandLineInput.Command == "SET")
                         {
-                            data.Enable_Display_NetworkKVM = commandLineInput.Options[0].Option_Value == "ON";
+                            bool? result;
 
-                            WriteLog("WriteITConfigData Enable_Display_NetworkKVM Entry");
-                            if (!_SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Enable_Display_NetworkKVM" }).Result == true)
+                            if (commandLineInput.Options[0].Option_Value == "ON" || commandLineInput.Options[0].Option_Value == "OFF")
+                            {
+                                data.Enable_Display_NetworkKVM = commandLineInput.Options[0].Option_Value == "ON";
+                                WriteLog($"WriteITConfigData Enable_Display_NetworkKVM: {data.Enable_Display_NetworkKVM} Entry");
+                                result = _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Enable_Display_NetworkKVM" }).Result;
+                                WriteLog("WriteITConfigData Enable_Display_NetworkKVM Exit");
+                            }
+                            else
+                            {
+                                data.Lock_Display_NetworkKVM = commandLineInput.Options[0].Option_Value == "DISABLE";
+                                WriteLog($"WriteITConfigData Lock_Display_NetworkKVM: {data.Lock_Display_NetworkKVM} Entry");
+                                result = _SettingsPluginIT?.WriteITConfigData(data, new List<string>() { "Lock_Display_NetworkKVM" }).Result;
+                                WriteLog("WriteITConfigData Lock_Display_NetworkKVM Exit");
+                            }
+
+                            if (result != true)
                             {
                                 rst.serialize_Json_response = JsonConvert.SerializeObject(new NKVM_RESPONSE
                                 {
@@ -309,7 +323,6 @@ namespace DDPM.SA.Plugin.CLIManager
                                 }, Formatting.Indented);
                                 rst.ExitCode = (int)CLI_ExitCode.fail_SetSettings_ITSettingsValue;
                             }
-                            WriteLog("WriteITConfigData Enable_Display_NetworkKVM Exit");
                         }
                     }
                 }
@@ -696,7 +709,7 @@ namespace DDPM.SA.Plugin.CLIManager
                 Trace.WriteLine($"{DateTime.Now} {command} (Exit code: {exitCode})");
             }
 
-            WriteLog($"RunDDMCommand({command}) Exit");
+            WriteLog($"RunDDMCommand({command}) Exit, ExitCode: {exitCode}");
             return (exitCode, value, message);
         }
 
@@ -753,7 +766,7 @@ namespace DDPM.SA.Plugin.CLIManager
         private (int code, string result) EntryNetworkKVM(string command)
         {
             WriteLog($"EntryNetworkKVM({command}) Entry");
-            var validOptions = new List<string> { "ON", "OFF" };
+            var validOptions = new List<string> { "ON", "OFF", "ENABLE", "DISABLE" };
             string output = string.Empty;
             bool retcode = false;
 

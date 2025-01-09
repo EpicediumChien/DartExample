@@ -10,7 +10,7 @@ namespace DDPM.SA.Common.Interfaces
     public interface IEasyArrangeService : IFrameworkPlugin
     {
         #region Properties
-        public bool IsFunctionEnabled { get; set; }
+        //public bool IsFunctionEnabled { get; set; }
 
         /// <summary>
         /// The last error string after a EAPlugin method return error.

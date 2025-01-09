@@ -138,7 +138,7 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(MultiDevicesInfoVisibility));
         }
 
-        public void CheckCopilot()
+        private void CheckCopilot()
         {
             //string regPath2 = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local";
             //string regKey2 = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
@@ -201,6 +201,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (di.DeviceName == "Headset Settings" || di.DeviceName == "Wired Audio Settings")
                 {
                     CurrentInstanceID = di.ID.GetHashCode();
+                    _log.Info($"[PeripheralViewModel] SetCurrentDevice Headset/Wired Audio Settings... InstanceId = {CurrentInstanceID.ToString()}");
                 }
                 else
                 {
@@ -1150,10 +1151,10 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 RightViewHeader? header = SelRightViewHeader;
-                if (header != null)
+                if (header != null &&
+                    header.DdpmModule != null)
                 {
-                    if (header.DdpmModule != null)
-                        return header.DdpmModule.ModuleName;
+                    return header.DdpmModule.ModuleName;
                 }
                 return "(ERROR)";
             }
@@ -1224,18 +1225,12 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                if (_rightViewHeaders.Count == 0)
+                if (_rightViewHeaders.Count == 0 &&
+                    _rightViewHeaders.Count == 0 && ModuleGroups.Count > 0 && // If _vbarItems is empty, will build the list from ModuleGroups
+                    ((VbarSelectedIndex >= 0) || (VbarSelectedIndex < ModuleGroups.Count))) //Get the selected ModuleGroup
                 {
-                    //If _vbarItems is empty, will build the list from ModuleGroups
-                    if ((_rightViewHeaders.Count == 0) && (ModuleGroups.Count > 0))
-                    {
-                        //Get the selected ModuleGroup
-                        if ((VbarSelectedIndex >= 0) || (VbarSelectedIndex < (ModuleGroups.Count)))
-                        {
-                            ModuleGroup mg = ModuleGroups[VbarSelectedIndex];
-                            _rightViewHeaders = mg.Headers;
-                        }
-                    }
+                    ModuleGroup mg = ModuleGroups[VbarSelectedIndex];
+                    _rightViewHeaders = mg.Headers;                                            
                 }
                 return _rightViewHeaders;
             }

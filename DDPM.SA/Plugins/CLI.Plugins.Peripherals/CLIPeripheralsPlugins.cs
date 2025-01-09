@@ -976,37 +976,42 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
-                            if (di.IsCollabsKeysSupported)
-                            {
-                                var result = RunAsyncTimeout(_devMgr.SetCollaborationCameraEnable(bl, Guid.Parse(x.Guid))).Result;
-                                if (result == "0")
-                                {
-                                    x.Result = "PASS";
-                                    retcode = di.IsCollaborationCameraEnable;
-                                    x.Value = (retcode) ? "ON" : "OFF";
-                                    x.Message = "N/A";
-                                }
-                                else if (result == "1")
-                                {
-                                    x.Result = "FAIL";
-                                    x.Message = "Timeout";
-                                }
-                                else
-                                {
-                                    x.Result = "FAIL";
-                                    x.Message = result;
-                                }
-                                retcode = (result == "0") ? true : false;
-                            }
-                            else
-                            {
-                                x.Value = "Not supported";
-                                x.Result = "FAIL";
-                                x.Message = "Keyboard not support COLLABCAMERAENABLE";
-                                retcode = false;
-                                writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABCAMERAENABLE");
-                            }
+                            x.Value = "Not supported";
+                            x.Result = "FAIL";
+                            x.Message = "Keyboard not support COLLABCAMERAENABLE";
+                            retcode = false;
+                            writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABCAMERAENABLE");
+                            //var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            //if (di.IsCollabsKeysSupported)
+                            //{
+                            //    var result = RunAsyncTimeout(_devMgr.SetCollaborationCameraEnable(bl, Guid.Parse(x.Guid))).Result;
+                            //    if (result == "0")
+                            //    {
+                            //        x.Result = "PASS";
+                            //        retcode = di.IsCollaborationCameraEnable;
+                            //        x.Value = (retcode) ? "ON" : "OFF";
+                            //        x.Message = "N/A";
+                            //    }
+                            //    else if (result == "1")
+                            //    {
+                            //        x.Result = "FAIL";
+                            //        x.Message = "Timeout";
+                            //    }
+                            //    else
+                            //    {
+                            //        x.Result = "FAIL";
+                            //        x.Message = result;
+                            //    }
+                            //    retcode = (result == "0") ? true : false;
+                            //}
+                            //else
+                            //{
+                            //    x.Value = "Not supported";
+                            //    x.Result = "FAIL";
+                            //    x.Message = "Keyboard not support COLLABCAMERAENABLE";
+                            //    retcode = false;
+                            //    writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABCAMERAENABLE");
+                            //}
                         }
                     });
                     writelog("SetPeripheralProperty: COLLABCAMERAENABLE" + (retcode ? "SUCCESS" : "FAIL"));
@@ -1018,37 +1023,42 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
-                            if (di.IsCollabsKeysSupported)
-                            {
-                                var result = RunAsyncTimeout(_devMgr.SetCollaborationChatEnable(bl, Guid.Parse(x.Guid))).Result;
-                                if (result == "0")
-                                {
-                                    x.Result = "PASS";
-                                    retcode = di.IsCollaborationChatEnable;
-                                    x.Value = (retcode) ? "ON" : "OFF";
-                                    x.Message = "N/A";
-                                }
-                                else if (result == "1")
-                                {
-                                    x.Result = "FAIL";
-                                    x.Message = "Timeout";
-                                }
-                                else
-                                {
-                                    x.Result = "FAIL";
-                                    x.Message = result;
-                                }
-                                retcode = (result == "0") ? true : false;
-                            }
-                            else
-                            {
-                                x.Value = "Not supported";
-                                x.Result = "FAIL";
-                                x.Message = "Keyboard not support COLLABCHATENABLE";
-                                retcode = false;
-                                writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABCHATENABLE");
-                            }
+                            x.Value = "Not supported";
+                            x.Result = "FAIL";
+                            x.Message = "Keyboard not support COLLABCHATENABLE";
+                            retcode = false;
+                            writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABCHATENABLE");
+                            //var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            //if (di.IsCollabsKeysSupported)
+                            //{
+                            //    var result = RunAsyncTimeout(_devMgr.SetCollaborationChatEnable(bl, Guid.Parse(x.Guid))).Result;
+                            //    if (result == "0")
+                            //    {
+                            //        x.Result = "PASS";
+                            //        retcode = di.IsCollaborationChatEnable;
+                            //        x.Value = (retcode) ? "ON" : "OFF";
+                            //        x.Message = "N/A";
+                            //    }
+                            //    else if (result == "1")
+                            //    {
+                            //        x.Result = "FAIL";
+                            //        x.Message = "Timeout";
+                            //    }
+                            //    else
+                            //    {
+                            //        x.Result = "FAIL";
+                            //        x.Message = result;
+                            //    }
+                            //    retcode = (result == "0") ? true : false;
+                            //}
+                            //else
+                            //{
+                            //    x.Value = "Not supported";
+                            //    x.Result = "FAIL";
+                            //    x.Message = "Keyboard not support COLLABCHATENABLE";
+                            //    retcode = false;
+                            //    writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABCHATENABLE");
+                            //}
                         }
                     });
                     writelog("SetPeripheralProperty: COLLABCHATENABLE" + (retcode ? "SUCCESS" : "FAIL"));
@@ -1068,37 +1078,42 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
-                            if (di.IsCollabsKeysSupported)
-                            {
-                                var result = RunAsyncTimeout(_devMgr.SetCollaborationMicEnable(bl, Guid.Parse(x.Guid))).Result;
-                                if (result == "0")
-                                {
-                                    x.Result = "PASS";
-                                    retcode = di.IsCollaborationMicEnable;
-                                    x.Value = (retcode) ? "ON" : "OFF";
-                                    x.Message = "N/A";
-                                }
-                                else if (result == "1")
-                                {
-                                    x.Result = "FAIL";
-                                    x.Message = "Timeout";
-                                }
-                                else
-                                {
-                                    x.Result = "FAIL";
-                                    x.Message = result;
-                                }
-                                retcode = (result == "0") ? true : false;
-                            }
-                            else
-                            {
-                                x.Value = "Not supported";
-                                x.Result = "FAIL";
-                                x.Message = "Keyboard not support COLLABMICMUTE";
-                                retcode = false;
-                                writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABMICMUTE");
-                            }
+                            x.Value = "Not supported";
+                            x.Result = "FAIL";
+                            x.Message = "Keyboard not support COLLABMICMUTE";
+                            retcode = false;
+                            writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABMICMUTE");
+                            //var di = _deviceinfo.Where(_ => _.ID.ToString() == x.Guid && _.LogicalDeviceType.ToUpper().Contains(_commandLineInput.PluginsType)).FirstOrDefault();
+                            //if (di.IsCollabsKeysSupported)
+                            //{
+                            //    var result = RunAsyncTimeout(_devMgr.SetCollaborationMicEnable(bl, Guid.Parse(x.Guid))).Result;
+                            //    if (result == "0")
+                            //    {
+                            //        x.Result = "PASS";
+                            //        retcode = di.IsCollaborationMicEnable;
+                            //        x.Value = (retcode) ? "ON" : "OFF";
+                            //        x.Message = "N/A";
+                            //    }
+                            //    else if (result == "1")
+                            //    {
+                            //        x.Result = "FAIL";
+                            //        x.Message = "Timeout";
+                            //    }
+                            //    else
+                            //    {
+                            //        x.Result = "FAIL";
+                            //        x.Message = result;
+                            //    }
+                            //    retcode = (result == "0") ? true : false;
+                            //}
+                            //else
+                            //{
+                            //    x.Value = "Not supported";
+                            //    x.Result = "FAIL";
+                            //    x.Message = "Keyboard not support COLLABMICMUTE";
+                            //    retcode = false;
+                            //    writelog("SetPeripheralProperty: FAIL Keyboard not support COLLABMICMUTE");
+                            //}
                         }
                     });
                     writelog("SetPeripheralProperty: COLLABMICMUTE" + (retcode ? "SUCCESS" : "FAIL"));

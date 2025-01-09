@@ -516,10 +516,10 @@ namespace DDPM.UI.Common.ViewModels
             get
             {
                 RightViewHeader? header = SelRightViewHeader;
-                if (header != null)
+                if (header != null &&
+                    header.DdpmModule != null)
                 {
-                    if (header.DdpmModule != null)
-                        return header.DdpmModule.ModuleName;
+                    return header.DdpmModule.ModuleName;
                 }
                 return "(ERROR)";
             }
@@ -553,21 +553,19 @@ namespace DDPM.UI.Common.ViewModels
                 bool isOrgNull = (_selectedHomeDevice == null);
                 bool isChanged = (value != _selectedHomeDevice);
                 SetProperty(ref _selectedHomeDevice, value);
-                if (isChanged)
-                {
-                    if (!isOrgNull)
-                    {
-                        //Refresh BatteryIndicator
-                        //_selectedHomeDevice.UpdateBatteryIndicator();
-                        //Selection changed
-                        HandleSelectedHomeDeviceChanged();
+                if (isChanged &&
+                    !isOrgNull)
+                {                                        
+                    //Refresh BatteryIndicator
+                    //_selectedHomeDevice.UpdateBatteryIndicator();
+                    //Selection changed
+                    HandleSelectedHomeDeviceChanged();
 
-                        //Robert_Lin, 2024-11-15 Show the OSD-Product on the selected Monitor
-                        if ((DdpmCommonHelper.DeviceManagerSA != null) && (_selectedHomeDevice != null))
-                        {
-                            DdpmCommonHelper.DeviceManagerSA.ShowOSD(_selectedHomeDevice.MonitorInfo, OSDType.DisplayChanged);
-                        }
-                     }
+                    //Robert_Lin, 2024-11-15 Show the OSD-Product on the selected Monitor
+                    if ((DdpmCommonHelper.DeviceManagerSA != null) && (_selectedHomeDevice != null))
+                    {
+                        DdpmCommonHelper.DeviceManagerSA.ShowOSD(_selectedHomeDevice.MonitorInfo, OSDType.DisplayChanged);
+                    }                    
                 }
             }
         }
@@ -664,15 +662,14 @@ namespace DDPM.UI.Common.ViewModels
             }
 
             //handle the last select monitor
-            if (DdpmCommonHelper.DeviceManagerSA != null)
+            if(DdpmCommonHelper.DeviceManagerSA != null &&
+                DdpmCommonHelper.ModuleOwner != null && 
+                DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null &&
+                DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
             {
-                if( DdpmCommonHelper.ModuleOwner != null && 
-                    DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null &&
-                    DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
-                {
-                    DdpmCommonHelper.DeviceManagerSA.SetLastSelectedMonitorFromUI(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
-                }
+                DdpmCommonHelper.DeviceManagerSA.SetLastSelectedMonitorFromUI(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo);
             }
+            
 
             foreach (ModuleGroup group in ModuleGroups)
             {
@@ -767,18 +764,15 @@ namespace DDPM.UI.Common.ViewModels
 
                     //Robert_Lin, 2024-8-28, If "KVM" vbar item become Collapsed, and it's current selected Group
                     //Then we will change the selected Group to another visible vbarItem
-                    if ((!hasCapability_KVM) && (SelectedGroup != null))
+                    if ((!hasCapability_KVM) && (SelectedGroup != null) &&
+                        SelectedGroup.GroupName.Equals(Constants.GroupName_KVM))
                     {
-                        //if (SelectedGroup.GroupName.Equals("KVM"))
-                        if (SelectedGroup.GroupName.Equals(Constants.GroupName_KVM))
-                        {
-                            //Change to EasyArrange
-                            //int idxEaGroup = FindGroupIndexByGroupName("EasyArrange");
-                            int idxEaGroup = FindGroupIndexByGroupName(Constants.GroupName_EasyArrange);
-                            if (idxEaGroup < 0)
-                                idxEaGroup = 0;
-                            GroupSelectedIndex = idxEaGroup;
-                        }
+                        //Change to EasyArrange
+                        //int idxEaGroup = FindGroupIndexByGroupName("EasyArrange");
+                        int idxEaGroup = FindGroupIndexByGroupName(Constants.GroupName_EasyArrange);
+                        if (idxEaGroup < 0)
+                            idxEaGroup = 0;
+                        GroupSelectedIndex = idxEaGroup;                        
                     }
                 }
             }
@@ -912,25 +906,20 @@ namespace DDPM.UI.Common.ViewModels
             }
 
             //If DDC/CI is off, then switch to Easy Arrange group
-            if (!isDdcCiOn)
+            if (!isDdcCiOn &&
+                !IsLandingMode && //If current is not Landing mode
+                idxEA >= 0)
             {
-                //If current is not Landing mode
-                if (!IsLandingMode)
+                //If EasyArrange group is locked
+                if (isEaLocked)
                 {
-                    if (idxEA >= 0)
-                    {
-                        //If EasyArrange group is locked
-                        if (isEaLocked)
-                        {
-                            //If DDCI is off and EasyArrange group is locked then go to homepage
-                            LogInfo("  * DDC/CI is off and EasyArrange group is locked, will go back to Homepage.");
-                            GotoHomepage();
-                            return;
-                        }
-                        //Else Change Group selection to "EasyArrange"
-                        GroupSelectedIndex = idxEA;
-                    }
+                    //If DDCI is off and EasyArrange group is locked then go to homepage
+                    LogInfo("  * DDC/CI is off and EasyArrange group is locked, will go back to Homepage.");
+                    GotoHomepage();
+                    return;
                 }
+                //Else Change Group selection to "EasyArrange"
+                GroupSelectedIndex = idxEA;
             }
 
             //Disable/Enable all other (non EA) Groups (it it's visible)
@@ -1054,12 +1043,10 @@ namespace DDPM.UI.Common.ViewModels
             string screenDeviceName = "";
 
             //If e.Tag contains a DeviceName, then move the specified screen
-            if (e.Tag != null)
+            if (e.Tag != null &&
+                e.Tag is string)
             {
-                if (e.Tag is string)
-                {
-                    screenDeviceName = e.Tag.ToString();
-                }
+                screenDeviceName = e.Tag.ToString();                
             }
             //Else the screen will be get from mouse cursor position
             if (String.IsNullOrEmpty(screenDeviceName))
@@ -1071,8 +1058,25 @@ namespace DDPM.UI.Common.ViewModels
                 screenDeviceName = screenOfCursor.DeviceName;
             }
 
+            //screenName = new move in Screen
+            //LastShowOsdScreenDeviceName =  Screen show OSD last time
+            //SelectedHomeDevice.MonitorInfo = Current selected monitor
+
+            //Get the current selected monitor's DeviceName
+            string selScreenName = "";
+            if (SelectedHomeDevice != null)
+            {
+                if (SelectedHomeDevice.MonitorInfo != null)
+                {
+                    selScreenName = SelectedHomeDevice.MonitorInfo.DisplayName;
+                }
+            }
+ 
             //Check if screen is different with last show
-            if (!screenDeviceName.Equals(DdpmCommonHelper.LastShowOsdScreenDeviceName))
+            //if (!screenDeviceName.Equals(DdpmCommonHelper.LastShowOsdScreenDeviceName))
+
+            //If screenName != SelectedHomeDevice
+            if (!screenDeviceName.Equals(selScreenName))
             {
                 DdpmCommonHelper.LastShowOsdScreenDeviceName = screenDeviceName;
 
@@ -1083,10 +1087,10 @@ namespace DDPM.UI.Common.ViewModels
                     return;
                 }
                 //Check if newSelected is the same with current Selected
-                if (SelectedHomeDevice != null)
+                if (SelectedHomeDevice != null &&
+                    SelectedHomeDevice.MonitorInfo.DisplayName.Equals(newSelectedDevice.MonitorInfo.DisplayName))
                 {
-                    if (SelectedHomeDevice.MonitorInfo.DisplayName.Equals(newSelectedDevice.MonitorInfo.DisplayName))
-                        return;
+                    return;
                 }
 
                 SelectedHomeDevice = newSelectedDevice;

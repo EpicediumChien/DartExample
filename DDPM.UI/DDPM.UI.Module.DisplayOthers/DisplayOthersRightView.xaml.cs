@@ -87,7 +87,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 vm.LockSettings_Visibility = isLocked ? Visibility.Visible : Visibility.Collapsed;
                 vm.isSettingsEnable = isLocked ? false : true;
                 vm.Settings_Opacity = isLocked ? 0.5 : 1;
-                vm.Tooltip_Settings = isLocked ? Strings.ImpExp_Tooltip2 : Strings.ImpExp_Tooltip1;
+                //vm.Tooltip_Settings = isLocked ? Strings.ImpExp_Tooltip2 : Strings.ImpExp_Tooltip1;
             }
         }
 
@@ -143,15 +143,14 @@ namespace DDPM.UI.Module.DisplayOthers
                 {
                     DisplayOthersViewModel vm = (DisplayOthersViewModel)this.DataContext;
                     data = DdpmCommonHelper.ReadDDPMSettings(true);//DeviceManagerSA.ReloadAppConfigData().Result;
-                    if (vm != null)
+                    if (vm != null &&
+                        DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data) == true && 
+                        data.LockSettings.Lock_Display_ExportSettings == false)
                     {
-                        if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data) == true && data.LockSettings.Lock_Display_ExportSettings == false)
-                        {
-                            //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
-                            IsLockinUI(vm, true);
-                            Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) to lock due to 1 or more settings be locked");
-                            vm.OnPropertyChanged_Lock();
-                        }
+                        //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                        IsLockinUI(vm, true);
+                        Trace.WriteLine($"[SettingsPage] Apply Import/Export(Lock) to lock due to 1 or more settings be locked");
+                        vm.OnPropertyChanged_Lock();
                     }
                 }));
             }
@@ -314,7 +313,7 @@ namespace DDPM.UI.Module.DisplayOthers
                 case "result_success":
                     Dispatcher.Invoke(new Action(() =>
                     {
-                        DisplayMsgBox(Strings.ImpExp_Success, Strings.ImpExp_SuccessMsg0, returnToHomepage: true);
+                        DisplayMsgBox(Strings.ImpExp_Success, Strings.ImpExp_SuccessMsg0);
                     }));
                     break;
                 case "result_success_model":

@@ -129,7 +129,9 @@
                             <!-- Engineer Test -->
                             <Grid Height="40">
                                 <Button Name="saveSplitCtrlsToPngImagesButton" Visibility="Collapsed"
-                                        Content="..." HorizontalAlignment="Left" VerticalAlignment="Center" Padding="8,2" Click="saveSplitCtrlsToPngImagesButton_Click"/>
+                                        Style="{StaticResource DestructiveButtonStyle}"
+                                        Content="Save Icon Images..." HorizontalAlignment="Left"
+                                        Click="saveSplitCtrlsToPngImagesButton_Click"/>
                             </Grid>
                         </StackPanel>
                     </Border>

@@ -2271,4 +2271,1192 @@
   <data name="Tooltips_Schedule" xml:space="preserve">
     <value>Эта функция позволяет нашим глазам адаптироваться к нужной настройке.</value>
   </data>
+  <data name="DisplayOthers.8" xml:space="preserve">
+    <value>Здесь можно легко экспортировать предпочтительную конфигурацию и импортировать ее на другой монитор той же модели.</value>
+  </data>
+  <data name="InputSource.5" xml:space="preserve">
+    <value>Переименование источника входного сигнала</value>
+  </data>
+  <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
+    <value>Отсоедините от монитора все накопители USB.</value>
+  </data>
+  <data name="AddDevice.KnM.14" xml:space="preserve">
+    <value>Подключение беспроводного приемника</value>
+  </data>
+  <data name="ConsentNo" xml:space="preserve">
+    <value>Не даю согласие</value>
+  </data>
+  <data name="ConsentYes" xml:space="preserve">
+    <value>Даю согласие</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="Consent.1" xml:space="preserve">
+    <value>Помогите нам стать лучше</value>
+  </data>
+  <data name="Consent.2" xml:space="preserve">
+    <value>Помогите компании Dell совершенствовать продукты и услуги благодаря автоматической отправке диагностических данных и сведений об использовании. Узнайте больше о </value>
+  </data>
+  <data name="ImpExp_CheckBox.0" xml:space="preserve">
+    <value>Больше не отображать запросы о той же модели</value>
+  </data>
+  <data name="ImpExp_Message.1" xml:space="preserve">
+    <value>Импортировать параметры приложений для удобства использования?</value>
+  </data>
+  <data name="ImpExp_Title.0" xml:space="preserve">
+    <value>Обнаружен новый монитор %1.</value>
+  </data>
+  <data name="Wait_DevMgr" xml:space="preserve">
+    <value>Выполняется подключение к субагенту DDPM...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="Wait_DTH" xml:space="preserve">
+    <value>Выполняется подключение к Dell.TechHub...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="Wait_NoDevice" xml:space="preserve">
+    <value>Выполняется обнаружение устройства...</value>
+    <comment>Robert_1218 Changed</comment>
+  </data>
+  <data name="InvalidURL" xml:space="preserve">
+    <value>Недопустимый URL-адрес</value>
+  </data>
+  <data name="Left" xml:space="preserve">
+    <value>Влево</value>
+  </data>
+  <data name="Right" xml:space="preserve">
+    <value>Вправо</value>
+  </data>
+  <data name="WalkThrough.1" xml:space="preserve">
+    <value>Пропустить</value>
+  </data>
+  <data name="WalkThrough.2" xml:space="preserve">
+    <value>Перейти к приложению</value>
+  </data>
+  <data name="HeadsetAudioSettings.29" xml:space="preserve">
+    <value>Применяется во время конференц-вызовов</value>
+  </data>
+  <data name="HeadsetAudioSettings.30" xml:space="preserve">
+    <value>Применяется во время прослушивания мультимедиа, например музыки или подкастов</value>
+  </data>
+  <data name="Brightness.19" xml:space="preserve">
+    <value>В настоящее время включен параметр «Автоматическая яркость». Переопределить параметр?</value>
+  </data>
+  <data name="Brightness.20" xml:space="preserve">
+    <value>Это не основной монитор. Продолжить изменения и установить его в качестве основного монитора для синхронизации?</value>
+  </data>
+  <data name="ThirdPartyLicense.Title" xml:space="preserve">
+    <value>Лицензия сторонних производителей</value>
+  </data>
+  <data name="Illumination.2" xml:space="preserve">
+    <value>Для изменения уровня яркости нажмите клавишу F8</value>
+  </data>
+  <data name="Illumination.3" xml:space="preserve">
+    <value>Регулировка уровней яркости клавиатуры в зависимости от количества света в помещении</value>
+  </data>
+  <data name="Illumination.4" xml:space="preserve">
+    <value>Ручная регулировка яркости клавиатуры</value>
+  </data>
+  <data name="Off2" xml:space="preserve">
+    <value>Выкл.</value>
+  </data>
+  <data name="EazyMemory.40" xml:space="preserve">
+    <value>Введите имя профиля.</value>
+  </data>
+  <data name="hotkey.7" xml:space="preserve">
+    <value>Предупреждение о горячих клавишах</value>
+  </data>
+  <data name="hotkey.8" xml:space="preserve">
+    <value>Вы настроили одну клавишу в качестве горячей клавиши. Это может повлиять на предполагаемую функцию данной клавиши в других приложениях. Продолжить?</value>
+  </data>
+  <data name="hotkey.9" xml:space="preserve">
+    <value>Эта горячая клавиша используется другой функцией Dell Display и Peripheral Manager. Заменить?</value>
+  </data>
+  <data name="URL" xml:space="preserve">
+    <value>URL-адрес</value>
+  </data>
+  <data name="Update_Available_Version" xml:space="preserve">
+    <value>Обновление доступной версии</value>
+  </data>
+  <data name="New_Supported_Devices" xml:space="preserve">
+    <value>Новые поддерживаемые устройства</value>
+  </data>
+  <data name="New_Features" xml:space="preserve">
+    <value>Новые функции</value>
+  </data>
+  <data name="Bug_Fixes" xml:space="preserve">
+    <value>Исправления ошибок</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="UI_Orientation.0" xml:space="preserve">
+    <value>Альбомная</value>
+  </data>
+  <data name="UI_Orientation.1" xml:space="preserve">
+    <value>Книжная</value>
+  </data>
+  <data name="UI_Orientation.2" xml:space="preserve">
+    <value>Альбомная (перевернутая)</value>
+  </data>
+  <data name="UI_Orientation.3" xml:space="preserve">
+    <value>Книжная (перевернутая)</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.0" xml:space="preserve">
+    <value>Низкая</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.1" xml:space="preserve">
+    <value>Средняя</value>
+  </data>
+  <data name="AutoBrightnessRangeLevel.2" xml:space="preserve">
+    <value>Высокая</value>
+  </data>
+  <data name="EazyMemorySettings.0" xml:space="preserve">
+    <value>Горячая клавиша: недавние</value>
+  </data>
+  <data name="EazyMemorySettings.1" xml:space="preserve">
+    <value>Примеры: «Alt + P», «Shift + F», «Ctrl + Shift + F».</value>
+  </data>
+  <data name="EazyMemorySettings.2" xml:space="preserve">
+    <value>Можно легко разместить любое приложение в макете разделенного экрана путем перетаскивания приложения в нужный раздел</value>
+  </data>
+  <data name="EazyMemorySettings.3" xml:space="preserve">
+    <value>Разделение окна приложения в формате «рядом друг с другом» без разрыва</value>
+  </data>
+  <data name="EazyMemorySettings.4" xml:space="preserve">
+    <value>Размещение в зонах разрешено только при нажатии клавиши SHIFT</value>
+  </data>
+  <data name="EazyMemorySettings.5" xml:space="preserve">
+    <value>Расположение на нескольких мониторах</value>
+  </data>
+  <data name="EazyMemorySettings.6" xml:space="preserve">
+    <value>Моментальный снимок окна приложения</value>
+  </data>
+  <data name="PairedInfo.0" xml:space="preserve">
+    <value>Это устройство может быть одновременно сопряжено с хостами в количестве {0}</value>
+  </data>
+  <data name="EazyMemory.41" xml:space="preserve">
+    <value>Для использования этого же времени настроен другой профиль. Используйте другое время.</value>
+  </data>
+  <data name="Action.1" xml:space="preserve">
+    <value>Чтобы создать сочетание клавиш, введите комбинацию клавиш</value>
+  </data>
+  <data name="Action.2" xml:space="preserve">
+    <value>Чтобы выбрать файл, нажмите кнопку «Browse»</value>
+  </data>
+  <data name="Action.3" xml:space="preserve">
+    <value>Чтобы выбрать папку, нажмите кнопку \&quot;Browse\&quot;</value>
+  </data>
+  <data name="Action.4" xml:space="preserve">
+    <value>Введите URL-адрес веб-страницы в поле ниже</value>
+  </data>
+  <data name="Action.5" xml:space="preserve">
+    <value>Имя файла</value>
+  </data>
+  <data name="Action.6" xml:space="preserve">
+    <value>Имя папки</value>
+  </data>
+  <data name="Camera.14" xml:space="preserve">
+    <value>Предустановка</value>
+  </data>
+  <data name="Camera.15" xml:space="preserve">
+    <value>Изменить предустановку</value>
+  </data>
+  <data name="Camera.19" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="Camera.20" xml:space="preserve">
+    <value>Это имя занято</value>
+  </data>
+  <data name="Camera.21" xml:space="preserve">
+    <value>Нейтрализуйте изображение с камеры и восстановите его первоначальные параметры</value>
+  </data>
+  <data name="Camera.22" xml:space="preserve">
+    <value>Отретушируйте свое изображение и примените к нему сглаживание</value>
+  </data>
+  <data name="Camera.23" xml:space="preserve">
+    <value>Увеличьте насыщенность цветов и яркость изображения</value>
+  </data>
+  <data name="Camera.24" xml:space="preserve">
+    <value>Подчеркните свою внешность с помощью теплых тонов</value>
+  </data>
+  <data name="Collab.1" xml:space="preserve">
+    <value>Совместная работа</value>
+  </data>
+  <data name="Collab.10" xml:space="preserve">
+    <value>Клавиатура для совместной работы не может подключиться к Microsoft Teams, так как вы заблокировали запрос. Чтобы использовать Microsoft Teams с клавиатурой для совместной работы, нажмите \&quot;Learn more\&quot; для получения инструкций по повторному подключению.</value>
+  </data>
+  <data name="Collab.11" xml:space="preserve">
+    <value>Чтобы использовать клавиатуру для совместной работы с Zoom, установите последнюю версию Zoom для настольных компьютеров</value>
+  </data>
+  <data name="Collab.12" xml:space="preserve">
+    <value>Чтобы использовать клавиатуру для совместной работы с Microsoft Teams, убедитесь, что вы выполнили вход в Microsoft Teams и используете последнюю версию этого приложения, и что API сторонних приложений включен</value>
+  </data>
+  <data name="Collab.13" xml:space="preserve">
+    <value>Видео</value>
+  </data>
+  <data name="Collab.14" xml:space="preserve">
+    <value>Поделиться</value>
+  </data>
+  <data name="Collab.15" xml:space="preserve">
+    <value>Чат</value>
+  </data>
+  <data name="Collab.16" xml:space="preserve">
+    <value>Микрофон</value>
+  </data>
+  <data name="Collab.17" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Collab.2" xml:space="preserve">
+    <value>Обеспечивает быстрый доступ к средствам управления конференц-вызовами. Включение/выключение клавиш\n приведет к их скрытию на клавиатуре во время\n вызова Microsoft Teams или Zoom.</value>
+  </data>
+  <data name="Collab.3" xml:space="preserve">
+    <value>Включить эффект мигания при появлении нового сообщения чата\n в конференц-вызове</value>
+  </data>
+  <data name="Collab.4" xml:space="preserve">
+    <value>Активировать значки на клавиатуре двумя касаниями, а не\nодним</value>
+  </data>
+  <data name="Collab.5" xml:space="preserve">
+    <value>Подробнее</value>
+  </data>
+  <data name="Collab.6" xml:space="preserve">
+    <value>Чтобы использовать клавиатуру для совместной работы с Microsoft Teams, выполните следующие действия.\r\n1. Откройте Teams и перейдите к настройкам конфиденциальности.\n\n2. Выберите «Third-party app API» и убедитесь, что Dell Display и Peripheral Manager не находится в списке заблокированных.\n\n3. Выполните сопряжение Microsoft Teams с Dell Display и Peripheral Manager посредством запуска конференц-вызова Microsoft Teams.</value>
+  </data>
+  <data name="Collab.7" xml:space="preserve">
+    <value>Если у вас по-прежнему возникают проблемы, обратитесь в отдел ИТ (в соответствующих случаях), так как он может применять политики, запрещающие подключение клавиатуры для совместной работы к Microsoft Teams.</value>
+  </data>
+  <data name="Collab.8" xml:space="preserve">
+    <value>Для использования клавиатуры для совместной работы необходима последняя версия Zoom или Microsoft Teams</value>
+  </data>
+  <data name="Collab.9" xml:space="preserve">
+    <value>Подключите клавиатуру для совместной работы к Microsoft Teams посредством запуска конференц-вызова и принятия запроса на подключение</value>
+  </data>
+  <data name="Common.0" xml:space="preserve">
+    <value>Обзор</value>
+  </data>
+  <data name="Common.1" xml:space="preserve">
+    <value>Очистить</value>
+  </data>
+  <data name="Common.2" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="Common.3" xml:space="preserve">
+    <value>Выберите приложение из списка приложений</value>
+  </data>
+  <data name="Common.4" xml:space="preserve">
+    <value>Выберите файл</value>
+  </data>
+  <data name="Common.5" xml:space="preserve">
+    <value>Выбранный файл</value>
+  </data>
+  <data name="DisplayDefault.1" xml:space="preserve">
+    <value>Восстановить на устройстве все настройки по умолчанию?</value>
+  </data>
+  <data name="Dock.2" xml:space="preserve">
+    <value>Порт USB-C (DP 1.4)</value>
+  </data>
+  <data name="Dock.3" xml:space="preserve">
+    <value>Двойной порт USB-C (DP 1.4)</value>
+  </data>
+  <data name="Dock.4" xml:space="preserve">
+    <value>Порт USB-C (TB 4)</value>
+  </data>
+  <data name="Dock.5" xml:space="preserve">
+    <value>Порт USB-C (TB 5)</value>
+  </data>
+  <data name="Excel.1" xml:space="preserve">
+    <value>Выровнять по центру</value>
+  </data>
+  <data name="Excel.10" xml:space="preserve">
+    <value>Вставить только формат</value>
+  </data>
+  <data name="Excel.11" xml:space="preserve">
+    <value>Вставить формулы</value>
+  </data>
+  <data name="Excel.12" xml:space="preserve">
+    <value>Вставить только значение</value>
+  </data>
+  <data name="Excel.13" xml:space="preserve">
+    <value>Предыдущий лист</value>
+  </data>
+  <data name="Excel.14" xml:space="preserve">
+    <value>Сортировка от A до Z</value>
+  </data>
+  <data name="Excel.2" xml:space="preserve">
+    <value>Выровнять по левому краю</value>
+  </data>
+  <data name="Excel.3" xml:space="preserve">
+    <value>Выровнять по правому краю</value>
+  </data>
+  <data name="Excel.4" xml:space="preserve">
+    <value>Уменьшить отступ</value>
+  </data>
+  <data name="Excel.5" xml:space="preserve">
+    <value>Перейти к нижней части области данных</value>
+  </data>
+  <data name="Excel.6" xml:space="preserve">
+    <value>Перейти к верхней части области данных</value>
+  </data>
+  <data name="Excel.7" xml:space="preserve">
+    <value>Вставить диаграмму</value>
+  </data>
+  <data name="Excel.8" xml:space="preserve">
+    <value>Вставить строку выше</value>
+  </data>
+  <data name="Excel.9" xml:space="preserve">
+    <value>Панорамирование (зажмите кнопку мыши и перемещайте курсор)</value>
+  </data>
+  <data name="Multimedia.1" xml:space="preserve">
+    <value>Медиа: следующая композиция </value>
+  </data>
+  <data name="Multimedia.2" xml:space="preserve">
+    <value>Медиа: воспроизведение/пауза</value>
+  </data>
+  <data name="Multimedia.3" xml:space="preserve">
+    <value>Медиа: предыдущая композиция</value>
+  </data>
+  <data name="Multimedia.4" xml:space="preserve">
+    <value>Музыка</value>
+  </data>
+  <data name="Multimedia.5" xml:space="preserve">
+    <value>Изображения</value>
+  </data>
+  <data name="Multimedia.6" xml:space="preserve">
+    <value>Уменьшить громкость</value>
+  </data>
+  <data name="Multimedia.7" xml:space="preserve">
+    <value>Отключить звук</value>
+  </data>
+  <data name="Multimedia.8" xml:space="preserve">
+    <value>Увеличить громкость</value>
+  </data>
+  <data name="Outlook.1" xml:space="preserve">
+    <value>Прикрепить файл</value>
+  </data>
+  <data name="Outlook.2" xml:space="preserve">
+    <value>Переслать электронное письмо</value>
+  </data>
+  <data name="Outlook.3" xml:space="preserve">
+    <value>Новое электронное письмо</value>
+  </data>
+  <data name="Outlook.4" xml:space="preserve">
+    <value>Новое собрание</value>
+  </data>
+  <data name="Outlook.5" xml:space="preserve">
+    <value>Ответить</value>
+  </data>
+  <data name="Outlook.6" xml:space="preserve">
+    <value>Ответить всем</value>
+  </data>
+  <data name="PairedInfo.1" xml:space="preserve">
+    <value>Вы уверены?</value>
+  </data>
+  <data name="PairedInfo.10" xml:space="preserve">
+    <value>Выполнить сопряжение пера с системой?</value>
+  </data>
+  <data name="PairedInfo.2" xml:space="preserve">
+    <value>Отмена сопряжения с мышью может ограничить возможности использования этого компьютера. Перед отменой сопряжения убедитесь, что у вас есть альтернатива мыши.</value>
+  </data>
+  <data name="PairedInfo.3" xml:space="preserve">
+    <value>Отмена сопряжения с клавиатурой может ограничить возможности использования этого компьютера. Перед отменой сопряжения убедитесь, что у вас есть альтернатива клавиатуре.</value>
+  </data>
+  <data name="PairedInfo.4" xml:space="preserve">
+    <value>Отмена сопряжения с пером может ограничить возможности использования этого компьютера. Перед отменой сопряжения убедитесь, что у вас есть альтернатива перу.</value>
+  </data>
+  <data name="PairedInfo.5" xml:space="preserve">
+    <value>Это приведет к отмене сопряжения гарнитуры с беспроводным USB-приемником. Вы по-прежнему можете выполнить сопряжение и использовать гарнитуру с этой системой с помощью Bluetooth. При необходимости можно выполнить повторное сопряжение гарнитуры с беспроводным приемником. Для этого нажмите на значок «+» в правом верхнем углу главного экрана DDPM.</value>
+  </data>
+  <data name="PairedInfo.6" xml:space="preserve">
+    <value>Продолжить</value>
+  </data>
+  <data name="PairedInfo.7" xml:space="preserve">
+    <value>Это устройство несовместимо с</value>
+  </data>
+  <data name="PairedInfo.8" xml:space="preserve">
+    <value>Это устройство уже сопряжено. Отмените сопряжение устройства, если хотите выполнить его заново.</value>
+  </data>
+  <data name="PairedInfo.9" xml:space="preserve">
+    <value>Сопряжение пера</value>
+  </data>
+  <data name="PenSettings.10" xml:space="preserve">
+    <value>Чтобы выполнить сопряжение с Tile, нажмите и удерживайте две боковые кнопки на пере в течение 3 секунд.</value>
+  </data>
+  <data name="PenSettings.11" xml:space="preserve">
+    <value>Скачать Tile</value>
+  </data>
+  <data name="PenSettings.8" xml:space="preserve">
+    <value>Включите Bluetooth на устройстве.</value>
+  </data>
+  <data name="PenSettings.9" xml:space="preserve">
+    <value>Отсканируйте QR-код, чтобы скачать Tile на мобильное устройство.</value>
+  </data>
+  <data name="PowerPoint.1" xml:space="preserve">
+    <value>Расположить с выравниванием по центру</value>
+  </data>
+  <data name="PowerPoint.10" xml:space="preserve">
+    <value>На задний план</value>
+  </data>
+  <data name="PowerPoint.2" xml:space="preserve">
+    <value>Расположить с выравниванием по левому краю</value>
+  </data>
+  <data name="PowerPoint.3" xml:space="preserve">
+    <value>Расположить с выравниванием по правому краю</value>
+  </data>
+  <data name="PowerPoint.4" xml:space="preserve">
+    <value>На передний план</value>
+  </data>
+  <data name="PowerPoint.5" xml:space="preserve">
+    <value>Понизить уровень списка</value>
+  </data>
+  <data name="PowerPoint.6" xml:space="preserve">
+    <value>Дублировать выбранные слайды</value>
+  </data>
+  <data name="PowerPoint.7" xml:space="preserve">
+    <value>Повысить уровень списка</value>
+  </data>
+  <data name="PowerPoint.8" xml:space="preserve">
+    <value>Воспроизвести с текущего слайда</value>
+  </data>
+  <data name="PowerPoint.9" xml:space="preserve">
+    <value>Предыдущий слайд</value>
+  </data>
+  <data name="RadialMenu.1" xml:space="preserve">
+    <value>Отключено</value>
+  </data>
+  <data name="RadialMenu.2" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="RadialMenu.3" xml:space="preserve">
+    <value>Вперед</value>
+  </data>
+  <data name="RadialMenu.4" xml:space="preserve">
+    <value>Воспроизведение/пауза</value>
+  </data>
+  <data name="RadialMenu.5" xml:space="preserve">
+    <value>Предыдущая композиция</value>
+  </data>
+  <data name="RadialMenu.6" xml:space="preserve">
+    <value>Выкл. звук</value>
+  </data>
+  <data name="RadialMenu.7" xml:space="preserve">
+    <value>Функция для выбранного кругового</value>
+  </data>
+  <data name="RadialMenu.8" xml:space="preserve">
+    <value>Метка для выбранного кругового</value>
+  </data>
+  <data name="RadialMenu.9" xml:space="preserve">
+    <value>Использовать центр для эмуляции нажатия правой кнопки мыши</value>
+  </data>
+  <data name="Smooth" xml:space="preserve">
+    <value>Плавный</value>
+  </data>
+  <data name="Vibrant" xml:space="preserve">
+    <value>Яркий</value>
+  </data>
+  <data name="Warm" xml:space="preserve">
+    <value>Теплый</value>
+  </data>
+  <data name="Word.1" xml:space="preserve">
+    <value>Автопрокрутка</value>
+  </data>
+  <data name="Word.10" xml:space="preserve">
+    <value>Вставить и сопоставить форматирование</value>
+  </data>
+  <data name="Word.11" xml:space="preserve">
+    <value>Предыдущее изменение</value>
+  </data>
+  <data name="Word.12" xml:space="preserve">
+    <value>Предыдущий комментарий</value>
+  </data>
+  <data name="Word.13" xml:space="preserve">
+    <value>Печать</value>
+  </data>
+  <data name="Word.14" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="Word.15" xml:space="preserve">
+    <value>Зачеркивание</value>
+  </data>
+  <data name="Word.16" xml:space="preserve">
+    <value>Размер текста -</value>
+  </data>
+  <data name="Word.17" xml:space="preserve">
+    <value>Размер текста +</value>
+  </data>
+  <data name="Word.18" xml:space="preserve">
+    <value>Перевести выделенный текст</value>
+  </data>
+  <data name="Word.19" xml:space="preserve">
+    <value>Просмотр одной страницы</value>
+  </data>
+  <data name="Word.2" xml:space="preserve">
+    <value>Найти</value>
+  </data>
+  <data name="Word.20" xml:space="preserve">
+    <value>Просмотр ширины страницы</value>
+  </data>
+  <data name="Word.3" xml:space="preserve">
+    <value>Увеличить отступ</value>
+  </data>
+  <data name="Word.4" xml:space="preserve">
+    <value>Вставить комментарий</value>
+  </data>
+  <data name="Word.5" xml:space="preserve">
+    <value>Следующее изменение</value>
+  </data>
+  <data name="Word.6" xml:space="preserve">
+    <value>Следующий комментарий</value>
+  </data>
+  <data name="Word.7" xml:space="preserve">
+    <value>Вставить и сохранить исходное форматирование</value>
+  </data>
+  <data name="Word.8" xml:space="preserve">
+    <value>Вставить и сохранить только текст</value>
+  </data>
+  <data name="Word.9" xml:space="preserve">
+    <value>Вставить и объединить форматирование</value>
+  </data>
+  <data name="Camera.25" xml:space="preserve">
+    <value>Подключите монитор с помощью USB 3.0 и выберите «High Data Speed» в разделе «USB-C Prioritization», чтобы включить разрешение 4K UHD.</value>
+  </data>
+  <data name="HeadsetAutomatedActions.14" xml:space="preserve">
+    <value>Чувствительность</value>
+  </data>
+  <data name="File_corrupted" xml:space="preserve">
+    <value>Файл поврежден</value>
+  </data>
+  <data name="File_corruptedMsg" xml:space="preserve">
+    <value>Файл поврежден. Выберите другой файл</value>
+  </data>
+  <data name="ImportFail" xml:space="preserve">
+    <value>Сбой</value>
+  </data>
+  <data name="ImportFailMsg" xml:space="preserve">
+    <value>Невозможно импортировать другую модель</value>
+  </data>
+  <data name="Update_Webcam_Alert" xml:space="preserve">
+    <value>Это обновление позволит управлять датчиком присутствия с помощью параметров Windows в системах Win 11 22H2 или более поздней версии со сборкой ОС\r\n22621 или более поздней версии</value>
+  </data>
+  <data name="Update_BatteryLow_Alert" xml:space="preserve">
+    <value>Низкий уровень заряда аккумулятора устройства. Замените или перезарядите аккумулятор, чтобы включить это обновление.</value>
+  </data>
+  <data name="Update_Dock_Alert" xml:space="preserve">
+    <value>Убедитесь, что к системе подключена только одна стыковочная станция. Устройства, подключенные к стыковочной станции, могут быть недоступны во время обновления.</value>
+  </data>
+  <data name="Update_PCBatteryLow_Alert" xml:space="preserve">
+    <value>Чтобы продолжить обновление, подключите ПК к источнику питания и убедитесь, что заряд аккумулятора ПК выше 10 %</value>
+  </data>
+  <data name="Update_Mouse_Alert" xml:space="preserve">
+    <value>Чтобы включить это обновление, нажмите любую кнопку или клавишу на устройстве</value>
+  </data>
+  <data name="Landscape" xml:space="preserve">
+    <value>Альбомная</value>
+  </data>
+  <data name="Portrait" xml:space="preserve">
+    <value>Книжная</value>
+  </data>
+  <data name="Landscape_flipped" xml:space="preserve">
+    <value>Альбомная (перевернутая)</value>
+  </data>
+  <data name="Portrait_flipped" xml:space="preserve">
+    <value>Книжная (перевернутая)</value>
+  </data>
+  <data name="Frame_Rate" xml:space="preserve">
+    <value>Частота кадров</value>
+  </data>
+  <data name="Display_Alignment" xml:space="preserve">
+    <value>Выравнивание дисплея</value>
+  </data>
+  <data name="Timer__30min" xml:space="preserve">
+    <value>Таймер/30 мин</value>
+  </data>
+  <data name="Timer__40min" xml:space="preserve">
+    <value>Таймер/40 мин</value>
+  </data>
+  <data name="Timer__50min" xml:space="preserve">
+    <value>Таймер/50 мин</value>
+  </data>
+  <data name="Timer__60min" xml:space="preserve">
+    <value>Таймер/60 мин</value>
+  </data>
+  <data name="Timer__90min" xml:space="preserve">
+    <value>Таймер/90 мин</value>
+  </data>
+  <data name="Disable" xml:space="preserve">
+    <value>Выключить</value>
+  </data>
+  <data name="Extreme" xml:space="preserve">
+    <value>Предельная</value>
+  </data>
+  <data name="Super_Fast" xml:space="preserve">
+    <value>Супербыстрая</value>
+  </data>
+  <data name="Fast" xml:space="preserve">
+    <value>Быстрая</value>
+  </data>
+  <data name="Normal" xml:space="preserve">
+    <value>Нормальная</value>
+  </data>
+  <data name="Level_0" xml:space="preserve">
+    <value>Уровень 0</value>
+  </data>
+  <data name="Level_1" xml:space="preserve">
+    <value>Уровень 1</value>
+  </data>
+  <data name="Level_2" xml:space="preserve">
+    <value>Уровень 2</value>
+  </data>
+  <data name="Level_3" xml:space="preserve">
+    <value>Уровень 3</value>
+  </data>
+  <data name="Desktop" xml:space="preserve">
+    <value>Рабочий стол</value>
+  </data>
+  <data name="Movie_HDR" xml:space="preserve">
+    <value>HDR для фильмов</value>
+  </data>
+  <data name="Game_HDR" xml:space="preserve">
+    <value>HDR для игр</value>
+  </data>
+  <data name="Display_HDR" xml:space="preserve">
+    <value>Дисплей HDR</value>
+  </data>
+  <data name="Custom_Color_HDR" xml:space="preserve">
+    <value>Свой цвет HDR</value>
+  </data>
+  <data name="HDRPeak1000" xml:space="preserve">
+    <value>HDRPeak1000</value>
+  </data>
+  <data name="_4K" xml:space="preserve">
+    <value>4К</value>
+  </data>
+  <data name="_FHD" xml:space="preserve">
+    <value>FHD</value>
+  </data>
+  <data name="Steady_Vision" xml:space="preserve">
+    <value>Steady Vision</value>
+  </data>
+  <data name="VisionEngine_Steady" xml:space="preserve">
+    <value>Steady Vision</value>
+  </data>
+  <data name="Software_update" xml:space="preserve">
+    <value>Обновление ПО</value>
+  </data>
+  <data name="Firmware_update" xml:space="preserve">
+    <value>Обновление микропрограммы</value>
+  </data>
+  <data name="Color.10" xml:space="preserve">
+    <value>В настоящее время включен параметр «Автоматическая температура цвета». Переопределить параметр?</value>
+  </data>
+  <data name="Mouse.16" xml:space="preserve">
+    <value>Количество сообщений о положении мыши в секунду. Для повышения частоты опроса установите подключение USB.</value>
+  </data>
+  <data name="EATooltip_00" xml:space="preserve">
+    <value>Пустой макет</value>
+  </data>
+  <data name="EATooltip_21H" xml:space="preserve">
+    <value>Вариант 2.1: два столбца с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_21V" xml:space="preserve">
+    <value>Вариант 2.1: две строки с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_22H" xml:space="preserve">
+    <value>Вариант 2.2: две строки с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_22V" xml:space="preserve">
+    <value>Вариант 2.2: два столбца с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_23H" xml:space="preserve">
+    <value>Вариант 2.3: два столбца с разделением 70/30 %.</value>
+  </data>
+  <data name="EATooltip_23V" xml:space="preserve">
+    <value>Вариант 2.3: две строки с разделением 30/70 %.</value>
+  </data>
+  <data name="EATooltip_24H" xml:space="preserve">
+    <value>Вариант 2.4: два столбца с разделением 30/70 %.</value>
+  </data>
+  <data name="EATooltip_24V" xml:space="preserve">
+    <value>Вариант 2.4: две строки с разделением 70/30 %.</value>
+  </data>
+  <data name="EATooltip_31H" xml:space="preserve">
+    <value>Вариант 3.1: три строки с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_31V" xml:space="preserve">
+    <value>Вариант 3.1: три столбца с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_32H" xml:space="preserve">
+    <value>Вариант 3.2: три столбца с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_32V" xml:space="preserve">
+    <value>Вариант 3.2: три строки с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_33H" xml:space="preserve">
+    <value>Вариант 3.3: три столбца с разделением 30/40/30 %.</value>
+  </data>
+  <data name="EATooltip_33V" xml:space="preserve">
+    <value>Вариант 3.3: три строки с разделением 30/40/30 %.</value>
+  </data>
+  <data name="EATooltip_34H" xml:space="preserve">
+    <value>Вариант 3.4: две строки с разделением поровну. Столбец 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_34V" xml:space="preserve">
+    <value>Вариант 3.4: две строки с разделением поровну. Строка 1 без разделения. Строка 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_35H" xml:space="preserve">
+    <value>Вариант 3.5: две строки с разделением поровну. Столбец 1 без разделения. Столбец 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_35V" xml:space="preserve">
+    <value>Вариант 3.5: две строки с разделением поровну. Строка 1 с разделением поровну. Строка 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_36H" xml:space="preserve">
+    <value>Вариант 3.6: две строки с разделением поровну. Столбец 1 с разделением 30/70 %. Столбец 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_36V" xml:space="preserve">
+    <value>Вариант 3.6: две строки с разделением 70/30 %. Строка 1 без разделения. Строка 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_37H" xml:space="preserve">
+    <value>Вариант 3.7: две строки с разделением поровну. Столбец 1 с разделением 70/30 %. Столбец 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_37V" xml:space="preserve">
+    <value>Вариант 3.7: две строки с разделением 30/70 %. Строка 1 с разделением поровну. Строка 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_38H" xml:space="preserve">
+    <value>Вариант 3.8: две строки с разделением поровну. Строка 1 без разделения. Строка 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_38V" xml:space="preserve">
+    <value>Вариант 3.8: два столбца с разделением поровну. Столбец 1 без разделения. Столбец 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_39H" xml:space="preserve">
+    <value>Вариант 3.9: две строки с разделением поровну. Строка 1 с разделением поровну. Строка 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_39V" xml:space="preserve">
+    <value>Вариант 3.9: два столбца с разделением поровну. Столбец 1 с разделением поровну. Столбец 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_41H" xml:space="preserve">
+    <value>Вариант 4.1: разделение на четыре квадранта.</value>
+  </data>
+  <data name="EATooltip_41V" xml:space="preserve">
+    <value>Вариант 4.1: разделение на четыре квадранта.</value>
+  </data>
+  <data name="EATooltip_42H" xml:space="preserve">
+    <value>Вариант 4.2: два столбца с разделением поровну. Столбец 1 с разделением поровну на три сектора. Столбец 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_42V" xml:space="preserve">
+    <value>Вариант 4.2: две строки с разделением поровну. Строка 1 без разделения. Строка 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_43H" xml:space="preserve">
+    <value>Вариант 4.3: два столбца с разделением поровну. Столбец 1 без разделения. Столбец 2 с разделением поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_43V" xml:space="preserve">
+    <value>Вариант 4.3: две строки с разделением поровну. Строка 1 с разделением поровну на три сектора. Столбец 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_44H" xml:space="preserve">
+    <value>Вариант 4.4: четыре столбца с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_44V" xml:space="preserve">
+    <value>Вариант 4.4: четыре строки с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_45H" xml:space="preserve">
+    <value>Вариант 4.5: три столбца с разделением поровну. Столбец 1 с разделением поровну. Столбцы 2 и 3 без разделения.</value>
+  </data>
+  <data name="EATooltip_45V" xml:space="preserve">
+    <value>Вариант 4.5: три строки с разделением поровну. Строки 1 и 2 без разделения. Строка 3 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_46H" xml:space="preserve">
+    <value>Вариант 4.6: три столбца с разделением поровну. Столбцы 1 и 2 без разделения. Столбец 3 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_46V" xml:space="preserve">
+    <value>Вариант 4.6: три строки с разделением поровну. Строка 1 с разделением поровну. Строки 2 и 3 без разделения.</value>
+  </data>
+  <data name="EATooltip_51H" xml:space="preserve">
+    <value>Вариант 5.1: две строки с разделением поровну. Строка 1 с разделением поровну на три сектора. Строка 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_51V" xml:space="preserve">
+    <value>Вариант 5.1: два столбца с разделением поровну. Столбец 1 с разделением поровну на три сектора. Столбец 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_52H" xml:space="preserve">
+    <value>Вариант 5.2: две строки с разделением поровну. Строка 1 с разделением поровну. Строка 2 с разделением поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_52V" xml:space="preserve">
+    <value>Вариант 5.2: два столбца с разделением поровну. Столбец 1 с разделением поровну. Столбец 2 с разделением поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_53H" xml:space="preserve">
+    <value>Вариант 5.3: две строки с разделением 30/70 %. Строка 1 с разделением поровну на три сектора. Строка 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_53V" xml:space="preserve">
+    <value>Вариант 5.3: два столбца с разделением 30/70 %, Строка 1 с разделением поровну на три сектора. Строка 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_54H" xml:space="preserve">
+    <value>Вариант 5.4: две строки с разделением 70/30 %. Строка 1 с разделением поровну. Строка 2 с разделением поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_54V" xml:space="preserve">
+    <value>Вариант 5.4: два столбца с разделением 70/30 %. Строка 1 с разделением поровну. Строка 2 с разделением поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_55H" xml:space="preserve">
+    <value>Вариант 5.5: две строки с разделением 30/70 %. Строки 1 и 2 с разделением каждой поровну. Столбец 1 без разделения. Столбец 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_55V" xml:space="preserve">
+    <value>Вариант 5.5: две строки с разделением поровну. Строка 1 с разделением поровну на три сектора. Строка 2 с разделением 30/70 %.</value>
+  </data>
+  <data name="EATooltip_56H" xml:space="preserve">
+    <value>Вариант 5.6: два столбца с разделением поровну. Столбец 1 с разделением поровну на три сектора. Столбец 2 с разделением 30/70 %.</value>
+  </data>
+  <data name="EATooltip_56V" xml:space="preserve">
+    <value>Вариант 5.6: две строки с разделением поровну. Строка 1 с разделением 30/70 %. Строка 2 с разделением поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_57H" xml:space="preserve">
+    <value>Вариант 5.7: три столбца с разделением поровну. Столбцы 1 и 3 с разделением поровну. Столбец 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_57V" xml:space="preserve">
+    <value>Вариант 5.7: три строки с разделением поровну. Строки 1 и 3 с разделением каждой поровну. Строка 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_58H" xml:space="preserve">
+    <value>Вариант 5.8: две строки с разделением 70/30 %. Строка 1 с разделением 70/30 %. Строка 2 с разделением поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_58V" xml:space="preserve">
+    <value>Вариант 5.8: два столбца с разделением 30/70 %. Столбец 1 с разделением 70/30 %. Столбец 2 с разделением поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_59H" xml:space="preserve">
+    <value>Вариант 5.9: две строки с разделением 70/30 %. Строка 1 с разделением 70/30 %. Строка 2 с разделением поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_59V" xml:space="preserve">
+    <value>Вариант 5.9: два столбца с разделением 70/30 %. Столбец 1 с разделением 70/30 %. Столбец 2 с разделением поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_61H" xml:space="preserve">
+    <value>Вариант 6.1: три столбца с разделением поровну. Столбцы 1, 2 и 3 с разделением каждого поровну.</value>
+  </data>
+  <data name="EATooltip_61V" xml:space="preserve">
+    <value>Вариант 6.1: два столбца с разделением поровну. Столбцы 1 и 2 с разделением каждого поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_62H" xml:space="preserve">
+    <value>Вариант 6.2: две строки с разделением 70/30 %. Строка 1 с разделением 70/30 %. Строка 2 с разделением поровну на три сектора. Столбец 1 без разделения. Столбец 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_62V" xml:space="preserve">
+    <value>Вариант 6.2: две строки с разделением 30/70 %. Строка 1 с разделением поровну на три сектора. Строка 2 с разделением 30/70 %. Столбец 1 без разделения. Столбец 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_63H" xml:space="preserve">
+    <value>Вариант 6.3: две строки с разделением 30/70 %. Строка 1 с разделением поровну на четыре сектора. Строка 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_63V" xml:space="preserve">
+    <value>Вариант 6.3: два столбца с разделением 30/70 %. Столбец 1 с разделением поровну на четыре сектора. Столбец 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_64H" xml:space="preserve">
+    <value>Вариант 6.4: две строки с разделение 30/70 %. Строка 1 с разделением поровну на три сектора. Строка 2 с разделением 70/30 %. Столбец 1 без разделения. Столбец 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_64V" xml:space="preserve">
+    <value>Вариант 6.4: два столбца с разделением 30/70 %. Строка 1 с разделением поровну на три сектора. Строка 2 с разделением 30/70 %. Столбец 1 с разделением поровну. Столбец 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_65H" xml:space="preserve">
+    <value>Вариант 6.5: две строки с разделением 30/70 %. Строка 1 с разделением поровну на три сектора. Строка 2 с разделением 30/70 %. Столбец 1 с разделением поровну. Столбец 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_65V" xml:space="preserve">
+    <value>Вариант 6.5: два столбца с разделением 30/70 %. Строка 1 с разделением 30/70 %. Строка 2 с разделением поровну на три сектора. Столбец 1 с разделением поровну. Столбец 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_66H" xml:space="preserve">
+    <value>Вариант 6.6: две строки с разделением 30/70 %. Строка 1 с разделением 30/70 %. Столбец 1 с разделением поровну. Столбец 2 без разделения. Строка 1 с разделением поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_66V" xml:space="preserve">
+    <value>Вариант 6.6: две строки с разделением 30/70 %. Строка 1 с разделением 30/70 %. Строка 2 с разделением поровну на три сектора. Столбец 1 без разделения. Столбец 2 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_67H" xml:space="preserve">
+    <value>Вариант 6.7: два столбца с разделением поровну. Строки 1, 2 и 3 с разделением поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_67V" xml:space="preserve">
+    <value>Вариант 6.7: три столбца с разделением поровну. Столбцы 1, 2 и 3 с разделением каждого поровну.</value>
+  </data>
+  <data name="EATooltip_68H" xml:space="preserve">
+    <value>Вариант 6.8: четыре столбца с разделением поровну. Строки 1 и 4 с разделением поровну. Строки 2 и 3 без разделения.</value>
+  </data>
+  <data name="EATooltip_68V" xml:space="preserve">
+    <value>Вариант 6.8: четыре строки с разделением поровну. Строки 1 и 4 с разделением поровну. Строки 2 и 3 без разделения.</value>
+  </data>
+  <data name="EATooltip_69H" xml:space="preserve">
+    <value>Вариант 6.9: две строки с разделением 70/30 %. Строка 1 с разделением поровну. Строка 2 с разделением поровну на четыре сектора.</value>
+  </data>
+  <data name="EATooltip_69V" xml:space="preserve">
+    <value>Вариант 6.9: две строки с разделением поровну. Строка 1 с разделением 70/30 %. Столбец 1 без разделения. Столбец 2 с разделением поровну. Строка 2 с разделением 70/30 %.</value>
+  </data>
+  <data name="EATooltip_6AH" xml:space="preserve">
+    <value>Вариант 6.10: два столбца с разделением 70/30 %. Столбцы 1, 2 и 3 с разделением каждого поровну.</value>
+  </data>
+  <data name="EATooltip_6AV" xml:space="preserve">
+    <value>Вариант 6.10: две строки с разделением 70/30 %. Строки 1 и 2 с разделением каждой поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_71H" xml:space="preserve">
+    <value>Вариант 7.1: две строки с разделением 30/70 %. Строка 1 с разделением поровну на три сектора. Строка 2 с разделением 30/70 %. Столбец 1 с разделением поровну. Столбцы 2 и 3 без разделения.</value>
+  </data>
+  <data name="EATooltip_71V" xml:space="preserve">
+    <value>Вариант 7.1: три строки с разделением поровну. Строки 1 и 2 с разделением каждой 30/70 %. Строка 3 с разделением на три равных сектора.</value>
+  </data>
+  <data name="EATooltip_72H" xml:space="preserve">
+    <value>Вариант 7.2: две строки с разделением 30/70 %. Строки 1 и 2 с разделением каждой поровну на три сектора. Столбцы 1 и 2 без разделения. Столбец 3 с разделением поровну.</value>
+  </data>
+  <data name="EATooltip_72V" xml:space="preserve">
+    <value>Вариант 7.2: три строки с разделением поровну. Строки 1 и 3 с разделением каждой поровну на три сектора. Строка 2 с разделением 30/70 %.</value>
+  </data>
+  <data name="EATooltip_73H" xml:space="preserve">
+    <value>Вариант 7.3: две строки с разделением поровну. Срока 1 с разделением поровну на четыре сектора. Строка 2 с разделением поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_73V" xml:space="preserve">
+    <value>Вариант 7.3: два столбца с разделением поровну. Столбец 1 с разделением поровну на четыре сектора. Столбец 2 с разделением поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_74H" xml:space="preserve">
+    <value>Вариант 7.4: две строки с разделением поровну. Строки 1 и 3 с разделением каждой поровну. Строка 2 с разделением поровну на четыре сектора.</value>
+  </data>
+  <data name="EATooltip_74V" xml:space="preserve">
+    <value>Вариант 7.4: два столбца с разделением поровну. Столбец 1 с разделением поровну на три сектора. Столбец 2 с разделением поровну на четыре сектора.</value>
+  </data>
+  <data name="EATooltip_75H" xml:space="preserve">
+    <value>Вариант 7.5: две строки с разделением поровну. Строка 1 с разделением поровну на четыре сектора. Строка 2 с разделением 25/50/25 %. Столбцы 1 и 3 с разделением каждого поровну. Столбец 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_75V" xml:space="preserve">
+    <value>Вариант 7.5: три строки с разделением 25/50/25 %. Строка 1 с разделением поровну на три сектора. Строка 2 с разделением 30/70 %. Столбец 1 с разделением поровну. Столбец 2 без разделения. Строка 3 с разделением на три равных сектора.</value>
+  </data>
+  <data name="EATooltip_76H" xml:space="preserve">
+    <value>Вариант 7.6: две строки с разделением 30/70 %. Строка 1 с разделением 25/50/25 %. Столбцы 1 и 3 с разделением поровну. Столбец 2 без разделения. Строка 2 с разделением поровну на четыре сектора.</value>
+  </data>
+  <data name="EATooltip_76V" xml:space="preserve">
+    <value>Вариант 7.6: три строки с разделением 25/50/25 %. Строка 1 с разделением поровну на три сектора. Строка 2 с разделением 70/30 %. Строка 3 с разделением поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_77H" xml:space="preserve">
+    <value>Вариант 7.7: две строки с разделением 30/70 %. Строка 1 с разделением поровну на четыре сектора. Строка 2 с разделением 50/25/25 %. Столбец 1 без разделения. Столбцы 2 и 3 с разделением каждого поровну.</value>
+  </data>
+  <data name="EATooltip_77V" xml:space="preserve">
+    <value>Вариант 7.7: три строки с разделением 25/25/50 %. Строки 1 и 2 с разделением каждой поровну на три сектора. Строка 3 с разделением 30/70 %. Столбец 1 с разделением поровну. Столбец 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_78H" xml:space="preserve">
+    <value>Вариант 7.8: две строки с разделением 30/70 %. Строки 1 и 4 с разделением каждой поровну. Строка 2 с разделением 25/25/50 %. Столбцы 1 и 2 с разделением каждого поровну. Столбец 3 без разделения.</value>
+  </data>
+  <data name="EATooltip_78V" xml:space="preserve">
+    <value>Вариант 7.8: три строки с разделением 30/70 %. Строка 1 с разделением 30/70 %. Столбец 1 с разделением поровну. Столбец 2 без разделения. Строки 2 и 3 с разделением каждого поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_79H" xml:space="preserve">
+    <value>Вариант 7.9: четыре столбца с разделением поровну. Столбцы 1, 2, 3 и 4 с разделением каждого поровну.</value>
+  </data>
+  <data name="EATooltip_79V" xml:space="preserve">
+    <value>Вариант 7.9: четыре столбца с разделением поровну. Строки 1, 2, 3 и 4 с разделением каждого поровну.</value>
+  </data>
+  <data name="EATooltip_7AH" xml:space="preserve">
+    <value>Вариант 7.10: четыре столбца с разделением поровну. Столбцы 1, 2, 3 и 4 с разделением каждого поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_7AV" xml:space="preserve">
+    <value>Вариант 7.10: четыре столбца с разделением поровну. Столбцы 1, 2, 3 и 4 с разделением каждого поровну на три сектора.</value>
+  </data>
+  <data name="EATooltip_7BH" xml:space="preserve">
+    <value>Вариант 7.11: две строки с разделением 30/70 %. Строки 1 и 2 с разделением каждой 25/50/25 %. Столбцы 1 и 3 с разделением каждого поровну. Столбец 2 без разделения.</value>
+  </data>
+  <data name="EATooltip_7BV" xml:space="preserve">
+    <value>Вариант 7.11: три столбца с разделением 30/70 %. Столбцы 1, 2 и 3 с разделением 25/50/25 %. Строки 1 и 3 с разделением поровну. Строка 2 без разделения.</value>
+  </data>
+  <data name="EazyMemory.42" xml:space="preserve">
+    <value>Соответствующий профиль Easy Memory также будет удален. Продолжить?</value>
+  </data>
+  <data name="DiagnosticReport_SaveFail" xml:space="preserve">
+    <value>Не удалось сохранить диагностический отчет</value>
+  </data>
+  <data name="MonitorAssetReport_SaveFail" xml:space="preserve">
+    <value>Не удалось сохранить отчет о мониторинге активов</value>
+  </data>
+  <data name="USBKVM.Tips" xml:space="preserve">
+    <value>Примеры: «Alt + P», «Shift + F» «Ctrl + Shift + F».\nПримечание. При работе с несколькими мониторами для активации функции горячих клавиш курсор мыши должен находиться на экране целевого монитора.</value>
+  </data>
+  <data name="BrightnessLevel" xml:space="preserve">
+    <value>Уровень яркости</value>
+  </data>
+  <data name="USBKVM" xml:space="preserve">
+    <value>USB KVM</value>
+  </data>
+  <data name="Mouse" xml:space="preserve">
+    <value>Мышь</value>
+  </data>
+  <data name="Keyboard" xml:space="preserve">
+    <value>Клавиатура</value>
+  </data>
+  <data name="Calendar" xml:space="preserve">
+    <value>Календарь</value>
+  </data>
+  <data name="Camera" xml:space="preserve">
+    <value>Камера</value>
+  </data>
+  <data name="Clock" xml:space="preserve">
+    <value>Часы</value>
+  </data>
+  <data name="Cortana" xml:space="preserve">
+    <value>Кортана</value>
+  </data>
+  <data name="DellCommandUpdate" xml:space="preserve">
+    <value>Dell Command Update</value>
+  </data>
+  <data name="DellDigitalDelivery" xml:space="preserve">
+    <value>Dell Digital Delivery</value>
+  </data>
+  <data name="DellOptimizer" xml:space="preserve">
+    <value>Dell Optimizer</value>
+  </data>
+  <data name="Family" xml:space="preserve">
+    <value>Семья</value>
+  </data>
+  <data name="FeedbackHub" xml:space="preserve">
+    <value>Центр обратной связи</value>
+  </data>
+  <data name="GameBar" xml:space="preserve">
+    <value>Игровая панель</value>
+  </data>
+  <data name="GetHelp" xml:space="preserve">
+    <value>Помощь</value>
+  </data>
+  <data name="GetStarted" xml:space="preserve">
+    <value>Начало работы</value>
+  </data>
+  <data name="IntelManagementAndSecurityStatus" xml:space="preserve">
+    <value>Intel (R) Management and Security Status</value>
+  </data>
+  <data name="IntelGraphicsCommandCenter" xml:space="preserve">
+    <value>Intel® Graphics Command Center</value>
+  </data>
+  <data name="IntelOptaneMemoryAndStorageManagement" xml:space="preserve">
+    <value>Intel® Optane™ Memory and Storage Management</value>
+  </data>
+  <data name="Mail" xml:space="preserve">
+    <value>Почта</value>
+  </data>
+  <data name="Maps" xml:space="preserve">
+    <value>Карты</value>
+  </data>
+  <data name="MediaPlayer" xml:space="preserve">
+    <value>Мультимедиа-проигрыватель</value>
+  </data>
+  <data name="Microsoft365Office" xml:space="preserve">
+    <value>Microsoft 365 (Office)</value>
+  </data>
+  <data name="MicrosoftClipchamp" xml:space="preserve">
+    <value>Microsoft Clipchamp</value>
+  </data>
+  <data name="MicrosoftDefender" xml:space="preserve">
+    <value>Microsoft Defender</value>
+  </data>
+  <data name="MicrosoftStore" xml:space="preserve">
+    <value>Microsoft Store</value>
+  </data>
+  <data name="MicrosoftTeams" xml:space="preserve">
+    <value>Microsoft Teams</value>
+  </data>
+  <data name="MicrosoftTeamsWorkSchool" xml:space="preserve">
+    <value>Microsoft Teams (для работы или учебы)</value>
+  </data>
+  <data name="MicrosoftToDo" xml:space="preserve">
+    <value>Microsoft To Do</value>
+  </data>
+  <data name="MoviesTV" xml:space="preserve">
+    <value>Кино и ТВ</value>
+  </data>
+  <data name="News" xml:space="preserve">
+    <value>Новости</value>
+  </data>
+  <data name="Notepad" xml:space="preserve">
+    <value>Блокнот</value>
+  </data>
+  <data name="Paint" xml:space="preserve">
+    <value>Paint</value>
+  </data>
+  <data name="PhoneLink" xml:space="preserve">
+    <value>Связь с телефоном</value>
+  </data>
+  <data name="Photos" xml:space="preserve">
+    <value>Фотографии</value>
+  </data>
+  <data name="PowerAutomate" xml:space="preserve">
+    <value>Power Automate</value>
+  </data>
+  <data name="SnippingTool" xml:space="preserve">
+    <value>Ножницы</value>
+  </data>
+  <data name="SolitaireCasualGames" xml:space="preserve">
+    <value>Пасьянсы и казуальные игры</value>
+  </data>
+  <data name="SoundRecorder" xml:space="preserve">
+    <value>Звукозапись</value>
+  </data>
+  <data name="Spotify" xml:space="preserve">
+    <value>Spotify</value>
+  </data>
+  <data name="SupportAssist" xml:space="preserve">
+    <value>SupportAssist</value>
+  </data>
+  <data name="Terminal" xml:space="preserve">
+    <value>Терминал</value>
+  </data>
+  <data name="Tips" xml:space="preserve">
+    <value>Советы</value>
+  </data>
+  <data name="Weather" xml:space="preserve">
+    <value>Погода</value>
+  </data>
+  <data name="WindowsBackup" xml:space="preserve">
+    <value>Резервное копирование Windows</value>
+  </data>
+  <data name="WindowsSecurity" xml:space="preserve">
+    <value>Безопасность Windows</value>
+  </data>
+  <data name="Xbox" xml:space="preserve">
+    <value>Xbox</value>
+  </data>
+  <data name="NextTrack" xml:space="preserve">
+    <value>Следующая композиция</value>
+  </data>
+  <data name="PrtSc" xml:space="preserve">
+    <value>Печать экрана</value>
+  </data>
+  <data name="ScrollLock" xml:space="preserve">
+    <value>Scroll Lock</value>
+  </data>
+  <data name="PauseBreak" xml:space="preserve">
+    <value>Pause/Break</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="End" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="PageDown" xml:space="preserve">
+    <value>Page Down</value>
+  </data>
+  <data name="PageUp" xml:space="preserve">
+    <value>Page Up</value>
+  </data>
+  <data name="WebBrowser" xml:space="preserve">
+    <value>Веб-браузер</value>
+  </data>
+  <data name="DTPUnavailable" xml:space="preserve">
+    <value>Служба DTP недоступна!</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>(Без имени)</value>
+  </data>
+  <data name="Keyboard.20" xml:space="preserve">
+    <value>Беспроводная клавиатура Dell Premier</value>
+  </data>
+  <data name="Keyboard.21" xml:space="preserve">
+    <value>Беспроводная мышь Dell {0}</value>
+  </data>
+  <data name="EzArrange.10" xml:space="preserve">
+    <value>Выберите папку</value>
+  </data>
+  <data name="Fullscreen.1" xml:space="preserve">
+    <value>Полноэкранный режим</value>
+  </data>
+  <data name="PIPSmall" xml:space="preserve">
+    <value>PIP, малый</value>
+  </data>
+  <data name="PIPLarge" xml:space="preserve">
+    <value>PIP, большой</value>
+  </data>
+  <data name="Learn_more_for_firmware" xml:space="preserve">
+    <value>Подробнее о микропрограмме</value>
+  </data>
+  <data name="Learn_more_for_software" xml:space="preserve">
+    <value>Подробнее о программном обеспечении</value>
+  </data>
 </root>

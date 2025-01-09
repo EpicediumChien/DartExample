@@ -220,6 +220,21 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             //string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin._userId}";
             //string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
 
+            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
+            {
+                ViewModel.EndWalkThrough();
+            }
+            else
+            {
+                if (!DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
+                {
+                    ViewModel.IsPeripheralVisible = true;
+                    ViewModel.IsDDPMVisibility = false;
+                    ViewModel.InitializeDeviceFromQueue();
+                    ViewModel.UpdateButtonVisibility();
+                }
+            }
+
             this.Close();
         }
 

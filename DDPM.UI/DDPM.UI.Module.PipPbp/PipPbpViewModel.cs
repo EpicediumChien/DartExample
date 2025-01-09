@@ -1488,8 +1488,12 @@ namespace DDPM.UI.Module.PipPbp
             if (SplitListView_Pbp == null)
                 return;
 
+            //Robert_Lin, 2025-1-7, the DDPMDebug.txt solution will be removed, use DevSettings instaed.
+            //NEW:
+            bool isAddAllModeToListView = DevSettings.IsPxpModelListViewAddAllModes();
+            //OLD:
             //Robert_Lin, 2024-11-22, To verify Pxp SplitItem tooltip text
-            bool isAddAllModeToListView = (DDPM.UI.Common.User32.IniReadInt("DDPMDebug", "PipPbp.PbpModeListView.AddAllModes", 0, @"C:\temp\DDPMDebug.txt") == 1);
+            //bool isAddAllModeToListView = (DDPM.UI.Common.User32.IniReadInt("DDPMDebug", "PipPbp.PbpModeListView.AddAllModes", 0, @"C:\temp\DDPMDebug.txt") == 1);
 
             SplitListView_Pbp.ClearList();
             bool isSelectedItemInList = false;
@@ -1524,8 +1528,12 @@ namespace DDPM.UI.Module.PipPbp
         {
             get
             {
+                //Robert_Lin, 2025-1-7, the DDPMDebug.txt solution will be removed, use DevSettings instaed.
+                //NEW:
+                if (DevSettings.IsPxpVideoSwapComboBoxAlwaysVisible())
+                //OLD:
                 //Robert_Lin, 2024-11-13, allow to set it always true from INI file for debugging
-                if (DDPM.UI.Common.User32.IniReadInt("DDPMDebug", "PipPbp.VideoSwapComboBox.AlwaysVisible", 0, @"C:\temp\DDPMDebug.txt") == 1)
+                //if (DDPM.UI.Common.User32.IniReadInt("DDPMDebug", "PipPbp.VideoSwapComboBox.AlwaysVisible", 0, @"C:\temp\DDPMDebug.txt") == 1)
                 {
                     return true;
                 }
@@ -1556,12 +1564,10 @@ namespace DDPM.UI.Module.PipPbp
 
         public bool ExecuteVideoSwap()
         {
-            if (DeviceManagerSA != null)
+            if (DeviceManagerSA != null &&
+                SelectedHomeDevice != null)
             {
-                if (SelectedHomeDevice != null)
-                {
-                    return DeviceManagerSA.VideoSwap(SelectedHomeDevice.MonitorInfo, 0, 1).Result;
-                }
+                return DeviceManagerSA.VideoSwap(SelectedHomeDevice.MonitorInfo, 0, 1).Result;
             }
             return false;
         }
@@ -1579,10 +1585,10 @@ namespace DDPM.UI.Module.PipPbp
 
                 if (SelectedHomeDevice.HasCapability_UsbKvm)
                     return true;
-                if (SelectedHomeDevice.HasCapability_NetworkKvm)
+                if (SelectedHomeDevice.HasCapability_NetworkKvm &&
+                    IsNetworkKvmOn)
                 {
-                    if (IsNetworkKvmOn)
-                        return true;
+                    return true;
                 }
                 return false;
             }
@@ -1632,12 +1638,10 @@ namespace DDPM.UI.Module.PipPbp
 
         public bool ExecuteUsbSwitch()
         {
-            if (DeviceManagerSA != null)
+            if (DeviceManagerSA != null &&
+                SelectedHomeDevice != null)
             {
-                if (SelectedHomeDevice != null)
-                {
-                    return DeviceManagerSA.UsbSwitch1(SelectedHomeDevice.MonitorInfo).Result; ;
-                }
+                return DeviceManagerSA.UsbSwitch1(SelectedHomeDevice.MonitorInfo).Result; ;
             }
             return false;
         }

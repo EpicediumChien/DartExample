@@ -34,6 +34,8 @@ namespace DDPM.SA.Common.Settings
 {
     public class DDPMFileSecurity
     {
+        public static readonly string SysLogLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "Dell\\DDPM.Subagent");
+
         private static void WriteLog(ILog log, string message, bool isError = false)
         {
 #if DEBUG
@@ -560,33 +562,33 @@ namespace DDPM.SA.Common.Settings
 
             if (File.Exists(fileName) == false)
             {
-                info = $"[ApplyDDPMACLtoSettingFile] file ({fileName}) not exist";
+                info = $"[ApplyFileACLUserReadOnly] file ({fileName}) not exist";
                 return false;
             }
 
             //Elsa Add Security
             string FileInfo;
-            if (!DDPMFileSecurity.IsFilePathValid(fileName, out FileInfo))
+            if (!DDPMFileSecurity.ValidateFilePath(fileName, out FileInfo))
             {
-                info = $"[ApplyFileACLUserReadOnly] {FileInfo}";
+                info = $"[ApplyFileACLUserReadOnly][ValidateFilePath] {FileInfo}";
                 return false;
             }
             FileInfo fileInfo = new FileInfo(fileName);
 
             // Get file's security content
-            FileSecurity fileSecurity = fileInfo.GetAccessControl();
+            FileSecurity fileSecurity = new FileSecurity();// fileInfo.GetAccessControl();
 
             // Create rules for setting file
             var usersReadRule = new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null), FileSystemRights.Read, AccessControlType.Allow);
             var usersWriteRule = new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null), FileSystemRights.Write, AccessControlType.Deny);
-            var usersRule = new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null), FileSystemRights.FullControl, AccessControlType.Allow);
+            //var usersRule = new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null), FileSystemRights.FullControl, AccessControlType.Allow);
             var systemRule = new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null), FileSystemRights.FullControl, AccessControlType.Allow);
-            var adminRule = new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null), FileSystemRights.Read | FileSystemRights.Write, AccessControlType.Allow);
+            var adminRule = new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null), FileSystemRights.FullControl, AccessControlType.Allow);
 
             try
             {
                 // check if can apply rules
-                SetAccessRuleIfNotExists(ref fileSecurity, systemRule);
+                /*SetAccessRuleIfNotExists(ref fileSecurity, systemRule);
                 if (!isDebug)
                 {
                     //for release build please use this rule for normal user
@@ -600,15 +602,25 @@ namespace DDPM.SA.Common.Settings
                 SetAccessRuleIfNotExists(ref fileSecurity, adminRule);
 
                 // In dotnet core, FileSystemAclExtensions.SetAccessControl method is the major function used to update file access right
+                fileInfo.SetAccessControl(fileSecurity);*/
+                // Disable inheritance and remove inherited rules
+
+                fileSecurity.AddAccessRule(usersReadRule);
+                fileSecurity.AddAccessRule(usersWriteRule);
+                fileSecurity.AddAccessRule(systemRule);
+                fileSecurity.AddAccessRule(adminRule);
+                fileSecurity.SetAccessRuleProtection(true, false);
+
+                // Apply changes
                 fileInfo.SetAccessControl(fileSecurity);
             }
             catch (Exception ex)
             {
-                info = ex.Message;
+                info = "[ApplyFileACLUserReadOnly]" + ex.Message;
                 return false;
             }
 
-            info = "Success";
+            info = "[ApplyFileACLUserReadOnly] Success";
             return true;
         }
 
@@ -800,41 +812,99 @@ namespace DDPM.SA.Common.Settings
             }
         }
 
-        //
-        //The caller should use try-catch to catch exception and avoid crash
-        public static void SetFolderPermissions_UserReadAndExecute(string folderPath)
+        public static bool SetFolderPermissions_UserReadAndExecute(string folderPath, out string info)
         {
-            // Elsa Add Security
-            string FileInfo;
-            if (!IsFolderPathValid(folderPath, out FileInfo))
+            info = string.Empty;
+
+            string fileInfo;
+            if (!ValidateFilePath(folderPath, out fileInfo))
             {
-                //_log.Info($"{nameof(SetFolderPermissions_UserReadAndExecute)} {FileInfo}");
-                throw new SecurityException($"{FileInfo}");
+                info = $"[{nameof(SetFolderPermissions_UserReadAndExecute)}][ValidateFilePath] {fileInfo}";
+                return false;
             }
-            DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
-            DirectorySecurity directorySecurity = new DirectorySecurity();// directoryInfo.GetAccessControl();
+            try
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
+                DirectorySecurity directorySecurity = new DirectorySecurity();
 
-            // Admin - full control
-            SecurityIdentifier adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
-            FileSystemAccessRule adminRule = new FileSystemAccessRule(adminSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
-            directorySecurity.AddAccessRule(adminRule);
+                // Admin - full control
+                SecurityIdentifier adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+                FileSystemAccessRule adminRule = new FileSystemAccessRule(adminSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+                directorySecurity.AddAccessRule(adminRule);
 
-            // System - full control
-            SecurityIdentifier systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
-            FileSystemAccessRule systemRule = new FileSystemAccessRule(systemSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
-            directorySecurity.AddAccessRule(systemRule);
+                // System - full control
+                SecurityIdentifier systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
+                FileSystemAccessRule systemRule = new FileSystemAccessRule(systemSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+                directorySecurity.AddAccessRule(systemRule);
 
-            // normal user - read and execute (w/o write)
-            SecurityIdentifier usersSid = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
-            FileSystemAccessRule usersRule = new FileSystemAccessRule(usersSid, FileSystemRights.ReadAndExecute, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
-            directorySecurity.AddAccessRule(usersRule);
+                // Normal user - read and execute (w/o write)
+                SecurityIdentifier usersSid = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
+                FileSystemAccessRule usersRule = new FileSystemAccessRule(usersSid, FileSystemRights.ReadAndExecute, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+                directorySecurity.AddAccessRule(usersRule);
 
-            // normal user - write deny
-            FileSystemAccessRule denyWriteRule = new FileSystemAccessRule(usersSid, FileSystemRights.Write, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Deny);
-            directorySecurity.AddAccessRule(denyWriteRule);
+                // Normal user - write deny
+                FileSystemAccessRule denyWriteRule = new FileSystemAccessRule(usersSid, FileSystemRights.Write, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Deny);
+                directorySecurity.AddAccessRule(denyWriteRule);
 
-            // apply change
-            directoryInfo.SetAccessControl(directorySecurity);
+                // Disable inheritance and remove inherited rules
+                directorySecurity.SetAccessRuleProtection(true, false);
+
+                // Apply changes
+                directoryInfo.SetAccessControl(directorySecurity);
+            }
+            catch (Exception ex)
+            {
+                info = $"[{nameof(SetFolderPermissions_UserReadAndExecute)}]exception: {ex.Message}";
+                return false;
+            }
+            return true;
+        }
+
+
+        public static bool SetFolderPermissions_UserReadAndExecute_old(string folderPath, out string info)
+        {
+            info = string.Empty;
+
+            string FileInfo;
+            if (!ValidateFilePath(folderPath, out FileInfo))
+            {
+                info = $"[{nameof(SetFolderPermissions_UserReadAndExecute)}][ValidateFilePath] {FileInfo}";
+                // throw new SecurityException($"{FileInfo}");
+                return false;
+            }
+            try
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(folderPath);
+                DirectorySecurity directorySecurity = new DirectorySecurity();// directoryInfo.GetAccessControl();
+
+                // Admin - full control
+                SecurityIdentifier adminSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+                FileSystemAccessRule adminRule = new FileSystemAccessRule(adminSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+                directorySecurity.AddAccessRule(adminRule);
+
+                // System - full control
+                SecurityIdentifier systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
+                FileSystemAccessRule systemRule = new FileSystemAccessRule(systemSid, FileSystemRights.FullControl, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+                directorySecurity.AddAccessRule(systemRule);
+
+                // normal user - read and execute (w/o write)
+                SecurityIdentifier usersSid = new SecurityIdentifier(WellKnownSidType.BuiltinUsersSid, null);
+                FileSystemAccessRule usersRule = new FileSystemAccessRule(usersSid, FileSystemRights.ReadAndExecute, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Allow);
+                directorySecurity.AddAccessRule(usersRule);
+
+                // normal user - write deny
+                FileSystemAccessRule denyWriteRule = new FileSystemAccessRule(usersSid, FileSystemRights.Write, InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit, PropagationFlags.None, AccessControlType.Deny);
+                directorySecurity.AddAccessRule(denyWriteRule);
+
+                // apply change
+                directoryInfo.SetAccessControl(directorySecurity);
+            }
+            catch (Exception ex)
+            {
+                info = $"[{nameof(SetFolderPermissions_UserReadAndExecute)}]exception: {ex.Message}";
+                return false;
+            }
+            return true;
         }
 
         public static string GetFileSHA_256(string filePath, out string info)
@@ -1229,144 +1299,7 @@ namespace DDPM.SA.Common.Settings
             }
             return true;
         }
-
-        /*
-        #region Bruce 0814 Move this method to DDPM.SA.Common
-
-        private enum WTS_INFO_CLASS
-        {
-            WTSUserName = 5,
-            WTSDomainName = 7,
-        }
-
-        [DllImport("Kernel32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern int WTSGetActiveConsoleSessionId();
-
-        private int WTSGetActiveConsoleSessionId_Public()
-        {
-            return WTSGetActiveConsoleSessionId();
-        }
-
-        [DllImport("Wtsapi32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern bool WTSQuerySessionInformation(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned);
-
-        private bool WTSQuerySessionInformation_Public(IntPtr hServer, int sessionId, WTS_INFO_CLASS wtsInfoClass, out IntPtr ppBuffer, out int pBytesReturned)
-        {
-            return WTSQuerySessionInformation(hServer, sessionId, wtsInfoClass, out ppBuffer, out pBytesReturned);
-        }
-
-        [DllImport("Wtsapi32.dll", SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        private static extern void WTSFreeMemory(IntPtr pointer);
-
-        private void WTSFreeMemory_Public(IntPtr pointer)
-        {
-            WTSFreeMemory(pointer);
-        }
-
-        public string GetActiveUserLocalAppDataPath()
-        {
-            IntPtr buffer;
-            int bytesReturned = 0;
-            int sessionId = WTSGetActiveConsoleSessionId_Public(); // This gets the session ID of the user logged into the console
-#if DEBUG
-            Console.WriteLine($"WTSGetActiveConsoleSessionId: {sessionId}");
-#endif
-            if (WTSQuerySessionInformation_Public(IntPtr.Zero, sessionId, WTS_INFO_CLASS.WTSUserName, out buffer, out bytesReturned))
-            {
-                string userName = Marshal.PtrToStringAnsi(buffer);
-                WTSFreeMemory_Public(buffer);
-#if DEBUG
-                Console.WriteLine($"WTSQuerySessionInformation: user name ({userName})");
-#endif
-
-                if (!string.IsNullOrEmpty(userName))
-                {
-                    string userSid = GetUserSid(userName);
-                    if (!string.IsNullOrEmpty(userSid))
-                    {
-                        string regKey = $@"HKEY_USERS\{userSid}\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders";
-                        string localAppDataPath = (string)Registry.GetValue(regKey, "Local AppData", null);
-#if DEBUG
-                        Console.WriteLine($"Local app data from registry: {localAppDataPath}");
-#endif
-                        return localAppDataPath;
-                    }
-                }
-                else
-                {
-#if DEBUG
-                    Console.WriteLine("Got null user name");
-#endif
-                }
-            }
-            else
-            {
-#if DEBUG
-                Console.WriteLine("WTSQuerySessionInformation: return false");
-#endif
-            }
-            return null;
-        }
-
-        private string GetUserSid(string userName)
-        {
-            NTAccount f_normal, f_domain = null;
-            string accountName = $"{Environment.MachineName}\\{userName}";
-            f_normal = new NTAccount(accountName);
-#if DEBUG
-            Console.WriteLine($"GetUserSid: Machine name: {Environment.MachineName}, User name:{userName}");
-#endif
-            if (!string.IsNullOrEmpty(Environment.UserDomainName))
-            {
-                accountName = $"{Environment.UserDomainName}\\{userName}";
-#if DEBUG 
-                Console.WriteLine($"GetUserSid: find domain name: {Environment.UserDomainName}, User name:{userName}");
-#endif
-                f_domain = new NTAccount(Environment.UserDomainName, userName);
-            }
-
-            string sidString;
-            try
-            {
-                SecurityIdentifier s = (SecurityIdentifier)f_normal.Translate(typeof(SecurityIdentifier));
-                sidString = s.ToString();
-#if DEBUG
-                Console.WriteLine($"GetUserSid(normal user): SID: {sidString}");
-#endif
-            }
-            catch (Exception ex)
-            {
-                sidString = null;
-#if DEBUG
-                Console.WriteLine($"GetUserSid(normal user): try translate fail: {ex.Message}");
-#endif
-
-                //0724 add code that translate normal user and do translate domain user if fail.
-                if (f_domain != null)
-                {
-                    try
-                    {
-                        SecurityIdentifier s = (SecurityIdentifier)f_domain.Translate(typeof(SecurityIdentifier));
-                        sidString = s.ToString();
-#if DEBUG
-                        Console.WriteLine($"GetUserSid(domain user): SID: {sidString}");
-#endif
-                    }
-                    catch (Exception e)
-                    {
-                        sidString = null;
-#if DEBUG
-                        Console.WriteLine($"GetUserSid(domain user): try translate fail: {e.Message}");
-#endif
-                    }
-                }
-            }
-            return sidString;
-        }*/
-
+        
         public static bool CheckFold(string folderPath, out string folderInfo, out string pathSymbolicLinInfo)    // Move from Bruce code
         {
             folderInfo = "Error";

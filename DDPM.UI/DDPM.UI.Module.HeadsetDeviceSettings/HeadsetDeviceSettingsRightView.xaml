@@ -93,7 +93,14 @@
             <Border x:Name="MainBorder" CornerRadius="13" Width="520" Margin="0,10,0,0">
                 <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
                     <Grid>
-                        <UXControls:UXTextBlock x:Name="DeviceSettingsTextBlock" Style="{StaticResource ModuleCaptionStyle}" Text="{Binding [DeviceSettings], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,20,20,20" />
+                        <!-- Derek 0107 for PIMS-335063 change Width="200" to Width="550"  -->
+                        <UXControls:UXTextBlock x:Name="DeviceSettingsTextBlock" 
+                                                Style="{StaticResource ModuleCaptionStyle}" 
+                                                Text="{Binding [DeviceSettings], Source={x:Static lang:LangHelper.Instance}}" 
+                                                FontFamily="Roboto" FontSize="20" Height="28" Width="550" 
+                                                VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                                                HorizontalAlignment="Left" 
+                                                Margin="0,20,20,20" />
                     </Grid>
 
                     <!-- Busy Light -->
@@ -106,7 +113,7 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <UXControls:UXTextBlock x:Name="BusyLightText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Text="{Binding [HeadsetDeviceSettings.0], Source={x:Static lang:LangHelper.Instance}}" Margin="20,8,0,20" />
-                                <Image x:Name="BusyLightImage" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0,0,10" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                                <Image ToolTipService.HorizontalOffset="-100" x:Name="BusyLightImage" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0,0,10" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                     <Image.ToolTip>
                                         <ToolTip x:Name="BusyLightToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                             <UXControls:UXTextBlock x:Name="BusyLightToolTipText" Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding BusyLightToolTip}" />
@@ -128,10 +135,13 @@
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
                                     <UXControls:UXTextBlock x:Name="VoiceGuidanceText" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Text="{Binding [HeadsetDeviceSettings.1], Source={x:Static lang:LangHelper.Instance}}" Margin="20,20,0,10" />
-                                    <Image x:Name="VoiceGuidanceImage" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Left" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Margin="8,20,0,10">
+                                    <Image ToolTipService.HorizontalOffset="-100" x:Name="VoiceGuidanceImage" Grid.Column="1" Width="16" Height="16" HorizontalAlignment="Left" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Margin="8,20,0,10">
                                         <Image.ToolTip>
                                             <ToolTip x:Name="VoiceGuidanceToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                                <UXControls:UXTextBlock x:Name="VoiceGuidanceToolTipText" Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding VoiceGuidanceToolTip}" />
+                                                <UXControls:UXTextBlock x:Name="VoiceGuidanceToolTipText" 
+                                                                        Style="{StaticResource TabInfoToolTipTextStyle}" 
+                                                                        Text="{Binding VoiceGuidanceToolTip}" 
+                                                                        MaxWidth="350" TextWrapping="WrapWithOverflow"/>
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>

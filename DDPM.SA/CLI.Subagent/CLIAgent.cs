@@ -26,6 +26,7 @@ using DDPM.SA.Obfuscation;
 using System.IO;
 using System.Collections.Generic;
 using DDPM.SA.Common.Defer;
+using DDPM.SA.Common.Settings;
 
 namespace CLI.Subagent
 {
@@ -108,6 +109,12 @@ namespace CLI.Subagent
 
             while (!_Agent.IsStarted)
                 await Task.Delay(10);
+
+            if(!DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(LogLocation, out string info))
+            {
+                _Log.Error($"[CLI][StartAsync] error: {info}");
+                Console.WriteLine("[CLI][StartAsync] " + info);
+            }
 
             RunManagement(args, _IsAdministrator);
 

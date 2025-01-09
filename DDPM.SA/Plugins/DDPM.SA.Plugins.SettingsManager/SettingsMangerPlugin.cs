@@ -37,6 +37,7 @@ using DDPM.SA.Obfuscation;
 using System.Net.NetworkInformation;
 using System.Windows.Interop;
 using DDPMSettings = DDPM.SA.Common.Settings;
+using Microsoft.VisualBasic.Logging;
 
 namespace DDPM.SA.Plugins.SettingsManager
 {
@@ -89,6 +90,15 @@ namespace DDPM.SA.Plugins.SettingsManager
         {
             _agent = agent;
             WriteLog($"SettingsManagerPlugin constructor ...(Admin:{_IsAdministrator})");
+
+            if(_agent != null)
+            {                
+                WriteLog($"SettingsManagerPlugin constructor ...(Data location: {DDPMFileSecurity.SysLogLocation})");
+                if (!DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(DDPMFileSecurity.SysLogLocation, out string info))
+                {
+                    WriteLog($"SettingsManagerPlugin constructor ... ACL failed...{info}");
+                }
+            }
         }
 
         #endregion
@@ -585,16 +595,17 @@ namespace DDPM.SA.Plugins.SettingsManager
             if (File.Exists(filePath))
             {
                 FileInfo fileInfo = null;
-                /*try
+                try
                 {
                     fileInfo = new FileInfo(filePath);
                 }
                 catch (Exception ex)
                 {
-                    WriteLog($"[{type}]System config: retrieve FileInfo got null return");
-                    File.Delete(filePath);
-                    WriteLog($"[{type}]Exist file deleted.");
-                }*/
+                    WriteLog($"[{type}]System config: retrieve FileInfo got null return ({ex.Message})");
+                    //File.Delete(filePath);
+                    //WriteLog($"[{type}]Exist file deleted.");
+                    return null;
+                }
 
                 if (fileInfo != null)
                 {
