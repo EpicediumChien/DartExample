@@ -49,6 +49,7 @@ namespace DDPM.UI.Common.Models
             ////Register a handler for BitmapImageUpdated for Theme changed. Will update the image resources
             //DdpmCommonHelper.BitmapImageUpdated += bitmapImageUpdate_OnThemeChanged;
         }
+
         public ImageSource? DeviceImage
         {
             get => _deviceImage;
@@ -663,6 +664,17 @@ namespace DDPM.UI.Common.Models
             {
                 string assemblyName = "DDPM.UI.Resources";
                 ImageSource? imgSource = DdpmCommonHelper.GetImageSourceFromCommonResource($"Resources/Images/{imageFileName}.png", assemblyName);
+                if (DeviceInfo?.Type == DeviceType.LogicalNotSupported)
+                {
+                    if (DdpmCommonHelper.EOLKBList.Contains(DeviceInfo?.ModelNumber ?? string.Empty))
+                    {
+                        imgSource = (BitmapImage)System.Windows.Application.Current.Resources["KeyboardImage_LineArt"];
+                    }
+                    if (DdpmCommonHelper.EOLMouseList.Contains(DeviceInfo?.ModelNumber ?? string.Empty))
+                    {
+                        imgSource = (BitmapImage)System.Windows.Application.Current.Resources["MouseImage_LineArt"];
+                    }
+                }
                 //If the image can be loaded (and not LineArt) then assign to DeviceImage to show
                 if (imgSource != null)
                 {
