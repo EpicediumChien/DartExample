@@ -125,7 +125,7 @@ namespace DdpmSwUpdater
                     {
                         DeviceName = SWUpdateInfo.SoftwareName,
                         TheLatestVersion = SWUpdateInfo.TheLatestVersion,
-                        ProcessName = LangHelper.Instance["Downloading_and_installing"],
+                        ProcessName = "Downloading",
                         ProcessProgress = 0.0,
                     };
                     sendMessageToEvent(fWUpdateInfo);
@@ -594,7 +594,7 @@ namespace DdpmSwUpdater
                 {
                     DeviceName = _SWUpdateInfo.SoftwareName,
                     TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                    ProcessName = LangHelper.Instance["Downloading_and_installing"],
+                    ProcessName = "Downloading",
                     ProcessProgress = download.GetProgress(),
                 };
                 sendMessageToEvent(fWUpdateInfo);
@@ -616,7 +616,7 @@ namespace DdpmSwUpdater
                 {
                     DeviceName = _SWUpdateInfo.SoftwareName,
                     TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                    ProcessName = LangHelper.Instance["Installing"],
+                    ProcessName = "Installing",
                     ProcessProgress = 0.0,
                 };
                 sendMessageToEvent(updateProgressInfo);
@@ -921,7 +921,7 @@ namespace DdpmSwUpdater
                     {
                         DeviceName = _SWUpdateInfo.SoftwareName,
                         TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                        ProcessName = LangHelper.Instance["Installing"],
+                        ProcessName = "Installing",
                         ProcessProgress = nextProcess != null ? int.Parse(nextProcess) : 0.0,
                     };
                     sendMessageToEvent(updateProgressInfo);
@@ -937,7 +937,7 @@ namespace DdpmSwUpdater
                         {
                             DeviceName = _SWUpdateInfo.SoftwareName,
                             TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                            ProcessName = LangHelper.Instance["Installing"],
+                            ProcessName = "Installing",
                             ProcessProgress = nextProcess != null ? int.Parse(nextProcess) : 0.0,
                         };
                         sendMessageToEvent(updateProgressInfo);
