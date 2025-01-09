@@ -36,6 +36,7 @@ using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -54,8 +55,10 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Threading;
 using VcpCore.Common;
+using Windows.Devices.Geolocation;
 using Windows.System;
 using static DDPM.SA.Common.Telementry_GeneralFunction;
 using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
@@ -11844,6 +11847,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _EventArgs.deviceID = di?.ID.ToString() ?? "";// temp unique guid;
                                                               // >>
             }
+
+            if(changedProperty != "DisplayChanged" && type == DeviceChangedType.Peripherals_PlugIn)
+                CheckDeviceFirstTimesToConnect(mo, di);
+
             _EventArgs.type = type;
             _EventArgs.device_display = mo;
             _EventArgs.device_peripherals = di;
@@ -11899,7 +11906,57 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
+        private void CheckDeviceFirstTimesToConnect(MonitorInfo mo, DeviceInfo di)
+        {
+            if (di == null)
+            {
+                writelog($"CheckDeviceFirstTimesToConnect DeviceInfo null ... ");
+                return;
+            }
+            bool result = false;
+            object regValue;
 
+            string UserId = WTSFunction.DirectGetUserID(Log);
+
+            string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
+            string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{di.ModelNumber}";
+            string ddpmExePath = //@"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
+                                 System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Dell\Dell Display and Peripheral Manager\DDPM.exe");
+            string debugPath = @"D:\\NEW\DDPM\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+
+            regValue = ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
+            //Trace.WriteLine($"regValue {regValue.ToString()}");
+            // mean null or "" or is false, add to the queue and set it to true
+            if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
+            {
+                writelog($"CheckDeviceFirstTimesToConnect ReadRegistryData UserId : {UserId}, can not find ModelNumber : {di.ModelNumber}, StartProcess ... ");
+                result = DDPMFileSecurity.ValidateFilePath(debugPath, out string info);
+                if (result)
+                {
+                    result = DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                        null,
+                        new ProcessStartInfo
+                        {
+                            FileName = debugPath,
+                            UseShellExecute = true
+                        });
+
+                    if (!result)
+                    {
+                        writelog($"CheckDeviceFirstTimesToConnect StartProcessSafely fail");
+                    }
+                }
+                else
+                {
+                    writelog($"CheckDeviceFirstTimesToConnect ValidateFilePath fail");
+                }
+            }
+            else
+            {
+                writelog($"CheckDeviceFirstTimesToConnect ReadRegistryData UserId : {UserId}, find ModelNumber : {di.ModelNumber}");
+            }
+
+        }
         //0613 Bruce 用於看是否連接超過2個dock
         private void CheckDocks()
         {
