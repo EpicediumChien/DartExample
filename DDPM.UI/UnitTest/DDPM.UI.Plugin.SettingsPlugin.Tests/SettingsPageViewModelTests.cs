@@ -29,8 +29,8 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             resourceDictionary.Source = new Uri("pack://application:,,,/DDPM.UI.Common;component/ModuleStyle.xaml");
             System.Windows.Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
             settingsPageViewModel = new SettingsPageViewModel();
-            DeviceManagerSAMock=new Mock<IDeviceManagerSA>();
-            DdpmCommonHelper.DeviceManagerSA=DeviceManagerSAMock.Object;
+            DeviceManagerSAMock = new Mock<IDeviceManagerSA>();
+            DdpmCommonHelper.DeviceManagerSA = DeviceManagerSAMock.Object;
             DeviceManagerSAMock.Setup(x => x.GetDevices(It.IsAny<bool>())).Returns(Task.FromResult(new DeviceHelper() { deviceInfo = new List<DeviceInfo>() }));
         }
 
@@ -247,7 +247,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             var result = settingsPageViewModel.Critical_UpdateList;
             Assert.That(result, Is.EqualTo(Visibility.Collapsed));
 
-            List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { } };
+            List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>(), new int(), new int()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>(), new int(), new int()) { } };
             settingsPageViewModel.Critical_UpdateList_UI = Critical_UpdateList_UI;
             result = settingsPageViewModel.Critical_UpdateList;
             Assert.That(result, Is.EqualTo(Visibility.Visible));
@@ -315,7 +315,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             FWUpdateInfoPackage fwUpdateInfoPackage = new FWUpdateInfoPackage();
             SWUpdateInfoPackage swUpdateInfoPackage = new SWUpdateInfoPackage();
             var deviceManagerSAMock = new Mock<IDeviceManagerSA>();
-            DdpmCommonHelper.DeviceManagerSA= deviceManagerSAMock.Object;
+            DdpmCommonHelper.DeviceManagerSA = deviceManagerSAMock.Object;
             deviceManagerSAMock.Setup(x => x.GetDevices(It.IsAny<bool>())).Returns(Task.FromResult(new DeviceHelper() { deviceInfo = new List<DeviceInfo>() }));
             try
             {
@@ -334,7 +334,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             var result = settingsPageViewModel.Recommended_UpdateList;
             Assert.That(result, Is.EqualTo(Visibility.Collapsed));
 
-            List<UIUpdateInfo> Recommended_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { } };
+            List<UIUpdateInfo> Recommended_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>(), new int(), new int()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>(), new int(), new int()) { } };
             settingsPageViewModel.Recommended_UpdateList_UI = Recommended_UpdateList_UI;
             result = settingsPageViewModel.Recommended_UpdateList;
             Assert.That(result, Is.EqualTo(Visibility.Visible));
@@ -346,7 +346,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             var result = settingsPageViewModel.Optional_UpdateList;
             Assert.That(result, Is.EqualTo(Visibility.Collapsed));
 
-            List<UIUpdateInfo> Optional_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { } };
+            List<UIUpdateInfo> Optional_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>(), new int(), new int()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>(), new int(), new int()) { } };
             settingsPageViewModel.Optional_UpdateList_UI = Optional_UpdateList_UI;
             result = settingsPageViewModel.Optional_UpdateList;
             Assert.That(result, Is.EqualTo(Visibility.Visible));
@@ -358,7 +358,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             var result = settingsPageViewModel.IsAnyUpdate;
             Assert.That(result, Is.EqualTo(Visibility.Collapsed));
 
-            List<UIUpdateInfo> Optional_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { } };
+            List<UIUpdateInfo> Optional_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>(), new int(), new int()) { IsCheckUpdate = true }, new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>(), new int(), new int()) { } };
             settingsPageViewModel.Optional_UpdateList_UI = Optional_UpdateList_UI;
             result = settingsPageViewModel.IsAnyUpdate;
             Assert.That(result, Is.EqualTo(Visibility.Visible));
@@ -370,7 +370,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             bool result = settingsPageViewModel.IsCanUpdate();
             Assert.That(result, Is.EqualTo(false));
 
-            List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true } };
+            List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>(), new int(), new int()) { IsCheckUpdate = true } };
             settingsPageViewModel.Critical_UpdateList_UI = Critical_UpdateList_UI;
             result = settingsPageViewModel.IsCanUpdate();
             Assert.That(result, Is.EqualTo(true));
@@ -381,13 +381,15 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         {
             FWUpdateInfo fwUpdateInfo = new FWUpdateInfo();
             List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
-            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
-            List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true, SWUpdateInfo = new SWUpdateInfo() } };
+            int ioDongleCount = new int();
+            int audioDongleCount = new int();
+            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos, ioDongleCount, audioDongleCount);
+            List<UIUpdateInfo> Critical_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>(), new int(), new int()) { IsCheckUpdate = true, SWUpdateInfo = new SWUpdateInfo() } };
             settingsPageViewModel.Critical_UpdateList_UI = Critical_UpdateList_UI;
 
-            List<UIUpdateInfo> Recommended_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true, SWUpdateInfo = new SWUpdateInfo() } };
+            List<UIUpdateInfo> Recommended_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>(), new int(), new int()) { IsCheckUpdate = true, SWUpdateInfo = new SWUpdateInfo() } };
             settingsPageViewModel.Recommended_UpdateList_UI = Recommended_UpdateList_UI;
-            List<UIUpdateInfo> Optional_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>()) { IsCheckUpdate = true, SWUpdateInfo = new SWUpdateInfo() } };
+            List<UIUpdateInfo> Optional_UpdateList_UI = new List<UIUpdateInfo>() { new UIUpdateInfo(new FWUpdateInfo(), new List<DeviceInfo>(), new int(), new int()) { IsCheckUpdate = true, SWUpdateInfo = new SWUpdateInfo() } };
             settingsPageViewModel.Optional_UpdateList_UI = Optional_UpdateList_UI;
             FWUpdateInfoPackage FWUpdateInfoPackage = new FWUpdateInfoPackage();
             settingsPageViewModel.FWUpdateInfoPackage = FWUpdateInfoPackage;
@@ -410,7 +412,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         {
             FWUpdateInfo fwUpdateInfo = new FWUpdateInfo();
             List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
-            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
+            int ioDongleCount = new int();
+            int audioDongleCount = new int();
+            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos, ioDongleCount, audioDongleCount);
             uIFWUpdateInfo.IsCheckUpdate = true;
             var result = uIFWUpdateInfo.IsCheckUpdate;
             Assert.That(result, Is.EqualTo(true));
@@ -421,7 +425,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         {
             FWUpdateInfo fwUpdateInfo = new FWUpdateInfo();
             List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
-            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
+            int ioDongleCount = new int();
+            int audioDongleCount = new int();
+            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos, ioDongleCount, audioDongleCount);
             uIFWUpdateInfo.IsEnableCheckBox = true;
             var result = uIFWUpdateInfo.IsEnableCheckBox;
             Assert.That(result, Is.EqualTo(true));
@@ -432,7 +438,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         {
             FWUpdateInfo fwUpdateInfo = new FWUpdateInfo();
             List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
-            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
+            int ioDongleCount = new int();
+            int audioDongleCount = new int();
+            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos, ioDongleCount, audioDongleCount);
             uIFWUpdateInfo.UpdateInfo = "AA";
             var result = uIFWUpdateInfo.UpdateInfo;
             Assert.That(result, Is.EqualTo("AA"));
@@ -443,7 +451,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         {
             FWUpdateInfo fwUpdateInfo = new FWUpdateInfo();
             List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
-            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
+            int ioDongleCount = new int();
+            int audioDongleCount = new int();
+            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos, ioDongleCount, audioDongleCount);
             uIFWUpdateInfo.FWUpdateInfo = fwUpdateInfo;
             var result = uIFWUpdateInfo.FWUpdateInfo;
             Assert.That(result, Is.EqualTo(fwUpdateInfo));
@@ -454,7 +464,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         {
             FWUpdateInfo fwUpdateInfo = new FWUpdateInfo();
             List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
-            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
+            int ioDongleCount = new int();
+            int audioDongleCount = new int();
+            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos, ioDongleCount, audioDongleCount);
             var uXAlertItemVisibility = Visibility.Visible;
             uIFWUpdateInfo.UXAlertItemVisibility = uXAlertItemVisibility;
             var result = uIFWUpdateInfo.UXAlertItemVisibility;
@@ -466,7 +478,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
         {
             FWUpdateInfo fwUpdateInfo = new FWUpdateInfo();
             List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
-            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
+            int ioDongleCount = new int();
+            int audioDongleCount = new int();
+            UIUpdateInfo uIFWUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos, ioDongleCount, audioDongleCount);
             uIFWUpdateInfo.UXAlertItemMessage = "AA";
             var result = uIFWUpdateInfo.UXAlertItemMessage;
             Assert.That(result, Is.EqualTo("AA"));
@@ -481,7 +495,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin.Tests
             fwUpdateInfo.DeviceName = "ST";
             fwUpdateInfo.DeviceType = deviceType;
             List<DeviceInfo> deviceInfos = new List<DeviceInfo>();
-            UIUpdateInfo uIUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
+            int ioDongleCount = new int();
+            int audioDongleCount = new int();
+            UIUpdateInfo uIUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos, ioDongleCount, audioDongleCount);
             Assert.That(uIUpdateInfo, Is.Not.Null);
             Assert.That(uIUpdateInfo.UXAlertItemVisibility, Is.EqualTo(Visibility.Collapsed));
             Assert.That(uIUpdateInfo.UXAlertItemMessage, Is.EqualTo(""));

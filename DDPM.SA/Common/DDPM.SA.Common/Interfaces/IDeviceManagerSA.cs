@@ -681,6 +681,8 @@ namespace DDPM.SA.Common
         Task<int> GetSnoozeLength(Guid deviceId);
         Task<bool> StartCopilotRegistryMonitor();
         Task<bool> StopCopilotRegistryMonitor();
+        Task<int> GetIODongleCount();
+        Task<int> GetAudioDongleCount();
 
         #endregion public for Peripherals
 

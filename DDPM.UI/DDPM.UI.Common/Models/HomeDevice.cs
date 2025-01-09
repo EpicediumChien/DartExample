@@ -260,6 +260,7 @@ namespace DDPM.UI.Common.Models
                     {
                         string model = DeviceInfo.ModelNumber;
                         //以下 Keyboard/Mouse 的 Model 需要轉換
+                        //DDPM.SA.Common(JudgmentList.cs)也有一份，如有修改再麻煩通知Bruce，謝謝
                         switch (DeviceInfo.ModelNumber)
                         {
                             //Keyboard
