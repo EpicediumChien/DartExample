@@ -1808,7 +1808,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                             }
                                         }
                                     }
-                                    dokc_bytes = _logicalDeviceDock.GetDockData();
+                                    /*Bruce 01/10 註解，因有把Dock API 卡住的疑慮
+                                     * dokc_bytes = _logicalDeviceDock.GetDockData();
                                     _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockData byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
                                     if (dokc_bytes != null)
                                     {
@@ -1841,7 +1842,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                                 _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockData Error : {ex.Message}");
                                             }
                                         }
-                                    }
+                                    }*/
                                     dokc_bytes = _logicalDeviceDock.GetDockFwUpdateStatus();
                                     _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockFwUpdateStatus byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
                                     if (dokc_bytes != null)
@@ -1870,8 +1871,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                             }
                                         }
                                     }
-                                    dokc_bytes = _logicalDeviceDock.GetDockTBTConnectionStatus();
-                                    _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockTBTConnectionStatus byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
+                                    /*Bruce 01/10 註解，因有把Dock API 卡住的疑慮
+                                     * dokc_bytes = _logicalDeviceDock.GetDockTBTConnectionStatus();
+                                    _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockTBTConnectionStatus byte is null = {(dokc_bytes == null ? "Yes" : "No")}");*/
                                     if (dokc_bytes != null)
                                     {
                                         _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockTBTConnectionStatus dokc_bytes.Length : {dokc_bytes.Length}");
