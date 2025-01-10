@@ -375,20 +375,22 @@
                                         </Border>
                                         <Border Margin="8,0,0,12" Border.CornerRadius="4" Cursor="Hand" Width="184"  Height="36"
                                     BorderThickness="1" BorderBrush="#324255" Background="{DynamicResource DdpmCB_BkColor}">
-                                            <UXControls:UXTextBlock Name="txtAddPreset" FontFamily="Roboto" FontSize="14" FontWeight="Normal" VerticalAlignment="Center" HorizontalAlignment="Center" MouseLeftButtonDown="AddPreset" />
-                                        </Border>
-                                    </StackPanel>
-                                    <Border Margin="8,0,0,0" Cursor="Hand" x:Name="btnPreset" MouseLeftButtonDown="btnPreset_Click"
+                        <!-- Derek 20250108 for PIMS333767 -->
+                        <UXControls:UXTextBlock Margin="10,0,15,0" TextTrimming="CharacterEllipsis" Name="txtAddPreset" FontFamily="Roboto" FontSize="14" FontWeight="Normal" VerticalAlignment="Center" HorizontalAlignment="Center" MouseLeftButtonDown="AddPreset" />
+                    </Border>
+                  </StackPanel>
+                  <Border Margin="8,0,0,0" Cursor="Hand" x:Name="btnPreset" MouseLeftButtonDown="btnPreset_Click"
                                 Background="{DynamicResource DdpmCB_BkColor}"
                                 Border.CornerRadius="4"
                                 Width="184"
                                 BorderThickness="1"
                                 BorderBrush="#31A2E3">
-                                        <Grid>
-                                            <!--<Image Margin="10,12,0,12" Source="/DDPM.UI.Resources;component/Resources/Images/CameraPreset.png" Stretch="Fill" Width="17" Height="16" HorizontalAlignment="Left" />-->
-                                            <ContentControl Margin="10,12,0,12" Width="17" Height="16" HorizontalAlignment="Left" Template="{StaticResource icon_CameraPreset}" />
-                                            <UXControls:UXTextBlock Name="txtPreset" Margin="35,0,0,0" FontFamily="Roboto" FontSize="14" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                                            <!--<Image Name="imgDown" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" Stretch="Uniform" Margin="0,0,10,0"
+                    <Grid>
+                      <!--<Image Margin="10,12,0,12" Source="/DDPM.UI.Resources;component/Resources/Images/CameraPreset.png" Stretch="Fill" Width="17" Height="16" HorizontalAlignment="Left" />-->
+                      <ContentControl Margin="10,12,0,12" Width="17" Height="16" HorizontalAlignment="Left" Template="{StaticResource icon_CameraPreset}" />
+                      <!-- Derek 20250108 for PIMS333767 -->
+                      <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtPreset" Margin="35,0,28,0" FontFamily="Roboto" FontSize="14" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                      <!--<Image Name="imgDown" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" Stretch="Uniform" Margin="0,0,10,0"
                      Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="12" Height="12"/>-->
                                             <ContentControl Name="imgDown" Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="12" Height="12" 
                                                 RenderTransformOrigin="0.5,0.5"  Template="{StaticResource icon_DownArrow}" />

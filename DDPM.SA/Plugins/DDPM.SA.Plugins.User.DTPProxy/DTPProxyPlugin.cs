@@ -569,6 +569,24 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return new JArray();
             }
         }
+        public async Task<JArray> GetMouseAssignedActions(string Guid)
+        {
+            if (!await GetItemIDAsync("Mouse", Guid))
+            { return new JArray(); }
+
+            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_mouseInterfaceType, commodity, "AssignedActions");
+                Debug.WriteLine($"{value ?? ""}");
+                return value == null ? new JArray() : (JArray)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {Guid} item.");
+                return new JArray();
+            }
+        }
         public async Task<JArray> GetMouseProgrammableKeys(string Guid)
         {
             Debug.Write($"GetMouseProgrammableKeys - Guid: {Guid}");
@@ -923,16 +941,34 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Keyboard", Guid))
             { return new JArray(); }
 
-            if (await GetCommodityInterfaceInstanceAsync(_mouseMethodInfo) is ICommodity commodity)
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
             {
-                var value = GetPropertyValue(_mouseInterfaceType, commodity, "AssignableActions");
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "AssignableActions");
                 Debug.WriteLine($"{value ?? ""}");
                 return value == null ? new JArray() : (JArray)value;
             }
             else
             {
-                Debug.WriteLine($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
-                writelog($"Could not retrieve the Commodity Interface {_mouseInterfaceType} for the {_itemID} item.");
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardMethodInfo} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardMethodInfo} for the {_itemID} item.");
+                return new JArray();
+            }
+        }
+        public async Task<JArray> GetKbAssignedActions(string Guid)
+        {
+            if (!await GetItemIDAsync("Keyboard", Guid))
+            { return new JArray(); }
+
+            if (await GetCommodityInterfaceInstanceAsync(_keyboardMethodInfo) is ICommodity commodity)
+            {
+                var value = GetPropertyValue(_keyboardInterfaceType, commodity, "AssignedActions");
+                Debug.WriteLine($"{value ?? ""}");
+                return value == null ? new JArray() : (JArray)value;
+            }
+            else
+            {
+                Debug.WriteLine($"Could not retrieve the Commodity Interface {_keyboardMethodInfo} for the {_itemID} item.");
+                writelog($"Could not retrieve the Commodity Interface {_keyboardMethodInfo} for the {_itemID} item.");
                 return new JArray();
             }
         }
@@ -6166,6 +6202,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged += Headset_IsWearDetectionPauseMusicEnabledChanged;
                     _Headsetcom.IsWearDetectionMuteMicEnabledChanged += Headset_IsWearDetectionMuteMicEnabledChanged;
                     _Headsetcom.WearDetectionQuickPauseChanged += Headset_WearDetectionQuickPauseChanged;
+                    _Headsetcom.IsBoomMicSupportedChanged += Headset_BoomMicSupportedChangedArgs;
+                    _Headsetcom.FirmwareVersionChanged += Headset_FirmwareVersionChanged;
+                    _Headsetcom.IsDirtyChanged += Headset_IsDirtyChanged;
+                    _Headsetcom.IsReadyChanged += Headset_IsReadyChanged;
+                    _Headsetcom.MuteStatusChanged += Headset_MuteStatusChanged;
+
                     writelog($"Headset{index} Commodity events registered successfully");
                     return true;
                 }
@@ -6197,6 +6239,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged -= Headset_IsWearDetectionPauseMusicEnabledChanged;
                     _Headsetcom.IsWearDetectionMuteMicEnabledChanged -= Headset_IsWearDetectionMuteMicEnabledChanged;
                     _Headsetcom.WearDetectionQuickPauseChanged -= Headset_WearDetectionQuickPauseChanged;
+                    _Headsetcom.IsBoomMicSupportedChanged -= Headset_BoomMicSupportedChangedArgs;
+                    _Headsetcom.FirmwareVersionChanged -= Headset_FirmwareVersionChanged;
+                    _Headsetcom.IsDirtyChanged -= Headset_IsDirtyChanged;
+                    _Headsetcom.IsReadyChanged -= Headset_IsReadyChanged;
+                    _Headsetcom.MuteStatusChanged -= Headset_MuteStatusChanged;
+
                     writelog($"[Headset] Headset{index} Commodity events unregistered successfully");
                     return true;
                 }
@@ -6230,6 +6278,46 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             writelog($"[Headset] Catch event _Headset_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
+
+        private void Headset_MuteStatusChanged(object sender, MuteStatusChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_MuteStatusChanged",
+                                    e.DeviceId, $"Headset_MuteStatusChanged:{e.MuteStatus.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_MuteStatusChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_IsReadyChanged(object sender, IsReadyChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_IsReadyChanged",
+                                    e.DeviceId, $"Headset_IsReadyChanged:{e.IsReady.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_IsReadyChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_IsDirtyChanged(object sender, IsDirtyChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_IsDirtyChanged",
+                                    e.DeviceId, $"Headset_IsDirtyChanged:{e.IsDirty.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_IsDirtyChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_FirmwareVersionChanged(object sender, FirmwareVersionChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_FirmwareVersionChanged",
+                                    e.DeviceId, $"Headset_FirmwareVersionChanged:{e.FirmwareVersion}"));
+
+            writelog($"[Headset] Catch event Headset_FirmwareVersionChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_BoomMicSupportedChangedArgs(object sender, IsBoomMicSupportedChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_BoomMicSupportedChangedArgs",
+                                    e.DeviceId, $"Headset_BoomMicSupportedChangedArgs:{e.IsBoomMicSupported.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_BoomMicSupportedChangedArgs : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }       
 
         private void Headset_BandsGainChanged(object sender, BandsGainChangedArgs e)
         {
@@ -8435,25 +8523,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         {
             writelog($"Dock Connected Device ID: {e.DeviceId} !!!!!!!!!!!!!!!");
         }
-
-        #region Headset Event
-
-        private void _headsetcomdity_IsReadyChanged(object sender, IsReadyChangedArgs e)
-        {
-            Debug.WriteLine($"[DTPProxyPlugin] [Headset] IsReadyChanged {e.IsReady} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[DTPProxyPlugin] [Headset] IsReadyChanged {e.IsReady} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-        }
-        private void _headsetcomdity_FirmwareVersionChanged(object sender, FirmwareVersionChangedArgs e)
-        {
-            Debug.WriteLine($"[Headset]FirmwareVersionChanged {e.FirmwareVersion} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Headset]FirmwareVersionChanged {e.FirmwareVersion} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-        }
-        private void _headsetcomdity_AncModeChange(object sender, AncModeChangedArgs e)
-        {
-            Debug.WriteLine($"[Headset]AncModeChange {e.AncMode} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-            writelog($"[Headset]AncModeChange {e.AncMode} Changed for Device ID: {e.DeviceId}  !!!!!!!!!!!!!!!");
-        }
-        #endregion
 
         #region Speaker
 

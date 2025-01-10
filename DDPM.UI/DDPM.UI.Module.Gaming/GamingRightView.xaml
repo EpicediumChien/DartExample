@@ -6,14 +6,31 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.Gaming"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              d:DesignHeight="800" d:DesignWidth="800" mc:Ignorable="d">
-    
+ 
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
                 <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
             </ResourceDictionary.MergedDictionaries>
+            <PluginCommon:CenterToolTipConverter x:Key="CenterToolTipConverter" />
+            <Style x:Key="btnToolTipStyle" TargetType="ToolTip" BasedOn="{StaticResource InfoToolTipStyle}">
+                <Setter Property="Placement" Value="Top" />
+                <Setter Property="VerticalOffset" Value="-5" />
+                <Setter Property="Width" Value="200"></Setter>
+                <Setter Property="HorizontalOffset">
+                    <Setter.Value>
+                        <MultiBinding Converter="{StaticResource CenterToolTipConverter}">
+                            <Binding RelativeSource="{RelativeSource Self}" Path="PlacementTarget.ActualWidth" />
+                            <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth" />
+                        </MultiBinding>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
+
     </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer>
@@ -82,11 +99,23 @@
                                 <ComboBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" DisplayMemberPath="DisplayText" ItemsSource="{Binding DarkStabilizer_ItemsCollection}" SelectedItem="{Binding SelectedDarkStabilizer, Mode=TwoWay}" Style="{StaticResource DdpmComboBoxStyle}" TabIndex="1" />
                             </Grid>
                             <Grid Height="40" Margin="0,8" Visibility="{Binding IsSupported_DarkStabilizer}" IsEnabled="{Binding DarkStabilizer_IsEnable}" Opacity="{Binding DarkStabilizer_Opacity}">
+                                <!-- Elsa 20250109 For PIMS [PIMS-335204][PIMS-335209] add Width="350" ToolTipService.Placement="Center" ToolTipService.VerticalOffset="-30" TextTrimming="CharacterEllipsis" -->
                                 <UXControls:UXTextBlock HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
+                                                        Width="350" ToolTipService.Placement="Center" ToolTipService.VerticalOffset="-30"
+                                                        TextTrimming="CharacterEllipsis"
                                                         FontSize="16"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                                        Text="{Binding [Dark_Stabilizer_Toggle], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
+                                                        Text="{Binding [Dark_Stabilizer_Toggle], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Caption" >
+                                    <!-- Elsa 20250109 For PIMS [PIMS-335204][PIMS-335209] add <UXControls:UXTextBlock.ToolTip> -->
+                                    <UXControls:UXTextBlock.ToolTip>
+                                        <ToolTip Style="{StaticResource InfoToolTipStyle}">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Dark_Stabilizer_Toggle], Source={x:Static lang:LangHelper.Instance}}" />
+                                            </Border>
+                                        </ToolTip>
+                                    </UXControls:UXTextBlock.ToolTip>
+                                </UXControls:UXTextBlock>
                                 <UXControls:UXTextBox Width="200"
                                                       Height="40"
                                                       HorizontalAlignment="Right"
@@ -114,12 +143,25 @@
                                 <ComboBox Width="200" HorizontalAlignment="Right" VerticalAlignment="Center" DisplayMemberPath="DisplayText" ItemsSource="{Binding DualResolution_ItemsCollection}" SelectedItem="{Binding SelectedDualResolution, Mode=TwoWay}" Style="{StaticResource DdpmComboBoxStyle}" TabIndex="1" />
                             </Grid>
                             <Grid Height="40" Margin="0,8" Visibility="{Binding IsSupported_DualResolution}">
+                                <!-- Elsa 20250109 For PIMS [PIMS-335204][PIMS-335209] add Width="350" ToolTipService.Placement="Center" ToolTipService.VerticalOffset="-30" TextTrimming="CharacterEllipsis" -->
                                 <UXControls:UXTextBlock HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
+                                                        Width="350" ToolTipService.Placement="Center" ToolTipService.VerticalOffset="-30"
+                                                        TextTrimming="CharacterEllipsis"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
-                                                        Text="{Binding [Dual_Resolution_Toggle], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Caption" />
-                                <UXControls:UXTextBox Width="260"
+                                                        Text="{Binding [Dual_Resolution_Toggle], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Caption" >
+                                    <!-- Elsa 20250109 For PIMS [PIMS-335204][PIMS-335209] add <UXControls:UXTextBlock.ToolTip> -->
+                                    <UXControls:UXTextBlock.ToolTip>
+                                        <ToolTip Style="{StaticResource InfoToolTipStyle}">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" Style="{StaticResource Tooltip_TextBlockStyle}" Text="{Binding [Dual_Resolution_Toggle], Source={x:Static lang:LangHelper.Instance}}" />
+                                            </Border>
+                                        </ToolTip>
+                                    </UXControls:UXTextBlock.ToolTip>
+                                </UXControls:UXTextBlock>
+                                <!-- Elsa 20250109 For PIMS [PIMS-335204][PIMS-335209] change Width="260" to Width="200" -->
+                                <UXControls:UXTextBox Width="200"
                                                       Height="40"
                                                       HorizontalAlignment="Right"
                                                       VerticalAlignment="Center"

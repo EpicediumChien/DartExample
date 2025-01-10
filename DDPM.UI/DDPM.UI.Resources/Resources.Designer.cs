@@ -124,7 +124,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click the \&quot;Browse\&quot; button to select a folder.
+        ///   Looks up a localized string similar to Click the &quot;Browse&quot; button to select a folder.
         /// </summary>
         internal static string Action_3 {
             get {
@@ -1438,7 +1438,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Collaboration Keyboard cannot connect to Microsoft Teams because you blocked the request. To use Microsoft Teams with Collaboration Keyboard, click \&quot;Learn more\&quot; for instructions on how to re-connect..
+        ///   Looks up a localized string similar to Collaboration Keyboard cannot connect to Microsoft Teams because you blocked the request. To use Microsoft Teams with Collaboration Keyboard, click &quot;Learn more&quot; for instructions on how to re-connect..
         /// </summary>
         internal static string Collab_10 {
             get {
@@ -7909,7 +7909,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The available slots on this USB wireless receiver are full. To use, unpair a device from it by clicking on the \&quot;Unpair\&quot; button in the device settings page..
+        ///   Looks up a localized string similar to The available slots on this USB wireless receiver are full. To use, unpair a device from it by clicking on the &quot;Unpair&quot; button in the device settings page..
         /// </summary>
         internal static string Tooltip_4 {
             get {

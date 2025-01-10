@@ -1399,7 +1399,7 @@
     <value>Eşleştirdiğiniz bu aygıt, bağlı USB kablosuz alıcı ile desteklenmiyor. Aygıtla birlikte gelen alıcıyı kullanın.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>Bu USB kablosuz alıcıdaki kullanılabilir yuvalar dolu. Kullanmak için aygıt ayarları sayfasındaki \"Eşleşmeyi Kaldır\" düğmesine tıklayarak aygıtın eşleşmesini kaldırın.</value>
+    <value>Bu USB kablosuz alıcıdaki kullanılabilir yuvalar dolu. Kullanmak için aygıt ayarları sayfasındaki "Eşleşmeyi Kaldır" düğmesine tıklayarak aygıtın eşleşmesini kaldırın.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>Eylem atamak için tıklayın</value>
@@ -2416,7 +2416,7 @@
     <value>Kısayol Tuşu: Son</value>
   </data>
   <data name="EazyMemorySettings.1" xml:space="preserve">
-    <value>Örnek: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.</value>
+    <value>Örnek: "Alt + P", "Shift + F", "Ctrl + Shift + F".</value>
   </data>
   <data name="EazyMemorySettings.2" xml:space="preserve">
     <value>Bir bölüme sürükleyerek herhangi bir uygulamayı kolayca bölünmüş ekran düzeninde tutturun</value>
@@ -2446,7 +2446,7 @@
     <value>Bir dosya seçmek için gözat düğmesine tıklayın</value>
   </data>
   <data name="Action.3" xml:space="preserve">
-    <value>Bir klasör seçmek için \&quot;Gözat\&quot; düğmesine tıklayın</value>
+    <value>Bir klasör seçmek için "Gözat" düğmesine tıklayın</value>
   </data>
   <data name="Action.4" xml:space="preserve">
     <value>Aşağıdaki kutuya web sayfasının URL&apos;sini yazın</value>
@@ -2485,7 +2485,7 @@
     <value>İş Birliği</value>
   </data>
   <data name="Collab.10" xml:space="preserve">
-    <value>İsteği engellediğiniz için Collaboration Klavye Microsoft Teams&apos;e bağlanamıyor. Microsoft Teams&apos;i Collaboration Klavye ile kullanmak üzere yeniden bağlanma talimatları için \&quot;Daha fazla bilgi\&quot; öğesine tıklayın.</value>
+    <value>İsteği engellediğiniz için Collaboration Klavye Microsoft Teams&apos;e bağlanamıyor. Microsoft Teams&apos;i Collaboration Klavye ile kullanmak üzere yeniden bağlanma talimatları için "Daha fazla bilgi" öğesine tıklayın.</value>
   </data>
   <data name="Collab.11" xml:space="preserve">
     <value>Collaboration Klavyeyi Zoom ile kullanmak için Zoom&apos;un en son masaüstü sürümünü yükleyin</value>
@@ -2818,7 +2818,7 @@
     <value>Biçimlendirmeyi Yapıştır ve Birleştir</value>
   </data>
   <data name="Camera.25" xml:space="preserve">
-    <value>Monitörünüzü USB 3.0 üzerinden bağlayın ve 4K UHD çözünürlüğü etkinleştirmek için USB-C Önceliği altında &quot;Yüksek Veri Hızı&quot; öğesini seçin.</value>
+    <value>Monitörünüzü USB 3.0 üzerinden bağlayın ve 4K UHD çözünürlüğü etkinleştirmek için USB-C Önceliği altında "Yüksek Veri Hızı" öğesini seçin.</value>
   </data>
   <data name="HeadsetAutomatedActions.14" xml:space="preserve">
     <value>Hassasiyet</value>
@@ -3259,7 +3259,7 @@
     <value>Monitör varlık raporunu kaydetme işlemi başarısız</value>
   </data>
   <data name="USBKVM.Tips" xml:space="preserve">
-    <value>Örnek: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.\nNot: Birden fazla monitörde kısayol tuşu işlevini tetiklemek için fare imleci, hedeflenen monitör ekranında olmalıdır.</value>
+    <value>Örnek: "Alt + P", "Shift + F", "Ctrl + Shift + F".\nNot: Birden fazla monitörde kısayol tuşu işlevini tetiklemek için fare imleci, hedeflenen monitör ekranında olmalıdır.</value>
   </data>
   <data name="BrightnessLevel" xml:space="preserve">
     <value>Parlaklık düzeyi</value>

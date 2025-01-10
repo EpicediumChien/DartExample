@@ -63,7 +63,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private DeviceHelper _deviceHelper;
         private UpdateHelper _updateHelper;
         //Bruce, FWU need it
-        private int _DongleCount;
+        private int _IODongleCount;
+        //Bruce, FWU need it
+        private int _AudioDongleCount;
         private RFDeviceHelper _rfDeviceHelper;
         private ClientInfo _clientInfo;
         private static Logs _logs;
@@ -1408,8 +1410,10 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     if (_iDeviceManager == null)
                         return;
                     //Bruce, FWU need it
-                    _DongleCount = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalAudioDongle) || o.Type.Equals(DeviceType.PhysicalDongle)).Count;
-                    _logs.DebugMsg_1("[PeripheralsPlugin] _DongleCount " + _DongleCount);
+                    _IODongleCount = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalDongle)).Count;
+                    _AudioDongleCount = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalAudioDongle)).Count;
+                    _logs.DebugMsg_1("[PeripheralsPlugin] _IODongleCount " + _IODongleCount);
+                    _logs.DebugMsg_1("[PeripheralsPlugin] _HeadsetDongleCount " + _AudioDongleCount);
                     //_deviceHelper.DPeMSDKVersion = IndiLogic.DPeM.Broker.Assembly.GetName();
                     foreach (var device in _iDeviceManager.Devices)
                     {
@@ -1443,6 +1447,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... BatteryLevel " + item.BatteryLevel);
                             _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... FirmwareVersion " + item.FirmwareVersion.ToString("X4"));
                             _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... PhysicalDeviceFirmwareVersion " + item.ParentPhysicalDevice.FirmwareVersion.ToString("X4"));
+                            string newModel = JudgmentList.ModelRename(item.ModelNumber);
+                            if (string.IsNullOrEmpty(newModel))
+                            {
+                                _logs.DebugMsg_1("[PeripheralsPlugin] DeviceInfo ... newModel " + newModel);
+                                newModel = item.ModelNumber;
+                            }
                             DeviceInfo info = new()
                             {
                                 ID = item.Id,
@@ -1458,7 +1468,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 Type = item.Type,
                                 PluginId = item.PluginId,
                                 OdmId = item.ODMId,
-                                ModelNumber = item.ModelNumber,
+                                ModelNumber = newModel,
                                 IsBatteryLevelSupported = item.IsBatteryLevelSupported,
                                 ThumbnailImageRawData = item.ThumbnailImageRawData,
                             };
@@ -2640,6 +2650,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     //    LowBatteryIDs.Remove(iLogicalDevice.Id.ToString());
                     ScanDevices();
                     var IDs = _deviceHelper.deviceInfo.Select(x => x.ID.ToString()).ToList();
+                    Trace.WriteLine($"[PeripheralsPlugin] IPhysicalDevice_DeviceRemovedEvent LowBatteryIDs.Count : {LowBatteryIDs.Count.ToString()}, IDs.Count : {IDs.Count.ToString()} ... ");
+                    _logs.DebugMsg_1($"[PeripheralsPlugin] IPhysicalDevice_DeviceRemovedEvent LowBatteryIDs.Count : {LowBatteryIDs.Count.ToString()}, IDs.Count : {IDs.Count.ToString()} ... ");
                     LowBatteryIDs.ForEach(id =>
                     {
                         if (!IDs.Contains(id))
@@ -2654,8 +2666,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                //Debug.WriteLine(arg2.ToString());                
-                writelog(arg2.ToString());
                 if (deviceInfo == null)
                 {
                     writelog($"DpiLevelChanged: Error: deviceInfo is null");
@@ -2665,13 +2675,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     return;
                 //deviceInfo.DpiLevel = arg2 - 1;
                 deviceInfo.DpiLevel = arg2;
-                //Debug.WriteLine($"New DpiLevel: {arg2}");
-                writelog($"New DpiLevel: {arg2}");
-
-                DeviceChangedEventArgs _EventArgs = new();
-                _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                _EventArgs.device_peripherals = deviceInfo;
-                _EventArgs.changedProperty = "DpiLevelChanged";
+                Debug.WriteLine($"DpiLevelChanged: New DpiLevel: {arg2}");
+                writelog($"DpiLevelChanged: New DpiLevel: {arg2}");
+                DeviceChangedEventArgs _EventArgs = new()
+                {
+                    type = DeviceChangedType.Peripherals_SettingsChange,
+                    device_peripherals = deviceInfo,
+                    changedProperty = "DpiLevelChanged"
+                };
                 OnNotify(_EventArgs);
             }
         }
@@ -2681,21 +2692,21 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             if (_deviceHelper is { deviceInfo: not null })
             {
                 var deviceInfo = _deviceHelper.deviceInfo.FirstOrDefault(x => x.ID.ToString() == arg1.Id.ToString());
-                //Debug.WriteLine(arg2.ToString());
-                writelog(arg2.ToString());
-                if (deviceInfo != null)
-                {
-                    deviceInfo.DpiValue = arg2.ToString();
-                    DeviceChangedEventArgs _EventArgs = new();
-                    _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
-                    _EventArgs.device_peripherals = deviceInfo;
-                    _EventArgs.changedProperty = "DpiValueChanged";
-                    OnNotify(_EventArgs);
-                }
-                else
+                if (deviceInfo == null)
                 {
                     writelog($"DpiValueChanged: Error: deviceInfo is null");
+                    return;
                 }
+                deviceInfo.DpiValue = arg2.ToString();
+                Debug.WriteLine($"DpiValueChanged: New DpiValue: {arg2}");
+                writelog($"DpiValueChanged: New DpiValue: {arg2}");
+                DeviceChangedEventArgs _EventArgs = new()
+                {
+                    type = DeviceChangedType.Peripherals_SettingsChange,
+                    device_peripherals = deviceInfo,
+                    changedProperty = "DpiValueChanged"
+                };
+                OnNotify(_EventArgs);
             }
         }
 
@@ -2904,6 +2915,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     else if (deviceType.Contains("HEADSET"))
                     {
                         type = OSDType_Device.Headset;
+                        message = "Dell Headset ";
                     }
                     else if (SACommonHelper.EOLKBList.Contains(deviceInfo.ModelNumber))
                     {
@@ -3218,7 +3230,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         Requester = "Mute.Status",
                         DeviceName = Screen.PrimaryScreen.DeviceName,
                         osd_type = OSDType.Mute,
-                        Message = deviceInfo.Name,
+                        Message = "Dell Headset " + deviceInfo.ModelNumber,
                         Status = newValue
                     };
                     OnOSDNotify(args);
@@ -3399,7 +3411,6 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 _logs.DebugMsg_1("[PeripheralsPlugin] _logicalDeviceHeadset_WearDetectionChanged ... out " + newValue.ToString());
             }
         }
-
         private void IUpdateManager_IsAnyUpdateAvailableChanged(bool isAnyUpdateAvailable)
         {
             lock (_lock)
@@ -3421,6 +3432,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _updateItems.DeviceId = updateItem.DeviceId;
                             _updateItems.DeviceIndex = updateItem.DeviceIndex;
                             _updateItems.DeviceModelNumber = updateItem.DeviceModelNumber;
+                            string newModel = JudgmentList.ModelRename(updateItem.DeviceModelNumber);
+                            if (!string.IsNullOrEmpty(newModel))
+                            {
+                                _logs.DebugMsg_1($"[PeripheralsPlugin] newModel = {newModel}");
+                                _updateItems.DeviceModelNumber = newModel;
+                            }
                             _logs.DebugMsg_1($"[PeripheralsPlugin] _updateItems.DeviceModelNumber = {_updateItems.DeviceModelNumber}");
                             _updateItems.DeviceName = updateItem.DeviceName;
                             _logs.DebugMsg_1($"[PeripheralsPlugin] _updateItems.DeviceName = {_updateItems.DeviceName}");
@@ -3438,7 +3455,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _updateItems.Thumbprint = updateItem.Thumbprint;
 
                             _updateHelper.UpdateItems.Add(_updateItems);
-                        }
+                        }        
                     }
                     else
                     {
@@ -3661,9 +3678,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             };
         }
         //Bruce, FWU need it
-        public int GetDongleCount()
+        public Task<int> GetIODongleCount()
         {
-            return _DongleCount;
+            return System.Threading.Tasks.Task.FromResult(_IODongleCount);
+        }
+        //Bruce, FWU need it
+        public Task<int> GetAudioDongleCount()
+        {
+            return System.Threading.Tasks.Task.FromResult(_AudioDongleCount);
         }
 
         public void DisplayNotification(string bannerInfo, string hyperlinkText, string bannerItemType)

@@ -2956,6 +2956,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.Run(() => _PeripheralsPlugin.StopCopilotRegistryMonitor());
         }
 
+        public Task<int> GetIODongleCount()//Bruce Added 01/09
+        {
+            int retCount = 0;
+            if (_PeripheralsPlugin != null)
+            {
+                retCount = _PeripheralsPlugin.GetIODongleCount().Result;
+            }
+            return Task.FromResult(retCount);
+        }
+        public Task<int> GetAudioDongleCount()//Bruce Added 01/09
+        {
+            int retCount = 0;
+            if (_PeripheralsPlugin != null)
+            {
+                retCount = _PeripheralsPlugin.GetAudioDongleCount().Result;
+            }
+            return Task.FromResult(retCount);
+        }
         #endregion
 
         #region Headset
@@ -6190,7 +6208,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null)
             {
-                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo, _PeripheralsPlugin.GetDongleCount());
+                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo, _PeripheralsPlugin.GetIODongleCount().Result, _PeripheralsPlugin.GetAudioDongleCount().Result);
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);
@@ -6871,44 +6889,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<bool> GetOnNKVM(MonitorInfo monitorInfo)
         {
-            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-            if (settings != null)
+            if (_NKVMPlugin != null)
             {
-                DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == monitorInfo.edid.ServiceTag);
-                if (monitorSetting != null)
-                {
-                    return Task.FromResult(monitorSetting.KVM.isOnNKVM);
-                }
+                return _NKVMPlugin.GetOnNKVM(monitorInfo, _SettingsPlugin);
             }
             return Task.FromResult(false);
         }
 
         public Task SetOnNKVM(MonitorInfo monitorInfo, bool ison)
         {
-            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-            if (settings != null && _NKVMPlugin != null) //Robert_Lin 0731
+            if (_NKVMPlugin != null)
             {
-                foreach (DDPMMonitorSettings setting in settings)
+                _NKVMPlugin.SetOnNKVM(monitorInfo, ison, _SettingsPlugin).Wait();
+                if (ison)
                 {
-                    if (setting != null)
-                    {
-                        if (setting.ServiceTag == monitorInfo.edid.ServiceTag)
-                        {
-                            setting.KVM.isOnNKVM = ison;
-                            bool b = _SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result;
-                            if (ison)
-                            {
-                                //_SupportedMonitorList = _NKVMPlugin.GetSupportedNKVM().Result;
-                                _NKVMPlugin.OnNKVM().Wait();
-                                bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
-                            }
-                            else
-                            {
-                                _NKVMPlugin.OffNKVM().Wait();
-                            }
-                            break;
-                        }
-                    }
+                    bool bt = SentKVMtoTelementry(monitorInfo, "KVMMode", "Network").Result;
                 }
             }
 
@@ -8744,6 +8739,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 DisplayImportResultCode backendImportResult = _SettingsPlugin.DisplayImportSettings(path, isSameModel, monitorInfo.edid.ServiceTag, out DDPMImpExpSettings ImpExpSettings).Result;
                 if ((int)backendImportResult > 0)
                 {
+                    // Apply new Hotkey setting
+                    ReloadHotkeyConfigData();
+                    RegistHotkey(true);
                     if (ImpExpSettings != null)
                     {
                         if (ImpExpSettings.MonitorSettings != null)
@@ -8802,7 +8800,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         SetVCPSequence(monitorInfo, impVCPSequence, vcps);
                                         foreach (VCPCode code in vcps)
                                         {
-                                            writelog("[DisplayImportSettings] VCP code : " + code.Code.ToString());
+                                            writelog($"[DisplayImportSettings] VCP code : {code.Code.ToString()}, First Value: {code.Value[0]}");
                                             if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
                                                 importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
                                             {
@@ -9247,6 +9245,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             return await Task.Run(() => _DTPProxyPlugin.GetMouseAssignableActions(Guid));
         }
+        public async Task<JArray> GetMouseAssignedActions(string Guid)
+        {
+            return await Task.Run(() => _DTPProxyPlugin.GetMouseAssignedActions(Guid));
+        }
 
         public async Task<JArray> GetMouseProgrammableKeys(string Guid)
         {
@@ -9595,6 +9597,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<JArray> GetKbAssignableActions(string Guid)
         {
             return Task.Run(() => _DTPProxyPlugin.GetKbAssignableActions(Guid));
+        }
+        public Task<JArray> GetKbAssignedActions(string Guid)
+        {
+            return Task.Run(() => _DTPProxyPlugin.GetKbAssignedActions(Guid));
         }
 
         public async Task<string> GetKeyboardKeystrokeDisplayData(string Guid)
@@ -11846,6 +11852,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _EventArgs.deviceID = di?.ID.ToString() ?? "";// temp unique guid;
                                                               // >>
             }
+
+            if(changedProperty != "DisplayChanged" && type == DeviceChangedType.Peripherals_PlugIn)
+                CheckDeviceFirstTimesToConnect(mo, di);
+
             _EventArgs.type = type;
             _EventArgs.device_display = mo;
             _EventArgs.device_peripherals = di;
@@ -11901,7 +11911,85 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
+        private void CheckDeviceFirstTimesToConnect(MonitorInfo mo, DeviceInfo di)
+        {
+            try
+            {
+                if (_DisplayManagerPlugin == null)
+                {
+                    writelog($"CheckDeviceFirstTimesToConnect _DisplayManagerPlugin NULL ... ");
+                    return;
+                }
+                if (_DisplayManagerPlugin.GetIsDDPMLaunch().Result)
+                {
+                    writelog($"CheckDeviceFirstTimesToConnect isDDPMlaunch true ... ");
+                    return;
+                }
+                if (di == null)
+                {
+                    writelog($"CheckDeviceFirstTimesToConnect DeviceInfo null ... ");
+                    return;
+                }
+                bool result = false;
+                object regValue;
 
+                string UserId = WTSFunction.DirectGetUserID(Log);
+
+                if(UserId == null)
+                {
+                    writelog($"CheckDeviceFirstTimesToConnect UserId null ... ");
+                    return;
+                }
+
+                string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
+                string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{di.ModelNumber}";
+                string ddpmExePath = //@"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
+                                     System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Dell\Dell Display and Peripheral Manager\DDPM.exe");
+                //string debugPath = @"D:\\NEW\DDPM\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+                
+                if (!File.Exists(ddpmExePath))
+                {
+                    writelog($"CheckDeviceFirstTimesToConnect File not found at path: {ddpmExePath} ... ");
+                    return;
+                }
+
+                regValue = ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
+                //Trace.WriteLine($"regValue {regValue.ToString()}");
+                // mean null or "" or is false, add to the queue and set it to true
+                if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
+                {
+                    writelog($"CheckDeviceFirstTimesToConnect ReadRegistryData UserId : {UserId}, can not find ModelNumber : {di.ModelNumber}, StartProcess ... ");
+                    result = DDPMFileSecurity.ValidateFilePath(ddpmExePath, out string info);
+                    if (result)
+                    {
+                        result = DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                            null,
+                            new ProcessStartInfo
+                            {
+                                FileName = ddpmExePath,
+                                UseShellExecute = true
+                            });
+
+                        if (!result)
+                        {
+                            writelog($"CheckDeviceFirstTimesToConnect StartProcessSafely fail");
+                        }
+                    }
+                    else
+                    {
+                        writelog($"CheckDeviceFirstTimesToConnect ValidateFilePath fail");
+                    }
+                }
+                else
+                {
+                    writelog($"CheckDeviceFirstTimesToConnect ReadRegistryData UserId : {UserId}, find ModelNumber : {di.ModelNumber}");
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"CheckDeviceFirstTimesToConnect Exception : {ex.Message}");
+            }
+        }
         //0613 Bruce 用於看是否連接超過2個dock
         private void CheckDocks()
         {
@@ -12628,6 +12716,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         //LoadGlobalSettingParam(); //here is too early, please refer to function "SettingsReady"
                         UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
                         _PeripheralsPlugin.Peripheral_OSD_Notify += OnPeripheralOSDNotify;
+
+                        var di = GetDevices(true).Result;
+                        if (di != null)
+                        {
+                            foreach (var item in di.deviceInfo)
+                            {
+                                CheckDeviceFirstTimesToConnect(null, item);
+                            }
+                        }
                     }
                 }
             });

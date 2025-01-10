@@ -372,6 +372,10 @@ namespace DDPM.UI.Common.UserControls
             // Jim add 20241221 for  PIMS-303368 [DDPM Win 2.0][R11 Webcam] The text button "Restore to Default" always showing in DDPM UI under DUT.
             ((Border)(viewModel.DefaultLeftView.FindName("btnRestore"))).Visibility = Visibility.Collapsed;
             */
+
+            // Jim 20250109 to fix PIMS-340036 [DDPM Win 2.0][R19]Connect two monitors,switch the drop-down menu. One DUT of the Restore to default icons disappears.
+            ((System.Windows.Controls.Button)(viewModel.DefaultLeftView.FindName("btnRestore"))).Visibility = Visibility.Collapsed;
+            viewModel.SelectedHomeDevice.IsRestoreBtnVisible = Visibility.Collapsed; ;
         }
 
         private void ExtendVBarOnVerticalLayout()

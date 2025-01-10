@@ -99,11 +99,11 @@
                             NormalContent="Next"
                             ProgressButtonState="Normal"
                             Click="OpenMKFullView" />-->
-                            <!-- Elsa 20250108 For PIMS [PIMS-334050] change Width="164" to Width="Auto"-->
+                            <!-- Elsa 20250108 For PIMS [PIMS-334050] change Width="164" to MinWidth="164"-->
                             <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
                                                  ButtonType="Primary" Padding="40, 8"
                                                  ButtonSize="Medium" VerticalContentAlignment="Center"
-                                                 IconAnimation="Move" Width="Auto" Height="40"
+                                                 IconAnimation="Move" MinWidth="164" Height="40"
                                                  ContentStringFormat="{}{0}"
                                                  Click="OpenMKFullView" Visibility="{Binding SetInput}">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -132,7 +132,7 @@
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid Grid.Column="1" Margin="132, 60, 130, 40" HorizontalAlignment="Center">
+                <Grid Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />

@@ -35,6 +35,7 @@ namespace DDPM.SA.Common
             { "DEVICECONFIGURATION", 300 },
             { "EXPORTSETTINGS", 300 },
             { "IMPORTSETTINGS", 300 },
+            { "USBCPRIORITIZATION", 300 },
             { "PXP", 300 }
         };
 

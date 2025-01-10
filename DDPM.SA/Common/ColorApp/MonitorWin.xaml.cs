@@ -314,34 +314,42 @@ namespace DDPM.ColorApp
                     writelog("EventAppStatus_SendValue ActiveWindowFilePath = " + data.ActiveWindowFilePath);
 
                     MonitorInfo actived_mi = null;
-                    if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
-                    {
-                        actived_mi = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(screen.DeviceName.ToUpper()));
 
-                    }
-                    else
+                    // Jim 20250110 modify for exception 
+                    if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
                     {
-                        writelog($"_AllInfoMonitors.Count = {_AllInfoMonitors.Count} ");
-                        writelog("No any Monitors is matched");
+                        writelog("No any Monitors is matched, _AllInfoMonitors was null or empty");
+                        actived_mi = null;
                         return;
                     }
 
+                    try
+                    {
+                        actived_mi = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(screen.DeviceName.ToUpper()));
+                    }
+                    catch (Exception ex)
+                    {
+                        writelog($"[EventAppStatus_SendValue] Find matched Monitor has error = {ex.Message}");
+                        actived_mi = null;
+                    }            
 
                     //Get actived Monitor from actived window
                     //screen = Screen.FromHandle(data.ActiveWindowHandle);
 
                     //MonitorInfo actived_mi = Mi;
 
-                    if (actived_mi != null && !actived_mi.IsDellMonitor)
+                    // Jim 20250110 modify for exception
+                    if (actived_mi == null)
                     {
-                            writelog("actived_mi.IsDellMonitor is False");
-                            return;
-                    }
-                    else // Jim 20241223 add check if null to avoid Exception
-                    {
-                        writelog("No any Monitors is matched,actived_mi was null");                        
+                        writelog("No any Monitors is matched, actived_mi was null");
                         return;
                     }
+
+                    if (!actived_mi.IsDellMonitor) // Jim 20250109 modify
+                    {
+                        writelog("The activated monitor does not meet the criteria");
+                        return;
+                    }                
 
                     //////get active process's modeul info
                     Process forgroundProcess = Process.GetProcessById((int)data.ActiveWindowProcessId);
