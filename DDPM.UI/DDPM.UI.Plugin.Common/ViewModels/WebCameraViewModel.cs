@@ -748,10 +748,18 @@ namespace DDPM.UI.Plugin.ViewModels
             _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(_resolutions)}!");
             _log.Info($"DTP (WebcamSettings.Selected_Resolution:{WebcamSettings.SelectedResolution}!");
             _log.Info($"DTP i:{i}!");
+            if (i < 0) 
+            {
+                i = 0;
+            }
             SetResolution_Selected(i);
             _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(WebcamSettings.SupportedFPSs)}!");
             var j = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution]);
             _log.Info($"DTP j:{j}!");
+            if (j < 0)
+            {
+                j = 0;
+            }
             SetFPS_Selected(j);
             foreach (var sf in WebcamSettings.SelectedFPSs)
             {
