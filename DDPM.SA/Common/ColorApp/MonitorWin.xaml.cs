@@ -343,7 +343,7 @@ namespace DDPM.ColorApp
 
                     if (actived_mi != null)
                     {
-                        if (!actived_mi.IsDellMonitor || actived_mi.DisplayName == "\\\\.\\DISPLAY1") // Jim 20250109 modify
+                        if (!actived_mi.IsDellMonitor) // Jim 20250109 modify
                         {
 
                             writelog("the actived monitor do not meet");
