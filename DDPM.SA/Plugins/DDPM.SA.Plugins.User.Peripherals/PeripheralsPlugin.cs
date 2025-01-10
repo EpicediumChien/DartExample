@@ -1873,7 +1873,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                     }
                                     /*Bruce 01/10 註解，因有把Dock API 卡住的疑慮
                                      * dokc_bytes = _logicalDeviceDock.GetDockTBTConnectionStatus();
-                                    _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockTBTConnectionStatus byte is null = {(dokc_bytes == null ? "Yes" : "No")}");*/
+                                    _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockTBTConnectionStatus byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
                                     if (dokc_bytes != null)
                                     {
                                         _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockTBTConnectionStatus dokc_bytes.Length : {dokc_bytes.Length}");
@@ -1899,7 +1899,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                                 _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockTBTConnectionStatus Error : {ex.Message}");
                                             }
                                         }
-                                    }
+                                    }*/
                                     dokc_bytes = _logicalDeviceDock.GetDockServiceTag();
                                     _logs.DebugMsg_1($"[PeripheralsPlugin] GetDockServiceTag byte is null = {(dokc_bytes == null ? "Yes" : "No")}");
                                     if (dokc_bytes != null)
