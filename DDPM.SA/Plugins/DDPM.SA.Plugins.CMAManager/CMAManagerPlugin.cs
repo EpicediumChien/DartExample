@@ -702,7 +702,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
                         if (isSuccess)
                         {
-                            finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": [" + jsonResult + "]}";
+                            finalResult = finalResult + "{\"tid\": " + taskInfo.tid + ",\"result\": 0,\"msg\": \"\",\"data\": " + jsonResult + "}";
                         }
                         else
                         {

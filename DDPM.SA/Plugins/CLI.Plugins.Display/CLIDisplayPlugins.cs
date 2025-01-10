@@ -6732,6 +6732,7 @@ namespace DDPM.CLI.Plugins.Display
                         MonitorInfo mo = _AllInfoMonitors.FirstOrDefault(_ => _.edid.ServiceTag == serviceTagList[i]);
                         if (mo == null)
                         {
+                            Thread.Sleep(5000);
                             _AllInfoMonitors = _devMgr.GetMonitors().Result;
                             break;
                         }
