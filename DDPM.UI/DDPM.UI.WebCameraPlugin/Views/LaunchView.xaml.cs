@@ -1892,7 +1892,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             return result;
         }
 
-        private void StartRecord()
+        // private void StartRecord()
+        private async void StartRecord()
         {
             DdpmCommonHelper.WriteUILog($"StartRecord");
 
@@ -1908,7 +1909,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //DdpmCommonHelper.DeviceManagerSA!.ShowOSD(Screen.PrimaryScreen!.DeviceName, OSDType.StartRecording);
             }
             else
-                StartRecordingAsync().RunSynchronously();
+            {
+                //leo fixed 2024/01/10
+                //Avoid unnecessary expectation warnings.
+                //StartRecordingAsync().RunSynchronously();
+                await StartRecordingAsync();
+            }
 
         }
 

@@ -149,11 +149,11 @@
                                     <MouseBinding Gesture="LeftClick" Command="{Binding GoBackClickedCommand, Mode=OneTime}" />
                                 </Image.InputBindings>
                             </Image>
-                            <UXControls:UXTextBlock Name="txtCaption" Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
+                            <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtCaption" Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
                               Style="{StaticResource ProductNameTextStyle}" Cursor="" VerticalAlignment="Top" />
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <UXControls:UXTextBlock Text="{Binding Model}" Margin="101,18,0,0" HorizontalAlignment="Left"
+                            <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Text="{Binding Model}" Margin="101,18,0,0" HorizontalAlignment="Left"
                                           Style="{StaticResource ModelNumberTextStyle}" />
                             <!--<Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info18.png" Stretch="Fill"
                          VerticalAlignment="Top" Cursor="" Width="16" Height="16">
@@ -183,11 +183,11 @@
                     </StackPanel>
                 </Grid>
                 <!--Image-->
-                <Grid  Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Margin="0,10,80,10" Grid.ColumnSpan="2" >
-                    <Viewbox Name="largeImage" >
+                <Grid Grid.Column="0" Grid.Row="1" Grid.RowSpan="2" Margin="0,10,80,80" Grid.ColumnSpan="2" >
+                    <Viewbox Name="largeImage">
                         <Grid>
                             <Grid>
-                                <Image  Name="imgDevice" Source="{Binding ImageFilePath}"  />
+                                <Image Name="imgDevice" Source="{Binding ImageFilePath}"  />
                             </Grid>
                             <Grid  x:Name="gridPreview" Margin="0,0,0,12">
                                 <StackPanel ZIndex ="1" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -261,7 +261,7 @@
                           VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
                    </Image>-->
                             <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                            <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="Transparent" Foreground="{DynamicResource DefaultTheme_TxtColor}" TextWrapping="Wrap" Width="260" Text="{Binding AlertText}"
+                            <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="Transparent" Foreground="{DynamicResource DefaultTheme_TxtColor}" TextWrapping="Wrap" Width="260" Text="{Binding AlertText}"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,0,0,0" LineHeight="19.5" Padding="0,18,0,16" FontFamily="Roboto" FontWeight="Normal" />
                         </StackPanel>
                     </Border>
@@ -270,7 +270,7 @@
                 <StackPanel Margin="30,30,0,0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2">
                     <!--Timer-->
                     <Grid VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="2">
-                        <UXControls:UXTextBlock Name="txtTimer" AutomationProperties.Name="Description" FontSize="16" Background="Transparent" Foreground="#FBA433" TextWrapping="Wrap" Text="00:00:00"
+                        <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtTimer" AutomationProperties.Name="Description" FontSize="16" Background="Transparent" Foreground="#FBA433" TextWrapping="Wrap" Text="00:00:00"
            VerticalAlignment="Top" HorizontalAlignment="Left" Margin="0,10,0,0" FontFamily="Roboto" FontWeight="Normal" Visibility="Collapsed" />
                     </Grid>
                     <!--Battery-->
@@ -377,22 +377,20 @@
                                         </Border>
                                         <Border Margin="8,0,0,12" Border.CornerRadius="4" Cursor="Hand" Width="184"  Height="36"
                                     BorderThickness="1" BorderBrush="#324255" Background="{DynamicResource DdpmCB_BkColor}">
-                        <!-- Derek 20250108 for PIMS333767 -->
-                        <UXControls:UXTextBlock Margin="10,0,15,0" TextTrimming="CharacterEllipsis" Name="txtAddPreset" FontFamily="Roboto" FontSize="14" FontWeight="Normal" VerticalAlignment="Center" HorizontalAlignment="Center" MouseLeftButtonDown="AddPreset" />
-                    </Border>
-                  </StackPanel>
-                  <Border Margin="8,0,0,0" Cursor="Hand" x:Name="btnPreset" MouseLeftButtonDown="btnPreset_Click"
+                                            <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtAddPreset" FontFamily="Roboto" FontSize="14" FontWeight="Normal" VerticalAlignment="Center" HorizontalAlignment="Center" MouseLeftButtonDown="AddPreset" />
+                                        </Border>
+                                    </StackPanel>
+                                    <Border Margin="8,0,0,0" Cursor="Hand" x:Name="btnPreset" MouseLeftButtonDown="btnPreset_Click"
                                 Background="{DynamicResource DdpmCB_BkColor}"
                                 Border.CornerRadius="4"
                                 Width="184"
                                 BorderThickness="1"
                                 BorderBrush="#31A2E3">
-                    <Grid>
-                      <!--<Image Margin="10,12,0,12" Source="/DDPM.UI.Resources;component/Resources/Images/CameraPreset.png" Stretch="Fill" Width="17" Height="16" HorizontalAlignment="Left" />-->
-                      <ContentControl Margin="10,12,0,12" Width="17" Height="16" HorizontalAlignment="Left" Template="{StaticResource icon_CameraPreset}" />
-                      <!-- Derek 20250108 for PIMS333767 -->
-                      <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtPreset" Margin="35,0,28,0" FontFamily="Roboto" FontSize="14" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center" />
-                      <!--<Image Name="imgDown" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" Stretch="Uniform" Margin="0,0,10,0"
+                                        <Grid>
+                                            <!--<Image Margin="10,12,0,12" Source="/DDPM.UI.Resources;component/Resources/Images/CameraPreset.png" Stretch="Fill" Width="17" Height="16" HorizontalAlignment="Left" />-->
+                                            <ContentControl Margin="10,12,0,12" Width="17" Height="16" HorizontalAlignment="Left" Template="{StaticResource icon_CameraPreset}" />
+                                            <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtPreset" Margin="35,0,0,0" FontFamily="Roboto" FontSize="14" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                            <!--<Image Name="imgDown" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" Stretch="Uniform" Margin="0,0,10,0"
                      Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="12" Height="12"/>-->
                                             <ContentControl Name="imgDown" Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="12" Height="12" 
                                                 RenderTransformOrigin="0.5,0.5"  Template="{StaticResource icon_DownArrow}" />
@@ -405,7 +403,7 @@
                     <!--Add Profile-->
                     <Grid Name="gdAddProfile" VerticalAlignment="Bottom" Grid.Column="0" Grid.Row="2" Visibility="Hidden">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
-                            <UXControls:UXTextBlock Name="txtName" FontFamily="Roboto" FontSize="16" FontWeight="Medium"  VerticalAlignment="Center" />
+                            <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtName" FontFamily="Roboto" FontSize="16" FontWeight="Medium"  VerticalAlignment="Center" />
                             <StackPanel Orientation="Vertical">
                                 <Border x:Name="bdrName" BorderThickness="1" BorderBrush="#7E7E7E" CornerRadius="4" Margin="16,0,0,0">
                                     <UXControls:UXTextBox Name="txbName" Width="260" Height="40" Padding="8,12" FontWeight="Medium" FontFamily="Roboto" MaxLength="30" FontSize="14"
@@ -413,7 +411,7 @@
                            TextChanged="NameTextChanged" TextWrapping="NoWrap" FocusVisualStyle="{StaticResource BorderFocused}"/>
 
                                 </Border>
-                                <UXControls:UXTextBlock Name="txtMsg" Margin="16,5,0,-20" FontFamily="Roboto" FontSize="12" FontWeight="Medium" Foreground="#FF3E3B" Visibility="Collapsed" />
+                                <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtMsg" Margin="16,5,0,-20" FontFamily="Roboto" FontSize="12" FontWeight="Medium" Foreground="#FF3E3B" Visibility="Collapsed" />
                             </StackPanel>
                             <!-- <common:ActionButton Name="btnCancel" Style="{StaticResource CancelButtonStyle}" Margin="16,0,7,0" MouseDown="CancelClick" Width="107" />-->
                             <Button Name="btnCancel" Style="{StaticResource SecondaryButtonStyle}" Margin="16,0,7,0" Click="CancelClick" Width="107" />
