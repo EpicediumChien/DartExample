@@ -2562,10 +2562,10 @@ namespace VcpCore.Plugins
                                 break;
                             }
                         }
-                        if (!IsExist)
+                        if (!IsExist &&
+                            !string.IsNullOrWhiteSpace(MonitorInfo.CapabilityString))
                         {
-                            if (!string.IsNullOrWhiteSpace(MonitorInfo.CapabilityString))
-                                _CacheTable.Add(MonitorInfo.edid, new Dictionary<object, object>() { { "CapibilityString", MonitorInfo.CapabilityString } });
+                            _CacheTable.Add(MonitorInfo.edid, new Dictionary<object, object>() { { "CapibilityString", MonitorInfo.CapabilityString } });
                         }
                     }
                 }
@@ -2620,17 +2620,15 @@ namespace VcpCore.Plugins
                     var Keys = _CacheTable.Keys.ToList();
                     foreach (var Key in Keys)
                     {
-                        if (Key.Equals(MonitorInfo.edid))
-                        {
-                            if (_CacheTable[Key].ContainsKey(key))
-                            {
-                                bool rc = false;
-                                var result = new object();
-                                rc = _CacheTable[Key].TryGetValue(key, out result);
+                        if (Key.Equals(MonitorInfo.edid) &&
+                            _CacheTable[Key].ContainsKey(key))
+                        {                           
+                            bool rc = false;
+                            var result = new object();
+                            rc = _CacheTable[Key].TryGetValue(key, out result);
 
-                                _logs.DebugMsg("[VcpCorePlugin] Is GetFromCacheTable success?? : result => " + rc.ToString());
-                                return (rc ? result : null);
-                            }
+                            _logs.DebugMsg("[VcpCorePlugin] Is GetFromCacheTable success?? : result => " + rc.ToString());
+                            return (rc ? result : null);                            
                         }
                     }
                 }
@@ -2823,10 +2821,10 @@ namespace VcpCore.Plugins
             {
                 PHYSICAL_MONITOR[] pPhysicalMonitors = new PHYSICAL_MONITOR[cPhysicalMonitors];
                 bSuccess = _GetPhysicalMonitorsFromHMONITOR(monitor.hMonitor, cPhysicalMonitors, pPhysicalMonitors);
-                if (bSuccess)
+                if (bSuccess &&
+                    pPhysicalMonitors.Length >= monitor.cPhysicalMonitors_index)
                 {
-                    if (pPhysicalMonitors.Length >= monitor.cPhysicalMonitors_index)
-                        monitor.hPhysicalMonitor = pPhysicalMonitors[monitor.cPhysicalMonitors_index].hPhysicalMonitor;
+                    monitor.hPhysicalMonitor = pPhysicalMonitors[monitor.cPhysicalMonitors_index].hPhysicalMonitor;
                 }
             }
         }
@@ -3613,14 +3611,12 @@ namespace VcpCore.Plugins
                     outColorPreset.vcpode = VcpCode.ColorSpace14;
                     Dictionary<string, string> myresources = new Dictionary<string, string>();
                     bool TF_Boolean = ColorPresetHash.TryGetValue("14", out myresources);
-                    if (TF_Boolean)
-                    {
-                        if (myresources.ContainsKey(presetName))
-                        {
-                            GetPresetValue = myresources[presetName].ToString();
-                            GetResult = true;
-                            outColorPreset.codeValue = Convert.ToUInt32(GetPresetValue, 16);
-                        }
+                    if (TF_Boolean &&
+                        myresources.ContainsKey(presetName))
+                    {                        
+                        GetPresetValue = myresources[presetName].ToString();
+                        GetResult = true;
+                        outColorPreset.codeValue = Convert.ToUInt32(GetPresetValue, 16);                        
                     }
                 }
                 return GetResult;
@@ -4186,10 +4182,10 @@ namespace VcpCore.Plugins
                             {
                                 foreach (var s in getData)
                                 {
-                                    if (!string.IsNullOrWhiteSpace(s))
+                                    if (!string.IsNullOrWhiteSpace(s) &&
+                                        E2List.Contains(s))
                                     {
-                                        if (E2List.Contains(s))
-                                            Newlist.Add(s);
+                                        Newlist.Add(s);
                                     }
                                 }
                             }

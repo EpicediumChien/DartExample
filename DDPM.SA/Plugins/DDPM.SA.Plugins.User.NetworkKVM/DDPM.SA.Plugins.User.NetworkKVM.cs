@@ -433,13 +433,11 @@ namespace NetworkKVM.Plugins
                     {
                         if (_SupportedMonitors.Count > 0)
                         {
-                            if (_SupportedMonitors.IndexOf(ModelName) == -1)
+                            if (_SupportedMonitors.IndexOf(ModelName) == -1 &&
+                                IsSupportNKVM(capabilityString))
                             {
-                                if (IsSupportNKVM(capabilityString))
-                                {
-                                    _SupportedMonitors.Add(ModelName);
-                                    isAdd = true;
-                                }
+                                _SupportedMonitors.Add(ModelName);
+                                isAdd = true;
                             }
                         }
                         else
@@ -472,18 +470,16 @@ namespace NetworkKVM.Plugins
         public Task OnNKVM()
         {
             _logs.DebugMsg("[NetworkKVM] OnNKVM....");
-            if (pipeServer != null)
+            if (pipeServer != null &&
+                pipeServer.IsConnected)
             {
-                if (pipeServer.IsConnected)
-                {
-                    cid = cid + 1;
-                    ON_NKVM _COMMAND = new ON_NKVM();
-                    _COMMAND.cid = cid;
-                    _COMMAND.UpdateChecksum();
-                    //_COMMAND.type = "ON_NKVM";
-                    NKVMState = true;
-                    WriteAsync(_COMMAND.ToJson()).Wait();
-                }
+                cid = cid + 1;
+                ON_NKVM _COMMAND = new ON_NKVM();
+                _COMMAND.cid = cid;
+                _COMMAND.UpdateChecksum();
+                //_COMMAND.type = "ON_NKVM";
+                NKVMState = true;
+                WriteAsync(_COMMAND.ToJson()).Wait();
             }
             return Task.CompletedTask;
         }
@@ -491,18 +487,16 @@ namespace NetworkKVM.Plugins
         public Task OffNKVM()
         {
             _logs.DebugMsg("[NetworkKVM] OffNKVM....");
-            if (pipeServer != null)
+            if (pipeServer != null &&
+                pipeServer.IsConnected)
             {
-                if (pipeServer.IsConnected)
-                {
-                    cid = cid + 1;
-                    OFF_NKVM _COMMAND = new OFF_NKVM();
-                    _COMMAND.cid = cid;
-                    _COMMAND.UpdateChecksum();
-                    //_COMMAND.type = "OFF_NKVM";
-                    NKVMState = false;
-                    WriteAsync(_COMMAND.ToJson()).Wait();
-                }
+                cid = cid + 1;
+                OFF_NKVM _COMMAND = new OFF_NKVM();
+                _COMMAND.cid = cid;
+                _COMMAND.UpdateChecksum();
+                //_COMMAND.type = "OFF_NKVM";
+                NKVMState = false;
+                WriteAsync(_COMMAND.ToJson()).Wait();
             }
             return Task.CompletedTask;
         }
@@ -598,30 +592,28 @@ namespace NetworkKVM.Plugins
         {
             try
             {
-                if (pipeServer != null)
+                if (pipeServer != null &&
+                    pipeServer.IsConnected)
                 {
-                    if (pipeServer.IsConnected)
+                    _logs.DebugMsg("[NetworkKVM] SetVCPNotify VcpCode : " + vcpcode.ToString());
+                    _logs.DebugMsg("[NetworkKVM] SetVCPNotify value : " + value.ToString());
+                    if (!isSetVCP || (isSetVCP && lockVCP != vcpcode))
                     {
-                        _logs.DebugMsg("[NetworkKVM] SetVCPNotify VcpCode : " + vcpcode.ToString());
-                        _logs.DebugMsg("[NetworkKVM] SetVCPNotify value : " + value.ToString());
-                        if (!isSetVCP || (isSetVCP && lockVCP != vcpcode))
+                        if (vcpcode == 0x60 && value == 0)
                         {
-                            if (vcpcode == 0x60 && value == 0)
-                            {
-                                return Task.CompletedTask;
-                            }
-                            SET_VCP_NOTIFY set_VCP_NOTIFY = new SET_VCP_NOTIFY();
-                            set_VCP_NOTIFY.MonitorIndex = monitorInfo.Index;
-                            set_VCP_NOTIFY.VcpCode = vcpcode;
-                            set_VCP_NOTIFY.Value = value;
-                            set_VCP_NOTIFY.UpdateChecksum();
+                            return Task.CompletedTask;
+                        }
+                        SET_VCP_NOTIFY set_VCP_NOTIFY = new SET_VCP_NOTIFY();
+                        set_VCP_NOTIFY.MonitorIndex = monitorInfo.Index;
+                        set_VCP_NOTIFY.VcpCode = vcpcode;
+                        set_VCP_NOTIFY.Value = value;
+                        set_VCP_NOTIFY.UpdateChecksum();
 
-                            WriteAsync(set_VCP_NOTIFY.ToJson()).Wait();
-                        }
-                        else
-                        {
-                            _logs.DebugMsg("[NetworkKVM] isSetVCP : " + isSetVCP.ToString());
-                        }
+                        WriteAsync(set_VCP_NOTIFY.ToJson()).Wait();
+                    }
+                    else
+                    {
+                        _logs.DebugMsg("[NetworkKVM] isSetVCP : " + isSetVCP.ToString());
                     }
                 }
                 if (vcpcode == 0x60)

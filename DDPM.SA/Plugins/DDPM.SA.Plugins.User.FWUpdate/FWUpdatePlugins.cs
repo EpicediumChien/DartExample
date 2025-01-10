@@ -458,40 +458,38 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 _logs.DebugMsg_1($" CheckUpdate(), newVer (production output) = {newVer}");
                             }
                             _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].oldVer = {oldVer}");
-                            if (!string.IsNullOrEmpty(oldVer))
+                            if (!string.IsNullOrEmpty(oldVer) &&
+                                !oldVer.Contains("."))
                             {
-                                if (!oldVer.Contains("."))
+                                if (oldVer.Length < 5) //長度小於5
                                 {
-                                    if (oldVer.Length < 5) //長度小於5
+                                    if (oldVer.Length < 4) // 長度不足4,就補0在字首到長度為4
+                                        oldVer = oldVer.PadLeft(4, '0');
+                                    oldVer = Regex.Replace(oldVer, ".{1}", "$0.").Substring(0, (oldVer.Length * 2) - 1);
+                                }
+                                else if (oldVer.Length > 4) // 長度大於4
+                                {
+                                    //FF.FF.FF.FF(testing) or
+                                    //01004501 => 01.00.45.01 / 00011600 => 00.01.16.00(production)
+
+                                    if (oldVer.Length < 8) // 長度不足8,就補0在字首到長度為8
+                                        oldVer = oldVer.PadLeft(8, '0');
+
+                                    //FF.FF.FF.FF(testing) or
+                                    //00001541 => 1.5.4.1; 00001064 => 1.0.6.4(production)
+                                    if (oldVer.StartsWith("0000")) // 檢查前4個字元是否都為0
                                     {
-                                        if (oldVer.Length < 4) // 長度不足4,就補0在字首到長度為4
-                                            oldVer = oldVer.PadLeft(4, '0');
+                                        oldVer = oldVer.Substring(4);
                                         oldVer = Regex.Replace(oldVer, ".{1}", "$0.").Substring(0, (oldVer.Length * 2) - 1);
                                     }
-                                    else if (oldVer.Length > 4) // 長度大於4
+                                    else
                                     {
-                                        //FF.FF.FF.FF(testing) or
-                                        //01004501 => 01.00.45.01 / 00011600 => 00.01.16.00(production)
-
-                                        if (oldVer.Length < 8) // 長度不足8,就補0在字首到長度為8
-                                            oldVer = oldVer.PadLeft(8, '0');
-
-                                        //FF.FF.FF.FF(testing) or
-                                        //00001541 => 1.5.4.1; 00001064 => 1.0.6.4(production)
-                                        if (oldVer.StartsWith("0000")) // 檢查前4個字元是否都為0
-                                        {
-                                            oldVer = oldVer.Substring(4);
-                                            oldVer = Regex.Replace(oldVer, ".{1}", "$0.").Substring(0, (oldVer.Length * 2) - 1);
-                                        }
-                                        else
-                                        {
-                                            string pattern = @"(.{2})(.{2})(.{2})(.{2})";
-                                            string replacement = "$1.$2.$3.$4";
-                                            oldVer = Regex.Replace(oldVer, pattern, replacement);
-                                        }
+                                        string pattern = @"(.{2})(.{2})(.{2})(.{2})";
+                                        string replacement = "$1.$2.$3.$4";
+                                        oldVer = Regex.Replace(oldVer, pattern, replacement);
                                     }
-                                    _logs.DebugMsg_1($" CheckUpdate(), oldVer (production output) = {oldVer}");
                                 }
+                                _logs.DebugMsg_1($" CheckUpdate(), oldVer (production output) = {oldVer}");                                
                             }
                             _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}] go add list");
                             if (deviceTypeList == null && !isOnlyDisplay)
@@ -859,12 +857,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             }
                             _logs.DebugMsg_1($"{nameof(Filter)} minVersion currentVersion:{currentVersion}");
                             _logs.DebugMsg_1($"{nameof(Filter)} minVersion new_MinVersion:{new_MinVersion}");
-                            if (currentVersion > 0 && new_MinVersion > 0)
+                            if (currentVersion > 0 && new_MinVersion > 0 &&
+                                currentVersion <= new_MinVersion)
                             {
-                                if (currentVersion <= new_MinVersion)
-                                {
-                                    _forCLI_FWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
-                                }
+                                _forCLI_FWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
                             }
                         }
                     }
@@ -947,15 +943,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _fWUpdateInfo = fwUpdateInfos[i];
                     _updateErrorCode = FWUErrorCode.Unknow;
                     fwUpdateInfos[i].FWUErrorCode = _updateErrorCode;
-                    if (!fwUpdateInfos[i].IsDisplay)
+                    if (!fwUpdateInfos[i].IsDisplay &&
+                        CheckDeviceStatus_IsStopUpdate(fwUpdateInfos[i], out FWUErrorCode isStopUpdateError))
                     {
-                        if (CheckDeviceStatus_IsStopUpdate(fwUpdateInfos[i], out FWUErrorCode isStopUpdateError))
-                        {
-                            fwUpdateInfos[i].FWUErrorCode = isStopUpdateError;
-                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                            method.DeleteFolder(savePath);
-                            continue;
-                        }
+                        fwUpdateInfos[i].FWUErrorCode = isStopUpdateError;
+                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                        method.DeleteFolder(savePath);
+                        continue;
                     }
                     if (CheckPCBattery_IsStopUpdate(fwUpdateInfos[i]))
                     {
@@ -1965,12 +1959,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 sendMessageToEvent(fWUpdateInfo);
             }
             _timeOutCount--;
-            if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe)
+            if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe &&
+                !_IsSkipSHA)
             {
-                if (!_IsSkipSHA)
-                {
-                    resetState();
-                }
+                resetState();
             }
             if (_timeOutCount == 0)
             {
