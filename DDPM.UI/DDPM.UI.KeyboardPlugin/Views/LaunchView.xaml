@@ -151,7 +151,7 @@
                 <Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
                 <!--Image-->
                 <Grid>
-                    <Viewbox Name="largeImage" Margin="30,0" MaxWidth="900">
+                    <Viewbox Name="largeImage" Margin="0" MaxWidth="900" MinWidth="700">
                         <Grid>
                             <Grid>
                                 <Image Source="{Binding ImageFilePath}" Stretch="Uniform" MaxWidth="900" />
