@@ -315,49 +315,23 @@ namespace DDPM.ColorApp
 
                     MonitorInfo actived_mi = null;
 
-                    // Jim 20250110 modify for exception
-                    if (_AllInfoMonitors == null)
+                    // Jim 20250110 modify for exception 
+                    if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
                     {
-                        writelog("No any Monitors is matched, _AllInfoMonitors was null");
+                        writelog("No any Monitors is matched, _AllInfoMonitors was null or empty");
                         actived_mi = null;
                         return;
                     }
 
-                    if (_AllInfoMonitors.Count > 0)
+                    try
                     {
-                        // Jim 20250109 add exception handling 
-                        try
-                        {
-                            actived_mi = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(screen.DeviceName.ToUpper()));
-                        }
-                        catch (Exception ex)
-                        {
-                            writelog($"[EventAppStatus_SendValue(] Find matched Monitor has error = {ex.Message}");
-                            actived_mi = null;
-                        }
+                        actived_mi = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(screen.DeviceName.ToUpper()));
                     }
-
-                    /*if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0)
+                    catch (Exception ex)
                     {
-                        // Jim 20250109 add exception handling 
-                        try
-                        {
-                            actived_mi = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(screen.DeviceName.ToUpper()));
-                        }
-                        catch (Exception ex)
-                        {
-                            writelog($"[EventAppStatus_SendValue(] Find matched Monitor has error = {ex.Message}");
-                            actived_mi = null;
-                        }
-                    }
-                    else
-                    {
-                        writelog($"_AllInfoMonitors.Count = {_AllInfoMonitors.Count} ");
-                        writelog("No any Monitors is matched");
+                        writelog($"[EventAppStatus_SendValue] Find matched Monitor has error = {ex.Message}");
                         actived_mi = null;
-                        return;
-                    }*/
-
+                    }            
 
                     //Get actived Monitor from actived window
                     //screen = Screen.FromHandle(data.ActiveWindowHandle);
@@ -375,22 +349,7 @@ namespace DDPM.ColorApp
                     {
                         writelog("The activated monitor does not meet the criteria");
                         return;
-                    }
-
-                    /*if (actived_mi != null)
-                    {
-                        if (!actived_mi.IsDellMonitor) // Jim 20250109 modify
-                        {
-
-                            writelog("the actived monitor do not meet");
-                            return;
-                        }
-                    }
-                    else // Jim 20241223 add check if null to avoid Exception
-                    {
-                        writelog("No any Monitors is matched,actived_mi was null");                        
-                        return;
-                    }*/
+                    }                
 
                     //////get active process's modeul info
                     Process forgroundProcess = Process.GetProcessById((int)data.ActiveWindowProcessId);
