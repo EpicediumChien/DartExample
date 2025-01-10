@@ -192,9 +192,9 @@ namespace CLI.Subagent
                     var isForceWithNoNotice = false;
                     var cmds = string.Join(" ", args.Select(_ => _.ToUpper()));
 
-                    if (commandLineInput.Command == "SET" && commandLineInput.Options.Count > 0)
+                    if (commandLineInput.Command == "SET")
                     {
-                        if (commandLineInput.TargetType == "APP" && commandLineInput.TargetFeature == "FIRMWAREUPDATE")
+                        if (commandLineInput.TargetType == "APP" && commandLineInput.TargetFeature == "FIRMWAREUPDATE" && commandLineInput.Options.Count > 0)
                         {
                             foreach (var option in commandLineInput.Options)
                             {
@@ -234,7 +234,7 @@ namespace CLI.Subagent
                                 }
                             }
                         }
-                        else if (commandLineInput.TargetType == "DOCK" && commandLineInput.TargetFeature == "SILENTFWUPDATE")
+                        else if (commandLineInput.TargetType == "DOCK" && commandLineInput.TargetFeature == "SILENTFWUPDATE" && commandLineInput.Options.Count > 0)
                         {
                             if (commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITHNOTICE") || _.Option_Value.Contains("FORCEWITHNONOTICE")))
                             {
@@ -242,7 +242,47 @@ namespace CLI.Subagent
                                 return;
                             }
                         }
-                        else
+                        else if (commandLineInput.TargetType == "APP" && commandLineInput.TargetFeature == "UPDATE")
+                        {
+                            foreach (var option in commandLineInput.Options)
+                            {
+                                if (option.Option_Value.Contains(",DEFER"))
+                                {
+                                    isDefer = true;
+                                    option.Option_Value = option.Option_Value.Replace(",DEFER", "");
+                                    cmds = string.Join(" ", args.Select(_ => _.ToUpper().Replace(",DEFER", "")));
+
+                                    if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds).Result)
+                                    {
+                                        _exitcode = ICLICommandTable.ResponseDefer(commandLineInput);
+                                        return;
+                                    }
+                                }
+                                else if (option.Option_Value.Contains(",FORCEWITHNOTICE"))
+                                {
+                                    isForceWithNotice = true;
+                                    var deferItem = new DeferItem(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds);
+                                    _CliManagerPlugin.showNotification(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), deferItem);
+                                    break;
+                                }
+                                else if (option.Option_Value.Contains(",FORCEWITHNONOTICE"))
+                                {
+                                    isForceWithNoNotice = true;
+                                    break;
+                                }
+                            }
+
+                            if (!(isDefer || isForceWithNotice || isForceWithNoNotice))
+                            {
+                                isDefer = true;
+                                if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds).Result)
+                                {
+                                    _exitcode = ICLICommandTable.ResponseDefer(commandLineInput);
+                                    return;
+                                }
+                            }
+                        }
+                        else if (commandLineInput.Options.Count > 0)
                         {
                             foreach (var option in commandLineInput.Options)
                             {
