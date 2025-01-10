@@ -76,18 +76,21 @@
                 </Grid>
                 <Grid Grid.Row="1">
                     <StackPanel>
-                        <Grid Grid.Row="1" Margin="0, 50, 0, 0"  Width="400" Height="30" HorizontalAlignment="Left">
+                        <!-- Elsa 20250108 For PIMS [PIMS-334058] change Height="52" to Height="Auto" and add TextWrapping="WrapWithOverflow" -->
+                        <Grid Grid.Row="1" Margin="0, 50, 0, 0"  Width="400" Height="Auto" HorizontalAlignment="Left">
                             <UXControls:UXTextBlock Text="{Binding [Kvm.16], Source={x:Static lang:LangHelper.Instance}}"
                                                     Foreground="{DynamicResource DefaultTheme_PbHeaderColor}"
-                                                    FontSize="20"  LineHeight="28" />
+                                                    FontSize="20"  LineHeight="28" TextWrapping="WrapWithOverflow" />
                         </Grid>
+                        <!-- Elsa 20250108 For PIMS [PIMS-334058] change FontSize="48" LineHeight="76" to FontSize="40" LineHeight="40" and add TextWrapping="WrapWithOverflow" -->
                         <Grid Grid.Row="2" Margin="0, 8, 0, 0" Width="476" Height="150" HorizontalAlignment="Left">
                             <UXControls:UXTextBlock Text="{Binding [Kvm.17], Source={x:Static lang:LangHelper.Instance}}"
-                                                    FontSize="48" LineHeight="76" />
+                                                    FontSize="40" LineHeight="40" TextWrapping="WrapWithOverflow" />
                         </Grid>
+                        <!-- Elsa 20250108 For PIMS [PIMS-334058] change FontSize="16" to FontSize="15" and add TextWrapping="WrapWithOverflow" -->
                         <Grid Grid.Row="3" Margin="0, 16, 0, 0"  Width="476" Height="120" HorizontalAlignment="Left">
                             <UXControls:UXTextBlock Text="{Binding [Kvm.18], Source={x:Static lang:LangHelper.Instance}}"
-                                                    FontSize="16" LineHeight="24" />
+                                                    FontSize="15" LineHeight="24" TextWrapping="WrapWithOverflow"/>
                         </Grid>
                     </StackPanel>
                 </Grid>

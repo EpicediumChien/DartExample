@@ -341,24 +341,22 @@ namespace DDPM.UI.Module.InputSource
             //IsBusy = true;
             _inputsList.Clear();
             _inputsList = new List<InputSourceList>();
-            if (inputList != null)
+            if (inputList != null &&
+                inputList.Count > 0)
             {
-                if (inputList.Count > 0)
+                foreach (var item in inputList)
                 {
-                    foreach (var item in inputList)
+                    _inputsList.Add(new InputSourceList()
                     {
-                        _inputsList.Add(new InputSourceList()
-                        {
-                            inputSource = item.Key,
-                            inputName = item.Value.InputName
-                        });
-                    }
-                    InputsList = _inputsList;
-                    _selectInput = _inputsList.Find(x => (x.inputSource == InputSourceModule.SelectedHomeDevice.MonitorInfo.inputSource));
-                    OnPropertyChanged("Items_Selected");
-                    OnPropertyChanged("InputsList");
-                    DdpmCommonHelper.bInputSourceRenamed = true;
+                        inputSource = item.Key,
+                        inputName = item.Value.InputName
+                    });
                 }
+                InputsList = _inputsList;
+                _selectInput = _inputsList.Find(x => (x.inputSource == InputSourceModule.SelectedHomeDevice.MonitorInfo.inputSource));
+                OnPropertyChanged("Items_Selected");
+                OnPropertyChanged("InputsList");
+                DdpmCommonHelper.bInputSourceRenamed = true;                
             }
 
             return Task.CompletedTask;

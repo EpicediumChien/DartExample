@@ -484,7 +484,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     (e.changedProperty.ToLower().Contains("add")) ||
                     (e.changedProperty.ToLower().Contains("batterystatuschanged")) ||
                     (e.changedProperty.ToLower().Contains("batterylevelchanged")) ||
-                    ((string.Compare(e.changedProperty, "DisplayChanged", true) == 0)))
+                    (string.Compare(e.changedProperty, "DisplayChanged", true) == 0))
                 {
                     //Force return to HomePage
                     // 2024-06-19 From Dean, using DeviceChangedType.NotifyOnly to check if it's a monitor settings change.
@@ -1011,7 +1011,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _iconGear.ClickCommand = new RelayCommand(OnGearIconClicked);
                 _iconGear.IsTabStop = true;
                 _iconGear.Focusable = true;
-                _iconGear.SetValue(AutomationProperties.NameProperty, "Show Settings page");
+                _iconGear.SetValue(AutomationProperties.NameProperty, "Settings icon");
                 //_iconGear.TabIndex = 0;
                 //_iconGear.IsHitTestVisible = true;
                 masthead.InsertCustomContent(_iconGear);
@@ -1027,7 +1027,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _iconAddDevice.ClickCommand = new RelayCommand(OnAddIconClicked);
                 _iconAddDevice.IsTabStop= true;
                 _iconAddDevice.Focusable = true;
-                _iconAddDevice.SetValue(AutomationProperties.NameProperty, "Show Add Device page");
+                _iconAddDevice.SetValue(AutomationProperties.NameProperty, "Add Device icon");
                 //_iconAddDevice.TooltipText = "Add device";
                 masthead.InsertCustomContent(_iconAddDevice);
             }

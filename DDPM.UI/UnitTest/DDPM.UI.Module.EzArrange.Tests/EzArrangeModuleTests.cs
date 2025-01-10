@@ -60,7 +60,8 @@ namespace DDPM.UI.Module.EzArrange.Tests
             log = logMock.Object;
             vmDisplay = new DisplayViewModel(console, log, deviceManagerSA, easyArrange);
             HomeDevice.DeviceManagerSA= deviceManagerSAMock.Object;
-            deviceManagerSAMock.Setup(x => x.GetEAFunctionEnabled()).Returns(Task.FromResult(new ObjGetVCP() { result = true ,value=true}));
+            //Robert_Lin, 2025-1-7, IsEAFunctionEnabled is deleted
+            //deviceManagerSAMock.Setup(x => x.GetEAFunctionEnabled()).Returns(Task.FromResult(new ObjGetVCP() { result = true ,value=true}));
             ezArrangeModule = new EzArrangeModule(new DisplayViewModel(console, log, deviceManagerSA, easyArrange) { SelectedHomeDevice = new HomeDevice() { MonitorInfo = new MonitorInfo() { DisplayName = "AA" } } });
             privateObject = new PrivateObject(ezArrangeModule);
         }

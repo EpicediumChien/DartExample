@@ -477,4 +477,61 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Blocco in assenza</value>
   </data>
+  <data name="Caps_Lock_Off" xml:space="preserve">
+    <value>BLOC MAIUSC disattivato</value>
+  </data>
+  <data name="App_Name" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="ImpExp_Message.0" xml:space="preserve">
+    <value>Viene rilevato lo stesso monitor, importare le impostazioni per %1?</value>
+  </data>
+  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
+    <value>Aggiornamento firmware interrotto. Assicurarsi che al sistema sia collegato un solo dispositivo dello stesso modello.</value>
+  </data>
+  <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
+    <value>Il firmware del ricevitore senza fili USB non supporta l&apos;aggiornamento del firmware del dispositivo</value>
+  </data>
+  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
+    <value>Aggiornamento firmware in corso. Impossibile interrompere il processo.</value>
+  </data>
+  <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
+    <value>Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
+    <value>Impossibile sincronizzare il profilo ICC corrispondente per</value>
+  </data>
+  <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
+    <value>Esistono profili Easy Memory associati a questo layout personalizzato.\nSalvando questo layout personalizzato, il layout verrà aggiornato per tutti i profili associati.\nSalvare il layout?</value>
+  </data>
+  <data name="CollabMultipleCalls" xml:space="preserve">
+    <value>I controlli di collaborazione non sono disponibili durante conference call multiple</value>
+  </data>
+  <data name="Custom_Color_HDR" xml:space="preserve">
+    <value>Personalizza HDR a colori</value>
+  </data>
+  <data name="Display_P3" xml:space="preserve">
+    <value>Display P3</value>
+  </data>
+  <data name="FPS_Game" xml:space="preserve">
+    <value>Gioco FPS</value>
+  </data>
+  <data name="HDR_Peak_1000" xml:space="preserve">
+    <value>HDR Peak 1000</value>
+  </data>
+  <data name="Multiscreen_Match" xml:space="preserve">
+    <value>Associazione multischermo</value>
+  </data>
+  <data name="Off_0" xml:space="preserve">
+    <value>Spento</value>
+  </data>
+  <data name="Presets_Disabled" xml:space="preserve">
+    <value>Impostazioni predefinite disabilitate</value>
+  </data>
+  <data name="RTS_Game" xml:space="preserve">
+    <value>Gioco RTS</value>
+  </data>
+  <data name="RPG_Game" xml:space="preserve">
+    <value>Gioco RPG</value>
+  </data>
 </root>

@@ -305,15 +305,13 @@ namespace DDPM.UI.Module.EzMemory
             {
                 List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
 
-                if (checkEAProfileDDPM != null)
+                if (checkEAProfileDDPM != null &&
+                    checkEAProfileDDPM.Any(p => p.Name.Equals(_vm.InputText, StringComparison.OrdinalIgnoreCase)))
                 {
-                    if (checkEAProfileDDPM.Any(p => p.Name.Equals(_vm.InputText, StringComparison.OrdinalIgnoreCase)))
-                    {
-                        Thickness headMargin = new Thickness(24, 30, 45, 24);
-                        Thickness subMargin = new Thickness(24, -16, 24, 8);
-                        DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
-                        return;
-                    }
+                    Thickness headMargin = new Thickness(24, 30, 45, 24);
+                    Thickness subMargin = new Thickness(24, -16, 24, 8);
+                    DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                    return;
                 }
             }
 

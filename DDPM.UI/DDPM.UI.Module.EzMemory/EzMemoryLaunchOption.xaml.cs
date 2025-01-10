@@ -186,56 +186,54 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: ... in");
 
-                if (_vm.IsAutoLaunch)
+                if (_vm.IsAutoLaunch &&
+                    !CheckedAutoLunchTime())
                 {
-                    if (!CheckedAutoLunchTime())
+                    DDPM.SA.Common.Popup.PopupBase popBase = new DDPM.SA.Common.Popup.PopupBase(
+                        Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage,
+                        Strings.ezMemoryAutoLaunchErrorStringForLaunchOptionPage,
+                        "",
+                        Strings.OK,
+                        null, 
+                        false, 
+                        0,
+                        "C");
+                    popBase.Owner = System.Windows.Application.Current.MainWindow;
+                    bool? popResult = popBase.ShowDialog();
+                    //popResult: Close=null; LeftButton=false; RightButton=true
+                    if (popResult != true)
                     {
-                        DDPM.SA.Common.Popup.PopupBase popBase = new DDPM.SA.Common.Popup.PopupBase(
-                            Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage,
-                            Strings.ezMemoryAutoLaunchErrorStringForLaunchOptionPage,
-                            "",
-                            Strings.OK,
-                            null, 
-                            false, 
-                            0,
-                            "C");
-                        popBase.Owner = System.Windows.Application.Current.MainWindow;
-                        bool? popResult = popBase.ShowDialog();
-                        //popResult: Close=null; LeftButton=false; RightButton=true
-                        if (popResult != true)
-                        {
-                            _log.Info("[EzMemoryLaunchOption] AutoLunchTime_Checked ... chooice No");
-                            return;
-                        }
-                        else
-                        {
-                            _log.Info("[EzMemoryLaunchOption] AutoLunchTime_Checked ... chooice Yes");
-                            return;
-                            //EasyArrangementDDPM clickedeasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
-
-                            //if (clickedeasyArrangementDDPM != null && clickedeasyArrangementDDPM.Desktops.Count > 0)
-                            //{
-                            //    foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
-                            //    {
-                            //        if (ps.AutoStartTime == GetAutoLaunchTime())
-                            //        {
-                            //            ps.Auto = false;
-                            //            ps.AutoStartTime = 0;
-                            //            if (DdpmCommonHelper.DeviceManagerSA.UpdateMonitorEzProfileSettingDDPM(_selecthomeDevice.MonitorInfo, ps).Result)
-                            //            {
-                            //                _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup update success ");
-                            //            }
-                            //        }
-                            //    }
-                            //}
-                            //else
-                            //{
-                            //    _log.Info($"@{nameof(EzMemoryLaunchOption)} CheckedAutoLunchTime update error ");
-                            //}
-
-
-                        }
+                        _log.Info("[EzMemoryLaunchOption] AutoLunchTime_Checked ... chooice No");
+                        return;
                     }
+                    else
+                    {
+                        _log.Info("[EzMemoryLaunchOption] AutoLunchTime_Checked ... chooice Yes");
+                        return;
+                        //EasyArrangementDDPM clickedeasyArrangementDDPM = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_selecthomeDevice.MonitorInfo).Result;
+
+                        //if (clickedeasyArrangementDDPM != null && clickedeasyArrangementDDPM.Desktops.Count > 0)
+                        //{
+                        //    foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
+                        //    {
+                        //        if (ps.AutoStartTime == GetAutoLaunchTime())
+                        //        {
+                        //            ps.Auto = false;
+                        //            ps.AutoStartTime = 0;
+                        //            if (DdpmCommonHelper.DeviceManagerSA.UpdateMonitorEzProfileSettingDDPM(_selecthomeDevice.MonitorInfo, ps).Result)
+                        //            {
+                        //                _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup update success ");
+                        //            }
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    _log.Info($"@{nameof(EzMemoryLaunchOption)} CheckedAutoLunchTime update error ");
+                        //}
+
+
+                    }                    
                 }
 
                 // Determine if adding a new profile or editing an existing one
@@ -489,33 +487,31 @@ namespace DDPM.UI.Module.EzMemory
                 {
                     foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
                     {
-                        if (ps.StartUpLaunch)
+                        if (ps.StartUpLaunch &&
+                            (_vm.currentEditprofileSetting == null || _vm.currentEditprofileSetting.ID != ps.ID) )
                         {
-                            if (_vm.currentEditprofileSetting == null || _vm.currentEditprofileSetting.ID != ps.ID)
-                            {
-                                DDPM.SA.Common.Popup.PopupBase popBase = new DDPM.SA.Common.Popup.PopupBase(
-                                    Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage,
-                                    Strings.ezMemoryStartupErrorStringForLaunchOptionPage,
-                                    Strings.No,
-                                    Strings.Yes,
-                                    null, 
-                                    false, 
-                                    0);
-                                popBase.Owner = System.Windows.Application.Current.MainWindow;
-                                bool? popResult = popBase.ShowDialog();
+                            DDPM.SA.Common.Popup.PopupBase popBase = new DDPM.SA.Common.Popup.PopupBase(
+                                Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage,
+                                Strings.ezMemoryStartupErrorStringForLaunchOptionPage,
+                                Strings.No,
+                                Strings.Yes,
+                                null, 
+                                false, 
+                                0);
+                            popBase.Owner = System.Windows.Application.Current.MainWindow;
+                            bool? popResult = popBase.ShowDialog();
 
-                                //if (DdpmCommonHelper.DDPMMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryStartupErrorStringForLaunchOptionPage))
-                                if(popResult != true)
-                                {
-                                    _log.Info("[EzMemoryLaunchOption] StartupCB_Checked ... choice No");
-                                    _vm.IsLaunchAtStartup = false;
-                                }
-                                else
-                                {
-                                    _log.Info("[EzMemoryLaunchOption] StartupCB_Checked ... choice Yes");
-                                    _vm.IsLaunchAtStartup = true;
-                                }
+                            //if (DdpmCommonHelper.DDPMMesssageBox(Strings.ezMemoryStartupErrorTitleStringForLaunchOptionPage, Strings.ezMemoryStartupErrorStringForLaunchOptionPage))
+                            if(popResult != true)
+                            {
+                                _log.Info("[EzMemoryLaunchOption] StartupCB_Checked ... choice No");
+                                _vm.IsLaunchAtStartup = false;
                             }
+                            else
+                            {
+                                _log.Info("[EzMemoryLaunchOption] StartupCB_Checked ... choice Yes");
+                                _vm.IsLaunchAtStartup = true;
+                            }                            
                         }
                     }
                 }
@@ -544,14 +540,12 @@ namespace DDPM.UI.Module.EzMemory
 
                     foreach (var ps in clickedeasyArrangementDDPM.Desktops[0].ProfileSettings)
                     {
-                        if (ps.AutoStartTime == autoLaunchTime && autoLaunchTime !=0)
+                        if (ps.AutoStartTime == autoLaunchTime && autoLaunchTime !=0 &&
+                            (_vm.currentEditprofileSetting == null || _vm.currentEditprofileSetting.ID != ps.ID) )
                         {
-                            if (_vm.currentEditprofileSetting == null || _vm.currentEditprofileSetting.ID != ps.ID)
-                            {
-                                return false;
-                                //    _vm.IsLaunchAtStartup = true;
-                                //    _vm.IsLaunchAtStartup = false;
-                            }
+                            return false;
+                            //    _vm.IsLaunchAtStartup = true;
+                            //    _vm.IsLaunchAtStartup = false;                            
                         }
                     }
                 }

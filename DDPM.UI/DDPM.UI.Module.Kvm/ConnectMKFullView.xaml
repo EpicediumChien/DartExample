@@ -169,7 +169,8 @@
                     </Grid>
                     <Path Grid.Row="1" HorizontalAlignment="Center" Data="M0.999999 24L1 0" Stroke="#1B385F" StrokeThickness="2"/>
                     <Grid Grid.Row="2">
-                        <UXControls:UXTextBlock Text="{Binding [Kvm.5], Source={x:Static lang:LangHelper.Instance},StringFormat={}     {0}}" FontSize="14" LineHeight="18" Width="87" Height="28.39" Padding="4" />
+                        <!-- Elsa 20250108 For PIMS [PIMS-334923] remove Width="87" and add HorizontalAlignment="Center" -->
+                        <UXControls:UXTextBlock Text="{Binding [Kvm.5], Source={x:Static lang:LangHelper.Instance},StringFormat={}{0}}" FontSize="14" LineHeight="18" Height="28.39" Padding="4" HorizontalAlignment="Center"/>
                     </Grid>
                     <!--<Image Grid.Row="2" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/USB-A.png" />-->
                     <Path Grid.Row="3" HorizontalAlignment="Center"

@@ -46,14 +46,12 @@ namespace DDPM.UI.Module.Collaboration
                 DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
 
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null)
+                if (data != null &&
+                    data.LockSettings.Lock_Keyboard_CollabScreenShare)
                 {
-                    if (data.LockSettings.Lock_Keyboard_CollabScreenShare)
-                    {
-                        bdrShare.Opacity = 0.5;
-                        imgLock.Visibility = Visibility.Visible;
-                        tsShare.IsEnabled = false;
-                    }
+                    bdrShare.Opacity = 0.5;
+                    imgLock.Visibility = Visibility.Visible;
+                    tsShare.IsEnabled = false;                    
                 }
             }
         }

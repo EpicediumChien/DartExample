@@ -61,7 +61,8 @@ namespace DDPM.UI.Common.Tests
             myConsoleMock.Setup(x => x.CreateLog(It.IsAny<string>())).Returns(log);
             deviceManagerSAMock= new Mock<IDeviceManagerSA>();
             HomeDevice.DeviceManagerSA=deviceManagerSAMock.Object;
-            deviceManagerSAMock.Setup(x => x.GetEAFunctionEnabled()).Returns(Task.FromResult(new ObjGetVCP()));
+            //Robert_Lin, 2025-1-7 IsEAFuctionEnabled is deleted.
+            //deviceManagerSAMock.Setup(x => x.GetEAFunctionEnabled()).Returns(Task.FromResult(new ObjGetVCP()));
             ezArrangeViewModel = new EzArrangeViewModel(homeDev);
             privateObject = new PrivateObject(ezArrangeViewModel);
         }
@@ -76,6 +77,8 @@ namespace DDPM.UI.Common.Tests
         [Test]
         public void TestIsEaFunctionEnabled()
         {
+            //Robert_Lin, 2025-1-7 IsEAFuctionEnabled is deleted.
+            /*
             deviceManagerSAMock.Setup(x => x.SetEAFunctionEnabled(It.IsAny<bool>())).Returns(Task.FromResult(true));
             ezArrangeViewModel.IsEaFunctionEnabled = true;
 
@@ -87,11 +90,14 @@ namespace DDPM.UI.Common.Tests
 
             // Assert
             Assert.That(ezArrangeViewModel.IsEaFunctionEnabled, Is.EqualTo(true));
+            */
         }
 
         [Test]
         public void TestSetWorkSplit()
         {
+            //Robert_Lin, 2025-1-7 SetEAWorkSplit is deleted.
+            /*
             deviceManagerSAMock.Setup(x=>x.SetEAWrokSplit(It.IsAny<MonitorInfo>(),It.IsAny<int>(), It.IsAny<char>(),It.IsAny<List<double>>())).Returns(Task.FromResult(true));
             try
             {
@@ -102,6 +108,7 @@ namespace DDPM.UI.Common.Tests
             {
                 Assert.Fail("not invoked");
             }
+            */
         }
 
         [Test]

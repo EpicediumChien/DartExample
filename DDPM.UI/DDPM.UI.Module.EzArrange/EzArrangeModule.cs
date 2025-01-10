@@ -32,12 +32,10 @@ namespace DDPM.UI.Module.EzArrange
                 _vmDisplay = moduleOwner as DisplayViewModel;
                 _deviceManagerSA = _vmDisplay.DeviceManagerSA;
                 _selHomeDevice = _vmDisplay.SelectedHomeDevice;
-                if (_selHomeDevice != null)
+                if (_selHomeDevice != null &&
+                    _selHomeDevice.vmEzArrange == null)
                 {
-                    if (_selHomeDevice.vmEzArrange == null)
-                    {
-                        _selHomeDevice.vmEzArrange = new Common.ViewModels.EzArrangeViewModel(_selHomeDevice);
-                    }
+                    _selHomeDevice.vmEzArrange = new Common.ViewModels.EzArrangeViewModel(_selHomeDevice);                    
                 }
 
                 _selHomeDevice.vmEzArrange.CreateLog(_vmDisplay.Console, "EAMod");
@@ -116,12 +114,10 @@ namespace DDPM.UI.Module.EzArrange
             {
                 ModuleOwner = DdpmCommonHelper.ModuleOwner;
                 _selHomeDevice = ModuleOwner.SelectedHomeDevice;
-                if (_selHomeDevice != null)
+                if (_selHomeDevice != null &&
+                    _selHomeDevice.vmEzArrange == null)
                 {
-                    if (_selHomeDevice.vmEzArrange == null)
-                    {
-                        _selHomeDevice.vmEzArrange = new Common.ViewModels.EzArrangeViewModel(_selHomeDevice);
-                    }
+                    _selHomeDevice.vmEzArrange = new Common.ViewModels.EzArrangeViewModel(_selHomeDevice);                    
                 }
             }
             if (_rightView != null)

@@ -71,10 +71,11 @@ namespace DDPM.UI.Plugin.MousePlugin
                             _viewModel.DeviceInfos.Remove(e.device_peripherals.ID);
                         //GetPeripheralsAsync();
                     }
-                    if (e.type == DeviceChangedType.Peripherals_PlugIn)
+                    if (e.type == DeviceChangedType.Peripherals_PlugIn &&
+                        e.device_peripherals.ModelNumber == _viewModel?.CurrentDeviceInfo?.ModelNumber && 
+                        !_viewModel.DeviceInfos.ContainsKey(e.device_peripherals.ID))
                     {
-                        if (e.device_peripherals.ModelNumber == _viewModel?.CurrentDeviceInfo?.ModelNumber && !_viewModel.DeviceInfos.ContainsKey(e.device_peripherals.ID))
-                            _viewModel.DeviceInfos.Add(e.device_peripherals.ID, e.device_peripherals);
+                        _viewModel.DeviceInfos.Add(e.device_peripherals.ID, e.device_peripherals);
                     }
                     _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
 

@@ -477,4 +477,61 @@
   <data name="Walk_Away_Lock" xml:space="preserve">
     <value>Blokuj przy odejściu</value>
   </data>
+  <data name="Caps_Lock_Off" xml:space="preserve">
+    <value>Caps Lock wyłączony</value>
+  </data>
+  <data name="App_Name" xml:space="preserve">
+    <value>Menu Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="ImpExp_Message.0" xml:space="preserve">
+    <value>Wykryto ten sam monitor. Czy chcesz zaimportować ustawienia dla %1?</value>
+  </data>
+  <data name="Firmware_update_aborted_same_model_is_connected" xml:space="preserve">
+    <value>Przerwano aktualizację oprogramowania wewnętrznego. Upewnij się, że do systemu podłączone jest tylko jedno urządzenie tego samego modelu.</value>
+  </data>
+  <data name="USB_wireless_receiver_firmware_is_unable_to_support_device_firmware_upgrade" xml:space="preserve">
+    <value>Oprogramowanie wewnętrzne bezprzewodowego odbiornika USB nie obsługuje aktualizacji oprogramowania wewnętrznego urządzenia</value>
+  </data>
+  <data name="Firmware_update_in_progress_Fail_to_abort" xml:space="preserve">
+    <value>Trwa aktualizacja oprogramowania wewnętrznego. Nie udało się przerwać.</value>
+  </data>
+  <data name="Dell_Display_and_Peripheral_Manager" xml:space="preserve">
+    <value>Menu Dell Display and Peripheral Manager</value>
+  </data>
+  <data name="Unable_to_synchronize_the_corresponding_ICC_profile" xml:space="preserve">
+    <value>Nie można zsynchronizować odpowiedniego profilu ICC dla</value>
+  </data>
+  <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
+    <value>Z tym układem niestandardowym są powiązane profile Easy Memory.\nZapisanie tego układu niestandardowego spowoduje aktualizację układu dla wszystkich powiązanych profili.\nCzy chcesz zapisać układ?</value>
+  </data>
+  <data name="CollabMultipleCalls" xml:space="preserve">
+    <value>Elementy sterujące współpracą nie są dostępne podczas wielu połączeń konferencyjnych</value>
+  </data>
+  <data name="Custom_Color_HDR" xml:space="preserve">
+    <value>Niestandardowy kolor HDR</value>
+  </data>
+  <data name="Display_P3" xml:space="preserve">
+    <value>Display P3</value>
+  </data>
+  <data name="FPS_Game" xml:space="preserve">
+    <value>FPS Game</value>
+  </data>
+  <data name="HDR_Peak_1000" xml:space="preserve">
+    <value>HDR Peak 1000</value>
+  </data>
+  <data name="Multiscreen_Match" xml:space="preserve">
+    <value>Dopasowanie wieloekranowe</value>
+  </data>
+  <data name="Off_0" xml:space="preserve">
+    <value>Wył.</value>
+  </data>
+  <data name="Presets_Disabled" xml:space="preserve">
+    <value>Ustawienia predefiniowane wyłączone</value>
+  </data>
+  <data name="RTS_Game" xml:space="preserve">
+    <value>Gra RTS</value>
+  </data>
+  <data name="RPG_Game" xml:space="preserve">
+    <value>Gra RPG</value>
+  </data>
 </root>

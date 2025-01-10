@@ -36,7 +36,8 @@
                         <Border x:Name="MainContentBorder" Style="{DynamicResource RightGroupBorderStyleForHeadset}" CornerRadius="6" Width="438" Height="auto" VerticalAlignment="Top" Margin="0,0,0,0">
                             <StackPanel x:Name="MainContentStackPanel" Orientation="Vertical" Margin="0,20,0,10">
                                 <Grid>
-                                    <UXControls:UXTextBlock x:Name="txtCaption" Style="{DynamicResource ModuleCaptionStyle}" Text="{Binding [AudioSettings], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="{DynamicResource TextBlock_ForegroundColor}" Height="28" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,8,20,16" />
+                                    <!--Chewlin 20250108 change Width="200" to Width="280" Fix ES language Audio Setting Title Clipping issue(No Pims Number) -->
+                                    <UXControls:UXTextBlock x:Name="txtCaption" Style="{DynamicResource ModuleCaptionStyle}" Text="{Binding [AudioSettings], Source={x:Static lang:LangHelper.Instance}}" FontFamily="Roboto" FontSize="20" Foreground="{DynamicResource TextBlock_ForegroundColor}" Height="28" Width="280" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="16,8,20,16" />
                                 </Grid>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -120,7 +121,8 @@
                                     </Grid>
 
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,16,0,8">
-                                        <UXControls:UXToggleSwitch x:Name="EveryLevelButton" BorderThickness="1.5" Width="203" Height="30" Margin="0,0,0,8" IsEnabled="{Binding ElementName=VolumeAdjustmentToneStatus}" IsChecked="{Binding IsEveryLevelChecked, Mode=TwoWay}">
+                                        <!--Chewlin 20250108 for PIMS-334385 Change Height form 30 to 38-->
+                                        <UXControls:UXToggleSwitch x:Name="EveryLevelButton" BorderThickness="1.5" Width="203" Height="38" Margin="0,0,0,8" IsEnabled="{Binding ElementName=VolumeAdjustmentToneStatus}" IsChecked="{Binding IsEveryLevelChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                     <Border x:Name="EveryLevelButtonBorder" BorderThickness="1.5,1.5,0,1.5" CornerRadius="4,0,0,4">
@@ -140,13 +142,15 @@
                                                 </ControlTemplate>
                                             </UXControls:UXToggleSwitch.Template>
                                         </UXControls:UXToggleSwitch>
-                                        <UXControls:UXToggleSwitch x:Name="MinMaxOnlyButton" BorderThickness="1.5" Width="203" Height="30" Margin="0,0,0,8" IsEnabled="{Binding ElementName=VolumeAdjustmentToneStatus}" IsChecked="{Binding IsMinMaxOnlyChecked, Mode=TwoWay}">
+                                        <!--Chewlin 20250108 for PIMS-334385 Change Height form 30 to 38-->
+                                        <UXControls:UXToggleSwitch x:Name="MinMaxOnlyButton" BorderThickness="1.5" Width="203" Height="38" Margin="0,0,0,8" IsEnabled="{Binding ElementName=VolumeAdjustmentToneStatus}" IsChecked="{Binding IsMinMaxOnlyChecked, Mode=TwoWay}">
                                             <UXControls:UXToggleSwitch.Template>
                                                 <ControlTemplate TargetType="UXControls:UXToggleSwitch">
                                                     <Border x:Name="MinMaxOnlyButtonBorder" BorderThickness="0,1.5,1.5,1.5" CornerRadius="0,4,4,0">
                                                         <Grid>
                                                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                <UXControls:UXTextBlock x:Name="MinMaxOnlyButtonBorderTxt" Text="{Binding [SpeakerAudioSettings.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
+                                                                <!--Chewlin 20250108 for PIMS-334385 ADD TextWrapping="Wrap"-->
+                                                                <UXControls:UXTextBlock x:Name="MinMaxOnlyButtonBorderTxt" Text="{Binding [SpeakerAudioSettings.4], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="Wrap" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Border>
