@@ -2142,11 +2142,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         if (_NKVMPlugin != null)
                         {
-                            ObjGetVCP obj = new ObjGetVCP();
-                            obj = _DisplayManagerPlugin.GetVCPCapability(monitorInfoX, 0x60).Result;
-                            if (obj.result)
+                            ObjGetVCP objGetVCP = new ObjGetVCP();
+                            objGetVCP = _DisplayManagerPlugin.GetVCPCapability(monitorInfoX, 0x60).Result;
+                            if (objGetVCP.result)
                             {
-                                _NKVMPlugin.SetVCPNotify(monitorInfoX, 0x60, (int)(uint)obj.value).Wait();
+                                _NKVMPlugin.SetVCPNotify(monitorInfoX, 0x60, (int)(uint)objGetVCP.value).Wait();
                             }
                         }
                         if (Displaysettings_Function.Send_InputSource_Telementry(_TelementryScheduler, monitorInfoX, val, GetMonitorCurrentResolution(monitorInfoX), GetMonitorMaxResolution(monitorInfoX)))
@@ -6147,7 +6147,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (_PeripheralsPlugin == null)
                 return Task.FromResult(false);
             UpdateHelper updateHelper;
-            DisplayUpdateHelper displayUpdateHelper;
+            DisplayUpdateHelper localDisplayUpdateHelper;
             List<DeviceInfo> deviceInfos;
             try
             {
@@ -6176,11 +6176,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             try
             {
-                displayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
-                if (displayUpdateHelper == null || displayUpdateHelper.Firmwares == null)
+                localDisplayUpdateHelper = _DisplayManagerPlugin.GetDisplayFWUpdate(_IsSkipCA, _SettingsPlugin).Result;
+                if (localDisplayUpdateHelper == null || localDisplayUpdateHelper.Firmwares == null)
                 {
-                    displayUpdateHelper = new DisplayUpdateHelper();
-                    displayUpdateHelper.Firmwares = new List<Display_Firmwares_item>();
+                    localDisplayUpdateHelper = new DisplayUpdateHelper();
+                    localDisplayUpdateHelper.Firmwares = new List<Display_Firmwares_item>();
                 }
             }
             catch (Exception ex)
@@ -6194,7 +6194,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             try
             {
                 SetDelayFWUpdateInfoPackage();
-                FWUpdateInfoPackage fwUpdateInfos = _FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, true, false, false, null, false, displayUpdateHelper, false, true, false, null, null, null, "").Result;
+                FWUpdateInfoPackage fwUpdateInfos = _FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, true, false, false, null, false, localDisplayUpdateHelper, false, true, false, null, null, null, "").Result;
                 return Task.FromResult(true);
             }
             catch (Exception ex)
