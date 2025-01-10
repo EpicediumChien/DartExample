@@ -88,10 +88,12 @@
                                                     FontSize="40" LineHeight="40" TextWrapping="WrapWithOverflow" />
                         </Grid>
                         <!-- Elsa 20250108 For PIMS [PIMS-334058] change FontSize="16" to FontSize="15" and add TextWrapping="WrapWithOverflow" -->
-                        <Grid Grid.Row="3" Margin="0, 16, 0, 0"  Width="476" Height="120" HorizontalAlignment="Left">
-                            <UXControls:UXTextBlock Text="{Binding [Kvm.18], Source={x:Static lang:LangHelper.Instance}}"
+                        <!--<Grid Grid.Row="3" Margin="0, 16, 0, 0"  Width="476" Height="120" HorizontalAlignment="Left">-->
+                        <UXControls:UXTextBlock Grid.Row="3" Margin="0, 16, 0, 0" Height="120" HorizontalAlignment="Left"
+                                                    Width="{Binding [Kvm.4], Source={x:Static lang:LangHelper.Instance}}" 
+                                                    Text="{Binding [Kvm.18], Source={x:Static lang:LangHelper.Instance}}"
                                                     FontSize="15" LineHeight="24" TextWrapping="WrapWithOverflow"/>
-                        </Grid>
+                        <!--</Grid>-->
                     </StackPanel>
                 </Grid>
             </Grid>
@@ -201,7 +203,7 @@
 
                                 <commonCtrls:SplitItem Width="88" Height="68" Margin="8,0" Name="pipLarge"
                                                        Visibility="{Binding DataContext.HasCap_PipLarge, Converter={StaticResource BoolToVisibilityConverter}, RelativeSource={RelativeSource AncestorType=UserControl}}">
-                                <!-- Robert_Lin, 2024-12-25 change to runtime creation -->
+                                    <!-- Robert_Lin, 2024-12-25 change to runtime creation -->
                                     <!--<eaem:SplitCtrl1B />-->
                                 </commonCtrls:SplitItem>
 

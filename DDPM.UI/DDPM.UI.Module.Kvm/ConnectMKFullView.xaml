@@ -9,7 +9,7 @@
              mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
              d:DesignHeight="671" d:DesignWidth="1378"
              SizeChanged="UserControl_SizeChanged">
-    
+
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -34,8 +34,8 @@
         <StackPanel>
             <Grid Margin="24" x:Name="splitGrid">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="552" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="auto" MinWidth="246" />
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0" Margin="76, 60, 0, 0">
                     <Grid.RowDefinitions>
@@ -76,10 +76,12 @@
                                                 FontSize="42" TextWrapping="WrapWithOverflow" />
                     </Grid>
                     <!-- Elsa 20250109 For PIMS [PIMS-334089] add TextWrapping="WrapWithOverflow" -->
-                    <Grid Grid.Row="3" Margin="0, 16, 0, 0" Width="476" Height="120" HorizontalAlignment="Left">
-                        <UXControls:UXTextBlock Text="{Binding [Kvm.4], Source={x:Static lang:LangHelper.Instance}}"
+                    <!--<Grid Grid.Row="3" Margin="0, 16, 0, 0" Width="476" Height="120" HorizontalAlignment="Left">-->
+                    <UXControls:UXTextBlock Grid.Row="3" Margin="0, 16, 0, 0" Height="120" HorizontalAlignment="Left"
+                                                Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}" 
+                                                Text="{Binding [Kvm.4], Source={x:Static lang:LangHelper.Instance}}"
                                                 FontSize="16" LineHeight="24" TextWrapping="WrapWithOverflow"/>
-                    </Grid>
+                    <!--</Grid>-->
                     <Grid Grid.Row="4" Margin="0, 93, 0 ,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -143,7 +145,7 @@
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid Grid.Column="1" Margin="259, 0, 259, 0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid Grid.Column="1" Margin="0, 0, 259, 0" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
