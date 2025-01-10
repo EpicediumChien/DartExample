@@ -16,20 +16,20 @@ namespace DDPM.SA.Common
     {
         #region Private Members
 
-        private string _name;
-        private string _batteryStatus;
-        private string _pairedHostName1;
-        private string _pairedHostName2;
-        private string _pairedHostName3;
+        private string _name = string.Empty ;
+        private string _batteryStatus = string.Empty;
+        private string _pairedHostName1 = string.Empty;
+        private string _pairedHostName2 = string.Empty;
+        private string _pairedHostName3 = string.Empty;
         private byte[] _deviceImage;
         private int _totalNumberOfPairedHostName;
-        private string _dpiValue;
+        private string _dpiValue = string.Empty;
         private string[] _pairedHostNames;
-        private string _collabsKeysSupported;
+        private string _collabsKeysSupported = string.Empty;
         private bool _isCollabsKeysSupported;
         private DeviceType _physicalDeviceType;
-        private string _logicalDeviceType;
-        private string _status;
+        private string _logicalDeviceType = string.Empty;
+        private string _status = string.Empty;
         private bool _isCollaborationKeyEnable;
         private bool _isCollaborationCameraEnable;
         private bool _isCollaborationScreenShareEnable;
@@ -56,7 +56,7 @@ namespace DDPM.SA.Common
         private int _reportRate;
         private int _backLightTabIndex;
         private string[] _dpiLevelValues;
-        private string _deviceName;
+        private string _deviceName = string.Empty;
         private bool _muteStatus;
         private int _wiredAudioVolumeAdjustmentTone;
         private bool _isWiredAudioMicMuteSoundEnable;
@@ -99,23 +99,23 @@ namespace DDPM.SA.Common
         private bool _isMicNCIncomingSupported;
         private HeadsetConnectionType _connectionType;
         private bool _isBLE;
-        private string _isdServiceVersion;
-        private string _isdDriverVersion;
+        private string _isdServiceVersion = string.Empty;
+        private string _isdDriverVersion = string.Empty;
         private int _tiltSensitivity;
         private int _tipSensitivity;
         private int _monitorCount;
         private DockData _dockData;
         private byte[] _dockInfo;
         private int _dockType;
-        private string _dockService;
-        private string _dockPackageFwVersion;
+        private string _dockService = string.Empty;
+        private string _dockPackageFwVersion = string.Empty;
         private int _dockFwUpdateStatus;
         private int _dockTBTConnectionStatus;
 
         #region private webcam Properties
 
-        private string _deviceSymbolicLink;
-        private string _parentDevInstanceId;
+        private string _deviceSymbolicLink = string.Empty;
+        private string _parentDevInstanceId = string.Empty;
         private bool _isESISupported;
         private string[] _supportedProperties;
         private string[] _fOVValues;
@@ -135,7 +135,7 @@ namespace DDPM.SA.Common
 
         #region Physical Device Dongle Private Properties
 
-        private string _pairingStatusName;
+        private string _pairingStatusName = string.Empty;
         private int _maxPairingSlots;
         private int _pairedDeviceCount;
 
@@ -150,7 +150,7 @@ namespace DDPM.SA.Common
 
         public string Name
         {
-            get => _name;
+            get => _name ?? string.Empty;
             set
             {
                 _name = value;
@@ -172,14 +172,14 @@ namespace DDPM.SA.Common
 
         public byte[] ThumbnailImageRawData { get; set; }
 
-        public string FirmwareVersion { get; set; }
-        public string Message { get; set; }
+        public string FirmwareVersion { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
 
         public int BatteryLevel { get; set; }
 
         public string PairedHostName1
         {
-            get => _pairedHostName1;
+            get => _pairedHostName1 ?? string.Empty;
             set
             {
                 _pairedHostName1 = value;
@@ -195,7 +195,7 @@ namespace DDPM.SA.Common
 
         public string PairedHostName2
         {
-            get => _pairedHostName2;
+            get => _pairedHostName2??string.Empty; 
             set
             {
                 _pairedHostName2 = value;
@@ -205,7 +205,7 @@ namespace DDPM.SA.Common
 
         public string PairedHostName3
         {
-            get => _pairedHostName3;
+            get => _pairedHostName3 ?? string.Empty;
             set
             {
                 _pairedHostName3 = value;
@@ -255,7 +255,7 @@ namespace DDPM.SA.Common
 
         public string DpiValue
         {
-            get => _dpiValue;
+            get => _dpiValue ?? string.Empty;
             set
             {
                 _dpiValue = value;
@@ -265,7 +265,7 @@ namespace DDPM.SA.Common
 
         public string CollabsKeysSupported
         {
-            get => _collabsKeysSupported;
+            get => _collabsKeysSupported ?? string.Empty;
             set
             {
                 _collabsKeysSupported = value;
@@ -338,7 +338,7 @@ namespace DDPM.SA.Common
 
         public string BatteryStatus
         {
-            get => _batteryStatus;
+            get => _batteryStatus ?? string.Empty;
             set
             {
                 _batteryStatus = value;
@@ -350,7 +350,7 @@ namespace DDPM.SA.Common
 
         public string Status
         {
-            get => _status;
+            get => _status ?? string.Empty;
             set
             {
                 _status = value;
@@ -580,7 +580,7 @@ namespace DDPM.SA.Common
 
         public string DeviceName
         {
-            get => _deviceName;
+            get => _deviceName ?? string.Empty;
             set
             {
                 _deviceName = value;
@@ -630,9 +630,9 @@ namespace DDPM.SA.Common
 
         #region Physical Device Dongle Properties
 
-        public string PairingStatusName
+        public string PairingStatusName 
         {
-            get => _pairingStatusName;
+            get => _pairingStatusName ?? string.Empty;
             set
             {
                 _pairingStatusName = value;
@@ -1110,9 +1110,9 @@ namespace DDPM.SA.Common
         public JArray PresetProfiles { get; set; }
         public JArray CustomProfiles { get; set; }
         //public JArray CurrentSelectedProfile { get; set; }
-        public string Profile { get; set; }
-        public string ProfileName { get; set; }
-        public string ProfileDescription { get; set; }
+        public string Profile { get; set; } = string.Empty;
+        public string ProfileName { get; set; } = string.Empty;
+        public string ProfileDescription { get; set; } = string.Empty;
         public int SaturationMax { get; set; }
         public int SaturationMin { get; set; }
         public int SaturationSteppingDelta { get; set; }
@@ -1141,7 +1141,7 @@ namespace DDPM.SA.Common
 
         public string DeviceSymbolicLink
         {
-            get => _deviceSymbolicLink;
+            get => _deviceSymbolicLink ?? string.Empty;
             set
             {
                 _deviceSymbolicLink = value;
@@ -1151,7 +1151,7 @@ namespace DDPM.SA.Common
 
         public string ParentDevInstanceId
         {
-            get => _parentDevInstanceId;
+            get => _parentDevInstanceId ?? string.Empty;
             set
             {
                 _parentDevInstanceId = value;
@@ -1191,14 +1191,14 @@ namespace DDPM.SA.Common
 
         public string SupportedResolutions
         {
-            get => _supportedResolutions;
+            get => _supportedResolutions ?? string.Empty;
             set
             {
                 _supportedResolutions = value;
                 OnPropertyChanged();
             }
         }
-        public string SelectedResolution { get; set; }
+        public string SelectedResolution { get; set; } = string.Empty;
 
         public int SupportedFeatures
         {
@@ -1292,7 +1292,7 @@ namespace DDPM.SA.Common
 
         public string IsdDriverVersion
         {
-            get => _isdDriverVersion;
+            get => _isdDriverVersion ?? string.Empty;
             set
             {
                 _isdDriverVersion = value;
@@ -1302,7 +1302,7 @@ namespace DDPM.SA.Common
 
         public string IsdServiceVersion
         {
-            get => _isdServiceVersion;
+            get => _isdServiceVersion ?? string.Empty;
             set
             {
                 _isdServiceVersion = value;
@@ -1376,7 +1376,7 @@ namespace DDPM.SA.Common
 
         public string DockServiceTag
         {
-            get => _dockService;
+            get => _dockService ?? string.Empty;
             set
             {
                 _dockService = value;
@@ -1386,13 +1386,13 @@ namespace DDPM.SA.Common
 
         public string DockPackageFwVersion
         {
-            get => _dockPackageFwVersion;
+            get => _dockPackageFwVersion ?? string.Empty;
             set
             {
                 _dockPackageFwVersion = value;
                 OnPropertyChanged();
             }
-        }
+        } 
 
         public int DockFwUpdateStatus
         {
@@ -1447,13 +1447,13 @@ namespace DDPM.SA.Common
         public int BoardId { get; set; }
         public int Configuration { get; set; }
         public int DockType { get; set; }
-        public string MarketingName { get; set; }
-        public string ModuleSerialNumber { get; set; }
+        public string MarketingName { get; set; } = string.Empty;
+        public string ModuleSerialNumber { get; set; } = string.Empty;
         public int ModuleType { get; set; }
-        public string OriginalModuleSerialNumber { get; set; }
+        public string OriginalModuleSerialNumber { get; set; } = string.Empty;
         public int PackageFirmwareVersion { get; set; }
         public int PowerSupplyWattage { get; set; }
-        public string ServiceTag { get; set; }
+        public string ServiceTag { get; set; } = string.Empty;
         public int Status { get; set; }
     }
 }
