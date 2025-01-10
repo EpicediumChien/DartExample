@@ -13364,9 +13364,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"@ GetInputSourceHotKeyDataAndSaveBack: ReloadMonitorSettings(model={model}) return null.");
                 return false;
             }
+
             Debug.WriteLine($"GetInputSourceHotKeyDataAndSaveNewBack:{mo.edid.ServiceTag}");
-            Debug.WriteLine($"[GetInputSourceHotKeyDataAndSaveNewBack(monitor:{mo.AliasDeviceName = mo.edid.ServiceTag})]param=hotkeyDataInputSource:{string.Join("+", hotkeyDataInputSource.Select(x => "inputsource" + "(" + x.Name + ":" + x.Code + ")").ToList())}");
-            writelog($"[GetInputSourceHotKeyDataAndSaveNewBack(monitor:{mo.AliasDeviceName = mo.edid.ServiceTag})]param=hotkeyDataInputSource:{string.Join("+", hotkeyDataInputSource.Select(x => "inputsource" + "(" + x.Name + ":" + x.Code + ")").ToList())}");
+            mo.AliasDeviceName = mo.edid.ServiceTag;
+            Debug.WriteLine($"[GetInputSourceHotKeyDataAndSaveNewBack(monitor:{mo.AliasDeviceName})]param=hotkeyDataInputSource:{string.Join("+", hotkeyDataInputSource.Select(x => "inputsource" + "(" + x.Name + ":" + x.Code + ")").ToList())}");
+                   writelog($"[GetInputSourceHotKeyDataAndSaveNewBack(monitor:{mo.AliasDeviceName})]param=hotkeyDataInputSource:{string.Join("+", hotkeyDataInputSource.Select(x => "inputsource" + "(" + x.Name + ":" + x.Code + ")").ToList())}");
             //Find the previous saved device settings
             DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(mo.edid.ServiceTag));
             //If not found => return error, GetAllMonitor() will init and create an initial settings instance for us
