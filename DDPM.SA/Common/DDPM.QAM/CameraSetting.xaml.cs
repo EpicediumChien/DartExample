@@ -11,7 +11,7 @@ namespace DDPM.QAM
     {
         QAMPage QAMPage;
 
-        //Derek 2025/01/06 to fix bug that QAM UI will set to default when click Presets button angin
+        //Derek 2025/01/06 to fix bug that QAM UI will set to default when click Presets button again
         //private bool bFirstClick = true;
 
         public CameraSetting(QAMPage qam)
