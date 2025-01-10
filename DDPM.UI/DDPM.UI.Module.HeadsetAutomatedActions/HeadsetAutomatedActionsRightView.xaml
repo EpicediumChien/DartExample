@@ -131,9 +131,9 @@
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <UXControls:UXTextBlock x:Name="WearDetectionText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [HeadsetAutomatedActions.0], Source={x:Static lang:LangHelper.Instance}}" Margin="18,0,0,0" />
-                                <Image ToolTipService.HorizontalOffset="-100" x:Name="WearDetectionImage" Grid.Column="1" Width="16" Height="16" Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                                <Image x:Name="WearDetectionImage" Grid.Column="1" Width="16" Height="16" Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                     <Image.ToolTip>
-                                        <ToolTip x:Name="WearDetectionToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                        <ToolTip x:Name="WearDetectionToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Left" VerticalOffset="18" HorizontalOffset="6">
                                             <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" x:Name="WearDetectionToolTipText" Style="{StaticResource TabInfoToolTipTextStyle}" Text="{Binding WearDetectionToolTip}" />
                                         </ToolTip>
                                     </Image.ToolTip>
