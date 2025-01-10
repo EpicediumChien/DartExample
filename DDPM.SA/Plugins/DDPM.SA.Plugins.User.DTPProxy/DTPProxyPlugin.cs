@@ -4408,6 +4408,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
                 {
                     SetPropertyValue(_headsetInterfaceType, commodity, "FactoryReset", newValue);
+                    SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_SetFactoryResetAsyncValueForHeadset",
+                        Guid, $"Headset_SetFactoryResetAsyncValueForHeadset:{newValue.ToString()}"));
                     writelog("[DTPProxyPlugin] [Headset] SetFactoryResetAsyncValueForHeadset Success !");
                     return true;
                 }
@@ -6202,6 +6204,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged += Headset_IsWearDetectionPauseMusicEnabledChanged;
                     _Headsetcom.IsWearDetectionMuteMicEnabledChanged += Headset_IsWearDetectionMuteMicEnabledChanged;
                     _Headsetcom.WearDetectionQuickPauseChanged += Headset_WearDetectionQuickPauseChanged;
+                    _Headsetcom.BoomMicChanged += Headset_BoomMicChanged;
                     _Headsetcom.IsBoomMicSupportedChanged += Headset_BoomMicSupportedChangedArgs;
                     _Headsetcom.FirmwareVersionChanged += Headset_FirmwareVersionChanged;
                     _Headsetcom.IsDirtyChanged += Headset_IsDirtyChanged;
@@ -6239,6 +6242,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged -= Headset_IsWearDetectionPauseMusicEnabledChanged;
                     _Headsetcom.IsWearDetectionMuteMicEnabledChanged -= Headset_IsWearDetectionMuteMicEnabledChanged;
                     _Headsetcom.WearDetectionQuickPauseChanged -= Headset_WearDetectionQuickPauseChanged;
+                    _Headsetcom.BoomMicChanged -= Headset_BoomMicChanged;
                     _Headsetcom.IsBoomMicSupportedChanged -= Headset_BoomMicSupportedChangedArgs;
                     _Headsetcom.FirmwareVersionChanged -= Headset_FirmwareVersionChanged;
                     _Headsetcom.IsDirtyChanged -= Headset_IsDirtyChanged;
@@ -6373,6 +6377,13 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             writelog($"[Headset] Catch event Headset_WearDetectionQuickPauseChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
+        private void Headset_BoomMicChanged(object sender, BoomMicChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_BoomMicChanged",
+                                    e.DeviceId, $"Headset_BoomMicChanged:{e.BoomMic.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_BoomMicChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }     
 
         private string CreateHeadsetEventMsg(string devType, string eventType, string devID, string eventContent = "NewValue:NoContent")
         {
