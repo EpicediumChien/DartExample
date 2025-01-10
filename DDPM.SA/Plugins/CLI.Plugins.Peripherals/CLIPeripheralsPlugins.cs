@@ -88,9 +88,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (_commandLineInput.PluginsType.Equals("AUDIO"))
                 {
 
-                    List<DeviceInfo> _deviceinfo = null;
-                    _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
-                    foreach (var g in _deviceinfo)
+                    List<DeviceInfo> deviceInfoList = null;
+                    deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
+                    foreach (var g in deviceInfoList)
                     {
                         if (g.LogicalDeviceType == "LogicalHeadset")
                         {
