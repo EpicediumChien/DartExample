@@ -5753,6 +5753,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 writelog("[DeviceMangerPlugin] _FWUpdatePlugin.GetFWUpdateInfo go");
                 ResetTimer();
+                _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
+                _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
                 return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay, reScan, isUITrigger, giuds, serviceTags, models, minVersion).Result);
             }
             writelog("[DeviceMangerPlugin] GetFWUpdateInfo done, But all obj is null");
@@ -5769,6 +5771,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("[DeviceMangerPlugin] _FWUpdatePlugin is null");
                 return Task.FromResult(new List<FWUpdateInfo>());
             }
+            _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
+            _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
             _UpdateProgress = null;
             writelog($"[DeviceMangerPlugin] SetDelayFWUpdateInfoPackage go");
             SetDelayFWUpdateInfoPackage();
@@ -5779,10 +5783,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"[DeviceMangerPlugin] _FWUpdatePlugin.DownloadAndInstall go");
             List<FWUpdateInfo> tmpFWUpdateInfos = _FWUpdatePlugin.DownloadAndInstall(fwUpdateInfos, isUITrigger, installPath).Result;
+            _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
             if (_UpdateProgress != null)
             {
                 writelog($"[DeviceMangerPlugin] _UpdateProgress.CloseWindow go");
-                _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
                 ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                 _UpdateProgress.CloseWindow();
                 _UpdateProgress = null;
@@ -5821,6 +5825,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             FWUErrorCode ret = FWUErrorCode.Unknow;
             if (_FWUpdatePlugin != null)
             {
+                _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
+                _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
                 writelog($"[DeviceMangerPlugin] Install SetDelayFWUpdateInfoPackage go");
                 SetDelayFWUpdateInfoPackage();
                 //if (_UpdateProgress != null)
@@ -6276,7 +6282,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _UpdateProgress.Dispatcher.InvokeShutdown();
                 };
                 _UpdateProgress.Dispatcher.Invoke(() => _UpdateProgress.Show());
-                _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
                 ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                 MiniMizeDDPMUI().Wait();
                 tcs.SetResult(true);
@@ -11699,10 +11704,21 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #region FW Update
+        private void PopupBaseCloseEvent(object o, EventArgs e)
+        {
+            if (_PopupBase != null)
+            {
+                _PopupBase.Closed -= PopupBaseCloseEvent;
+                _PopupBase = null;
+
+                writelog($"PopupBaseCloseEvent finished with _PopupBase != null");
+            }
+            else
+                writelog($"PopupBaseCloseEvent finished with _PopupBase == null");
+        }
         private void OnProgressUpdateEvent(UpdateProgressInfo fWUpdateInfo)
         {
             writelog($"{nameof(OnProgressUpdateEvent)} start");
-            //ProgressUpdate_Notify?.Invoke(this, fWUpdateInfo);
             EventHandler<UpdateProgressInfo> handler = ProgressUpdate_Notify;
             writelog($"{nameof(OnProgressUpdateEvent)} handler : {handler}");
             if (handler != null)
@@ -11711,27 +11727,44 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 handler.Invoke(this, fWUpdateInfo);
                 if (_UpdateProgress == null)
                 {
-                    if (_PopupBase != null && _PopupBase.Activate())
+                    writelog($"_UpdateProgress is null");
+                    if (_PopupBase != null)
                     {
-                        _PopupBase.UpdateContent(LangHelper.Instance["FW_info"], fWUpdateInfo.ProcessName);
+                        writelog($"_PopupBase UpdateContent");
+                        _PopupBase.UpdateContent(LangHelper.Instance["FW_info"], fWUpdateInfo);
                     }
                     else
                     {
-                        _PopupBase = new PopupBase(LangHelper.Instance["FW_info"], fWUpdateInfo.ProcessName, "", "", null, true, 0);
-                        _PopupBase.ShowWindow();
-                        const double NotificationHeight = 252;
-                        const double NotificationWidth = 417;
-                        const double NotificationSpacing = 10;
-                        _PopupBase.Height = NotificationHeight;
-                        _PopupBase.Width = NotificationWidth;
-                        double screenHeight = SystemParameters.PrimaryScreenHeight;
-                        double screenWidth = SystemParameters.PrimaryScreenWidth;
-                        _PopupBase.Left = screenWidth - NotificationWidth - NotificationSpacing;
-                        _PopupBase.Top = screenHeight - NotificationHeight - NotificationSpacing;
+                        try
+                        {
+                            writelog($"_PopupBase new");
+                            Thread thread1 = new Thread(() =>
+                            {
+                                _PopupBase = new PopupBase(LangHelper.Instance["FW_info"], "", "", "", null, true, 0);
+                                _PopupBase.Closed += PopupBaseCloseEvent;
+                                _PopupBase.UpdateContent(LangHelper.Instance["FW_info"], fWUpdateInfo);
+                                const double NotificationHeight = 252;
+                                const double NotificationWidth = 417;
+                                const double NotificationSpacing = 10;
+                                _PopupBase.Height = NotificationHeight;
+                                _PopupBase.Width = NotificationWidth;
+                                double screenHeight = SystemParameters.PrimaryScreenHeight;
+                                double screenWidth = SystemParameters.PrimaryScreenWidth;
+                                _PopupBase.Left = screenWidth - NotificationWidth - NotificationSpacing;
+                                _PopupBase.Top = screenHeight - NotificationHeight - NotificationSpacing;
+                                _PopupBase.ShowWindow();
+                            });
+                            thread1.SetApartmentState(ApartmentState.STA);
+                            thread1.Start();
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog($"_PopupBase error : {ex.Message}");
+                        }
                     }
                 }
             }
-            writelog($"{nameof(OnProgressUpdateEvent)} done");
+            //writelog($"{nameof(OnProgressUpdateEvent)} done");
         }
 
         private void OnUILockEvent(bool isLockFWU_UI)
@@ -11853,7 +11886,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                               // >>
             }
 
-            if(changedProperty != "DisplayChanged" && type == DeviceChangedType.Peripherals_PlugIn)
+            if (changedProperty != "DisplayChanged" && type == DeviceChangedType.Peripherals_PlugIn)
                 CheckDeviceFirstTimesToConnect(mo, di);
 
             _EventArgs.type = type;
@@ -11935,7 +11968,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 string UserId = WTSFunction.DirectGetUserID(Log);
 
-                if(UserId == null)
+                if (UserId == null)
                 {
                     writelog($"CheckDeviceFirstTimesToConnect UserId null ... ");
                     return;
@@ -11946,7 +11979,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 string ddpmExePath = //@"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
                                      System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Dell\Dell Display and Peripheral Manager\DDPM.exe");
                 //string debugPath = @"D:\\NEW\DDPM\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
-                
+
                 if (!File.Exists(ddpmExePath))
                 {
                     writelog($"CheckDeviceFirstTimesToConnect File not found at path: {ddpmExePath} ... ");

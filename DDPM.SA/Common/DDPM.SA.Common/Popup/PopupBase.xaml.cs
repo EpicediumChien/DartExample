@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DDPM.SA.Resources.Helper;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -33,6 +34,7 @@ namespace DDPM.SA.Common.Popup
         public event EventHandler<object> Default_Event;
 
         private object _object;
+        private bool isInstalling = false;
 
         /// <summary>
         ///
@@ -82,15 +84,45 @@ namespace DDPM.SA.Common.Popup
                 Task.Delay(autoCloseTimeInSeconds * 1000).ContinueWith(t => this.Dispatcher.Invoke(Close));
             }
         }
-        public void UpdateContent(string HeaderText, string SubHeaderText)
+        public void UpdateContent(string HeaderText, UpdateProgressInfo e)
         {
             if (!Dispatcher.CheckAccess())
             {
                 Dispatcher.Invoke(UpdateContent);
                 return;
             }
-            Header1.Text = HeaderText;
-            SubHeader1.Text = SubHeaderText;
+            if (e.DeviceName.Equals("DDPM"))
+            {
+                Header1.Text = $"{LangHelper.Instance["Software_Update"]} - {e.DeviceName}";
+            }
+            else
+            {
+                Header1.Text = $"{LangHelper.Instance["Firmware_Update"]} - {e.DeviceName} {e.Model}";
+            }
+            if (e.ProcessName.Equals("Installing"))
+            {
+                isInstalling = true;
+                SubHeader1.Text = $"{LangHelper.Instance["Processing"]}... {(int)e.ProcessProgress}%";
+            }
+            else if (e.ProcessName.Equals("Downloading"))
+            {
+                isInstalling = false;
+                SubHeader1.Text = $"{LangHelper.Instance["Downloading_and_installing"]}... {(int)e.ProcessProgress}%";
+            }
+            else if (e.ProcessName.Equals("M1"))
+            {
+                isInstalling = false;
+                SubHeader1.Text = LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"];
+            }
+            else if (e.ProcessName.Equals("M2"))
+            {
+                isInstalling = false;
+                SubHeader1.Text = LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"];
+            }
+            else if (e.ProcessName.Equals("Timeout") && !isInstalling)
+            {
+                SubHeader1.Text = $"{LangHelper.Instance["Unable_to_detect_target_device"]}… {(int)e.ProcessProgress}s";
+            }
         }
         public void ShowWindow()
         {
