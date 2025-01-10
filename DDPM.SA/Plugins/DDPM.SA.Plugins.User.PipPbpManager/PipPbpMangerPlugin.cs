@@ -140,6 +140,13 @@ namespace DDPM.SA.Plugins.User.PipPbpManger
         /// </returns>
         public Task<string> GetCapabilitiesString(MonitorInfo monitorInfo)
         {
+            if (monitorInfo.CapabilityDic != null)
+            {
+                if (monitorInfo.CapabilityDic.ContainsKey("E9"))
+                {
+                    return Task.FromResult(string.Join(" ",monitorInfo.CapabilityDic["E9"]));
+                }
+            }
             /*
         if (_DisplayManagerPlugin != null)
         {
