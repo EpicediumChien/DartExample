@@ -2187,7 +2187,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 #region Parse Dock SilentFwUpdate command to unified format
                 if (commandLineInput.TargetType == "DOCK")
                 {
-                    writelog("FW update DOCK,DEFER");
+                    writelog("FW update DOCK,FORCEWITHNONOTICE");
                     var dockNoCommaOptions = commandLineInput.Options.Where(_ => !_.Option_Value.Contains(',')).ToList();
 
                     foreach (var dockNoCommaOption in dockNoCommaOptions)
@@ -2202,7 +2202,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                     }
 
-                    commandLineInput.Options.Insert(0, new CommandType_Option("VALUE", "DOCK,DEFER"));
+                    commandLineInput.Options.Insert(0, new CommandType_Option("VALUE", "DOCK,FORCEWITHNONOTICE"));
                 }
                 #endregion
 
@@ -2212,7 +2212,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                     if (!commandLineInput.Options[0].Option_Value.Contains(','))
                     {
-                        commandLineInput.Options[0].Option_Value += ",DEFER";
+                        commandLineInput.Options[0].Option_Value += ",FORCEWITHNOTICE";
                     }
                     string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
 
