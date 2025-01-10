@@ -4782,7 +4782,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         firmwares_item.url = display_FWU_URL + firmwares_item.url;
                                     }
                                     firmwares_item.CurrentVersion = monitorInfo.FwVersion;
-                                    firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
+                                    //firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
                                     firmwares_item.ServiceTag = monitorInfo.edid.ServiceTag;
                                     firmwares_item.SupplierID = monitorInfo.SupplierID;
                                     firmwares_item.D_Ctrl = monitorInfo.D_Ctrl;
