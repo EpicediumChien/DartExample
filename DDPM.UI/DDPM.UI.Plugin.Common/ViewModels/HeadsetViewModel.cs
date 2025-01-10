@@ -2149,7 +2149,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isSidetoneStatus ? Strings.On : Strings.Off;
         }
 
-        private bool _isSidetoneStatus;// = false;
+        private bool _isSidetoneStatus = true;// = false;
 
         public bool SidetoneStatus
         {

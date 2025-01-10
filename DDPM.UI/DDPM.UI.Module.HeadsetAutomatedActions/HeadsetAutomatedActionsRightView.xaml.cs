@@ -107,7 +107,7 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
                         return isChecked ? Brushes.White : Brushes.Black;
                 }
             }
-            else
+            else if (values.Length == 3)
             {
                 if (values[0] is bool isDarkTheme && values[1] is bool isChecked && values[2] is bool IsChecked2)
                 {
@@ -119,6 +119,7 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
                         return isChecked ? Brushes.White : Brushes.Black;
                 }
             }
+            else { return Brushes.Gray; }
             return Brushes.Gray;
         }
 
@@ -132,14 +133,17 @@ namespace DDPM.UI.Module.HeadsetAutomatedActions
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values[0] is bool isChecked && values[1] is bool isDarkTheme && values[2] is bool quickPauseStatus)
+            if (values.Length == 3)
             {
-                if (!quickPauseStatus)
-                    return Brushes.Gray;
-                if (isDarkTheme)
-                    return isChecked ? Brushes.White : Brushes.Gray;
-                else
-                    return isChecked ? Brushes.Black : Brushes.Gray;
+                if (values[0] is bool isChecked && values[1] is bool isDarkTheme && values[2] is bool quickPauseStatus)
+                {
+                    if (!quickPauseStatus)
+                        return Brushes.Gray;
+                    if (isDarkTheme)
+                        return isChecked ? Brushes.White : Brushes.Gray;
+                    else
+                        return isChecked ? Brushes.Black : Brushes.Gray;
+                }
             }
             return Brushes.Gray;
         }
