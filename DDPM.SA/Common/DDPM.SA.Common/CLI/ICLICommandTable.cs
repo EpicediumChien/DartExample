@@ -981,6 +981,34 @@ namespace DDPM.SA.Common
             };
         }
 
+        public static int ResponseDefer(CommandLineInput commandLineInput)
+        {
+            APP_RESPONSE result = new APP_RESPONSE()
+            {
+                Command = commandLineInput.Command,
+                TargetFeature = commandLineInput.TargetFeature,
+                Result = "PASS",
+                Value = commandLineInput.Options.Count > 0 ? commandLineInput.Options[0].Option_Value : "N/A",
+                Message = "Set defer operation completed"
+            };
+            Console.WriteLine(result.ToJson());
+            return (int)CLI_ExitCode.success;
+        }
+
+        public static int ResponseNotSupportValue(CommandLineInput commandLineInput)
+        {
+            APP_RESPONSE result = new APP_RESPONSE()
+            {
+                Command = commandLineInput.Command,
+                TargetFeature = commandLineInput.TargetFeature,
+                Result = "FAIL",
+                Value = commandLineInput.Options.Count > 0 ? commandLineInput.Options[0].Option_Value : "N/A",
+                Message = "Option value not supported"
+            };
+            Console.WriteLine(result.ToJson());
+            return (int)CLI_ExitCode.fail_option_value;
+        }
+
         public static string change_0base_to_1base(string value)
         {
             return (int.Parse(value) + 1).ToString();
