@@ -180,7 +180,7 @@
                                         <ComboBox AutomationProperties.Name="SelectedCheck"
                                                   Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                                   HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                  ItemsSource="{Binding PCInputsList}"
+                                                  ItemsSource="{Binding PC1InputsList}"
                                                   SelectedItem="{Binding PC1Inputs_Selected, Mode=TwoWay}"
                                                   DisplayMemberPath="inputDisplayText"
                                                   Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
@@ -254,7 +254,7 @@
                                                         HorizontalAlignment="Center" />
                                         <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                                 HorizontalAlignment="Center" VerticalAlignment="Top"
-                                                ItemsSource="{Binding PCInputsList}" 
+                                                ItemsSource="{Binding PC2InputsList}" 
                                                 SelectedItem="{Binding PC2Inputs_Selected, Mode=TwoWay}"
                                                 DisplayMemberPath="inputDisplayText"
                                                 Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
@@ -317,7 +317,7 @@
                             <Grid Grid.Row="3" Margin="16, 2, 16, 8">
                                 <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                          ItemsSource="{Binding PCInputsList}" Width="100"
+                                          ItemsSource="{Binding PC3InputsList}" Width="100"
                                           SelectedItem="{Binding PC3Inputs_Selected, Mode=TwoWay}"
                                           DisplayMemberPath="inputDisplayText"
                                           Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
@@ -370,7 +370,7 @@
                             <Grid Grid.Row="3" Margin="16, 2, 16, 8">
                                 <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                          ItemsSource="{Binding PCInputsList}"
+                                          ItemsSource="{Binding PC4InputsList}"
                                           SelectedItem="{Binding PC4Inputs_Selected, Mode=TwoWay}"
                                           DisplayMemberPath="inputDisplayText"
                                           Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"

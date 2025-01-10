@@ -373,6 +373,7 @@ namespace DDPM.UI.Module.InputSource
         /// <param name="e">changed event</param>
         private void OnVCPChangedEvent(object? sender, VCPchangedEventArgs e)
         {
+            Trace.WriteLine("[InputSource] OnVCPChangedEvent : " + e.vcpcode);
             if (e.vcpcode.Equals("input select")) //input source change 0x52 event
             {
                 if (InputsList.Count > 0)
