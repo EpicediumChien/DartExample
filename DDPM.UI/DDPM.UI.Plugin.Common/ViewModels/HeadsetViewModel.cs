@@ -204,6 +204,19 @@ namespace DDPM.UI.Plugin.ViewModels
                         case "Headset_BandsGainChanged":
                             // DTH event still support, DTP keep empty.
                             break;
+                        case "Headset_BoomMicSupportedChangedArgs":
+                            _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_BoomMicSupportedChangedArgs {Model.ToString() + " : " + event_param[eventtype].ToString()}");
+                            break;
+                        case "Headset_FirmwareVersionChanged":
+                            FirmwareVersion2 = event_param[eventtype];
+                            _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_WearDetectionSensitivityChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
+                            break;
+                        case "Headset_IsReadyChanged":
+                            _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_IsReadyChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
+                            break;
+                        case "Headset_IsDirtyChanged":
+                            _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_IsDirtyChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
+                            break;
                         default:
                             break;
                     }

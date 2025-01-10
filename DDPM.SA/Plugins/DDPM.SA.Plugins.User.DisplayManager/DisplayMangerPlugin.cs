@@ -151,6 +151,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// </summary>
         private readonly Dictionary<string, DateTime> LastProcessedTimestamps = new();
 
+        private bool IsDDPMLaunch = false;
         #endregion
 
         #region Constructor
@@ -202,6 +203,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(_CacheTable);
         }
 
+        public Task<bool> GetIsDDPMLaunch()
+        {
+            return Task.FromResult(IsDDPMLaunch);
+        }
         public Task Reset0x52TimerTick(int millisecond, int processID = -0xFF)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Reset0x52TimerTick: " +
@@ -211,6 +216,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 CreateProcessExitEvent(processID);
 
             _VcpCorePlugin.Reset0x52TimerTick(millisecond);
+
+            if (millisecond == 2000) // 8000 mean UI close, 2000 mean UI open
+            {
+                IsDDPMLaunch = true;
+                _logs.DebugMsg("[DisplayMangerPlugin] Reset0x52TimerTick: millisecond = 2000 , UI Open");
+            }
+            else
+            {
+                IsDDPMLaunch = false;
+                _logs.DebugMsg("[DisplayMangerPlugin] Reset0x52TimerTick: millisecond = 8000 , UI Close");
+            }
 
             return Task.FromResult(Task.CompletedTask);
         }
@@ -241,7 +257,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             uiProcess = null;
 
-            await _VcpCorePlugin.Reset0x52TimerTick(8000);
+            //await _VcpCorePlugin.Reset0x52TimerTick(8000);
+            await Reset0x52TimerTick(8000);
         }
 
         public Task<List<MonitorInfo>> GetMonitors()

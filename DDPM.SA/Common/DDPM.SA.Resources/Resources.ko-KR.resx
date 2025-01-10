@@ -241,7 +241,7 @@
     <value>마우스 왼쪽 버튼을 두 번 클릭하여 펌웨어 업데이트를 시작하십시오.</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>펌웨어 업데이트를 시작하려면 키보드의 \"U\" 키를 누르십시오.</value>
+    <value>펌웨어 업데이트를 시작하려면 키보드의 "U" 키를 누르십시오.</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>디바이스 연결됨</value>

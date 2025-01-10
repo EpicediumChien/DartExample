@@ -27,9 +27,9 @@ namespace DDPM.UI.Module.SpeakerInteractions
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
                 Dictionary<string, InstalledAppInfo> data = DdpmCommonHelper.DeviceManagerSA.GetAllAppList().Result;
-                var matchingTeams = data.Values.Where(app => "teams".Any(keyword => app.AppName.ToLower().Contains("teams", StringComparison.OrdinalIgnoreCase)));
-                var matchingZoom = data.Values.Where(app => "zoom".Any(keyword => app.AppName.ToLower().Contains("zoom", StringComparison.OrdinalIgnoreCase)));
-                var matchingMeet = data.Values.Where(app => "meet".Any(keyword => app.AppName.ToLower().Contains("meet", StringComparison.OrdinalIgnoreCase)));
+                var matchingTeams = data.Values.Where(app => app.AppName.ToLower().Contains("teams", StringComparison.OrdinalIgnoreCase));
+                var matchingZoom = data.Values.Where(app => app.AppName.ToLower().Contains("zoom", StringComparison.OrdinalIgnoreCase));
+                var matchingMeet = data.Values.Where(app => app.AppName.ToLower().Contains("meet", StringComparison.OrdinalIgnoreCase));
                 if (!matchingTeams.Any())//!isTeamsInstalled)
                 {
                     MicrosoftTeamsButton.Visibility = System.Windows.Visibility.Collapsed;

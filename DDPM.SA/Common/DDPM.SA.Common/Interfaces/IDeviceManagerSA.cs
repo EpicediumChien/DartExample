@@ -681,6 +681,8 @@ namespace DDPM.SA.Common
         Task<int> GetSnoozeLength(Guid deviceId);
         Task<bool> StartCopilotRegistryMonitor();
         Task<bool> StopCopilotRegistryMonitor();
+        Task<int> GetIODongleCount();
+        Task<int> GetAudioDongleCount();
 
         #endregion public for Peripherals
 
@@ -955,35 +957,22 @@ namespace DDPM.SA.Common
         #region Mouse
 
         Task<int> GetDpiValue(string Guid);
-
         Task<JArray> GetMouseProgrammableKeys(string Guid);
-
         Task<JArray> GetAppSpecificProfiles(string Guid);
-
         Task<bool> DeleteMouseAllAssignedActions(string Guid);
-
         Task<JArray> GetMouseAssignableActions(string Guid);
-
+        Task<JArray> GetMouseAssignedActions(string Guid);
         Task<string> GetMouseKeystrokeDisplayData(string Guid);
-
         Task<bool> StartMouseKeystrokeRecording(string Guid);
-
         Task<bool> StopMouseKeystrokeRecording(string Guid);
 
         Task SetDPIValue(string Guid, int newValue);
-
         Task SetMouseAction(string Guid, byte[] newValue);
-
         Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue);
-
         Task DeleteMouseAssignedAction(string Guid, int newValue);
-
         Task SetMouseAssignDialogAction(string Guid, byte[] newValue);
-
         Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue);
-
         Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true);
-
         Task<bool> SetReportRate(string Guid, int newValue);
 
         #endregion Mouse
@@ -997,6 +986,7 @@ namespace DDPM.SA.Common
         Task<bool> DeleteKeyboardAllAssignedActions(string Guid);
 
         Task<JArray> GetKbAssignableActions(string Guid);
+        Task<JArray> GetKbAssignedActions(string Guid);
 
         Task<string> GetKeyboardKeystrokeDisplayData(string Guid);
 

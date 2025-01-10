@@ -1043,7 +1043,7 @@ namespace DDPM.SA.Plugin.CLIManager
 
         public Task showNotification(int from, string guid, DeferItem item)
         {
-            string did = item.deferid;
+            string did = item.deferid == string.Empty ? "NULL" : item.deferid;
 
             onCLIToastEventNotify(new CLIEventToastArgs()
             {

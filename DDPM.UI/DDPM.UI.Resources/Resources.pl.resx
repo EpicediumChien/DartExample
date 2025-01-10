@@ -937,7 +937,7 @@
     <value>Podłączanie myszy\n i klawiatury</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>W przypadku myszy i klawiatury podłącz urządzenie z tyłu monitora (USB-A).\n Uwaga: Możesz także podłączyć inne urządzenia peryferyjne USB, takie jak\n kamera internetowa.</value>
+    <value>W przypadku myszy i klawiatury podłącz urządzenie z tyłu monitora (USB-A).\n Uwaga: Możesz także podłączyć inne urządzenia peryferyjne USB, takie jak kamera internetowa.</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>
@@ -1399,7 +1399,7 @@
     <value>To urządzenie, które chcesz sparować, nie jest obsługiwane z podłączonym bezprzewodowym odbiornikiem USB. Użyj odbiornika dostarczonego z urządzeniem.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>Dostępne gniazda w tym bezprzewodowym odbiorniku USB są pełne. Aby użyć, usuń sparowanie urządzenia z nim, klikając przycisk \„Usuń sparowanie\” na stronie ustawień urządzenia.</value>
+    <value>Dostępne gniazda w tym bezprzewodowym odbiorniku USB są pełne. Aby użyć, usuń sparowanie urządzenia z nim, klikając przycisk „Usuń sparowanie” na stronie ustawień urządzenia.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>Kliknij, aby przypisać działanie</value>
