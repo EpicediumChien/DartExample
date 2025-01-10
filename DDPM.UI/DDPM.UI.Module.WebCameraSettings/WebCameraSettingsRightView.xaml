@@ -102,7 +102,7 @@
                                     <Grid Margin="16,25,16,0">
                                         <StackPanel Orientation="Horizontal">
                                             <!-- Derek for PIMS-332102 -->
-                                            <UXControls:UXTextBlock Width="270" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraSettings.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                                            <UXControls:UXTextBlock MaxWidth="270" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraSettings.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                                             <Border ToolTipService.Placement="Left" Background="{StaticResource FakeTransparent}" Cursor="Hand">
                                                 <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                                                 <Border.ToolTip>
@@ -596,7 +596,7 @@
                                             <Border.ToolTip>
                                                 <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                        <TextBlock Text="{Binding [WebCameraSettings.11], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" Padding="5,0,5,0" />
+                                                        <TextBlock Text="{Binding [WebCameraSettings.11], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="WrapWithOverflow" Padding="5,0,5,0" />
                                                     </Border>
                                                 </ToolTip>
                                             </Border.ToolTip>

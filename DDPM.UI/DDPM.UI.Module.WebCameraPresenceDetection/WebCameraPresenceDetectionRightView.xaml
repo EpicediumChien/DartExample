@@ -97,7 +97,7 @@
                   <Grid Margin="18,20,18,0">
                     <StackPanel Orientation="Horizontal">
                       <!-- Derek for PIMS-332099 -->
-                      <UXControls:UXTextBlock Width="270" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraPresenceDetection.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                      <UXControls:UXTextBlock MaxWidth="270" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraPresenceDetection.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                       <Border ToolTipService.Placement="Left" Background="{StaticResource FakeTransparent}" Cursor="Hand">
                         <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                         <Border.ToolTip>
