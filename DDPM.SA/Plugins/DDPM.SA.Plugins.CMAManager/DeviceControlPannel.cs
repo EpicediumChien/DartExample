@@ -194,7 +194,7 @@ namespace DDPM.SA.Plugins.CMAManager
                         result = result + ",";
                     }
 
-                    result = result + $"\"FWVersion\":\"{fwversion}\"";
+                    result = result + $"\"FirmwareVersion\":\"{fwversion}\"";
                     hasData = true;
                 }
 
@@ -227,7 +227,7 @@ namespace DDPM.SA.Plugins.CMAManager
                         result = result + ",";
                     }
 
-                    result = result + $"\"Servicetag\":\"{servicetag}\"";
+                    result = result + $"\"ServiceTag\":\"{servicetag}\"";
                     hasData = true;
                 }
 
