@@ -6266,7 +6266,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private void Headset_Disconnected(object sender, DisconnectedArgs e)
         {
             _ = UnregisterEventsForAllHeadsetAsync();
-            _ = RegisterEventsForAllHeadsetAsync();
+
+            //_ = RegisterEventsForAllHeadsetAsync();
 
             //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Disconnected", e.DeviceId));
 

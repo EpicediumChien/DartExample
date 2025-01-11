@@ -210,6 +210,8 @@ namespace DDPM.UI.Plugin.ViewModels
                             // DTH event still support, DTP keep empty.
                             break;
                         case "Headset_BoomMicChanged":
+                            DeviceInfoDTP.AnswerCall = event_param[eventtype].ToLower() == "true" ? true : false;
+                            CheckAnswerCallUI(true);
                             _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_BoomMicChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             break;
                         case "Headset_BoomMicSupportedChangedArgs":
@@ -461,18 +463,18 @@ namespace DDPM.UI.Plugin.ViewModels
             ReadQRCodeReg();
             AllResetHeadsetPage();
             //string fwv = string.Empty;
-            bool answerCall = false;
-            if (IsDTPReady)
-            {
-                //fwv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceInfo!.ID.ToString()).Result;
-                answerCall = _deviceManager.GetIsBoomMicSupportedAsync(CurrentDeviceInfo.ID.ToString()).Result; //DTP
-            }
-            else
-            {
-                //fwv = FirmwareVersion;
-                answerCall = SupportedAnswerCalls;
-            }
-            _log!.Info($"[HeadsetViewModel] DetectPageShow ... BoomMicSupported = {answerCall.ToString()}");
+            //bool answerCall = false;
+            //if (IsDTPReady)
+            //{
+            //    //fwv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceInfo!.ID.ToString()).Result;
+            //    answerCall = _deviceManager.GetIsBoomMicSupportedAsync(CurrentDeviceInfo.ID.ToString()).Result; //DTP
+            //}
+            //else
+            //{
+            //    //fwv = FirmwareVersion;
+            //    answerCall = SupportedAnswerCalls;
+            //}
+            //_log!.Info($"[HeadsetViewModel] DetectPageShow ... BoomMicSupported = {answerCall.ToString()}");
             switch (model.ToUpper())
             {
                 case "WL7024"://Mito
@@ -498,7 +500,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     _wearDetectionPageShow = true;
                     _automatedActionsSensitivityUpPageShow = true;
                     _automatedActionsWhenHeadsetIsRemovedPageShow = true;
-                    _automatedActionsAnswerCallPageShow = answerCall; //WL5024 page2, not only AnswerCall 
+                    _automatedActionsAnswerCallPageShow = true; //WL5024 page2, not only AnswerCall  // always show, but need to detect disable/enable
+                    _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
+                    //OnPropertyChanged(nameof(AnswerCalls_String));
                     //Page 3
                     _voiceGuidancePageShow = true;
                     //_deviceSettingsDownloadDellAudioPageShow = false;
@@ -509,10 +513,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     _controlTheNoiseIHearPageShow = true;
                     _configureMyAudioModesPageShow = true;
                     //Page 2                  
-                    //if (ConvertVersionToInt(fwv) >= 252)
-                    //    _automatedActionsAnswerCallPageShow = true;
-                    //else
-                    _automatedActionsAnswerCallPageShow = answerCall;//DELL 說拿掉;// only AnswerCall 
+                    _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;// only AnswerCall // always show, but need to detect disable/enable
+                    _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
+                    //OnPropertyChanged(nameof(AnswerCalls_String));
                     //Page 3
                     _voiceGuidancePageShow = true;
                     _deviceSettingsDownloadDellAudioPageShow = false;
@@ -521,8 +524,10 @@ namespace DDPM.UI.Plugin.ViewModels
                 case "WL3024"://Vaporify
                     //Page 1
                     _configureMyAudioModesPageShow = true;
-                    //Page 2
-                    _automatedActionsAnswerCallPageShow = answerCall;// only AnswerCall 
+                    //Page 2                   
+                    _automatedActionsAnswerCallPageShow = true;// only AnswerCall // always show, but need to detect disable/enable
+                    _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
+                    //OnPropertyChanged(nameof(AnswerCalls_String));
                     //Page 3
                     _voiceGuidancePageShow = true;
                     //_deviceSettingsDownloadDellAudioPageShow = false;
@@ -533,23 +538,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     _controlTheNoiseIHearPageShow = false;//Fix PIMS-PIMS-294568
                     _configureMyAudioModesPageShow = true;
                     //Page 2
-                    if (DeviceInfoDTP.IsAnswerCallSupported)
-                    {
-                        _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;
-                    }
-                    else
-                    {
-                        _supportedAnswerCalls = false;
-                        OnPropertyChanged(nameof(AnswerCalls_String));
-                        //ModuleGroup? mgKvm = ModuleGroups.FirstOrDefault(x => x.GroupName.Equals(Strings.HeadsetAutomatedActions));
-                    }
-                    //string AutomatedActions = Strings.HeadsetAutomatedActions;
-                    ////ModuleGroup? mgKvm1 = ModuleGroups.FirstOrDefault(x => x.GroupName.Equals(Strings.HeadsetAudioSettings));
-                    //VbarItem? vbarItem = VbarItems.Find(x => x.Text.Equals(AutomatedActions));
-                    //vbarItem.Visibility = Visibility.Collapsed;
-                    //else
-                    _automatedActionsAnswerCallPageShow = answerCall;//DELL 說拿掉;// only AnswerCall 
-
+                    _supportedAnswerCalls = DeviceInfoDTP.IsAnswerCallSupported;
+                    _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;// only AnswerCall // always show, but need to detect disable/enable
+                    //OnPropertyChanged(nameof(AnswerCalls_String));
                     //Page 3
                     _deviceSettingsDownloadDellAudioPageShow = false;
                     //defult page
@@ -616,16 +607,16 @@ namespace DDPM.UI.Plugin.ViewModels
         public void CheckHeadsetFunc()
         {
             _log.Info($"[HeadsetViewModel] CheckHeadsetFunc ...");
-            CheckSidetoneUI(false);
-            CheckBusyLightUI(false);
-            CheckOutgoingAudioUI(false);
-            CheckMicNCIncomingUI(false);
-            CheckMicNoiseCancellationUI(false);
-            CheckWearDetectionUI(false);
-            CheckPresetsUI(false);
-            CheckVoiceGuidanceUI(false);
-            CheckANCUI(false);
-            CheckAnswerCallUI(false);
+            CheckSidetoneUI(true);
+            CheckBusyLightUI(true);
+            CheckOutgoingAudioUI(true);
+            CheckMicNCIncomingUI(true);
+            CheckMicNoiseCancellationUI(true);
+            CheckWearDetectionUI(true);
+            CheckPresetsUI(true);
+            CheckVoiceGuidanceUI(true);
+            CheckANCUI(true);
+            CheckAnswerCallUI(true);
             HeadsetSettingChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -1123,10 +1114,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged(nameof(TransparencylevelSliderValue));
                     break;
 
-                case "WearDetectionChanged":
-                    DeviceInfoDTP.WearDetection = di.WearDetection;//_deviceManager.GetWearDetectionAsync(CurrentDeviceID.ToString()).Result;
-                    CheckWearDetectionUI(true);
-                    break;
+                //case "WearDetectionChanged":
+                //    DeviceInfoDTP.WearDetection = di.WearDetection;//_deviceManager.GetWearDetectionAsync(CurrentDeviceID.ToString()).Result;
+                //    CheckWearDetectionUI(true);
+                //    break;
 
                 default:
                     break;
@@ -1903,6 +1894,7 @@ namespace DDPM.UI.Plugin.ViewModels
             else
             {
                 _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetHeadsetFirmwareVersionAsync ...... DTP success ...");
+                //fv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
                 IsDTPReady = true;
                 FirmwareVersion2 = Strings.FirmwareVersion + $" {fv}";
                 _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Firmware Version from DTP ... {FirmwareVersion2} ...");
@@ -2106,7 +2098,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                return _supportedMicNoiseCancellation;
+                return _supportedMicNoiseCancellation = DeviceInfoDTP!.IsMicNoiseCancellationSupported ;
             }
             set
             {
