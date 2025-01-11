@@ -1225,6 +1225,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         if (singleMonitorSetting.ServiceTag == seriveTag)
                         {
                             impexpSettings.MonitorSettings = singleMonitorSetting;
+                            WriteLog($"[ExportSettingsFile] Model: {singleMonitorSetting.Model}, ServiceTag: {singleMonitorSetting.ServiceTag}, VCP counts: {singleMonitorSetting.VCPs.Count}");
                             // PIMS-328022 to renew EzMemory
                             impexpSettings.MonitorSettings.easyArrangementDDPM.Desktops = new List<DesktopDDPM>();
 
@@ -1897,6 +1898,30 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return impSettings;
         }
 
+        private List<DDPMMonitorSettings> RunDDPMMonitorSettingsList(string value)
+        {
+            List<DDPMMonitorSettings> monitorProfiles = new List<DDPMMonitorSettings>();
+
+            try
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    var jsonParseResult = JsonConvert.DeserializeObject<List<DDPMMonitorSettings>>(value);
+                    if (jsonParseResult != null)
+                        monitorProfiles = jsonParseResult;
+                    else
+                        WriteLog($"[RunDDPMMonitorSettingsList] Parse json string jsonParseResult is null.");
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"[RunDDPMMonitorSettingsList] Parse json string for display profile throws Exception: {ex.Message}, StackTrace: {ex.StackTrace}.");
+                return monitorProfiles;
+            }
+
+            return monitorProfiles;
+        }
+
         private bool WriteImpExpSettings(string path, DDPMImpExpSettings impexpSettings)
         {
             if (impexpSettings == null)
@@ -2012,6 +2037,54 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             return Task.FromResult(ImpSettings);
         }
 
+        /// <summary>
+        /// For auto import to read if we need to skip notification
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="modelName"></param>
+        /// <returns>Boolean</returns>
+        public Task<bool> ReadSameModelAutoApplySameModelFlag(string path, string modelName)
+        {
+            List<DDPMMonitorSettings> monitorProfiles = new List<DDPMMonitorSettings>();
+
+            if (!string.IsNullOrEmpty(path))
+            {
+                if (File.Exists(path))
+                {
+                    try
+                    {
+                        string FileInfo;
+                        if (!DDPMFileSecurity.IsFilePathValid(path, out FileInfo))
+                        {
+                            WriteLog($"{nameof(ReadDDMImpSettingsFile)} {FileInfo}");
+                            return Task.FromResult(false);
+                        }
+                        string strReadJson = string.Empty;
+                        strReadJson = DDPMFileSecurity.GetSerializedJsonString(path, out string info);
+
+                        if (string.IsNullOrEmpty(strReadJson))
+                        {
+                            WriteLog($"[ReadDDMImpAutoApplySameModel] empty output: {info}");
+                            return Task.FromResult(false);
+                        }
+                        WriteLog($"[ReadDDMImpAutoApplySameModel] strReadJson: " + strReadJson);
+                        monitorProfiles = RunDDPMMonitorSettingsList(strReadJson);
+                        if (monitorProfiles.Find(profile => profile.ImpExpSettings != null && profile.ImpExpSettings.SameModel) != null)
+                        {
+                            return Task.FromResult(true);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        WriteLog($"[ReadDDMImpAutoApplySameModel] exception: {e.Message}");
+                    }
+                }
+                else
+                    WriteLog($"[ReadDDMImpAutoApplySameModel] strReadJson: selected file isn't exist" + path);
+            }
+
+            return Task.FromResult(false);
+        }
         #endregion ImpExpSettings
 
         #region Global settings

@@ -72,19 +72,33 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     Dispatcher.Invoke(() =>
                     {
+                        List<Task> tasks = new List<Task>();
+                        bool isSameModelFlag = false;
                         string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
                         string path = localAppDataPath + "\\Dell Display and Peripheral Manager\\Export";
                         string model = mo.modelName;//"U2724DE";
                         string exportpath = path + "\\" + model + ".json";
+                        string displayProfilePath = $"{localAppDataPath}\\Dell Display and Peripheral Manager\\Display\\{model}.json";
 
                         DDPMImpExpSettings ImpExpSettings = new DDPMImpExpSettings();
+                        //ImpExpSettings = DdpmCommonHelper.DeviceManagerSA.ReadImportSettingsFile(displayProfilePath).Result;
+
+                        Task<DDPMImpExpSettings> readExp = DdpmCommonHelper.DeviceManagerSA.ReadImportSettingsFile(displayProfilePath);
+                        Task<bool> readSameModel = DdpmCommonHelper.DeviceManagerSA.ReadSameModelAutoApplySameModelFlag(displayProfilePath, model);
+                        tasks.Add(readExp);
+                        tasks.Add(readSameModel);
+                        Task.WhenAll(tasks).Wait();
+                        ImpExpSettings = readExp.Result;
+                        isSameModelFlag = readSameModel.Result;
+
                         ImpExpSettings = DdpmCommonHelper.DeviceManagerSA.ReadImportSettingsFile(exportpath).Result;
 
                         if (ImpExpSettings != null &&
                             ImpExpSettings.MonitorSettings != null &&
                             ImpExpSettings.MonitorSettings.ServiceTag != mo.edid.ServiceTag)
                         {
-                            if (ImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
+                            //if (ImpExpSettings.MonitorSettings.ImpExpSettings.SameModel)
+                            if (isSameModelFlag)
                             {
                                 DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Wait();
                             }

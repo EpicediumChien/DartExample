@@ -906,6 +906,14 @@ namespace DDPM.SA.Common
 
         Task<DDPMImpExpSettings> ReadImportSettingsFile(string path);
 
+        /// <summary>
+        /// For auto import to read if we need to skip notification
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="modelName"></param>
+        /// <returns>Boolean</returns>
+        Task<bool> ReadSameModelAutoApplySameModelFlag(string path, string modelName);
+
         #endregion public for ImpExpSettings
 
         //public for GUI to get the changes of display and peripherals
