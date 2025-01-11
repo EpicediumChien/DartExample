@@ -42,7 +42,7 @@
               HorizontalAlignment="Center"
               VerticalAlignment="Bottom">
             <Border Width="366"
-                    Height="135"
+                    Height="145"
                     Background="{DynamicResource Default_SA_OSD_Border_BkColor}"
                     BorderBrush="#0DFFFFFF"
                     BorderThickness="1.5"
@@ -54,7 +54,7 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <!--Close-->
-                    <Canvas Grid.Row="0" Width="20" Height="20" Margin="0,10,10,0" 
+                    <Canvas Grid.Row="0" Width="20" Height="20" Margin="0,8,10,0" 
                             HorizontalAlignment="Right" VerticalAlignment="Top" 
                             MouseLeftButtonDown="close_Click"
                             Background="Transparent"
@@ -67,19 +67,19 @@
                             <RowDefinition Height="50*" />
                             <RowDefinition Height="50*" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0"
+                        <TextBlock Grid.Row="0" Margin="2,5,2,0"
                                    x:Name="ShowStringText"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Top"
                                    FontFamily="Roboto"
-                                   Width="270"
-                                   Height="40"
+                                   MinWidth="270"
+                                   MinHeight="40"
                                    TextWrapping="WrapWithOverflow"
                                    FontSize="14"
                                    FontWeight="Medium"
                                    Foreground="{DynamicResource Default_SA_QAM_Path_BkColor}"
                                    Text="{Binding [QAM_OSD_Msg], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
-                        <Button Grid.Row="1"
+                        <Button Grid.Row="1" Margin="0,5,0,0"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Top"
                                 FontFamily="Roboto"

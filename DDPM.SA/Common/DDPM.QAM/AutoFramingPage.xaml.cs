@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using DDPM.SA.Resources.Helper;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace DDPM.QAM
@@ -24,7 +25,14 @@ namespace DDPM.QAM
                 vm.isStatusChagneByDDPM = false;
                 //DdpmCommonHelper.DeviceManagerSA?.WriteLog($"ToggleButton_Click -> {vm.isStatusChagneByDDPM}");
                 vm.SetAutoFramingStatus();
-            }
+
+                //Derek 20250111
+                var textBlock = (TextBlock)MyToggleButton.Template.FindName("SwitchText", MyToggleButton);
+                if (textBlock != null)
+                {
+                    textBlock.Text = vm.AutoFramingStatus ? LangHelper.Instance["ON"] : LangHelper.Instance["OFF"];
+                }
+            }    
         }
     }
 }
