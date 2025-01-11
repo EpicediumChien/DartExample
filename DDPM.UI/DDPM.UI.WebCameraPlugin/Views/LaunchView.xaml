@@ -341,8 +341,10 @@
                                                         <ItemsControl.ItemTemplate>
                                                             <DataTemplate>
                                                                 <Grid Height="30" Margin="0,5,0,0">
-                                                                    <StackPanel Orientation="Horizontal" Width="110" HorizontalAlignment="Left">
-                                                                        <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Cursor="Hand" Margin="0" Tag="{Binding ID}" Text="{Binding Caption}" HorizontalAlignment="Left" MouseLeftButtonDown="ProfileSelected" FontFamily="Roboto" FontSize="14" VerticalAlignment="Center" />
+                                                                    <!-- Derek 20250110 for PIMS 333767 change Width="100" to Width="160" -->
+                                                                    <StackPanel Orientation="Horizontal" Width="160" HorizontalAlignment="Left">
+                                                                        <!-- Derek 20250110 for PIMS 333767 add TextTrimming="CharacterEllipsis" MaxWidth="140" -->
+                                                                        <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" MaxWidth="140" Cursor="Hand" Margin="0" Tag="{Binding ID}" Text="{Binding Caption}" HorizontalAlignment="Left" MouseLeftButtonDown="ProfileSelected" FontFamily="Roboto" FontSize="14" VerticalAlignment="Center" />
                                                                         <!--<Image Margin="8,0,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/info.png" Visibility="{Binding TooltipVisibility}" Stretch="Fill" Width="16" Height="16" HorizontalAlignment="Right" MouseLeftButtonDown="DeletePreset" Tag="{Binding ID}">
                                                                 <Image.ToolTip>
                                                                     <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">

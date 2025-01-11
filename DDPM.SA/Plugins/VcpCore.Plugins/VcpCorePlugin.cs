@@ -1375,7 +1375,7 @@ namespace VcpCore.Plugins
                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCode is " + BitConverter.ToString(new byte[] { code }));
                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] val is " + val.ToString());
 
-                            rc = Set_VCPCapability(monitorInfoX, code, val, IsOutInitialize);
+                        rc = Set_VCPCapability(monitorInfoX, code, val, IsOutInitialize);
 
                         if (rc)
                         {
@@ -1666,22 +1666,31 @@ namespace VcpCore.Plugins
                                 });
                             }
 
-                            monitor.Item1.DDCCIFail = 0;
-
-                            if (!ori_DDCCIStatus)
+                            if (!string.IsNullOrWhiteSpace(monitor.Item1.CapabilityString))
                             {
-                                _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck prepare DDC/CI broadcast off -> on");
+                                monitor.Item1.DDCCIFail = 0;
 
-                                monitor.Item1.DDCisON = true;
-                                monitor.Item2.DDCisON = true;
+                                if (!ori_DDCCIStatus)
+                                {
+                                    _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCorePlugin Watcher0x02forStatusCheck prepare DDC/CI broadcast off -> on");
 
+                                    monitor.Item1.DDCisON = true;
+                                    monitor.Item2.DDCisON = true;
+
+                                    Initialize2TypesMonitorInfo(false, CancellationToken.None);
+
+                                    DDCCIchangedEventArgs _ddcceventArg = new DDCCIchangedEventArgs();
+                                    _ddcceventArg.DDCisON = true;
+                                    _ddcceventArg.monitors = monitor.Item2.Clone();
+
+                                    OnDDCCIStatuschanged(_ddcceventArg);
+                                }
+                            }
+                            else
+                            {
+                                monitor.Item1.DDCisON = false;
+                                monitor.Item2.DDCisON = false;
                                 Initialize2TypesMonitorInfo(false, CancellationToken.None);
-
-                                DDCCIchangedEventArgs _ddcceventArg = new DDCCIchangedEventArgs();
-                                _ddcceventArg.DDCisON = true;
-                                _ddcceventArg.monitors = monitor.Item2.Clone();
-
-                                OnDDCCIStatuschanged(_ddcceventArg);
                             }
                         }
                         else
@@ -4036,7 +4045,7 @@ namespace VcpCore.Plugins
             VCPF0.Add("HLG", "38");
             VCPF0.Add("Custom Color HDR", "39"); // Jim add 2025 for [S3225QC] HDR list
             VCPF0.Add("HDR Peak 1000", "3A"); // Jim add 2025 for [S3225QC] HDR list
-          
+
             Dictionary<string, string> VCP14 = new Dictionary<string, string>();
             VCP14.Add("sRGB", "01");
             VCP14.Add("sRGB D65 sRGB L120", "01"); // PIMS-327394 jim 20241211
@@ -4125,7 +4134,7 @@ namespace VcpCore.Plugins
             VCPE2.Add("HLG", "3C");
             VCPE2.Add("Custom Color HDR", "30"); // Jim add 2025 for [S3225QC] HDR list
             VCPE2.Add("HDR Peak 1000", "31"); // Jim add 2025 for [S3225QC] HDR list
-          
+
             #endregion
 
             _ColorPresets.Add("DC", VCPDC);
@@ -4541,14 +4550,9 @@ namespace VcpCore.Plugins
                 _TargetMonitor.D_Ctrl = _TargetMonitorx.D_Ctrl;
                 _TargetMonitor.scalingFactor = _TargetMonitorx.scalingFactor;
 
-                if (IsUpdate)
-                {
-                    _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} UpdateMyself go to Initialize2TypesMonitorInfo ...");
-
-                    Initialize2TypesMonitorInfo(false, CancellationToken.None);
-
-                    _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} Initialize2TypesMonitorInfo ok...");
-                }
+                _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} UpdateMyself go to Initialize2TypesMonitorInfo ...");
+                Initialize2TypesMonitorInfo(false, CancellationToken.None);
+                _logs.DebugMsg($"[VcpCorePlugin] {_TargetMonitorx.modelName} Initialize2TypesMonitorInfo ok...");
 
                 return (IsConnectAllCorrect, IsUpdate);
             }
@@ -5155,7 +5159,7 @@ namespace VcpCore.Plugins
                             return 5;
                     }
                 case "P2423D": return 1;
-                case "P2423DE": return 2;
+                case "P2423DE": return 1;
                 case "P2723D": return 1;
                 case "P2723DE": return 1;
                 case "P2723QE": return 5;

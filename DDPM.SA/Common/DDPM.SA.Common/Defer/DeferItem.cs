@@ -16,6 +16,10 @@ namespace DDPM.SA.Common.Defer
         public int commandfrom { get; set; }
         public string commanddata { get; set; }
 
+        public DeferItem()
+        {
+        }
+
         public DeferItem(int _from, string _guid, string _commanddata)
         {
             DateTimeOffset dateTime = DateTimeOffset.Now;

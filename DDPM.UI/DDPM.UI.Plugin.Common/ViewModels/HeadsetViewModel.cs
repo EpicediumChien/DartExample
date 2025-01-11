@@ -131,18 +131,21 @@ namespace DDPM.UI.Plugin.ViewModels
                         case "Headset_WearDetectionChanged":
                             HandleWearDetectionEvent(eventtype, event_param[eventtype], ref _isWearDetectionStatus);
                             DeviceInfoDTP.WearDetectionFromDTP = _isWearDetectionStatus;
+                            CheckWearDetectionUI();
                             _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_WearDetectionChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             break;
 
                         case "Headset_IsWearDetectionPauseMusicEnabledChanged":
                             HandleWearDetectionEvent(eventtype, event_param[eventtype], ref _isPauseMusicStatus);
                             DeviceInfoDTP.IsWearDetectionPauseMusicEnableFromDTP = _isPauseMusicStatus;
+                            CheckWearDetectionUI();
                             _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_IsWearDetectionPauseMusicEnabledChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             break;
 
                         case "Headset_IsWearDetectionMuteMicEnabledChanged":
                             HandleWearDetectionEvent(eventtype, event_param[eventtype], ref _isMuteMicrophoneStatus);
                             DeviceInfoDTP.IsWearDetectionMuteMicEnabledFromDTP = _isMuteMicrophoneStatus;
+                            CheckWearDetectionUI();
                             _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_IsWearDetectionMuteMicEnabledChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             break;
 
@@ -177,6 +180,7 @@ namespace DDPM.UI.Plugin.ViewModels
                                 }
                                 _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_WearDetectionQuickPauseChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             }
+                            CheckWearDetectionUI();
                             break;
 
                         case "Headset_WearDetectionSensitivityChanged":
@@ -200,16 +204,28 @@ namespace DDPM.UI.Plugin.ViewModels
                                 DeviceInfoDTP.WearDetectionSensitivityFromDTP = BoolToInt(_isQuickPauseStatus);
                                 _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_WearDetectionSensitivityChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             }
+                            CheckWearDetectionUI();
                             break;
                         case "Headset_BandsGainChanged":
                             // DTH event still support, DTP keep empty.
+                            break;
+                        case "Headset_BoomMicChanged":
+                            _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_BoomMicChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             break;
                         case "Headset_BoomMicSupportedChangedArgs":
                             _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_BoomMicSupportedChangedArgs {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             break;
                         case "Headset_FirmwareVersionChanged":
-                            FirmwareVersion2 = event_param[eventtype];
-                            _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_WearDetectionSensitivityChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
+                            if (!waitFW)
+                            {
+                                FirmwareVersion2 = event_param[eventtype];
+                                waitFW = true;
+                                IsDTPReady = true;
+                                FirmwareVersion2 = string.Join(".", FirmwareVersion2.ToCharArray());
+                                FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
+                                _log.Info($"[HeadsetViewModel] Headset_DTPNotify ... Headset_WearDetectionSensitivityChanged ... {FirmwareVersion2} ...");
+                                _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_WearDetectionSensitivityChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
+                            }
                             break;
                         case "Headset_IsReadyChanged":
                             _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_IsReadyChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
@@ -217,11 +233,16 @@ namespace DDPM.UI.Plugin.ViewModels
                         case "Headset_IsDirtyChanged":
                             _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_IsDirtyChanged {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             break;
+                        case "Headset_SetFactoryResetAsyncValueForHeadset":
+                            if (CheckIfCurrentSettingsMatchDefault(DeviceInfoDTP, Model))
+                                return;
+                            RestoreToDefault();
+                            _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_SetFactoryResetAsyncValueForHeadset {Model.ToString() + " : " + event_param[eventtype].ToString()}");
+                            break;
                         default:
                             break;
                     }
                     _isRestoreEnable = false;
-                    CheckWearDetectionUI();
                 }
                 //Keep first, Reset event
                 //if (device == "Headset_Reset")
@@ -437,19 +458,18 @@ namespace DDPM.UI.Plugin.ViewModels
         public void DetectPageShow(string model)
         {
             _log!.Info($"[HeadsetViewModel] DetectPageShow ... {model}");
-            //modelTest = model;
             ReadQRCodeReg();
             AllResetHeadsetPage();
-            string fwv = string.Empty;
+            //string fwv = string.Empty;
             bool answerCall = false;
-            if (!IsDTPReady)
+            if (IsDTPReady)
             {
-                fwv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceInfo!.ID.ToString()).Result;
+                //fwv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceInfo!.ID.ToString()).Result;
                 answerCall = _deviceManager.GetIsBoomMicSupportedAsync(CurrentDeviceInfo.ID.ToString()).Result; //DTP
             }
             else
             {
-                fwv = FirmwareVersion;
+                //fwv = FirmwareVersion;
                 answerCall = SupportedAnswerCalls;
             }
             _log!.Info($"[HeadsetViewModel] DetectPageShow ... BoomMicSupported = {answerCall.ToString()}");
@@ -513,10 +533,23 @@ namespace DDPM.UI.Plugin.ViewModels
                     _controlTheNoiseIHearPageShow = false;//Fix PIMS-PIMS-294568
                     _configureMyAudioModesPageShow = true;
                     //Page 2
-                    //if (ConvertVersionToInt(fwv) >= 275)
-                    //    _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;
+                    if (DeviceInfoDTP.IsAnswerCallSupported)
+                    {
+                        _automatedActionsAnswerCallPageShow = true;//DELL 說拿掉;
+                    }
+                    else
+                    {
+                        _supportedAnswerCalls = false;
+                        OnPropertyChanged(nameof(AnswerCalls_String));
+                        //ModuleGroup? mgKvm = ModuleGroups.FirstOrDefault(x => x.GroupName.Equals(Strings.HeadsetAutomatedActions));
+                    }
+                    //string AutomatedActions = Strings.HeadsetAutomatedActions;
+                    ////ModuleGroup? mgKvm1 = ModuleGroups.FirstOrDefault(x => x.GroupName.Equals(Strings.HeadsetAudioSettings));
+                    //VbarItem? vbarItem = VbarItems.Find(x => x.Text.Equals(AutomatedActions));
+                    //vbarItem.Visibility = Visibility.Collapsed;
                     //else
                     _automatedActionsAnswerCallPageShow = answerCall;//DELL 說拿掉;// only AnswerCall 
+
                     //Page 3
                     _deviceSettingsDownloadDellAudioPageShow = false;
                     //defult page
@@ -1019,24 +1052,6 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!base.SetCurrentDevice(deviceID))
                 return false;
             _log.Info($"[HeadsetViewModel] SetCurrentDevice GUID ... {CurrentDeviceID.ToString()}");
-
-            _current_headset = CurrentDeviceID!.ToString();
-            var fv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
-            if (fv == null || fv == string.Empty)
-            {
-                _log.Info($"[HeadsetViewModel] SetCurrentDevice ... GetHeadsetFirmwareVersionAsync ... Null or Empty ... DTP fail ...");
-                IsDTPReady = false;
-                fv = CurrentDeviceInfo.FirmwareVersion.PadLeft(4, '0');
-                FirmwareVersion2 = $"Firmware Version {fv}";
-                _log.Info($"[HeadsetViewModel] SetCurrentDevice ... Firmware Version from DTH ... {FirmwareVersion2} ...");
-            }
-            else
-            {
-                _log.Info($"[HeadsetViewModel] SetCurrentDevice ... GetHeadsetFirmwareVersionAsync ...... DTP success ...");
-                IsDTPReady = true;
-                FirmwareVersion2 = Strings.FirmwareVersion + $" {fv}";
-                _log.Info($"[HeadsetViewModel] SetCurrentDevice ... Firmware Version from DTP ... {FirmwareVersion2} ...");
-            }
             return true;
         }
 
@@ -1866,15 +1881,38 @@ namespace DDPM.UI.Plugin.ViewModels
         private async Task DoWork_PleaseWait(string model, HeadsetViewModel vm)
         {
             _log.Info($"[HeadsetViewModel] DoWork_PleaseWait .......");
-            // Simulate time-consuming operation
-            Thread.Sleep(500);
+
+            waitFW = false;
+            var fv = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
+            Thread.Sleep(3000);
+            if ((fv == null || fv == "0.0.0.0"))
+            {
+                int tick = 0;
+                while (!waitFW)
+                {
+                    Thread.Sleep(3000); // IL provide info, DPeM 18 need 3sec, DPeM 20 need 18~25 sec,
+                    tick++;
+                    if (tick > 16) // 51 sec force exit
+                    {
+                        waitFW = true;
+                        _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetHeadsetFirmwareVersionAsync ...... {tick.ToString()} X 3 + 3 sec, success ...");
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... GetHeadsetFirmwareVersionAsync ...... DTP success ...");
+                IsDTPReady = true;
+                FirmwareVersion2 = Strings.FirmwareVersion + $" {fv}";
+                _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Firmware Version from DTP ... {FirmwareVersion2} ...");
+            }
             if (IsDTPReady)
                 UpdateDTPValue();
             else
                 UpdateDTHValue();
             // Call DetectPageShow
             DetectPageShow(model);
-            //HidePleaseWait();
         }
 
         public async Task Invoke_PleaseWaitAsync(string model, HeadsetViewModel vm)
@@ -1908,6 +1946,18 @@ namespace DDPM.UI.Plugin.ViewModels
             HidePleaseWait();
         }
 
+        public bool _waitFW = false;
+        public bool waitFW
+        {
+            get
+            {
+                return _waitFW;
+            }
+            set
+            {
+                _waitFW = value;
+            }
+        }
         #endregion Please Wait
 
         /// <summary>
@@ -2099,7 +2149,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isSidetoneStatus ? Strings.On : Strings.Off;
         }
 
-        private bool _isSidetoneStatus;// = false;
+        private bool _isSidetoneStatus = true;// = false;
 
         public bool SidetoneStatus
         {
@@ -2322,7 +2372,7 @@ namespace DDPM.UI.Plugin.ViewModels
                             //_deviceManager.SetSidetone(value, CurrentDeviceInfo!.ID).Wait();
                         }
                         //SidetoneStatus = true;
-                        _isSidetoneStatus = true;
+                        //_isSidetoneStatus = true;
                         OnPropertyChanged(nameof(IsTransparencyChecked));
                         OnPropertyChanged(nameof(IsNoiseOffChecked));
                         OnPropertyChanged(nameof(Sidetone_String));
