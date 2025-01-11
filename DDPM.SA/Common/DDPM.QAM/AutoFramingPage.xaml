@@ -78,8 +78,8 @@
                                         FontSize="16"
                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                         TextBlockSemanticColorType="Light"
-                                        TextBlockType="Caption"
-                                        VerticalAlignment="Center"
+                                        TextBlockType="Caption" Background="red" MaxWidth="180"
+                                        VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
                                         HorizontalAlignment="Left" />
                 <Path Data="M8 5.05005C8.55228 5.05005 9 4.60233 9 4.05005C9 3.49776 8.55228 3.05005 8 3.05005C7.44772 3.05005 7 3.49776 7 4.05005C7 4.60233 7.44772 5.05005 8 5.05005Z
                       M8.75 6.44995H7.25V12.65H8.75V6.44995Z
