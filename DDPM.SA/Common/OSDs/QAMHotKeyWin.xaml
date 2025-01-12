@@ -54,7 +54,7 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <!--Close-->
-                    <Canvas Grid.Row="0" Width="20" Height="20" Margin="0,8,10,0" 
+                    <Canvas Grid.Row="0" Width="20" Height="20" Margin="0,8,8,0" 
                             HorizontalAlignment="Right" VerticalAlignment="Top" 
                             MouseLeftButtonDown="close_Click"
                             Background="Transparent"
@@ -67,7 +67,7 @@
                             <RowDefinition Height="50*" />
                             <RowDefinition Height="50*" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Margin="2,5,2,0"
+                        <TextBlock Grid.Row="0" Margin="5,5,5,0"
                                    x:Name="ShowStringText"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Top"
@@ -88,8 +88,11 @@
                                 FontSize="14"
                                 FontWeight="Medium"
                                 Click="Button_Click"
-                                Style="{StaticResource PrimaryButtonStyle}"
-                                Content="{Binding [Go_to_Widget_Settings], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
+                                Style="{StaticResource PrimaryButtonStyle}">
+                            <Button.Content>
+                                <TextBlock Margin="0,0" Text="{Binding [Go_to_Widget_Settings], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"></TextBlock>
+                            </Button.Content>
+                        </Button>
                     </Grid>
                 </Grid>
             </Border>

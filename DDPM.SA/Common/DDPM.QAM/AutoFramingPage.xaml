@@ -6,13 +6,13 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              xmlns:lang="clr-namespace:DDPM.SA.Resources.Helper;assembly=DDPM.SA.Resources"            
              xmlns:local="clr-namespace:DDPM.QAM"
-             mc:Ignorable="d"
+             mc:Ignorable="d" Loaded="UserControl_Loaded"
              Height="72"
              Width="288">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!--<ResourceDictionary Source="/DDPM.QAM;component/PluginStyles.xaml" />-->
+                <ResourceDictionary Source="/DDPM.QAM;component/PluginStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style TargetType="ToggleButton">
                 <Setter Property="Template">
@@ -74,30 +74,48 @@
             <StackPanel HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Orientation="Horizontal">
-                <UXControls:UXTextBlock Text="{Binding [AI_Auto_Framing], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                <UXControls:UXTextBlock x:Name="tb"  Text="{Binding [AI_Auto_Framing], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
                                         FontSize="16"
                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                         TextBlockSemanticColorType="Light"
                                         TextBlockType="Caption" MaxWidth="170"
                                         VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
-                                        HorizontalAlignment="Left" />
-                <Path Data="M8 5.05005C8.55228 5.05005 9 4.60233 9 4.05005C9 3.49776 8.55228 3.05005 8 3.05005C7.44772 3.05005 7 3.49776 7 4.05005C7 4.60233 7.44772 5.05005 8 5.05005Z
+                                        HorizontalAlignment="Left">
+                    <UXControls:UXTextBlock.ToolTip>
+                        <ToolTip Placement="Center"  VerticalOffset="40" BorderThickness="0" Margin="0" Padding="0" Visibility="Hidden" 
+                                 ToolTipService.HasDropShadow="True" x:Name="tt"
+                                 ToolTipService.InitialShowDelay="1000"
+                                 ToolTipService.BetweenShowDelay="2000">
+                            <Border Background="{DynamicResource  Tooltip_BkColor}" 
+                                    BorderBrush="{DynamicResource Tooltip_BdColor}"
+                                    CornerRadius="0" Padding="12,12" >
+                                <Border.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{DynamicResource Tooltip_TextColor}" />
+                                        <Setter Property="FontSize" Value="12" />
+                                    </Style>
+                                </Border.Resources>
+                                <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" Text="{Binding [AI_Auto_Framing], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
+                            </Border>
+                        </ToolTip>
+                    </UXControls:UXTextBlock.ToolTip>
+                </UXControls:UXTextBlock>
+                <Border Width="20" Height="20">
+                    <Path Data="M8 5.05005C8.55228 5.05005 9 4.60233 9 4.05005C9 3.49776 8.55228 3.05005 8 3.05005C7.44772 3.05005 7 3.49776 7 4.05005C7 4.60233 7.44772 5.05005 8 5.05005Z
                       M8.75 6.44995H7.25V12.65H8.75V6.44995Z
                       M8 1C11.85 1 15 4.15 15 8C15 11.85 11.85 15 8 15C4.15 15 1 11.85 1 8C1 4.15 4.15 1 8 1ZM8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0Z"
                       Fill="{DynamicResource Default_SA_QAM_Path_IsTrigger_Color}"
-                      Margin="8"
+                      Margin="2"
                       VerticalAlignment="Center">
-                    <Path.ToolTip>
-                        <ToolTip Style="{StaticResource InfoToolTipStyle}"
-                                 Placement="Top"
-                                 VerticalOffset="8"
-                                 HorizontalOffset="6">
-                            <TextBlock Text=""
-                                       Style="{StaticResource TabInfoToolTipTextStyle}"
-                                       MaxWidth="350" />
+                    </Path>
+                    <Border.ToolTip>
+                        <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Center" VerticalOffset="40">
+                            <TextBlock Text="{Binding [WebCameraSettings.2], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                                        Style="{StaticResource TabInfoToolTipTextStyle}" 
+                                        MaxWidth="350" TextWrapping="WrapWithOverflow"/>
                         </ToolTip>
-                    </Path.ToolTip>
-                </Path>
+                    </Border.ToolTip>
+                </Border>
             </StackPanel>
             <Grid HorizontalAlignment="Right"
                   VerticalAlignment="Center">
