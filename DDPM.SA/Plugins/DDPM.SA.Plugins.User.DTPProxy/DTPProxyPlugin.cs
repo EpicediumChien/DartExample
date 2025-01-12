@@ -114,6 +114,16 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             public string ModelNumber { get; set; } = string.Empty;  //P2424HEB
         };
 
+        private ICommodity _comdityHeadset = null;
+        private List<HeadsetEventHandleObject> headsetList = new List<HeadsetEventHandleObject>();
+        internal class HeadsetEventHandleObject
+        {
+            public ICommodity headsetCommodity = null;
+            public string headsetIndex = string.Empty;
+            public string DeviceName { get; set; } = string.Empty;
+            public string DeviceId { get; set; } = string.Empty;
+            public string ModelNumber { get; set; } = string.Empty;
+        };
 
         /// <summary>
         /// Webcam change event
@@ -6138,6 +6148,12 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         #endregion
 
         #region Headset Event
+
+        #region Headset Already connected do this
+        /// <summary>
+        /// Already connected do this
+        /// </summary>
+        /// <returns></returns>
         private async Task<bool> RegisterEventsForAllHeadsetAsync()
         {
             bool result = false;
@@ -6170,6 +6186,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             return false;
         }
 
+        /// <summary>
+        /// Already connected do this
+        /// </summary>
+        /// <returns></returns>
         private async Task UnregisterEventsForAllHeadsetAsync()
         {
             bool result = false;
@@ -6198,18 +6218,32 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
                 {
+                    _Headsetcom.FirmwareVersionChanged += Headset_FirmwareVersionChanged;
+                    _Headsetcom.BatteryLevelChanged += Headset_BatteryLevelChanged;
+                    _Headsetcom.BatteryStatusChanged += Headset_BatteryStatusChanged;
+                    _Headsetcom.PairedHostNameChanged += Headset_PairedHostNameChanged;
+                    _Headsetcom.InstanceNumberChanged += Headset_InstanceNumberChanged;
+                    _Headsetcom.IsReadyChanged += Headset_IsReadyChanged;
+                    _Headsetcom.IsDirtyChanged += Headset_IsDirtyChanged;
+                    _Headsetcom.MicNoiseCancellationChanged += Headset_MicNoiseCancellationChanged;
+                    _Headsetcom.MicNCIncomingChanged += Headset_MicNCIncomingChanged;
+                    _Headsetcom.SidetoneChanged += Headset_SidetoneChanged;
+                    _Headsetcom.BusyLightChanged += Headset_BusyLightChanged;
+                    _Headsetcom.VoiceGuidanceChanged += Headset_VoiceGuidanceChanged;
+                    _Headsetcom.SelectedPresetChanged += Headset_SelectedPresetChanged;
+                    _Headsetcom.SidetoneLevelChanged += Headset_SidetoneLevelChanged;
+                    _Headsetcom.MuteStatusChanged += Headset_MuteStatusChanged;
                     _Headsetcom.BandsGainChanged += Headset_BandsGainChanged;
+                    _Headsetcom.AncModeChanged += Headset_AncModeChanged;
+                    _Headsetcom.AncGainChanged += Headset_AncGainChanged;
+                    _Headsetcom.BoomMicChanged += Headset_BoomMicChanged;
+                    _Headsetcom.IsBoomMicSupportedChanged += Headset_BoomMicSupportedChanged;
+                    _Headsetcom.SerialNumberChanged += Headset_SerialNumberChanged;
                     _Headsetcom.WearDetectionChanged += Headset_WearDetectionChanged;
-                    _Headsetcom.WearDetectionSensitivityChanged += Headset_WearDetectionSensitivityChanged;
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged += Headset_IsWearDetectionPauseMusicEnabledChanged;
                     _Headsetcom.IsWearDetectionMuteMicEnabledChanged += Headset_IsWearDetectionMuteMicEnabledChanged;
+                    _Headsetcom.WearDetectionSensitivityChanged += Headset_WearDetectionSensitivityChanged;
                     _Headsetcom.WearDetectionQuickPauseChanged += Headset_WearDetectionQuickPauseChanged;
-                    _Headsetcom.BoomMicChanged += Headset_BoomMicChanged;
-                    _Headsetcom.IsBoomMicSupportedChanged += Headset_BoomMicSupportedChangedArgs;
-                    _Headsetcom.FirmwareVersionChanged += Headset_FirmwareVersionChanged;
-                    _Headsetcom.IsDirtyChanged += Headset_IsDirtyChanged;
-                    _Headsetcom.IsReadyChanged += Headset_IsReadyChanged;
-                    _Headsetcom.MuteStatusChanged += Headset_MuteStatusChanged;
 
                     writelog($"Headset{index} Commodity events registered successfully");
                     return true;
@@ -6232,22 +6266,36 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             try
             {
-                _comdity = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId($"DellPeripheral.Webcam.{index}"), CancellationToken.None);
+                _comdity = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId($"DellPeripheral.Headset.{index}"), CancellationToken.None);
 
                 if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
                 {
+                    _Headsetcom.FirmwareVersionChanged -= Headset_FirmwareVersionChanged;
+                    _Headsetcom.BatteryLevelChanged -= Headset_BatteryLevelChanged;
+                    _Headsetcom.BatteryStatusChanged -= Headset_BatteryStatusChanged;
+                    _Headsetcom.PairedHostNameChanged -= Headset_PairedHostNameChanged;
+                    _Headsetcom.InstanceNumberChanged -= Headset_InstanceNumberChanged;
+                    _Headsetcom.IsReadyChanged -= Headset_IsReadyChanged;
+                    _Headsetcom.IsDirtyChanged -= Headset_IsDirtyChanged;
+                    _Headsetcom.MicNoiseCancellationChanged -= Headset_MicNoiseCancellationChanged;
+                    _Headsetcom.MicNCIncomingChanged -= Headset_MicNCIncomingChanged;
+                    _Headsetcom.SidetoneChanged -= Headset_SidetoneChanged;
+                    _Headsetcom.BusyLightChanged -= Headset_BusyLightChanged;
+                    _Headsetcom.VoiceGuidanceChanged -= Headset_VoiceGuidanceChanged;
+                    _Headsetcom.SelectedPresetChanged -= Headset_SelectedPresetChanged;
+                    _Headsetcom.SidetoneLevelChanged -= Headset_SidetoneLevelChanged;
+                    _Headsetcom.MuteStatusChanged -= Headset_MuteStatusChanged;
                     _Headsetcom.BandsGainChanged -= Headset_BandsGainChanged;
+                    _Headsetcom.AncModeChanged -= Headset_AncModeChanged;
+                    _Headsetcom.AncGainChanged -= Headset_AncGainChanged;
+                    _Headsetcom.BoomMicChanged -= Headset_BoomMicChanged;
+                    _Headsetcom.IsBoomMicSupportedChanged -= Headset_BoomMicSupportedChanged;
+                    _Headsetcom.SerialNumberChanged -= Headset_SerialNumberChanged;
                     _Headsetcom.WearDetectionChanged -= Headset_WearDetectionChanged;
-                    _Headsetcom.WearDetectionSensitivityChanged -= Headset_WearDetectionSensitivityChanged;
                     _Headsetcom.IsWearDetectionPauseMusicEnabledChanged -= Headset_IsWearDetectionPauseMusicEnabledChanged;
                     _Headsetcom.IsWearDetectionMuteMicEnabledChanged -= Headset_IsWearDetectionMuteMicEnabledChanged;
+                    _Headsetcom.WearDetectionSensitivityChanged -= Headset_WearDetectionSensitivityChanged;
                     _Headsetcom.WearDetectionQuickPauseChanged -= Headset_WearDetectionQuickPauseChanged;
-                    _Headsetcom.BoomMicChanged -= Headset_BoomMicChanged;
-                    _Headsetcom.IsBoomMicSupportedChanged -= Headset_BoomMicSupportedChangedArgs;
-                    _Headsetcom.FirmwareVersionChanged -= Headset_FirmwareVersionChanged;
-                    _Headsetcom.IsDirtyChanged -= Headset_IsDirtyChanged;
-                    _Headsetcom.IsReadyChanged -= Headset_IsReadyChanged;
-                    _Headsetcom.MuteStatusChanged -= Headset_MuteStatusChanged;
 
                     writelog($"[Headset] Headset{index} Commodity events unregistered successfully");
                     return true;
@@ -6259,30 +6307,248 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                 return false;
             }
+            return false;
+        }
+
+        #endregion  Headset Already connected do this
+
+        private bool UnregisterEventsForHeadset(HeadsetEventHandleObject obj)
+        {
+            if (obj.headsetCommodity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
+            {
+                _Headsetcom.FirmwareVersionChanged -= Headset_FirmwareVersionChanged;
+                _Headsetcom.BatteryLevelChanged -= Headset_BatteryLevelChanged;
+                _Headsetcom.BatteryStatusChanged -= Headset_BatteryStatusChanged;
+                _Headsetcom.PairedHostNameChanged -= Headset_PairedHostNameChanged;
+                _Headsetcom.InstanceNumberChanged -= Headset_InstanceNumberChanged;
+                _Headsetcom.IsReadyChanged -= Headset_IsReadyChanged;
+                _Headsetcom.IsDirtyChanged -= Headset_IsDirtyChanged;
+                _Headsetcom.MicNoiseCancellationChanged -= Headset_MicNoiseCancellationChanged;
+                _Headsetcom.MicNCIncomingChanged -= Headset_MicNCIncomingChanged;
+                _Headsetcom.SidetoneChanged -= Headset_SidetoneChanged;
+                _Headsetcom.BusyLightChanged -= Headset_BusyLightChanged;
+                _Headsetcom.VoiceGuidanceChanged -= Headset_VoiceGuidanceChanged;
+                _Headsetcom.SelectedPresetChanged -= Headset_SelectedPresetChanged;
+                _Headsetcom.SidetoneLevelChanged -= Headset_SidetoneLevelChanged;
+                _Headsetcom.MuteStatusChanged -= Headset_MuteStatusChanged;
+                _Headsetcom.BandsGainChanged -= Headset_BandsGainChanged;
+                _Headsetcom.AncModeChanged -= Headset_AncModeChanged;
+                _Headsetcom.AncGainChanged -= Headset_AncGainChanged;
+                _Headsetcom.BoomMicChanged -= Headset_BoomMicChanged;
+                _Headsetcom.IsBoomMicSupportedChanged -= Headset_BoomMicSupportedChanged;
+                _Headsetcom.SerialNumberChanged -= Headset_SerialNumberChanged;
+                _Headsetcom.WearDetectionChanged -= Headset_WearDetectionChanged;
+                _Headsetcom.IsWearDetectionPauseMusicEnabledChanged -= Headset_IsWearDetectionPauseMusicEnabledChanged;
+                _Headsetcom.IsWearDetectionMuteMicEnabledChanged -= Headset_IsWearDetectionMuteMicEnabledChanged;
+                _Headsetcom.WearDetectionSensitivityChanged -= Headset_WearDetectionSensitivityChanged;
+                _Headsetcom.WearDetectionQuickPauseChanged -= Headset_WearDetectionQuickPauseChanged;
+
+                writelog($"Headset {obj.headsetIndex}/{obj.ModelNumber} Commodity events unregistered successfully");
+
+                return true;
+            }
+            else
+                writelog($"obj.headsetCommodity is not Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity for {obj.ModelNumber}");
 
             return false;
         }
 
+        private async Task<bool> UnregisterEventsForHeadsetAsync(string devcieID)
+        {
+            if (devcieID == null || devcieID == string.Empty || webcamList.Count == 0)
+            {
+                writelog($"devcieID == string.Empty || devcieID == null || headsetList.Count == 0");
+
+                return false;
+            }
+
+            try
+            {
+                // find _comdity object for this device
+                writelog($"Search {devcieID} from webcamList for Unregister Events");
+
+                bool result = false;
+                foreach (var item in headsetList)
+                {
+                    if (item.DeviceId == devcieID)
+                    {
+                        result = true;
+                        writelog($"Found object {item.DeviceName} from headsetList for Unregister Events");
+                        result = UnregisterEventsForHeadset(item);
+                        writelog($"UnregisterEventsForHeadset result is {result}");
+                        result = headsetList.Remove(item);
+                        writelog($"headsetList.Remove(item) result is {result}");
+                        break;
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                writelog($"Webcam{devcieID} UnregisterEventsForWebcam Exception {e.Message}");
+
+                return false;
+            }
+        }
+
         private void Headset_Disconnected(object sender, DisconnectedArgs e)
         {
-            _ = UnregisterEventsForAllHeadsetAsync();
+            Task<bool> result = UnregisterEventsForHeadsetAsync(e.DeviceId);
 
-            //_ = RegisterEventsForAllHeadsetAsync();
+            SendDTPEventToUI(CreateEventMsg("Headset", "Headset_Disconnected", e.DeviceId));
 
-            //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Disconnected", e.DeviceId));
+            writelog($"Catch event _Headset_Disconnected, unregister events result is {result.Result}, current devCount is {webcamList.Count} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
 
-            writelog($"[Headset] Catch event _Headset_Disconnected, current devCount is {GetHeadsetDevsCountAsync().Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        private async Task<bool> RegisterEventsForHeadsetAsync(string deviceID)
+        {
+            if (null == _comdityHeadset || deviceID == null || deviceID == string.Empty)
+            {
+                writelog($"null == _comdityHeadset || deviceID == null || deviceID == string.Empty");
+
+                return false;
+            }
+
+            try
+            {
+                if (_comdityHeadset is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _HeadsetComObj)
+                {
+                    writelog($"connected _HeadsetComObj.DeviceItems = {_HeadsetComObj.DeviceItems.Length}");
+
+                    int i = 0;
+                    foreach (var item in _HeadsetComObj.DeviceItems)
+                    {
+                        writelog($"connected _HeadsetComObj.DeviceItems[{i}] = {item}");
+                        string jsonStr = _HeadsetComObj.DeviceItemsEx[i++].ToString();
+                        writelog($"connected _HeadsetComObj.DeviceItems = {jsonStr}");
+
+                        HeadsetEventHandleObject jsonObject = JsonSerializer.Deserialize<HeadsetEventHandleObject>(jsonStr)!;
+
+                        if (jsonObject != null && jsonObject.DeviceId == deviceID)
+                        {
+                            writelog($"jsonObject values: {item}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+
+                            ICommodity _comdityHeadsetTmp = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId(item), CancellationToken.None);
+
+                            if (RegisterEventsForHeadset(_comdityHeadsetTmp))
+                            {
+                                jsonObject.headsetIndex = item;
+                                jsonObject.headsetCommodity = _comdityHeadsetTmp;
+                                headsetList.Add(jsonObject);
+
+                                writelog($"Headset {deviceID} Commodity events registered successfully");
+
+                                return true;
+                            }
+                            else
+                            {
+                                writelog($"Headset {deviceID} Commodity events registered fail");
+
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Headset{deviceID} RegisterEventsForHeadsetAsync Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private bool RegisterEventsForHeadset(ICommodity _comdityHeadset)
+        {
+            if (null == _comdityHeadset)
+            {
+                writelog($"_comdityHeadset == null");
+
+                return false;
+            }
+
+            try
+            {
+                if (_comdityWebcam is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
+                {
+                    _Headsetcom.FirmwareVersionChanged += Headset_FirmwareVersionChanged;
+                    _Headsetcom.BatteryLevelChanged += Headset_BatteryLevelChanged;
+                    _Headsetcom.BatteryStatusChanged += Headset_BatteryStatusChanged;
+                    _Headsetcom.PairedHostNameChanged += Headset_PairedHostNameChanged;
+                    _Headsetcom.InstanceNumberChanged += Headset_InstanceNumberChanged;
+                    _Headsetcom.IsReadyChanged += Headset_IsReadyChanged;
+                    _Headsetcom.IsDirtyChanged += Headset_IsDirtyChanged;
+                    _Headsetcom.MicNoiseCancellationChanged += Headset_MicNoiseCancellationChanged;
+                    _Headsetcom.MicNCIncomingChanged += Headset_MicNCIncomingChanged;
+                    _Headsetcom.SidetoneChanged += Headset_SidetoneChanged;
+                    _Headsetcom.BusyLightChanged += Headset_BusyLightChanged;
+                    _Headsetcom.VoiceGuidanceChanged += Headset_VoiceGuidanceChanged;
+                    _Headsetcom.SelectedPresetChanged += Headset_SelectedPresetChanged;
+                    _Headsetcom.SidetoneLevelChanged += Headset_SidetoneLevelChanged;
+                    _Headsetcom.MuteStatusChanged += Headset_MuteStatusChanged;
+                    _Headsetcom.BandsGainChanged += Headset_BandsGainChanged;
+                    _Headsetcom.AncModeChanged += Headset_AncModeChanged;
+                    _Headsetcom.AncGainChanged += Headset_AncGainChanged;
+                    _Headsetcom.BoomMicChanged += Headset_BoomMicChanged;
+                    _Headsetcom.IsBoomMicSupportedChanged += Headset_BoomMicSupportedChanged;
+                    _Headsetcom.SerialNumberChanged += Headset_SerialNumberChanged;
+                    _Headsetcom.WearDetectionChanged += Headset_WearDetectionChanged;
+                    _Headsetcom.IsWearDetectionPauseMusicEnabledChanged += Headset_IsWearDetectionPauseMusicEnabledChanged;
+                    _Headsetcom.IsWearDetectionMuteMicEnabledChanged += Headset_IsWearDetectionMuteMicEnabledChanged;
+                    _Headsetcom.WearDetectionSensitivityChanged += Headset_WearDetectionSensitivityChanged;
+                    _Headsetcom.WearDetectionQuickPauseChanged += Headset_WearDetectionQuickPauseChanged;
+
+                    writelog($"Headsetcom Commodity {_Headsetcom.DeviceName}/{_Headsetcom.DeviceId}/{_Headsetcom.ModelNumber} events registered successfully");
+
+                    return true;
+                }
+                else
+                {
+                    writelog($"_comdityHeadset is not Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity");
+
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch exception {e.Message} when run RegisterEventsForHeadset");
+
+                return false;
+            }
         }
 
         private void Headset_Connected(object sender, ConnectedArgs e)
         {
-            Task<int> headsets = GetHeadsetDevsCountAsync();
-            bool result = RegisterEventsForHeadsetAsync(headsets.Result - 1).Result;
+            Task<bool> result = RegisterEventsForHeadsetAsync(e.DeviceId);
 
-            //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Connected", e.DeviceId));
+            SendDTPEventToUI(CreateEventMsg("Headset", "Headset_Connected", e.DeviceId));
 
-            writelog($"[Headset] Catch event _Headset_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+            writelog($"Catch event _Headset_Connected, register events result is {result.Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
+
+        //private void Headset_Disconnected(object sender, DisconnectedArgs e)
+        //{
+        //    _ = UnregisterEventsForAllHeadsetAsync();
+
+        //    //_ = RegisterEventsForAllHeadsetAsync();
+
+        //    //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Disconnected", e.DeviceId));
+
+        //    writelog($"[Headset] Catch event _Headset_Disconnected, current devCount is {GetHeadsetDevsCountAsync().Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        //}
+
+        //private void Headset_Connected(object sender, ConnectedArgs e)
+        //{
+        //    Task<int> headsets = GetHeadsetDevsCountAsync();
+        //    bool result = RegisterEventsForHeadsetAsync(headsets.Result - 1).Result;
+
+        //    //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Connected", e.DeviceId));
+
+        //    writelog($"[Headset] Catch event _Headset_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        //}
 
         private void Headset_MuteStatusChanged(object sender, MuteStatusChangedArgs e)
         {
@@ -6315,14 +6581,126 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             writelog($"[Headset] Catch event Headset_FirmwareVersionChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
+        private void Headset_BatteryLevelChanged(object sender, BatteryLevelChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_BatteryLevelChanged",
+                                    e.DeviceId, $"Headset_BatteryLevelChanged:{e.BatteryLevel.ToString()}"));
 
-        private void Headset_BoomMicSupportedChangedArgs(object sender, IsBoomMicSupportedChangedArgs e)
+            writelog($"[Headset] Catch event Headset_BatteryLevelChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_BatteryStatusChanged(object sender, BatteryStatusChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_BatteryStatusChanged",
+                                    e.DeviceId, $"Headset_BatteryStatusChanged:{e.BatteryStatus.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_BatteryStatusChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_PairedHostNameChanged(object sender, PairedHostNameChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_PairedHostNameChanged", e.DeviceId,
+                                      "Headset_PairedHostNameIndex:" + e.Index.ToString() + ";" +
+                                      "Headset_PairedHostNameNewhostName:" + e.NewhostName.ToString()));
+
+            writelog($"[Headset] Catch event Headset_PairedHostNameChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_InstanceNumberChanged(object sender, InstanceNumberChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_InstanceNumberChanged",
+                                    e.DeviceId, $"Headset_InstanceNumberChanged:{e.InstanceNumber.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_InstanceNumberChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_MicNoiseCancellationChanged(object sender, MicNoiseCancellationChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_MicNoiseCancellationChanged",
+                                    e.DeviceId, $"Headset_MicNoiseCancellationChanged:{e.MicNoiseCancellation.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_MicNoiseCancellationChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_MicNCIncomingChanged(object sender, MicNCIncomingChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_MicNCIncomingChanged",
+                                    e.DeviceId, $"Headset_MicNCIncomingChanged:{e.MicNCIncoming.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_MicNCIncomingChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_SidetoneChanged(object sender, SidetoneChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_SidetoneChanged",
+                                    e.DeviceId, $"Headset_SidetoneChanged:{e.Sidetone.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_SidetoneChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_BusyLightChanged(object sender, BusyLightChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_BusyLightChanged",
+                                    e.DeviceId, $"Headset_BusyLightChanged:{e.BusyLight.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_BusyLightChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_VoiceGuidanceChanged(object sender, VoiceGuidanceChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_VoiceGuidanceChanged",
+                                    e.DeviceId, $"Headset_VoiceGuidanceChanged:{e.VoiceGuidance.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_VoiceGuidanceChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_SelectedPresetChanged(object sender, SelectedPresetChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_SelectedPresetChanged",
+                                    e.DeviceId, $"Headset_SelectedPresetChanged:{e.SelectedPreset.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_SelectedPresetChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_SidetoneLevelChanged(object sender, SidetoneLevelChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_SidetoneLevelChanged",
+                                    e.DeviceId, $"Headset_SidetoneLevelChanged:{e.SidetoneLevel.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_SidetoneLevelChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_AncModeChanged(object sender, AncModeChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_AncModeChanged",
+                                    e.DeviceId, $"Headset_AncModeChanged:{e.AncMode.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_AncModeChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_AncGainChanged(object sender, AncGainChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_AncGainChanged",
+                                    e.DeviceId, $"Headset_AncGainChanged:{e.AncGain.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_AncGainChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_BoomMicSupportedChanged(object sender, IsBoomMicSupportedChangedArgs e)
+        {
+            SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_BoomMicSupportedChanged",
+                                    e.DeviceId, $"Headset_BoomMicSupportedChanged:{e.IsBoomMicSupported.ToString()}"));
+
+            writelog($"[Headset] Catch event Headset_BoomMicSupportedChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void Headset_SerialNumberChanged(object sender, SerialNumberChangedArgs e)
         {
             SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_BoomMicSupportedChangedArgs",
-                                    e.DeviceId, $"Headset_BoomMicSupportedChangedArgs:{e.IsBoomMicSupported.ToString()}"));
+                                    e.DeviceId, $"Headset_BoomMicSupportedChangedArgs:{e.SerialNumber}"));
 
             writelog($"[Headset] Catch event Headset_BoomMicSupportedChangedArgs : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
-        }       
+        }
 
         private void Headset_BandsGainChanged(object sender, BandsGainChangedArgs e)
         {
@@ -7735,7 +8113,24 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 {
                     _headsetcom.Connected += Headset_Connected;
                     _headsetcom.Disconnected += Headset_Disconnected;
-                    writelog($"Headset Commodity event registered");
+                    writelog($"Headset Commodity event registered, connected _headsetcom.DeviceItems = {_headsetcom.DeviceItems.Length}");
+                    int i = 0;
+                    foreach (var item in _headsetcom.DeviceItems)
+                    {
+                        writelog($"connected _headsetcom.DeviceItems[{i}] = {item}");
+                        string jsonStr = _headsetcom.DeviceItemsEx[i++].ToString();
+                        writelog($"connected _headsetcom.DeviceItems, jsonStr = {jsonStr}");
+
+                        if (jsonStr != null && jsonStr != string.Empty)
+                        {
+                            HeadsetEventHandleObject jsonObject = JsonSerializer.Deserialize<HeadsetEventHandleObject>(jsonStr)!;
+                            jsonObject.headsetCommodity = null;
+                            jsonObject.headsetIndex = item;
+                            writelog($"jsonObject values: {jsonObject.headsetIndex}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+                            headsetList.Add(jsonObject);
+                        }
+                    }
+                    writelog($"connected _headsetcom.DeviceItemsEx.Count = {_headsetcom.DeviceItemsEx.Count}");
                 }
                 catch (Exception e)
                 {
@@ -7918,6 +8313,27 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 else
                     writelog($"UnsubscribeDTPGlobalEvents _comdityWebcam is not a IWebcamCommodity object");
 
+                //////////////////////////////////////////////////////////////////////////////////////////////
+
+                if (null == _comdityHeadset)
+                {
+                    writelog($"UnsubscribeDTPGlobalEvents _comdityHeadset is null");
+
+                    return false;
+                }
+
+                if (_comdityHeadset is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _HeadsetGlobalEvent)
+                {
+                    _HeadsetGlobalEvent.Connected -= Headset_Connected;
+                    _HeadsetGlobalEvent.Disconnected -= Headset_Disconnected;
+
+                    writelog($"UnsubscribeDTPGlobalEvents headset global events successfully");
+
+                    return true;
+                }
+                else
+                    writelog($"UnsubscribeDTPGlobalEvents _comdityHeadset is not a IHeadsetCommodity object");
+
                 return false;
             }
             catch (Exception e)
@@ -7927,6 +8343,26 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return false;
             }
         }
+
+        //private void UnsubscribeEventsFromDeviceList<T>(List<T> deviceList, string deviceType) where T : class
+        //{
+        //    foreach (var device in deviceList)
+        //    {
+        //        if (device is Dell.TechHub.Commodity.Peripheral.IWebcamCommodity webcam)
+        //        {
+        //            webcam.Connected -= Webcam_Connected;
+        //            webcam.Disconnected -= Webcam_Disconnected;
+        //            writelog($"UnsubscribeEventsFromDeviceList {deviceType} {webcam.DeviceName} events successfully");
+        //        }
+        //        if (device is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity headset)
+        //        {
+        //            headset.Connected -= Headset_Connected;
+        //            headset.Disconnected -= Headset_Disconnected;
+        //            writelog($"UnsubscribeEventsFromDeviceList {deviceType} {headset.DeviceName} events successfully");
+        //        }
+        //    }
+        //}
+
         private async Task<int> GetHeadsetDevsCountAsync()
         {
             var headsets = await GetHeadsetDeviceItemsExAsync();
