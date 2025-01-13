@@ -351,54 +351,54 @@ namespace NetworkKVM.Plugins
                 MONITOR_PLUG_DETECTION _COMMAND = new MONITOR_PLUG_DETECTION();
                 _COMMAND.UpdateChecksum();
                 WriteAsync(_COMMAND.ToJson()).Wait();
-                NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
-                if (_AllInfoMonitors != null)
-                {
-                    _logs.DebugMsg("[NetworkKVM] MonitorPlug _AllInfoMonitors count : " + _AllInfoMonitors.Count);
-                    foreach (MonitorInfo monitorInfo in _AllInfoMonitors)
-                    {
-                        if (nKVMVCPValues != null)
-                        {
-                            if (nKVMVCPValues.Count == 0)
-                            {
-                                ObjGetVCP objGetVCP = _VcpCorePlugin.GetVCPCapability(monitorInfo, 0xE9).Result;
-                                if (objGetVCP != null && objGetVCP.result)
-                                {
-                                    _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP.value);
-                                    nKVMVCPValue.monitorInfo = monitorInfo;
-                                    nKVMVCPValue.value = (int)(uint)objGetVCP.value;
-                                    nKVMVCPValues.Add(nKVMVCPValue);
-                                }
-                            }
-                            else
-                            {
-                                nKVMVCPValue = nKVMVCPValues.Find(x => x.monitorInfo == monitorInfo);
-                                if (nKVMVCPValue != null)
-                                {
-                                    ObjGetVCP objGetVCP = _VcpCorePlugin.GetVCPCapability(monitorInfo, 0xE9).Result;
-                                    if (objGetVCP != null && objGetVCP.result)
-                                    {
-                                        _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP.value);
-                                        _logs.DebugMsg("[NetworkKVM] MonitorPlug nKVMVCPValue : " + nKVMVCPValue.value);
-                                        if (nKVMVCPValue.value != (int)(uint)objGetVCP.value)
-                                        {
-                                            nKVMVCPValue.value = (int)(uint)objGetVCP.value;
-                                            SetVCPNotify(monitorInfo, 0xE9, (int)(uint)objGetVCP.value);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    _logs.DebugMsg("[NetworkKVM] nKVMVCPValue is null");
-                                }
-                            }
-                        }
-                        else
-                        {
-                            _logs.DebugMsg("[NetworkKVM] nKVMVCPValues is null or count is 0");
-                        }
-                    }
-                }
+                //NKVMVCPValue nKVMVCPValue = new NKVMVCPValue();
+                //if (_AllInfoMonitors != null)
+                //{
+                //    _logs.DebugMsg("[NetworkKVM] MonitorPlug _AllInfoMonitors count : " + _AllInfoMonitors.Count);
+                //    foreach (MonitorInfo monitorInfo in _AllInfoMonitors)
+                //    {
+                //        if (nKVMVCPValues != null)
+                //        {
+                //            if (nKVMVCPValues.Count == 0)
+                //            {
+                //                ObjGetVCP objGetVCP = _VcpCorePlugin.GetVCPCapability(monitorInfo, 0xE9).Result;
+                //                if (objGetVCP != null && objGetVCP.result)
+                //                {
+                //                    _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP.value);
+                //                    nKVMVCPValue.monitorInfo = monitorInfo;
+                //                    nKVMVCPValue.value = (int)(uint)objGetVCP.value;
+                //                    nKVMVCPValues.Add(nKVMVCPValue);
+                //                }
+                //            }
+                //            else
+                //            {
+                //                nKVMVCPValue = nKVMVCPValues.Find(x => x.monitorInfo == monitorInfo);
+                //                if (nKVMVCPValue != null)
+                //                {
+                //                    ObjGetVCP objGetVCP = _VcpCorePlugin.GetVCPCapability(monitorInfo, 0xE9).Result;
+                //                    if (objGetVCP != null && objGetVCP.result)
+                //                    {
+                //                        _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP.value);
+                //                        _logs.DebugMsg("[NetworkKVM] MonitorPlug nKVMVCPValue : " + nKVMVCPValue.value);
+                //                        if (nKVMVCPValue.value != (int)(uint)objGetVCP.value)
+                //                        {
+                //                            nKVMVCPValue.value = (int)(uint)objGetVCP.value;
+                //                            SetVCPNotify(monitorInfo, 0xE9, (int)(uint)objGetVCP.value);
+                //                        }
+                //                    }
+                //                }
+                //                else
+                //                {
+                //                    _logs.DebugMsg("[NetworkKVM] nKVMVCPValue is null");
+                //                }
+                //            }
+                //        }
+                //        else
+                //        {
+                //            _logs.DebugMsg("[NetworkKVM] nKVMVCPValues is null or count is 0");
+                //        }
+                //    }
+                //}
             }
             return Task.CompletedTask;
         }
@@ -2814,24 +2814,24 @@ namespace NetworkKVM.Plugins
                                 _logs.DebugMsg("[NetworkKVM] VCPcode 60 value " + (int)(uint)value_60);
                                 SetVCPNotify(e.monitor, 0x60, value_60);
                             }
-                            if (nKVMVCPValues != null && nKVMVCPValues.Count > 0)
-                            {
-                                NKVMVCPValue nKVMVCPValue = nKVMVCPValues.Find(x => x.monitorInfo == e.monitor);
-                                if (nKVMVCPValue != null)
-                                {
+                            //if (nKVMVCPValues != null && nKVMVCPValues.Count > 0)
+                            //{
+                            //    NKVMVCPValue nKVMVCPValue = nKVMVCPValues.Find(x => x.monitorInfo == e.monitor);
+                            //    if (nKVMVCPValue != null)
+                            //    {
                                     objGetVCP_E9 = _VcpCorePlugin.GetVCPCapability(e.monitor, 0xE9).Result;
                                     if (objGetVCP_E9 != null && objGetVCP_E9.result)
                                     {
                                         _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP_E9.value);
-                                        _logs.DebugMsg("[NetworkKVM] MonitorPlug nKVMVCPValue : " + nKVMVCPValue.value);
-                                        if (nKVMVCPValue.value != (int)(uint)objGetVCP_E9.value)
-                                        {
-                                            nKVMVCPValue.value = (int)(uint)objGetVCP_E9.value;
+                                        //_logs.DebugMsg("[NetworkKVM] MonitorPlug nKVMVCPValue : " + nKVMVCPValue.value);
+                                        //if (nKVMVCPValue.value != (int)(uint)objGetVCP_E9.value)
+                                        //{
+                                            //nKVMVCPValue.value = (int)(uint)objGetVCP_E9.value;
                                             SetVCPNotify(e.monitor, 0xE9, (int)(uint)objGetVCP_E9.value);
-                                        }
+                                        //}
                                     }
-                                }
-                            }
+                            //    }
+                            //}
                         }
                         else if (e.vcpcode.Equals("E9"))
                         {
@@ -2852,24 +2852,24 @@ namespace NetworkKVM.Plugins
                                     SetVCPNotify(e.monitor, 0xE8, value_E8);
                                 }
                             }
-                            if (nKVMVCPValues != null && nKVMVCPValues.Count > 0)
-                            {
-                                NKVMVCPValue nKVMVCPValue = nKVMVCPValues.Find(x => x.monitorInfo == e.monitor);
-                                if (nKVMVCPValue != null)
-                                {
+                            //if (nKVMVCPValues != null && nKVMVCPValues.Count > 0)
+                            //{
+                            //    NKVMVCPValue nKVMVCPValue = nKVMVCPValues.Find(x => x.monitorInfo == e.monitor);
+                            //    if (nKVMVCPValue != null)
+                            //    {
                                     objGetVCP_E9 = _VcpCorePlugin.GetVCPCapability(e.monitor, 0xE9).Result;
                                     if (objGetVCP_E9 != null && objGetVCP_E9.result)
                                     {
                                         _logs.DebugMsg("[NetworkKVM] MonitorPlug E9 : " + (int)(uint)objGetVCP_E9.value);
-                                        _logs.DebugMsg("[NetworkKVM] MonitorPlug nKVMVCPValue : " + nKVMVCPValue.value);
-                                        if (nKVMVCPValue.value != (int)(uint)objGetVCP_E9.value)
-                                        {
-                                            nKVMVCPValue.value = (int)(uint)objGetVCP_E9.value;
+                                        //_logs.DebugMsg("[NetworkKVM] MonitorPlug nKVMVCPValue : " + nKVMVCPValue.value);
+                                        //if (nKVMVCPValue.value != (int)(uint)objGetVCP_E9.value)
+                                        //{
+                                            //nKVMVCPValue.value = (int)(uint)objGetVCP_E9.value;
                                             SetVCPNotify(e.monitor, 0xE9, (int)(uint)objGetVCP_E9.value);
-                                        }
+                                        //}
                                     }
-                                }
-                            }
+                            //    }
+                            //}
                         }
                         else
                         {
