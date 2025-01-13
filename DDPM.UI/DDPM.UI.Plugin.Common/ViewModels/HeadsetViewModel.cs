@@ -268,7 +268,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         default:
                             break;
                     }
-                    _isRestoreEnable = false;
+                    UpdateResetToDefault();
                 }
             }
             catch (Exception ex)
@@ -1156,6 +1156,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 default:
                     break;
             }
+            UpdateResetToDefault();
             switch (changeType)
             {
                 case DeviceChangedType.Peripherals_SettingsChange:
