@@ -1134,6 +1134,10 @@ namespace DDPM.UI.Plugin.ViewModels
                 case "AncModeChanged":
                     DeviceInfoDTP.AncMode = di.AncMode;//_deviceManager.GetAncModeAsync(CurrentDeviceID.ToString()).Result;
                     CheckANCUI(true);
+                    // PIMS-333300
+                    OnPropertyChanged(nameof(Sidetone_String));
+                    OnPropertyChanged(nameof(SidetoneStatus));
+                    OnPropertyChanged(nameof(SidetoneSliderStatus));
                     _log.Info($"[HeadsetViewModel] HandleNotification DTH Event AncModeChanged {Model.ToString() + " : " + di.AncMode.ToString()}");
                     break;
 
