@@ -191,7 +191,7 @@
                                                     HorizontalAlignment="Center" VerticalAlignment="Center"
                                                     ItemsSource="{Binding PC1InputsList}"
                                                     SelectedItem="{Binding PC1Inputs_Selected, Mode=TwoWay}"
-                                                    DisplayMemberPath="inputDisplayText"
+                                                    DisplayMemberPath="inputDisplayText" MinWidth="100" MinHeight="80"
                                                     Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                                     BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
                                         </StackPanel>
@@ -215,7 +215,7 @@
                                                     HorizontalAlignment="Center" VerticalAlignment="Center"
                                                     ItemsSource="{Binding USBsList}"
                                                     SelectedItem="{Binding PC1USB_Selected, Mode=TwoWay}"
-                                                    DisplayMemberPath="inputDisplayText"
+                                                    DisplayMemberPath="inputDisplayText" MinWidth="100" MinHeight="80"
                                                     Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                                     BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
                                                     IsEnabled="{Binding PC1USB_Enable}" Opacity="{Binding PC1USB_Opacity}"/>
@@ -267,7 +267,7 @@
                                                 HorizontalAlignment="Center" VerticalAlignment="Top"
                                                 ItemsSource="{Binding PC2InputsList}" 
                                                 SelectedItem="{Binding PC2Inputs_Selected, Mode=TwoWay}"
-                                                DisplayMemberPath="inputDisplayText"
+                                                DisplayMemberPath="inputDisplayText" MinWidth="100" MinHeight="80"
                                                 Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                                 BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
                                         </StackPanel>
@@ -290,7 +290,7 @@
                                                   HorizontalAlignment="Center" VerticalAlignment="Center"
                                                   ItemsSource="{Binding USBsList}" 
                                                   SelectedItem="{Binding PC2USB_Selected, Mode=TwoWay}"
-                                                  DisplayMemberPath="inputDisplayText"
+                                                  DisplayMemberPath="inputDisplayText" MinWidth="100" MinHeight="80"
                                                   Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                                   BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
                                                   IsEnabled="{Binding PC2USB_Enable}" Opacity="{Binding PC2USB_Opacity}"/>
@@ -330,9 +330,9 @@
                                 <Grid Grid.Row="3" Margin="16, 2, 16, 8">
                                     <ComboBox AutomationProperties.Name="SelectedCheck" Style="{StaticResource DdpmUSBKVMComboBoxStyle}"
                                               HorizontalAlignment="Center" VerticalAlignment="Center"
-                                              ItemsSource="{Binding PC3InputsList}" Width="100"
+                                              ItemsSource="{Binding PC3InputsList}"
                                               SelectedItem="{Binding PC3Inputs_Selected, Mode=TwoWay}"
-                                              DisplayMemberPath="inputDisplayText"
+                                              DisplayMemberPath="inputDisplayText" MinWidth="100" MinHeight="80"
                                               Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                               BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
                                 </Grid>
@@ -347,7 +347,7 @@
                                               HorizontalAlignment="Center" VerticalAlignment="Center"
                                               ItemsSource="{Binding USBsList}" Width="103"
                                               SelectedItem="{Binding PC3USB_Selected, Mode=TwoWay}"
-                                              DisplayMemberPath="inputDisplayText"
+                                              DisplayMemberPath="inputDisplayText" MinWidth="100" MinHeight="80"
                                               Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                               BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
                                               IsEnabled="{Binding PC3USB_Enable}" Opacity="{Binding PC3USB_Opacity}"/>
@@ -387,7 +387,7 @@
                                               HorizontalAlignment="Center" VerticalAlignment="Center"
                                               ItemsSource="{Binding PC4InputsList}"
                                               SelectedItem="{Binding PC4Inputs_Selected, Mode=TwoWay}"
-                                              DisplayMemberPath="inputDisplayText"
+                                              DisplayMemberPath="inputDisplayText" MinWidth="100" MinHeight="80"
                                               Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                               BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5" />
                                 </Grid>
@@ -402,7 +402,7 @@
                                     HorizontalAlignment="Center" VerticalAlignment="Center"
                                     ItemsSource="{Binding USBsList}" Width="103"
                                     SelectedItem="{Binding PC4USB_Selected, Mode=TwoWay}"
-                                    DisplayMemberPath="inputDisplayText" 
+                                    DisplayMemberPath="inputDisplayText" MinWidth="100" MinHeight="80" 
                                     Background="{DynamicResource DefaultTheme_USBKVMComboBkColor}"
                                     BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="1.5"
                                     IsEnabled="{Binding PC4USB_Enable}" Opacity="{Binding PC4USB_Opacity}"/>
