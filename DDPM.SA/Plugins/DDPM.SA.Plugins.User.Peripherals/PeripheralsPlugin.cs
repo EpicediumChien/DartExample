@@ -63,9 +63,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private DeviceHelper _deviceHelper;
         private UpdateHelper _updateHelper;
         //Bruce, FWU need it
-        private int _IODongleCount;
-        //Bruce, FWU need it
-        private int _AudioDongleCount;
+        private int _IODongleCount_Gen3Ago;
         private RFDeviceHelper _rfDeviceHelper;
         private ClientInfo _clientInfo;
         private static Logs _logs;
@@ -1411,10 +1409,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     if (_iDeviceManager == null)
                         return;
                     //Bruce, FWU need it
-                    _IODongleCount = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalDongle)).Count;
-                    _AudioDongleCount = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalAudioDongle)).Count;
-                    _logs.DebugMsg_1("[PeripheralsPlugin] _IODongleCount " + _IODongleCount);
-                    _logs.DebugMsg_1("[PeripheralsPlugin] _HeadsetDongleCount " + _AudioDongleCount);
+                    _IODongleCount_Gen3Ago = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalDongle) && o.Name.ToLower().Equals("Dell Universal Receiver".ToLower())).Count;
+                    _logs.DebugMsg_1("[PeripheralsPlugin] _IODongleCount_Gen3Ago : " + _IODongleCount_Gen3Ago);
                     //_deviceHelper.DPeMSDKVersion = IndiLogic.DPeM.Broker.Assembly.GetName();
                     foreach (var device in _iDeviceManager.Devices)
                     {
@@ -3485,7 +3481,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _updateItems.Thumbprint = updateItem.Thumbprint;
 
                             _updateHelper.UpdateItems.Add(_updateItems);
-                        }        
+                        }
                     }
                     else
                     {
@@ -3708,14 +3704,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             };
         }
         //Bruce, FWU need it
-        public Task<int> GetIODongleCount()
+        public Task<int> GetIODongleCountGen3AgoCount()
         {
-            return System.Threading.Tasks.Task.FromResult(_IODongleCount);
-        }
-        //Bruce, FWU need it
-        public Task<int> GetAudioDongleCount()
-        {
-            return System.Threading.Tasks.Task.FromResult(_AudioDongleCount);
+            return System.Threading.Tasks.Task.FromResult(_IODongleCount_Gen3Ago);
         }
 
         public void DisplayNotification(string bannerInfo, string hyperlinkText, string bannerItemType)
