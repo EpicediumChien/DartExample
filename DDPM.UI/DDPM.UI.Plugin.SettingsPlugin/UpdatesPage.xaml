@@ -51,8 +51,8 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <StackPanel Grid.Row="0" Margin="0,0,0,24" Orientation="Horizontal" x:Name="spFWUpdate">
-                                    <!-- Derek PIMS 334386 change Width="176" to MinWidth="176" -->
-                                    <Button MinWidth="176"
+                                    <!-- Derek PIMS 334386 change Width="176" to MinWidth="176" add Padding="10,0,10,0" on 1/10 -->
+                                    <Button MinWidth="176" Padding="10,0,10,0"
                                             Height="40"
                                             Click="CheckUpdate_Click"
                                             Cursor="Hand"

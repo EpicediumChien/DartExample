@@ -32,6 +32,7 @@ using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Dell.TechHub.Sdk.Common.Utilities.Extensions;
 using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
 using Microsoft;
@@ -8569,7 +8570,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //need test, but need other function
             //if vcp code is null, get vcp code
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-            Dictionary<EDID, Dictionary<object, object>> VCPTable = _DisplayManagerPlugin.GetVCPCacheTable().Result;
+            //Dictionary<EDID, Dictionary<object, object>> VCPTable = _DisplayManagerPlugin.GetVCPCacheTable().Result;
+
             if (settings != null)
             {
                 foreach (DDPMMonitorSettings monitorSettings in settings)
@@ -8581,8 +8583,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             try
                             {
                                 writelog("[DisplayExportSettings]Export FindVCPTable");
-                                Dictionary<object, object> cacheTable = new Dictionary<object, object>();
-                                cacheTable = FindVCPTable(VCPTable, monitorInfo.edid);
+                                //Dictionary<object, object> cacheTable = new Dictionary<object, object>();
+                                //cacheTable = FindVCPTable(VCPTable, monitorInfo.edid);
                                 writelog("[DisplayExportSettings]Export DisplayProperties");
                                 monitorSettings.DisplayPropertiesInfo = Export_DisplayProperties(monitorInfo);
                                 writelog("[DisplayExportSettings]Export ColorPreset");
@@ -8636,6 +8638,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     }
                                 }
                                 writelog("[DisplayExportSettings]Export VCPs");
+                                // Add to prevent ini VCP failed
+                                if (monitorSettings.VCPs == null || monitorSettings.VCPs.Count == 0)
+                                    monitorSettings.VCPs = GetAllVCPcode(monitorInfo);
                                 foreach (VCPCode vcp in monitorSettings.VCPs)
                                 {
                                     if (vcp.Value != null)
@@ -9052,6 +9057,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 impExpSettings = _SettingsPlugin.ReadImportSettingsFile(path).Result;
             }
             return Task.FromResult(impExpSettings);
+        }
+
+        /// <summary>
+        /// For auto import to read if we need to skip notification
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="modelName"></param>
+        /// <returns>Boolean</returns>
+        public Task<bool> ReadSameModelAutoApplySameModelFlag(string path, string modelName)
+        { 
+            bool sameModelFlag = false;
+            if (_SettingsPlugin != null && !string.IsNullOrEmpty(path) && !string.IsNullOrEmpty(modelName))
+            {
+                sameModelFlag = _SettingsPlugin.ReadSameModelAutoApplySameModelFlag(path, modelName).Result;
+            }
+            else
+            {
+                WriteLog($"[DeviceManagerPlugin] Missing parameter Path: \"{path}\", ModelName: \"{modelName}\"");
+            }
+            return Task.FromResult(sameModelFlag);
         }
 
         #endregion
@@ -11579,6 +11604,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() UpdateExistAlsConfig finish ...");
                             writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() Re-GetDevices finish ...");
 
+                            writelog($"[DeviceMangerPlugin] Toast Windows notification token.IsCancellationRequested: {token.IsCancellationRequested}");
                             if (_AllInfoMonitors != null && _AllInfoMonitors.Count > 0 && !token.IsCancellationRequested)
                                 Task.Run(() => _disDevHelper?.CheckAndTriggerToastWhileMonitorPlugged(_millisecond, _AllInfoMonitors.ToList(), _SettingsPlugin));
                         }

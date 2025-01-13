@@ -170,11 +170,13 @@
                         <DDPMUserControls:BatteryIndicator  Margin="0,0,0,70" HorizontalAlignment="Center" MouseEnter="BatteryIndicator_MouseEnter"
                                                            BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}" MouseLeave="BatteryIndicator_MouseLeave"
                                                            ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
-                        <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" x:Name="btnRestore" Visibility="{Binding IsRestoreEnable, Converter={StaticResource BoolToVisibilityConverter}}"
+                        <!--Chewlin 20250110 for PIMS-334922 fix RestoreToDefault clipping issue change Width="176" to  MinWidth="176" Width="auto"-->
+                        <Border Style="{StaticResource BorderUnpair}" MinWidth="176" Width="auto" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" x:Name="btnRestore" Visibility="{Binding IsRestoreEnable, Converter={StaticResource BoolToVisibilityConverter}}"
                                 BorderBrush="{DynamicResource SecondaryButton_DefaultBdColor}">
                             <Grid>
                                 <Border BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" Background="Transparent" BorderThickness="1"  >
-                                    <UXControls:UXTextBlock Name="txtRestore"  VerticalAlignment="Center" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}"
+                                    <!--Chewlin 20250110 for PIMS-334922 fix RestoreToDefault clipping issue ADD Width="auto" Margin="15,0,15,0"-->
+                                    <UXControls:UXTextBlock Name="txtRestore" Width="auto" Margin="15,0,15,0" VerticalAlignment="Center" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}"
                                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [RestoreToDefault], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </Border>
                             </Grid>

@@ -100,7 +100,8 @@
                 <Border Grid.Row="1" Style="{StaticResource BorderUnpair}"  Width="176" MouseLeftButtonDown="Restore_Click"  Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnRestore"
                         BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
                 -->
-                <Button Grid.Row="1" Style="{StaticResource SecondaryButtonStyle}"  Width="176" Click="Restore_Click"  Cursor="Hand" Margin="8,0,0,70" x:Name="btnRestore"
+                <!--Chewlin 20250111 for fix Display page RestoreToDefault clipping issue(No PIMS number) change Width="176" to  MinWidth="176" ADD Width="auto"-->
+                <Button Grid.Row="1" Style="{StaticResource SecondaryButtonStyle}"  MinWidth="176" Width="auto" Click="Restore_Click"  Cursor="Hand" Margin="8,0,0,70" x:Name="btnRestore"
                         Visibility="{Binding IsRestoreBtnVisible}">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -111,7 +112,8 @@
                         <UXControls:UXTextBlock Name="txtRestore" Foreground="#F5F6F7" VerticalAlignment="Center" Grid.Column="0"
                                                 HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
                         -->
-                        <UXControls:UXTextBlock Name="txtRestore" Foreground="{DynamicResource SecondaryButton_TextColor_Default}" VerticalAlignment="Center" Grid.Column="0"
+                        <!--Chewlin 20250111 for fix Display page RestoreToDefault clipping issue(No PIMS number) add Width="auto"-->
+                        <UXControls:UXTextBlock Name="txtRestore" Width="auto" Foreground="{DynamicResource SecondaryButton_TextColor_Default}" VerticalAlignment="Center" Grid.Column="0"
                                                 HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
                         <!-- Robert_Lin, 2024-12-8, Change LockIcon to a ControlTemplate from Image -->
                         <!-- NEW: -->
