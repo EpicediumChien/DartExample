@@ -149,7 +149,8 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" Margin="0, 0, 8, 0" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13">
+                        <Border Grid.Column="0" Margin="0, 0, 8, 0" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13" 
+                                BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="2">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -224,7 +225,8 @@
                                 </Grid>
                             </Grid>
                         </Border>
-                        <Border Grid.Column="1" Margin="0, 0, 8, 0" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13">
+                        <Border Grid.Column="1" Margin="0, 0, 8, 0" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13"
+                                BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="2">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -299,7 +301,8 @@
                                 </Grid>
                             </Grid>
                         </Border>
-                        <Border Grid.Column="2" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" Margin="0, 0, 8, 0" Visibility="{Binding PC3_Visibility}">
+                        <Border Grid.Column="2" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" Margin="0, 0, 8, 0" CornerRadius="13"
+                                BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="2" Visibility="{Binding PC3_Visibility}">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -354,7 +357,8 @@
                                 </Grid>
                             </Grid>
                         </Border>
-                        <Border Grid.Column="3" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" Visibility="{Binding PC4_Visibility}">
+                        <Border Grid.Column="3" Background="{DynamicResource DefaultTheme_USBKVMPCGridBkColor}" CornerRadius="13"
+                                BorderBrush="{DynamicResource DefaultTheme_USBKVMComboBdColor}" BorderThickness="2" Visibility="{Binding PC4_Visibility}">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
