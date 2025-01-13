@@ -90,6 +90,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private static List<Guid> LogicalDevices2 = new();
         private static List<Guid> LogicalDevices3 = new();
         private static List<Guid> LogicalDevicesPen = new();
+        private static List<Guid> LogicalDevicHeadset = new();
         private static List<Guid> IDevices = new();
 
         //private IDeviceManagerSA _DeviceManagerPlugin;
@@ -1714,6 +1715,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                             if (item is ILogicalDeviceHeadset _logicalDeviceHeadset)
                             {
+                                _logs.DebugMsg_1($"[LogicalDevicHeadset] ScanDevices Add DTH event ... in ");
                                 _logs.DebugMsg_1("[PeripheralsPlugin] ILogicalDeviceHeadset ... FirmwareVersion " + item.FirmwareVersion.ToString("X4"));
                                 info.FirmwareVersion = item.FirmwareVersion.ToString("X4");
                                 info.IsReady = _logicalDeviceHeadset.IsReady;
@@ -1767,6 +1769,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 _logicalDeviceHeadset.AncGainChanged += _logicalDeviceHeadset_AncGainChanged;
                                 //Elie. R17.1 drop this function.1123
                                 //_logicalDeviceHeadset.WearDetectionChanged += _logicalDeviceHeadset_WearDetectionChanged;
+                                var headset = (ILogicalDeviceHeadset)item;
+                                if (!LogicalDevicHeadset.Contains(headset.Id))
+                                {
+                                    LogicalDevicHeadset.Add(headset.Id);
+                                    _logs.DebugMsg_1($"[LogicalDevicHeadset] ScanDevices Add DTH event, LogicalDevicHeadset Headset ID : {headset.Id.ToString()} ... ");
+                                }
                             }
 
                             if (item is ILogicalDeviceDock _logicalDeviceDock)
@@ -2648,6 +2656,26 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         _logicalDevicePen.KeyCaptureProgressDataChanged -= Pen_KeyCaptureProgressDataChanged;
                         LogicalDevicesPen.Remove(iLogicalDevice.Id);
                     }
+                    if (LogicalDevicHeadset.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
+                    {
+                        _logs.DebugMsg_1($"[LogicalDevicHeadset] IPhysicalDevice_DeviceRemovedEvent Remove DTH event ... in");
+                        _logicalDeviceHeadset.IsReadyChanged -= _logicalDeviceHeadset_IsReadyChanged;
+                        _logicalDeviceHeadset.IsDirtyChanged -= _logicalDeviceHeadset_IsDirtyChanged;
+                        _logicalDeviceHeadset.MicNoiseCancellationChanged -= _logicalDeviceHeadset_MicNoiseCancellationChanged;
+                        _logicalDeviceHeadset.MicNCIncomingChanged -= _logicalDeviceHeadset_MicNCIncomingChanged;
+                        _logicalDeviceHeadset.SidetoneChanged -= _logicalDeviceHeadset_SidetoneChanged;
+                        _logicalDeviceHeadset.BusyLightChanged -= _logicalDeviceHeadset_BusyLightChanged;
+                        _logicalDeviceHeadset.VoiceGuidanceChanged -= _logicalDeviceHeadset_VoiceGuidanceChanged;
+                        _logicalDeviceHeadset.SelectedPresetChanged -= _logicalDeviceHeadset_SelectedPresetChanged;
+                        _logicalDeviceHeadset.SidetoneLevelChanged -= _logicalDeviceHeadset_SidetoneLevelChanged;
+                        _logicalDeviceHeadset.MuteStatusChanged -= _logicalDeviceHeadset_MuteStatusChanged;
+                        _logicalDeviceHeadset.BandsGainChanged -= _logicalDeviceHeadset_BandsGainChanged;
+                        _logicalDeviceHeadset.AncModeChanged -= _logicalDeviceHeadset_AncModeChanged;
+                        _logicalDeviceHeadset.AncGainChanged -= _logicalDeviceHeadset_AncGainChanged;
+                        LogicalDevicHeadset.Remove(iLogicalDevice.Id);
+                        _logs.DebugMsg_1($"[LogicalDevicHeadset] IPhysicalDevice_DeviceRemovedEvent Remove ID : {iLogicalDevice.Id.ToString()} ... ");
+                    }
+
                     //if (LowBatteryIDs.Contains(iLogicalDevice.Id.ToString()))
                     //    LowBatteryIDs.Remove(iLogicalDevice.Id.ToString());
                     ScanDevices();
