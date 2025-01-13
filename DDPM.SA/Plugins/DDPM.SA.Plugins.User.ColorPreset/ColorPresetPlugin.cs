@@ -2133,7 +2133,7 @@ namespace ColorPreset.Plugins
                 //Jim 20250113 modify for ICC profile Production Server
                 //ex: https://clientperipherals.dell.com/DDPM/ICC/icc_profile_sha256.json
                 string Display_ICC_URL = Download.GetTestServerURL();//@$"https://clientperipherals.dell.com/DDPM/";
-                string Display_ICC_URL_Folder = @"ICC/";
+                string Display_ICC_URL_Folder = GlobalDefinitions.Display_ICC_URL_Folder;//@"ICC/";
                 string str_url_prefix = Display_ICC_URL + Display_ICC_URL_Folder;
  
                 url = str_url_prefix + @"icc_profile_sha256.json";
