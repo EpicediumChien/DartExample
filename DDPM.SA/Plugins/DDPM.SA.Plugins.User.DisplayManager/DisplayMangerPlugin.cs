@@ -15,6 +15,7 @@ using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Interfaces;
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
@@ -114,7 +115,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private Dictionary<string, string> USBUpstream = new Dictionary<string, string>(); // Port name, Upstream Port num
 
         private string[] OrientationString = new string[] { "", "Landscape", "Portrait", "Landscape_flipped", "Portrait_flipped" };//OSD orientation
-        private readonly string Display_FWU_URL = @$"https://clientperipherals.dell.com/DDPM/";
+        private readonly string Display_FWU_URL = GlobalDefinitions.major_url;//@$"https://clientperipherals.dell.com/DDPM/";
         private readonly string Display_FWU_URL_Folder = @$"/Windows/Display/Firmware/";
 
         //Derek 2024/10/21
@@ -4783,7 +4784,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     firmwares_item.id = model;
                                     if (firmwares_item.url.Contains("%2"))
                                     {
-                                        firmwares_item.url = firmwares_item.url.Replace("%2", "https://downloads.dell.com");
+                                        firmwares_item.url = firmwares_item.url.Replace("%2", GlobalDefinitions.percent_two_url);// "https://downloads.dell.com");
                                     }
                                     else
                                     {
