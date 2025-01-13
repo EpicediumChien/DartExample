@@ -11,6 +11,7 @@
 #endregion
 
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.SA.Common.UI;
 using DDPM.SA.Resources.Helper;
 using Dell.Client.Framework.Common;
@@ -1409,7 +1410,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     if (_iDeviceManager == null)
                         return;
                     //Bruce, FWU need it
-                    _IODongleCount_Gen3Ago = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalDongle) && o.Name.ToLower().Equals("Dell Universal Receiver".ToLower())).Count;
+                    _IODongleCount_Gen3Ago = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalDongle) && o.Name.ToLower().Equals(GlobalDefinitions.Dongle_BeforeGen2_Name.ToLower())).Count;
                     _logs.DebugMsg_1("[PeripheralsPlugin] _IODongleCount_Gen3Ago : " + _IODongleCount_Gen3Ago);
                     //_deviceHelper.DPeMSDKVersion = IndiLogic.DPeM.Broker.Assembly.GetName();
                     foreach (var device in _iDeviceManager.Devices)
