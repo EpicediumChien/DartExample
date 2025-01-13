@@ -2229,7 +2229,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     try
                     {
-                        _KeyGenerator = new KeyGenerator();
+                        _KeyGenerator = new KeyGenerator(Log);
                         string result_string = _KeyGenerator.ProcessX0State(tPubKeyDev1.InnerText);
                         string s = $"<StateFlow>X1</StateFlow><TPubKeyPC1></TPubKeyPC1>";
                         if (!string.IsNullOrEmpty(result_string))
