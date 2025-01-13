@@ -242,7 +242,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
             else if (e.ProcessName.Equals("M1"))
             {
                 isInstalling = false;
-                ProgressValue = (int)e.ProcessProgress;
+                ProgressValue = (int)100;
                 ProgressStr = $"{LangHelper.Instance["Downloading_and_installing"]}... {ProgressValue}%";
                 Progress_IsAnimated = false;
                 AlertMessage = LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"];
@@ -251,7 +251,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
             else if (e.ProcessName.Equals("M2"))
             {
                 isInstalling = false;
-                ProgressValue = (int)e.ProcessProgress;
+                ProgressValue = (int)100;
                 ProgressStr = $"{LangHelper.Instance["Downloading_and_installing"]}... {ProgressValue}%";
                 Progress_IsAnimated = false;
                 AlertMessage = LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"];

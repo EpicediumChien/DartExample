@@ -168,6 +168,22 @@ namespace DDPM.UI.Module.Brightness
                 _vm.IsSynchronize_Scheduled = true;
                 //SynchronizeSwitch.Content = Strings.On;
 
+                Synchronize_Scheduled(_vm);
+            }
+            else
+            {
+                _vm.IsSynchronize_Scheduled = false;
+                //SynchronizeSwitch.Content = Strings.Off;
+            }
+
+            setting.UserSettings.IsSynchronizemonitor_Scheduled = _vm.IsSynchronize_Scheduled;
+            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
+        }
+
+        private void Synchronize_Scheduled(BrightnessViewModel _vm)
+        {
+            if ((bool)ScheduledSynchronizeSwitch.IsChecked)
+            {
                 Task.Run(() =>
                 {
                     foreach (HomeDevice hd in _vm.ModuleOwner.HomeDevices)
@@ -183,14 +199,6 @@ namespace DDPM.UI.Module.Brightness
                     }
                 });
             }
-            else
-            {
-                _vm.IsSynchronize_Scheduled = false;
-                //SynchronizeSwitch.Content = Strings.Off;
-            }
-
-            setting.UserSettings.IsSynchronizemonitor_Scheduled = _vm.IsSynchronize_Scheduled;
-            DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
         }
 
         private void Synchronize_LuminanceScheduledSwitch_Click(object sender, RoutedEventArgs e)
@@ -204,17 +212,7 @@ namespace DDPM.UI.Module.Brightness
                 _vm.IsSynchronize_Scheduled = true;
                 //SynchronizeSwitch.Content = Strings.On;
 
-                Task.Run(() =>
-                {
-                    foreach (HomeDevice hd in _vm.ModuleOwner.HomeDevices)
-                    {
-                        if (hd.MonitorInfo.IsDellMonitor)
-                        {
-                            if (!hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
-                                DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, vm.ScheduleMap);
-                        }
-                    }
-                });
+                Synchronize_LuminanceScheduled(_vm);
             }
             else
             {
@@ -224,6 +222,39 @@ namespace DDPM.UI.Module.Brightness
 
             setting.UserSettings.IsSynchronizemonitor_Scheduled = _vm.IsSynchronize_Scheduled;
             DdpmCommonHelper.WriteDDPMSettings(setting);// DeviceManagerSA.SetAppConfigData(setting);
+        }
+
+        private void Synchronize_LuminanceScheduled(BrightnessViewModel _vm)
+        {
+            if ((bool)ScheduledLuminanceSynchronizeSwitch.IsChecked)
+            {
+                Task.Run(() =>
+                {
+                    foreach (HomeDevice hd in _vm.ModuleOwner.HomeDevices)
+                    {
+                        if (hd.MonitorInfo.IsDellMonitor)
+                        {
+                            if (!hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                            {
+                                if (hd.MonitorInfo.modelName.ToUpper().Equals("UP2720Q") && ((vm.ScheduleMap.Brightness1 > 250) || (vm.ScheduleMap.Brightness2 > 250)))
+                                {
+                                    var ScheduleMap = new scheduleInfo(vm.ScheduleMap);
+
+                                    if (vm.ScheduleMap.Brightness1 > 250)
+                                        ScheduleMap.Brightness1 = 250;  // UP2720Q max luminance is 250
+
+                                    if (vm.ScheduleMap.Brightness2 > 250)
+                                        ScheduleMap.Brightness2 = 250;  // UP2720Q max luminance is 250
+
+                                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, ScheduleMap);
+                                }
+                                else
+                                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, vm.ScheduleMap);
+                            }
+                        }
+                    }
+                });
+            }
         }
 
         private void Expander_Manual_Expanded(object sender, RoutedEventArgs e)
@@ -780,6 +811,11 @@ namespace DDPM.UI.Module.Brightness
                     localVm.StartScheduleManger(60000);
                 }
             }
+
+            if (localVm.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("12"))
+                Synchronize_Scheduled(localVm);
+            else
+                Synchronize_LuminanceScheduled(localVm);
         }
 
         private void ShowPreview(int pr, BrightnessViewModel vm, CancellationToken token)
@@ -855,7 +891,7 @@ namespace DDPM.UI.Module.Brightness
                                     else
                                         vm.ContrastValue -= PerStepValue;
 
-                                    ContrastSteps_msec_counter = 0;                                    
+                                    ContrastSteps_msec_counter = 0;
                                 }
 
                                 Thread.Sleep(1);
@@ -912,7 +948,7 @@ namespace DDPM.UI.Module.Brightness
 
                                 if (!(vm.isLuminanceSupport == Visibility.Visible) &&
                                     ContrastSteps_msec_counter == ContrastSteps_msec)
-                                { 
+                                {
                                     if (IsContrastPR2Plus)
                                         vm.ContrastValue += PerStepValue;
                                     else

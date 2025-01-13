@@ -73,7 +73,8 @@
                            Foreground="{DynamicResource popupBase_Header_TextColor}"/>
                 -->
                 <TextBlock x:Name="Header1" FontFamily="Roboto" FontSize="20" FontWeight="Normal"
-                           VerticalAlignment="Center" HorizontalAlignment="Left"
+                           VerticalAlignment="Center" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
+                           Text="{Binding Header}"
                            Foreground="{DynamicResource popupBase_Header_TextColor}"/>
                 <!-- #endregion Header -->
                 
@@ -85,7 +86,13 @@
                            Foreground="{DynamicResource popupBase_Body_TextColor}"/>
                
                 -->
-                <TextBlock x:Name="SubHeader1" FontFamily="Roboto" FontSize="16" FontWeight="Normal" Margin="0,8,0,16" TextWrapping="Wrap"
+                <TextBlock x:Name="SubHeader1"
+                           FontFamily="Roboto"
+                           FontSize="16"
+                           FontWeight="Normal"
+                           Margin="0,8,0,16"
+                           TextWrapping="Wrap"
+                           Text="{Binding SubHeader}"
                            Foreground="{DynamicResource popupBase_Body_TextColor}"/>
                 <!-- #endregion Body -->
                 

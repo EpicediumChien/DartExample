@@ -81,6 +81,7 @@ namespace DDPM.SA.Common
         public bool IsDisplay { get; set; }
         public string DeviceName { get; set; }
         public string DeviceId { get; set; }
+        public int DeviceIndex { get; set; }
         public string DevicePath { get; set; }
         public string Model { get; set; }
         public string DeviceVersion { get; set; }

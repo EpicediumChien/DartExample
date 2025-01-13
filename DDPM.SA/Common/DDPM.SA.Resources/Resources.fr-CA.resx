@@ -534,4 +534,7 @@
   <data name="RPG_Game" xml:space="preserve">
     <value>Jeu RPG</value>
   </data>
+  <data name="WebCameraSettings.2" xml:space="preserve">
+    <value>Utilise l’analyse intelligente de la scène et le suivi du visage pour effectuer un zoom et un panoramique lorsque vous vous déplacez</value>
+  </data>
 </root>

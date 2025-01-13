@@ -2485,7 +2485,7 @@ namespace ColorPreset.Plugins
 
                 if (str_EnableDDPMMetadataTest.ToUpper().Contains("TRUE"))
                 {
-                    string str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
+                    string str_url_prefix = GlobalDefinitions.major_url; //@"https://clientperipherals.dell.com/DDPM/";
                     str_url_prefix += str_IncludeTestPath;
                     str_url_prefix += @"/Windows/Display/ICC/";
                     str_url_prefix += @"icc_profile_sha256_new.json";
@@ -2589,7 +2589,7 @@ namespace ColorPreset.Plugins
                                 // 20240725 jim add
                                 str_url_prefix = string.Empty;
 
-                                str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
+                                str_url_prefix = GlobalDefinitions.major_url; //@"https://clientperipherals.dell.com/DDPM/";
                                 str_url_prefix += str_IncludeTestPath;
                                 str_url_prefix += @"/Windows/Display/ICC/";
                                 str_url_prefix += m.modelName;

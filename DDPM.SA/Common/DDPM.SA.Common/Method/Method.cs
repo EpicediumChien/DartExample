@@ -134,8 +134,9 @@ namespace DDPM.SA.Common.Method
                     ret = files.Length > 0 || directories.Length > 0;
                 }
             }
-            catch
+            catch(Exception e)
             {
+                WriteLog($"[DirectoryContainsFiles] exception: {e.Message}");
             }
             return ret;
         }

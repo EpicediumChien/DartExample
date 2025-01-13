@@ -534,4 +534,7 @@
   <data name="RPG_Game" xml:space="preserve">
     <value>RPGゲーム</value>
   </data>
+  <data name="WebCameraSettings.2" xml:space="preserve">
+    <value>インテリジェントなシーン分析と顔追跡を利用して、ユーザーが移動するとビューを拡大縮小したり、パンしたりします</value>
+  </data>
 </root>
