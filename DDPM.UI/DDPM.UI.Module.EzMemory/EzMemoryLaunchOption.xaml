@@ -40,6 +40,10 @@
                 <Setter Property="VerticalContentAlignment" Value="Center" />
                 <Setter Property="Template" Value="{DynamicResource DdpmComboBoxControlTemplate}" />
                 <Setter Property="ItemContainerStyle" Value="{DynamicResource DdpmComboBoxItemContainerStyle}" />
+
+                <!-- Robert_Lin 2025-1-10 These ComboBoxes will be enabled only when Automatically radio button is checked -->
+                <Setter Property="IsEnabled" Value="{Binding IsAutoLaunch}"/>
+
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>

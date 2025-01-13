@@ -277,28 +277,28 @@ namespace DDPM.ColorApp
                         Trace.WriteLine("Mi.DisplayName = " + Mi.DisplayName);
                         Trace.WriteLine("Mi.modelName = " + Mi.modelName);
 
-                        Trace.WriteLine("screen.WorkingArea.Height = " + screen.WorkingArea.Height);
-                        Trace.WriteLine("s.WorkingArea.Height = " + s.WorkingArea.Height);
 
-                        Trace.WriteLine("screen.WorkingArea.Width = " + screen.WorkingArea.Width);
-                        Trace.WriteLine("s.WorkingArea.Width = " + s.WorkingArea.Width);
+                    Trace.WriteLine("screen.WorkingArea.Height = " + screen.WorkingArea.Height);
+                    Trace.WriteLine("s.WorkingArea.Height = " + s?.WorkingArea.Height);
 
-                        Trace.WriteLine("screen.WorkingArea.Left = " + screen.WorkingArea.Left);
-                        Trace.WriteLine("s.WorkingArea.Left = " + s.WorkingArea.Left);
+                    Trace.WriteLine("screen.WorkingArea.Width = " + screen.WorkingArea.Width);
+                    Trace.WriteLine("s.WorkingArea.Width = " + s?.WorkingArea.Width);
+
+                    Trace.WriteLine("screen.WorkingArea.Left = " + screen.WorkingArea.Left);
+                    Trace.WriteLine("s.WorkingArea.Left = " + s?.WorkingArea.Left);
 
                         writelog("Mi.DisplayName = " + Mi.DisplayName);
                         writelog("Mi.modelName = " + Mi.modelName);
 
 
-                        writelog("screen.WorkingArea.Height = " + screen.WorkingArea.Height);
-                        writelog("s.WorkingArea.Height = " + s.WorkingArea.Height);
+                    writelog("screen.WorkingArea.Height = " + screen.WorkingArea.Height);
+                    writelog("s.WorkingArea.Height = " + s?.WorkingArea.Height);
 
-                        writelog("screen.WorkingArea.Width = " + screen.WorkingArea.Width);
-                        writelog("s.WorkingArea.Width = " + s.WorkingArea.Width);
+                    writelog("screen.WorkingArea.Width = " + screen.WorkingArea.Width);
+                    writelog("s.WorkingArea.Width = " + s?.WorkingArea.Width);
 
-                        writelog("screen.WorkingArea.Left = " + screen.WorkingArea.Left);
-                        writelog("s.WorkingArea.Left = " + s.WorkingArea.Left);
-                    } 
+                    writelog("screen.WorkingArea.Left = " + screen.WorkingArea.Left);
+                    writelog("s.WorkingArea.Left = " + s?.WorkingArea.Left);
 
                     //if (s == null)//Dean 0626 fix SAST issue
                     //    return;

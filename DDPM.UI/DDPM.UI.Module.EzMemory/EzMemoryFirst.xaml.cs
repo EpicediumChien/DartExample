@@ -50,6 +50,9 @@ namespace DDPM.UI.Module.EzMemory
         private readonly IConsole _console;
         private readonly ILog _log;
         private HomeDevice _selecthomeDevice;
+        //Robert_Lin 2025-1-11 added. The ProfileName when entering this page
+        //If the name (InputText) is the same as this (no changed), then we can skip check if duplicate
+        private readonly string _orgProfileName = string.Empty;
         #endregion Private Members
 
         public EzMemoryFirst(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
@@ -73,15 +76,17 @@ namespace DDPM.UI.Module.EzMemory
             Screen? currentScreen = GetAttachedScreen(_selecthomeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
 
-
-            splitListView_Recent.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
-            splitListView_Custom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
-            splitListView_2w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            splitListView_3w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            splitListView_4w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            splitListView_5w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            splitListView_6w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-            splitListView_7w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            //Robert_Lin 2025-1-9 remove SplitOwner settings for all SplitListViews
+            // because all of them do not need Pencel and delX icon
+            //
+            //splitListView_Recent.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+            //splitListView_Custom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
+            //splitListView_2w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            //splitListView_3w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            //splitListView_4w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            //splitListView_5w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            //splitListView_6w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+            //splitListView_7w.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
 
             splitListView_Recent.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
             splitListView_Custom.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
@@ -92,49 +97,62 @@ namespace DDPM.UI.Module.EzMemory
             splitListView_6w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
             splitListView_7w.ItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
 
-            splitListView_Custom.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            splitListView_2w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            splitListView_3w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            splitListView_4w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            splitListView_5w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            splitListView_6w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
-            splitListView_7w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            //SplitListViews in EM First view do not need Edit and Delete command
 
-            splitListView_Custom.ItemDeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
+            //splitListView_Custom.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            //splitListView_2w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            //splitListView_3w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            //splitListView_4w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            //splitListView_5w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            //splitListView_6w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+            //splitListView_7w.ItemEditCommand = new RelayCommand<SplitItem>(HandleSplitItemEditCommand);
+
+            //splitListView_Custom.ItemDeleteCommand = new RelayCommand<SplitItem>(HandleSplitItemDeleteCommand);
 
             //InitRecentListView();
             InitListViewItems();
 
             customListTooltipText.Text = Strings.CustomListTooltipText;
 
+            _orgProfileName = _vm.InputText;
+
             InitializePage();
 
-            if(!_vm.IsEditProfile)
-            {
-                CheckInputText();
-            }
-            else
+            if (_vm.IsEditProfile)
             {
                 SyncEditStatusForFirstPage();
             }
+            else
+            {
+                //Robert_Lin, 2025-1-11
+                //NEW:
+                //If InputText is empty, then generate an unused name for it
+                if (string.IsNullOrWhiteSpace(_vm.InputText))
+                    _vm.InputText = GenerateProfileName();
+
+                //OLD:
+                //CheckInputText();
+            }
+
+
 
             //splitListView_Custom Always Collapsed
             //Check Custom split List View count
-            var customList = splitListView_Custom.SplitList.ToList();
-            foreach (var custom in customList)
-            {
-                if (custom.CellCount == 0 && custom.SplitKey == 'B')
-                    splitListView_Custom.SplitList.Remove(custom);
-            }
-            if (splitListView_Custom.ItemCount == 0)
-            {
-                splitListView_Custom.Visibility = Visibility.Collapsed;
-                splitListView_Recent_StackPanel.Visibility = Visibility.Collapsed;
-            }
+            //var customList = splitListView_Custom.SplitList.ToList();
+            //foreach (var custom in customList)
+            //{
+            //    if (custom.CellCount == 0 && custom.SplitKey == 'B')
+            //        splitListView_Custom.SplitList.Remove(custom);
+            //}
+            //if (splitListView_Custom.ItemCount == 0)
+            //{
+            //    splitListView_Custom.Visibility = Visibility.Collapsed;
+            //    splitListView_Recent_StackPanel.Visibility = Visibility.Collapsed;
+            //}
 
-            //Always Visible Recent split List View
-            splitListView_Recent_Grid.Visibility = Visibility.Collapsed;
-            splitListView_Recent.Visibility = Visibility.Collapsed;
+            ////Always Visible Recent split List View
+            //splitListView_Recent_Grid.Visibility = Visibility.Collapsed;
+            //splitListView_Recent.Visibility = Visibility.Collapsed;
 
         }
 
@@ -162,12 +180,22 @@ namespace DDPM.UI.Module.EzMemory
         /// </summary>
         public void SyncEditStatusForFirstPage()
         {
+            //Robert_Lin, user may has changed the profile name
+            //Then click Next, then <- from AssignProgram, then come back to FirstPage
+            //The Profile name should not be restored but keep the user's change
             //Need to auto select
-            _vm.InputText = _vm.currentEditprofile.Name;
+            //if (_vm.currentEditprofile != null)
+            //    _vm.InputText = _vm.currentEditprofile.Name;
+
+            //Robert_Lin 2025-1-9, CurrentSelectspItem will be selected in InitListViewItems()
+            // so comment-out the following code
+            //
+            /*
             //_vm.ispCtrlForEm = _vm.SelectedSplitItem.ISplitCtrl.Clone();
             SplitItem profilwSplitItem = _vm.CurrentEditSelectspItem; //splitListView_Recent.FindSplitItem(_vm.CurrentSelectspItem.CellCount, _vm.CurrentSelectspItem.SplitKey);
             profilwSplitItem.IsSelected = true;
             OnListViewItemClicked(profilwSplitItem);
+            */
         }
 
         /// <summary>
@@ -269,10 +297,16 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
+            //Robert_Lin 2025-1-11 redefine the meaning of IsEditProfile
+            //Only RightView will assign value to it
             // Need to Re-set Edit Profile status
-            _vm.IsEditProfile = false;
+            //_vm.IsEditProfile = false;
+
             _vm.ClearTextBlockAppName();
-            _vm.RightViewDataClear();
+
+            //Robert_Lin 2025-1-11 should not clear RightViewData
+            //_vm.RightViewDataClear();
+
             if (_vm._currentPageIndex == 0)
             {
                 DdpmCommonHelper.ModuleOwner?.CloseFullView();
@@ -296,22 +330,38 @@ namespace DDPM.UI.Module.EzMemory
                 DdpmCommonHelper.DDPMEzMesssageBox("", Strings.BlankProfileSubText, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
                 return;
             }
-            if (_vm.SelectedSplitItem.CellCount < 2)
+               
+            //Robert_Lin 2025-1-9 fix, should be CurrentEditSelectspItem
+            //NEW:
+            if ((_vm.CurrentEditSelectspItem != null) && (_vm.CurrentEditSelectspItem.CellCount < 2))
+            //OLD:
+            //if (_vm.SelectedSplitItem.CellCount < 2)
             {
                 return;
             }
 
-            if (!_vm.IsEditProfile)
+            //Robert_Lin 2025-1-11 only if user change the profile name, then we need to do duplicate check
+            if (!_vm.InputText.Equals(_orgProfileName))
+
+                //Robert_Lin 2025-1-11 No mater Add or Edit mode, both need to check the name is unique or not
+                //if (!_vm.IsEditProfile)
             {
                 List<EAProfileDDPM> checkEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
 
                 if (checkEAProfileDDPM != null &&
                     checkEAProfileDDPM.Any(p => p.Name.Equals(_vm.InputText, StringComparison.OrdinalIgnoreCase)))
                 {
-                    Thickness headMargin = new Thickness(24, 30, 45, 24);
-                    Thickness subMargin = new Thickness(24, -16, 24, 8);
-                    DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
-                    return;
+                    //Robert_Lin 2025-1-11 follow DDM, will allow case-insensitive duplicate
+                    //NEW:
+                    if (checkEAProfileDDPM.Any(p => p.Name.Equals(_vm.InputText)))
+                        //OLD:
+                    //if (checkEAProfileDDPM.Any(p => p.Name.Equals(_vm.InputText, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        Thickness headMargin = new Thickness(24, 30, 45, 24);
+                        Thickness subMargin = new Thickness(24, -16, 24, 8);
+                        DdpmCommonHelper.DDPMEzMesssageBox(Strings.msgboxTitleForFirstPage, Strings.subTitleForFirstPage, true, Window.GetWindow(this), 417, 148, headMargin, subMargin);
+                        return;
+                    }
                 }
             }
 
@@ -368,6 +418,7 @@ namespace DDPM.UI.Module.EzMemory
         #region Init SplitListView and SplitItems
         private void InitListViewItems()
         {
+            
             //0. Prepare
             //
             if (_deviceManagerSA == null) return;
@@ -389,6 +440,18 @@ namespace DDPM.UI.Module.EzMemory
             splitListView_5w.IsVertical = _vm.IsVertical;
             splitListView_6w.IsVertical = _vm.IsVertical;
             splitListView_7w.IsVertical = _vm.IsVertical;
+
+
+            //Robert_Lin 2025-1-9, will set selected item based on vm.CurrentEditSelectspItem
+            // we will used EAID (Layout) to match
+            int eaIdSelected = 0; //Default 0 : No init selected item
+            if (_vm.CurrentEditSelectspItem != null)
+            {
+                if (_vm.CurrentEditSelectspItem.ISplitCtrl != null)
+                {
+                    eaIdSelected = _vm.CurrentEditSelectspItem.ISplitCtrl.EAID;
+                }
+            }
 
             //A Build WindowLists
             //
@@ -432,6 +495,14 @@ namespace DDPM.UI.Module.EzMemory
                 {
                     spItem.IsEditEnabled = false;//Do not need pencil icon
                     spItem.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+
+                    //Robert_Lin 2025-1-9, will set selected item based on vm.CurrentEditSelectspItem
+                    if (spCtrl.EAID == eaIdSelected)
+                    {
+                        spItem.IsSelected = true;
+                        _vm.CurrentEditSelectspItem = spItem;
+                        _vm.CurrentSelectsEAID = spCtrl.EAID;
+                    }
                 }
             } //foreach(ISplitCtrl spCtrl in ISplitCtrl.Splits_EA)
 
@@ -464,6 +535,10 @@ namespace DDPM.UI.Module.EzMemory
                         continue;
                     }
 
+                    //EM does not support Overlap Custom layouts
+                    if (spj.IsOverlapLayout)
+                        continue;
+
                     ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
                     if (spCtrl == null)
                         continue;
@@ -472,21 +547,34 @@ namespace DDPM.UI.Module.EzMemory
                     spCtrl.FriendlyName = spj.CustomName;
                     spCtrl.EAID = spj.EAID;
 
-                    if (spCtrl.IsAddedCustomLayout)
-                    {
-                        CreateCellBorderListToSplitCtrlFromCellJsons(spj.Cells, ref spCtrl);
-                    }
+                    //Robert_Lin 2025-1-9, EM does not support OverlayLayouts
+                    //if (spCtrl.IsAddedCustomLayout)
+                    //{
+                    //    CreateCellBorderListToSplitCtrlFromCellJsons(spj.Cells, ref spCtrl);
+                    //}
 
                     SplitItem itemCustom = splitListView_Custom.AddItemToList(spCtrl.UC);
                     itemCustom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
                     itemCustom.CustomId = (int)spj.CustomId;
 
+                    //Robert_Lin 2025-1-9, will set selected item based on vm.CurrentEditSelectspItem
+                    if (spCtrl.EAID == eaIdSelected)
+                    {
+                        itemCustom.IsSelected = true;
+                        //_vm.SelectedSplitItem = itemCustom;
+                        _vm.CurrentEditSelectspItem = itemCustom;
+                        _vm.CurrentSelectsEAID = spCtrl.EAID;
+                    }
+
+
                     //Robert_Lin, 2024-10-4 add max items check
                     if (splitListView_Custom.ItemCount >= EAEMConstants.MaxCustomItems)
                         break;
-                }
+                } //foreach
             } //if (eaSettings != null)
 
+            //Robert_Lin 2025-1-9, EM does not support Recent List 
+            /*
             //C Load & Build Recent List
             //
 
@@ -605,7 +693,10 @@ namespace DDPM.UI.Module.EzMemory
                     idxRecentList++;
                 } //foreach
             } //if (eaSettings?.CustomList != null)
+            */
 
+            //Robert_Lin 2025-1-9, EM does not support Recent List and Buddy
+            /*
             //D Add all custom items which has no Buddy into Recent list
             //
             foreach (SplitItem itemCustom in splitListView_Custom.SplitList)
@@ -666,7 +757,10 @@ namespace DDPM.UI.Module.EzMemory
                     itemRecent.CustomId = itemWin.CustomId;
                 }
             }
+            */
 
+            //Robert_Lin, 2025-1-9, We has set the SelectedItem in the above code
+            /*
             //Setup the Selected Item
             if (eaSettings != null)
             {
@@ -680,57 +774,60 @@ namespace DDPM.UI.Module.EzMemory
                     _vm.SelectedSplitItem = splitListView_Recent.GetAt(0);
                 }
             }
+            */
         }
 
-        private void CreateCellBorderListToSplitCtrlFromCellJsons(CellJson[] cellJsons, ref ISplitCtrl ispCtrl)
-        {
-            if (!ispCtrl.IsAddedCustomLayout)
-                return;
+        //Unused
+        //private void CreateCellBorderListToSplitCtrlFromCellJsons(CellJson[] cellJsons, ref ISplitCtrl ispCtrl)
+        //{
+        //    if (!ispCtrl.IsAddedCustomLayout)
+        //        return;
 
-            SplitCtrl0B spCtrl0B = (SplitCtrl0B)ispCtrl;
-            spCtrl0B.CellList.Clear();
-            if (spCtrl0B.CellBorders != null)
-                spCtrl0B.CellBorders.Clear();
-            else
-                spCtrl0B.CellBorders = new List<CellBorder>();
+        //    SplitCtrl0B spCtrl0B = (SplitCtrl0B)ispCtrl;
+        //    spCtrl0B.CellList.Clear();
+        //    if (spCtrl0B.CellBorders != null)
+        //        spCtrl0B.CellBorders.Clear();
+        //    else
+        //        spCtrl0B.CellBorders = new List<CellBorder>();
 
-            foreach (CellJson cellJson in cellJsons)
-            {
-                CellBorder cellBorder = new CellBorder();
-                cellBorder.CellName = cellJson.Name;
-                cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
-                spCtrl0B.CellBorders.Add(cellBorder);
+        //    foreach (CellJson cellJson in cellJsons)
+        //    {
+        //        CellBorder cellBorder = new CellBorder();
+        //        cellBorder.CellName = cellJson.Name;
+        //        cellBorder.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+        //        spCtrl0B.CellBorders.Add(cellBorder);
 
-                CellObj cellObj = new CellObj(cellJson.Name);
-                cellObj.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
-                spCtrl0B.CellList.Add(cellObj);
-            }
+        //        CellObj cellObj = new CellObj(cellJson.Name);
+        //        cellObj.rcRatio = new Rect(cellJson.x, cellJson.y, cellJson.w, cellJson.h);
+        //        spCtrl0B.CellList.Add(cellObj);
+        //    }
 
-        }
+        //}
 
         #endregion
-        #region SplitListView Operations
-        private SplitItem? FindSplitItemFromWindowLists(int cellCount, char splitKey)
-        {
-            switch (cellCount)
-            {
-                case 2:
-                    return splitListView_2w.FindSplitItem(cellCount, splitKey);
-                case 3:
-                    return splitListView_3w.FindSplitItem(cellCount, splitKey);
-                case 4:
-                    return splitListView_4w.FindSplitItem(cellCount, splitKey);
-                case 5:
-                    return splitListView_5w.FindSplitItem(cellCount, splitKey);
-                case 6:
-                    return splitListView_6w.FindSplitItem(cellCount, splitKey);
-                case 7:
-                    return splitListView_7w.FindSplitItem(cellCount, splitKey);
-                default: return null;
-            }
-        }
+        #region SplitListView Operations - Unused
+        //private SplitItem? FindSplitItemFromWindowLists(int cellCount, char splitKey)
+        //{
+        //    switch (cellCount)
+        //    {
+        //        case 2:
+        //            return splitListView_2w.FindSplitItem(cellCount, splitKey);
+        //        case 3:
+        //            return splitListView_3w.FindSplitItem(cellCount, splitKey);
+        //        case 4:
+        //            return splitListView_4w.FindSplitItem(cellCount, splitKey);
+        //        case 5:
+        //            return splitListView_5w.FindSplitItem(cellCount, splitKey);
+        //        case 6:
+        //            return splitListView_6w.FindSplitItem(cellCount, splitKey);
+        //        case 7:
+        //            return splitListView_7w.FindSplitItem(cellCount, splitKey);
+        //        default: return null;
+        //    }
+        //}
         #endregion SplitListView Operations
         #region Delete Custom Layout item
+        /*
         private void HandleSplitItemDeleteCommand(SplitItem spItem)
         {
             //Must be a EA SplitItem
@@ -748,18 +845,25 @@ namespace DDPM.UI.Module.EzMemory
                 //Remove the buddy from Recent list
                 splitListView_Recent.DeleteSplitItem(itemRecent);
             }
+
+            //Robert_Lin 2025-1-10, If delting item is selected, then force to select none
+            if (spItem.IsSelected)
+            {
+                _vm.CurrentEditSelectspItem = null;
+            }
             splitListView_Custom.DeleteSplitItem(spItem);
 
             //If the deleted Custom item is Selected
-            if (spItem.IsSelected)
-            {
-                //Force to selected Split0A
-                SplitItem item0A = splitListView_Recent.SplitList[0];
-                _vm.SelectedSplitItem = item0A;
-                _vm.SetWorkSplit(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey, _vm.SelectedSplitItem.Settings);
-            }
+            //if (spItem.IsSelected)
+            //{
+            //    //Force to select none
+            //    //SplitItem item0A = splitListView_Recent.SplitList[0];
+            //    //_vm.SelectedSplitItem = item0A;
+            //    //_vm.SetWorkSplit(_vm.SelectedSplitItem.CellCount, _vm.SelectedSplitItem.SplitKey, _vm.SelectedSplitItem.Settings);
+            //}
             //SaveEaSettings();
         }
+        */
         #endregion Delete Custom Layout item
         #region Screen
         private Screen? GetAttachedScreen(string deviceName)
@@ -778,35 +882,51 @@ namespace DDPM.UI.Module.EzMemory
             return DisplayOrientation.Unknow;
         }
         #endregion
-        #region Clean up SplitListView and Items
-        private void CleanUpListViewItems()
-        {
-            splitListView_Recent.ClearList();
-            splitListView_Custom.ClearList();
-            splitListView_2w.ClearList();
-            splitListView_4w.ClearList();
-        }
+        #region Clean up SplitListView and Items - Unused
+        //private void CleanUpListViewItems()
+        //{
+        //    splitListView_Recent.ClearList();
+        //    splitListView_Custom.ClearList();
+        //    splitListView_2w.ClearList();
+        //    splitListView_4w.ClearList();
+        //}
         #endregion Clean up SplitListView and Items
         #region SplitItem Selection
         private void OnListViewItemClicked(SplitItem spItem)
         {
-            if (spItem.InnerContent is ISplitCtrl)
-            {
-                ISplitCtrl spCtrl = spItem.InnerContent as ISplitCtrl;
-                _vm.SelectedSplitItem = spItem;
-                _vm.CurrentSelectsEAID = spCtrl.EAID;
-                //_vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);//EM no need
+            //if (spItem.InnerContent is ISplitCtrl)
+            //{
+            //    //ISplitCtrl spCtrl = spItem.InnerContent as ISplitCtrl;
+            //    //_vm.CurrentEditSelectspItem = spItem;
+            //    //_vm.CurrentSelectsEAID = spCtrl.EAID;
+            //    ////_vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);//EM no need
 
-                //splitListView_Recent.MoveSelectedItemToSecondPosition();//EM no need
-                //SaveEaSettings();
-                //_deviceManagerSA.WriteEasyArrangeSettings()
-            }
+            //    //splitListView_Recent.MoveSelectedItemToSecondPosition();//EM no need
+            //    //SaveEaSettings();
+            //    //_deviceManagerSA.WriteEasyArrangeSettings()
+            //}
 
             //If Edit，need to recoerd
-            _vm.CurrentSelectspItem = spItem;
+            //_vm.CurrentSelectspItem = spItem;
+
+            //Robert_Lin 2025-1-9, will copy selected item to vm.CurrentEditSelectspItem
+            if (_vm.CurrentEditSelectspItem != null)
+                _vm.CurrentEditSelectspItem.IsSelected = false;
+            _vm.CurrentEditSelectspItem = spItem;
+            _vm.CurrentEditSelectspItem.IsSelected = true;
+
+            if (_vm.CurrentEditSelectspItem != null)
+            {
+                if (_vm.CurrentEditSelectspItem.ISplitCtrl != null)
+                {
+                    _vm.CurrentSelectsEAID = _vm.CurrentEditSelectspItem.ISplitCtrl.EAID;
+                }
+
+            }
         }
         #endregion SplitItem Selection
         #region Edit Layout
+        /*
         /// <summary>
         /// The event handler when the 'pencil' icon is clicked on the SplitItem
         /// </summary>
@@ -882,8 +1002,10 @@ namespace DDPM.UI.Module.EzMemory
                 }
             }
         }
+        */
         #endregion
         #region Custom Layout Manager
+        /*
         /// <summary>
         /// Generate the CustomNames as the ItemSource of ComboBox in SaveCustomWindow.
         /// This method must be executed in UI thread.
@@ -935,6 +1057,7 @@ namespace DDPM.UI.Module.EzMemory
             //Step D
             return listOut;
         }
+        */
         #endregion
 
         #region For security
@@ -943,6 +1066,32 @@ namespace DDPM.UI.Module.EzMemory
         {
             TextString textString = new TextString();
             e.Handled = !textString.CheckChar(e.Text);
+        }
+        #endregion
+
+        #region Profile Name
+        private static string GenerateProfileName()
+        {
+            if (DdpmCommonHelper.DeviceManagerSA == null)
+                return string.Empty;
+
+            //Load all EM Profiles from DeviceManager
+            List<EAProfileDDPM> emProfiles = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+            if (emProfiles == null)
+                return string.Empty;
+
+            //Generate a new Profile Name and check if exists
+            const int maxProfileId = 9; //Profille No: 1~9
+            for (int i = 1; i <= 9; i++)
+            {
+                string profileName = $"Profile {i}";
+                //If no dupliate, then return this name
+                if (!emProfiles.Any(p => p.Name.Equals(profileName, StringComparison.OrdinalIgnoreCase)))
+                {
+                    return profileName;
+                }
+            }   
+            return string.Empty;
         }
         #endregion
     }

@@ -18,7 +18,7 @@ using System.Windows.Media.Media3D;
 namespace DDPM.EABroker
 {
     //Robert_Lin, 2024-12-6, Unused. The usage from EzMemoryPlugin, will be removed.
-    public class EzMemLauncher
+    public class EzMemLauncher_Unused
     {
         #region Private Members
         private string _lastError = string.Empty;
@@ -36,7 +36,7 @@ namespace DDPM.EABroker
         public static ILog? Log { get; set; } = null;
 
         #endregion
-        public EzMemLauncher()
+        public EzMemLauncher_Unused()
         {
             
         }
