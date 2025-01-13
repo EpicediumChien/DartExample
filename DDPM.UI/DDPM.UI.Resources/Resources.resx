@@ -1405,7 +1405,7 @@
     <value>This device you are pairing is not supported with the connected USB wireless receiver. Use the receiver that came with the device.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>The available slots on this USB wireless receiver are full. To use, unpair a device from it by clicking on the \"Unpair\" button in the device settings page.</value>
+    <value>The available slots on this USB wireless receiver are full. To use, unpair a device from it by clicking on the "Unpair" button in the device settings page.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>Click to Assign an action</value>
@@ -2446,7 +2446,7 @@
     <value>Click the browse button to select a file</value>
   </data>
   <data name="Action.3" xml:space="preserve">
-    <value>Click the \"Browse\" button to select a folder</value>
+    <value>Click the "Browse" button to select a folder</value>
   </data>
   <data name="Action.4" xml:space="preserve">
     <value>Type the URL of the web page in the box below</value>
@@ -2485,7 +2485,7 @@
     <value>Collaboration</value>
   </data>
   <data name="Collab.10" xml:space="preserve">
-    <value>Collaboration Keyboard cannot connect to Microsoft Teams because you blocked the request. To use Microsoft Teams with Collaboration Keyboard, click \"Learn more\" for instructions on how to re-connect.</value>
+    <value>Collaboration Keyboard cannot connect to Microsoft Teams because you blocked the request. To use Microsoft Teams with Collaboration Keyboard, click "Learn more" for instructions on how to re-connect.</value>
   </data>
   <data name="Collab.11" xml:space="preserve">
     <value>To use Collaboration Keyboard with Zoom, install Zoom’s latest desktop version</value>

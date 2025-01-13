@@ -2212,7 +2212,7 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                     if (!commandLineInput.Options[0].Option_Value.Contains(','))
                     {
-                        commandLineInput.Options[0].Option_Value += ",DEFER";
+                        commandLineInput.Options[0].Option_Value += ",FORCEWITHNOTICE";
                     }
                     string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
 
@@ -3359,13 +3359,13 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                         if (commandLineInput.Options.Count == 0)
                         {
-                            commandLineInput.Options.Insert(0, new CommandType_Option("VALUE", "MANUAL,DEFER"));
+                            commandLineInput.Options.Insert(0, new CommandType_Option("VALUE", "MANUAL,FORCEWITHNOTICE"));
                         }
                         if (!commandLineInput.Options[0].Option_Value.Contains(','))
                         {
-                            commandLineInput.Options[0].Option_Value += ",DEFER"; //2025/1/1 Elie, fix Cli for SW update with Automatic command is going to add a DEFER. (Anfernee's comment)
+                            commandLineInput.Options[0].Option_Value += ",FORCEWITHNOTICE"; //2025/1/1 Elie, fix Cli for SW update with Automatic command is going to add a DEFER. (Anfernee's comment)
                         }
-                        if (commandLineInput.Options.Count > 0 || commandLineInput.Options[0].Option_Value == "MANUAL,DEFER")
+                        if (commandLineInput.Options.Count > 0)
                         {
                             writelog("FWUpdate_Line 3902");
                             string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
@@ -3420,14 +3420,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                             }
 
                         }
-                        else if (commandLineInput.Options.Count == 0)
-                        {
-                            writelog("FWUpdate_Line 3957");
-                            SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, false, true).Result;
-                            Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
-                            ret = true;
-                            _devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, false, installPath);
-                        }
+                        //else if (commandLineInput.Options.Count == 0)
+                        //{
+                        //    writelog("FWUpdate_Line 3957");
+                        //    SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, false, true).Result;
+                        //    Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
+                        //    ret = true;
+                        //    _devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, false, installPath);
+                        //}
                         else
                         {
                             writelog("FWUpdate_Line 3965");

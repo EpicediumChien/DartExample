@@ -77,7 +77,7 @@
                       <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
                         <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                         <Border.ToolTip>
-                          <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                          <ToolTip Placement="Center" VerticalOffset="40" HorizontalOffset="80">
                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                               <TextBlock Text="{Binding [WebCameraColorImage.1], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap" />
                             </Border>
@@ -163,7 +163,7 @@
                         <Border Background="{StaticResource FakeTransparent}" Cursor="Hand">
                           <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                           <Border.ToolTip>
-                            <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                            <ToolTip Placement="Center" VerticalOffset="-40">
                               <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                 <TextBlock Text="{Binding [WebCameraColorImage.8], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="Wrap"/>
                               </Border>

@@ -148,8 +148,8 @@ namespace DDPM.SA.Common.UpdateProgressPage
         {
             InitializeComponent();
             DataContext = this;
-            _Logs = logs;
-            _Logs?.DebugMsg_1($"[UpdateProgress] UpdateProgress go");
+            //_Logs = logs;
+            //_Logs?.DebugMsg_1($"[UpdateProgress] UpdateProgress go");
             GetSystemTheme();
         }
 
@@ -217,7 +217,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 UpdateSubTitle = LangHelper.Instance["Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed"];
             }
             UpdateVersion = $"{LangHelper.Instance["Version"]} {e.TheLatestVersion}";
-            if (e.ProcessName.Equals(LangHelper.Instance["Installing"]))
+            if (e.ProcessName.Equals("Installing"))
             {
                 isInstalling = true;
                 ProgressValue = (int)100;
@@ -230,7 +230,7 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 AlertVisibility = Visibility.Collapsed;
                 Progress_IsAnimated = true;
             }
-            else if (e.ProcessName.Equals(LangHelper.Instance["Downloading_and_installing"]))
+            else if (e.ProcessName.Equals("Downloading"))
             {
                 isInstalling = false;
                 ProgressValue = (int)e.ProcessProgress;
@@ -239,21 +239,30 @@ namespace DDPM.SA.Common.UpdateProgressPage
                 Progress_IsAnimated = false;
                 AlertVisibility = Visibility.Collapsed;
             }
-            else if (e.ProcessName.Equals(LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"]) || e.ProcessName.Equals(LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"]))
+            else if (e.ProcessName.Equals("M1"))
             {
                 isInstalling = false;
                 ProgressValue = (int)e.ProcessProgress;
                 ProgressStr = $"{LangHelper.Instance["Downloading_and_installing"]}... {ProgressValue}%";
                 Progress_IsAnimated = false;
-                AlertMessage = e.ProcessName;
+                AlertMessage = LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"];
                 AlertVisibility = Visibility.Visible;
             }
-            else if (e.ProcessName.Equals(LangHelper.Instance["Timeout"]) && !isInstalling)
+            else if (e.ProcessName.Equals("M2"))
+            {
+                isInstalling = false;
+                ProgressValue = (int)e.ProcessProgress;
+                ProgressStr = $"{LangHelper.Instance["Downloading_and_installing"]}... {ProgressValue}%";
+                Progress_IsAnimated = false;
+                AlertMessage = LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"];
+                AlertVisibility = Visibility.Visible;
+            }
+            else if (e.ProcessName.Equals("Timeout") && !isInstalling)
             {
                 ProgressStr_2 = $"{LangHelper.Instance["Unable_to_detect_target_device"]}… {(int)e.ProcessProgress}s";
                 ProgressStr_2_Color = "#E6AC28";
             }
-            _Logs?.DebugMsg_1($"[UpdateProgress] {nameof(_FWUpdatePlugin_ProgressUpdate)} {e.DeviceName} {e.TheLatestVersion} {e.ProcessName} {e.ProcessProgress} {DateTime.Now}");
+            //_Logs?.DebugMsg_1($"[UpdateProgress] {nameof(_FWUpdatePlugin_ProgressUpdate)} {e.DeviceName} {e.TheLatestVersion} {e.ProcessName} {e.ProcessProgress} {DateTime.Now}");
         }
         int GetSystemTheme()
         {

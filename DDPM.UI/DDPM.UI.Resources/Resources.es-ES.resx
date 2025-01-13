@@ -1399,7 +1399,7 @@
     <value>El dispositivo que va a emparejar no es compatible con el receptor inalámbrico USB conectado. Utilice el receptor que incluía el dispositivo.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>Las ranuras disponibles en este receptor inalámbrico USB están llenas. Para usarlo, desempareje un dispositivo haciendo clic en el botón \"Desemparejar\" en la página de configuración del dispositivo.</value>
+    <value>Las ranuras disponibles en este receptor inalámbrico USB están llenas. Para usarlo, desempareje un dispositivo haciendo clic en el botón "Desemparejar" en la página de configuración del dispositivo.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>Haga clic en Asignar una acción</value>
@@ -2416,7 +2416,7 @@
     <value>Tecla de acceso rápido: Reciente</value>
   </data>
   <data name="EazyMemorySettings.1" xml:space="preserve">
-    <value>Ejemplo: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.</value>
+    <value>Ejemplo: "Alt + P", "Shift + F", "Ctrl + Shift + F".</value>
   </data>
   <data name="EazyMemorySettings.2" xml:space="preserve">
     <value>Ajuste fácilmente cualquier aplicación en un diseño de pantalla dividida arrastrando a una partición</value>
@@ -2446,7 +2446,7 @@
     <value>Haga clic en el botón Examinar para seleccionar un archivo</value>
   </data>
   <data name="Action.3" xml:space="preserve">
-    <value>Haga clic en el botón \&quot;Examinar\&quot; para seleccionar una carpeta</value>
+    <value>Haga clic en el botón "Examinar" para seleccionar una carpeta</value>
   </data>
   <data name="Action.4" xml:space="preserve">
     <value>Escriba la URL de la página web en el recuadro siguiente</value>
@@ -2485,7 +2485,7 @@
     <value>Colaboración</value>
   </data>
   <data name="Collab.10" xml:space="preserve">
-    <value>El teclado de colaboración no puede conectarse a Microsoft Teams porque ha bloqueado la solicitud. Para utilizar Microsoft Teams con el teclado de colaboración, haga clic en \&quot;Más información\&quot; para obtener instrucciones sobre cómo volver a conectarse.</value>
+    <value>El teclado de colaboración no puede conectarse a Microsoft Teams porque ha bloqueado la solicitud. Para utilizar Microsoft Teams con el teclado de colaboración, haga clic en "Más información" para obtener instrucciones sobre cómo volver a conectarse.</value>
   </data>
   <data name="Collab.11" xml:space="preserve">
     <value>Para utilizar el teclado de colaboración con Zoom, instale la versión de escritorio más reciente de Zoom</value>
@@ -2818,7 +2818,7 @@
     <value>Pegar y combinar formato</value>
   </data>
   <data name="Camera.25" xml:space="preserve">
-    <value>Conecte el monitor a través de USB 3.0 y seleccione &quot;Alta velocidad de datos&quot; en la priorización USB-C para habilitar la resolución 4K UHD.</value>
+    <value>Conecte el monitor a través de USB 3.0 y seleccione "Alta velocidad de datos" en la priorización USB-C para habilitar la resolución 4K UHD.</value>
   </data>
   <data name="HeadsetAutomatedActions.14" xml:space="preserve">
     <value>Sensibilidad</value>
@@ -3259,7 +3259,7 @@
     <value>Error al guardar del informe de activos de monitor</value>
   </data>
   <data name="USBKVM.Tips" xml:space="preserve">
-    <value>Ejemplo: &quot;Alt + P&quot;, &quot;Mayús + F&quot;, &quot;Ctrl + Mayús + F&quot;.\nNota: para varios monitores, el cursor del ratón debe estar en la pantalla del monitor objetivo para activar la función de tecla de acceso rápido.</value>
+    <value>Ejemplo: "Alt + P", "Mayús + F", "Ctrl + Mayús + F".\nNota: para varios monitores, el cursor del ratón debe estar en la pantalla del monitor objetivo para activar la función de tecla de acceso rápido.</value>
   </data>
   <data name="BrightnessLevel" xml:space="preserve">
     <value>Nivel de brillo</value>

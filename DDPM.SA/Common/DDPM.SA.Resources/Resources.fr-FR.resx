@@ -502,7 +502,7 @@
     <value>Impossible de synchroniser le profil ICC correspondant pour</value>
   </data>
   <data name="EABroker_updateToEmProfilePrompt" xml:space="preserve">
-    <value>Des profils Easy Memory sont associés à cette mise en page personnalisée.\NLa sauvegarde de cette mise en page personnalisée mettra à jour la mise en page pour tous les profils associés.\NVoulez-vous sauvegarder la mise en page ?</value>
+    <value>Des profils Easy Memory sont associés à cette mise en page personnalisée.\nLa sauvegarde de cette mise en page personnalisée mettra à jour la mise en page pour tous les profils associés.\nVoulez-vous sauvegarder la mise en page ?</value>
   </data>
   <data name="CollabMultipleCalls" xml:space="preserve">
     <value>Les commandes de collaboration ne sont pas disponibles pendant les conférences téléphoniques multiples</value>

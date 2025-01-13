@@ -132,6 +132,14 @@ namespace DDPM.SA.Common
 
         Task<DDMImpSettings> ReadDDMImpSettingsFile(string path);
 
+        /// <summary>
+        /// For auto import to read if we need to skip notification
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="modelName"></param>
+        /// <returns>Boolean</returns>
+        Task<bool> ReadSameModelAutoApplySameModelFlag(string path, string modelName);
+
         //For common json file read/write
         Task<string> ReadSerializedContentFromFile(string filePath);
 

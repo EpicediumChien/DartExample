@@ -497,7 +497,7 @@ namespace DDPM.UI.Module.Kvm
 
         public bool isNKVMEanble { get; set; } = true;
         public double NKVM_Opacity { get; set; } = 1;
-        public Visibility LockNKVM_Visibility { get; set; } = Visibility.Collapsed;
+        //public Visibility LockNKVM_Visibility { get; set; } = Visibility.Collapsed;
 
         public bool isUSBKVMEanble { get; set; } = true;
         public double USBKVM_Opacity { get; set; } = 1;
@@ -1963,7 +1963,7 @@ namespace DDPM.UI.Module.Kvm
         {
             OnPropertyChanged("isNKVMEanble");
             OnPropertyChanged("NKVM_Opacity");
-            OnPropertyChanged("LockNKVM_Visibility");
+            //OnPropertyChanged("LockNKVM_Visibility");
             OnPropertyChanged("isUSBKVMEanble");
             OnPropertyChanged("USBKVM_Opacity");
             OnPropertyChanged("LockUSBKVM_Visibility");
@@ -2070,15 +2070,15 @@ namespace DDPM.UI.Module.Kvm
                         }
                         else
                         {
-                            if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
-                            {
+                            //if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
+                            //{
                                 bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
                                 _log.Debug($"[KvmViewModel] SetUSBUpstream {pcs.Key}-{pcs.Value.InputType}: {pcs.Value.USBUpstream} Done");
                                 if (bUSBuptream)
                                 {
                                     Thread.Sleep(1000);
                                 }
-                            }
+                            //}
                         }
                     }
                     USBDisenable();

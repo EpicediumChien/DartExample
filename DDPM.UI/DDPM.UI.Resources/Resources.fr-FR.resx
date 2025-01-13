@@ -1399,7 +1399,7 @@
     <value>L’appareil que vous êtes en train de coupler n’est pas compatible avec le récepteur sans fil USB qui est connecté. Utilisez le récepteur fourni avec l’appareil.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>Les logements disponibles sur le récepteur sans fil USB sont tous occupés. Pour l’utiliser, dissociez un appareil du système en cliquant sur le bouton \"Dissocier\" dans les paramètres de l’appareil.</value>
+    <value>Les logements disponibles sur le récepteur sans fil USB sont tous occupés. Pour l’utiliser, dissociez un appareil du système en cliquant sur le bouton "Dissocier" dans les paramètres de l’appareil.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>Cliquer pour attribuer une action</value>

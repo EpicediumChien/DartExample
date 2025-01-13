@@ -305,6 +305,8 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(ButtonCollection));
 
             InitializeButton();
+            IsSliderDragging = false;
+            isDpiChangePanding = false;
             return true;
         }
 
@@ -464,11 +466,20 @@ namespace DDPM.UI.Plugin.ViewModels
                                 break;
 
                             case "DpiValueChanged":
-                                DPIValue = int.Parse(di.DpiValue);
+                                if (!di.IsDPIValueChangePending)
+                                {
+                                    if (int.TryParse(di.DpiValue, out int v) && !IsSliderDragging)
+                                        DPIValue = v;
+
+                                    CurrentDeviceInfo.DpiValue = di.DpiValue;
+                                }
                                 break;
                             case "DpiLevelChanged":
-                                DPIValue = di.DpiLevel;
-                                CurrentDeviceInfo.DpiLevel = di.DpiLevel;
+                                if (!di.IsDPILevelChangePending && !IsSliderDragging)
+                                {
+                                    DPIValue = di.DpiLevel;
+                                    CurrentDeviceInfo.DpiLevel = di.DpiLevel;
+                                }
                                 break;
 
                             case "BatteryLevelChanged":
@@ -477,6 +488,9 @@ namespace DDPM.UI.Plugin.ViewModels
                             case "DPILevelChangePendingChanged":
                             case "DPIValueChangePendingChanged":
                                 isDpiChangePanding = di.IsDPILevelChangePending || di.IsDPIValueChangePending;
+                                if (!isDpiChangePanding)
+                                    SetDPIValue();
+
                                 OnPropertyChanged(nameof(DpiChangePandingVisibility));
                                 break;
 
@@ -577,8 +591,10 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (CurrentDeviceInfo!.IsDPIValueSupported)
                     return CurrentDeviceInfo.DpiMin;
-                else
+                else if (CurrentDeviceInfo.IsDPILevelSupported)
                     return 1;
+                else
+                    return 0;
             }
         }
         public int DPIMax
@@ -603,6 +619,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     return 1;
             }
         }
+
+        public int DpiTempValue = 0;
         public int DPIValue
         {
             get => _DPIValue;
@@ -630,7 +648,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public double[] DPITextMargin { get; set; } = { 0 };//SDL, change to use array
         public void SetDPIValue()
         {
-            if (_DPIValue != int.Parse(CurrentDeviceInfo!.DpiValue))
+            if (_DPIValue != int.Parse(CurrentDeviceInfo!.DpiValue) && !isDpiChangePanding)
             {
                 if (CurrentDeviceInfo.IsDPIValueSupported)
                     DdpmCommonHelper.DeviceManagerSA!.SetDPIValue(_DPIValue, CurrentDeviceInfo.ID);

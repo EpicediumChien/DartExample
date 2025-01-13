@@ -37,7 +37,7 @@ namespace DDPM.SA.Common
         Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay, DeviceType deviceType);
         Task<bool> RestartService();
 
-        void SetDeviceinfo(List<DeviceInfo> DeviceInfos, int DongleCount);
+        void SetDeviceinfo(List<DeviceInfo> DeviceInfos, int DongleCount, int AudioDongle);
 
         void CheckUODFWUInfo(DokcUODUpdateInfoPackage UODFWUInfo, List<DeviceInfo> DeviceInfos);
 

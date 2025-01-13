@@ -30,15 +30,13 @@
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <Grid Width="25" Height="25" Margin="5" Grid.Row="0"
-              HorizontalAlignment="Right"
-              VerticalAlignment="Top"
-              MouseDown="Grid_MouseDown"
-              >
-                <Path VerticalAlignment="Center" HorizontalAlignment="Center"
-                  Data="M14 0.7175L13.2825 0L7 6.3L0.7175 0.04375L0 0.76125L6.25625 7L0.04375 13.2388L0.76125 14L7 7.74375L13.2388 14L13.9563 13.2825L7.7 7L14 0.7175Z"
-                   />
-            </Grid>
+            <Border  BorderThickness="1" CornerRadius="10"  Width="25" Height="25" Margin="5" Grid.Row="0"  HorizontalAlignment="Right"
+                    VerticalAlignment="Top" MouseDown="Grid_MouseDown" >
+                <Grid  MouseDown="Grid_MouseDown" >
+                    <Path VerticalAlignment="Center" HorizontalAlignment="Center"  MouseDown="Grid_MouseDown"
+                  Data="M14 0.7175L13.2825 0L7 6.3L0.7175 0.04375L0 0.76125L6.25625 7L0.04375 13.2388L0.76125 14L7 7.74375L13.2388 14L13.9563 13.2825L7.7 7L14 0.7175Z" />
+                </Grid>
+            </Border>
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
