@@ -234,6 +234,11 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="spItem"></param>
         private void OnListViewItemEdited(SplitItem spItem)
         {
+            //Find the EM Profile and ProfileSetting from SplitItem.ProfileID
+            //
+            //OUTPUT:
+            // _vm.currentEditprofile  : The profile to be edited
+            // _vm.currentEditprofileSetting : The profile setting to be edited
             try
             {
                 _log.Info($"@[EzMemoryRightView] OnListViewItemEdited ... in");
@@ -282,11 +287,15 @@ namespace DDPM.UI.Module.EzMemory
                     }
                     else
                     {
+                        //Robert_Lin 2025-1-12 Create a default ProfileSetting for the editing Profile
+                        _vm.currentEditprofileSetting = new EzProfileSettingDDPM(spItem.ProfileID, false, 0, false);
                         _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, ProfileSetting with Monitor Model {_homeDevice.MonitorInfo.modelName}, ID {spItem.ProfileID} not found in MonitorSettings.");
                     }
                 }
                 else
                 {
+                    //Robert_Lin 2025-1-12 Create a default ProfileSetting for the editing Profile
+                    _vm.currentEditprofileSetting = new EzProfileSettingDDPM(spItem.ProfileID, false, 0, false);
                     _log.Info($"@[EzMemoryRightView] OnListViewItemEdited, No valid EasyArrangementDDPM or Desktops found in MonitorSettings.");
                 }
             }
@@ -295,8 +304,15 @@ namespace DDPM.UI.Module.EzMemory
                 _log.Error($"@[EzMemoryRightView] OnListViewItemEdited, Error occurred while deleting from MonitorSettings: {ex.Message}");
             }
 
-            _vm.IsEditProfile = true;
+            _vm.OrgEditSplitItem = spItem;
             _vm.CurrentEditSelectspItem = spItem;
+            _vm.IsEditProfile = true;
+            //Robert_Lin 2025-1-9 add this flag so that the Profile appInfo can be Sync in AssignApp page
+            _vm.IsAddPageBack = false;
+            //Assign the Proile Name to be edited
+            if (_vm.currentEditprofile != null)
+                _vm.InputText = _vm.currentEditprofile.Name;
+
             EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay, _vm, _homeDeviceSelect);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
         }
@@ -308,15 +324,50 @@ namespace DDPM.UI.Module.EzMemory
         /// <summary>
         /// SplitItem Click event
         /// </summary>
-        /// <param name="spItem"></param>
+        /// <param name="spItem">The SplitItem uesr is clicking</param>
         private void OnListViewItemClicked(SplitItem spItem)
         {
+            //Robert_Lin, 2025-1-12
+            //1 spItem: the user clicking SplitItem will be the new selected item, assign tp _vm.CurrentSelectspItem
+            //2 Get the ProfileId from spItem
+            //3 LoadEmProfileSettings(profileId): Load the ProfileSettings from UserSettings and MonitorSettings
+            //  UserSettings assign to _vm.CurrentSelectedProfile; update to UI (ProfileName, AppDocument)
+            //  MonitorSettings assign to _vm.CurrentSelectedProfileSetting; update to UI (AutomaticStartup, LaunchByTime)
+            //4 Refresh Selection of SplitListView
+            //5 Enable Apply button
+
             try
             {
                 _log.Info($"@[EzMemoryRightView] OnListViewItemClicked ... in");
+                int profileID = spItem.ProfileID;
+
+                /*
+                EAProfileDDPM emProfile = new EAProfileDDPM();
+                EzProfileSettingDDPM emProfileSettings = new EzProfileSettingDDPM();
+
+                if (_vm.LoadEmProfileSettings(profileID, ref emProfile, ref emProfileSettings))
+                {
+                    _vm.CurrentSelectedProfile = emProfile;
+                    _vm.CurrentSelectedProfileSetting = emProfileSettings;
+                    _log.Info($"@EzMemoryRightView.OnListViewItemClicked,, Profile ID={profileID}, Load user settings OK.");
+                }
+                else
+                {
+                    _vm.CurrentSelectedProfile = null;
+                    _vm.CurrentSelectedProfileSetting = null;
+                    _log.Info($"@EzMemoryRightView.OnListViewItemClicked, Profile ID {profileID} not found in UserSettings.");
+                }
+                */
+
+                if (_vm.CurrentSelectspItem != null)
+                    _vm.CurrentSelectspItem.IsSelected = false;
 
                 _vm.CurrentSelectspItem = spItem;
+                _vm.CurrentSelectspItem.IsSelected = true;
 
+                _vm.UpdateRightViewUIFromCurrentSelectspItem();
+
+                /*
                 // User Setting
                 List<EAProfileDDPM> clickedEAProfileDDPM = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
                 EAProfileDDPM matchingProfile;
@@ -393,27 +444,33 @@ namespace DDPM.UI.Module.EzMemory
                         _log.Info($"@[EzMemoryRightView] OnListViewItemClicked, ProfileSetting with ID {matchingProfile.ID} not found in MonitorSettings.");
                     }
                 }
+                */
             }
             catch (Exception ex)
             {
                 _log.Error($"@[EzMemoryRightView] OnListViewItemClicked, Error occurred: {ex.Message}. StackTrace: {ex.StackTrace}");
             }
 
+            _vm.IsApplyEnabled = (_vm.CurrentSelectspItem != null);
+
             //Only sopported for ISplitCtrl SplitItem (that is, EasyArrange) should be always
             //If it's NOT a ISplitCtrl, then noting to do and return
-            if (spItem.InnerContent is not ISplitCtrl)
-                return;
+            //if (spItem.InnerContent is not ISplitCtrl)
+            //    return;
 
-            ISplitCtrl spCtrl = spItem.InnerContent as ISplitCtrl;
+            //ISplitCtrl spCtrl = spItem.InnerContent as ISplitCtrl;
 
             //Set as current Selected item
-            _vm.SelectedSplitItem = spItem;
+            //_vm.SelectedSplitItem = spItem;
             //Robert_Lin, 2024-11-27, comment out, Don't call this method, it will change the selection of Easy Arrange to SA
             //But UI do not get the notification.
             //_vm.SetWorkSplit(spCtrl.CellCount, spCtrl.SplitKey, spCtrl.Settings);
 
             //Need to set it's buddy as IsSelected
 
+            //Robert_Lin, 2025-1-9, EasyMemory do not need to check the Buddy in RecentList
+
+            /*
             //If the selected item is in RecentList, then it should be has Buddy
             if (spItem.SplitOwner == Common.EAEM.eSplitOwner.EaRecent)
             {
@@ -450,12 +507,12 @@ namespace DDPM.UI.Module.EzMemory
                 }
 
             }
-
-            if(_vm.SelectedSplitItem != null)
-            {
-                _vm.IsApplyEnabled = true;
-            }
-            //splitListView_RecentForEzM.MoveSelectedItemToSecondPosition();
+            */
+            //if(_vm.SelectedSplitItem != null)
+            //{
+            //    _vm.IsApplyEnabled = true;
+            //}
+            ////splitListView_RecentForEzM.MoveSelectedItemToSecondPosition();
             //SaveEaSettings();
         }
 
@@ -540,6 +597,34 @@ namespace DDPM.UI.Module.EzMemory
 
                 }
             }
+
+            //Robert_Lin 2025-1-11 Reset Editing data to defauls
+            //
+            //No current edit SplitItem
+            _vm.CurrentEditSelectspItem = null;
+
+            //No added apps
+            _vm.ClearTextBlockAppName();
+            if (_vm.currentEditprofile != null)
+            {
+                _vm.currentEditprofile = null;
+            }
+
+            //ProfileSetting: allocate a new default value
+            _vm.currentEditprofileSetting = null;
+
+            //Is Edit mode = false
+            _vm.IsEditProfile = false;
+
+            //Clear ProfileName to be generated a new/unused one
+            _vm.InputText = string.Empty;
+
+            //reset Launch options to
+            _vm.IsManualLaunch = true;
+            _vm.IsAutoLaunch = false;
+            _vm.IsLaunchAtStartup = false;
+            //Time will be refresh in LaunchOptions page
+
             EzMemoryFirst ezFirst = new EzMemoryFirst(_vmDisplay, _vm, _homeDeviceSelect);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezFirst);
         }
@@ -600,70 +685,86 @@ namespace DDPM.UI.Module.EzMemory
                     // ProfileSettings 不為 null
                     //if (initListVieweasyArrangementDDPM.Desktops.Count > 0 && initListVieweasyArrangementDDPM.Desktops[0].ProfileSettings != null)
                     //{
-                        foreach (var profile in initListViewIEAProfileDDPM)
+                    foreach (var profile in initListViewIEAProfileDDPM)
+                    {
+                        // 在 ProfileSettings 中找是否有對應的 ID
+                        //EzProfileSettingDDPM profileSetting = initListVieweasyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == profile.ID);
+
+                        //if (profileSetting != null)
+                        //{
+                        //Robert_Lin, 2025-1-9, use new property to check
+                        //NEW:
+                        if (profile.IsCustomLayout)
+                        //OLD:
+                        //if (profile.Layout >= 1000)
                         {
-                            // 在 ProfileSettings 中找是否有對應的 ID
-                            //EzProfileSettingDDPM profileSetting = initListVieweasyArrangementDDPM.Desktops[0].ProfileSettings.FirstOrDefault(ps => ps.ID == profile.ID);
+                            SplitJson[] customList = _deviceManagerSA.ReadEACustomList().Result;
+                            foreach (SplitJson spj in customList)
+                            {
 
-                            //if (profileSetting != null)
-                            //{
-                                if (profile.Layout >= 1000)
+                                if (profile.Layout == spj.EAID)
                                 {
-                                    SplitJson[] customList = _deviceManagerSA.ReadEACustomList().Result;
-                                    foreach (SplitJson spj in customList)
-                                    {
-                                        if (profile.Layout == spj.EAID)
-                                        {
-                                            //Validate settings
-                                            //1 CustomId must > 0
-                                            if (spj.CustomId == 0)
-                                                continue;
-                                            //2 CustomName cannot be empty
-                                            if (String.IsNullOrWhiteSpace(spj.CustomName))
-                                                continue;
-                                            //3 CustomName length
-                                            if (spj.CustomName.Length > EAEMConstants.MaxCustomNameLenth)
-                                                continue;
+                                    //Validate settings
+                                    //Robert_Lin, 2025-1-9, EasyMemory do not need to validate these
+                                    ////1 CustomId must > 0
+                                    //if (spj.CustomId == 0)
+                                    //    continue;
+                                    ////2 CustomName cannot be empty
+                                    //if (String.IsNullOrWhiteSpace(spj.CustomName))
+                                    //    continue;
+                                    ////3 CustomName length
+                                    //if (spj.CustomName.Length > EAEMConstants.MaxCustomNameLenth)
+                                    //    continue;
 
-                                            ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
-                                            if (spCtrl == null)
-                                                continue;
+                                    ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
+                                    if (spCtrl == null)
+                                        continue;
 
-                                            
-                                            spCtrl.Settings = new List<double>(spj.Settings);
-                                            spCtrl.SplitMode = eSplitModes.Icon;
-                                            spCtrl.FriendlyName = spj.CustomName;
-                                            spCtrl.EAID = spj.EAID;
-                                            SplitItem item = splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
-                                            // splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
-                                            item.IsDeleteEnabled = true;
-                                            item.IsEditEnabled = true;
-                                        }
-                                    }
+
+                                    spCtrl.Settings = new List<double>(spj.Settings);
+                                    spCtrl.SplitMode = eSplitModes.Icon;
+                                    //Robert_Lin, 2025-1-9, Tooltip text show the Profile name instead of Custom name
+                                    spCtrl.FriendlyName = profile.Name;
+                                    //spCtrl.FriendlyName = spj.CustomName;
+
+                                    spCtrl.EAID = spj.EAID;
+
+
+                                    SplitItem item = splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                    // splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                    item.IsDeleteEnabled = true;
+                                    item.IsEditEnabled = true;
+
+                                    //Robert_Lin, 2025-1-9, SplitItem need ProfileID to identify the Profile
+                                    item.ProfileID = profile.ID;
                                 }
-                                else
-                                {
-                                    // 找到才繼續處理
-                                    //(int cellCount, char splitKey) = _vm.ParseFromLayout(profile.Layout);
-                                    //ISplitCtrl? spCtrl = ISplitCtrl.Create(cellCount, splitKey);
-                                    ISplitCtrl? spCtrl = ISplitCtrl.Create(profile.Layout);
-                                    if (spCtrl != null)
-                                    {
-                                        SplitItem item = splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
-                                        //item.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
-                                        item.ProfileID = profile.ID;
-                                        item.IsHoverable = true;
-                                        item.IsDeleteEnabled = true;
-                                        item.IsEditEnabled = true;
-                                        item.LayoutID = profile.Layout;
-                                    }
-                                }
-                            //}
-                            //else
-                            //{
-                            //    _log.Info($"@[EzMemoryRightView] InitListViewItems: Profile ID {profile.ID} not found in MonitorSettings.");
-                            //}
+                            }
                         }
+                        else //Preset Layout
+                        {
+                            // 找到才繼續處理
+                            //(int cellCount, char splitKey) = _vm.ParseFromLayout(profile.Layout);
+                            //ISplitCtrl? spCtrl = ISplitCtrl.Create(cellCount, splitKey);
+                            ISplitCtrl? spCtrl = ISplitCtrl.Create(profile.Layout);
+                            if (spCtrl != null)
+                            {
+                                //Robert_Lin, 2025-1-9, Tooltip text show the Profile name instead of Custom name
+                                spCtrl.FriendlyName = profile.Name;
+                                SplitItem item = splitListView_RecentForEzM.AddItemToList(spCtrl.UC);
+                                //item.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+                                item.ProfileID = profile.ID;
+                                item.IsHoverable = true;
+                                item.IsDeleteEnabled = true;
+                                item.IsEditEnabled = true;
+                                item.LayoutID = profile.Layout;
+                            }
+                        }
+                        //}
+                        //else
+                        //{
+                        //    _log.Info($"@[EzMemoryRightView] InitListViewItems: Profile ID {profile.ID} not found in MonitorSettings.");
+                        //}
+                    }
                     //}
                     //else
                     //{
@@ -684,14 +785,14 @@ namespace DDPM.UI.Module.EzMemory
 
         #endregion
 
-        private void InitSplitListViews_Unused()
-        {
-            //A Build WindowLists
-            //
-            foreach (ISplitCtrl isp in ISplitCtrl.Splits_EA)
-            {
-            }
-        }
+        //private void InitSplitListViews_Unused()
+        //{
+        //    //A Build WindowLists
+        //    //
+        //    foreach (ISplitCtrl isp in ISplitCtrl.Splits_EA)
+        //    {
+        //    }
+        //}
 
         private void InitRecentListView_Unused()
         {

@@ -14,6 +14,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Animation;
+using Windows.ApplicationModel;
 using DragEventArgs = System.Windows.DragEventArgs;
 using ProgressBar = System.Windows.Controls.ProgressBar;
 using UserControl = System.Windows.Controls.UserControl;
@@ -63,22 +64,28 @@ namespace DDPM.UI.Module.EzMemory
             //Robert_Lin, 2024-11-19, ISplitCtrl.Create(EAID) can only create preset layout (EAID=[1~48]
             //_vm.ispCtrlForEm = ISplitCtrl.Create(_vm.CurrentSelectsEAID);
             //You can use Clone() to clone a ISplitCtrl from SplitIte.ISplitCtrl
-            _vm.ispCtrlForEm = _vm.SelectedSplitItem.ISplitCtrl.Clone();
+
+            //Robert_Lin 2025-1-9 change to CurrentEditSelectspItem
+            //NEW:
+            _vm.ispCtrlForEm = _vm.CurrentEditSelectspItem.ISplitCtrl.Clone();
+            //OLD:
+            //_vm.ispCtrlForEm = _vm.SelectedSplitItem.ISplitCtrl.Clone();
+
             //_vm.ispCtrlForEm = ISplitCtrl.Create(_vm.SelectedSplitItem.);
             _vm.ispCtrlForEm!.IsEditable = false; //If you do need the 'pencil' icon, please set it to false
             _vm.ispCtrlForEm.SplitMode = eSplitModes.Em;
             EMsplitCtrl.Content = _vm.ispCtrlForEm.UC;
 
-            int _no = 1;
-            foreach (var cellBorder in _vm.ispCtrlForEm.CellList)
-            {
-                cellBorder.CellBd.CellNumber = _no;
-                cellBorder.CellBd.MemoryText = _no.ToString();
-                //cellBorder.CellBd.MemoryImage = _vm.ImageSource;
-                _vm.AlignCellNumberAndAppName(_no, cellBorder);
-                _vm?.RegisterCellBorder(cellBorder.CellBd, _no);
-                _no++;
-            }
+            //int _no = 1;
+            //foreach (var cellBorder in _vm.ispCtrlForEm.CellList)
+            //{
+            //    cellBorder.CellBd.CellNumber = _no;
+            //    cellBorder.CellBd.MemoryText = _no.ToString();
+            //    //cellBorder.CellBd.MemoryImage = _vm.ImageSource;
+            //    _vm.AlignCellNumberAndAppName(_no, cellBorder);
+            //    _vm?.RegisterCellBorder(cellBorder.CellBd, _no);
+            //    _no++;
+            //}
             //Record UXTextBox
             if (_vm.ispCtrlForEm.CellList.Count <= 2)
             {
@@ -91,6 +98,19 @@ namespace DDPM.UI.Module.EzMemory
 
             UserControl_Loaded(null, null);
             InitializePage();
+
+
+            int _no = 1;
+            foreach (var cellBorder in _vm.ispCtrlForEm.CellList)
+            {
+                cellBorder.CellBd.CellNumber = _no;
+                cellBorder.CellBd.MemoryText = _no.ToString();
+                //cellBorder.CellBd.MemoryImage = _vm.ImageSource;
+                _vm.AlignCellNumberAndAppName(_no, cellBorder);
+                _vm?.RegisterCellBorder(cellBorder.CellBd, _no);
+                _no++;
+            }
+
         }
 
 
@@ -100,7 +120,19 @@ namespace DDPM.UI.Module.EzMemory
         public void InitializePage()
         {
             //這裡加入分割視窗的個數
-            if (_vm.SelectedSplitItem.ISplitCtrl.CellList.Count == 2)//(_vm.SelectedSplitItem.CellCount == 2)
+            //Robert_Lin 2025-1-10 During editing, the SplitItem should be CurrentEditSelectspItem
+            //NEW:
+            int splitCount = 0;
+            if (_vm.CurrentEditSelectspItem != null)
+            {
+                if (_vm.CurrentEditSelectspItem.ISplitCtrl != null)
+                {
+                    splitCount = _vm.CurrentEditSelectspItem.ISplitCtrl.CellList.Count;
+                }
+            }
+            if (splitCount == 2)
+            //OLD:
+            //if (_vm.SelectedSplitItem.ISplitCtrl.CellList.Count == 2)//(_vm.SelectedSplitItem.CellCount == 2)
             {
                 _vm.IsRightGridPage2Visible = true;
                 _vm.SelectedValue = 2;
@@ -108,7 +140,14 @@ namespace DDPM.UI.Module.EzMemory
             else
             {
                 _vm.IsRightGridPage2Visible = false;
-                _vm.SelectedValue = _vm.SelectedSplitItem.ISplitCtrl.CellList.Count;// _vm.SelectedSplitItem.CellCount;
+                //Robert_Lin 2025-1-10, editing SplitItem should be CurrentEditSelectspItem
+                //NEW:
+                if (_vm.CurrentEditSelectspItem != null)
+                {
+                    _vm.SelectedValue = splitCount;
+                }
+                //OLD:
+                //_vm.SelectedValue = _vm.SelectedSplitItem.ISplitCtrl.CellList.Count;// _vm.SelectedSplitItem.CellCount;
             }
             _vm.ezPages = _vm.GetEzPages();
 
@@ -120,19 +159,54 @@ namespace DDPM.UI.Module.EzMemory
                 SubText.Text = pageData.SubText!;
             }
 
-            //編輯模式但不是由AddPage返回才執行
-            if (_vm.IsEditProfile && !_vm.IsAddPageBack)
-            {
-                SyncEditStatusForAssignPage();
-            }
+            SyncEditStatusForAssignPage(false);
+            ////編輯模式但不是由AddPage返回才執行
+            //if (_vm.IsEditProfile && !_vm.IsAddPageBack)
+            //{
+            //    SyncEditStatusForAssignPage(false);
+            //}
+            //else
+            //{
+            //    SyncEditStatusForAssignPage(false);
+            //}
         }
 
         /// <summary>
         /// Sync Edit Status 回填App Name
         /// </summary>
-        public void SyncEditStatusForAssignPage()
+        public void SyncEditStatusForAssignPage(bool shouldClearApps=true)
         {
-            _vm._sortApps.Clear();
+            if (shouldClearApps)
+            {
+                _vm._sortApps.Clear();
+            }
+            //if (_vm.currentEditprofile == null)
+            {
+                if (_vm._sortApps.Count > 0)
+                {
+                     _vm.RefreshSortAppsKeysForNewCellCount(_vm.SelectedValue);
+
+                    int splitCount = Math.Min(_vm.SelectedValue, _vm._sortApps.Count);
+
+                    for (int i = 0; i < splitCount; i++)
+                    {
+                        string buttonName = "AddButton" + (i + 1).ToString();
+
+                        if (_vm.SelectedValue <= 2)
+                        {
+                            buttonName = "AddButton2_" + (i + 1).ToString();
+                        }
+
+                        if (_vm._sortApps.ContainsKey(buttonName))
+                        {
+                            _vm.UpdateTextBlockAppName(buttonName, _vm._sortApps[buttonName].AppName);
+                        }
+                    }
+                    return;
+                }
+                if (_vm.currentEditprofile == null)
+                    return;
+            }
 
             int loopCount = Math.Min(_vm.SelectedValue, _vm.currentEditprofile.AppInfos.Count);
 
@@ -177,8 +251,17 @@ namespace DDPM.UI.Module.EzMemory
                 }
 
                 _vm.UpdateTextBlockAppName(buttonName, appInfo.Name);
-                _vm._sortApps.Add(buttonName, newApp);
+                if (_vm._sortApps.ContainsKey(buttonName))
+                {
+                    _vm._sortApps[buttonName] = newApp;
+                }
+                else
+                {
+                    _vm._sortApps.Add(buttonName, newApp);
+                }
             }
+
+            _vm.RefreshAssignPageButtons();
         }
 
         /// <summary>
@@ -227,7 +310,11 @@ namespace DDPM.UI.Module.EzMemory
         /// <param name="e"></param>
         private void ArrowButton_Click(object sender, RoutedEventArgs e)
         {
-            _vm.ClearTextBlockAppName();
+            //Robert_Lin 2025-1-10 When Back button clicked, we should keep _sortApp
+            //When we come back from First view, we will reused _sortApps
+            //So comment-out the following code
+           // _vm.ClearTextBlockAppName();
+
             //_vm.IsEditProfile = true;// 從Aassign退回First
             EzMemoryFirst ezMemoryFirst = new EzMemoryFirst(_vmDisplay, _vm, _selecthomeDevice);
             DdpmCommonHelper.ModuleOwner?.OpenFullView(ezMemoryFirst);
@@ -350,6 +437,7 @@ namespace DDPM.UI.Module.EzMemory
                                 }
                                 _no++;
                             }
+                            _vm.RefreshAssignPageButtons();
                             return;
                         }
                         else
@@ -365,6 +453,7 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _log.Error($"[EzMemoryAssignProgram] AddButton1_Click Exception occurred: {ex.Message}");
             }
+            _vm.RefreshAssignPageButtons();
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

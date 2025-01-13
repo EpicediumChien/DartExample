@@ -102,6 +102,14 @@ namespace DDPM.SA.Common.Settings
             return 1 == DevSettings.ReadInt("EzArrange.SplitItem.Tooltip.ShowDebugInfo");
         }
 
+        /// <summary>
+        /// Dump WorkWindows and its information to log file after RefreshWorkWindows
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsDumpWorkWindowsInfoOnRefreshEnabled()
+        {
+            return 1 == ReadInt("EABroker.DumpWorkWindowsInfoOnRefreshed");
+        }
         #endregion EasyArrange
 
         #region DdpmHomePlgin
