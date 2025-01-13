@@ -245,19 +245,22 @@
                                                 <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                                                     <UXControls:UXButton
                                                         Name="btnManualBrightnessContrast"
-                                                        Width="111"
+                                                        MinWidth="111"
                                                         Height="40"
                                                         Margin="8,0,0,16"
                                                         Padding="24,8"
                                                         ButtonSemanticColorType="Neutral"
                                                         ButtonType="Secondary"
                                                         Click="Hotkey_Click"
-                                                        Content="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}"
                                                         CornerRadius="2"
                                                         IsEnabled="{Binding ManualBCHotkeyBtn}"
-                                                        Style="{StaticResource Button_WhiteFrame}" />
+                                                        Style="{StaticResource Button_WhiteFrame}">
+                                                        <Button.Content>
+                                                            <TextBlock Padding="10,0,10,0" Text="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}"/>
+                                                        </Button.Content>
+                                                    </UXControls:UXButton>
                                                     <UXControls:UXButton
-                                                        Width="111"
+                                                        MinWidth="111"
                                                         Height="40"
                                                         Margin="8,0,0,16"
                                                         Padding="24,8"

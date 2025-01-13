@@ -961,6 +961,7 @@
             <ContentPresenter.Resources>
               <Style TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
+                <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
               </Style>
             </ContentPresenter.Resources>
           </ContentPresenter>

@@ -50,7 +50,7 @@
                                 <Viewbox Width="16" Height="16"  Margin="16,0,0,0" Stretch="Uniform">
                                     <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
                                         <Grid.ToolTip>
-                                            <ToolTip>
+                                            <ToolTip Placement="Center" VerticalOffset="45">
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}"
                                                     MaxWidth="360">
                                                     <Grid>
@@ -104,13 +104,13 @@
                         <!-- #region Row 1: Allow app to split side by side without gap -->
                         <Grid Height="40" Margin="16,8">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="450"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
                             <!-- Text "Allow app to split side by side without gap"-->
-                            <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [EazyMemorySettings.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ItemDescriptionTextStyle}"/>
+                            <UXControls:UXTextBlock Grid.Column="0" TextWrapping="WrapWithOverflow" Text="{Binding [EazyMemorySettings.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ItemDescriptionTextStyle}"/>
                             <!-- ToogleSwitch -->
                             <UXControls:UXToggleSwitch Grid.Column="2" IsChecked="{Binding IsWithoutGap}" ContentTextVisibility="True" 
                                                    Content="{Binding Path=IsWithoutGap_String}" HorizontalAlignment="Right" VerticalAlignment="Center"  
@@ -121,13 +121,13 @@
                         <!-- #region Row 2: Only allow zone positioning when SHIFT is pressed -->
                         <Grid Height="40" Margin="16,8">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="450"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
                             <!-- Text "Only allow zone positioning when SHIFT is pressed"-->
-                            <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [EazyMemorySettings.4], Source={x:Static lang:LangHelper.Instance}}"
+                            <UXControls:UXTextBlock Grid.Column="0" TextWrapping="WrapWithOverflow" Text="{Binding [EazyMemorySettings.4], Source={x:Static lang:LangHelper.Instance}}"
                                                     Style="{StaticResource ItemDescriptionTextStyle}"/>
                             <!-- ToogleSwitch 
                         Content="{Binding Path=IsOnlyAllowWhenShiftKeyPressed_String}"
@@ -192,13 +192,13 @@
                                 <Viewbox Width="16" Height="16"  Margin="16,0,0,0" Stretch="Uniform">
                                     <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
                                         <Grid.ToolTip>
-                                            <ToolTip>
+                                            <ToolTip Placement="Left">
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}"
                                                    MaxWidth="360">
                                                     <Grid>
                                                         <TextBlock Name="applicationWindowSnapTooltipText"
                                                               Style="{StaticResource Tooltip_TextBlockStyle}"
-                                                              TextWrapping="Wrap"/>
+                                                              TextWrapping="WrapWithOverflow" MaxWidth="350"/>
                                                     </Grid>
                                                 </Border>
                                             </ToolTip>

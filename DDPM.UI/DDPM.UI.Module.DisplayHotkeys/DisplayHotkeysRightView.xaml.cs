@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using VcpCore.Common;
 using Windows.System;
 
@@ -503,6 +504,60 @@ namespace DDPM.UI.Module.DisplayHotkeys
             {
                 DdpmCommonHelper.bInputSourceRenamed = false;
                 vm.Invoke_RefreshData();
+            }
+        }
+
+        private bool IsTextTruncated(TextBlock tb)
+        {
+            Typeface typeface = new Typeface(tb.FontFamily, tb.FontStyle, tb.FontWeight, tb.FontStretch);
+            FormattedText formattedText = new FormattedText(tb.Text, System.Globalization.CultureInfo.CurrentCulture,
+                System.Windows.FlowDirection.LeftToRight, typeface, tb.FontSize, Brushes.Black);
+
+            if (formattedText.Width > tb.ActualWidth)
+                return true;
+
+            return false;
+        }
+
+        private void UXDisplayHotkeys1TextBlock_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                TextBlock? tb = sender as TextBlock;
+
+                if (tb != null)
+                {
+                    if (IsTextTruncated(tb))
+                        displayHotkeys1Tooltip.Visibility = Visibility.Visible;
+                    else
+                        displayHotkeys1Tooltip.Visibility = Visibility.Hidden;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                DdpmCommonHelper.WriteUILog($"Catch Exception[{ex.Message}] when run UXDisplayHotkeys1TextBlock_Loaded");
+            } 
+        }
+
+        private void UXDisplayHotkeys3TextBlock_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                TextBlock? tb = sender as TextBlock;
+
+                if (tb != null)
+                {
+                    if (IsTextTruncated(tb))
+                        displayHotkeys3Tooltip.Visibility = Visibility.Visible;
+                    else
+                        displayHotkeys3Tooltip.Visibility = Visibility.Hidden;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                DdpmCommonHelper.WriteUILog($"Catch Exception[{ex.Message}] when run UXDisplayHotkeys3TextBlock_Loaded");
             }
         }
     }
