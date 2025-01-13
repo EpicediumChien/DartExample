@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:DDPM.UI.Common.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
     Title="DDPMMsgBox"
     Width="420"
     Height="240"
@@ -73,7 +74,7 @@
                         HorizontalAlignment="Left"
                         ButtonType="Secondary"
                         Click="lefe_btn_Click"
-                        Content="Yes"
+                        Content="{Binding [Yes], Source={x:Static lang:LangHelper.Instance}}"
                          />
                     <controls:UXButton
                         Name="right_btn"
@@ -83,7 +84,7 @@
                         HorizontalAlignment="Right"
                         ButtonType="Primary"
                         Click="right_btn_Click"
-                        Content="No"
+                        Content="{Binding [No], Source={x:Static lang:LangHelper.Instance}}"
                         
                         IconPosition="IconRight" />
                 </StackPanel>

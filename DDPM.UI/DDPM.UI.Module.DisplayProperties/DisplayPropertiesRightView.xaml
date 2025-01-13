@@ -152,7 +152,7 @@
                                             <UXControls:UXAlertItem AlertItemType="Info"
                                                                     Margin="8,8,8,8"
                                                                     Label=""
-                                                                    Message="Disconnect all USB storage devices from monitor." />
+                                                                    Message="{Binding [Disconnect_all_USB_storage_devices_from_monitor], Source={x:Static lang:LangHelper.Instance}}" />
                                         </UXControls:UXAlert>
                                         <StackPanel Orientation="Horizontal">
                                             <!--Bruce 0607 fix typo-->

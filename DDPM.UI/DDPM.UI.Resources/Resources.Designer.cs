@@ -178,6 +178,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add your first device.
+        /// </summary>
+        internal static string Add1sDevice {
+            get {
+                return ResourceManager.GetString("Add1sDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Device.
         /// </summary>
         internal static string AddDevice {
@@ -1771,6 +1780,24 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Color is not available when.
+        /// </summary>
+        internal static string ColorMsg_0 {
+            get {
+                return ResourceManager.GetString("ColorMsg.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To access presence sensing features, use the link below to download compitible webcam firmware.
+        /// </summary>
+        internal static string ColorMsg_1 {
+            get {
+                return ResourceManager.GetString("ColorMsg.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
         internal static string Common_0 {
@@ -1825,11 +1852,29 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Compatible Firmware.
+        /// </summary>
+        internal static string CompatibleFirmware {
+            get {
+                return ResourceManager.GetString("CompatibleFirmware", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm.
         /// </summary>
         internal static string Confirm {
             get {
                 return ResourceManager.GetString("Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect.
+        /// </summary>
+        internal static string Connect {
+            get {
+                return ResourceManager.GetString("Connect", resourceCulture);
             }
         }
         
@@ -2118,6 +2163,15 @@ namespace DDPM.UI.Resources {
         internal static string Display_HDR {
             get {
                 return ResourceManager.GetString("Display_HDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The monitor is currently busy. You can only control limited functions..
+        /// </summary>
+        internal static string DisplayAlert {
+            get {
+                return ResourceManager.GetString("DisplayAlert", resourceCulture);
             }
         }
         
@@ -4039,6 +4093,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Save Icon Images....
+        /// </summary>
+        internal static string EzArrange_11 {
+            get {
+                return ResourceManager.GetString("EzArrange.11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Family.
         /// </summary>
         internal static string Family {
@@ -5596,6 +5659,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scan to download the Dell Audio app to customize your headset.
+        /// </summary>
+        internal static string LearnMoreMsg_0 {
+            get {
+                return ResourceManager.GetString("LearnMoreMsg.0", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Left.
         /// </summary>
         internal static string Left {
@@ -6186,6 +6258,15 @@ namespace DDPM.UI.Resources {
         internal static string No {
             get {
                 return ResourceManager.GetString("No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NO DEVICE DETECTED.
+        /// </summary>
+        internal static string NoDeviceDetected {
+            get {
+                return ResourceManager.GetString("NoDeviceDetected", resourceCulture);
             }
         }
         
@@ -9795,6 +9876,15 @@ namespace DDPM.UI.Resources {
         internal static string WebCameraSettings_9 {
             get {
                 return ResourceManager.GetString("WebCameraSettings.9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To access Microsoft Presence Sensing features, visit Windows Settings.
+        /// </summary>
+        internal static string WebcamMPS_0 {
+            get {
+                return ResourceManager.GetString("WebcamMPS.0", resourceCulture);
             }
         }
         

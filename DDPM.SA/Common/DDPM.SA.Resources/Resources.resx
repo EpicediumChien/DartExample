@@ -534,4 +534,7 @@
   <data name="RPG_Game" xml:space="preserve">
     <value>RPG Game</value>
   </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>Please do not power down system until updates are complete.</value>
+  </data>
 </root>
