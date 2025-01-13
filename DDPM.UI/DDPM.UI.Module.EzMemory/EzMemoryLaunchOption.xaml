@@ -8,6 +8,7 @@
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF" 
              xmlns:commonCtrl="clr-namespace:DDPM.UI.Common.UserControls;assembly=DDPM.UI.Common" 
              xmlns:viewmodels="clr-namespace:DDPM.UI.Common.ViewModels;assembly=DDPM.UI.Common"
+             xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              d:DataContext="{d:DesignInstance Type=viewmodels:EzArrangeViewModel}"
              mc:Ignorable="d" 
              Background="{DynamicResource mainWindowBkColor}"
@@ -43,8 +44,10 @@
 
                 <!-- Robert_Lin 2025-1-10 These ComboBoxes will be enabled only when Automatically radio button is checked -->
                 <Setter Property="IsEnabled" Value="{Binding IsAutoLaunch}"/>
-
             </Style>
+            
+            <!--<common:MaxHeight x:Key="MaxHeightConverter" /> "-->
+            <common:MaxHeightConverter x:Key="MaxHeightConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -179,25 +182,80 @@
 
                                 <!-- Radio Buttons for Manual or Automatic Launch -->
                                 <StackPanel Orientation="Vertical" Margin="0,8,0,0">
-                                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Width="305" Height="28">
-                                        <UXControls:UXRadioButton x:Name="ManulRB" Grid.Row="1" Content="{Binding [EazyMemory.14], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="16" Height="36"  Margin="8,2,0,2" IsChecked="{Binding IsManualLaunch}">
+                                    <!-- Robert_Lin 2025-1-13 for PIMS-332061 es-XL, ru-RU: Clipping issue found in StringID: EazyMemory.15
+                                        RadioBtton requiremens: Adjust the box to fit the text for the radio button. It should not exceed 3 lines. If it does, shorten with “...”
+                                    -->
+                                    <Grid Margin="0,8,0,0">
+                                        <UXControls:UXRadioButton x:Name="ManulRB" VerticalAlignment="Top"
+                                                                  FontSize="16" Margin="8,2,0,2" IsChecked="{Binding IsManualLaunch}" 
+                                                                  MaxHeight="{Binding [EazyMemory.14], Source={x:Static lang:LangHelper.Instance}, Converter={StaticResource MaxHeightConverter}, ConverterParameter='16,3'}"
+                                                                  >
                                             <UXControls:UXRadioButton.Resources>
                                                 <Style TargetType="Border">
                                                     <Setter Property="Background" Value="Transparent" />
                                                 </Style>
                                             </UXControls:UXRadioButton.Resources>
-                                        </UXControls:UXRadioButton>
-                                    </StackPanel>
+                                            
+                                            <TextBlock Text="{Binding [EazyMemory.14], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                                                       FontFamily="Roboto" FontSize="16"
+                                                       TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
 
-                                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0" Width="305" Height="28">
-                                        <UXControls:UXRadioButton x:Name="AutoRB" Grid.Row="2" Content="{Binding [EazyMemory.15], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="16" Height="36"  Margin="8,2,0,2" IsChecked="{Binding IsAutoLaunch}">
+
+                                        </UXControls:UXRadioButton>
+
+                                    </Grid>
+                                    
+                                    <!--<StackPanel Orientation="Horizontal" Margin="0,8,0,0" Width="305" Height="28" Visibility="Collapsed">
+                                         <UXControls:UXRadioButton x:Name="ManulRB" Grid.Row="1" Content="{Binding [EazyMemory.14], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" 
+                                                                FontSize="16" Margin="8,2,0,2" IsChecked="{Binding IsManualLaunch}" Height="36"  
+                                                                MaxHeight="{Binding [EazyMemory.14], Source={x:Static lang:LangHelper.Instance}, Converter={StaticResource MaxHeightConverter}, ConverterParameter='16,3'}"
+                                                                >
+                                            <UXControls:UXRadioButton.Resources>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                </Style>
+                                            </UXControls:UXRadioButton.Resources>
+                                         </UXControls:UXRadioButton>
+                                    </StackPanel>-->
+
+                                    <Grid Margin="0,8,0,0">
+                                        <!-- 
+                                              <UXControls:UXRadioButton x:Name="AutoRB" VerticalAlignment="Top"
+                                                                 FontSize="16" Margin="8,2,0,2" IsChecked="{Binding IsAutoLaunch}"
+                                                                 MaxHeight="{Binding [EazyMemory.15], Source={x:Static lang:LangHelper.Instance}, Converter={StaticResource MaxHeightConverter}, ConverterParameter='16,3'}"
+                                                                 >
+                                 
+                                        -->
+                                        <UXControls:UXRadioButton x:Name="AutoRB" VerticalAlignment="Top"
+                                                                  FontSize="16" Margin="8,2,0,2" IsChecked="{Binding IsAutoLaunch}"
+                                                                  MaxHeight="{Binding [EazyMemory.15], Source={x:Static lang:LangHelper.Instance}, Converter={StaticResource MaxHeightConverter}, ConverterParameter='16,3'}"
+                                                                  >
+                                            <UXControls:UXRadioButton.Resources>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="Transparent" />
+                                                </Style>
+                                            </UXControls:UXRadioButton.Resources>
+                                            
+                                            <!-- 
+                                                       MaxHeight="{Binding [EazyMemory.15], Source={x:Static lang:LangHelper.Instance}, Converter={StaticResource MaxHeightConverter}, ConverterParameter='16,3'}"
+                                            
+                                            -->
+                                            <TextBlock Text="{Binding [EazyMemory.15], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontFamily="Roboto" FontSize="16"
+                                                       TextWrapping="Wrap" TextTrimming="CharacterEllipsis"/>
+
+
+                                        </UXControls:UXRadioButton>
+                                    </Grid>
+
+                                    <!--<StackPanel Orientation="Horizontal" Margin="0,8,0,0" Width="305" Height="28">
+                                        <UXControls:UXRadioButton x:Name="AutoRB2" Grid.Row="2" Content="{Binding [EazyMemory.15], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="16" Height="36"  Margin="8,2,0,2" IsChecked="{Binding IsAutoLaunch}">
                                             <UXControls:UXRadioButton.Resources>
                                                 <Style TargetType="Border">
                                                     <Setter Property="Background" Value="Transparent" />
                                                 </Style>
                                             </UXControls:UXRadioButton.Resources>
                                         </UXControls:UXRadioButton>
-                                    </StackPanel>
+                                    </StackPanel>-->
 
                                     <!-- Time Picker Controls (Disabled when manually select is checked) -->
                                     <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="46,8,0,0" >
