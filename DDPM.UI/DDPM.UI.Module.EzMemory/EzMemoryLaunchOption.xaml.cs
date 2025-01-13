@@ -33,6 +33,10 @@ using static System.Reflection.Metadata.BlobBuilder;
 using System.Globalization;
 using Window = System.Windows.Window;
 using Dell.Client.Framework.Security;
+using System.Data;
+using System.Runtime.Intrinsics.X86;
+using System.Security.Policy;
+//using System.Windows.Forms;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -83,6 +87,9 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _log.Error($"@{nameof(EzMemoryLaunchOption)} InitializePage: ... in");
 
+                //string lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation";
+                //string lorem2 = "Lorem ipsum dolor sit amet, consectetur adipiscing eiusmod";
+
                 TitleTB.Text = Strings.TitleTBForLaunchOptionPage;
                 StartupCB.Content = Strings.StartupCBContentForLaunchOptionPage;
                 ManulRB.Content = Strings.ManulRBContentForLaunchOptionPage;
@@ -108,7 +115,17 @@ namespace DDPM.UI.Module.EzMemory
                 if (_vm.IsEditProfile)
                 {
                     if (_vm.currentEditprofile != null)
+                    {
                         _vm.currentEditprofileSetting = _vm.LoadEmMonitorSettings(_vm.currentEditprofile.ID);
+                        if (_vm.currentEditprofileSetting == null)
+                        {
+                            //Assign default settings
+                            _vm.currentEditprofileSetting = new EzProfileSettingDDPM(_vm.currentEditprofile.ID,
+                                false, GetAutoLaunchTime(), false);
+                            _vm.IsLaunchAtStartup = false;
+                        }
+
+                    }
                 }
                 else
                 {
@@ -120,6 +137,7 @@ namespace DDPM.UI.Module.EzMemory
                 {
                     if (_vm.currentEditprofileSetting == null)
                     {
+                        //Assign default settings
                         _vm.IsLaunchAtStartup = false;
                     }
                     else
