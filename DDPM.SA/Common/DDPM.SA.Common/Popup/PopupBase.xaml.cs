@@ -55,8 +55,8 @@ namespace DDPM.SA.Common.Popup
             SubHeader1.Text = SubHeaderText;
 
             _object = ob;
-            //LeftButton.Visibility = Visibility.Collapsed;
-            //RightButton.Visibility = Visibility.Collapsed;
+            //LeftButton1.Visibility = Visibility.Collapsed;
+            //RightButton1.Visibility = Visibility.Collapsed;
             if (!string.IsNullOrEmpty(LeftButtonContent))
             {
                 //LeftButton.Visibility = Visibility.Visible;
@@ -84,44 +84,18 @@ namespace DDPM.SA.Common.Popup
                 Task.Delay(autoCloseTimeInSeconds * 1000).ContinueWith(t => this.Dispatcher.Invoke(Close));
             }
         }
-        public void UpdateContent(string HeaderText, UpdateProgressInfo e)
+        public PopupBase(bool IsStayOnly, int autoCloseTimeInSeconds, PopupBaseViewModel popupBaseViewModel)// 1/13Added by Bruce
         {
-            if (!Dispatcher.CheckAccess())
+            InitializeComponent();
+            LeftButton1.Visibility = Visibility.Collapsed;
+            RightButton1.Visibility = Visibility.Collapsed;
+            if (popupBaseViewModel != null)
             {
-                Dispatcher.Invoke(UpdateContent);
-                return;
+                DataContext = popupBaseViewModel;
             }
-            if (e.DeviceName.Equals("DDPM"))
+            if (!IsStayOnly && autoCloseTimeInSeconds > 0)
             {
-                Header1.Text = $"{LangHelper.Instance["Software_Update"]} - {e.DeviceName}";
-            }
-            else
-            {
-                Header1.Text = $"{LangHelper.Instance["Firmware_Update"]} - {e.DeviceName} {e.Model}";
-            }
-            if (e.ProcessName.Equals("Installing"))
-            {
-                isInstalling = true;
-                SubHeader1.Text = $"{LangHelper.Instance["Processing"]}... {(int)e.ProcessProgress}%";
-            }
-            else if (e.ProcessName.Equals("Downloading"))
-            {
-                isInstalling = false;
-                SubHeader1.Text = $"{LangHelper.Instance["Downloading_and_installing"]}... {(int)e.ProcessProgress}%";
-            }
-            else if (e.ProcessName.Equals("M1"))
-            {
-                isInstalling = false;
-                SubHeader1.Text = LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"];
-            }
-            else if (e.ProcessName.Equals("M2"))
-            {
-                isInstalling = false;
-                SubHeader1.Text = LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"];
-            }
-            else if (e.ProcessName.Equals("Timeout") && !isInstalling)
-            {
-                SubHeader1.Text = $"{LangHelper.Instance["Unable_to_detect_target_device"]}… {(int)e.ProcessProgress}s";
+                Task.Delay(autoCloseTimeInSeconds * 1000).ContinueWith(t => this.Dispatcher.Invoke(Close));
             }
         }
         public void ShowWindow()
@@ -199,10 +173,18 @@ namespace DDPM.SA.Common.Popup
 
         private void closeX_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            DialogResult = _dialogResult_Close;
-            LeftButtonClick = null;
-            RightButtonClick = null;
+            if (this.IsModal())// 1/11 Added by Bruce to check this windows owner
+            {
+                DialogResult = _dialogResult_Close;
+                LeftButtonClick = null;
+                RightButtonClick = null;
+            }
             this.Close();
+        }
+
+        public bool IsModal()// 1/11 Added by Bruce to check this windows owner
+        {
+            return !this.Dispatcher.CheckAccess() || this.Owner != null;
         }
     }
 }

@@ -194,6 +194,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //FW update progress bar
         private UpdateProgress _UpdateProgress;
+        PopupBaseViewModel popupBaseViewModel = new PopupBaseViewModel();
         private PopupBase _PopupBase = null;
 
         //Bruce 07-30 Added total screens
@@ -5753,8 +5754,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
                 writelog("[DeviceMangerPlugin] _FWUpdatePlugin.GetFWUpdateInfo go");
                 ResetTimer();
-                _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
-                _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
                 return Task.FromResult(_FWUpdatePlugin.GetFWUpdateInfo(updateHelper, deviceInfos, isShowNotify, isForce, isDefer, deviceTypeList, UODMode, displayUpdateHelper, isOnlyDisplay, reScan, isUITrigger, giuds, serviceTags, models, minVersion).Result);
             }
             writelog("[DeviceMangerPlugin] GetFWUpdateInfo done, But all obj is null");
@@ -5771,8 +5770,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("[DeviceMangerPlugin] _FWUpdatePlugin is null");
                 return Task.FromResult(new List<FWUpdateInfo>());
             }
-            _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
-            _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
             _UpdateProgress = null;
             writelog($"[DeviceMangerPlugin] SetDelayFWUpdateInfoPackage go");
             SetDelayFWUpdateInfoPackage();
@@ -5783,10 +5780,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             writelog($"[DeviceMangerPlugin] _FWUpdatePlugin.DownloadAndInstall go");
             List<FWUpdateInfo> tmpFWUpdateInfos = _FWUpdatePlugin.DownloadAndInstall(fwUpdateInfos, isUITrigger, installPath).Result;
-            _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
             if (_UpdateProgress != null)
             {
                 writelog($"[DeviceMangerPlugin] _UpdateProgress.CloseWindow go");
+                _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
                 ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                 _UpdateProgress.CloseWindow();
                 _UpdateProgress = null;
@@ -6282,6 +6279,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _UpdateProgress.Dispatcher.InvokeShutdown();
                 };
                 _UpdateProgress.Dispatcher.Invoke(() => _UpdateProgress.Show());
+                _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
                 ProgressUpdate_Notify += _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
                 MiniMizeDDPMUI().Wait();
                 tcs.SetResult(true);
@@ -6291,7 +6289,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread1.Start();
             return tcs.Task;
         }
-
         private void CallOSD(object o, (string, string, bool) args)
         {
             ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Error, false, args);
@@ -6340,11 +6337,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         toastContentBuilder.AddText(title);
                         toastContentBuilder.AddText(info);
                     }
-                    if (_PopupBase != null && _PopupBase.Activate())
-                    {
-                        _PopupBase.CloseWindow();
-                        _PopupBase = null;
-                    }
+                    ClosePopup();
                     toastContentBuilder.Show(); // 顯示Toast通知
                     writelog("[CallPopup], popup Show.");
                     Thread.Sleep(5000);
@@ -6422,7 +6415,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         writelog("[UpdateEvent], go to _FWUpdatePlugin.UpdateEvent.");
                         List<FWUpdateInfo> fWUpdateInfos = new List<FWUpdateInfo>();
+                        _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
+                        GetDeviceinfos().Wait();
                         fWUpdateInfos = _FWUpdatePlugin.UpdateEvent().Result;
+                        _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
                         List<FWUpdateInfo> DisplayList = fWUpdateInfos.FindAll(o => o.IsDisplay);
                         List<FWUpdateInfo> PeripheralsList = fWUpdateInfos.FindAll(o => o.IsDisplay == false);
                         //Telementry Collection
@@ -11704,69 +11700,106 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         }
 
         #region FW Update
+
+        private static bool isThreadRunning = false;
         private void PopupBaseCloseEvent(object o, EventArgs e)
         {
+            writelog($"_PopupBase PopupBaseCloseEvent");
             if (_PopupBase != null)
             {
+                writelog($"_PopupBase PopupBaseCloseEvent2");
                 _PopupBase.Closed -= PopupBaseCloseEvent;
                 _PopupBase = null;
-
-                writelog($"PopupBaseCloseEvent finished with _PopupBase != null");
+                writelog($"_PopupBase PopupBaseCloseEvent2 done");
             }
-            else
-                writelog($"PopupBaseCloseEvent finished with _PopupBase == null");
         }
         private void OnProgressUpdateEvent(UpdateProgressInfo fWUpdateInfo)
         {
-            writelog($"{nameof(OnProgressUpdateEvent)} start");
+            //writelog($"{nameof(OnProgressUpdateEvent)} start");
             EventHandler<UpdateProgressInfo> handler = ProgressUpdate_Notify;
-            writelog($"{nameof(OnProgressUpdateEvent)} handler : {handler}");
+            //writelog($"{nameof(OnProgressUpdateEvent)} handler : {handler}");
             if (handler != null)
             {
-                writelog($"{nameof(OnProgressUpdateEvent)} {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
+                //writelog($"{nameof(OnProgressUpdateEvent)} {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
                 handler.Invoke(this, fWUpdateInfo);
-                if (_UpdateProgress == null)
+            }
+            if (_UpdateProgress == null)
+            {
+                writelog($"_UpdateProgress is null");
+                if (_PopupBase == null)
                 {
-                    writelog($"_UpdateProgress is null");
-                    if (_PopupBase != null)
-                    {
-                        writelog($"_PopupBase UpdateContent");
-                        _PopupBase.UpdateContent(LangHelper.Instance["FW_info"], fWUpdateInfo);
-                    }
-                    else
-                    {
-                        try
-                        {
-                            writelog($"_PopupBase new");
-                            Thread thread1 = new Thread(() =>
-                            {
-                                _PopupBase = new PopupBase(LangHelper.Instance["FW_info"], "", "", "", null, true, 0);
-                                _PopupBase.Closed += PopupBaseCloseEvent;
-                                _PopupBase.UpdateContent(LangHelper.Instance["FW_info"], fWUpdateInfo);
-                                const double NotificationHeight = 252;
-                                const double NotificationWidth = 417;
-                                const double NotificationSpacing = 10;
-                                _PopupBase.Height = NotificationHeight;
-                                _PopupBase.Width = NotificationWidth;
-                                double screenHeight = SystemParameters.PrimaryScreenHeight;
-                                double screenWidth = SystemParameters.PrimaryScreenWidth;
-                                _PopupBase.Left = screenWidth - NotificationWidth - NotificationSpacing;
-                                _PopupBase.Top = screenHeight - NotificationHeight - NotificationSpacing;
-                                _PopupBase.ShowWindow();
-                            });
-                            thread1.SetApartmentState(ApartmentState.STA);
-                            thread1.Start();
-                        }
-                        catch (Exception ex)
-                        {
-                            writelog($"_PopupBase error : {ex.Message}");
-                        }
-                    }
+                    writelog($"_PopupBase is null");
+                    CallPopup();
                 }
+            }
+            if (popupBaseViewModel != null)
+            {
+                writelog($"popupBaseViewModel UpdateContent");
+                //writelog($"{nameof(OnProgressUpdateEvent)} {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
+                popupBaseViewModel.UpdateContent(LangHelper.Instance["FW_info"], fWUpdateInfo);
             }
             //writelog($"{nameof(OnProgressUpdateEvent)} done");
         }
-
+        private Task CallPopup()
+        {
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            Thread thread1 = new Thread(() =>
+            {
+                try
+                {
+                    writelog($"CallPopup start");
+                    if (isThreadRunning)
+                    {
+                        return;
+                    }
+                    isThreadRunning = true;
+                    writelog($"CallPopup new PopupBase go");
+                    _PopupBase = new PopupBase(true, 0, popupBaseViewModel);
+                    _PopupBase.Closed += PopupBaseCloseEvent;
+                    popupBaseViewModel.UpdateContent(LangHelper.Instance["FW_info"], null);
+                    const double NotificationHeight = 252;
+                    const double NotificationWidth = 417;
+                    const double NotificationSpacing = 10;
+                    _PopupBase.Height = NotificationHeight;
+                    _PopupBase.Width = NotificationWidth;
+                    double screenHeight = SystemParameters.PrimaryScreenHeight;
+                    double screenWidth = SystemParameters.PrimaryScreenWidth;
+                    _PopupBase.Left = screenWidth - NotificationWidth - NotificationSpacing;
+                    _PopupBase.Top = screenHeight - NotificationHeight - NotificationSpacing;
+                    _PopupBase.Show();
+                    writelog($"CallPopup new PopupBase done");
+                    Dispatcher.Run();
+                }
+                catch (Exception ex)
+                {
+                    writelog($"_PopupBase error : {ex.Message}");
+                }
+                finally
+                {
+                    isThreadRunning = false; // 线程完成后重置状态
+                }
+            });
+            thread1.SetApartmentState(ApartmentState.STA);
+            thread1.Start();
+            return tcs.Task;
+        }
+        private void ClosePopup()
+        {
+            writelog($"ClosePopup start");
+            try
+            {
+                if (_PopupBase != null)
+                {
+                    writelog($"ClosePopup go");
+                    _PopupBase.CloseWindow();
+                }
+                writelog($"ClosePopup done");
+            }
+            catch (Exception ex)
+            {
+                writelog($"ClosePopup error : {ex.Message}");
+            }
+        }
         private void OnUILockEvent(bool isLockFWU_UI)
         {
             EventHandler<bool> handler = FWU_UILock_Notify;
