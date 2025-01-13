@@ -377,7 +377,7 @@
                                         </Border>
                                         <Border Margin="8,0,0,12" Border.CornerRadius="4" Cursor="Hand" Width="184"  Height="36"
                                     BorderThickness="1" BorderBrush="#324255" Background="{DynamicResource DdpmCB_BkColor}">
-                                            <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtAddPreset" FontFamily="Roboto" FontSize="14" FontWeight="Normal" VerticalAlignment="Center" HorizontalAlignment="Center" MouseLeftButtonDown="AddPreset" />
+                                            <UXControls:UXTextBlock Margin="10,0,10,0" MaxWidth="170" TextTrimming="CharacterEllipsis" Name="txtAddPreset" FontFamily="Roboto" FontSize="14" FontWeight="Normal" VerticalAlignment="Center" HorizontalAlignment="Center" MouseLeftButtonDown="AddPreset" />
                                         </Border>
                                     </StackPanel>
                                     <Border Margin="8,0,0,0" Cursor="Hand" x:Name="btnPreset" MouseLeftButtonDown="btnPreset_Click"
@@ -389,7 +389,7 @@
                                         <Grid>
                                             <!--<Image Margin="10,12,0,12" Source="/DDPM.UI.Resources;component/Resources/Images/CameraPreset.png" Stretch="Fill" Width="17" Height="16" HorizontalAlignment="Left" />-->
                                             <ContentControl Margin="10,12,0,12" Width="17" Height="16" HorizontalAlignment="Left" Template="{StaticResource icon_CameraPreset}" />
-                                            <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtPreset" Margin="35,0,0,0" FontFamily="Roboto" FontSize="14" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                                            <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtPreset" Margin="35,0,28,0" FontFamily="Roboto" FontSize="14" FontWeight="Normal" HorizontalAlignment="Left" VerticalAlignment="Center" />
                                             <!--<Image Name="imgDown" Source="/DDPM.UI.Resources;component/Resources/Images/Down.png" Stretch="Uniform" Margin="0,0,10,0"
                      Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="12" Height="12"/>-->
                                             <ContentControl Name="imgDown" Margin="0,0,10,0" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="12" Height="12" 

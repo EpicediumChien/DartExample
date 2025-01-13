@@ -534,4 +534,7 @@
   <data name="RPG_Game" xml:space="preserve">
     <value>Гра RPG</value>
   </data>
+  <data name="WebCameraSettings.2" xml:space="preserve">
+    <value>Використовує алгоритми інтелектуального аналізу сцени та відстеження обличчя для масштабування та панорамування зображення, коли ви рухаєтеся.</value>
+  </data>
 </root>

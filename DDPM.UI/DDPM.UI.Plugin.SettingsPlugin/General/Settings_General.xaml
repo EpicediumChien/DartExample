@@ -130,30 +130,44 @@
                                 BorderThickness="0" CornerRadius="6">
                             <StackPanel Orientation="Horizontal" x:Name="reportsStackPanel"
                                         Margin="15,0,0,0">
+                                <!-- Derek for PIMS-334386 change Width="176" to MinWidth="176"
+                                    and move Content to Button.Content
+                                -->
                                 <Button Style="{DynamicResource Button_WhiteFrame}"
-                                        Width="176"
+                                        MinWidth="176"
                                         Height="40"
                                         Click="SaveDiagnosticReport_Click"
+                                        x:Name="btnSaveDiagnosticReport"
                                         Cursor="Hand"
                                         Margin="8,15,5,15"
                                         Visibility="Visible"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
                                         FontFamily="Roboto"
-                                        FontSize="14"
-                                        Content="{Binding [Save_diagnostic_report], Source={x:Static lang:LangHelper.Instance}}" />
+                                        FontSize="14">
+                                    <Button.Content>
+                                        <TextBlock Margin="10,0,10,0" Text="{Binding [Save_diagnostic_report], Source={x:Static lang:LangHelper.Instance}}" />
+                                    </Button.Content>
+                                </Button>
+                                <!-- Derek for PIMS-334386 change Width="176" to MinWidth="176"
+                                    and move Content to Button.Content
+                                -->
                                 <Button Style="{StaticResource Button_WhiteFrame}"
-                                        Width="176"
+                                        MinWidth="176"
                                         Height="40"
                                         Click="SaveMonitorAssetReport_Click"
+                                        x:Name="btnSaveMonitorAssetReport"
                                         Cursor="Hand"
                                         Margin="8,15,5,15"
                                         Visibility="Visible"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
                                         FontFamily="Roboto"
-                                        FontSize="14"
-                                        Content="{Binding [Save_monitor_asset_report], Source={x:Static lang:LangHelper.Instance}}" />
+                                        FontSize="14">
+                                    <Button.Content>
+                                        <TextBlock Margin="10,0,10,0" Text="{Binding [Save_monitor_asset_report], Source={x:Static lang:LangHelper.Instance}}" />
+                                    </Button.Content>
+                                </Button>
                             </StackPanel>
                         </Border>
                     </Grid>
