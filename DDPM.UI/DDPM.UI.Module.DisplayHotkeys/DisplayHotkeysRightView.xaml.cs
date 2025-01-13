@@ -511,7 +511,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
         {
             Typeface typeface = new Typeface(tb.FontFamily, tb.FontStyle, tb.FontWeight, tb.FontStretch);
             FormattedText formattedText = new FormattedText(tb.Text, System.Globalization.CultureInfo.CurrentCulture,
-                System.Windows.FlowDirection.LeftToRight, typeface, tb.FontSize, Brushes.Black);
+                                            tb.FlowDirection, typeface, tb.FontSize, Brushes.Black);
 
             if (formattedText.Width > tb.ActualWidth)
                 return true;
