@@ -65,20 +65,20 @@
                             </ProgressBar.Triggers>
                         </ProgressBar>
                     </Grid>
-                    <Grid Grid.Row="1" Margin="0, 50, 0, 0" Width="400" Height="30" HorizontalAlignment="Left">
+                    <Grid Grid.Row="1" Margin="0, 50, 0, 0" HorizontalAlignment="Left">
                         <UXControls:UXTextBlock Text="{Binding [Kvm.2], Source={x:Static lang:LangHelper.Instance}}"
                                                 Foreground="{DynamicResource DefaultTheme_PbHeaderColor}"
                                                 FontSize="20" LineHeight="28" />
                     </Grid>
-                    <Grid Grid.Row="2" Margin="0, 8, 0 ,0" Width="476" Height="150" HorizontalAlignment="Left">
+                    <Grid Grid.Row="2" Margin="0, 8, 0 ,0" HorizontalAlignment="Left">
                         <UXControls:UXTextBlock Text="{Binding [Kvm.3], Source={x:Static lang:LangHelper.Instance}}"
-                                                FontSize="48" LineHeight="76" />
+                                                FontSize="64" LineHeight="76" />
                     </Grid>
                     <Grid Grid.Row="3" Margin="0, 16, 0, 0" Width="476" Height="120" HorizontalAlignment="Left">
                         <UXControls:UXTextBlock Text="{Binding [Kvm.4], Source={x:Static lang:LangHelper.Instance}}"
                                                 FontSize="16" LineHeight="24" />
                     </Grid>
-                    <Grid Grid.Row="4" Margin="0, 93, 0 ,0">
+                    <Grid Grid.Row="4" Margin="0, 90, 0 ,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
