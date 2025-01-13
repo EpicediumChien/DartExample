@@ -22,23 +22,35 @@ namespace DDPM.SA.Common.Method
 
         public static string GetTestServerURL()
         {
-            RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
-            string ret = GlobalDefinitions.major_url;//this is default value (production server)
-            if (localKey64 != null)
+            string ret = GlobalDefinitions.major_url; // this is default value (production server)
+            try
             {
-                RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
-                if (registryKey != null)
+                using (RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64))
                 {
-                    var obj = registryKey?.GetValue("TestServerURL");
-                    if (obj != null)
+                    if (localKey64 != null)
                     {
-                        string s = obj.ToString();
-                        if (!string.IsNullOrEmpty(s))
+                        using (RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false))
                         {
-                            ret = s;
+                            if (registryKey != null)
+                            {
+                                var obj = registryKey.GetValue("TestServerURL");
+                                if (obj != null)
+                                {
+                                    string s = obj.ToString();
+                                    if (!string.IsNullOrEmpty(s))
+                                    {
+                                        ret = s;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                // Log or handle the exception as needed
+                Console.WriteLine($"Error accessing registry: {ex.Message}");
             }
             return ret;
         }
