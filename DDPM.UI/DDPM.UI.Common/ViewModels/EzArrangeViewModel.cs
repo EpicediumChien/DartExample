@@ -54,6 +54,10 @@ namespace DDPM.UI.Common.ViewModels
         public EzProfileSettingDDPM? _currentSelectedProfileSetting;
         #endregion
 
+        //Robert_Lin 2025-1-13 Fix _log is null bug: 
+        //And all _log.Info() has been changed to LogInfo() in the EzArrangeViewModel
+
+
         //Robert_Lin, 2025-1-10 add a default ctor for design-time data binding,
         // do not use it in code
         public EzArrangeViewModel()
@@ -670,13 +674,13 @@ namespace DDPM.UI.Common.ViewModels
                 {
                     CurrentSelectedProfile = emProfile;
                     CurrentSelectedProfileSetting = emProfileSettings;
-                    _log.Info($"@EzMemoryRightView.OnListViewItemClicked,, Profile ID={profileID}, Load user settings OK.");
+                    LogInfo($"@EzMemoryRightView.OnListViewItemClicked,, Profile ID={profileID}, Load user settings OK.");
                 }
                 else
                 {
                     CurrentSelectedProfile = null;
                     CurrentSelectedProfileSetting = null;
-                    _log.Info($"@EzMemoryRightView.OnListViewItemClicked, Profile ID {profileID} not found in UserSettings.");
+                    LogInfo($"@EzMemoryRightView.OnListViewItemClicked, Profile ID {profileID} not found in UserSettings.");
                 }
             }
             RefreshProfileSettingsToRightView();
@@ -1108,14 +1112,14 @@ namespace DDPM.UI.Common.ViewModels
             {
                 if (HasDuplicateApp(fileName.First().Value.FileName)) // fileName KEY值為cell編號而且只會有1個觸發進來，所以判斷第一個即可
                 {
-                    _log.Info($"@[EzArrangeViewModel] HasDuplicateApp {cellBorder.Name} {fileName.First().Value.FileName}");
+                    LogInfo($"@[EzArrangeViewModel] HasDuplicateApp {cellBorder.Name} {fileName.First().Value.FileName}");
                     PopUpAlreadyexistsMessage(null);
                     return;
                 }
 
                 if (_sortApps.Values.Any(a => a.AppName.Equals(fileName.First().Value.FileName, StringComparison.OrdinalIgnoreCase) || a.AppPath.Equals(fileName.First().Value.FilePath, StringComparison.OrdinalIgnoreCase)))
                 {
-                    _log.Info($"@[EzArrangeViewModel] HasDuplicateApp {cellBorder.Name} {fileName.First().Value.FileName}");
+                    LogInfo($"@[EzArrangeViewModel] HasDuplicateApp {cellBorder.Name} {fileName.First().Value.FileName}");
                     PopUpAlreadyexistsMessage(null);
                     return;
                 }
@@ -1574,7 +1578,7 @@ namespace DDPM.UI.Common.ViewModels
         {
             if (DdpmCommonHelper.DeviceManagerSA == null)
             {
-                _log.Info("@EMVM.LoadEmUserSetting(), DeviceManagerSA is null");
+                LogInfo("@EMVM.LoadEmUserSetting(), DeviceManagerSA is null");
                 return null;
             }
             //Load EM Profiles from User Setting
@@ -1582,14 +1586,14 @@ namespace DDPM.UI.Common.ViewModels
             if (emProfiles == null)
             {
 
-                _log.Info("@EMVM.LoadEmUserSetting(), Load EM Profiles return null.");
+                LogInfo("@EMVM.LoadEmUserSetting(), Load EM Profiles return null.");
                 return null;
             }
             //Find the profile by profileId
             EAProfileDDPM? foundProfile = emProfiles.FirstOrDefault(p => p.ID == profileId);
             if (foundProfile == null)
             {
-                _log.Info($"@EMVM.LoadEmUserSetting(), ProfileId={profileId} not found in EM UserSettings.");
+                LogInfo($"@EMVM.LoadEmUserSetting(), ProfileId={profileId} not found in EM UserSettings.");
                 return null;
             }
             return foundProfile;
@@ -1599,7 +1603,7 @@ namespace DDPM.UI.Common.ViewModels
         {
             if (DdpmCommonHelper.DeviceManagerSA == null)
             {
-                _log.Info("@LoadEmMonitorSettings(), DeviceManagerSA is null");
+                LogInfo("@LoadEmMonitorSettings(), DeviceManagerSA is null");
                 return null;
             }
             if (homeDevice == null)
@@ -1607,13 +1611,13 @@ namespace DDPM.UI.Common.ViewModels
                 homeDevice = _homeDevice;
                 if (_homeDevice == null)
                 {
-                    _log.Info("@EMVM.LoadEmMonitorSettings(), HomeDevice is null");
+                    LogInfo("@EMVM.LoadEmMonitorSettings(), HomeDevice is null");
                     return null;
                 }
             }
             if (homeDevice.MonitorInfo == null)
             {
-                _log.Info("@EMVM.LoadEmMonitorSettings(), HomeDevice.MonitorInfo is null.");
+                LogInfo("@EMVM.LoadEmMonitorSettings(), HomeDevice.MonitorInfo is null.");
                 return null;
             }
 
@@ -1621,14 +1625,14 @@ namespace DDPM.UI.Common.ViewModels
             EasyArrangementDDPM emMonitorSettings = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(homeDevice.MonitorInfo).Result;
             if (emMonitorSettings == null)
             {
-                _log.Info($"@EMVM.LoadEmMonitorSettings(), Monitor={homeDevice.MonitorInfo.modelName}/{homeDevice.MonitorInfo.edid.ServiceTag} not found.");
+                LogInfo($"@EMVM.LoadEmMonitorSettings(), Monitor={homeDevice.MonitorInfo.modelName}/{homeDevice.MonitorInfo.edid.ServiceTag} not found.");
                 return null;
             }
 
             EzProfileSettingDDPM? foundProfileSetting = FindProfileSettingById(emMonitorSettings, profileId);
             if (foundProfileSetting == null)
             {
-                _log.Info($"@EMVM.LoadEmMonitorSettings(), ProfileId={profileId} not found in EM MonitorSettings.");
+                LogInfo($"@EMVM.LoadEmMonitorSettings(), ProfileId={profileId} not found in EM MonitorSettings.");
                 return null;
             }
 
@@ -1648,12 +1652,12 @@ namespace DDPM.UI.Common.ViewModels
         {
             if (DdpmCommonHelper.DeviceManagerSA == null)
             {
-                _log.Info("@LoadEmProfileSettings(), DeviceManagerSA is null");
+                LogInfo("@LoadEmProfileSettings(), DeviceManagerSA is null");
                 return false;
             }
             if (_homeDevice == null)
             {
-                _log.Info("@LoadEmProfileSettings(), HomeDevice is null");
+                LogInfo("@LoadEmProfileSettings(), HomeDevice is null");
                 return false;
             }
 
@@ -1662,7 +1666,7 @@ namespace DDPM.UI.Common.ViewModels
             if (emProfiles == null)
             {
 
-                _log.Info("@LoadEmProfileSettings(), Load EM Profiles return null.");
+                LogInfo("@LoadEmProfileSettings(), Load EM Profiles return null.");
                 return false;
             }
 
@@ -1670,7 +1674,7 @@ namespace DDPM.UI.Common.ViewModels
             EAProfileDDPM? foundProfile = emProfiles.FirstOrDefault(p => p.ID == profileId);
             if (foundProfile == null)
             {
-                _log.Info($"@LoadEmProfileSettings(), Profile with ID {profileId} not found.");
+                LogInfo($"@LoadEmProfileSettings(), Profile with ID {profileId} not found.");
                 return false;
             }
             profile = foundProfile;
@@ -1695,7 +1699,7 @@ namespace DDPM.UI.Common.ViewModels
             EasyArrangementDDPM emMonitorSettings = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_homeDevice.MonitorInfo).Result;
             if (emMonitorSettings == null)
             {
-                _log.Info($"@LoadEmProfileSettings(), Per-monitor settings, ProfileID={profileId} not found.");
+                LogInfo($"@LoadEmProfileSettings(), Per-monitor settings, ProfileID={profileId} not found.");
                 //Output the default values
                 profileSettings = null;
 
