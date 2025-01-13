@@ -249,8 +249,9 @@ namespace DDPM.ColorApp
                         new EventArgs());
                 }
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
+                writelog($"[pass_process_info_to_callback] exception: {ex.Message}");
             }
         }
 
