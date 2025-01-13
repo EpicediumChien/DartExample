@@ -1,4 +1,5 @@
 ﻿using DdmLibrary.Utility;
+using DDPM.SA.Common.Display;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,12 @@ namespace DDPM.SA.Common.Settings
             Layout = layout;
             AppInfos = apps == null ? new List<EAAppInfoDDPM>() : apps.ConvertAll(app => new EAAppInfoDDPM(app.Name, app.Path, app.IsUWP, app.AppUserModelID, app.Param));
 
+        }
+
+        //Robert_Lin, 2025-1-9 Added
+        public bool IsCustomLayout
+        {
+            get { return Layout >= EAEMConstants.EAID_FirstCustom; }
         }
     }
 

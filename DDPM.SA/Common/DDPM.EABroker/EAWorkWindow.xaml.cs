@@ -143,6 +143,16 @@ namespace DDPM.EABroker
             }));
 
         }
+
+        public string GetWorkScreenInfoText()
+        {
+            if (_workEaScreen != null)
+            {
+                return $"EAScreen: {_workEaScreen.ToString()}";
+            }
+            return $"EAScreen: None";
+        }
+
         #endregion
 
         #region Flags
