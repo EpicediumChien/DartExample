@@ -2449,6 +2449,7 @@ namespace ColorPreset.Plugins
                 //string strFilePath = string.Empty;
                 download = new Download(_logs);
                 string downloadInfo = string.Empty;
+                /*
                 // 20240627 jim add
                 string str_EnableDDPMMetadataTest = string.Empty;
                 string str_IncludeTestPath = string.Empty;
@@ -2482,15 +2483,40 @@ namespace ColorPreset.Plugins
                         }
                     }
                 }
+                */
 
-                if (str_EnableDDPMMetadataTest.ToUpper().Contains("TRUE"))
+                //Jim 20250113 modify for ICC profile Production Server
+                //ex: https://clientperipherals.dell.com/DDPM/ICC/icc_profile_sha256.json
+                string Display_ICC_URL = GlobalDefinitions.major_url;//@$"https://clientperipherals.dell.com/DDPM/";
+                string Display_ICC_URL_Folder = @"ICC/";
+
+                RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
+                string str_url_prefix = Display_ICC_URL + Display_ICC_URL_Folder;
+                if (localKey64 != null)
                 {
-                    string str_url_prefix = GlobalDefinitions.major_url; //@"https://clientperipherals.dell.com/DDPM/";
-                    str_url_prefix += str_IncludeTestPath;
-                    str_url_prefix += @"/Windows/Display/ICC/";
-                    str_url_prefix += @"icc_profile_sha256_new.json";
+                    RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
+                    if (registryKey != null)
+                    {
+                        var obj = registryKey?.GetValue("TestServerURL");
+                        if (obj != null)
+                        {
+                            string s = obj.ToString();
+                            if (!string.IsNullOrEmpty(s))
+                            {
+                                str_url_prefix = s + Display_ICC_URL_Folder;
+                            }
+                        }
+                    }
+                }
 
-                    url = str_url_prefix;
+                //if (str_EnableDDPMMetadataTest.ToUpper().Contains("TRUE"))
+                //{
+                    //string str_url_prefix = GlobalDefinitions.major_url; //@"https://clientperipherals.dell.com/DDPM/";
+                    //str_url_prefix += str_IncludeTestPath;
+                    //str_url_prefix += @"/Windows/Display/ICC/";
+                    url = str_url_prefix + @"icc_profile_sha256.json";
+
+                    //url = str_url_prefix;
 
                     if (!string.IsNullOrEmpty(url))
                     {
@@ -2587,11 +2613,11 @@ namespace ColorPreset.Plugins
                                 int count = _ICC_Metadata._match_ICC_DeviceName.Count;
 
                                 // 20240725 jim add
-                                str_url_prefix = string.Empty;
+                                //str_url_prefix = string.Empty;
 
-                                str_url_prefix = GlobalDefinitions.major_url; //@"https://clientperipherals.dell.com/DDPM/";
-                                str_url_prefix += str_IncludeTestPath;
-                                str_url_prefix += @"/Windows/Display/ICC/";
+                                //str_url_prefix = GlobalDefinitions.major_url; //@"https://clientperipherals.dell.com/DDPM/";
+                                //str_url_prefix += str_IncludeTestPath;
+                                //str_url_prefix += @"/Windows/Display/ICC/";
                                 str_url_prefix += m.modelName;
                                 str_url_prefix += @"/";
 
@@ -2637,7 +2663,7 @@ namespace ColorPreset.Plugins
                         }
 
                     }
-                }
+                //}
 
                 writelog("ColorPresetPlugin DownloadICCData exit ...");
                 return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
