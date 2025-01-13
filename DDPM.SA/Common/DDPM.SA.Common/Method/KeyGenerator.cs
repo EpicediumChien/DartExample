@@ -1,4 +1,5 @@
-﻿using Dell.Client.Framework.Common;
+﻿using DDPM.SA.Obfuscation;
+using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +23,9 @@ namespace DDPM.SA.Common.Method
         byte[] _nddpm1;
         byte[] _assd;
 
-        readonly byte[] cp1 = { 0x39, 0x65, 0x82, 0x37, 0xA0, 0xDC, 0x2E, 0x5F };
-        readonly byte[] cp1_keyseed = { 0x1F, 0x3D, 0x92, 0x3C };
+        //readonly byte[] cp1 = { 0x39, 0x65, 0x82, 0x37, 0xA0, 0xDC, 0x2E, 0x5F };
+        //readonly byte[] cp1_keyseed = { 0x1F, 0x3D, 0x92, 0x3C };
+
         public KeyGenerator(ILog input_log = null)
         {
             _tKeyPair = new byte[0];
@@ -132,9 +134,9 @@ namespace DDPM.SA.Common.Method
                     Console.WriteLine($"Length: {_skT1.Length}, _skT1.y: {BitConverter.ToString(_skT1.Skip(32).Take(32).ToArray())}");
                     
                     // generate _shrKey1
-                    byte[] _shrKey1data = new byte[_skT1.Length + cp1.Length];
+                    byte[] _shrKey1data = new byte[_skT1.Length + SettingsAccess.cp1.Length];
                     Array.Copy(_skT1, 0, _shrKey1data, 0, _skT1.Length / 2);
-                    Array.Copy(cp1, 0, _shrKey1data, _skT1.Length / 2, cp1.Length);
+                    Array.Copy(SettingsAccess.cp1, 0, _shrKey1data, _skT1.Length / 2, SettingsAccess.cp1.Length);
                     Array.Copy(_skT1, _skT1.Length / 2, _shrKey1data, _shrKey1data.Length - (_skT1.Length / 2), _skT1.Length / 2);
                     
                     Console.WriteLine($"Length: {_shrKey1data.Length}, _shrKey1data: {BitConverter.ToString(_shrKey1data)}");
@@ -297,7 +299,7 @@ namespace DDPM.SA.Common.Method
         private (byte[] KSD, byte[] stateM) calculateKSD(byte[] kcom, uint idx)
         {
             // Step 1: Prepare Data for Hash
-            byte[] cp1B = cp1_keyseed.ToArray(); // Ensure Big-Endian
+            byte[] cp1B = SettingsAccess.cp1_keyseed.ToArray();// cp1_keyseed.ToArray(); // Ensure Big-Endian
             byte[] idxBytes = BitConverter.GetBytes(idx).ToArray();    // Ensure Big-Endian
 
             byte[] bstr = kcom
@@ -478,7 +480,7 @@ namespace DDPM.SA.Common.Method
             Console.WriteLine($"Length: {authTag.Length}, authTag: {BitConverter.ToString(authTag)}");
             local_log?.Info($"Info of index: {index.Length}, tkeyseed: {tkeyseed.Length}, authTag: {authTag.Length}");
 
-            byte[] comkey = Convert.FromHexString("51f371b0181d7a9a7457e48ef639396d8cac1445a762cd012de42ab2a70aa9ab");
+            byte[] comkey = Convert.FromHexString(SettingsAccess.comKey);// "51f371b0181d7a9a7457e48ef639396d8cac1445a762cd012de42ab2a70aa9ab");
             Console.WriteLine($"Length: {comkey.Length}, comkey: {BitConverter.ToString(comkey)}");
             byte[] deviceID = new byte[16];
             byte[] OOBKEY = GenerateTKDeviceIDPair2(comkey, tkeyseed, idxNumber, out deviceID);

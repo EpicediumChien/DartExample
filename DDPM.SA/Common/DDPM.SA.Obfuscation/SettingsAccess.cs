@@ -12,6 +12,12 @@ namespace DDPM.SA.Obfuscation
 {
     public class SettingsAccess
     {
+        #region For FW Key Generator
+        public static readonly string comKey = "51f371b0181d7a9a7457e48ef639396d8cac1445a762cd012de42ab2a70aa9ab";
+        public static readonly byte[] cp1 = { 0x39, 0x65, 0x82, 0x37, 0xA0, 0xDC, 0x2E, 0x5F };
+        public static readonly byte[] cp1_keyseed = { 0x1F, 0x3D, 0x92, 0x3C };
+        #endregion
+
         private const int iterations = 100;
         private const int keyLength = 128;
         private static string salt = "841c87c9f5a679dcdba8a9c7f743847d157cd598";
