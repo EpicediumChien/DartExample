@@ -278,20 +278,27 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void ChangeProfileByQAM(string profileName)
         {
-            if (profileName != _vm!.CurrentProfileName || isProfilePropertyChanged)
+            try
             {
-                _vm!.CurrentProfileName = profileName;
-                _vm.IsSettingProfile = true;
-                _vm.SetProfile();
-                _vm.IsSettingProfile = false;
-                isProfilePropertyChanged = false;
-            }
+                if (profileName != _vm!.CurrentProfileName || isProfilePropertyChanged)
+                {
+                    _vm!.CurrentProfileName = profileName;
+                    _vm.IsSettingProfile = true;
+                    _vm.SetProfile();
+                    _vm.IsSettingProfile = false;
+                    isProfilePropertyChanged = false;
+                }
 
-            Dispatcher.Invoke(new Action(() =>
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    btnPreset_Click(this, null);
+                    btnPreset_Click(this, null);
+                }));
+            }
+            catch (Exception ex) 
             {
-                btnPreset_Click(this, null);
-                btnPreset_Click(this, null);
-            }));
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  ChangeProfileByQAM() ex:" + ex.Message);
+            }
         }
 
         ~LaunchView()
