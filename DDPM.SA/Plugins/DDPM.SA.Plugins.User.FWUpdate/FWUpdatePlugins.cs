@@ -2523,10 +2523,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 // 要運行的安裝程式路徑和命令行參數
                 arguments = (fwUpdateInfo.IsUOD ? "/uod " : "") + "/silent" + " /pipename:" + namedPipeName;
-                //deviceID commandLine
-                _logs.DebugMsg_1($"BuildArgs deviceID go");
-                arguments += $" /deviceID:" + fwUpdateInfo.DeviceIndex;
-                _logs.DebugMsg_1($"BuildArgs deviceID done");
+                //deviceIndex commandLine
+                _logs.DebugMsg_1($"BuildArgs deviceIndex go");
+                arguments += $" /deviceIndex:" + fwUpdateInfo.DeviceIndex;
+                _logs.DebugMsg_1($"BuildArgs deviceIndex done");
 
                 _logs.DebugMsg_1($"BuildArgs Log go");
                 if (fwUpdateInfo.DeviceType == DeviceType.LogicalMouse ||
