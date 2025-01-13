@@ -73,6 +73,52 @@ namespace DDPM.SA.Common.Method
             return false;
         }
 
+
+        /// <summary>
+        /// 傳入 private key , public key.x, public key.y.傳回 ECC相乘後的(sharedSecret, agreedSecret)
+        /// </summary>
+        /// <param name="scalar">private key</param>
+        /// <param name="pointX">public key.x</param>
+        /// <param name="pointY">public key.y</param>
+        /// <returns>(sharedSecret, agreedSecret)</returns>
+        private (byte[], byte[]) MultiplyEccPoint(byte[] scalar, byte[] pointX, byte[] pointY)
+        {
+            ECCurve curve = ECCurve.NamedCurves.nistP256;
+
+            // Import the scalar (private key)
+            var privateKeyParams = new ECParameters
+            {
+                Curve = curve,
+                D = scalar,
+            };
+
+            // Import the point (public key)
+            var publicPointParams = new ECParameters
+            {
+                Curve = curve,
+                Q = new ECPoint
+                {
+                    X = pointX,
+                    Y = pointY
+                }
+            };
+
+            // Create the local ECDH instance
+            using (ECDiffieHellman ecdh = ECDiffieHellman.Create(privateKeyParams))
+            //using (var ecdh = new ECDiffieHellmanCng())
+            using (ECDiffieHellman peerEcdh = ECDiffieHellman.Create(publicPointParams))
+            //using (var peerEcdh = new ECDiffieHellmanCng())
+            {
+                ecdh.ImportParameters(privateKeyParams);
+                peerEcdh.ImportParameters(publicPointParams);
+
+                // Derive the shared point (Q = d * P)
+                byte[] sharedSecret = ecdh.DeriveKeyMaterial(peerEcdh.PublicKey); ;
+                byte[] agreedSecret = ecdh.DeriveRawSecretAgreement(peerEcdh.PublicKey); ;
+
+                return (sharedSecret, agreedSecret);
+            }
+        }
         private byte[] ProcessECDHKeyExchange(byte[] publicKeyData, byte[] privateKeyData)
         {
             byte[] sharedSecret;
@@ -84,7 +130,7 @@ namespace DDPM.SA.Common.Method
                 var parameters = new ECParameters
                 {
                     Curve = ECCurve.NamedCurves.nistP256,
-                    D = privateKeyData,
+                    //D = privateKeyData,
                     Q = new ECPoint
                     {
                         X = publicKeyData.Skip(1).Take(32).ToArray(),
@@ -105,8 +151,9 @@ namespace DDPM.SA.Common.Method
                     };
                     using (ECDiffieHellman peerECDH = ECDiffieHellman.Create(peerParams))
                     {
-                        sharedSecret = ecdh.DeriveKeyMaterial(peerECDH.PublicKey);
-                        agreedSecret = ecdh.DeriveRawSecretAgreement(peerECDH.PublicKey);
+                        (sharedSecret, agreedSecret) = MultiplyEccPoint(privateKeyData, publicKeyData.Skip(1).Take(32).ToArray(), publicKeyData.Skip(33).Take(32).ToArray());
+                        //sharedSecret = ecdh.DeriveKeyMaterial(peerECDH.PublicKey);
+                        //agreedSecret = ecdh.DeriveRawSecretAgreement(peerECDH.PublicKey);
                         Console.WriteLine($"Derived sharedSecret: {BitConverter.ToString(sharedSecret)}");
                         Console.WriteLine($"Derived agreedSecret: {BitConverter.ToString(agreedSecret)}");
                         //agreedSecret = agreedSecret.Reverse().ToArray();
