@@ -2957,21 +2957,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.Run(() => _PeripheralsPlugin.StopCopilotRegistryMonitor());
         }
 
-        public Task<int> GetIODongleCount()//Bruce Added 01/09
+        public Task<int> GetIODongleCountGen3AgoCount()//Bruce Added 01/09
         {
             int retCount = 0;
             if (_PeripheralsPlugin != null)
             {
-                retCount = _PeripheralsPlugin.GetIODongleCount().Result;
-            }
-            return Task.FromResult(retCount);
-        }
-        public Task<int> GetAudioDongleCount()//Bruce Added 01/09
-        {
-            int retCount = 0;
-            if (_PeripheralsPlugin != null)
-            {
-                retCount = _PeripheralsPlugin.GetAudioDongleCount().Result;
+                retCount = _PeripheralsPlugin.GetIODongleCountGen3AgoCount().Result;
             }
             return Task.FromResult(retCount);
         }
@@ -6209,7 +6200,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_PeripheralsPlugin != null && _FWUpdatePlugin != null)
             {
-                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo, _PeripheralsPlugin.GetIODongleCount().Result, _PeripheralsPlugin.GetAudioDongleCount().Result);
+                _FWUpdatePlugin.SetDeviceinfo(_PeripheralsPlugin.GetDevices().Result.deviceInfo, _PeripheralsPlugin.GetIODongleCountGen3AgoCount().Result);
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);

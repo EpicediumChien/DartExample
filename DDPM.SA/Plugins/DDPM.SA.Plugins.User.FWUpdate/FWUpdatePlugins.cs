@@ -110,10 +110,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// 從DeviceManager取得的連接的IO Dongle，用於更新韌體前確認是否有插入多個Dongle
         /// </summary>
         private int _IODongleCount;
-        /// <summary>
-        /// 從DeviceManager取得的連接的Audio Dongle，用於更新韌體前確認是否有插入多個Dongle
-        /// </summary>
-        private int _AudioDongleCount;
 
         /// <summary>
         /// 要取得更新的裝置列表
@@ -259,10 +255,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         #endregion Overriding methods
 
 
-        public void SetDeviceinfo(List<DeviceInfo> DeviceInfos, int IODongleCount, int AudioDongle)
+        public void SetDeviceinfo(List<DeviceInfo> DeviceInfos, int Gen3AgeDongleCount)
         {
-            _IODongleCount = IODongleCount;
-            _IODongleCount = AudioDongle;
+            _IODongleCount = Gen3AgeDongleCount;
             if (DeviceInfos != null && DeviceInfos.Count > 0)
             {
                 _DeviceInfos = DeviceInfos;
@@ -1312,7 +1307,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                     }
                 }
-                else if (currentFWInfo.DeviceType == DeviceType.PhysicalDongle)
+                else if (currentFWInfo.DeviceType == DeviceType.PhysicalDongle && currentFWInfo.DeviceName.ToLower().Equals("Dell Universal Receiver".ToLower()))
                 {
                     //List<DeviceInfo> dongle_deviceInfos = _DeviceInfos.FindAll(o => o.PhysicalDeviceType.Equals(DeviceType.PhysicalAudioDongle) ||
                     //o.PhysicalDeviceType.Equals(DeviceType.PhysicalDongle));
