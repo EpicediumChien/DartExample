@@ -505,6 +505,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     DeviceType = updateHelper.UpdateItems[i].DeviceType,
                                     DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                     DevicePath = updateHelper.UpdateItems[i].DevicePath,
+                                    DeviceIndex = updateHelper.UpdateItems[i].DeviceIndex,
                                     SHA256 = updateHelper.UpdateItems[i].SHA256,
                                     //SHA512 = updateHelper.UpdateItems[i].SHA512,
                                     Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
@@ -547,6 +548,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                         DeviceType = updateHelper.UpdateItems[i].DeviceType,
                                         DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                         DevicePath = updateHelper.UpdateItems[i].DevicePath,
+                                        DeviceIndex = updateHelper.UpdateItems[i].DeviceIndex,
                                         SHA256 = updateHelper.UpdateItems[i].SHA256,
                                         //SHA512 = updateHelper.UpdateItems[i].SHA512,
                                         Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
@@ -2521,6 +2523,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 // 要運行的安裝程式路徑和命令行參數
                 arguments = (fwUpdateInfo.IsUOD ? "/uod " : "") + "/silent" + " /pipename:" + namedPipeName;
+                //deviceID commandLine
+                _logs.DebugMsg_1($"BuildArgs deviceID go");
+                arguments += $" /deviceID:" + fwUpdateInfo.DeviceIndex;
+                _logs.DebugMsg_1($"BuildArgs deviceID done");
+
+                _logs.DebugMsg_1($"BuildArgs Log go");
                 if (fwUpdateInfo.DeviceType == DeviceType.LogicalMouse ||
                     fwUpdateInfo.DeviceType == DeviceType.LogicalKeyboard)
                 {
@@ -2557,6 +2565,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     _logs.DebugMsg_1($"BuildArgs DeviceType done");
                 }
+
                 //devicePath commandLine
                 if (fwUpdateInfo.DeviceType != DeviceType.LogicalDock &&
                     fwUpdateInfo.DeviceType != DeviceType.PhysicalWiredDock)
@@ -2565,6 +2574,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     arguments += $" /devicePath:" + fwUpdateInfo.DevicePath;
                     _logs.DebugMsg_1($"BuildArgs devicePath done");
                 }
+
                 _logs.DebugMsg_1($"BuildArgs Log go");
                 //Log commandLine
                 switch (fwUpdateInfo.DeviceType)
