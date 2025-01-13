@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common.Security;
+﻿using DDPM.SA.Common.Method;
+using DDPM.SA.Common.Security;
 using Dell.Client.Framework.Common;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.Win32;
@@ -21,34 +22,10 @@ namespace DDPM.SA.Common.Settings
 {
     public class SWUpdateSetting
     {
-        private static readonly string URL = GlobalDefinitions.major_url;//@$"https://clientperipherals.dell.com/DDPM/";
-        private static readonly string URL_Folder = @$"/Windows/Application/";
-        private static string GetSWUServer()
-        {
-            RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
-            string ret = URL + URL_Folder;
-            if (localKey64 != null)
-            {
-                RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
-                if (registryKey != null)
-                {
-                    var obj = registryKey?.GetValue("TestServerURL");
-                    if (obj != null)
-                    {
-                        string s = obj.ToString();
-                        if (!string.IsNullOrEmpty(s))
-                        {
-                            ret = s + URL_Folder;
-                        }
-                    }
-                }
-            }
-            return ret;
-        }
         public static SWUpdateHelper GetSWMetadata(bool isSkipCA, out string info, ISettingsManagerSA settingsPlugin, List<string> InserInfoPkey, Logs logs)
         {
             SWUpdateHelper data = new SWUpdateHelper();
-            string SW_URL = GetSWUServer();
+            string SW_URL = Download.GetTestServerURL() + GlobalDefinitions.SW_URL_Folder;
             CertificateCheck certificateCheck = new CertificateCheck(logs);
             if (!isSkipCA && !certificateCheck.CheckURLCACertificate(SW_URL))
             {
@@ -190,7 +167,7 @@ namespace DDPM.SA.Common.Settings
         {
             InterruptScreenRoot result = null;
             logs?.DebugMsg_1("[InterruptScreen_Metadata], start.");
-            string SW_URL = GetSWUServer();
+            string SW_URL = Download.GetTestServerURL() + GlobalDefinitions.SW_URL_Folder;
             CertificateCheck certificateCheck = new CertificateCheck(logs);
             if (!isSkipCA && !certificateCheck.CheckURLCACertificate(SW_URL))
             {

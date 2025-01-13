@@ -733,7 +733,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             switch (fwUpdateInfo.DeviceType)
             {
                 case DeviceType.PhysicalDongle:
-                    if (fwUpdateInfo.DeviceName.ToLower().Equals("Dell Universal Receiver".ToLower()) && IODongle > 1)
+                    if (fwUpdateInfo.DeviceName.ToLower().Equals(GlobalDefinitions.Dongle_BeforeGen2_Name.ToLower()) && IODongle > 1)
                     {
                         UXAlertItemVisibility = Visibility.Visible;
                         UXAlertItemMessage = LangHelper.Instance["Update_Firmware_update_of_multiple_USB_wireless_receivers"];

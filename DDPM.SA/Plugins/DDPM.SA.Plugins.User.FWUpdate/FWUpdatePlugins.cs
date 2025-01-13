@@ -1308,7 +1308,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                     }
                 }
-                else if (currentFWInfo.DeviceType == DeviceType.PhysicalDongle && currentFWInfo.DeviceName.ToLower().Equals("Dell Universal Receiver".ToLower()))
+                else if (currentFWInfo.DeviceType == DeviceType.PhysicalDongle && currentFWInfo.DeviceName.ToLower().Equals(GlobalDefinitions.Dongle_BeforeGen2_Name.ToLower()))
                 {
                     //List<DeviceInfo> dongle_deviceInfos = _DeviceInfos.FindAll(o => o.PhysicalDeviceType.Equals(DeviceType.PhysicalAudioDongle) ||
                     //o.PhysicalDeviceType.Equals(DeviceType.PhysicalDongle));
