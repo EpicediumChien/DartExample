@@ -105,11 +105,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (msec == 8000)//means no UI pluged
             {
+                WriteLog($"[CheckAndTriggerToastWhileMonitorPlugged] is monitor list null: {mos==null}, is settingsManager null: {settingsManager == null}");
                 if (mos != null && settingsManager != null)
                 {
                     settingsManagerDev = settingsManager;
                     string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
                     path = localAppDataPath + "\\Dell Display and Peripheral Manager\\Export";
+                    WriteLog($"[CheckAndTriggerToastWhileMonitorPlugged] monitor list count: {mos.Count}");
                     foreach (MonitorInfo monitorInfo in mos)
                     {
                         string model = monitorInfo.modelName;//"U2724DE";

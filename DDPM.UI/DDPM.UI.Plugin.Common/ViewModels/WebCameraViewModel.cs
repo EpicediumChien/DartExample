@@ -534,6 +534,12 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void SetResolution_Selected(int index)
         {
+            if (index < 0 || index >= Resolution_IsSelected.Length)
+            {
+                //throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+                _log.Info(nameof(index), "Index is out of range.");
+                index = 0;
+            }
             for (int j = 0; j < Resolution_IsSelected.Length; j++)
             {
                 Resolution_IsSelected[j] = false;
@@ -548,6 +554,12 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void SetFPS_Selected(int index)
         {
+            if (index < 0 || index >= FPS_IsSelected.Length)
+            {
+                //throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+                _log.Info(nameof(index), "Index is out of range.");
+                index = 0;
+            }
             for (int j = 0; j < FPS_IsSelected.Length; j++)
             {
                 FPS_IsSelected[j] = false;
@@ -748,10 +760,12 @@ namespace DDPM.UI.Plugin.ViewModels
             _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(_resolutions)}!");
             _log.Info($"DTP (WebcamSettings.Selected_Resolution:{WebcamSettings.SelectedResolution}!");
             _log.Info($"DTP i:{i}!");
+           
             SetResolution_Selected(i);
             _log.Info($"DTP _resolutions:{JsonConvert.SerializeObject(WebcamSettings.SupportedFPSs)}!");
             var j = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution].IndexOf(WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution]);
             _log.Info($"DTP j:{j}!");
+            
             SetFPS_Selected(j);
             foreach (var sf in WebcamSettings.SelectedFPSs)
             {

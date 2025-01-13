@@ -196,7 +196,7 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="auto"/>
                                 </Grid.ColumnDefinitions>
-                                <UXControls:UXTextBlock Name="txtRestore" VerticalAlignment="Center" Grid.Column="0" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}"
+                                <UXControls:UXTextBlock Name="txtRestore" VerticalAlignment="Center" Grid.Column="0" Foreground="{DynamicResource SecondaryButton_TextColor_Default}"
                                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [RestoreToDefault], Source={x:Static lang:LangHelper.Instance}}"/>
                                 <Image Grid.Column="1" Name="RestoreLockIcon" Visibility="Collapsed" Margin="0,0,6,0"
                                        Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
@@ -220,7 +220,7 @@
                         </Button>
                         <Button Style="{StaticResource SecondaryButtonStyle}" Click="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair">
                             <Grid>
-                                <UXControls:UXTextBlock Name="txtUnpair" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}" VerticalAlignment="Center"
+                                <UXControls:UXTextBlock Name="txtUnpair" Foreground="{DynamicResource SecondaryButton_TextColor_Default}" VerticalAlignment="Center"
                                                         HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}"/>
                             </Grid>
                         </Button>

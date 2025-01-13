@@ -36,7 +36,7 @@
 
 	<ItemGroup>
 		<Reference Include="DdmLibrary">
-			<HintPath>..\..\dll\DdmLibrary.dll</HintPath>
+		  <HintPath>..\..\dll\DdmLibrary.dll</HintPath>
 		</Reference>
 		<Reference Include="DDPM.Peripherals.interface">
 			<HintPath>..\..\dll\DDPM.Peripherals.interface.dll</HintPath>

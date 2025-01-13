@@ -53,7 +53,7 @@
                             Width="648"
                             Height="53"
                             Margin="0,5,0,15"
-                            Background="#364861"
+                            Background="{DynamicResource DefaultTheme_DialogBoxBkColor}"
                             CornerRadius="5"
                             Visibility="{Binding GreayoutAlart}">
                             <Grid>

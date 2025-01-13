@@ -241,7 +241,7 @@
     <value>يُرجى النقر نقرًا مزدوجًا على زر الماوس الأيسر لبدء تحديث البرنامج الثابت</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>يُرجى الضغط على مفتاح "‏\U"\ على لوحة المفاتيح لبدء تحديث البرنامج الثابت</value>
+    <value>يُرجى الضغط على مفتاح "‏" على لوحة المفاتيح لبدء تحديث البرنامج الثابت</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>تم توصيل الجهاز</value>

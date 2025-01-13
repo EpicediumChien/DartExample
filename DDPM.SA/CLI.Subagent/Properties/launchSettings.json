@@ -2,7 +2,7 @@
   "profiles": {
     "CLI.Subagent": {
       "commandName": "Project",
-      "commandLineArgs": "/config -Dock=FWUpdate -value=force -IsShowInfo=ON"
+      "commandLineArgs": "/set -display=BrightnessLevel -value=50,forcewithnotice"
     }
   }
 }

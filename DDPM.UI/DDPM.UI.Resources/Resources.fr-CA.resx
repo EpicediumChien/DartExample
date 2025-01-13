@@ -958,7 +958,7 @@
     <value>Connexion à vos appareils</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
-    <value>Veuillez connecter un câble vidéo et un câble USB entre chaque PC et le moniteur. Vous pouvez connecter jusqu’à quatre PC (ordinateurs, consoles de jeu, etc.). \Veuillez sélectionner le type de câble et attribuer un nom à chaque source.</value>
+    <value>Veuillez connecter un câble vidéo et un câble USB entre chaque PC et le moniteur. Vous pouvez connecter jusqu’à quatre PC (ordinateurs, consoles de jeu, etc.). Veuillez sélectionner le type de câble et attribuer un nom à chaque source.</value>
   </data>
   <data name="Kvm.8" xml:space="preserve">
     <value>Passez d’un PC à l’autre</value>
@@ -2446,7 +2446,7 @@
     <value>Cliquez sur le bouton Parcourir pour sélectionner un fichier</value>
   </data>
   <data name="Action.3" xml:space="preserve">
-    <value>Cliquez sur le bouton \&quot;Parcourir\&quot; pour sélectionner un dossier</value>
+    <value>Cliquez sur le bouton "Parcourir" pour sélectionner un dossier</value>
   </data>
   <data name="Action.4" xml:space="preserve">
     <value>Tapez l’URL de la page Web dans la case ci-dessous</value>
@@ -2485,7 +2485,7 @@
     <value>Collaboration</value>
   </data>
   <data name="Collab.10" xml:space="preserve">
-    <value>Le clavier collaboratif ne peut pas se connecter à Microsoft Teams, car vous avez bloqué la demande. Pour utiliser Microsoft Teams avec le clavier collaboratif, cliquez sur \&quot;En savoir plus\&quot; pour obtenir des instructions sur la façon de se reconnecter.</value>
+    <value>Le clavier collaboratif ne peut pas se connecter à Microsoft Teams, car vous avez bloqué la demande. Pour utiliser Microsoft Teams avec le clavier collaboratif, cliquez sur "En savoir plus" pour obtenir des instructions sur la façon de se reconnecter.</value>
   </data>
   <data name="Collab.11" xml:space="preserve">
     <value>Pour utiliser le clavier collaboratif avec Zoom, installez la dernière version de bureau de Zoom</value>
