@@ -391,7 +391,7 @@
             </Grid>
             <!--Battery-->
             <Grid VerticalAlignment="Bottom" MinHeight="200">
-                <Border Background="Transparent" MouseDown="PushBack"></Border>
+                <Border Background="{DynamicResource DefaultTheme_BdBkColor}" MouseDown="PushBack"></Border>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                         <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">

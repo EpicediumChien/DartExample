@@ -4,6 +4,7 @@
     xmlns:local="clr-namespace:DDPM.SA.Common"
     xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <SolidColorBrush x:Key="FakeTransparent" Color="#01FFFFFF" />
     <SolidColorBrush x:Key="Default_SA_OSD_Border_BkColor" Color="#141D28" />
     <SolidColorBrush x:Key="Default_SA_OSD_PathColor" Color="#FFFFFF" />
     
@@ -33,7 +34,7 @@
     <SolidColorBrush x:Key="Default_SA_QAM_Path_BkColor"
                      Color="#FFFFFF" />
     <SolidColorBrush x:Key="Default_SA_QAM_Path_IsTrigger_Color"
-                     Color="#FFFFFF" />
+                     Color="#B6B6B6" />
     <SolidColorBrush x:Key="Default_SA_QAM_BackGround"
                      Color="#141D28" />
     <SolidColorBrush x:Key="Default_SA_QAM_BackGround_1"
@@ -79,7 +80,9 @@
         <Setter Property="BorderBrush"
                 Value="{DynamicResource Button_UXStyleColor_ForWhiteFrame}" />
     </Style>
-    <Style x:Key="InfoToolTipStyle"
+    
+    <!-- Use New UI Tooltip only -->
+    <!--<Style x:Key="InfoToolTipStyle"
            TargetType="ToolTip">
         <Setter Property="Template">
             <Setter.Value>
@@ -88,13 +91,13 @@
                             BorderBrush="#293B4D"
                             BorderThickness="1"
                             CornerRadius="4">
-                        <!--<TextBlock Text="{TemplateBinding Content}"
+                        <TextBlock Text="{TemplateBinding Content}"
                       FontFamily="Arial" ToolTipService.InitialShowDelay="1"
                       FontSize="12"
                       FontWeight="Normal"
                       Foreground="#F5F6F7"
                       Background="#193475F2"
-                      Padding="8,12,8,12" />-->
+                      Padding="8,12,8,12" />
                         <ContentPresenter />
                     </Border>
                 </ControlTemplate>
@@ -119,7 +122,41 @@
                 Value="20" />
         <Setter Property="TextWrapping"
                 Value="Wrap" />
+    </Style>-->
+
+    <!-- #region Tootltip From UI -->
+    <SolidColorBrush x:Key="Tooltip_BkColor" Color="#FF1D2C3B" />
+    <SolidColorBrush x:Key="Tooltip_BdColor" Color="#FF293B4D" />
+    <SolidColorBrush x:Key="Tooltip_TextColor" Color="#FFF5F6F7" />
+    <sys:Double x:Key="Tooltip_FontSize">12</sys:Double>
+    <Thickness x:Key="Tooltip_BdThick">1</Thickness>
+    <CornerRadius x:Key="Tooltip_Radius">4</CornerRadius>
+    <Thickness x:Key="Tooltip_Padding">12,8</Thickness>
+
+    <Style x:Key="Tooltip_OutterBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{DynamicResource Tooltip_BkColor}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource Tooltip_BdColor}" />
+        <Setter Property="BorderThickness" Value="{StaticResource Tooltip_BdThick}" />
+        <Setter Property="CornerRadius" Value="{StaticResource Tooltip_Radius}" />
+        <Setter Property="Padding" Value="{StaticResource Tooltip_Padding}" />
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="8" Color="#2D000000" Opacity="0.4"
+                                  Direction="315" ShadowDepth="3" />
+            </Setter.Value>
+        </Setter>
     </Style>
+
+    <Style x:Key="Tooltip_TextBlockStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="Roboto"/>
+        <Setter Property="Foreground" Value="{DynamicResource Tooltip_TextColor}" />
+        <Setter Property="FontSize" Value="{StaticResource Tooltip_FontSize}" />
+        <Setter Property="LineStackingStrategy" Value="BlockLineHeight"/>
+        <Setter Property="LineHeight" Value="20"/>
+        <Setter Property="Margin" Value="0,4" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <!-- #endregion -->
     
     <!-- #region FocusVisual -->
     <Style x:Key="FocusVisual">
