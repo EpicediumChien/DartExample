@@ -188,11 +188,12 @@ namespace DDPM.UI.Module.WebCameraCapture
                     foreach (var property in _vm.allProperties)
                     {
                         string properties_temp = property.GetFriendlyName();
-                        if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase))
+                        if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase) && property.EncodingProperties.Subtype != "MJPG")
                         {
+                            DdpmCommonHelper.WriteUILog($"[btnResolution_Click] properties_temp: {properties_temp}");
                             var encodingProperties = property.EncodingProperties;
                             //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
-
+                            DdpmCommonHelper.WriteUILog($"[btnResolution_Click] encodingProperties: {encodingProperties} Subtype: {encodingProperties.Subtype}");
 
                             Application.Current.Dispatcher.Invoke(() =>
                             {
@@ -253,10 +254,12 @@ namespace DDPM.UI.Module.WebCameraCapture
                     foreach (var property in _vm.allProperties)
                     {
                         string properties_temp = property.GetFriendlyName();
-                        if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase))
-                        {
-                            var encodingProperties = property.EncodingProperties;
 
+                        if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase) && property.EncodingProperties.Subtype != "MJPG")
+                        {
+                            DdpmCommonHelper.WriteUILog($"[btnFPS_Click] properties_temp: {properties_temp}");
+                            var encodingProperties = property.EncodingProperties;
+                            DdpmCommonHelper.WriteUILog($"[btnFPS_Click] encodingProperties: {encodingProperties} Subtype: {encodingProperties.Subtype}");
                             //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
 
                             Application.Current.Dispatcher.Invoke(() =>

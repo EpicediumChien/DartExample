@@ -1349,14 +1349,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //Derek 1108 Move to here to fix Webcam PIMS-314613
                 // Query all properties [resolution and frame rate] of the webcam device
                 _vm.allProperties = _vm.MediaCapture.VideoDeviceController.GetAvailableMediaStreamProperties(MediaStreamType.VideoPreview).Select(x => new StreamResolution(x));
+                DdpmCommonHelper.WriteUILog($"Preview 28 {JsonConvert.SerializeObject(_vm.allProperties)}");
                 // Order them by resolution then frame rate
                 _vm.allProperties = _vm.allProperties.OrderByDescending(x => x.Height * x.Width).ThenByDescending(x => x.FrameRate);
                 foreach (var property in _vm.allProperties)
                 {
                     string properties_temp = property.GetFriendlyName();
-                    if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase))
+                    if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase) && property.EncodingProperties.Subtype != "MJPG")
                     {
+                        DdpmCommonHelper.WriteUILog($"properties_temp: {properties_temp}");
                         var encodingProperties = property.EncodingProperties;
+                        DdpmCommonHelper.WriteUILog($"encodingProperties: {encodingProperties} Subtype: {encodingProperties.Subtype}");
                         _ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
                         break;
                     }
