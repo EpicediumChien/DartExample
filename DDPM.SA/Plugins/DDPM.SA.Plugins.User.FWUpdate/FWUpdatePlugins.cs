@@ -147,6 +147,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// </summary>
         private int _fwTimeOutCount = 60;
         private bool _IsDownloadAndInsytall = false;
+        private KeyGenerator? _KeyGenerator;
 
         #region Events
 
@@ -2012,6 +2013,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             XmlNode? buttonStateNode;
             XmlNode? stateFlowNode;
             XmlNode? timeOut;//新的FW安裝包都有
+            XmlNode? tPubKeyDev1;
+            XmlNode? encBlock;
 
             if (message.Contains("InvokeDisplay"))
             {
@@ -2078,8 +2081,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 buttonStateNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='button-state']");
                 stateFlowNode = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='stateflow']");
                 timeOut = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='timeout']");
+                tPubKeyDev1 = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='tpubkeydev1']");
+                encBlock = xmlDoc.SelectSingleNode("Root/*[translate(name(),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')='encblock']");
 
-                if (progressNode == null && buttonCaptionNode == null && buttonStateNode == null && stateFlowNode == null && timeOut == null)
+                if (progressNode == null && buttonCaptionNode == null && buttonStateNode == null && stateFlowNode == null && timeOut == null && tPubKeyDev1 == null && encBlock == null)
                 {
                     _logs.DebugMsg_1("Can't handle: " + message + Environment.NewLine);
                 }
@@ -2211,9 +2216,66 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         sendMessageToEvent(updateProgressInfo);
                         resetState();
                     }
+                    else if (stateFlowNode.InnerText == "X0" || stateFlowNode.InnerText == "X2")
+                    {
+                        _logs.DebugMsg_1($"Get {stateFlowNode.InnerText}");
+                    }
                     else
                     {
                         _logs.DebugMsg_1("Can't handle: " + message);
+                    }
+                }
+                if (tPubKeyDev1 != null)
+                {
+                    try
+                    {
+                        _KeyGenerator = new KeyGenerator();
+                        string result_string = _KeyGenerator.ProcessX0State(tPubKeyDev1.InnerText);
+                        string s = $"<StateFlow>X1</StateFlow><TPubKeyPC1></TPubKeyPC1>";
+                        if (!string.IsNullOrEmpty(result_string))
+                        {
+                            s = $"<StateFlow>X1</StateFlow><TPubKeyPC1>{result_string.ToLower().Replace("-", "")}</TPubKeyPC1>";
+                            _logs.DebugMsg_1("SendMessage : " + s);
+                        }
+                        if (_namedPipeServer != null)
+                        {
+                            _namedPipeServer.SendMessage(s);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
+                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} _KeyGenerator ProcessX0State error : {ex.Message}");
+                        resetState();
+                    }
+                }
+                if (encBlock != null)
+                {
+                    try
+                    {
+                        string s = $"<StateFlow>X3</StateFlow><K2EncBlock></K2EncBlock><CCMTAG>4Bytes</CCMTag><version>01</version>";
+                        if (_KeyGenerator != null)
+                        {
+                            string result_string = _KeyGenerator.ProcessX2State(encBlock.InnerText);
+                            _KeyGenerator = null;
+                            if (!string.IsNullOrEmpty(result_string))
+                            {
+                                s = $"<StateFlow>X3</StateFlow><K2EncBlock>{result_string.ToLower().Replace("-", "")}</K2EncBlock><CCMTAG>4Bytes</CCMTag><version>01</version>";
+                                _logs.DebugMsg_1("SendMessage : " + s);
+                            }
+                        }
+                        if (_namedPipeServer != null)
+                        {
+                            _namedPipeServer.SendMessage(s);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
+                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} _KeyGenerator ProcessX2State error : {ex.Message}");
+                        resetState();
                     }
                 }
                 if (progressNode != null)
