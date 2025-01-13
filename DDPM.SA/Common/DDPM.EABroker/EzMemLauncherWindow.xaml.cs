@@ -794,8 +794,8 @@ namespace DDPM.EABroker
             }
             catch (Exception ex)
             {
-                //log?.Error(ex,
-                //    $"[{myName}] GetWindowHandle, Exception while retrieving window handle for {appData.AppName}, Error: {ex}");
+                log?.Error(ex,
+                    $"[{myName}] GetWindowHandle, Exception while retrieving window handle for {appData.AppName}, Error: {ex}");
             }
 
             return windowHandle;

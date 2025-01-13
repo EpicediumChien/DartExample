@@ -5944,7 +5944,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     string KeyPath = @"SOFTWARE\Dell\DDPM Subagent";
                     string KeyName = @"TestServerURL";
-                    string url2 = "https://clientperipherals.dell.com/DDPM/3fcf51beb3c8/";
+                    string url2 = GlobalDefinitions.major_url; //"https://clientperipherals.dell.com/DDPM/3fcf51beb3c8/";
                     ret = WriteRegistryData(RegistryHive.LocalMachine, KeyPath, KeyName, url2).Result;
                     writelog($"{nameof(SetServerURL)} DDPM Subagent Ret:{ret}");
                     KeyPath = @"SOFTWARE\Dell\Dell Display Manager";
