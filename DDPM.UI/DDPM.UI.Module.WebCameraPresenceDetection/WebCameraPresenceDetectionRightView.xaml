@@ -97,7 +97,7 @@
                   <Grid Margin="18,20,18,0">
                     <StackPanel Orientation="Horizontal">
                       <!-- Derek for PIMS-332099 -->
-                      <UXControls:UXTextBlock Width="270" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraPresenceDetection.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                      <UXControls:UXTextBlock MaxWidth="270" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraPresenceDetection.3], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                       <Border ToolTipService.Placement="Left" Background="{StaticResource FakeTransparent}" Cursor="Hand">
                         <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                         <Border.ToolTip>
@@ -114,7 +114,7 @@
                   <StackPanel Orientation="Vertical" Margin="18,20,18,0">
                     <Grid>
                       <StackPanel Orientation="Horizontal">
-                        <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
+                        <UXControls:UXTextBlock MaxWidth="280" TextTrimming="CharacterEllipsis" Text="{Binding [WebCameraPresenceDetection.5], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" />
                         <Border ToolTipService.Placement="Left" Background="{StaticResource FakeTransparent}" Cursor="Hand">
                           <ContentControl Template="{StaticResource icon_Info}" Margin="9,0,0,0" Width="16" Height="16"/>
                           <Border.ToolTip>
@@ -145,7 +145,7 @@
                             VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,75,0" FontFamily="Roboto" FontWeight="Normal" Visibility="Collapsed" />
                     </Grid>
                     <Grid Margin="0,20,0,15">
-                      <UXControls:UXTextBlock Text="{Binding [WebCameraPresenceDetection.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
+                      <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" HorizontalAlignment="Left" MaxWidth="170" Text="{Binding [WebCameraPresenceDetection.9], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource ModuleItemStyle}" VerticalAlignment="Center" />
                       <ComboBox Style="{StaticResource DdpmComboBoxStyle}" HorizontalAlignment="Right" VerticalAlignment="Center"  ItemsSource="{Binding SnoozeLength_ItemsCollection}"
                                   SelectedItem="{Binding SelectedSnoozeLength, Mode=TwoWay}"
                                   IsEnabled="{Binding Path= IsEnable_SnoozeLength}"

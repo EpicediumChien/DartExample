@@ -22,6 +22,7 @@ using System.Security.AccessControl;
 using Rectangle = System.Drawing.Rectangle;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft.Win32;
+using DDPM.SA.Resources.Helper;
 
 namespace DDPM.EABroker
 {
@@ -43,21 +44,21 @@ namespace DDPM.EABroker
 
         #region Multiligual Strings
         //[ResourceKey] [Custom_layout]
-        private string _customLayout = "Custom layout";
+        private string _customLayout = LangHelper.Instance["Custom_layout"];// "Custom layout";
         //[Save_0]
-        private string _saveButton = "Save";
+        private string _saveButton = LangHelper.Instance["Save_0"];//"Save";
         //[Cancel_0]
-        private string _cancelButton = "Cancel";
+        private string _cancelButton = LangHelper.Instance["Cancel_0"];//"Cancel";
         //[EABroker_updateToEmProfilePrompt]
-        private string _updateToEmProfilePrompt = "There are Easy Memory profiles associated to this custom layout.\nSaving this custom layout will update the layout for all the associated profiles.\nDo you want to save the layout?";
+        private string _updateToEmProfilePrompt = LangHelper.Instance["EABroker_updateToEmProfilePrompt"];//"There are Easy Memory profiles associated to this custom layout.\nSaving this custom layout will update the layout for all the associated profiles.\nDo you want to save the layout?";
         //[Yes]
-        private string _yesButton = "Yes";
+        private string _yesButton = LangHelper.Instance["Yes"];//"Yes";
         //[No]
-        private string _noButton = "No";
+        private string _noButton = LangHelper.Instance["No"];//"No";
         //[Arrange_Windows]
-        private string _arrangeWindows = "Arrange Windows";
+        private string _arrangeWindows = LangHelper.Instance["Arrange_Windows"];//"Arrange Windows";
         //[EA_MSG_0]
-        private string _adjust = "Adjust your current window arrangement, edit the name (if desired), and click \"Save\" to store the arrangement.";
+        private string _adjust = LangHelper.Instance["EA_MSG_0"];//"Adjust your current window arrangement, edit the name (if desired), and click \"Save\" to store the arrangement.";
         #endregion
 
         #region Input/Output
@@ -73,7 +74,7 @@ namespace DDPM.EABroker
         //Output:
         public SplitJson SelectedCustomItem
         {
-            get {  return _viewModel.SelectedCustomItem; }
+            get { return _viewModel.SelectedCustomItem; }
         }
 
         //Unused, using WorkingArea instead
@@ -274,11 +275,14 @@ namespace DDPM.EABroker
                 //    Add the the names which is not in saved custom list, until item count == 5
                 int nameNo = 1;
                 bool isTheFirstDefaultName = true;
-                string selName = "Custom Layout (1))";
+                //string selName = "Custom Layout (1))";
+                string selName = LangHelper.Instance["Custom_layout"] + @" (1)";
                 while (tempList.Count < EAEMConstants.MaxCustomItems)
                 {
                     //generate the default custom name
-                    string customName = $"Custom Layout ({nameNo})";
+
+                    //string customName = $"Custom Layout ({nameNo})";
+                    string customName = $"{LangHelper.Instance["Custom_layout"]} ({nameNo})";
                     //Check if the name is existed
                     if (tempList.FirstOrDefault(x => x.CustomName.Equals(customName)) == null)
                     {

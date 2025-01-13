@@ -241,7 +241,7 @@
     <value>Veuillez double-cliquer sur le bouton gauche de la souris pour lancer la mise à jour du micrologiciel</value>
   </data>
   <data name="M2_Please_press_key_on_keyboard_to_start_firmware_update" xml:space="preserve">
-    <value>Appuyez sur la touche \"U\" du clavier pour lancer la mise à jour du micrologiciel</value>
+    <value>Appuyez sur la touche "U" du clavier pour lancer la mise à jour du micrologiciel</value>
   </data>
   <data name="A0_Device_connected" xml:space="preserve">
     <value>Appareil connecté</value>

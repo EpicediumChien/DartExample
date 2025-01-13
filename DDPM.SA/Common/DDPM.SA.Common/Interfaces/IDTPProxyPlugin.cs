@@ -51,6 +51,7 @@ namespace DDPM.SA.Common
         Task<JArray> GetAppSpecificProfiles(string Guid);
         Task<bool> DeleteMouseAllAssignedActions(string Guid);
         Task<JArray> GetMouseAssignableActions(string Guid);
+        Task<JArray> GetMouseAssignedActions(string Guid);
         Task<string> GetMouseKeystrokeDisplayData(string Guid);
         Task<bool> StartMouseKeystrokeRecording(string Guid);
         Task<bool> StopMouseKeystrokeRecording(string Guid);
@@ -72,6 +73,7 @@ namespace DDPM.SA.Common
         Task<JArray> GetKbProgrammableKeys(string Guid);
         Task<bool> DeleteKeyboardAllAssignedActions(string Guid);
         Task<JArray> GetKbAssignableActions(string Guid);
+        Task<JArray> GetKbAssignedActions(string Guid);
         Task<string> GetKeyboardKeystrokeDisplayData(string Guid);
         Task<bool> StartKeyboardKeystrokeRecording(string Guid);
         Task<bool> StopKeyboardKeystrokeRecording(string Guid);

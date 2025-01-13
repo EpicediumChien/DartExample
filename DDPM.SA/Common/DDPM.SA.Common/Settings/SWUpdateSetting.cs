@@ -21,7 +21,7 @@ namespace DDPM.SA.Common.Settings
 {
     public class SWUpdateSetting
     {
-        private static readonly string URL = @$"https://clientperipherals.dell.com/DDPM/";
+        private static readonly string URL = GlobalDefinitions.major_url;//@$"https://clientperipherals.dell.com/DDPM/";
         private static readonly string URL_Folder = @$"/Windows/Application/";
         private static string GetSWUServer()
         {
@@ -298,9 +298,9 @@ namespace DDPM.SA.Common.Settings
                     imageBytes = client.GetByteArrayAsync(url).Result;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                Console.WriteLine($"[DownloadImageAsByteArray] exception: {ex.Message}");
             }
             return imageBytes;
         }

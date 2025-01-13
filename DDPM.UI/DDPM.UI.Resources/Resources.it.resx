@@ -1399,7 +1399,7 @@
     <value>Il dispositivo associato non è supportato dal ricevitore senza fili USB collegato. Utilizzare il ricevitore fornito con il dispositivo.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>Gli slot disponibili su questo ricevitore senza fili USB sono occupati. Per utilizzarne uno, annullare l'associazione di un dispositivo cliccando sul pulsante \"Annulla associazione\" nella pagina delle impostazioni del dispositivo.</value>
+    <value>Gli slot disponibili su questo ricevitore senza fili USB sono occupati. Per utilizzarne uno, annullare l'associazione di un dispositivo cliccando sul pulsante "Annulla associazione" nella pagina delle impostazioni del dispositivo.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>Cliccare per assegnare un'azione</value>
@@ -2416,7 +2416,7 @@
     <value>Combinazione tasti di scelta rapida: recente</value>
   </data>
   <data name="EazyMemorySettings.1" xml:space="preserve">
-    <value>Esempio: &quot;Alt + P&quot;, &quot;Maiusc + F&quot;, &quot;Ctrl + Maiusc + F&quot;.</value>
+    <value>Esempio: "Alt + P", "Maiusc + F", "Ctrl + Maiusc + F".</value>
   </data>
   <data name="EazyMemorySettings.2" xml:space="preserve">
     <value>Consente di fissare facilmente qualsiasi applicazione in un layout a schermo suddiviso trascinandola in una partizione</value>
@@ -2446,7 +2446,7 @@
     <value>Cliccare sul pulsante Sfoglia per selezionare un file</value>
   </data>
   <data name="Action.3" xml:space="preserve">
-    <value>Cliccare sul pulsante &quot;\Sfoglia\&quot; per selezionare una cartella</value>
+    <value>Cliccare sul pulsante "Sfoglia" per selezionare una cartella</value>
   </data>
   <data name="Action.4" xml:space="preserve">
     <value>Digitare l&apos;URL della pagina web nella casella sottostante</value>
@@ -2485,7 +2485,7 @@
     <value>Collaborazione</value>
   </data>
   <data name="Collab.10" xml:space="preserve">
-    <value>La tastiera per la collaborazione non è in grado di connettersi a Microsoft Teams perché la richiesta è stata bloccata. Per utilizzare Microsoft Teams con la tastiera per la collaborazione, cliccare su \&quot;Ulteriori informazioni\&quot; per istruzioni su come ricollegarsi.</value>
+    <value>La tastiera per la collaborazione non è in grado di connettersi a Microsoft Teams perché la richiesta è stata bloccata. Per utilizzare Microsoft Teams con la tastiera per la collaborazione, cliccare su "Ulteriori informazioni" per istruzioni su come ricollegarsi.</value>
   </data>
   <data name="Collab.11" xml:space="preserve">
     <value>Per utilizzare la tastiera per la collaborazione con Zoom, è necessario installare la versione desktop più recente di Zoom</value>
@@ -2818,7 +2818,7 @@
     <value>Incolla e unisci formattazione</value>
   </data>
   <data name="Camera.25" xml:space="preserve">
-    <value>Collega il monitor tramite USB 3.0 e seleziona &quot;High Data Speed&quot; in &quot;USB-C Prioritization&quot; per abilitare la risoluzione 4K UHD.</value>
+    <value>Collega il monitor tramite USB 3.0 e seleziona "High Data Speed" in "USB-C Prioritization" per abilitare la risoluzione 4K UHD.</value>
   </data>
   <data name="HeadsetAutomatedActions.14" xml:space="preserve">
     <value>Sensibilità</value>
@@ -3259,7 +3259,7 @@
     <value>Salvataggio report asset del monitor non riuscito</value>
   </data>
   <data name="USBKVM.Tips" xml:space="preserve">
-    <value>Esempio: &quot;ALT + P&quot;, &quot;MAIUSC + F&quot;, &quot;Ctrl + MAIUSC + F&quot;.\nNota: per più monitor, il cursore del mouse deve trovarsi sullo schermo del monitor di destinazione per attivare la funzione dei tasti di scelta rapida.</value>
+    <value>Esempio: "ALT + P", "MAIUSC + F", "Ctrl + MAIUSC + F".\nNota: per più monitor, il cursore del mouse deve trovarsi sullo schermo del monitor di destinazione per attivare la funzione dei tasti di scelta rapida.</value>
   </data>
   <data name="BrightnessLevel" xml:space="preserve">
     <value>Livello di luminosità</value>

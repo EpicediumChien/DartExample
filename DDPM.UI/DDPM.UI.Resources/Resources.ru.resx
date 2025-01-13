@@ -2446,7 +2446,7 @@
     <value>Чтобы выбрать файл, нажмите кнопку «Browse»</value>
   </data>
   <data name="Action.3" xml:space="preserve">
-    <value>Чтобы выбрать папку, нажмите кнопку \&quot;Browse\&quot;</value>
+    <value>Чтобы выбрать папку, нажмите кнопку "Browse"</value>
   </data>
   <data name="Action.4" xml:space="preserve">
     <value>Введите URL-адрес веб-страницы в поле ниже</value>
@@ -2485,7 +2485,7 @@
     <value>Совместная работа</value>
   </data>
   <data name="Collab.10" xml:space="preserve">
-    <value>Клавиатура для совместной работы не может подключиться к Microsoft Teams, так как вы заблокировали запрос. Чтобы использовать Microsoft Teams с клавиатурой для совместной работы, нажмите \&quot;Learn more\&quot; для получения инструкций по повторному подключению.</value>
+    <value>Клавиатура для совместной работы не может подключиться к Microsoft Teams, так как вы заблокировали запрос. Чтобы использовать Microsoft Teams с клавиатурой для совместной работы, нажмите "Learn more" для получения инструкций по повторному подключению.</value>
   </data>
   <data name="Collab.11" xml:space="preserve">
     <value>Чтобы использовать клавиатуру для совместной работы с Zoom, установите последнюю версию Zoom для настольных компьютеров</value>

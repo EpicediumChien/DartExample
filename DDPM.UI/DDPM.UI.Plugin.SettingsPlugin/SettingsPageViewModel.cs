@@ -114,7 +114,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                     vm = settings_About;
                     break;
             }
-            if (vm != null) 
+            if (vm != null)
             {
                 OpenFullView(vm);
             }
@@ -191,7 +191,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 Log?.Info($"Invoke_RefreshData go");
                 //bool GetPdemFile=DdpmCommonHelper.DeviceManagerSA.CheckInstallFirstOpen().Result;
-                Global.SettingParam= DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
+                Global.SettingParam = DdpmCommonHelper.DeviceManagerSA.GetGlobalSettingParam().Result;
                 GlobalSettingParam = Global.SettingParam;
                 DDPMSettings data = DdpmCommonHelper.ReadDDPMSettings();//DeviceManagerSA.ReloadAppConfigData().Result;
                 Lock_AnalyticsPage = data.LockSettings.Lock_Settings_TelemetryConsent;
@@ -442,10 +442,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 NoNetwork = Visibility.Collapsed;
                 List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA.GetDevices().Result.deviceInfo;
+                int ioDongleCount = DdpmCommonHelper.DeviceManagerSA.GetIODongleCount().Result;
+                int audioDongleCount = DdpmCommonHelper.DeviceManagerSA.GetAudioDongleCount().Result;
                 Log?.Info($"fwUpdateInfoPackage.FWUpdateInfo.Count : {fwUpdateInfoPackage.FWUpdateInfo.Count}");
+                Log?.Info($"ioDongleCount : {ioDongleCount}");
+                Log?.Info($"audioDongleCount : {audioDongleCount}");
                 foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
                 {
-                    UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos);
+                    UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos, ioDongleCount, audioDongleCount);
                     if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)//如果不能選擇是否更新為強制更新
                     {
                         Log?.Info($"Critical_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
@@ -687,7 +691,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public Visibility UXAlertItemVisibility_2 { get; set; }
         public string UXAlertItemMessage_2 { get; set; }
 
-        public UIUpdateInfo(FWUpdateInfo fwUpdateInfo, List<DeviceInfo> deviceInfos)
+        public UIUpdateInfo(FWUpdateInfo fwUpdateInfo, List<DeviceInfo> deviceInfos, int IODongle, int AudioDongle)
         {
             //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷
             DeviceType[] CriticalUpdates = new DeviceType[] { DeviceType.PhysicalAudioDongle, DeviceType.PhysicalDongle },
@@ -730,6 +734,13 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             }
             switch (fwUpdateInfo.DeviceType)
             {
+                case DeviceType.PhysicalDongle:
+                    if (IODongle > 1)
+                    {
+                        UXAlertItemVisibility = Visibility.Visible;
+                        UXAlertItemMessage = LangHelper.Instance["Update_Firmware_update_of_multiple_USB_wireless_receivers"];
+                    }
+                    break;
                 case DeviceType.LogicalMouse:
 
                     if (deviceBatteryLow == true)

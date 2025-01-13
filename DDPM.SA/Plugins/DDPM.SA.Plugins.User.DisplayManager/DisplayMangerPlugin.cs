@@ -15,6 +15,7 @@ using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Interfaces;
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
@@ -114,7 +115,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private Dictionary<string, string> USBUpstream = new Dictionary<string, string>(); // Port name, Upstream Port num
 
         private string[] OrientationString = new string[] { "", "Landscape", "Portrait", "Landscape_flipped", "Portrait_flipped" };//OSD orientation
-        private readonly string Display_FWU_URL = @$"https://clientperipherals.dell.com/DDPM/";
+        private readonly string Display_FWU_URL = GlobalDefinitions.major_url;//@$"https://clientperipherals.dell.com/DDPM/";
         private readonly string Display_FWU_URL_Folder = @$"/Windows/Display/Firmware/";
 
         //Derek 2024/10/21
@@ -151,6 +152,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// </summary>
         private readonly Dictionary<string, DateTime> LastProcessedTimestamps = new();
 
+        private bool IsDDPMLaunch = false;
         #endregion
 
         #region Constructor
@@ -202,6 +204,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(_CacheTable);
         }
 
+        public Task<bool> GetIsDDPMLaunch()
+        {
+            return Task.FromResult(IsDDPMLaunch);
+        }
         public Task Reset0x52TimerTick(int millisecond, int processID = -0xFF)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Reset0x52TimerTick: " +
@@ -211,6 +217,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 CreateProcessExitEvent(processID);
 
             _VcpCorePlugin.Reset0x52TimerTick(millisecond);
+
+            if (millisecond == 2000) // 8000 mean UI close, 2000 mean UI open
+            {
+                IsDDPMLaunch = true;
+                _logs.DebugMsg("[DisplayMangerPlugin] Reset0x52TimerTick: millisecond = 2000 , UI Open");
+            }
+            else
+            {
+                IsDDPMLaunch = false;
+                _logs.DebugMsg("[DisplayMangerPlugin] Reset0x52TimerTick: millisecond = 8000 , UI Close");
+            }
 
             return Task.FromResult(Task.CompletedTask);
         }
@@ -241,7 +258,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             uiProcess = null;
 
-            await _VcpCorePlugin.Reset0x52TimerTick(8000);
+            //await _VcpCorePlugin.Reset0x52TimerTick(8000);
+            await Reset0x52TimerTick(8000);
         }
 
         public Task<List<MonitorInfo>> GetMonitors()
@@ -4766,7 +4784,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     firmwares_item.id = model;
                                     if (firmwares_item.url.Contains("%2"))
                                     {
-                                        firmwares_item.url = firmwares_item.url.Replace("%2", "https://downloads.dell.com");
+                                        firmwares_item.url = firmwares_item.url.Replace("%2", GlobalDefinitions.percent_two_url);// "https://downloads.dell.com");
                                     }
                                     else
                                     {

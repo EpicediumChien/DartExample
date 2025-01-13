@@ -29,6 +29,7 @@ using DdmLibrary;
 using DdmLibrary.Utility;
 using DDPM.ColorApp;
 using System.Windows.Forms;
+using DDPM.SA.Common.Settings;
 
 
 namespace DDPM.SA.Plugins.User.ColorPreset.Test
@@ -505,7 +506,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
         /*[Test]
         public void TestCheckCA()
         {
-            string url = @"https://clientperipherals.dell.com/DDPM/";
+            string url = GlobalDefinitions.major_url;//@"https://clientperipherals.dell.com/DDPM/";
             string[] issuer = { "Entrust Certification Authority - L1F, OU=\"(c) 2016 Entrust, Inc. - for authorized use only\", OU=See www.entrust.net/legal-terms, O=\"Entrust, Inc.\", C=US" };
             string[] subject = { "CN=content-cdn.dell.com, O=Dell, L=Round Rock, S=Texas, C=US" };
             PrivateObject privatecolorPresetObject = new PrivateObject(colorPresetPlugin);
@@ -529,7 +530,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
         public void TestDownloadICCData()
         {
             string savelPath = "";
-            string url = @"https://clientperipherals.dell.com/DDPM/";
+            string url = GlobalDefinitions.major_url; //@"https://clientperipherals.dell.com/DDPM/";
             string[] issuer = { "Entrust Certification Authority - L1F, OU=\"(c) 2016 Entrust, Inc. - for authorized use only\", OU=See www.entrust.net/legal-terms, O=\"Entrust, Inc.\", C=US" };
             string[] subject = { "CN=content-cdn.dell.com, O=Dell, L=Round Rock, S=Texas, C=US" };
             PrivateObject privatehotkeyPluginObject = new PrivateObject(colorPresetPlugin);
@@ -566,7 +567,7 @@ namespace DDPM.SA.Plugins.User.ColorPreset.Test
         [Test]
         public void TestCheckHTTPAvailable()
         {
-            string Url_ = @"https://clientperipherals.dell.com/DDPM/";
+            string Url_ = GlobalDefinitions.major_url; //@"https://clientperipherals.dell.com/DDPM/";
             PrivateObject privatecolorPresetObject = new PrivateObject(colorPresetPlugin);
             try
             {

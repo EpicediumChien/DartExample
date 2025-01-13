@@ -1399,7 +1399,7 @@
     <value>O dispositivo que você está emparelhando não é compatível com o receptor USB sem fio conectado. Use o receptor que veio com o dispositivo.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>Os slots disponíveis neste receptor USB sem fio estão cheios. Para usá-lo, desemparelhe um dispositivo do receptor clicando no botão \"Desemparelhar\" na página de configurações do dispositivo.</value>
+    <value>Os slots disponíveis neste receptor USB sem fio estão cheios. Para usá-lo, desemparelhe um dispositivo do receptor clicando no botão "Desemparelhar" na página de configurações do dispositivo.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>Clique para atribuir uma ação</value>
@@ -2416,7 +2416,7 @@
     <value>Tecla de atalho: recente</value>
   </data>
   <data name="EazyMemorySettings.1" xml:space="preserve">
-    <value>Exemplo: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.</value>
+    <value>Exemplo: "Alt + P", "Shift + F", "Ctrl + Shift + F".</value>
   </data>
   <data name="EazyMemorySettings.2" xml:space="preserve">
     <value>Encaixar qualquer aplicativo em um layout de tela dividida facilmente arrastando-o para uma partição</value>
@@ -2446,7 +2446,7 @@
     <value>Clique no botão Procurar para selecionar um arquivo</value>
   </data>
   <data name="Action.3" xml:space="preserve">
-    <value>Clique no botão \&quot;Browse\&quot; para selecionar uma pasta</value>
+    <value>Clique no botão "Browse" para selecionar uma pasta</value>
   </data>
   <data name="Action.4" xml:space="preserve">
     <value>Digite a URL da página da Web na caixa abaixo</value>
@@ -2485,7 +2485,7 @@
     <value>Colaboração</value>
   </data>
   <data name="Collab.10" xml:space="preserve">
-    <value>O teclado de colaboração não consegue se conectar ao Microsoft Teams porque você bloqueou a solicitação. Para usar o Microsoft Teams com o teclado de colaboração, clique em \&quot;Saiba mais\&quot; para obter instruções sobre como se reconectar.</value>
+    <value>O teclado de colaboração não consegue se conectar ao Microsoft Teams porque você bloqueou a solicitação. Para usar o Microsoft Teams com o teclado de colaboração, clique em "Saiba mais" para obter instruções sobre como se reconectar.</value>
   </data>
   <data name="Collab.11" xml:space="preserve">
     <value>Para usar o teclado de colaboração com o Zoom, instale a versão mais recente do Zoom para desktop.</value>

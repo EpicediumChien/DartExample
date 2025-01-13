@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using Windows.System;
 
 namespace DDPM.UI.Module.Gaming
@@ -220,6 +221,39 @@ namespace DDPM.UI.Module.Gaming
         {
             //hook
             //bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
+        }
+
+        //Elsa 0110 add for PIMS [PIMS-335204][PIMS-335209]
+        // 检查TextBlock中的文本是否被截断的方法
+        private bool IsTextTruncated(TextBlock textBlock)
+        {
+            var formattedText = new FormattedText(textBlock.Text, System.Globalization.CultureInfo.CurrentCulture, textBlock.FlowDirection, new Typeface(textBlock.FontFamily, textBlock.FontStyle, textBlock.FontWeight, textBlock.FontStretch), textBlock.FontSize, Brushes.Black);
+            return formattedText.Width > textBlock.Width;
+        }
+
+        //Elsa 0110 add for PIMS [PIMS-335204][PIMS-335209]
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (IsTextTruncated(textblocktexta))
+            {
+                tooltipa.Visibility = Visibility;
+                //textblocktext.ToolTip = textblocktext.Text;
+            }
+            else
+            {
+                tooltipa.Visibility = Visibility.Hidden;
+            }
+
+
+            if (IsTextTruncated(textblocktextb))
+            {
+                tooltipb.Visibility = Visibility;
+                //textblocktexta.ToolTip = textblocktexta.Text;
+            }
+            else
+            {
+                tooltipb.Visibility = Visibility.Hidden;
+            }
         }
     }
 }

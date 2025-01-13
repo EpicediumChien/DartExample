@@ -937,7 +937,7 @@
     <value>Ligar o Rato\n e o Teclado</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
-    <value>Para o Rato e o Teclado, ligue-os à parte traseira do monitor (USB-A).\n Nota: também pode ligar outros Periféricos USB, tais \numa Câmara Web.</value>
+    <value>Para o Rato e o Teclado, ligue-os à parte traseira do monitor (USB-A).\n Nota: também pode ligar outros Periféricos USB, tais uma Câmara Web.</value>
   </data>
   <data name="Kvm.5" xml:space="preserve">
     <value>USB-A</value>
@@ -1399,7 +1399,7 @@
     <value>Este dispositivo que está a emparelhar não é compatível com o recetor sem fios USB ligado. Utilize o recetor fornecido com o dispositivo.</value>
   </data>
   <data name="Tooltip.4" xml:space="preserve">
-    <value>As ranhuras disponíveis neste recetor sem fios USB estão ocupadas. Para utilizar, desemparelhe um dispositivo clicando no botão \"Desemparelhar\" na página de definições do dispositivo.</value>
+    <value>As ranhuras disponíveis neste recetor sem fios USB estão ocupadas. Para utilizar, desemparelhe um dispositivo clicando no botão "Desemparelhar" na página de definições do dispositivo.</value>
   </data>
   <data name="Mouse.14" xml:space="preserve">
     <value>Clicar para Atribuir uma ação</value>
@@ -2416,7 +2416,7 @@
     <value>Tecla de atalho: Recente</value>
   </data>
   <data name="EazyMemorySettings.1" xml:space="preserve">
-    <value>Exemplo: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;.</value>
+    <value>Exemplo: "Alt + P", "Shift + F", "Ctrl + Shift + F".</value>
   </data>
   <data name="EazyMemorySettings.2" xml:space="preserve">
     <value>Insira facilmente qualquer aplicação numa disposição de ecrã dividido arrastando-a para dentro de uma partição</value>
@@ -2443,10 +2443,10 @@
     <value>Insira uma combinação de teclas para criar um atalho</value>
   </data>
   <data name="Action.2" xml:space="preserve">
-    <value>Clique no botão &quot;Procurar&quot; para selecionar um ficheiro</value>
+    <value>Clique no botão "Procurar" para selecionar um ficheiro</value>
   </data>
   <data name="Action.3" xml:space="preserve">
-    <value>Clique no botão \&quot;Procurar\&quot; para selecionar uma pasta</value>
+    <value>Clique no botão "Procurar" para selecionar uma pasta</value>
   </data>
   <data name="Action.4" xml:space="preserve">
     <value>Introduza o URL da página da Web na caixa abaixo</value>
@@ -2485,7 +2485,7 @@
     <value>Colaboração</value>
   </data>
   <data name="Collab.10" xml:space="preserve">
-    <value>O Teclado de Colaboração não consegue estabelecer ligação ao Microsoft Teams porque o pedido foi bloqueou por si. Para utilizar o Microsoft Teams com o Teclado de Colaboração, clique em \&quot;Saiba mais\&quot; para obter instruções sobre como voltar a ligar.</value>
+    <value>O Teclado de Colaboração não consegue estabelecer ligação ao Microsoft Teams porque o pedido foi bloqueou por si. Para utilizar o Microsoft Teams com o Teclado de Colaboração, clique em "Saiba mais" para obter instruções sobre como voltar a ligar.</value>
   </data>
   <data name="Collab.11" xml:space="preserve">
     <value>Para utilizar o Teclado de Colaboração com o Zoom, instale a versão de ambiente de trabalho mais recente do Zoom</value>
@@ -2818,7 +2818,7 @@
     <value>Colar e Unir Formatação</value>
   </data>
   <data name="Camera.25" xml:space="preserve">
-    <value>Ligue o monitor via USB 3.0 e selecione &quot;Alta Velocidade de Dados&quot; em &quot;Priorização USB-C&quot; para ativar a resolução 4K UHD.</value>
+    <value>Ligue o monitor via USB 3.0 e selecione "Alta Velocidade de Dados" em "Priorização USB-C" para ativar a resolução 4K UHD.</value>
   </data>
   <data name="HeadsetAutomatedActions.14" xml:space="preserve">
     <value>Sensibilidade</value>
@@ -2836,7 +2836,7 @@
     <value>Não foi possível importar um modelo diferente</value>
   </data>
   <data name="Update_Webcam_Alert" xml:space="preserve">
-    <value>Esta atualização ativa controlos de deteção de presença através das &quot;Definições do Windows&quot; nos sistemas: Win 11 22H2 ou superior e com a versão\r\n22621 ou superior do sistema operativo</value>
+    <value>Esta atualização ativa controlos de deteção de presença através das "Definições do Windows" nos sistemas: Win 11 22H2 ou superior e com a versão\r\n22621 ou superior do sistema operativo</value>
   </data>
   <data name="Update_BatteryLow_Alert" xml:space="preserve">
     <value>O nível da bateria no dispositivo é baixo. Substituir/Recarregar a bateria para ativar esta atualização.</value>
@@ -3259,7 +3259,7 @@
     <value>Falha ao guardar o relatório de monitorização de ativos</value>
   </data>
   <data name="USBKVM.Tips" xml:space="preserve">
-    <value>Exemplo: &quot;Alt + P&quot;, &quot;Shift + F&quot;, &quot;Ctrl + Shift + F&quot;\nNota: Para vários monitores, o cursor do rato deve estar no ecrã do monitor de destino para ativar a função de tecla de atalho.</value>
+    <value>Exemplo: "Alt + P", "Shift + F", "Ctrl + Shift + F"\nNota: Para vários monitores, o cursor do rato deve estar no ecrã do monitor de destino para ativar a função de tecla de atalho.</value>
   </data>
   <data name="BrightnessLevel" xml:space="preserve">
     <value>Nível de luminosidade</value>

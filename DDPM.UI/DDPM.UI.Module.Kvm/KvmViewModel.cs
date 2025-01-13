@@ -156,6 +156,10 @@ namespace DDPM.UI.Module.Kvm
         private USBList _PC3selectUSB = new USBList();
         private USBList _PC4selectUSB = new USBList();
         private List<InputSourceList> _inputsList = new List<InputSourceList>();
+        private List<InputSourceList> _inputsList1 = new List<InputSourceList>();
+        private List<InputSourceList> _inputsList2 = new List<InputSourceList>();
+        private List<InputSourceList> _inputsList3 = new List<InputSourceList>();
+        private List<InputSourceList> _inputsList4 = new List<InputSourceList>();
         private List<USBList> _usbsList = new List<USBList>();
         private PCInput pcInput = new PCInput();
         private bool _isNoKVM = false;
@@ -358,6 +362,30 @@ namespace DDPM.UI.Module.Kvm
             set => SetProperty(ref _inputsList, value);
         }
 
+        public List<InputSourceList> PC1InputsList
+        {
+            get => _inputsList1;
+            set => SetProperty(ref _inputsList1, value);
+        }
+
+        public List<InputSourceList> PC2InputsList
+        {
+            get => _inputsList2;
+            set => SetProperty(ref _inputsList2, value);
+        }
+
+        public List<InputSourceList> PC3InputsList
+        {
+            get => _inputsList3;
+            set => SetProperty(ref _inputsList3, value);
+        }
+
+        public List<InputSourceList> PC4InputsList
+        {
+            get => _inputsList4;
+            set => SetProperty(ref _inputsList4, value);
+        }
+
         public List<USBList> USBsList
         {
             get => _usbsList;
@@ -369,8 +397,11 @@ namespace DDPM.UI.Module.Kvm
             get => _PC1selectInput;
             set
             {
-                SetProperty(ref _PC1selectInput, value);
-                SelectInputSource(_PC1selectInput.Type, "PC1");
+                if (_PC1selectInput != value)
+                {
+                    SetProperty(ref _PC1selectInput, value);
+                    SelectInputSource(_PC1selectInput.Type, "PC1");
+                }
             }
         }
 
@@ -379,8 +410,11 @@ namespace DDPM.UI.Module.Kvm
             get => _PC2selectInput;
             set
             {
-                SetProperty(ref _PC2selectInput, value);
-                SelectInputSource(_PC2selectInput.Type, "PC2");
+                if (_PC2selectInput != value)
+                {
+                    SetProperty(ref _PC2selectInput, value);
+                    SelectInputSource(_PC2selectInput.Type, "PC2");
+                }
             }
         }
 
@@ -389,8 +423,11 @@ namespace DDPM.UI.Module.Kvm
             get => _PC3selectInput;
             set
             {
-                SetProperty(ref _PC3selectInput, value);
-                SelectInputSource(_PC3selectInput.Type, "PC3");
+                if (_PC3selectInput != value)
+                {
+                    SetProperty(ref _PC3selectInput, value);
+                    SelectInputSource(_PC3selectInput.Type, "PC3");
+                }
             }
         }
 
@@ -399,8 +436,11 @@ namespace DDPM.UI.Module.Kvm
             get => _PC4selectInput;
             set
             {
-                SetProperty(ref _PC4selectInput, value);
-                SelectInputSource(_PC4selectInput.Type, "PC4");
+                if (_PC4selectInput != value)
+                {
+                    SetProperty(ref _PC4selectInput, value);
+                    SelectInputSource(_PC4selectInput.Type, "PC4");
+                }
             }
         }
 
@@ -457,7 +497,7 @@ namespace DDPM.UI.Module.Kvm
 
         public bool isNKVMEanble { get; set; } = true;
         public double NKVM_Opacity { get; set; } = 1;
-        public Visibility LockNKVM_Visibility { get; set; } = Visibility.Collapsed;
+        //public Visibility LockNKVM_Visibility { get; set; } = Visibility.Collapsed;
 
         public bool isUSBKVMEanble { get; set; } = true;
         public double USBKVM_Opacity { get; set; } = 1;
@@ -1061,6 +1101,7 @@ namespace DDPM.UI.Module.Kvm
                                     {
                                         PCImage = DdpmCommonHelper.GetImageSourceFromCommonResource("Resources/USBKVM_2PCs.png");
                                     }
+                                    ModifiedPCinputList();
                                     USBDisenable();
                                 }
                                 else
@@ -1332,6 +1373,7 @@ namespace DDPM.UI.Module.Kvm
             {
                 _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
             }
+            ModifiedPCinputList();
             USBDisenable();
             //bool b = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
             OnPropertyChanged("PC1_Input");
@@ -1916,7 +1958,7 @@ namespace DDPM.UI.Module.Kvm
         {
             OnPropertyChanged("isNKVMEanble");
             OnPropertyChanged("NKVM_Opacity");
-            OnPropertyChanged("LockNKVM_Visibility");
+            //OnPropertyChanged("LockNKVM_Visibility");
             OnPropertyChanged("isUSBKVMEanble");
             OnPropertyChanged("USBKVM_Opacity");
             OnPropertyChanged("LockUSBKVM_Visibility");
@@ -2023,15 +2065,15 @@ namespace DDPM.UI.Module.Kvm
                         }
                         else
                         {
-                            if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
-                            {
+                            //if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
+                            //{
                                 bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
                                 _log.Debug($"[KvmViewModel] SetUSBUpstream {pcs.Key}-{pcs.Value.InputType}: {pcs.Value.USBUpstream} Done");
                                 if (bUSBuptream)
                                 {
                                     Thread.Sleep(1000);
                                 }
-                            }
+                            //}
                         }
                     }
                     USBDisenable();
@@ -2266,6 +2308,56 @@ namespace DDPM.UI.Module.Kvm
                     OnPropertyChanged("PC4USB_Enable");
                 }
             }
+        }
+
+        public void ModifiedPCinputList()
+        {
+            _inputsList1 = new List<InputSourceList>();
+            _inputsList2 = new List<InputSourceList>();
+            _inputsList3 = new List<InputSourceList>();
+            _inputsList4 = new List<InputSourceList>();
+            foreach (InputSourceList inputSource in _inputsList)
+            {
+                if (pcsList.ContainsKey("PC1") && inputSource.Type == pcsList["PC1"].InputType)
+                {
+                    _inputsList1.Add(inputSource);
+                }
+                else if (pcsList.ContainsKey("PC2") && inputSource.Type == pcsList["PC2"].InputType)
+                {
+                    _inputsList2.Add(inputSource);
+                }
+                else if (pcsList.ContainsKey("PC3") && inputSource.Type == pcsList["PC3"].InputType)
+                {
+                    _inputsList3.Add(inputSource);
+                }
+                else if(pcsList.ContainsKey("PC4") && inputSource.Type == pcsList["PC4"].InputType)
+                {
+                    _inputsList4.Add(inputSource);
+                }
+                else
+                {
+                    if (pcsList.ContainsKey("PC1"))
+                    {
+                        _inputsList1.Add(inputSource);
+                    }
+                    if (pcsList.ContainsKey("PC2"))
+                    {
+                        _inputsList2.Add(inputSource);
+                    }
+                    if (pcsList.ContainsKey("PC3"))
+                    {
+                        _inputsList3.Add(inputSource);
+                    }
+                    if (pcsList.ContainsKey("PC4"))
+                    {
+                        _inputsList4.Add(inputSource);
+                    }
+                }
+            }
+            OnPropertyChanged("PC1InputsList");
+            OnPropertyChanged("PC2InputsList");
+            OnPropertyChanged("PC3InputsList");
+            OnPropertyChanged("PC4InputsList");
         }
 
         #region Event

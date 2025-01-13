@@ -18,7 +18,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Width="1378" Height="753">
         <Image x:Name="imgBkGlow"
                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png"
                Stretch="UniformToFill"
@@ -27,8 +27,8 @@
         <StackPanel>
             <Grid Margin="0" Visibility="{Binding PeripheralVisibility}">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="552" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" MinWidth="670" />
                 </Grid.ColumnDefinitions>
 
                 <Grid Grid.Column="0" Margin="76, 60, 0, 0">
@@ -41,44 +41,48 @@
                     </Grid.RowDefinitions>
 
                     <!-- Progress Bar -->
-                    <Grid Grid.Row="0">
-                        <ProgressBar x:Name="WalkThroughProgressbar" Background="{DynamicResource ProgressBar_BkColor}" BorderThickness="0" HorizontalAlignment="Left" Height="5" Width="281" Minimum="0" Maximum="{Binding CurrentAnimationPage}" Value="{Binding ProgressValue}">
-                            <ProgressBar.Style>
-                                <Style TargetType="ProgressBar">
-                                    <Setter Property="Foreground" Value="#A4B8CD" />
-                                </Style>
-                            </ProgressBar.Style>
+                    <!--<Grid Grid.Row="0">-->
+                    <ProgressBar Grid.Row="0" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                                 x:Name="WalkThroughProgressbar" Background="{DynamicResource ProgressBar_BkColor}" BorderThickness="0" HorizontalAlignment="Left" Height="5" Minimum="0" Maximum="{Binding CurrentAnimationPage}" Value="{Binding ProgressValue}">
+                        <ProgressBar.Style>
+                            <Style TargetType="ProgressBar">
+                                <Setter Property="Foreground" Value="#A4B8CD" />
+                            </Style>
+                        </ProgressBar.Style>
 
-                            <ProgressBar.Triggers>
-                                <EventTrigger RoutedEvent="ProgressBar.Loaded">
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetProperty="Value" From="0" To="{Binding ProgressValue}" Duration="0:0:1" FillBehavior="HoldEnd" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </EventTrigger>
-                            </ProgressBar.Triggers>
-                        </ProgressBar>
-                    </Grid>
+                        <ProgressBar.Triggers>
+                            <EventTrigger RoutedEvent="ProgressBar.Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Value" From="0" To="{Binding ProgressValue}" Duration="0:0:1" FillBehavior="HoldEnd" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </ProgressBar.Triggers>
+                    </ProgressBar>
+                    <!--</Grid>-->
 
                     <!-- Feature Highlight Title -->
-                    <Grid Grid.Row="1" Margin="0, 50, 0, 0" Width="196" HorizontalAlignment="Left">
-                        <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_PbHeaderColor}" Text="{Binding [WalkThrough.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="20" LineHeight="28" />
-                    </Grid>
+                    <!--<Grid Grid.Row="1" Margin="0, 50, 0, 0" Width="196" HorizontalAlignment="Left">-->
+                    <UXControls:UXTextBlock Grid.Row="1" Margin="0, 50, 0, 0" HorizontalAlignment="Left" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                                                Foreground="{DynamicResource DefaultTheme_PbHeaderColor}" Text="{Binding [WalkThrough.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="20" LineHeight="28" />
+                    <!--</Grid>-->
 
                     <!-- Customizable Keys Title -->
-                    <Grid Grid.Row="2" Margin="0, 8, 0, 0" Width="476" HorizontalAlignment="Left">
-                        <UXControls:UXTextBlock x:Name="MainText" Text="{Binding MainText}" FontSize="58" TextWrapping="Wrap"/>
-                    </Grid>
+                    <!--<Grid Grid.Row="2" Margin="0, 8, 0, 0" Width="476" HorizontalAlignment="Left">-->
+                    <UXControls:UXTextBlock Grid.Row="2" Margin="0, 8, 0, 0" HorizontalAlignment="Left" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                                                x:Name="MainText" Text="{Binding MainText}" FontSize="58" TextWrapping="Wrap"/>
+                    <!--</Grid>-->
 
                     <!-- Description Text -->
-                    <Grid Grid.Row="3" Margin="0, 16, 0, 0" Width="476" HorizontalAlignment="Left">
-                        <UXControls:UXTextBlock x:Name="SubText" Text="{Binding SubText}"  FontSize="15"  TextWrapping="Wrap" />
-                    </Grid>
+                    <!--<Grid Grid.Row="3" Margin="0, 16, 0, 0" Width="476" HorizontalAlignment="Left">-->
+                    <UXControls:UXTextBlock Grid.Row="3" Margin="0, 16, 0, 0" HorizontalAlignment="Left" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
+                                                x:Name="SubText" Text="{Binding SubText}"  FontSize="15"  TextWrapping="Wrap" />
+                    <!--</Grid>-->
                 </Grid>
 
                 <!-- Buttons -->
-                <Grid Grid.Row="4" Margin="72,532, 0, 0">
+                <Grid Grid.Column="0" Margin="72,532, 0, 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
@@ -170,8 +174,8 @@
 
 
                     <!-- First Button Group -->
-                    <Grid Grid.Row="2" Margin="607, 16, 0, 0">
-                        <StackPanel Orientation="Horizontal">
+                    <Grid Grid.Row="2" Margin="0, 16, 0, 0">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <!-- Next Button -->
                             <UXControls:UXButton x:Name="MainNextBtn" IconPosition="IconRight" HorizontalContentAlignment="Center" ButtonType="Primary" Padding="40, 8" ButtonSize="Medium" VerticalContentAlignment="Center" Margin="-5, 0, 0, 0" IconAnimation="Move" Width="194" Height="40" Click="MainNextBtn_Click">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
