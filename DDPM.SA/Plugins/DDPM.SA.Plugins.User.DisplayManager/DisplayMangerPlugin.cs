@@ -4686,7 +4686,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(displayUpdateHelper);
         }
 
-        private string GetTestServerURL()
+        /*private string GetTestServerURL()
         {
             RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
             string ret = Display_FWU_URL + Display_FWU_URL_Folder;
@@ -4707,12 +4707,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 }
             }
             return ret;
-        }
+        }*/
 
         private DisplayUpdateHelper GetDisplayFWMetadata(bool isSkipCA, ISettingsManagerDev settingsPlugin)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} start");
-            string display_FWU_URL = GetTestServerURL();
+            string display_FWU_URL = Download.GetTestServerURL();// GetTestServerURL();
             DisplayUpdateHelper ret = new DisplayUpdateHelper();
             if (!isSkipCA)
             {
@@ -4759,7 +4759,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                     if (!string.IsNullOrEmpty(jsonString))
                     {
-                        string testServer = GetTestServerURL();
+                        string testServer = Download.GetTestServerURL();// GetTestServerURL();
 
                         Dictionary<string, Display_Firmwares_item> data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(jsonString);
                         foreach (MonitorInfo monitorInfo in monitorInfos)
