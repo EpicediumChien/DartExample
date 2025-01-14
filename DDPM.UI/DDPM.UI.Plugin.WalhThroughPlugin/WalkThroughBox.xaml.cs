@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.UI.Common;
+using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
