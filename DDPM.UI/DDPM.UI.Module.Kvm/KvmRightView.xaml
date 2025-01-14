@@ -136,12 +136,13 @@
                                                          Click="OpenUSBKVM"
                                                          Visibility="Collapsed"
                                                          IsEnabled="{Binding isUSBKVMButton}"/>
+                                    <!-- Elsa 20250114 remove Margin="16"for es-419 this button will overflow -->
                                     <UXControls:UXButton ButtonType="Secondary"
                                                          x:Name="USBKVMHotkeys"
                                                          ButtonSize="Medium"
                                                          HorizontalAlignment="Center"
                                                          VerticalAlignment="Center"
-                                                         Margin="16" Padding="32,0"
+                                                         Padding="32,0"
                                                          Visibility="Collapsed" Click="USBKVMHotkeys_Click">
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                             <UXControls:UXTextBlock Margin="8" Text="{Binding [Hotkeys], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" />
