@@ -19,18 +19,25 @@ namespace DDPM.UI.Module.PenSettings
 
         public PenSettingsRightView(PenViewModel vm)
         {
-            InitializeComponent();
-            _vm = vm;
+            try
+            {
+                InitializeComponent();
+                _vm = vm;
 
-            txtCaption.Text = Strings.PenSettings;
-            txtTipSensitivity.Text = Strings.TipSensitivity;
-            txtTipTooltip.Text = Strings.TipTooltip;
-            txtTiltSensitivity.Text = Strings.TiltSensitivity;
-            txtTiltTooltip.Text = Strings.TiltTooltip;
-            txtPairWithTile.Text = Strings.PairWithTile;
-            txtPairTooltip.Text = Strings.PairTooltip;
-            btnGetStart.Content = Strings.GetStarted2;
+                txtCaption.Text = Strings.PenSettings;
+                txtTipSensitivity.Text = Strings.TipSensitivity;
+                txtTipTooltip.Text = Strings.TipTooltip;
+                txtTiltSensitivity.Text = Strings.TiltSensitivity;
+                txtTiltTooltip.Text = Strings.TiltTooltip;
+                txtPairWithTile.Text = Strings.PairWithTile;
+                txtPairTooltip.Text = Strings.PairTooltip;
+                btnGetStart.Content = Strings.GetStarted2;
 
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs  PenSettingsRightView() ex:" + ex.Message);
+            }
             //DoubleCollection tickMarks = new DoubleCollection();
             //tickMarks.Add(0);
             //tickMarks.Add(12.5);
@@ -59,20 +66,29 @@ namespace DDPM.UI.Module.PenSettings
             _vm.SetTiltSensitivity();
         }
 
-    private void btnGetStart_Click(object sender, RoutedEventArgs e) {
-      Window parentWindow = Window.GetWindow(this);
-      double windowLeft = 0;
-      double windowTop = 0;
-      PairTileModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight);
-      if(parentWindow != null) {
-        modalDialog.Owner = parentWindow;
-        windowLeft = parentWindow.Left;
-        windowTop = parentWindow.Top;
-      }
-      modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-      modalDialog.Left = windowLeft;
-      modalDialog.Top = windowTop;
-      modalDialog.ShowDialog();
+        private void btnGetStart_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Window parentWindow = Window.GetWindow(this);
+                double windowLeft = 0;
+                double windowTop = 0;
+                PairTileModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight);
+                if (parentWindow != null)
+                {
+                    modalDialog.Owner = parentWindow;
+                    windowLeft = parentWindow.Left;
+                    windowTop = parentWindow.Top;
+                }
+                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                modalDialog.Left = windowLeft;
+                modalDialog.Top = windowTop;
+                modalDialog.ShowDialog();
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs  btnGetStart_Click() ex:" + ex.Message);
+            }
+        }
     }
-  }
 }
