@@ -44,6 +44,7 @@ using System.ServiceProcess;
 using System.IO.Compression;
 using DDPM.SA.Resources.Helper;
 using System.Windows;
+using System.Net.NetworkInformation;
 
 
 namespace DDPM.SA.Plugins.User.FWUpdate
@@ -487,7 +488,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                         oldVer = Regex.Replace(oldVer, pattern, replacement);
                                     }
                                 }
-                                _logs.DebugMsg_1($" CheckUpdate(), oldVer (production output) = {oldVer}");                                
+                                _logs.DebugMsg_1($" CheckUpdate(), oldVer (production output) = {oldVer}");
                             }
                             _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}] go add list");
                             if (deviceTypeList == null && !isOnlyDisplay)
@@ -971,6 +972,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} savePath FolderIsNotSafe - FolderInfo : {FolderInfo}");
                         _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} savePath FolderIsNotSafe - PathSymbolicLinInfo : {PathSymbolicLinInfo}");
+                        method.DeleteFolder(savePath);
+                        continue;
+                    }
+                    if (!NetworkInterface.GetIsNetworkAvailable())
+                    {
+                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
+                        _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
+                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download File Fail : " + _notificationStr);
                         method.DeleteFolder(savePath);
                         continue;
                     }
