@@ -980,5 +980,17 @@ namespace DDPM.UI.Plugin.ViewModels
         }
 
         public Visibility IsTouchScrollHilighted { get; set; } = Visibility.Collapsed;
+
+        private bool isBatteryUnavailable { get; set; } = false;
+
+        public bool IsBatteryUnavailable
+        {
+            get { return isBatteryUnavailable; }
+            set
+            {
+                isBatteryUnavailable = value;
+                OnPropertyChanged(nameof(IsBatteryUnavailable));
+            }
+        }
     }
 }

@@ -125,12 +125,12 @@
                                                       ItemClickCommand="{Binding ListViewItemClickCommand}" />
                             </StackPanel>
                             <!-- #endregion CellBorderCount more than 4 -->
-                            
+
                             <!-- Engineer Test -->
                             <Grid Height="40">
                                 <Button Name="saveSplitCtrlsToPngImagesButton" Visibility="Collapsed"
                                         Style="{StaticResource DestructiveButtonStyle}"
-                                        Content="Save Icon Images..." HorizontalAlignment="Left"
+                                        Content="{Binding [EzArrange.11], Source={x:Static lang:LangHelper.Instance}}" HorizontalAlignment="Left"
                                         Click="saveSplitCtrlsToPngImagesButton_Click"/>
                             </Grid>
                         </StackPanel>
