@@ -179,6 +179,22 @@ namespace DDPM.UI.Common.ViewModels
 
 
         }
+
+        public SplitItem? FindItemByProfileId(int profileId)
+        {
+            if (_splitList == null) return null;
+            if (_splitList.Count == 0) return null;
+
+            foreach (SplitItem spItem in _splitList)
+            {
+                if (spItem.ProfileID == profileId)
+                {
+                    return spItem;
+                }
+            }
+            return null;
+        }
+
         #endregion Find
 
         #region Index

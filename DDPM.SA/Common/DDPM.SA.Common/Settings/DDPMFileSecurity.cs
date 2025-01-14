@@ -281,17 +281,20 @@ namespace DDPM.SA.Common.Settings
                     }
                     else
                     {
-#if DEBUG
-                        Console.WriteLine($"[GetSerializedJsonString] ValidateFilePath failed: {info}, path: {filePath}");
-#endif
-                        throw new Exception(info);
+//#if DEBUG
+//                        Console.WriteLine($"[GetSerializedJsonString] ValidateFilePath failed: {info}, path: {filePath}");
+//#endif
+                        //throw new Exception(info);
+                        info = $"[GetSerializedJsonString] ValidateFilePath failed: {info}, path: {filePath}";
+                        return string.Empty;
                     }
                 }
                 else
                 {
-#if DEBUG
-                    Console.WriteLine($"[GetSerializedJsonString] SanitizePath failed: {info}, path: {filePath}");
-#endif
+                    //#if DEBUG
+                    //                    Console.WriteLine($"[GetSerializedJsonString] SanitizePath failed: {info}, path: {filePath}");
+                    //#endif
+                    info = $"[GetSerializedJsonString] SanitizePath failed: {info}, path: {filePath}";
                     return string.Empty;
                 }
             }
@@ -304,9 +307,9 @@ namespace DDPM.SA.Common.Settings
             if (string.IsNullOrEmpty(json_content))
             {
                 info = "Null content of json file";
-#if DEBUG 
-                Console.WriteLine(info);
-#endif 
+//#if DEBUG 
+//                Console.WriteLine(info);
+//#endif 
                 return string.Empty;
             }
             string serialized = json_content;
@@ -329,9 +332,9 @@ namespace DDPM.SA.Common.Settings
                     if (!obj.Remove("DDPM.Signature"))
                     {
                         info = "Remove signature field of json failed";
-#if DEBUG 
-                        Console.WriteLine(info);
-#endif
+//#if DEBUG 
+//                        Console.WriteLine(info);
+//#endif
                         return string.Empty;
                     }
                     sInfo = (string)obj["DDPM.Info"];
@@ -339,9 +342,9 @@ namespace DDPM.SA.Common.Settings
                     if (!obj.Remove("DDPM.Info"))
                     {
                         info = "Remove Info field of json failed";
-#if DEBUG 
-                        Console.WriteLine(info);
-#endif
+//#if DEBUG 
+//                        Console.WriteLine(info);
+//#endif
                         return string.Empty;
                     }
                     ticket = (string)obj["DDPM.Ticket"];
@@ -349,9 +352,9 @@ namespace DDPM.SA.Common.Settings
                     if (!obj.Remove("DDPM.Ticket"))
                     {
                         info = "Remove Ticket field of json failed";
-#if DEBUG 
-                        Console.WriteLine(info);
-#endif
+//#if DEBUG 
+//                        Console.WriteLine(info);
+//#endif
                         return string.Empty;
                     }
                     modifiedJson = obj.ToString();
@@ -407,18 +410,18 @@ namespace DDPM.SA.Common.Settings
                 if (string.IsNullOrEmpty(signature) || string.IsNullOrEmpty(sInfo) || string.IsNullOrEmpty(ticket))
                 {
                     info = $"a part of key is null (1){signature},(2){sInfo},(3){ticket}";
-#if DEBUG 
-                    Console.WriteLine(info);
-#endif
+//#if DEBUG 
+//                    Console.WriteLine(info);
+//#endif
                     return string.Empty;
                 }
             }
             catch (Exception ex)
             {
                 info = "Get Signature from json fail.\nReason: " + ex.ToString();
-#if DEBUG 
-                Console.WriteLine(info);
-#endif
+//#if DEBUG 
+//                Console.WriteLine(info);
+//#endif
                 return string.Empty;
             }
 
@@ -664,7 +667,7 @@ namespace DDPM.SA.Common.Settings
             }
             catch (Exception ex)
             {
-                info = ex.Message;
+                info = "[ApplyFileACLNormalUser] exception: " + ex.Message;
                 return false;
             }
 
@@ -742,7 +745,7 @@ namespace DDPM.SA.Common.Settings
             }
             catch (Exception e)
             {
-                info = e.Message;
+                info = "[CheckFileACL] exception: " + e.Message;
                 return false;
             }
         }
@@ -807,7 +810,7 @@ namespace DDPM.SA.Common.Settings
             }
             catch (Exception e)
             {
-                info = e.Message;
+                info = "[CheckFolderACL] exception: " + e.Message;
                 return false;
             }
         }
@@ -931,9 +934,9 @@ namespace DDPM.SA.Common.Settings
             {
                 data = File.ReadAllBytes(filePath);
             }
-            catch
+            catch(Exception e)
             {
-                info = $"Read data from file path - {filePath}, exception";
+                info = $"Read data from file path - {filePath}, exception: {e.Message}";
                 return null;
             }
 
@@ -998,9 +1001,9 @@ namespace DDPM.SA.Common.Settings
             {
                 data = File.ReadAllBytes(filePath);
             }
-            catch
+            catch(Exception e)
             {
-                info = $"Read data from file path - {filePath}, exception";
+                info = $"Read data from file path - {filePath}, exception: {e.Message}";
                 return null;
             }
 
@@ -1123,16 +1126,16 @@ namespace DDPM.SA.Common.Settings
 
                     //algorithm could be SHA256 or SHA512
                     bool isSignatureValid = rsa.VerifyData(dataBytes, signature, algorithm, RSASignaturePadding.Pkcs1);
-#if DEBUG
-                    Console.WriteLine($"Signature is valid: {isSignatureValid}");
-#endif
+//#if DEBUG
+//                    Console.WriteLine($"Signature is valid: {isSignatureValid}");
+//#endif
                     info = $"The signature validated result: {isSignatureValid}";
                     return isSignatureValid;
                 }
             }
             catch (Exception ex)
             {
-                info = ex.Message;
+                info = "[IsJsonContentValid_2] exception: " + ex.Message;
                 return false;
             }
         }
@@ -1200,9 +1203,9 @@ namespace DDPM.SA.Common.Settings
             bool gotMatched = false;
             if (!IsFilePathValid(filePath, out info))
             {
-#if DEBUG
-                Console.WriteLine(info);
-#endif
+//#if DEBUG
+//                Console.WriteLine(info);
+//#endif
                 return false;
             }
             try
@@ -1231,7 +1234,7 @@ namespace DDPM.SA.Common.Settings
             }
             catch (Exception ex)
             {
-                info = ex.Message;
+                info = "[VerifyFileCertWithInboxThumbprint] exception: " + ex.Message;
                 return false;
             }
             if (!gotMatched)
@@ -1274,9 +1277,9 @@ namespace DDPM.SA.Common.Settings
             info = "success";
             if (!IsFilePathValid(filePath, out info))
             {
-#if DEBUG
-                Console.WriteLine(info);
-#endif
+//#if DEBUG
+//                Console.WriteLine(info);
+//#endif
                 return false;
             }
             if (string.IsNullOrEmpty(targetThumbprint))
@@ -1294,7 +1297,7 @@ namespace DDPM.SA.Common.Settings
             }
             catch (Exception e)
             {
-                info = e.Message;
+                info = "[VerifyFileCertWithThumbprint] exception: " + e.Message;
                 return false;
             }
             return true;
@@ -1904,7 +1907,7 @@ namespace DDPM.SA.Common.Settings
             }
             catch (Exception ex)
             {
-                info = ex.Message;
+                info = "[ConvertObjectToSerializedString] exception: " + ex.Message;
                 return string.Empty;
             }
             info = "Success";

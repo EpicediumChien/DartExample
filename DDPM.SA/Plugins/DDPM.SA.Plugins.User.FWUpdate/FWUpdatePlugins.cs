@@ -55,10 +55,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
     [DependencyKnownTypes(new[] { typeof(IFWUpdateService), typeof(ISettingsManagerSA) })]
     public class FWUpdatePlugins : BaseAgentPlugin, IFWUpdateService
     {
-        //0531 Bruce 因應IL的現有安裝包修改底層邏輯，FWUpdatePlugins.cs有稍作大改
-        //0531 Bruce 因使用者可能在執行前將裝置移除，故將檢查是否延期的功能修改到底層的排程中
-
-        public static readonly string[] ODM = new string[] { "Chicony", "Primax", "LiteON", "Darfon", "Wacom", "Luxshare", "Wistron", "Horn", "Tymphany" };
+        public static readonly string[] ODM = new string[] { "Chicony", "Primax", "LiteON", "Darfon", "Wacom", "Luxshare", "Wistron", "Horn", "Tymphany", "Dell" };
         #region Private Members
 
         private const string pluginName = "FWUpdatePlugin";
@@ -110,10 +107,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// 從DeviceManager取得的連接的IO Dongle，用於更新韌體前確認是否有插入多個Dongle
         /// </summary>
         private int _IODongleCount;
-        /// <summary>
-        /// 從DeviceManager取得的連接的Audio Dongle，用於更新韌體前確認是否有插入多個Dongle
-        /// </summary>
-        private int _AudioDongleCount;
 
         /// <summary>
         /// 要取得更新的裝置列表
@@ -259,10 +252,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         #endregion Overriding methods
 
 
-        public void SetDeviceinfo(List<DeviceInfo> DeviceInfos, int IODongleCount, int AudioDongle)
+        public void SetDeviceinfo(List<DeviceInfo> DeviceInfos, int Gen3AgeDongleCount)
         {
-            _IODongleCount = IODongleCount;
-            _IODongleCount = AudioDongle;
+            _IODongleCount = Gen3AgeDongleCount;
             if (DeviceInfos != null && DeviceInfos.Count > 0)
             {
                 _DeviceInfos = DeviceInfos;
@@ -510,6 +502,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     DeviceType = updateHelper.UpdateItems[i].DeviceType,
                                     DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                     DevicePath = updateHelper.UpdateItems[i].DevicePath,
+                                    DeviceIndex = updateHelper.UpdateItems[i].DeviceIndex,
                                     SHA256 = updateHelper.UpdateItems[i].SHA256,
                                     //SHA512 = updateHelper.UpdateItems[i].SHA512,
                                     Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
@@ -552,6 +545,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                         DeviceType = updateHelper.UpdateItems[i].DeviceType,
                                         DeviceId = updateHelper.UpdateItems[i].DeviceId,
                                         DevicePath = updateHelper.UpdateItems[i].DevicePath,
+                                        DeviceIndex = updateHelper.UpdateItems[i].DeviceIndex,
                                         SHA256 = updateHelper.UpdateItems[i].SHA256,
                                         //SHA512 = updateHelper.UpdateItems[i].SHA512,
                                         Thumbprint = updateHelper.UpdateItems[i].Thumbprint,
@@ -938,7 +932,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             fwUpdateInfo.FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
                         }
-                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                        _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
                         NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         _logs.DebugMsg_1(nameof(DownloadAndInstall) + " savePath FolderIsNotSafe:" + FolderInfo + "--or--" + PathSymbolicLinInfo);
                         method.DeleteFolder(savePath);
@@ -971,7 +965,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     if (!DDPMFileSecurity.CheckFold(savePath, out FolderInfo, out PathSymbolicLinInfo))
                     {
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
-                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                        _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
                         NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} savePath FolderIsNotSafe - FolderInfo : {FolderInfo}");
                         _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} savePath FolderIsNotSafe - PathSymbolicLinInfo : {PathSymbolicLinInfo}");
@@ -1009,13 +1003,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         if (downloadInfo.Equals("CA check fail"))
                         {
                             fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.CAFail;
-                            _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                            _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
                             NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         }
                         else if (downloadInfo.Equals("Network fail"))
                         {
                             fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
-                            _notificationStr = LangHelper.Instance["Update_failed_due_to_network_error"];
+                            _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
                             NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         }
                         _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download File Fail");
@@ -1034,7 +1028,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
                         _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} extractPath FolderIsNotSafe - FolderInfo : {FolderInfo}");
                         _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} extractPath FolderIsNotSafe - PathSymbolicLinInfo : {PathSymbolicLinInfo}");
-                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                        _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
                         NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         method.DeleteFolder(savePath);
                         continue;
@@ -1048,7 +1042,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             {
                                 fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.FolderIsNotSafe;
                                 _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} Unzip Fail");
-                                _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                                _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
                                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                                 fileLock.Unlock();
                                 method.DeleteFolder(savePath);
@@ -1060,7 +1054,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 {
                                     _fWUpdateInfo.FWUErrorCode = FWUErrorCode.FileCheckFail;
                                     _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} CheckThumbprint Faile");
-                                    _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                                    _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
                                     NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                                     method.DeleteFolder(savePath);
                                     fileLock_2.Unlock();
@@ -1073,10 +1067,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             }
                             if (fwUpdateInfos[i].FWUErrorCode == FWUErrorCode.NoError)
                             {
+                                _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {_notificationStr}";
                                 NotificationFWupdate(LangHelper.Instance["FW_info"], _notificationStr);
                             }
                             else
                             {
+                                _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {_notificationStr}";
                                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                             }
                         }
@@ -1306,13 +1302,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         if (dock_deviceInfos.Count >= 2)
                         {
                             fWUErrorCode = FWUErrorCode.ConnectMultipleDocks;
-                            _notificationStr = LangHelper.Instance["Multiple_docks_are_detected"];
+                            _notificationStr = $"{currentFWInfo.DeviceName} {currentFWInfo.Model} {LangHelper.Instance["Multiple_docks_are_detected"]}";
                             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} LogicalDock: Multiple docks are detected. Keep only one dock connected to prevent damage to your docks");
                             ret = true;
                         }
                     }
                 }
-                else if (currentFWInfo.DeviceType == DeviceType.PhysicalDongle)
+                else if (currentFWInfo.DeviceType == DeviceType.PhysicalDongle && currentFWInfo.DeviceName.ToLower().Equals(GlobalDefinitions.Dongle_BeforeGen2_Name.ToLower()))
                 {
                     //List<DeviceInfo> dongle_deviceInfos = _DeviceInfos.FindAll(o => o.PhysicalDeviceType.Equals(DeviceType.PhysicalAudioDongle) ||
                     //o.PhysicalDeviceType.Equals(DeviceType.PhysicalDongle));
@@ -1323,7 +1319,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         if (_IODongleCount >= 2)
                         {
                             fWUErrorCode = FWUErrorCode.ConnectMultipleSameModels;
-                            _notificationStr = LangHelper.Instance["Firmware_update_aborted_same_model_is_connected"];
+                            _notificationStr = $"{currentFWInfo.DeviceName} {currentFWInfo.Model} {LangHelper.Instance["Firmware_update_aborted_same_model_is_connected"]}";
                             _logs.DebugMsg_1($"{nameof(CheckDeviceStatus_IsStopUpdate)} currentFWInfo.Model: {currentFWInfo.Model}: Multiple devices of the same model are plugged in");
                             ret = true;
                         }
@@ -1343,7 +1339,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             if (deviceInfo.BatteryLevel <= 20)
                             {
                                 fWUErrorCode = FWUErrorCode.DeviceBatteryTooLow;
-                                _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
+                                _notificationStr = $"{currentFWInfo.DeviceName} {currentFWInfo.Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
                                 ret = true;
                             }
                         }
@@ -1376,8 +1372,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         _logs.DebugMsg_1($"{nameof(CheckPCBattery_IsStopUpdate)} PC battery life percent ： {battery.BatteryLifePercent}");
                         if (battery.BatteryLifePercent <= 10)
                         {
-                            _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
-                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            _notificationStr = $"{currentFWInfo.DeviceName} {currentFWInfo.Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
                             _logs.DebugMsg_1($"{nameof(CheckPCBattery_IsStopUpdate)} {_fWUpdateInfo.DeviceName} update download cancel, because PC battery too low.");
                             ret = true;
                         }
@@ -1654,18 +1649,18 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _timerTimeOut = new Timer();
                     _timerTimeOut.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
                     _timerTimeOut.Elapsed += new ElapsedEventHandler(_timerTimeOut_Tick);
-                    _namedPipeServer = new NamedPipeStreamServer(_namedPipeName, fwUpdateInfo.Thumbprint, _IsSkipSHA); // 創建命名管道伺服器
+                    _namedPipeServer = new NamedPipeStreamServer(_namedPipeName, fwUpdateInfo.Thumbprint, _IsSkipSHA, _logs); // 創建命名管道伺服器
                     _namedPipeServer.MessageReceived += _namedPipeServer_MessageReceived;
                     _namedPipeServer.ClientConnectedEvent += _namedPipeServer_ClientConnectedEvent;
                     _namedPipeServer.ClientDisconnectedEvent += _namedPipeServer_ClientDisconnectedEvent;
                     _logs.DebugMsg_1(fwUpdateInfo.DeviceName + nameof(_namedPipeServer) + " ready");
                     if (fwUpdateInfo.IsUOD)
                     {
-                        NotificationFWupdate(LangHelper.Instance["Dock_FW_info"], LangHelper.Instance["Dock_FW_is_being_loaded"]);
+                        NotificationFWupdate(LangHelper.Instance["Dock_FW_info"], $"{fwUpdateInfo.DeviceName} {fwUpdateInfo.Model} {LangHelper.Instance["Dock_FW_is_being_loaded"]}");
                     }
                     else
                     {
-                        NotificationFWupdate(LangHelper.Instance["FW_info"], fwUpdateInfo.DeviceName + " " + LangHelper.Instance["FW_is_being_Installing"]);
+                        NotificationFWupdate(LangHelper.Instance["FW_info"], $"{fwUpdateInfo.DeviceName} {fwUpdateInfo.Model} {LangHelper.Instance["FW_is_being_Installing"]}");
                     }
                 }
                 arguments = BuildArgs(fwUpdateInfo, _namedPipeName, logPath);
@@ -2036,7 +2031,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 ProcessName = "M1"
                             };
                             sendMessageToEvent(updateProgressInfo);
-                            NotificationFWupdate(LangHelper.Instance["FW_info"], LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"]);
+                            //NotificationFWupdate(LangHelper.Instance["FW_info"], LangHelper.Instance["M1_Please_double_click_mouse_left_button_to_start_firmware_update"]);
                             _logs.DebugMsg_1("Get M1:Please double click mouse left button to start firmware update");
                         }
                         else
@@ -2056,7 +2051,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 ProcessName = "M2"
                             };
                             sendMessageToEvent(updateProgressInfo);
-                            NotificationFWupdate(LangHelper.Instance["FW_info"], LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"]);
+                            //NotificationFWupdate(LangHelper.Instance["FW_info"], LangHelper.Instance["M2_Please_press_key_on_keyboard_to_start_firmware_update"]);
                             _logs.DebugMsg_1("Get M2:Please press \"U\" key on keyboard to start firmware update");
                         }
                         else
@@ -2229,7 +2224,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     try
                     {
-                        _KeyGenerator = new KeyGenerator();
+                        _KeyGenerator = new KeyGenerator(Log);
                         string result_string = _KeyGenerator.ProcessX0State(tPubKeyDev1.InnerText);
                         string s = $"<StateFlow>X1</StateFlow><TPubKeyPC1></TPubKeyPC1>";
                         if (!string.IsNullOrEmpty(result_string))
@@ -2526,6 +2521,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 // 要運行的安裝程式路徑和命令行參數
                 arguments = (fwUpdateInfo.IsUOD ? "/uod " : "") + "/silent" + " /pipename:" + namedPipeName;
+                //deviceIndex commandLine
+                _logs.DebugMsg_1($"BuildArgs deviceIndex go");
+                arguments += $" /deviceIndex:" + fwUpdateInfo.DeviceIndex;
+                _logs.DebugMsg_1($"BuildArgs deviceIndex done");
+
+                _logs.DebugMsg_1($"BuildArgs Log go");
                 if (fwUpdateInfo.DeviceType == DeviceType.LogicalMouse ||
                     fwUpdateInfo.DeviceType == DeviceType.LogicalKeyboard)
                 {
@@ -2562,6 +2563,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     _logs.DebugMsg_1($"BuildArgs DeviceType done");
                 }
+
                 //devicePath commandLine
                 if (fwUpdateInfo.DeviceType != DeviceType.LogicalDock &&
                     fwUpdateInfo.DeviceType != DeviceType.PhysicalWiredDock)
@@ -2570,6 +2572,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     arguments += $" /devicePath:" + fwUpdateInfo.DevicePath;
                     _logs.DebugMsg_1($"BuildArgs devicePath done");
                 }
+
                 _logs.DebugMsg_1($"BuildArgs Log go");
                 //Log commandLine
                 switch (fwUpdateInfo.DeviceType)

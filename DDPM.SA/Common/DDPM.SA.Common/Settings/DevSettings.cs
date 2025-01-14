@@ -75,6 +75,33 @@ namespace DDPM.SA.Common.Settings
             }
             return defaultValue;
         }
+
+        /// <summary>
+        /// Read from DevSettings from Windows Registry, return string value.
+        /// If the value type is not string, then convert it to string.
+        /// </summary>
+        /// <param name="keyName"></param>
+        /// <param name="defaultValue"></param>
+        /// <returns></returns>
+        private static string ReadString(string keyName, string defaultValue = "")
+        {
+            object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, SubKey, keyName);
+            //If the specified keyName is not exist, then return the defaultValue
+            if (o == null)
+                return defaultValue;
+
+            //Convert object o to string as return value
+            try
+            {
+                string retValue = Convert.ToString(o);
+                return retValue;
+            }
+            catch (Exception e1)
+            {
+                Trace.WriteLine(e1);
+            }
+            return defaultValue;
+        }
         #endregion Private members
 
         #region EasyArrange
@@ -102,6 +129,14 @@ namespace DDPM.SA.Common.Settings
             return 1 == DevSettings.ReadInt("EzArrange.SplitItem.Tooltip.ShowDebugInfo");
         }
 
+        /// <summary>
+        /// Dump WorkWindows and its information to log file after RefreshWorkWindows
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsDumpWorkWindowsInfoOnRefreshEnabled()
+        {
+            return 1 == ReadInt("EABroker.DumpWorkWindowsInfoOnRefreshed");
+        }
         #endregion EasyArrange
 
         #region DdpmHomePlgin
@@ -146,5 +181,34 @@ namespace DDPM.SA.Common.Settings
             return 1 == DevSettings.ReadInt("PipPbp.VideoSwapComboBox.AlwaysVisible");
         }
         #endregion PIP PBP
+
+        #region Multilingual
+
+        //Usage exmaple:
+        //
+        //  if (DevSettings.IsMultiligualTestEnabled())
+        //  {
+        //      string culture = DevSettings.GetLanguageCulture();
+        //      if (!string.IsNullOrEmpty(culture))
+        //  }
+        //  else
+        //  {
+        //  }
+
+        public static bool IsMultiligualTestEnabled()
+        {
+            return 1 == DevSettings.ReadInt("IsMultiligualTestEnabled");
+        }
+
+        /// <summary>
+        /// Get the language culture from Windows Registry, for multilingal testing only.
+        /// You must set "IsMultiligualTestEnabled" to 1 at first.
+        /// </summary>
+        /// <returns></returns>
+        public static string GetLanguageCulture()
+        {
+            return ReadString("LanguageCulture", "");
+        }
+        #endregion Multilingual
     }
 }

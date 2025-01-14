@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DDPM.SA.Resources.Helper;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -33,6 +34,7 @@ namespace DDPM.SA.Common.Popup
         public event EventHandler<object> Default_Event;
 
         private object _object;
+        private bool isInstalling = false;
 
         /// <summary>
         ///
@@ -53,8 +55,8 @@ namespace DDPM.SA.Common.Popup
             SubHeader1.Text = SubHeaderText;
 
             _object = ob;
-            //LeftButton.Visibility = Visibility.Collapsed;
-            //RightButton.Visibility = Visibility.Collapsed;
+            //LeftButton1.Visibility = Visibility.Collapsed;
+            //RightButton1.Visibility = Visibility.Collapsed;
             if (!string.IsNullOrEmpty(LeftButtonContent))
             {
                 //LeftButton.Visibility = Visibility.Visible;
@@ -82,15 +84,19 @@ namespace DDPM.SA.Common.Popup
                 Task.Delay(autoCloseTimeInSeconds * 1000).ContinueWith(t => this.Dispatcher.Invoke(Close));
             }
         }
-        public void UpdateContent(string HeaderText, string SubHeaderText)
+        public PopupBase(bool IsStayOnly, int autoCloseTimeInSeconds, PopupBaseViewModel popupBaseViewModel)// 1/13Added by Bruce
         {
-            if (!Dispatcher.CheckAccess())
+            InitializeComponent();
+            LeftButton1.Visibility = Visibility.Collapsed;
+            RightButton1.Visibility = Visibility.Collapsed;
+            if (popupBaseViewModel != null)
             {
-                Dispatcher.Invoke(UpdateContent);
-                return;
+                DataContext = popupBaseViewModel;
             }
-            Header1.Text = HeaderText;
-            SubHeader1.Text = SubHeaderText;
+            if (!IsStayOnly && autoCloseTimeInSeconds > 0)
+            {
+                Task.Delay(autoCloseTimeInSeconds * 1000).ContinueWith(t => this.Dispatcher.Invoke(Close));
+            }
         }
         public void ShowWindow()
         {
@@ -167,10 +173,18 @@ namespace DDPM.SA.Common.Popup
 
         private void closeX_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            DialogResult = _dialogResult_Close;
-            LeftButtonClick = null;
-            RightButtonClick = null;
+            if (this.IsModal())// 1/11 Added by Bruce to check this windows owner
+            {
+                DialogResult = _dialogResult_Close;
+                LeftButtonClick = null;
+                RightButtonClick = null;
+            }
             this.Close();
+        }
+
+        public bool IsModal()// 1/11 Added by Bruce to check this windows owner
+        {
+            return !this.Dispatcher.CheckAccess() || this.Owner != null;
         }
     }
 }

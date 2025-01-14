@@ -6,8 +6,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO.Pipes;
+    using System.Security.AccessControl;
+    using System.Security.Principal;
     using System.Text;
-
+    using VcpCore.Common;
+    using Windows.Foundation;
 
     public class NamedPipeStreamServer : NamedPipeStreamBase
     {
@@ -20,12 +23,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         public bool IsNamedPipeServerIsNoSafe = false;
         private string thumbPrint;
         private bool skipSHA;
+        private Logs _Log;
 
-        public NamedPipeStreamServer(string pipeName, string thumbPrint, bool skipSHA) : base(pipeName)
+        public NamedPipeStreamServer(string pipeName, string thumbPrint, bool skipSHA, Logs logs) : base(pipeName)
         {
+            this._Log = logs;
             PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity_System();
             this._Connections = new List<NamedPipeStreamConnection>();
             NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
+            _Log.DebugMsg_1("NamedPipeStreamServer PrintPipeAcl state go");
+            PrintPipeAcl(state);
+            _Log.DebugMsg_1("NamedPipeStreamServer PrintPipeAcl state done");
             state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
             this.thumbPrint = thumbPrint;
             this.skipSHA = skipSHA;
@@ -37,14 +45,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             NamedPipeServerStream? asyncState = result.AsyncState as NamedPipeServerStream;
             if (asyncState != null)
             {
+                _Log.DebugMsg_1("ClientConnected PrintPipeAcl asyncState go");
+                PrintPipeAcl(asyncState);
+                _Log.DebugMsg_1("ClientConnected PrintPipeAcl asyncState done");
                 asyncState.EndWaitForConnection(result);
                 if (asyncState.IsConnected)
                 {
                     string info;
                     if (!NPipeSecurity.NamedPipeClientSecurity(asyncState, out info, thumbPrint))
                     {
-                        
-                        Trace.WriteLine($"[NamedPipeStreamServer] NamedPipeClientSecurity failed ({info})");
+
+                        _Log.DebugMsg_1($"ClientConnected [NamedPipeStreamServer] NamedPipeClientSecurity failed ({info})");
                         IsNamedPipeServerIsNoSafe = true;
                         if (!skipSHA)
                         {
@@ -63,7 +74,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     catch (Exception ex)
                     {
-                        Trace.WriteLine($"[NamedPipeStreamServer] NamedPipeClientSecurity failed ({ex.Message})");
+                        _Log.DebugMsg_1($"ClientConnected [NamedPipeStreamServer] NamedPipeClientSecurity failed ({ex.Message})");
                         return;
                     }
 
@@ -71,10 +82,30 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         this._Connections.Add(item);
                         ClientConnectedEvent?.Invoke(this, new EventArgs());
-                    }                                        
+                    }
                 }
                 NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
+                _Log.DebugMsg_1("ClientConnected PrintPipeAcl state go");
+                PrintPipeAcl(state);
+                _Log.DebugMsg_1("ClientConnected PrintPipeAcl state done");
                 state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
+                
+            }
+        }
+        private void PrintPipeAcl(NamedPipeServerStream pipeServer)
+        {
+            PipeSecurity pipeSecurity = pipeServer.GetAccessControl();
+            AuthorizationRuleCollection acl = pipeSecurity.GetAccessRules(true, true, typeof(NTAccount));
+            _Log.DebugMsg_1("[PrintPipeAcl]Access Control List for the pipe:");
+            foreach (AuthorizationRule rule in acl)
+            {
+                _Log.DebugMsg_1($"[PrintPipeAcl]rule.IdentityReference.Value : {rule.IdentityReference.Value}");
+                PipeAccessRule pipeRule = rule as PipeAccessRule;
+                if (pipeRule != null)
+                {
+                    _Log.DebugMsg_1($"[PrintPipeAcl]Access Rights: {pipeRule.PipeAccessRights}");
+                    _Log.DebugMsg_1($"[PrintPipeAcl]Access Control Type: {pipeRule.AccessControlType}");
+                }
             }
         }
 

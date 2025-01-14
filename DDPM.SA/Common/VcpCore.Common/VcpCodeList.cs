@@ -296,6 +296,7 @@ namespace VcpCore.Common
             { "DisplayHDR", 54 },
             { "HDR10", 55 },
             { "HLG", 56 },
+            { "Display P3", 161 }, // Jim  20250111 add back , due to accidental deletion on 20250106 
             { "Custom Color HDR", 57 }, // Jim add 2025 for [S3225QC] HDR list
             { "HDR Peak 1000", 58 } // Jim add 2025 for [S3225QC] HDR list
       

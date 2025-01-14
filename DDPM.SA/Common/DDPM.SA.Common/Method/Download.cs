@@ -1,4 +1,6 @@
 ﻿using DDPM.SA.Common.Security;
+using DDPM.SA.Common.Settings;
+using Microsoft.Win32;
 using System;
 using System.IO;
 using System.Net;
@@ -16,6 +18,41 @@ namespace DDPM.SA.Common.Method
         public Download(Logs logs)
         {
             _logs = logs;
+        }
+
+        public static string GetTestServerURL()
+        {
+            string ret = GlobalDefinitions.major_url; // this is default value (production server)
+            try
+            {
+                using (RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64))
+                {
+                    if (localKey64 != null)
+                    {
+                        using (RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false))
+                        {
+                            if (registryKey != null)
+                            {
+                                var obj = registryKey.GetValue("TestServerURL");
+                                if (obj != null)
+                                {
+                                    string s = obj.ToString();
+                                    if (!string.IsNullOrEmpty(s))
+                                    {
+                                        ret = s;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log or handle the exception as needed
+                Console.WriteLine($"Error accessing registry: {ex.Message}");
+            }
+            return ret;
         }
 
         public bool DownloadFile(string URLPath, string SavePath, out string FailInfo, bool isSkipCA = false)

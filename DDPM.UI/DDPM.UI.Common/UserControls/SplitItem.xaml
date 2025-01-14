@@ -8,6 +8,7 @@
              mc:Ignorable="d"
              d:DesignHeight="68" d:DesignWidth="88"
              Background="#02000000"
+             Focusable="True"
              Name="root">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -92,18 +93,23 @@
     <Grid Background="{StaticResource FakeTransparent}" MouseLeftButtonDown="rootGrid_MouseLeftButtonDown">
         <Grid.ToolTip>
             <ToolTip Visibility="{Binding ToolTipText, Converter={StaticResource StringEmptyToVisibilityConverter}}">
-                <Border Background="{DynamicResource Tooltip_BkColor}"
-                        BorderBrush="{DynamicResource Tooltip_BdColor}"
-                        CornerRadius="4" Padding="8,12">
-                    <Border.Resources>
+                <!-- Robert_Lin, 2025-1-9 SplitItem Tooltip outerborder will apply DDPM standard style 
+                OLD:
+               <Border Background="{DynamicResource Tooltip_BkColor}"
+                       BorderBrush="{DynamicResource Tooltip_BdColor}"
+                       CornerRadius="4" Padding="8,12">
+                -->
+                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                    <!--<Border.Resources>
                         <Style TargetType="TextBlock">
                             <Setter Property="Foreground" Value="{DynamicResource Tooltip_TextColor}" />
                             <Setter Property="FontSize" Value="12" />
                         </Style>
-                    </Border.Resources>
+                    </Border.Resources>-->
 
                     <StackPanel>
-                        <TextBlock Text="{Binding ToolTipText}" />
+                        <TextBlock Text="{Binding ToolTipText}"
+                                   Style="{StaticResource Tooltip_TextBlockStyle}"/>
                     </StackPanel>
                 </Border>
             </ToolTip>
