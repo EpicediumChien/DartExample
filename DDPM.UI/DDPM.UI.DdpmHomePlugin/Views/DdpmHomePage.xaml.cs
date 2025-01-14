@@ -48,8 +48,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     UIDebugPanel.Visibility = Visibility.Visible;
                 }
-                _ddpmHomePageViewModel.ShowConsentRequested -= _ddpmHomePageViewModel_ShowConsent;
-                _ddpmHomePageViewModel.ShowConsentRequested += _ddpmHomePageViewModel_ShowConsent;
+                //_ddpmHomePageViewModel.ShowConsentRequested -= _ddpmHomePageViewModel_ShowConsent;
+                //_ddpmHomePageViewModel.ShowConsentRequested += _ddpmHomePageViewModel_ShowConsent;
 
                 AttachImportNotification();
             }
@@ -911,6 +911,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //dispTimer.Start();
         }
 
+        [Obsolete]
         private void _ddpmHomePageViewModel_ShowConsent(object? sender, EventArgs e)
         {
             Dispatcher.Invoke(() =>

@@ -258,7 +258,7 @@
                         <!--
                         <WrapPanel HorizontalAlignment="Center" />
                         -->
-                        <local:HomeDevicesPanel HorizontalContentAlignment="Center" />
+                        <local:HomeDevicesPanel HorizontalContentAlignment="Center" VerticalAlignment="Center" />
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
 

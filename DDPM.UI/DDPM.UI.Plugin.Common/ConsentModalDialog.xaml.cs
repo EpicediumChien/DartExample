@@ -20,6 +20,7 @@ namespace DDPM.UI.Plugin.Common
     /// <summary>
     /// ConsentModalDialog.xaml 的互動邏輯
     /// </summary>
+    [Obsolete]
     public partial class ConsentModalDialog : Window
     {
         private string PrivacyUrl = "https://www.dell.com/learn/us/en/uscorp1/policies-privacy-country-specific-privacy-policy";

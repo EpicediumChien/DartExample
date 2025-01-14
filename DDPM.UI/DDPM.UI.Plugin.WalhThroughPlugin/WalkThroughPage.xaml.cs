@@ -1,10 +1,13 @@
 ﻿using DDPM.SA.Common;
 using DDPM.UI.Common;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 using Windows.Devices.Geolocation;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
@@ -16,13 +19,22 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
     /// </summary>
     public partial class WalkThroughPage : UserControl
     {
+        private string PrivacyUrl = "https://www.dell.com/learn/us/en/uscorp1/policies-privacy-country-specific-privacy-policy";
         private WalkThroughPageViewModel ViewModel => (WalkThroughPageViewModel)DataContext;
         public WalkThroughPage()
         {
             InitializeComponent();
             DataContext = new WalkThroughPageViewModel();
 
-            ViewModel.ControlIcon(false);
+            ViewModel.ControlIcon(true);
+
+            // Consent Page wording
+            txtYes.Content = LangHelper.Instance["ConsentYes"];
+            txtNo.Content = LangHelper.Instance["ConsentNo"];
+            txtCaption.Text = LangHelper.Instance["Consent.1"];
+            txtCaption2.Text = LangHelper.Instance["AppName"];
+            txt1.Text = LangHelper.Instance["Consent.2"];
+            txt2.Text = LangHelper.Instance["Analytics.2"];
         }
 
         ~WalkThroughPage()
@@ -111,6 +123,36 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             //        ViewModel.UpdateButtonVisibility();
             //    }
             //}
+        }
+
+        private void OpenPrivacy(object sender, MouseButtonEventArgs e)
+        {
+            DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                null,
+                new ProcessStartInfo
+                {
+                    FileName = PrivacyUrl,
+                    UseShellExecute = true
+                });
+        }
+
+        private void No_MouseLeftButtonDown(object sender, RoutedEventArgs e)
+        {
+            _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(false).Result;
+            //DialogResult = false;
+            Close();
+        }
+
+        private void Yes_MouseLeftButtonDown(object sender, RoutedEventArgs e)
+        {
+            _ = DdpmCommonHelper.DeviceManagerSA.Set_GlobalSetting_EnableTelemetryConsent(true).Result;
+            //DialogResult = true;
+            Close();
+        }
+
+        private void Close()
+        {
+            ViewModel.ConsentPageVisibility = Visibility.Collapsed;
         }
     }
 }

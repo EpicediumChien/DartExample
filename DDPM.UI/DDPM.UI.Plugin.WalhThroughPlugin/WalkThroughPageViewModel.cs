@@ -29,6 +29,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         public WalkThroughPageViewModel()
         {
+
             if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
             {
                 //IsPeripheralVisible = false;
@@ -369,6 +370,29 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             get => _img3Source;
             set => SetProperty(ref _img3Source, value);
+        }
+
+        private Visibility _consentPageVisibility { get; set; } = Visibility.Visible;
+
+        public Visibility ConsentPageVisibility
+        {
+            get { return _consentPageVisibility; }
+            set
+            { 
+                _consentPageVisibility = value;
+                OnPropertyChanged(nameof(ConsentPageVisibility));
+                OnPropertyChanged(nameof(AppWalkThroughVisibility));
+            }
+        }
+
+        public Visibility AppWalkThroughVisibility
+        {
+            get
+            {
+                if (_consentPageVisibility == Visibility.Visible)
+                    return Visibility.Collapsed;
+                return Visibility.Visible;
+            }
         }
     }
 }
