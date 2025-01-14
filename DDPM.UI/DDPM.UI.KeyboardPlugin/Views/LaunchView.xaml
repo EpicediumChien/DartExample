@@ -394,7 +394,7 @@
                 <Border Background="Transparent" MouseDown="PushBack"></Border>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                        <Border Width="350" Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
+                        <Border MaxWidth="350" Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
                             <StackPanel Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal" Margin="20,18,0,0">
                                     <ContentControl Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
