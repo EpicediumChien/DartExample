@@ -988,30 +988,26 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<bool> isScreenPartition(MonitorInfo monitorInfo)
         {
             ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, 0xF2).Result;
-            if (objGetVCP != null && objGetVCP.result)
+            if (objGetVCP != null && objGetVCP.result &&
+                (uint)objGetVCP.value != 0)
             {
-                if ((uint)objGetVCP.value != 0)
+                string strSP = Convert.ToString((uint)objGetVCP.value, 2);
+                string strSP_16 = strSP;
+                //add 16 to string
+                if (strSP.Length < 16)
                 {
-                    string strSP = Convert.ToString((uint)objGetVCP.value, 2);
-                    string strSP_16 = strSP;
-                    //add 16 to string
-                    if (strSP.Length < 16)
+                    for (int i = 0; i < (16 - strSP.Length); i++)
                     {
-                        for (int i = 0; i < (16 - strSP.Length); i++)
-                        {
-                            strSP_16 = "0" + strSP_16;
-                        }
-                    }
-                    _logs.DebugMsg("[DisplayMangerPlugin][isScreenPartition] strSP_16 : " + strSP_16);
-                    //find 8
-                    if (strSP_16.Length == 16)
-                    {
-                        if (strSP_16.Substring(7, 1) == "1")
-                        {
-                            return Task.FromResult(true);
-                        }
+                        strSP_16 = "0" + strSP_16;
                     }
                 }
+                _logs.DebugMsg("[DisplayMangerPlugin][isScreenPartition] strSP_16 : " + strSP_16);
+                //find 8
+                if (strSP_16.Length == 16 &&
+                    strSP_16.Substring(7, 1) == "1")
+                {
+                    return Task.FromResult(true);                    
+                }                
             }
             return Task.FromResult(false);
         }
@@ -1212,15 +1208,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 ALSConfig aconfig = AllALSConfig[idx];
                 AllALSConfig[idx] = param;
-                if (AllALSConfig.Count > 1) // If only one monitor, do not need show Busy
+                if (AllALSConfig.Count > 1 && // If only one monitor, do not need show Busy
+                    GetBitValue(param.AllValue, 5) == 1)
                 {
-                    if (GetBitValue(param.AllValue, 5) == 1)
+                    for (int i = 0; i < AllALSConfig.Count; i++)
                     {
-                        for (int i = 0; i < AllALSConfig.Count; i++)
-                        {
-                            AllALSConfig[i].isBusy = true;
-                            _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue ... {AllALSConfig[i].Edid.ModelName} ... Busy ... ");
-                        }
+                        AllALSConfig[i].isBusy = true;
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue ... {AllALSConfig[i].Edid.ModelName} ... Busy ... ");
                     }
                 }
                 //CheckisPrimaryMonitorSyncOnOff(monitorInfos, param, "0");
@@ -2718,12 +2712,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties _DisplayPropertiesPlugin.GetDisplaySupportedProperties go");
                 rc = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfo).Result;
                 bool? supported_OSD_Orientation = IsSupportWriteOSDOrientation(monitorInfo.CapabilityString);
-                if (supported_OSD_Orientation == true)
+                if (supported_OSD_Orientation == true &&
+                    rc != null)
                 {
-                    if (rc != null)
-                    {
-                        rc.OSD_Orientations = IsSupportOSDOrientation(monitorInfo.CapabilityString);
-                    }
+                    rc.OSD_Orientations = IsSupportOSDOrientation(monitorInfo.CapabilityString);
                 }
             }
             _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties done");
@@ -4828,7 +4820,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         firmwares_item.url = display_FWU_URL + firmwares_item.url;
                                     }
                                     firmwares_item.CurrentVersion = monitorInfo.FwVersion;
-                                    firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
+                                    //firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
                                     firmwares_item.ServiceTag = monitorInfo.edid.ServiceTag;
                                     firmwares_item.SupplierID = monitorInfo.SupplierID;
                                     firmwares_item.D_Ctrl = monitorInfo.D_Ctrl;

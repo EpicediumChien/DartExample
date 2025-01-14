@@ -1471,26 +1471,22 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 ThumbnailImageRawData = item.ThumbnailImageRawData,
                             };
 
-                            if (item.ParentPhysicalDevice.Type == DeviceType.PhysicalDongle)
+                            if (item.ParentPhysicalDevice.Type == DeviceType.PhysicalDongle &&
+                                item.ParentPhysicalDevice is IPhysicalDeviceDongle _physicalDeviceDongle)
                             {
-                                if (item.ParentPhysicalDevice is IPhysicalDeviceDongle _physicalDeviceDongle)
-                                {
-                                    info.PairingStatusName = UpdateParingStausText(_physicalDeviceDongle.PairingStatus);
-                                    info.MaxPairingSlots = _physicalDeviceDongle.MaxPairingSlots;
-                                    info.PairedDeviceCount = _physicalDeviceDongle.PairedDeviceCount;
-                                    info.IsPhysicalDeviceDongle = true; //Because if it is a physical device dongle it will return true.
-                                }
+                                info.PairingStatusName = UpdateParingStausText(_physicalDeviceDongle.PairingStatus);
+                                info.MaxPairingSlots = _physicalDeviceDongle.MaxPairingSlots;
+                                info.PairedDeviceCount = _physicalDeviceDongle.PairedDeviceCount;
+                                info.IsPhysicalDeviceDongle = true; //Because if it is a physical device dongle it will return true.                                
                             }
 
-                            if (item.ParentPhysicalDevice.Type == DeviceType.PhysicalAudioDongle)
+                            if (item.ParentPhysicalDevice.Type == DeviceType.PhysicalAudioDongle &&
+                                item.ParentPhysicalDevice is IPhysicalAudioDeviceDongle _physicalAudioDeviceDongle)
                             {
-                                if (item.ParentPhysicalDevice is IPhysicalAudioDeviceDongle _physicalAudioDeviceDongle)
-                                {
-                                    info.PairingStatusName = UpdateParingStausText(_physicalAudioDeviceDongle.PairingStatus);
-                                    info.MaxPairingSlots = _physicalAudioDeviceDongle.MaxPairingSlots;
-                                    info.PairedDeviceCount = _physicalAudioDeviceDongle.PairedDeviceCount;
-                                    info.IsPhysicalDeviceDongle = false;
-                                }
+                                info.PairingStatusName = UpdateParingStausText(_physicalAudioDeviceDongle.PairingStatus);
+                                info.MaxPairingSlots = _physicalAudioDeviceDongle.MaxPairingSlots;
+                                info.PairedDeviceCount = _physicalAudioDeviceDongle.PairedDeviceCount;
+                                info.IsPhysicalDeviceDongle = false;                                
                             }
 
                             if (item.ParentPhysicalDevice.Type == DeviceType.PhysicalPen)
@@ -1600,26 +1596,22 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             }
 
                             // << 241206 by Hess fix no event issue
-                            if (item is ILogicalDevice _logicalDevice)
+                            if (item is ILogicalDevice _logicalDevice &&
+                                !LogicalDevices.Contains(_logicalDevice.Id))
                             {
-                                if (!LogicalDevices.Contains(_logicalDevice.Id))
-                                {
-                                    _logicalDevice.BatteryStatusChanged += ILogicalDevice_BatteryStatusChanged;
-                                    _logicalDevice.BatteryLevelChanged += ILogicalDevice_BatteryLevelChanged;
-                                    LogicalDevices.Add(_logicalDevice.Id);
+                                _logicalDevice.BatteryStatusChanged += ILogicalDevice_BatteryStatusChanged;
+                                _logicalDevice.BatteryLevelChanged += ILogicalDevice_BatteryLevelChanged;
+                                LogicalDevices.Add(_logicalDevice.Id);
 
-                                    CheckLowBatteryOSD(info);
-                                }
+                                CheckLowBatteryOSD(info);
                             }
                             // >>
                             // << 241228 by Hess add new event
-                            if (item is IDevice _IDevice)
+                            if (item is IDevice _IDevice &&
+                                !IDevices.Contains(_IDevice.Id))
                             {
-                                if (!IDevices.Contains(_IDevice.Id))
-                                {
-                                    device.NameChanged += (name) => OnDeviceNameChanged(device, name);
-                                    IDevices.Add(_IDevice.Id);
-                                }
+                                device.NameChanged += (name) => OnDeviceNameChanged(device, name);
+                                IDevices.Add(_IDevice.Id);
                             }
                             // >>
 

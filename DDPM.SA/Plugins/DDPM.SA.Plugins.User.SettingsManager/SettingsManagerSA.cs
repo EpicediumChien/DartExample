@@ -675,13 +675,11 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                 string monitorSettings_path = _display_path + "\\" + modelname + ".json";
                 if (File.Exists(monitorSettings_path))
                 {
-                    if (_AllMonitorSettings != null)
+                    if (_AllMonitorSettings != null &&
+                        _AllMonitorSettings.ContainsKey(modelname))
                     {
-                        if (_AllMonitorSettings.ContainsKey(modelname))
-                        {
-                            monitorSettings = _AllMonitorSettings[modelname];
-                            return Task.FromResult(monitorSettings);
-                        }
+                        monitorSettings = _AllMonitorSettings[modelname];
+                        return Task.FromResult(monitorSettings);
                     }
                     string strReadJson = string.Empty;
 
@@ -1487,12 +1485,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             try
             {
-                if (File.Exists(path))
+                if (File.Exists(path) &&
+                    DDMMonitorSettings.restoreDDMMonitorSettings(ref DDMmonitorsettings, path))
                 {
-                    if (DDMMonitorSettings.restoreDDMMonitorSettings(ref DDMmonitorsettings, path))
-                    {
-                        return Task<bool>.FromResult(true);
-                    }
+                    return Task<bool>.FromResult(true);
                 }
             }
             catch
@@ -1506,12 +1502,10 @@ namespace DDPM.SA.Plugins.User.SettingsManager
         {
             try
             {
-                if (File.Exists(path))
+                if (File.Exists(path) &&
+                    DDMUserSettings.restoreDDMUserSettings(ref DDMusersettings, path))
                 {
-                    if (DDMUserSettings.restoreDDMUserSettings(ref DDMusersettings, path))
-                    {
-                        return Task<bool>.FromResult(true);
-                    }
+                    return Task<bool>.FromResult(true);
                 }
             }
             catch
@@ -2137,23 +2131,19 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             }
 
             //apply setting to system IT config
-            if (_GlobalSettingParam != null && result)
+            if (_GlobalSettingParam != null && result &&
+                _SysSettingsPlugin != null &&
+                writeToSys)
             {
-                if (_SysSettingsPlugin != null)
+                try
                 {
-                    if (writeToSys)
-                    {
-                        try
-                        {
-                            result = _SysSettingsPlugin.WriteGlobalSettingsToITConfig(_GlobalSettingParam, true).Result;
-                            WriteLog(($"Call sys plugin to write global setting ") + (result ? "PASS" : "FAIL"));
-                        }
-                        catch(Exception e)
-                        {
-                            WriteLog(($"Call sys plugin to write global setting [exception]: {e.Message}"));
-                        }
-                    }
+                    result = _SysSettingsPlugin.WriteGlobalSettingsToITConfig(_GlobalSettingParam, true).Result;
+                    WriteLog(($"Call sys plugin to write global setting ") + (result ? "PASS" : "FAIL"));
                 }
+                catch(Exception e)
+                {
+                    WriteLog(($"Call sys plugin to write global setting [exception]: {e.Message}"));
+                }                                    
             }
 
             return Task.FromResult(result);
