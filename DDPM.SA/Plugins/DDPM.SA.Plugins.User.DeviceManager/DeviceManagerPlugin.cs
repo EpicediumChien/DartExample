@@ -8340,12 +8340,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 string registryKey = @"SOFTWARE\Dell\Dell Display and Peripheral Manager";
                 string registryKey_Test = @"SOFTWARE\Dell Display and Peripheral Manager";
                 object o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater").Result;
-                ///Bruce added Test///
-                if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
-                {
-                    o = ReadRegistryData(RegistryHive.LocalMachine, registryKey_Test, "DdpmSwUpdater").Result;
-                }
-                ///Bruce added Test///
                 writelog($"[DeleteDdpmSwUpdaterFolder], o={o}.");
                 if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
                 {
@@ -8355,22 +8349,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         Method method = new Method(Log);
                         string path = path_programdata + "\\Dell\\Dell Display and Peripheral Manager" + "\\" + o.ToString();
+                        bool delete_Ret_1 = false, delete_Ret_2 = false;
                         if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
                         {
                             writelog($"[DeleteDdpmSwUpdaterFolder], path Exists.");
-                            method.DeleteFolder(path);
+                            delete_Ret_1 = method.DeleteFolder(path);
                             writelog($"[DeleteDdpmSwUpdaterFolder], path Delete.");
                         }
                         string path_2 = path_programdata + "\\Dell" + "\\" + o.ToString();
                         if (!string.IsNullOrEmpty(path_2) && Directory.Exists(path_2))
                         {
                             writelog($"[DeleteDdpmSwUpdaterFolder], path_2 Exists.");
-                            method.DeleteFolder(path_2);
+                            delete_Ret_2 = method.DeleteFolder(path_2);
                             writelog($"[DeleteDdpmSwUpdaterFolder], path_2 Delete.");
                         }
                         method.Dispose();
-                        WriteRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater", "");
-                        writelog($"[DeleteDdpmSwUpdaterFolder], WriteRegistryData.");
+                        if (delete_Ret_1 || delete_Ret_2)
+                        {
+                            WriteRegistryData(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater", "");
+                            writelog($"[DeleteDdpmSwUpdaterFolder], WriteRegistryData.");
+                        }
                     }
                     else
                     {
@@ -9058,7 +9056,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <param name="modelName"></param>
         /// <returns>Boolean</returns>
         public Task<bool> ReadSameModelAutoApplySameModelFlag(string path, string modelName)
-        { 
+        {
             bool sameModelFlag = false;
             if (_SettingsPlugin != null && !string.IsNullOrEmpty(path) && !string.IsNullOrEmpty(modelName))
             {
@@ -12792,9 +12790,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             int count = 0;
                             DeviceHelper di = null;
                             while (count < 10)
-                            {                               
+                            {
                                 di = GetDevices(true).Result;
-                                if(di.deviceInfo.Count > 0)
+                                if (di.deviceInfo.Count > 0)
                                     break;
                                 Thread.Sleep(1000);
                                 count++;
@@ -13456,7 +13454,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Debug.WriteLine($"GetInputSourceHotKeyDataAndSaveNewBack:{mo.edid.ServiceTag}");
             mo.AliasDeviceName = mo.edid.ServiceTag;
             Debug.WriteLine($"[GetInputSourceHotKeyDataAndSaveNewBack(monitor:{mo.AliasDeviceName})]param=hotkeyDataInputSource:{string.Join("+", hotkeyDataInputSource.Select(x => "inputsource" + "(" + x.Name + ":" + x.Code + ")").ToList())}");
-                   writelog($"[GetInputSourceHotKeyDataAndSaveNewBack(monitor:{mo.AliasDeviceName})]param=hotkeyDataInputSource:{string.Join("+", hotkeyDataInputSource.Select(x => "inputsource" + "(" + x.Name + ":" + x.Code + ")").ToList())}");
+            writelog($"[GetInputSourceHotKeyDataAndSaveNewBack(monitor:{mo.AliasDeviceName})]param=hotkeyDataInputSource:{string.Join("+", hotkeyDataInputSource.Select(x => "inputsource" + "(" + x.Name + ":" + x.Code + ")").ToList())}");
             //Find the previous saved device settings
             DDPMMonitorSettings? monitorSettings = settings.FirstOrDefault(x => x.ServiceTag.Equals(mo.edid.ServiceTag));
             //If not found => return error, GetAllMonitor() will init and create an initial settings instance for us
