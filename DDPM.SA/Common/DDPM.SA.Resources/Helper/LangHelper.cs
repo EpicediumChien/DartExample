@@ -46,9 +46,9 @@ namespace DDPM.SA.Resources.Helper
                 return System.Text.RegularExpressions.Regex.Unescape(str);
 #else
                 //resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
-                CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("ru");
-                string str = _resourceManager.GetString(name, cultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
-                //string str = _resourceManager.GetString(name, CultureInfo.CurrentUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+                //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("ru");
+                //string str = _resourceManager.GetString(name, cultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+                string str = _resourceManager.GetString(name, CultureInfo.CurrentUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
                 return System.Text.RegularExpressions.Regex.Unescape(str);
 #endif
             }
