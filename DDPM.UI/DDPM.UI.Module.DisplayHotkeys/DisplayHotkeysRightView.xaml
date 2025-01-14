@@ -41,7 +41,22 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.1], Source={x:Static lang:LangHelper.Instance}}" />
+                                <UXControls:UXTextBlock Loaded="UXDisplayHotkeys1TextBlock_Loaded" TextTrimming="CharacterEllipsis" MaxWidth="300" Text="{Binding [DisplayHotkeys.1], Source={x:Static lang:LangHelper.Instance}}">
+                                    <UXControls:UXTextBlock.ToolTip>
+                                        <ToolTip Placement="Center" Visibility="Hidden" VerticalOffset="45" x:Name="displayHotkeys1Tooltip">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <Border.Resources>
+                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
+                                                </Border.Resources>
+                                                <StackPanel>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding [DisplayHotkeys.1], Source={x:Static lang:LangHelper.Instance}}" />
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Border>
+                                        </ToolTip>
+                                    </UXControls:UXTextBlock.ToolTip>
+                                </UXControls:UXTextBlock>
                                 <UXControls:UXTextBox Grid.Column="2" Margin="2" Height="20"
                                                       Text="{Binding ToggleInputSourceKey,Mode=TwoWay}"
                                                       Width="230" BorderThickness="1" FontSize="14"
@@ -81,7 +96,7 @@
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="170" />
+                                        <ColumnDefinition Width="160" />
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
@@ -105,7 +120,22 @@
                                               ItemsSource="{Binding InputsList}"                                                                         
                                               SelectedItem="{Binding FavoriteInput_Selected, Mode=OneWay}"
                                               SelectionChanged="ComboBox_SelectionChanged"/>
-                                    <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.3], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="2" Grid.ColumnSpan="2" />
+                                    <UXControls:UXTextBlock Loaded="UXDisplayHotkeys3TextBlock_Loaded"  TextTrimming="CharacterEllipsis" MaxWidth="300" Text="{Binding [DisplayHotkeys.3], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="2" Grid.ColumnSpan="2">
+                                        <UXControls:UXTextBlock.ToolTip>
+                                            <ToolTip Placement="Center" VerticalOffset="45" x:Name="displayHotkeys3Tooltip" Visibility="Hidden">
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                    <Border.Resources>
+                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
+                                                    </Border.Resources>
+                                                    <StackPanel>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding [DisplayHotkeys.3], Source={x:Static lang:LangHelper.Instance}}" />
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Border>
+                                            </ToolTip>
+                                        </UXControls:UXTextBlock.ToolTip>
+                                    </UXControls:UXTextBlock>
                                     <UXControls:UXTextBox Grid.Column="2" Grid.Row="2" Margin="2" Height="20"
                                                           Text="{Binding SwitchInputSourceKey,Mode=TwoWay}"
                                                           Width="230" BorderThickness="1" FontSize="14"
