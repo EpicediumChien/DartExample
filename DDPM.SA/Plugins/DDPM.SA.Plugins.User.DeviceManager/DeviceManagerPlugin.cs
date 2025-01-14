@@ -12787,15 +12787,32 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         UpdateInstancesToPeripheralPlugin(null, _DTPProxyPlugin);
                         _PeripheralsPlugin.Peripheral_OSD_Notify += OnPeripheralOSDNotify;
 
-                        var di = GetDevices(true).Result;
-                        if (di != null)
+                        Task.Run(() =>
                         {
-                            foreach (var item in di.deviceInfo)
-                            {
-                                CheckDeviceFirstTimesToConnect(null, item);
-                                break; // Trigger once then break, do not need to check all devices
+                            int count = 0;
+                            DeviceHelper di = null;
+                            while (count < 10)
+                            {                               
+                                di = GetDevices(true).Result;
+                                if(di.deviceInfo.Count > 0)
+                                    break;
+                                Thread.Sleep(1000);
+                                count++;
+                                writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in a running condition");
+
                             }
-                        }
+                            if (di != null && di.deviceInfo.Count > 0)
+                            {
+                                writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - di.deviceInfo.Count = {di.deviceInfo.Count.ToString()}");
+                                foreach (var item in di.deviceInfo)
+                                {
+                                    CheckDeviceFirstTimesToConnect(null, item);
+                                    break; // Trigger once then break, do not need to check all devices
+                                }
+                            }
+                            else
+                                writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - di.deviceInfo NULL");
+                        });
                     }
                 }
             });

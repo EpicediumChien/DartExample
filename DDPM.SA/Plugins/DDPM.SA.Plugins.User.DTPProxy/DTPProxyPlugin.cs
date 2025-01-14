@@ -10887,22 +10887,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"commodity: {commodity.GetType().Name} Property: {property}");
 
+                var obj = interfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
 
-                var propertyInfo = interfaceType.GetProperty(property);
-                if (propertyInfo == null)
-                {
-                    writelog($"Property '{property}' not found on type '{interfaceType.Name}', == null");
-                    return null;
-                }
-
-                var getMethod = propertyInfo.GetGetMethod();
-                if (getMethod == null)
-                {
-                    writelog($"Property '{property}' on type '{interfaceType.Name}' does not have a getter, == null");
-                    return null;
-                }
-
-                var obj = getMethod.Invoke(commodity, null);
                 if (obj == null)
                 {
                     writelog($"obj = getMethod.Invoke(commodity, null), the obj == null");
