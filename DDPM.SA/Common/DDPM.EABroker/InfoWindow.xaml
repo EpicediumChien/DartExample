@@ -91,6 +91,9 @@
                             <TextBlock Text="{Binding IsWorkWindowVisible}" />
                         </WrapPanel>
                         <ListBox ItemsSource="{Binding WorkWinCellInfos}"/>
+                        <TextBox Text="{Binding WorkWinsInfoText}" FontFamily="Consolas" FontSize="10"
+                                 TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"/>
+
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

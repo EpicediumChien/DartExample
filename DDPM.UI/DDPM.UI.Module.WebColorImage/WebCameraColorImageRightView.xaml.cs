@@ -19,77 +19,91 @@ namespace DDPM.UI.Module.WebCameraColorImage
 
         public WebCameraColorImageRightView(WebCameraViewModel vm)
         {
-            InitializeComponent();
-            _vm = vm;
-
-            if (_vm.CurrentDeviceInfo!.IsPropertyWhiteBalanceSupported)
+            try
             {
-                AWBSlider.Maximum = _vm.CurrentDeviceInfo!.WhiteBalanceMax;
-                AWBSlider.Minimum = _vm.CurrentDeviceInfo.WhiteBalanceMin;
-                AWBSlider.TickFrequency = _vm.CurrentDeviceInfo!.WhiteBalanceSteppingDelta;
+                InitializeComponent();
+                _vm = vm;
+
+                if (_vm.CurrentDeviceInfo!.IsPropertyWhiteBalanceSupported)
+                {
+                    AWBSlider.Maximum = _vm.CurrentDeviceInfo!.WhiteBalanceMax;
+                    AWBSlider.Minimum = _vm.CurrentDeviceInfo.WhiteBalanceMin;
+                    AWBSlider.TickFrequency = _vm.CurrentDeviceInfo!.WhiteBalanceSteppingDelta;
+                }
+
+                if (_vm.CurrentDeviceInfo!.IsPropertyBrightnessSupported)
+                {
+                    BrightnessSlider.Maximum = _vm.CurrentDeviceInfo!.BrightnessMax;
+                    BrightnessSlider.Minimum = _vm.CurrentDeviceInfo.BrightnessMin;
+                    BrightnessSlider.TickFrequency = _vm.CurrentDeviceInfo!.BrightnessSteppingDelta;
+                    spBrightness.Visibility = Visibility.Visible;
+                    BSCS.Visibility = Visibility.Visible;
+                }
+
+                if (_vm.CurrentDeviceInfo!.IsPropertySharpnessSupported)
+                {
+                    SharpnessSlider.Maximum = _vm.CurrentDeviceInfo!.SharpnessMax;
+                    SharpnessSlider.Minimum = _vm.CurrentDeviceInfo.SharpnessMin;
+                    SharpnessSlider.TickFrequency = _vm.CurrentDeviceInfo!.SharpnessSteppingDelta;
+                    spSharpness.Visibility = Visibility.Visible;
+                    BSCS.Visibility = Visibility.Visible;
+                }
+
+                if (_vm.CurrentDeviceInfo!.IsPropertyContrastSupported)
+                {
+                    ContrastSlider.Maximum = _vm.CurrentDeviceInfo!.ContrastMax;
+                    ContrastSlider.Minimum = _vm.CurrentDeviceInfo.ContrastMin;
+                    ContrastSlider.TickFrequency = _vm.CurrentDeviceInfo!.ContrastSteppingDelta;
+                    spContrast.Visibility = Visibility.Visible;
+                    BSCS.Visibility = Visibility.Visible;
+                }
+
+                if (_vm.CurrentDeviceInfo!.IsPropertySaturationSupported)
+                {
+                    SaturationSlider.Maximum = _vm.CurrentDeviceInfo!.SaturationMax;
+                    SaturationSlider.Minimum = _vm.CurrentDeviceInfo.SaturationMin;
+                    SaturationSlider.TickFrequency = _vm.CurrentDeviceInfo!.SaturationSteppingDelta;
+                    spSaturation.Visibility = Visibility.Visible;
+                    BSCS.Visibility = Visibility.Visible;
+                }
             }
-
-            if (_vm.CurrentDeviceInfo!.IsPropertyBrightnessSupported)
+            catch (Exception ex) 
             {
-                BrightnessSlider.Maximum = _vm.CurrentDeviceInfo!.BrightnessMax;
-                BrightnessSlider.Minimum = _vm.CurrentDeviceInfo.BrightnessMin;
-                BrightnessSlider.TickFrequency = _vm.CurrentDeviceInfo!.BrightnessSteppingDelta;
-                spBrightness.Visibility = Visibility.Visible;
-                BSCS.Visibility = Visibility.Visible;
-            }
-
-            if (_vm.CurrentDeviceInfo!.IsPropertySharpnessSupported)
-            {
-                SharpnessSlider.Maximum = _vm.CurrentDeviceInfo!.SharpnessMax;
-                SharpnessSlider.Minimum = _vm.CurrentDeviceInfo.SharpnessMin;
-                SharpnessSlider.TickFrequency = _vm.CurrentDeviceInfo!.SharpnessSteppingDelta;
-                spSharpness.Visibility = Visibility.Visible;
-                BSCS.Visibility = Visibility.Visible;
-            }
-
-            if (_vm.CurrentDeviceInfo!.IsPropertyContrastSupported)
-            {
-                ContrastSlider.Maximum = _vm.CurrentDeviceInfo!.ContrastMax;
-                ContrastSlider.Minimum = _vm.CurrentDeviceInfo.ContrastMin;
-                ContrastSlider.TickFrequency = _vm.CurrentDeviceInfo!.ContrastSteppingDelta;
-                spContrast.Visibility = Visibility.Visible;
-                BSCS.Visibility = Visibility.Visible;
-            }
-
-            if (_vm.CurrentDeviceInfo!.IsPropertySaturationSupported)
-            {
-                SaturationSlider.Maximum = _vm.CurrentDeviceInfo!.SaturationMax;
-                SaturationSlider.Minimum = _vm.CurrentDeviceInfo.SaturationMin;
-                SaturationSlider.TickFrequency = _vm.CurrentDeviceInfo!.SaturationSteppingDelta;
-                spSaturation.Visibility = Visibility.Visible;
-                BSCS.Visibility = Visibility.Visible;
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebColorImage\\WebCameraColorImageRightView.xaml.cs WebCameraColorImageRightView() ex:" + ex.Message);
             }
         }
 
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
         {
-            //bool? rst = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_hdr", e);
-            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_hdr", e);
-
-            if (isLocked != null)
+            try
             {
-                Dispatcher.Invoke(new Action(() =>
+                //bool? rst = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_hdr", e);
+                bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_hdr", e);
+
+                if (isLocked != null)
                 {
-                    if (_vm != null)
+                    Dispatcher.Invoke(new Action(() =>
                     {
-                        _vm.IsTabStoppable = !(bool)isLocked;
-                        _vm.ShowLockMask = (bool)isLocked;
+                        if (_vm != null)
+                        {
+                            _vm.IsTabStoppable = !(bool)isLocked;
+                            _vm.ShowLockMask = (bool)isLocked;
 
-                        if (_vm.ShowLockMask)
-                            _vm.TabNavigation = "None";
-                        else
-                            _vm.TabNavigation = "Cycle";
+                            if (_vm.ShowLockMask)
+                                _vm.TabNavigation = "None";
+                            else
+                                _vm.TabNavigation = "Cycle";
 
-                        _vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
-                        Trace.WriteLine($"[SettingsPage] WebCameraColorImageRightView(Lock) : {isLocked}");
-                    }
-                }));
+                            _vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                            Trace.WriteLine($"[SettingsPage] WebCameraColorImageRightView(Lock) : {isLocked}");
+                        }
+                    }));
+                }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebColorImage\\WebCameraColorImageRightView.xaml.cs DeviceManagerSA_ITSettingsActionEvent() ex:" + ex.Message);
             }
 
             /*
@@ -178,25 +192,39 @@ namespace DDPM.UI.Module.WebCameraColorImage
 
         private void AntiFlicker_Click(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Border bdr)
+            try
             {
-                var val = int.Parse(bdr.Tag.ToString()!);
-                if (val == _vm.AntiFlicker)
-                { return; }
+                if (sender is Border bdr)
+                {
+                    var val = int.Parse(bdr.Tag.ToString()!);
+                    if (val == _vm.AntiFlicker)
+                    { return; }
 
-                _vm.AntiFlicker = val;
+                    _vm.AntiFlicker = val;
+                }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebColorImage\\WebCameraColorImageRightView.xaml.cs AntiFlicker_Click() ex:" + ex.Message);
             }
         }
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Border elm)
+            try
             {
-                var val = elm.Tag.ToString();
-                if (val == "0")
-                    _vm.Undo();
-                else
-                    _vm.Redo();
+                if (sender is Border elm)
+                {
+                    var val = elm.Tag.ToString();
+                    if (val == "0")
+                        _vm.Undo();
+                    else
+                        _vm.Redo();
+                }
+            }
+            catch ( Exception ex) 
+            {
+                    DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebColorImage\\WebCameraColorImageRightView.xaml.cs mage_MouseLeftButtonDown() ex:" + ex.Message);
             }
         }
 

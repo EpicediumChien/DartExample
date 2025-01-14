@@ -14,10 +14,15 @@ namespace DDPM.UI.Common
         private static ResourceManager resManager = Resources.Resources.ResourceManager;
         private static string GetString(string key)
         {
-
-            //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("fr-CA");
+            //Robert_Lin 2025-1-13 To do multilingual test, please remove below comments
+            //
+            //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("ru");
             //string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+
+            //And comment-out below line
             string str = resManager.GetString(key, CultureInfo.CurrentUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+
+            //This statement is required
             return System.Text.RegularExpressions.Regex.Unescape(str);
         }
         //private static string GetString(string key, string culture = "en-US")

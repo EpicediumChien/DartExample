@@ -104,7 +104,12 @@
                                 </UXControls:UXButton>
 
                                 <!-- Next Button -->
-                                <UXControls:UXButton x:Name="NextBtn" IconPosition="IconRight" HorizontalContentAlignment="Center" ButtonType="Primary" Padding="40, 8" ButtonSize="Medium" VerticalContentAlignment="Center" Margin="10, 0, 0, 0" IconAnimation="Move" Width="164" Height="40" Click="NextBtn_Click">
+                                <!-- Robert_Lin, 2025-1-9 Default is disabled, until a SplitItem is selected -->
+                                <UXControls:UXButton x:Name="NextBtn" IconPosition="IconRight" HorizontalContentAlignment="Center" 
+                                                     ButtonType="Primary" Padding="40, 8" ButtonSize="Medium" 
+                                                     VerticalContentAlignment="Center" Margin="10, 0, 0, 0" IconAnimation="Move" 
+                                                     Width="164" Height="40" IsEnabled="{Binding IsFirstNextButtonEnabled}"
+                                                     Click="NextBtn_Click">
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"/>
                                         <Path x:Name="ArrowPath" Margin="0,2" Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white">
@@ -161,12 +166,15 @@
                             <StackPanel>
                                 <Border Style="{DynamicResource RightPartBorderStyle}">
                                     <StackPanel>
+                                        <!-- Robert_Lin 2025-1-9, all SplitListViews here will not need binding ItemClickCommand
+                                        because all of them are handled by EzMemoryFirst.OnListViewItemClicked
+                                        -->
                                         <!-- Recent -->
-                                        <Grid Height="40" Name="splitListView_Recent_Grid">
+                                        <Grid Height="40" Name="splitListView_Recent_Grid" Visibility="Collapsed">
                                             <UXControls:UXTextBlock Text="{Binding [Recent], Source={x:Static lang:LangHelper.Instance}}"  />
                                         </Grid>
-                                        <!-- -->
-                                        <commonCtrl:SplitListView Name="splitListView_Recent" Margin="0,4" ItemClickCommand="{Binding ListViewItemClickCommand}" />
+                                        <!-- ItemClickCommand="{Binding ListViewItemClickCommand}" -->
+                                        <commonCtrl:SplitListView Name="splitListView_Recent" Margin="0,4"  Visibility="Collapsed" />
                                         <!--<ezCommon:EzListView />-->
                                         <!-- Custom -->
                                         <StackPanel Name="splitListView_Recent_StackPanel" Orientation="Horizontal" Height="40">
@@ -188,38 +196,66 @@
                                                 </Grid>
                                             </Viewbox>
                                         </StackPanel>
-                                        <commonCtrl:SplitListView Name="splitListView_Custom" Margin="0,4" ItemClickCommand="{Binding ListViewItemClickCommand}" />
+                                        <!-- ItemClickCommand="{Binding ListViewItemClickCommand}"  -->
+                                        <commonCtrl:SplitListView Name="splitListView_Custom" Margin="0,4" />
                                         <!-- 2 Windows -->
                                         <Grid Height="40" Margin="0,16,0,0">
                                             <UXControls:UXTextBlock Text="{Binding [Windows], Source={x:Static lang:LangHelper.Instance},StringFormat={}2 {0}}" />
                                         </Grid>
-                                        <commonCtrl:SplitListView Name="splitListView_2w" Margin="0,4" ItemClickCommand="{Binding ListViewItemClickCommand}" />
+                                        <!-- ItemClickCommand="{Binding ListViewItemClickCommand}"  -->
+                                        <commonCtrl:SplitListView Name="splitListView_2w" Margin="0,4" />
                                         <!-- 3 Windows -->
                                         <Grid Height="40" Margin="0,16,0,0">
                                             <UXControls:UXTextBlock Text="{Binding [Windows], Source={x:Static lang:LangHelper.Instance},StringFormat={}3 {0}}" />
                                         </Grid>
-                                        <commonCtrl:SplitListView Name="splitListView_3w" Margin="0,4" ItemClickCommand="{Binding ListViewItemClickCommand}" />
+                                        <!-- ItemClickCommand="{Binding ListViewItemClickCommand}"  -->
+                                        <commonCtrl:SplitListView Name="splitListView_3w" Margin="0,4"/>
                                         <!--4 Windows-->
                                         <Grid Height="40" Margin="0,16,0,0">
                                             <UXControls:UXTextBlock Text="{Binding [Windows], Source={x:Static lang:LangHelper.Instance},StringFormat={}4 {0}}" />
                                         </Grid>
-                                        <commonCtrl:SplitListView Name="splitListView_4w" Margin="0,4" ItemClickCommand="{Binding ListViewItemClickCommand}" />
-                                        <!--5 Windows-->
-                                        <Grid Height="40" Margin="0,16,0,0">
-                                            <UXControls:UXTextBlock Text="{Binding [Windows], Source={x:Static lang:LangHelper.Instance},StringFormat={}5 {0}}" />
-                                        </Grid>
-                                        <commonCtrl:SplitListView Name="splitListView_5w" Margin="0,4" ItemClickCommand="{Binding ListViewItemClickCommand}" />
-                                        <!--6 Windows-->
-                                        <Grid Height="40" Margin="0,16,0,0">
-                                            <UXControls:UXTextBlock Text="{Binding [Windows], Source={x:Static lang:LangHelper.Instance},StringFormat={}6 {0}}" />
-                                        </Grid>
-                                        <commonCtrl:SplitListView Name="splitListView_6w" Margin="0,4" ItemClickCommand="{Binding ListViewItemClickCommand}" />
+                                        <!-- ItemClickCommand="{Binding ListViewItemClickCommand}"  -->
+                                        <commonCtrl:SplitListView Name="splitListView_4w" Margin="0,4" />
 
-                                        <!--7 Windows or more-->
-                                        <Grid Height="40">
-                                            <UXControls:UXTextBlock Text="{Binding [EzArrange.1], Source={x:Static lang:LangHelper.Instance},StringFormat={}7 {0}}" />
-                                        </Grid>
-                                        <commonCtrl:SplitListView Name="splitListView_7w" Margin="0,4" ItemClickCommand="{Binding ListViewItemClickCommand}" />
+                                        <!-- #region CellBorderCount more than 4 (DDPMW-866) for DDPMW-866 Note. 
+                                             Easy arrange window arrangement preset limited to 4 windows for all displays 
+                                             below 19 inches in size (Reference: MDDM-3039)
+                                        -->
+                                        <StackPanel Name="moreThan4">
+                                            <StackPanel.Style>
+                                                <Style TargetType="StackPanel">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsMonitorSizeSmallerThan19Inches}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Style>
+
+                                            <!--5 Windows-->
+                                            <Grid Height="40" Margin="0,16,0,0">
+                                                <UXControls:UXTextBlock Text="{Binding [Windows], Source={x:Static lang:LangHelper.Instance},StringFormat={}5 {0}}" />
+                                            </Grid>
+                                            <!-- ItemClickCommand="{Binding ListViewItemClickCommand}"  -->
+                                            <commonCtrl:SplitListView Name="splitListView_5w" Margin="0,4"  />
+                                            <!--6 Windows-->
+                                            <Grid Height="40" Margin="0,16,0,0">
+                                                <UXControls:UXTextBlock Text="{Binding [Windows], Source={x:Static lang:LangHelper.Instance},StringFormat={}6 {0}}" />
+                                            </Grid>
+                                            <!-- ItemClickCommand="{Binding ListViewItemClickCommand}"  -->
+                                            <commonCtrl:SplitListView Name="splitListView_6w" Margin="0,4"/>
+
+                                            <!--7 Windows or more-->
+                                            <Grid Height="40">
+                                                <UXControls:UXTextBlock Text="{Binding [EzArrange.1], Source={x:Static lang:LangHelper.Instance},StringFormat={}7 {0}}" />
+                                            </Grid>
+                                            <!-- ItemClickCommand="{Binding ListViewItemClickCommand}"  -->
+                                            <commonCtrl:SplitListView Name="splitListView_7w" Margin="0,4" />
+                                        </StackPanel>
+                                        <!-- #endregion CellBorderCount more than 4 -->
+
+
                                     </StackPanel>
                                 </Border>
                             </StackPanel>

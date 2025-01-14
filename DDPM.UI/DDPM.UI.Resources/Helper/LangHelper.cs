@@ -32,10 +32,18 @@ namespace DDPM.UI.Resources.Helper
                 {
                     throw new ArgumentNullException(nameof(name));
                 }
+
                 //resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
-                //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("fr-CA");
+
+                //Robert_Lin 2025-1-13 To do multilingual test, please remove below comments
+                //
+                //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("ru");
                 //string str = _resourceManager.GetString(name, cultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+
+                //And comment out the following line
                 string str = _resourceManager.GetString(name, CultureInfo.CurrentUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+
+                //But below statement is requied
                 return System.Text.RegularExpressions.Regex.Unescape(str);
             }
         }

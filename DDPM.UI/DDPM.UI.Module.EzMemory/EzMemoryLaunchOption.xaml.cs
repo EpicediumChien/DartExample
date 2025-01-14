@@ -33,6 +33,10 @@ using static System.Reflection.Metadata.BlobBuilder;
 using System.Globalization;
 using Window = System.Windows.Window;
 using Dell.Client.Framework.Security;
+using System.Data;
+using System.Runtime.Intrinsics.X86;
+using System.Security.Policy;
+//using System.Windows.Forms;
 
 namespace DDPM.UI.Module.EzMemory
 {
@@ -83,6 +87,9 @@ namespace DDPM.UI.Module.EzMemory
             {
                 _log.Error($"@{nameof(EzMemoryLaunchOption)} InitializePage: ... in");
 
+                //string lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation";
+                //string lorem2 = "Lorem ipsum dolor sit amet, consectetur adipiscing eiusmod";
+
                 TitleTB.Text = Strings.TitleTBForLaunchOptionPage;
                 StartupCB.Content = Strings.StartupCBContentForLaunchOptionPage;
                 ManulRB.Content = Strings.ManulRBContentForLaunchOptionPage;
@@ -97,19 +104,50 @@ namespace DDPM.UI.Module.EzMemory
                     SubText.Text = pageData.SubText!;
                 }
 
+                //Robert_Lin 2025-1-13 Based on DDM behavior, every time when entering this page,
+                // the settings will be reloaded from per-monitor settings file.
+                //Even if user has changed the settings, Back to Assign programs, then "Next" return to here.
+                //(Changed settings will be lost, and will be reloaded from settings file)
+                //
+                //In Add mode, the new ProfileId will be generted when clicking Finish button.
+                //             So the per-monitor settings will be always null. we can skip it (to restore)
+                //But in Edit mode, we can restore its monitor settings with current editing profileId.
                 if (_vm.IsEditProfile)
                 {
-                    _vm.IsLaunchAtStartup = _vm.currentEditprofileSetting.StartUpLaunch;
-                    if (_vm.currentEditprofileSetting.Auto)
+                    if (_vm.currentEditprofile != null)
                     {
-                        _vm.IsAutoLaunch = true;
-                        _vm.IsManualLaunch = false;
+                        _vm.currentEditprofileSetting = _vm.LoadEmMonitorSettings(_vm.currentEditprofile.ID);
+                        if (_vm.currentEditprofileSetting == null)
+                        {
+                            //Assign default settings
+                            _vm.currentEditprofileSetting = new EzProfileSettingDDPM(_vm.currentEditprofile.ID,
+                                false, GetAutoLaunchTime(), false);
+                            _vm.IsLaunchAtStartup = false;
+                        }
+
+                    }
+                }
+                else
+                {
+                    _vm.IsManualLaunch = true;
+                    _vm.IsAutoLaunch = false;
+                }
+
+                if (_vm.IsEditProfile)
+                {
+                    if (_vm.currentEditprofileSetting == null)
+                    {
+                        //Assign default settings
+                        _vm.IsLaunchAtStartup = false;
                     }
                     else
                     {
-                        _vm.IsAutoLaunch = false;
-                        _vm.IsManualLaunch = true;
-                    }
+                        _vm.IsLaunchAtStartup = _vm.currentEditprofileSetting.StartUpLaunch;
+
+                        _vm.IsAutoLaunch = _vm.currentEditprofileSetting.Auto;
+                        _vm.IsManualLaunch = !_vm.currentEditprofileSetting.Auto;
+
+                     }
 
                     long autoStartTimeInSeconds = (long)_vm.currentEditprofileSetting.AutoStartTime!;
                     TimeSpan time = TimeSpan.FromSeconds(autoStartTimeInSeconds);
@@ -260,6 +298,10 @@ namespace DDPM.UI.Module.EzMemory
 
                 if (userSettingsSuccess)
                 {
+
+                    //Robert_Lin 2025-1-11, The tooltip of SplitItem in RightView shoud be the
+                    //ProfileName instead of EA Layout description.
+                    _vm.ispCtrlForEm.FriendlyName = profileName;
                     UpdateSplitListUI(profileID, _vm.ispCtrlForEm, isEditMode);
 
                     _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: User Settings PASS");
@@ -318,10 +360,41 @@ namespace DDPM.UI.Module.EzMemory
                     _log.Info($"@{nameof(EzMemoryLaunchOption)} FinishBtn_Click: Monitor Settings FAIL");
                 }
 
+                if (isEditMode)
+                {
+                    //Check if layout is changed, if yes, then remove the old layout from SplitList
+                    if (_vm.currentEditprofile.Layout != layout)
+                    {
+                        if (_vm.OrgEditSplitItem != null)
+                        {
+                            _vm.CurrentEditSelectspItem.ProfileID = _vm.OrgEditSplitItem.ProfileID;
+                            _vm.CurrentEditSelectspItem.ISplitCtrl.FriendlyName = profileName;
+                            _vm.OrgEditSplitItem.ReplaceWithISplitICtrl(_vm.CurrentEditSelectspItem.ISplitCtrl);
+                        }
+                    }
+                    //SplitItem tooltip
+                    _vm.CurrentEditSelectspItem.ISplitCtrl.FriendlyName = profileName;
+                    //Profile name at RightView Header
+                    _vm.ProfileTitleTextBlockValue = profileName;
+                    //_vm.LoadEmProfileSettings(profileID);
+                }
+                else
+                {
+
+                    _vm.CurrentEditSelectspItem.ProfileID = profileID;
+                    _vm.CurrentEditSelectspItem.ISplitCtrl.FriendlyName = profileName;
+                   // _vm.LoadEmProfileSettings(profileID);
+
+                }
+
+                _vm.UpdateRightViewUIFromCurrentSelectspItem();
+
                 // Clear UI and close view
                 _vm.ClearTextBlockAppName();
                 _vm.IsEditProfile = false;
-                _vm.RightViewDataClear();
+                //Robert_Lin 2025-1-10 Dont clean up ReightView Profile info,
+                //When return back to RightView, curranet added/edit profile info will be shown and selected
+                //_vm.RightViewDataClear();
                 DdpmCommonHelper.ModuleOwner?.CloseFullView();
             }
             catch (Exception ex)
@@ -410,10 +483,23 @@ namespace DDPM.UI.Module.EzMemory
                 if (isEditMode)
                 {
                     _log.Info("[EzMemoryLaunchOption] UpdateSplitListUI  ... isEditMode True");
-                    SplitItem? spItem = _vm.splitListRightView.FindItemByCustomId(ispAdd.EAID);
+                    //Robert_Lin 2025-1-9 fix, find by EAID
+                    //NEW:
+                    SplitItem? spItem = _vm.splitListRightView.FindItemByProfileId(profileID);
+                    //OLD:
+                    //SplitItem? spItem = _vm.splitListRightView.FindItemByCustomId(ispAdd.EAID);
                     if (spItem != null)
                     {
                         spItem.ReplaceWithISplitICtrl(ispNew);
+                        spItem.IsSelected = true;
+
+                        //Set new added SplitItem as Current selected
+                        if (_vm.CurrentSelectspItem != null)
+                        {
+                            _vm.CurrentSelectspItem.IsSelected = false;
+                        }
+                        _vm.CurrentSelectspItem = spItem;
+                        //_vm.CurrentSelectspItem.IsSelected = true;
                     }
                 }
                 else
@@ -427,6 +513,14 @@ namespace DDPM.UI.Module.EzMemory
                     newItem.IsDeleteEnabled = true;
                     newItem.IsEditEnabled = true;
                     newItem.LayoutID = ispNew.EAID;
+
+                    //Set new added SplitItem as Current selected
+                    if (_vm.CurrentSelectspItem != null)
+                    {
+                        _vm.CurrentSelectspItem.IsSelected = false;
+                    }
+                    _vm.CurrentSelectspItem = newItem;
+                    _vm.CurrentSelectspItem.IsSelected = true;
                 }
 
                 /* OLD Code by Wayn 
