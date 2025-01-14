@@ -1114,6 +1114,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please do not power down system until updates are complete..
+        /// </summary>
+        internal static string UpdateProgressMsg {
+            get {
+                return ResourceManager.GetString("UpdateProgressMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Updates info.
         /// </summary>
         internal static string Updates_info {

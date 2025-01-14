@@ -4132,6 +4132,7 @@ namespace VcpCore.Plugins
             VCPE2.Add("DisplayHDR", "3A");
             VCPE2.Add("HDR10", "3B");
             VCPE2.Add("HLG", "3C");
+            VCPE2.Add("Presets Disabled", "7F"); // Jim  20250111 add back , due to accidental deletion on 20250106 
             VCPE2.Add("Custom Color HDR", "30"); // Jim add 2025 for [S3225QC] HDR list
             VCPE2.Add("HDR Peak 1000", "31"); // Jim add 2025 for [S3225QC] HDR list
 

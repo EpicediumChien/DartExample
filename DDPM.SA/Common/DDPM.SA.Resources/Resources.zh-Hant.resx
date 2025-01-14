@@ -534,4 +534,7 @@
   <data name="RPG_Game" xml:space="preserve">
     <value>RPG 遊戲</value>
   </data>
+  <data name="WebCameraSettings.2" xml:space="preserve">
+    <value>利用智慧型場景分析和臉部追蹤功能，在您移動時縮放並平移檢視</value>
+  </data>
 </root>

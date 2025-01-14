@@ -13,6 +13,7 @@ using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using Dell.Client.Framework.UX.WPF.Controls;
 using Microsoft.VisualBasic.Logging;
+using System.CodeDom;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -47,8 +48,22 @@ namespace DDPM.UI.Common.ViewModels
         public EzProfileSettingDDPM currentEditprofileSetting;
         public ISplitCtrl? ispCtrlForEm;
         public UXTextBox currentUXTextBoxInfo;
+
+        //Robert_Lin 2025-1-10, current selected Profile and ProfileSetting in RightView
+        public EAProfileDDPM? _currentSelectedProfile;
+        public EzProfileSettingDDPM? _currentSelectedProfileSetting;
         #endregion
 
+        //Robert_Lin 2025-1-13 Fix _log is null bug: 
+        //And all _log.Info() has been changed to LogInfo() in the EzArrangeViewModel
+
+
+        //Robert_Lin, 2025-1-10 add a default ctor for design-time data binding,
+        // do not use it in code
+        public EzArrangeViewModel()
+        {
+            throw new NotImplementedException();
+        }
         public EzArrangeViewModel(HomeDevice homeDev)
         {
             _homeDevice = homeDev;
@@ -59,7 +74,8 @@ namespace DDPM.UI.Common.ViewModels
             _listViewItemClickCommand = new RelayCommand<SplitItem>(OnListViewItemClicked);
 
             _splitItemEditCommand = new RelayCommand<SplitItem>(OnSplitItemEditCommand);
-            Invoke_InitData();
+            //Robert_Lin, 2025-1-9 Comment out unused call
+            //Invoke_InitData();
 
             Init_EzMemory();
         }
@@ -81,7 +97,7 @@ namespace DDPM.UI.Common.ViewModels
         //    }
         //}
 
-        #region Init Data
+        #region Init Data (Robert_Lin, 2025-1-9 Mark this region as Unused)
 
         private void Invoke_InitData()
         {
@@ -90,19 +106,19 @@ namespace DDPM.UI.Common.ViewModels
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
-            bw.DoWork += DoWork_InitData;
-            bw.RunWorkerCompleted += RunWorkerCompleted_InitData;
+            //bw.DoWork += DoWork_InitData;
+            //bw.RunWorkerCompleted += RunWorkerCompleted_InitData;
 
-            bw.RunWorkerAsync();
+            //bw.RunWorkerAsync();
         }
 
         private void DoWork_InitData(object? sender, DoWorkEventArgs e)
         {
-//#if ENABLE_CALL_SA
-//            ObjGetVCP ret = _deviceManagerSA.GetEAFunctionEnabled().Result;
-//            if (ret.result)
-//                _isEaFunctionEnabled = (bool)ret.value;
-//#endif
+            //#if ENABLE_CALL_SA
+            //            ObjGetVCP ret = _deviceManagerSA.GetEAFunctionEnabled().Result;
+            //            if (ret.result)
+            //                _isEaFunctionEnabled = (bool)ret.value;
+            //#endif
             e.Result = "OK";
         }
 
@@ -311,7 +327,7 @@ namespace DDPM.UI.Common.ViewModels
                     _homeDevice.MonitorInfo != null &&
                     _homeDevice.MonitorInfo.edid != null)
                 {
-                    return (_homeDevice.MonitorInfo.edid.Size < 19.000);                    
+                    return (_homeDevice.MonitorInfo.edid.Size < 19.000);
                 }
                 return false;
             }
@@ -470,6 +486,12 @@ namespace DDPM.UI.Common.ViewModels
             };
         }
 
+        /// <summary>
+        /// The original SpitItem data before editing
+        /// </summary>
+        public SplitItem? OrgEditSplitItem { get; set; } = null;
+        
+
         #endregion
 
         #region First page
@@ -497,18 +519,30 @@ namespace DDPM.UI.Common.ViewModels
             set => SetProperty(ref _currentSelectsEAID, value);
         }
 
+        //Robert_Lin 2025-1-10, this is the selected SplitItem in RightView
         private SplitItem _currentSelectspItem;
         public SplitItem CurrentSelectspItem
         {
             get => _currentSelectspItem;
-            set => SetProperty(ref _currentSelectspItem, value);
+            set
+            {
+                SetProperty(ref _currentSelectspItem, value);
+                //Robert_Lin 2025-1-9, EzMemoryFirst.Next button use this propery to enable/disable 
+                //OnPropertyChanged("IsFirstNextButtonEnabled");
+                IsApplyEnabled = (value != null);
+            }
         }
 
         private SplitItem _currentEditSelectspItem;
         public SplitItem CurrentEditSelectspItem
         {
             get => _currentEditSelectspItem;
-            set => SetProperty(ref _currentEditSelectspItem, value);
+            set
+            {
+                SetProperty(ref _currentEditSelectspItem, value);
+                //Robert_Lin 2025-1-9, EzMemoryFirst.Next button use this propery to enable/disable 
+                OnPropertyChanged("IsFirstNextButtonEnabled");
+            }
         }
 
         //記錄進入 Edit status
@@ -537,7 +571,11 @@ namespace DDPM.UI.Common.ViewModels
 
         #region RightView page
 
-        private string _profileTitleTextBlockValue = "N/A";
+        private string _profileTitleTextBlockValue = Strings.NATextForRightViewUI; //"N/A";
+
+        /// <summary>
+        /// The Profile name of current selected SplitItem (profile) in RightView
+        /// </summary>
         public string ProfileTitleTextBlockValue
         {
             get => _profileTitleTextBlockValue;
@@ -548,7 +586,7 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
-        private string _automaticStartupValue = "N/A";
+        private string _automaticStartupValue = Strings.NATextForRightViewUI; //"N/A";
         public string AutomaticStartupValue
         {
             get => _automaticStartupValue;
@@ -559,7 +597,7 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
-        private string _launchByTimeValue = "N/A";
+        private string _launchByTimeValue = Strings.NATextForRightViewUI; //"N/A";
         public string LaunchByTimeValue
         {
             get => _launchByTimeValue;
@@ -570,7 +608,7 @@ namespace DDPM.UI.Common.ViewModels
             }
         }
 
-        private string _appDocumentValue = "N/A";
+        private string _appDocumentValue = Strings.NATextForRightViewUI; //"N/A";
         public string AppDocumentValue
         {
             get => _appDocumentValue;
@@ -578,6 +616,140 @@ namespace DDPM.UI.Common.ViewModels
             {
                 SetProperty(ref _appDocumentValue, value);
                 OnPropertyChanged("AppDocumentValue");
+            }
+        }
+
+        //Robert_Lin 2025-1-9 added for Next button IsEnabled proerty in EasyMemory. EzMemoryFirst view
+        public bool IsFirstNextButtonEnabled
+        {
+            get
+            {
+                return CurrentEditSelectspItem != null;
+            }
+        }
+
+        /// <summary>
+        /// The profile data of current selected SplitItem (profile) in RightView
+        /// When CurrentSelectspItem is changed, need to call LoadEmProfile() to update this property.
+        /// </summary>
+        public EAProfileDDPM? CurrentSelectedProfile
+        {
+            get => _currentSelectedProfile;
+            set
+            {
+                SetProperty(ref _currentSelectedProfile, value);
+            }
+        }
+
+        public EzProfileSettingDDPM? CurrentSelectedProfileSetting
+        {
+            get => _currentSelectedProfileSetting;
+            set
+            {
+                SetProperty(ref _currentSelectedProfileSetting, value);
+            }
+        }
+
+
+        /// <summary>
+        /// Called after you updated the CurrentSelectspItem, it will:
+        /// 1. Update CurrentSelectedProfile and CurrentSelectedProfileSetting from ProfilID in CurrentSelectspItem
+        /// 2. Update UI from CurrentSelectedProfile and CurrentSelectedProfileSetting
+        /// </summary>
+        public void UpdateRightViewUIFromCurrentSelectspItem()
+        {
+            if (CurrentSelectspItem == null)
+            {
+                CurrentSelectedProfile = null;
+                CurrentSelectedProfileSetting = null;
+            }
+            else
+            {
+                int profileID = CurrentSelectspItem.ProfileID;  
+
+                EAProfileDDPM emProfile = new EAProfileDDPM();
+                EzProfileSettingDDPM emProfileSettings = new EzProfileSettingDDPM(profileID, false, 0, false);
+
+                if (LoadEmProfileSettings(profileID, ref emProfile, ref emProfileSettings))
+                {
+                    CurrentSelectedProfile = emProfile;
+                    CurrentSelectedProfileSetting = emProfileSettings;
+                    LogInfo($"@EzMemoryRightView.OnListViewItemClicked,, Profile ID={profileID}, Load user settings OK.");
+                }
+                else
+                {
+                    CurrentSelectedProfile = null;
+                    CurrentSelectedProfileSetting = null;
+                    LogInfo($"@EzMemoryRightView.OnListViewItemClicked, Profile ID {profileID} not found in UserSettings.");
+                }
+            }
+            RefreshProfileSettingsToRightView();
+        }
+
+
+        /// <summary>
+        ///Refresh to RightView UI.
+        ///1 CurrentSelectedProfile: update to ProfileTitleTextBlockValue, AppDocumentValue
+        ///2 CurrentSelectedProfileSetting: update to AutomaticStartupValue, LaunchByTimeValue
+        /// </summary>
+        public void RefreshProfileSettingsToRightView()
+        {
+            //1. efresh CurrentSelectedProfile data
+            //If no selected SplitItem, then show default value ("N/A")
+            if (CurrentSelectedProfile == null)
+            {
+                //1.1 Profile Name
+                ProfileTitleTextBlockValue = Strings.NATextForRightViewUI; //"N/A";
+                //1.2 App/Document
+                AppDocumentValue = Strings.NATextForRightViewUI; //"N/A";
+                //2.1 Automatic Startup
+                AutomaticStartupValue = Strings.NATextForRightViewUI; //"N/A";
+                //2.2 Launch By Time
+                LaunchByTimeValue = Strings.NATextForRightViewUI; //"N/A";
+                return;
+            }
+
+            //1.1 Profile Name
+            ProfileTitleTextBlockValue = CurrentSelectedProfile.Name;
+            //1.2 App/Document
+            AppDocumentValue = string.Empty;
+            if (CurrentSelectedProfile != null)
+            {
+                int no = 1;
+                foreach (EAAppInfoDDPM profile in CurrentSelectedProfile.AppInfos)
+                {
+                    AppDocumentValue += no + ".  " + profile.Name + "\r\n";
+                    no++;
+                }
+            }
+
+            //2. Refresh CurrentSelectedProfileSetting data
+            if (CurrentSelectedProfileSetting == null)
+            {
+                //2.1 Automatic Startup
+                AutomaticStartupValue = Strings.No; // "No";
+                //2.2 Launch By Time
+                LaunchByTimeValue = "_";
+            }
+            else
+            {
+                if (CurrentSelectedProfileSetting.Auto)
+                {
+                    //2.1 Automatic Startup
+                    if (CurrentSelectedProfileSetting.StartUpLaunch)
+                        AutomaticStartupValue = Strings.Yes; // "Yes";
+                    else
+                        AutomaticStartupValue = Strings.No; // "No";
+                    //2.2 Launch By Time
+                    LaunchByTimeValue = ConvertAutoLaunchtimeToTime(CurrentSelectedProfileSetting.AutoStartTime);
+                }
+                else
+                {
+                    //2.1 Automatic Startup
+                    AutomaticStartupValue = Strings.No; // "No";
+                    //2.2 Launch By Time
+                    LaunchByTimeValue = "_";
+                }
             }
         }
 
@@ -940,14 +1112,14 @@ namespace DDPM.UI.Common.ViewModels
             {
                 if (HasDuplicateApp(fileName.First().Value.FileName)) // fileName KEY值為cell編號而且只會有1個觸發進來，所以判斷第一個即可
                 {
-                    _log.Info($"@[EzArrangeViewModel] HasDuplicateApp {cellBorder.Name} {fileName.First().Value.FileName}");
+                    LogInfo($"@[EzArrangeViewModel] HasDuplicateApp {cellBorder.Name} {fileName.First().Value.FileName}");
                     PopUpAlreadyexistsMessage(null);
                     return;
                 }
 
                 if (_sortApps.Values.Any(a => a.AppName.Equals(fileName.First().Value.FileName, StringComparison.OrdinalIgnoreCase) || a.AppPath.Equals(fileName.First().Value.FilePath, StringComparison.OrdinalIgnoreCase)))
                 {
-                    _log.Info($"@[EzArrangeViewModel] HasDuplicateApp {cellBorder.Name} {fileName.First().Value.FileName}");
+                    LogInfo($"@[EzArrangeViewModel] HasDuplicateApp {cellBorder.Name} {fileName.First().Value.FileName}");
                     PopUpAlreadyexistsMessage(null);
                     return;
                 }
@@ -1255,6 +1427,70 @@ namespace DDPM.UI.Common.ViewModels
                 OnPropertyChanged("ButtonName");
             }
         }
+
+        //Robert_Lin 2025-1-10 for Next button IsEnabled proerty in EzAssignProgram view
+        public bool IsAssignNextButtonEnabled
+        {
+            get
+            {
+                if (_sortApps == null)
+                    return false;
+
+                return _sortApps.Count >= SelectedValue;
+            }
+        }
+        public void RefreshAssignPageButtons()
+        {
+            OnPropertyChanged("IsAssignNextButtonEnabled");
+        }
+
+        /// <summary>
+        /// Call this method to convert _sortapps to new Dictinary which change its keys
+        /// For example, If cellCount<=2 => Keys will be AddButton2_1, AddButton2_2
+        /// Else (cellCount> 2) then Keys will be AddButton1, AddButton2, AddButton3, ...
+        /// </summary>
+        /// <param name="cellCount"></param>
+        public void RefreshSortAppsKeysForNewCellCount(int cellCount)
+        {
+            if (_sortApps.Count == 0)
+                return;
+
+            if (cellCount <= 2)
+            {
+                string key0 = _sortApps.ElementAt(0).Key;
+                //If the format of key is "AddButton2_?" then it's 2 splits => nothing to do
+                if (key0.StartsWith("AddButton2_"))
+                    return;
+            }
+            else //CellCount > 2
+            {
+                string key0 = _sortApps.ElementAt(0).Key;
+                //If the format of key is NOT  "AddButton2_?" then it's >2 splits => nothing to do
+                if (!key0.StartsWith("AddButton2_"))
+                    return;
+            }
+
+            Dictionary<String, Bind_AddFullPage_AppCollectionData> newSortApps = new Dictionary<String, Bind_AddFullPage_AppCollectionData>();
+
+            // For each keys in _sortApps, update its key
+            int no = 1;
+            foreach(KeyValuePair<string, Bind_AddFullPage_AppCollectionData> item in _sortApps)
+            {
+                string newKey = string.Empty;
+                if (cellCount <= 2)
+                {
+                    newKey = $"AddButton2_{no}";
+                }
+                else
+                {
+                    newKey = $"AddButton{no}";
+                }
+                newSortApps.Add(newKey, item.Value);
+                no++;
+            }
+            _sortApps.Clear();
+            _sortApps = newSortApps;
+        }
         #endregion
 
         #region LaunchOption
@@ -1316,7 +1552,7 @@ namespace DDPM.UI.Common.ViewModels
                 if (SetProperty(ref _isManualLaunch, value) &&
                     _isManualLaunch)
                 {
-                    IsAutoLaunch = false;                    
+                    IsAutoLaunch = false;
                 }
             }
         }
@@ -1330,13 +1566,180 @@ namespace DDPM.UI.Common.ViewModels
                 if (SetProperty(ref _isAutoLaunch, value) &&
                     _isAutoLaunch)
                 {
-                    IsManualLaunch = false;                    
+                    IsManualLaunch = false;
                 }
             }
         }
 
         #endregion LaunchOption
 
+        #region EM Profile / Settings
+        public EAProfileDDPM? LoadEmUserSetting(int profileId)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA == null)
+            {
+                LogInfo("@EMVM.LoadEmUserSetting(), DeviceManagerSA is null");
+                return null;
+            }
+            //Load EM Profiles from User Setting
+            List<EAProfileDDPM> emProfiles = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+            if (emProfiles == null)
+            {
+
+                LogInfo("@EMVM.LoadEmUserSetting(), Load EM Profiles return null.");
+                return null;
+            }
+            //Find the profile by profileId
+            EAProfileDDPM? foundProfile = emProfiles.FirstOrDefault(p => p.ID == profileId);
+            if (foundProfile == null)
+            {
+                LogInfo($"@EMVM.LoadEmUserSetting(), ProfileId={profileId} not found in EM UserSettings.");
+                return null;
+            }
+            return foundProfile;
+        }
+
+        public EzProfileSettingDDPM? LoadEmMonitorSettings(int profileId, HomeDevice? homeDevice=null)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA == null)
+            {
+                LogInfo("@LoadEmMonitorSettings(), DeviceManagerSA is null");
+                return null;
+            }
+            if (homeDevice == null)
+            {
+                homeDevice = _homeDevice;
+                if (_homeDevice == null)
+                {
+                    LogInfo("@EMVM.LoadEmMonitorSettings(), HomeDevice is null");
+                    return null;
+                }
+            }
+            if (homeDevice.MonitorInfo == null)
+            {
+                LogInfo("@EMVM.LoadEmMonitorSettings(), HomeDevice.MonitorInfo is null.");
+                return null;
+            }
+
+            //Load EM ProfileSettings from Per-Monitor Setting
+            EasyArrangementDDPM emMonitorSettings = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(homeDevice.MonitorInfo).Result;
+            if (emMonitorSettings == null)
+            {
+                LogInfo($"@EMVM.LoadEmMonitorSettings(), Monitor={homeDevice.MonitorInfo.modelName}/{homeDevice.MonitorInfo.edid.ServiceTag} not found.");
+                return null;
+            }
+
+            EzProfileSettingDDPM? foundProfileSetting = FindProfileSettingById(emMonitorSettings, profileId);
+            if (foundProfileSetting == null)
+            {
+                LogInfo($"@EMVM.LoadEmMonitorSettings(), ProfileId={profileId} not found in EM MonitorSettings.");
+                return null;
+            }
+
+            return foundProfileSetting;
+        }
+
+        /// <summary>
+        /// Load Profile data (EAProfileDDPM) from SettingsManager, 
+        /// User settings to CurrentSelectedProfile
+        /// Per-monitor settings to CurrentSelectedProfileSetting
+        /// </summary>
+        /// <param name="profileId">The profile ID to be loaded</param>
+        /// <param name="profile">The per-user EM profile data</param>
+        /// <param name="profileSettings">The per-monitor EM profile settings</param>
+        /// <returns></returns>
+        public bool LoadEmProfileSettings(int profileId, ref EAProfileDDPM profile, ref EzProfileSettingDDPM profileSettings)
+        {
+            if (DdpmCommonHelper.DeviceManagerSA == null)
+            {
+                LogInfo("@LoadEmProfileSettings(), DeviceManagerSA is null");
+                return false;
+            }
+            if (_homeDevice == null)
+            {
+                LogInfo("@LoadEmProfileSettings(), HomeDevice is null");
+                return false;
+            }
+
+            //Load EM Profiles from User Setting
+            List<EAProfileDDPM> emProfiles = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+            if (emProfiles == null)
+            {
+
+                LogInfo("@LoadEmProfileSettings(), Load EM Profiles return null.");
+                return false;
+            }
+
+            //Find the profile by profileId
+            EAProfileDDPM? foundProfile = emProfiles.FirstOrDefault(p => p.ID == profileId);
+            if (foundProfile == null)
+            {
+                LogInfo($"@LoadEmProfileSettings(), Profile with ID {profileId} not found.");
+                return false;
+            }
+            profile = foundProfile;
+
+            ////Refresh UI of Profile info
+            ////1 Profile Name
+            //ProfileTitleTextBlockValue = (CurrentSelectedProfile == null) ? "" : CurrentSelectedProfile.Name;
+
+            ////2 App/Document
+            //AppDocumentValue = string.Empty;
+            //if (CurrentSelectedProfile != null)
+            //{
+            //    int no = 1;
+            //    foreach (EAAppInfoDDPM appInfo in CurrentSelectedProfile.AppInfos)
+            //    {
+            //        AppDocumentValue += no + ".  " + appInfo.Name + "\r\n";
+            //        no++;
+            //    }
+            //}
+
+            //Load EM ProfileSettings from Per-Monitor Setting
+            EasyArrangementDDPM emMonitorSettings = DdpmCommonHelper.DeviceManagerSA.ReadMonitorEasyArrangement(_homeDevice.MonitorInfo).Result;
+            if (emMonitorSettings == null)
+            {
+                LogInfo($"@LoadEmProfileSettings(), Per-monitor settings, ProfileID={profileId} not found.");
+                //Output the default values
+                profileSettings = null;
+
+                //AutomaticStartupValue = Strings.NATextForRightViewUI;
+                //LaunchByTimeValue = Strings.NATextForRightViewUI;
+
+                //Return true, as there is no per-monitor settings for this monitor
+                return true;
+            }
+
+            profileSettings = FindProfileSettingById(emMonitorSettings, profileId);
+           //else
+           // {
+
+           //     //No per-monitor settingsm then apply default settings
+           //     if (CurrentSelectedProfileSetting == null)
+           //     {
+           //         AutomaticStartupValue = Strings.NATextForRightViewUI;
+           //         LaunchByTimeValue = Strings.NATextForRightViewUI;
+           //     }
+           //     else
+           //     {
+           //         //AutomaticStartupValue
+           //         if (CurrentSelectedProfile == null)
+           //         {
+           //             // 沒有monitor setting 數值 填否 跟 _
+           //             AutomaticStartupValue = Strings.No;
+           //             LaunchByTimeValue = "_";
+           //             //_log.Info($"@[EzMemoryRightView] OnListViewItemClicked, ProfileSetting with ID {matchingProfile.ID} not found in MonitorSettings.");
+           //         }
+           //         else
+           //         {
+           //             AutomaticStartupValue = CurrentSelectedProfileSetting.StartUpLaunch ? Strings.Yes : Strings.No;
+           //             LaunchByTimeValue = CurrentSelectedProfileSetting.Auto ? ConvertAutoLaunchtimeToTime(CurrentSelectedProfileSetting.AutoStartTime) : "_";
+           //         }
+           //     }
+           // }
+            return true;
+        }
+        #endregion EM Profile / Settings
     }
 
     #region EzMemory Class
@@ -1351,5 +1754,6 @@ namespace DDPM.UI.Common.ViewModels
         public string AppIcon { get; set; }
         public string AppPath { get; set; }
     }
-    #endregion
+    #endregion EzMemory Class
+    
 }

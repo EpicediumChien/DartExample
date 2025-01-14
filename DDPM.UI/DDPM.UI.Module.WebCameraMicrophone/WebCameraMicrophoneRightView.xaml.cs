@@ -17,44 +17,53 @@ namespace DDPM.UI.Module.WebCameraMicrophone
 
         public WebCameraMicrophoneRightView(WebCameraViewModel vm)
         {
-            InitializeComponent();
-            _vm = vm;
 
-            //lock/unlock init, 9/23 add lock
-            if (DdpmCommonHelper.DeviceManagerSA != null)
+            try
             {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
 
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null)
+                InitializeComponent();
+                _vm = vm;
+
+                //lock/unlock init, 9/23 add lock
+                if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    vm.ShowLockMask = data.LockSettings.Lock_Webcam_MicSwitch;
-                    vm.IsTabStoppable = !data.LockSettings.Lock_Webcam_MicSwitch;
+                    DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
 
-                    if (vm.ShowLockMask)
-                        vm.TabNavigation = "None";
-                    else
-                        vm.TabNavigation = "Cycle";
+                    DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                    if (data != null)
+                    {
+                        vm.ShowLockMask = data.LockSettings.Lock_Webcam_MicSwitch;
+                        vm.IsTabStoppable = !data.LockSettings.Lock_Webcam_MicSwitch;
 
-                    vm.LockMaskVisible = vm.ShowLockMask ? Visibility.Visible : Visibility.Collapsed;
+                        if (vm.ShowLockMask)
+                            vm.TabNavigation = "None";
+                        else
+                            vm.TabNavigation = "Cycle";
+
+                        vm.LockMaskVisible = vm.ShowLockMask ? Visibility.Visible : Visibility.Collapsed;
 
 
-                    //if (data.LockSettings.Lock_Webcam_MicSwitch)
-                    //{
-                    //_vm.lockIcon = Visibility.Visible;
-                    //_vm.viewMask = Visibility.Visible;
-                    //_vm.tabStop = false;
-                    //}
-                    //else
-                    //{
-                    //_vm.lockIcon = Visibility.Collapsed;
-                    //_vm.viewMask = Visibility.Collapsed;
-                    //_vm.tabStop = true;
-                    //}
+                        //if (data.LockSettings.Lock_Webcam_MicSwitch)
+                        //{
+                        //_vm.lockIcon = Visibility.Visible;
+                        //_vm.viewMask = Visibility.Visible;
+                        //_vm.tabStop = false;
+                        //}
+                        //else
+                        //{
+                        //_vm.lockIcon = Visibility.Collapsed;
+                        //_vm.viewMask = Visibility.Collapsed;
+                        //_vm.tabStop = true;
+                        //}
+                    }
                 }
+                if (_vm != null && _vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
+                    imgWarn.Visibility = Visibility.Hidden;
             }
-            if (_vm != null && _vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
-                imgWarn.Visibility = Visibility.Hidden;
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraMicrophone\\WebCameraMicrophoneRightView.xaml.cs WebCameraMicrophoneRightView() ex:" + ex.Message);
+            }
         }
 
         ~WebCameraMicrophoneRightView()
@@ -66,27 +75,34 @@ namespace DDPM.UI.Module.WebCameraMicrophone
         }
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
         {
-            //bool? rst = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_MicSwitch", e);
-            bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_MicSwitch", e);
-
-            if (isLocked != null)
+            try
             {
-                Dispatcher.Invoke(new Action(() =>
+                //bool? rst = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_MicSwitch", e);
+                bool? isLocked = DdpmCommonHelper.GetUINotifyPropertyValue_Boolean("Lock_Webcam_MicSwitch", e);
+
+                if (isLocked != null)
                 {
-                    if (_vm != null)
+                    Dispatcher.Invoke(new Action(() =>
                     {
-                        _vm.IsTabStoppable = !(bool)isLocked;
-                        _vm.ShowLockMask = (bool)isLocked;
+                        if (_vm != null)
+                        {
+                            _vm.IsTabStoppable = !(bool)isLocked;
+                            _vm.ShowLockMask = (bool)isLocked;
 
-                        if (_vm.ShowLockMask)
-                            _vm.TabNavigation = "None";
-                        else
-                            _vm.TabNavigation = "Cycle";
+                            if (_vm.ShowLockMask)
+                                _vm.TabNavigation = "None";
+                            else
+                                _vm.TabNavigation = "Cycle";
 
-                        _vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
-                        Trace.WriteLine($"[SettingsPage] WebCameraMicrophoneRightView(Lock) : {isLocked}");
-                    }
-                }));
+                            _vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
+                            Trace.WriteLine($"[SettingsPage] WebCameraMicrophoneRightView(Lock) : {isLocked}");
+                        }
+                    }));
+                }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraMicrophone\\WebCameraMicrophoneRightView.xaml.cs DeviceManagerSA_ITSettingsActionEvent() ex:" + ex.Message);
             }
 
             /*
@@ -119,13 +135,20 @@ namespace DDPM.UI.Module.WebCameraMicrophone
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Image elm)
+            try
             {
-                var val = elm.Tag.ToString();
-                if (val == "0")
-                    _vm.Undo();
-                else
-                    _vm.Redo();
+                if (sender is Image elm)
+                {
+                    var val = elm.Tag.ToString();
+                    if (val == "0")
+                        _vm.Undo();
+                    else
+                        _vm.Redo();
+                }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraMicrophone\\WebCameraMicrophoneRightView.xaml.cs Image_MouseLeftButtonDown() ex:" + ex.Message);
             }
         }
     }

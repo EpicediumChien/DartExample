@@ -442,14 +442,12 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             {
                 NoNetwork = Visibility.Collapsed;
                 List<DeviceInfo> deviceInfos = DdpmCommonHelper.DeviceManagerSA.GetDevices().Result.deviceInfo;
-                int ioDongleCount = DdpmCommonHelper.DeviceManagerSA.GetIODongleCount().Result;
-                int audioDongleCount = DdpmCommonHelper.DeviceManagerSA.GetAudioDongleCount().Result;
+                int ioDongleCount = DdpmCommonHelper.DeviceManagerSA.GetIODongleCountGen3AgoCount().Result;
                 Log?.Info($"fwUpdateInfoPackage.FWUpdateInfo.Count : {fwUpdateInfoPackage.FWUpdateInfo.Count}");
                 Log?.Info($"ioDongleCount : {ioDongleCount}");
-                Log?.Info($"audioDongleCount : {audioDongleCount}");
                 foreach (FWUpdateInfo fwUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
                 {
-                    UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos, ioDongleCount, audioDongleCount);
+                    UIUpdateInfo uiUpdateInfo = new UIUpdateInfo(fwUpdateInfo, deviceInfos, ioDongleCount);
                     if ((!uiUpdateInfo.IsEnableCheckBox) && uiUpdateInfo.IsCheckUpdate)//如果不能選擇是否更新為強制更新
                     {
                         Log?.Info($"Critical_UpdateList_UI.Add {uiUpdateInfo.UpdateInfo}");
@@ -691,7 +689,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         public Visibility UXAlertItemVisibility_2 { get; set; }
         public string UXAlertItemMessage_2 { get; set; }
 
-        public UIUpdateInfo(FWUpdateInfo fwUpdateInfo, List<DeviceInfo> deviceInfos, int IODongle, int AudioDongle)
+        public UIUpdateInfo(FWUpdateInfo fwUpdateInfo, List<DeviceInfo> deviceInfos, int IODongle)
         {
             //0614 Bruce 將原本DeviceType型態是字串改成跟IL一樣這樣可以直接使用IL提供的矩陣做判斷
             DeviceType[] CriticalUpdates = new DeviceType[] { DeviceType.PhysicalAudioDongle, DeviceType.PhysicalDongle },
@@ -735,7 +733,7 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             switch (fwUpdateInfo.DeviceType)
             {
                 case DeviceType.PhysicalDongle:
-                    if (IODongle > 1)
+                    if (fwUpdateInfo.DeviceName.ToLower().Equals(GlobalDefinitions.Dongle_BeforeGen2_Name.ToLower()) && IODongle > 1)
                     {
                         UXAlertItemVisibility = Visibility.Visible;
                         UXAlertItemMessage = LangHelper.Instance["Update_Firmware_update_of_multiple_USB_wireless_receivers"];
@@ -841,7 +839,14 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             }
             else
             {
-                UpdateInfo = $"{LangHelper.Instance["Firmware_update"]} {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName} {fwUpdateInfo.Model}";
+                if (!fwUpdateInfo.DeviceName.Equals(fwUpdateInfo.Model))//Added by Bruce Dongle name and model are repeated. Added a new check to prevent duplication if they are the same
+                {
+                    UpdateInfo = $"{LangHelper.Instance["Firmware_update"]} {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName} {fwUpdateInfo.Model}";
+                }
+                else
+                {
+                    UpdateInfo = $"{LangHelper.Instance["Firmware_update"]} {fwUpdateInfo.TheLatestVersion} - {fwUpdateInfo.DeviceName}";
+                }
             }
         }
 

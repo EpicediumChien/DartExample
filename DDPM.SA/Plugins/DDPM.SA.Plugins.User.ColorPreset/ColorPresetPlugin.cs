@@ -80,18 +80,6 @@ namespace ColorPreset.Plugins
         private List<string> ColorPresetSupportList = new List<string>();
         private List<string> ColorPresetSupportList_ = new List<string>();
 
-        //20240802 jim add
-        //public List<string> Support_ICC_DeviceName { get; set; } = new List<string> { "U4021QW", "U2723QE", "U3223QE", "U3223QZ", "U3423WE", "U3824DW", "U4924DW", "U3224KB", "U2724D", "U2724DE", "U3425WE", "U4025QW", "UP2720Q", "UP3221Q" };
-
-        //private List<X509Certificate2> TrustedPublisher = new List<X509Certificate2>();
-        //private List<X509Certificate2> TrustedRoot = new List<X509Certificate2>();
-
-        //private readonly string[] Issuer = { "CN=Entrust Certification Authority - L1F, O=\"Entrust, C=US", "CN=localhost, O=DigiNow, C=US" };
-        //private readonly string[] Issuer = { "Entrust Certification Authority - L1F, OU=\"(c) 2016 Entrust, Inc. - for authorized use only\", OU=See www.entrust.net/legal-terms, O=\"Entrust, Inc.\", C=US" };
-        //private readonly string[] Subject = { "CN=content-cdn.dell.com, O=Dell, L=Round Rock, S=Texas, C=US" };
-        //private string[] Issuers;
-        //private string[] Subjects;
-
         //20240829 Jim move to here 20240829
         private ISettingsManagerDev _SettingsPlugin_internal;
 
@@ -2025,104 +2013,6 @@ namespace ColorPreset.Plugins
             writelog($"appshell.FindAppsbyShell get app count({_AllAppData.Count})");
         }
 
-        // The cryptographic service provider.
-        /*private SHA256 Sha256 = SHA256.Create();
-        private SHA512 Sha512 = SHA512.Create();
-
-        // Compute the file's SHA256 hash.
-        private byte[] GetHashSha256(string filename)
-        {
-            try
-            {
-                using (FileStream stream = System.IO.File.OpenRead(filename))
-                {
-                    return Sha256.ComputeHash(stream);
-                }
-            }
-            catch (Exception ex)
-            {
-                writelog($"GetHashSha256 exception, message: ({ex.Message})");
-                return default;
-            }
-        }
-
-        // Compute the file's SHA512 hash.
-        private byte[] GetHashSha512(string filename)
-        {
-            try
-            {
-                using (FileStream stream = System.IO.File.OpenRead(filename))
-                {
-                    return Sha512.ComputeHash(stream);
-                }
-            }
-            catch (Exception ex)
-            {
-                writelog($"GetHashSha512 exception, message: ({ex.Message})");
-                return default;
-            }            
-        }*/
-
-        // 驗證伺服器證書
-        /*private bool CheckCertificateIsVaild(X509Certificate2 certificate)
-        {
-            bool result = false;
-            try
-            {
-                X509Chain x509Chain = new X509Chain();
-                x509Chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
-                x509Chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
-                x509Chain.ChainPolicy.UrlRetrievalTimeout = new System.TimeSpan(0, 1, 0);
-                x509Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
-                result = x509Chain.Build(certificate);
-            }
-            catch (System.Exception ex)
-            {
-                //Console.WriteLine("[CheckCertificateIsVaild] error: " + ex.Message);
-                writelog("[CheckCertificateIsVaild] error: " + ex.Message);
-            }
-            return result;
-        }*/
-
-        /*private bool CheckIssuerAndSubject(X509Certificate2 certificate)
-        {
-            try
-            {
-                //Console.WriteLine($"Issuer:{certificate.Issuer.ToString()}");
-                //Console.WriteLine($"Subject:{certificate.Subject.ToString()}");
-                writelog($"Issuer:{certificate.Issuer.ToString()}");
-                writelog($"Subject:{certificate.Subject.ToString()}");
-
-                foreach (string s in Issuers)
-                {
-                    if (!certificate.Issuer.Contains(s))
-                    {
-                        //Console.WriteLine("[CheckIssuerAndSubject] Not match.");
-                        writelog("[CheckIssuerAndSubject] Not match.");
-                        return false;
-                    }
-                }
-
-                foreach (string s in Subjects)
-                {
-                    if (!certificate.Subject.Contains(s))
-                    {
-                        //Console.WriteLine("[CheckIssuerAndSubject] Not match.");
-                        writelog("[CheckIssuerAndSubject] Not match.");
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-            catch
-            {
-                //Console.WriteLine("[CheckIssuerAndSubject] Error.");
-                writelog("[CheckIssuerAndSubject] Error.");
-            }
-            return false;
-        }*/
-
         private IIC_Metadata RunDeserializeObject(string value)
         {
             writelog("[DownloadICCData] RunDeserializeObject()  requested ...");
@@ -2160,215 +2050,6 @@ namespace ColorPreset.Plugins
             foreach (byte b in bytes) result += b.ToString("x2");
             return result;
         }
-
-        /*public bool CheckCA(string URL)
-        {
-            bool flag = false;
-            int num = 1;
-            GetLocalTrustedCert();
-            while (!flag && num > 0)
-            {
-                try
-                {
-                    HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(URL);
-                    httpWebRequest.ServerCertificateValidationCallback = PinPublicKey;
-                    httpWebRequest.GetResponse();
-                    flag = true;
-                }
-                catch (System.Exception ex)
-                {
-                    //Console.WriteLine("[CheckCA] error:" + ex.Message.ToString());
-                    writelog("[CheckCA] error:" + ex.Message.ToString());
-                    flag = false;
-                    //Console.WriteLine(string.Format("[CheckCA] error, retry:" + num));
-                    writelog(string.Format("[CheckCA] error, retry:" + num));
-                    Thread.Sleep(1000);
-                }
-                num--;
-            }
-            //Console.WriteLine(string.Format("[CheckCA] res:" + flag));
-            writelog(string.Format("[CheckCA] res:" + flag));
-            if (!flag)
-            {
-                flag = CheckCAHTTP(URL);
-            }
-            if (!flag)
-            {
-                //Console.WriteLine(string.Format("[CheckCA][CheckCAHTTP] Fail, Send Telemetry." + flag));
-                writelog(string.Format("[CheckCA][CheckCAHTTP] Fail, Send Telemetry." + flag));
-            }
-
-            return flag;
-        }*/
-
-        /*private bool CheckCAHTTP(string URL)
-        {
-            try
-            {
-                if (CheckHTTPAvailable(URL))
-                {
-                    HttpClientHandler httpClientHandler = new HttpClientHandler();
-                    httpClientHandler.ServerCertificateCustomValidationCallback = ValidateCertificate;
-                    HttpClient client = new HttpClient(httpClientHandler);
-                    bool response = GetResponse(client, URL);
-                    //Console.WriteLine("[CheckCAHTTP] result:" + response);
-                    writelog("[CheckCAHTTP] result:" + response);
-                    return response;
-                }
-            }
-            catch (System.Exception ex)
-            {
-                //Console.WriteLine("[CheckCAHTTP] error:" + ex.Message.ToString());
-                writelog("[CheckCAHTTP] error:" + ex.Message.ToString());
-            }
-            return false;
-        }*/
-
-        /*private bool ValidateCertificate(HttpRequestMessage request, X509Certificate2? certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors)
-        {
-            if (certificate == null)
-            {
-                //Console.WriteLine("[ValidateCertificate] certificate null.");
-                writelog("[ValidateCertificate] certificate null.");
-                return false;
-            }
-
-            if (request == null)
-            {
-                //Console.WriteLine("[ValidateCertificate] request null.");
-                writelog("[ValidateCertificate] request null.");
-            }
-
-            if (sslPolicyErrors != 0)
-            {
-                //Console.WriteLine($"[ValidateCertificate] sslPolicyErrors is Error. {sslPolicyErrors}");
-                writelog($"[ValidateCertificate] sslPolicyErrors is Error. {sslPolicyErrors}");
-            }
-
-            if (chain == null)
-            {
-                //Console.WriteLine("[ValidateCertificate] chain null.");
-                writelog("[ValidateCertificate] chain null.");
-                return false;
-            }
-            return CheckCertificateIsVaild(certificate) && CheckIssuerAndSubject(certificate);
-        }*/
-
-        /*private bool PinPublicKey(object sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors)
-        {
-            X509Certificate2 certificate2 = new X509Certificate2(certificate);
-            if (certificate == null)
-            {
-                //Console.WriteLine("[PinPublicKey] certificate null.");
-                writelog("[PinPublicKey] certificate null.");
-                return false;
-            }
-
-            try
-            {
-                X509Chain x509Chain = new X509Chain();
-                x509Chain.ChainPolicy.RevocationFlag = X509RevocationFlag.EntireChain;
-                x509Chain.ChainPolicy.RevocationMode = X509RevocationMode.Online;
-                x509Chain.ChainPolicy.UrlRetrievalTimeout = new System.TimeSpan(0, 1, 0);
-                x509Chain.ChainPolicy.VerificationFlags = X509VerificationFlags.NoFlag;
-                if(!x509Chain.Build(certificate2))
-                {
-                    writelog("[PinPublicKey] Certificate is invaild!");
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {                
-                writelog("[PinPublicKey] error: " + ex.Message);
-            }
-
-
-            HttpWebRequest httpWebRequest = sender as HttpWebRequest;
-            if (httpWebRequest == null)
-            {
-                //Console.WriteLine("[PinPublicKey] request null.");
-                writelog("[PinPublicKey] request null.");
-            }
-            if (chain == null)
-            {
-                //Console.WriteLine("[PinPublicKey] chain null.");
-                writelog("[PinPublicKey] chain null.");
-                return false;
-            }
-
-            return CheckIssuerAndSubject(certificate2) && CheckCertificateIsVaild(certificate2);
-        }*/
-
-        /*private bool CheckHTTPAvailable(string URL)
-        {
-            try
-            {
-                HttpClientHandler handler = new HttpClientHandler();
-                HttpClient httpClient = new HttpClient(handler);
-                httpClient.GetAsync(URL).GetAwaiter().GetResult();
-                return true;
-            }
-            catch (System.Exception ex)
-            {
-                //Console.WriteLine("[CheckHTTPAvailable] error:" + ex.Message.ToString());
-                writelog("[CheckHTTPAvailable] error:" + ex.Message.ToString());
-            }
-            return false;
-        }*/
-
-        /*private bool GetResponse(HttpClient client, string URL)
-        {
-            bool flag = false;
-            int num = 5;
-            while (!flag && num > 0)
-            {
-                try
-                {
-                    HttpResponseMessage result = client.GetAsync(URL).GetAwaiter().GetResult();
-                    //Console.WriteLine("[GetResponse] statusCode:" + result.StatusCode);
-                    writelog("[GetResponse] statusCode:" + result.StatusCode);
-                    flag = true;
-                }
-                catch (System.Exception ex)
-                {
-                    //Console.WriteLine("[GetResponse] error:" + ex.Message.ToString());
-                    writelog("[GetResponse] error:" + ex.Message.ToString());
-                    flag = false;
-                    //Console.WriteLine(string.Format("[GetResponse] error, retry:" + num));
-                    writelog(string.Format("[GetResponse] error, retry:" + num));
-                    Thread.Sleep(1000);
-                }
-                num--;
-            }
-            //Console.WriteLine(string.Format("[GetResponse] result:" + flag));
-            writelog(string.Format("[GetResponse] result:" + flag));
-            return flag;
-        }*/
-
-        /*private void GetLocalTrustedCert()
-        {
-            try
-            {
-                X509Store x509Store = new X509Store(StoreName.TrustedPublisher, StoreLocation.LocalMachine);
-                x509Store.Open(OpenFlags.ReadOnly);
-                foreach (X509Certificate2 certificate in x509Store.Certificates)
-                {
-                    TrustedPublisher.Add(certificate);
-                }
-                x509Store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
-                x509Store.Open(OpenFlags.ReadOnly);
-                foreach (X509Certificate2 certificate2 in x509Store.Certificates)
-                {
-                    TrustedRoot.Add(certificate2);
-                }
-                x509Store.Close();
-            }
-            catch (System.Exception ex)
-            {
-                //Console.WriteLine("[GetLocalTrustedCert] error:" + ex.Message.ToString());
-                writelog("[GetLocalTrustedCert] error:" + ex.Message.ToString());
-            }
-        }*/
 
         private bool CheckICC_JSON_Security(string filePath, out string strJson)
         {
@@ -2446,198 +2127,151 @@ namespace ColorPreset.Plugins
                 _ICC_Metadata.strICC_Folder = String.Format($"{strICC_Folder}");
 
                 string url = string.Empty;
-                //string strFilePath = string.Empty;
                 download = new Download(_logs);
                 string downloadInfo = string.Empty;
-                // 20240627 jim add
-                string str_EnableDDPMMetadataTest = string.Empty;
-                string str_IncludeTestPath = string.Empty;
 
-                // 20240627 jim add
-                RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
+                //Jim 20250113 modify for ICC profile Production Server
+                //ex: https://clientperipherals.dell.com/DDPM/ICC/icc_profile_sha256.json
+                string Display_ICC_URL = Download.GetTestServerURL();//@$"https://clientperipherals.dell.com/DDPM/";
+                string Display_ICC_URL_Folder = GlobalDefinitions.Display_ICC_URL_Folder;//@"ICC/";
+                string str_url_prefix = Display_ICC_URL + Display_ICC_URL_Folder;
+ 
+                url = str_url_prefix + @"icc_profile_sha256.json";
 
-                if (localKey64 != null)
+                if (!string.IsNullOrEmpty(url))
                 {
-                    writelog("DownloadICCData read UpdateServer requested ...");
-
-                    RegistryKey registryKey = localKey64.OpenSubKey(@"SOFTWARE\DELL\Dell Display and Peripheral Manager\UpdateServer", false);
-
-                    if (registryKey != null)
+                    string info = string.Empty;
+                    if(!DDPMFileSecurity.IsFolderPathValid(strICC_Folder, out info))
                     {
-                        writelog("DownloadICCData read EnableDDPMMetadataTest / IncludeTestPath requested ...");
-
-                        object obj_tmp_key_EnableDDPMMetadataTest = registryKey?.GetValue("EnableDDPMMetadataTest");
-                        object obj_tmp_keyIncludeTestPath = registryKey?.GetValue("IncludeTestPath");
-
-                        if (obj_tmp_key_EnableDDPMMetadataTest != null)
-                        {
-                            str_EnableDDPMMetadataTest = (string)obj_tmp_key_EnableDDPMMetadataTest;
-                            writelog($"DownloadICCData EnableDDPMMetadataTest = {str_EnableDDPMMetadataTest}");
-                        }
-
-                        if (obj_tmp_keyIncludeTestPath != null)
-                        {
-                            str_IncludeTestPath = (string)obj_tmp_keyIncludeTestPath;
-                            writelog($"DownloadICCData IncludeTestPath = {str_IncludeTestPath}");
-                        }
+                        writelog($"[DownloadICCData][IsFolderPathValid] {info}");
+                        return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
                     }
-                }
 
-                if (str_EnableDDPMMetadataTest.ToUpper().Contains("TRUE"))
-                {
-                    string str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
-                    str_url_prefix += str_IncludeTestPath;
-                    str_url_prefix += @"/Windows/Display/ICC/";
-                    str_url_prefix += @"icc_profile_sha256_new.json";
-
-                    url = str_url_prefix;
-
-                    if (!string.IsNullOrEmpty(url))
+                    strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
+                    string Info;
+                    if (download.DownloadFile(url, strFilePath, out downloadInfo))
                     {
-                        //[Dean 1122] remove this action and change to return directly if folder has symlink
-                        //20240920 Add Security
-                        //string FileInfo;
-                        //if (!DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(strICC_Folder, out FileInfo))
-                        //{
-                        //    writelog($"[DownloadICCData] {FileInfo}");
-                        //    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
-                        //}
-                        string info = string.Empty;
-                        if(!DDPMFileSecurity.IsFolderPathValid(strICC_Folder, out info))
+                        if (System.IO.File.Exists(strFilePath))
                         {
-                            writelog($"[DownloadICCData][IsFolderPathValid] {info}");
-                            return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                            //Elsa Add Security
+                            if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out Info))
+                            {
+                                writelog($"[DownloadICCData] {Info}");
+                                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                            }
+
+                            strReadJson = string.Empty;
+                            if (!CheckICC_JSON_Security(strFilePath, out strReadJson))
+                            {
+                                writelog($"[DownloadICCData] CheckICC_JSON_Security Fail. {strFilePath}");
+                                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                            }
+
+                            if (strReadJson.Length < 1)
+                            {
+                                using (var reader = new StreamReader(strFilePath))
+                                {
+                                    strReadJson = reader.ReadToEnd();
+                                }
+                            }
+
+                            if (strReadJson == string.Empty || strReadJson.Length == 0)
+                                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+
+                            try
+                            {
+                                _ICC_Metadata = RunDeserializeObject(strReadJson);
+                                _ICC_Metadata.strICC_Folder = strICC_Folder;
+                                _ICC_Metadata.Is_Support_ICC_DeviceName = false;
+                            }
+                            catch (System.Exception ex)
+                            {
+                                //Console.WriteLine("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
+                                writelog("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
+                            }
                         }
 
-                        strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
-                        string Info;
-                        if (download.DownloadFile(url, strFilePath, out downloadInfo))
+                        foreach (var kvp in _ICC_Metadata._support_ICC_DeviceName)
                         {
-                            if (System.IO.File.Exists(strFilePath))
-                            {
-                                //Elsa Add Security
-                                if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out Info))
-                                {
-                                    writelog($"[DownloadICCData] {Info}");
-                                    //return null;
-                                    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
-                                }
+                            Trace.WriteLine($" Model name = {kvp.Key}");
+                        }
 
-                                strReadJson = string.Empty;
-                                if (!CheckICC_JSON_Security(strFilePath, out strReadJson))
-                                {
-                                    writelog($"[DownloadICCData] CheckICC_JSON_Security Fail. {strFilePath}");
-                                    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
-                                }
+                        Trace.WriteLine($"m.modelName = {m.modelName} ");
 
-                                if (strReadJson.Length < 1)
-                                {
-                                    using (var reader = new StreamReader(strFilePath))
-                                    {
-                                        strReadJson = reader.ReadToEnd();
-                                    }
-                                }
+                        var lookup = _ICC_Metadata._support_ICC_DeviceName.First(x => x.Key.Equals(m.modelName, StringComparison.OrdinalIgnoreCase));
 
-                                if (strReadJson == string.Empty || strReadJson.Length == 0)
-                                    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                        Trace.WriteLine($"lookup.Key = {lookup.Key} ");
 
-                                try
-                                {
+                        if (lookup.Key != null)
+                        {
+                            _ICC_Metadata._match_ICC_DeviceName = lookup.Value;
+                            _ICC_Metadata.Is_Support_ICC_DeviceName = true;
 
-                                    _ICC_Metadata = RunDeserializeObject(strReadJson);
-                                    _ICC_Metadata.strICC_Folder = strICC_Folder;
-                                    _ICC_Metadata.Is_Support_ICC_DeviceName = false;
-                                }
-                                catch (System.Exception ex)
-                                {
-                                    //Console.WriteLine("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
-                                    writelog("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
-                                }
-                            }
-
-
-                            foreach (var kvp in _ICC_Metadata._support_ICC_DeviceName)
-                            {
-                                Trace.WriteLine($" Model name = {kvp.Key}");
-                            }
-
-                            Trace.WriteLine($"m.modelName = {m.modelName} ");
-
-                            var lookup = _ICC_Metadata._support_ICC_DeviceName.First(x => x.Key.Equals(m.modelName, StringComparison.OrdinalIgnoreCase));
-
-                            Trace.WriteLine($"lookup.Key = {lookup.Key} ");
-
-                            if (lookup.Key != null)
-                            {
-                                _ICC_Metadata._match_ICC_DeviceName = lookup.Value;
-                                _ICC_Metadata.Is_Support_ICC_DeviceName = true;
-
-                                writelog($"[DownloadICCData] DeviceName = {m.modelName} is Support ICC.");
-                            }
-                            else
-                            {
-                                _ICC_Metadata._match_ICC_DeviceName.Clear();
-                                _ICC_Metadata.Is_Support_ICC_DeviceName = false;
-
-                                writelog($"[DownloadICCData] DeviceName = {m.modelName} is not Support ICC.");
-                            }
-
-                            if (blICCProfile)
-                            {
-                                int count = _ICC_Metadata._match_ICC_DeviceName.Count;
-
-                                // 20240725 jim add
-                                str_url_prefix = string.Empty;
-
-                                str_url_prefix = @"https://clientperipherals.dell.com/DDPM/";
-                                str_url_prefix += str_IncludeTestPath;
-                                str_url_prefix += @"/Windows/Display/ICC/";
-                                str_url_prefix += m.modelName;
-                                str_url_prefix += @"/";
-
-                                info = string.Empty;
-                                for (int i = 0; i < count; i++)
-                                {
-                                    url = string.Empty;
-
-                                    url = str_url_prefix + _ICC_Metadata._match_ICC_DeviceName[i].File;
-
-                                    strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
-
-                                    if (download.DownloadFile(url, strFilePath, out downloadInfo))
-                                    {
-                                        //string txtSha256 = BytesToString(GetHashSha256(strFilePath));
-                                        //
-                                        //if (!string.Equals(txtSha256, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, StringComparison.OrdinalIgnoreCase))
-                                        bool? rst = _certChecker?.CheckFile_SHA256(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, out info);
-                                        if (rst == null || rst == false)
-                                        {
-                                            writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha256 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA256} mismatch!");
-                                        }
-
-                                        //string txtSha512 = BytesToString(GetHashSha512(strFilePath));
-                                        //
-                                        //if (!string.Equals(txtSha512, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, StringComparison.OrdinalIgnoreCase))
-                                        rst = _certChecker?.CheckFile_SHA512(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, out info);
-                                        if (rst == null || rst == false)
-                                        {
-                                            writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha512 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA512} mismatch!");
-                                        }
-                                    }
-                                    else
-                                    {
-                                        writelog($"[DownloadICCData] download icc {_ICC_Metadata._match_ICC_DeviceName[i]} failed");
-                                    }
-                                }
-                            }  
+                            writelog($"[DownloadICCData] DeviceName = {m.modelName} is Support ICC.");
                         }
                         else
                         {
-                            writelog($"[DownloadICCData] Download ICC Metadata failed = {downloadInfo}");
+                            _ICC_Metadata._match_ICC_DeviceName.Clear();
+                            _ICC_Metadata.Is_Support_ICC_DeviceName = false;
+
+                            writelog($"[DownloadICCData] DeviceName = {m.modelName} is not Support ICC.");
                         }
 
+                        if (blICCProfile)
+                        {
+                            int count = _ICC_Metadata._match_ICC_DeviceName.Count;
+
+                            // 20240725 jim add
+                            //str_url_prefix = string.Empty;
+
+                            //str_url_prefix = GlobalDefinitions.major_url; //@"https://clientperipherals.dell.com/DDPM/";
+                            //str_url_prefix += str_IncludeTestPath;
+                            //str_url_prefix += @"/Windows/Display/ICC/";
+                            str_url_prefix += m.modelName;
+                            str_url_prefix += @"/";
+
+                            info = string.Empty;
+                            for (int i = 0; i < count; i++)
+                            {
+                                url = string.Empty;
+
+                                url = str_url_prefix + _ICC_Metadata._match_ICC_DeviceName[i].File;
+
+                                strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
+
+                                if (download.DownloadFile(url, strFilePath, out downloadInfo))
+                                {
+                                    //string txtSha256 = BytesToString(GetHashSha256(strFilePath));
+                                    //
+                                    //if (!string.Equals(txtSha256, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, StringComparison.OrdinalIgnoreCase))
+                                    bool? rst = _certChecker?.CheckFile_SHA256(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, out info);
+                                    if (rst == null || rst == false)
+                                    {
+                                        writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha256 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA256} mismatch!");
+                                    }
+
+                                    //string txtSha512 = BytesToString(GetHashSha512(strFilePath));
+                                    //
+                                    //if (!string.Equals(txtSha512, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, StringComparison.OrdinalIgnoreCase))
+                                    rst = _certChecker?.CheckFile_SHA512(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, out info);
+                                    if (rst == null || rst == false)
+                                    {
+                                        writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha512 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA512} mismatch!");
+                                    }
+                                }
+                                else
+                                {
+                                    writelog($"[DownloadICCData] download icc {_ICC_Metadata._match_ICC_DeviceName[i]} failed");
+                                }
+                            }
+                        }  
+                    }
+                    else
+                    {
+                        writelog($"[DownloadICCData] Download ICC Metadata failed = {downloadInfo}");
                     }
                 }
+                //}
 
                 writelog("ColorPresetPlugin DownloadICCData exit ...");
                 return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);

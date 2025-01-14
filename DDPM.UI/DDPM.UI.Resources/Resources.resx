@@ -3471,4 +3471,34 @@
   <data name="Update_Firmware_update_of_multiple_USB_wireless_receivers" xml:space="preserve">
     <value>Firmware update of multiple USB wireless receivers of same kind is not supported. Keep one target USB wireless receiver connected.</value>
   </data>
+  <data name="NoDeviceDetected" xml:space="preserve">
+    <value>NO DEVICE DETECTED</value>
+  </data>
+  <data name="Add1sDevice" xml:space="preserve">
+    <value>Add your first device</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Connect</value>
+  </data>
+  <data name="DisplayAlert" xml:space="preserve">
+    <value>The monitor is currently busy. You can only control limited functions.</value>
+  </data>
+  <data name="ColorMsg.0" xml:space="preserve">
+    <value>Color is not available when</value>
+  </data>
+  <data name="WebcamMPS.0" xml:space="preserve">
+    <value>To access Microsoft Presence Sensing features, visit Windows Settings</value>
+  </data>
+  <data name="CompatibleFirmware" xml:space="preserve">
+    <value>Compatible Firmware</value>
+  </data>
+  <data name="LearnMoreMsg.0" xml:space="preserve">
+    <value>Scan to download the Dell Audio app to customize your headset</value>
+  </data>
+  <data name="EzArrange.11" xml:space="preserve">
+    <value>Save Icon Images...</value>
+  </data>
+  <data name="ColorMsg.1" xml:space="preserve">
+    <value>To access presence sensing features, use the link below to download compitible webcam firmware</value>
+  </data>
 </root>

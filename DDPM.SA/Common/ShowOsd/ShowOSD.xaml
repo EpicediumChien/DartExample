@@ -4,11 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DDPM.ShowOSD"  Background="Transparent"
-        mc:Ignorable="d"  ShowInTaskbar="False" WindowStartupLocation="Manual" Topmost="True" WindowStyle="None" AllowsTransparency="True"
+        xmlns:lang="clr-namespace:DDPM.SA.Resources.Helper;assembly=DDPM.SA.Resources"
+        mc:Ignorable="d"  ShowInTaskbar="False" WindowStartupLocation="Manual" Topmost="True" WindowStyle="None" AllowsTransparency="True" 
         Title=""   Loaded="Window_Loaded">
     <Grid>
         <Border Background="#141D28" CornerRadius="6">
-            <TextBlock Margin="20,15,20,15" x:Name="tbShowText" Text="Standard" Foreground="White" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto"  />
+            <TextBlock Margin="20,15,20,15" x:Name="tbShowText" Text="{Binding [Standard_0], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="40" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Roboto"  />
         </Border>
     </Grid>
 </Window>

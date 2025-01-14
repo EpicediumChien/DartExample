@@ -164,7 +164,7 @@
                                VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
                         </Image>-->
                         <ContentControl Template="{StaticResource icon_Info}" Margin="10,0,0,0" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                        <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="Transparent" Foreground="{DynamicResource DefaultTheme_TxtColor}" TextWrapping="Wrap" Width="260" Text="The monitor is currently busy. You can only control limited functions."
+                        <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="Transparent" Foreground="{DynamicResource DefaultTheme_TxtColor}" TextWrapping="Wrap" Width="260" Text="{Binding [DisplayAlert], Source={x:Static lang:LangHelper.Instance}}"
                                     VerticalAlignment="Top" HorizontalAlignment="Left" Margin="8,0,0,0" LineHeight="19.5" Padding="0,18,0,16" FontFamily="Roboto" FontWeight="Normal" />
                     </StackPanel>
                 </Border>

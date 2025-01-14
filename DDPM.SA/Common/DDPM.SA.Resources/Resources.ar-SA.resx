@@ -534,4 +534,7 @@
   <data name="RPG_Game" xml:space="preserve">
     <value>لعبة تقمص أدوار (RPG)</value>
   </data>
+  <data name="WebCameraSettings.2" xml:space="preserve">
+    <value>يستخدم التحليل الذكي للمشهد وتتبع الوجه للتكبير/التصغير وتحريك المنظر عند التنقل</value>
+  </data>
 </root>
