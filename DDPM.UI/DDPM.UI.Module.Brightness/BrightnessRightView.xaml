@@ -1013,7 +1013,10 @@
                                     <!--  RightPartBorder  -->
                                     <StackPanel>
                                         <!--  Preset 1  -->
-                                        <Border
+                                        <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="580" HorizontalAlignment="Left"-->
+                                        <Border  
+                                            Width="580"
+                                            HorizontalAlignment="Left"
                                             Margin="0,20,0,0"
                                             MouseEnter="Schedule_prest1_Border_MouseEnter"
                                             MouseLeave="Schedule_prest1_Border_MouseLeave">
@@ -1030,27 +1033,29 @@
                                             </Border.Style>
 
                                             <StackPanel>
-
+                                                <!-- Elsa 20250113 For PIMS [PIMS-333699] change ColumnDefinition Width="30*" "15" 30* "15" to "25*" "6" "33*" "5" -->
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="30*" />
-                                                        <ColumnDefinition Width="15" />
-                                                        <ColumnDefinition Width="30*" />
-                                                        <ColumnDefinition Width="15" />
+                                                        <ColumnDefinition Width="25*" />
+                                                        <ColumnDefinition Width="6" />
+                                                        <ColumnDefinition Width="33*" />
+                                                        <ColumnDefinition Width="5" />
                                                         <ColumnDefinition Width="30*" />
                                                     </Grid.ColumnDefinitions>
 
                                                     <Grid Grid.Column="0">
-
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699]change Height="24" to MinHeight="24" -->
                                                         <Grid.RowDefinitions>
-                                                            <RowDefinition Height="24" />
+                                                            <RowDefinition MinHeight="24" />
                                                             <RowDefinition Height="40" />
                                                         </Grid.RowDefinitions>
-
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="155" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom" -->
                                                         <UXControls:UXTextBlock
+                                                            MaxWidth="155"
+                                                            TextWrapping="WrapWithOverflow"
                                                             Grid.Row="0"
                                                             HorizontalAlignment="Left"
-                                                            VerticalAlignment="Center"
+                                                            VerticalAlignment="Bottom"
                                                             FontSize="16"
                                                             Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
                                                             Text="{Binding [Brightness.14], Source={x:Static lang:LangHelper.Instance}}"
@@ -1074,26 +1079,28 @@
                                                     <Grid Grid.Column="1" />
 
                                                     <Grid Grid.Column="2">
-
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699]change Height="24" to MinHeight="24" ColumnDefinition Width="5" to ColumnDefinition Width="3" -->
                                                         <Grid.RowDefinitions>
-                                                            <RowDefinition Height="24" />
+                                                            <RowDefinition MinHeight="24" />
                                                             <RowDefinition Height="40" />
                                                         </Grid.RowDefinitions>
 
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="70" />
-                                                            <ColumnDefinition Width="5" />
+                                                            <ColumnDefinition Width="3" />
                                                             <ColumnDefinition Width="70" />
                                                             <ColumnDefinition Width="Auto" />
                                                         </Grid.ColumnDefinitions>
-
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699]add Width="190" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom" change FontSize="16" to FontSize="15"-->
                                                         <UXControls:UXTextBlock
+                                                            Width="190"
+                                                            TextWrapping="WrapWithOverflow"
                                                             Grid.Row="0"
                                                             Grid.Column="0"
                                                             Grid.ColumnSpan="4"
                                                             HorizontalAlignment="Left"
-                                                            VerticalAlignment="Center"
-                                                            FontSize="16"
+                                                            VerticalAlignment="Bottom"
+                                                            FontSize="15"
                                                             Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
                                                             Text="{Binding [Brightness.15], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light"
@@ -1124,13 +1131,16 @@
                                                             SelectedItem="{Binding mIns1, Mode=TwoWay}"
                                                             SelectionChanged="ComboBox_SelectionChanged"
                                                             Style="{StaticResource DdpmComboBoxStyle}" />
-
+                                                        
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="60" TextWrapping="WrapWithOverflow" change FontSize="16" to FontSize="15" -->
                                                         <UXControls:UXTextBlock
+                                                            Width="60"
+                                                            TextWrapping="WrapWithOverflow"
                                                             Grid.Row="1"
                                                             Grid.Column="3"
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Center"
-                                                            FontSize="16"
+                                                            FontSize="15"
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             Text="{Binding [AM], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light"
@@ -1140,9 +1150,9 @@
                                                     <Grid Grid.Column="3" />
 
                                                     <Grid Grid.Column="4">
-
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699]change Height="24" to MinHeight="24" -->
                                                         <Grid.RowDefinitions>
-                                                            <RowDefinition Height="24" />
+                                                            <RowDefinition MinHeight="24" />
                                                             <RowDefinition Height="40" />
                                                         </Grid.RowDefinitions>
 
@@ -1156,11 +1166,13 @@
                                                             Grid.Column="0"
                                                             Grid.ColumnSpan="2"
                                                             Orientation="Horizontal">
-
+                                                            <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="140" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom"-->
                                                             <UXControls:UXTextBlock
+                                                                Width="140"
+                                                                TextWrapping="WrapWithOverflow"                                                                   
                                                                 HorizontalAlignment="Left"
-                                                                VerticalAlignment="Center"
-                                                                FontSize="16"
+                                                                VerticalAlignment="Bottom"
+                                                                FontSize="16"                                                               
                                                                 Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
                                                                 Text="{Binding [Brightness.16], Source={x:Static lang:LangHelper.Instance}}"
                                                                 TextBlockSemanticColorType="Light"
@@ -1217,9 +1229,10 @@
                                                 </Grid>
 
                                                 <!--  Row: "Brightness"  -->
-
+                                                <!-- Elsa 20250113 For PIMS [PIMS-333699] add Margin="0,20,0,-20" -->
                                                 <Grid Height="40">
-                                                    <UXControls:UXTextBlock
+                                                    <UXControls:UXTextBlock                                       
+                                                        Margin="0,20,0,-20"
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
@@ -1245,11 +1258,11 @@
                                                         VerticalAlignment="Center"
                                                         Source="{DynamicResource BrightnessImage}"
                                                         Stretch="UniformToFill" />
-
+                                                    <!-- Elsa 20250113 For PIMS [PIMS-333699]change Margin="8,0" Margin="8,-10,0,-40" -->
                                                     <UXControls:UXSlider
                                                         Name="preset1_B_slider"
                                                         Grid.Column="1"
-                                                        Margin="8,0"
+                                                        Margin="8,-10,0,-40"
                                                         HorizontalContentAlignment="Stretch"
                                                         IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                         IsSnapToTickEnabled="True"
@@ -1270,8 +1283,10 @@
                                                 </Grid>
 
                                                 <!--  Row: "Contrast"  -->
+                                                <!-- Elsa 20250113 For PIMS [PIMS-333699] add Margin="0,16,0,0" -->
                                                 <Grid Height="40">
                                                     <UXControls:UXTextBlock
+                                                        Margin="0,16,0,0"
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
@@ -1324,9 +1339,10 @@
                                                 <!--  Row: Buttons  -->
                                                 <Grid>
                                                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699] change Width="173" to MinWidth="173" -->
                                                         <UXControls:UXButton
                                                             Name="PR1_Preview_UXButton"
-                                                            Width="173"
+                                                            MinWidth="173"
                                                             Height="40"
                                                             Padding="24,8"
                                                             ButtonSemanticColorType="Neutral"
@@ -1342,7 +1358,10 @@
                                         </Border>
 
                                         <!--  Preset 2  -->
+                                        <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="580" HorizontalAlignment="Left"-->
                                         <Border
+                                            Width="580"
+                                            HorizontalAlignment="Left"
                                             Margin="0,20,0,0"
                                             MouseEnter="Schedule_prest2_Border_MouseEnter"
                                             MouseLeave="Schedule_prest2_Border_MouseLeave">
@@ -1360,27 +1379,29 @@
                                             </Border.Style>
 
                                             <StackPanel>
-
+                                                <!-- Elsa 20250113 For PIMS [PIMS-333699] change ColumnDefinition Width="30*" "15" 30* "15" to "25*" "6" "33*" "5" -->
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="30*" />
-                                                        <ColumnDefinition Width="15" />
-                                                        <ColumnDefinition Width="30*" />
-                                                        <ColumnDefinition Width="15" />
+                                                        <ColumnDefinition Width="25*" />
+                                                        <ColumnDefinition Width="6" />
+                                                        <ColumnDefinition Width="33*" />
+                                                        <ColumnDefinition Width="5" />
                                                         <ColumnDefinition Width="30*" />
                                                     </Grid.ColumnDefinitions>
 
                                                     <Grid Grid.Column="0">
-
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699]change Height="24" to MinHeight="24" -->
                                                         <Grid.RowDefinitions>
-                                                            <RowDefinition Height="24" />
+                                                            <RowDefinition MinHeight="24" />
                                                             <RowDefinition Height="40" />
                                                         </Grid.RowDefinitions>
-
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="155" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom"-->
                                                         <UXControls:UXTextBlock
+                                                            Width="155"
+                                                            TextWrapping="WrapWithOverflow"
                                                             Grid.Row="0"
                                                             HorizontalAlignment="Left"
-                                                            VerticalAlignment="Center"
+                                                            VerticalAlignment="Bottom"
                                                             FontSize="16"
                                                             Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
                                                             Text="{Binding [Brightness.18], Source={x:Static lang:LangHelper.Instance}}"
@@ -1404,9 +1425,9 @@
                                                     <Grid Grid.Column="1" />
 
                                                     <Grid Grid.Column="2">
-
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699]change Height="24" to MinHeight="24" -->
                                                         <Grid.RowDefinitions>
-                                                            <RowDefinition Height="24" />
+                                                            <RowDefinition MinHeight="24" />
                                                             <RowDefinition Height="40" />
                                                         </Grid.RowDefinitions>
 
@@ -1416,13 +1437,15 @@
                                                             <ColumnDefinition Width="70" />
                                                             <ColumnDefinition Width="Auto" />
                                                         </Grid.ColumnDefinitions>
-
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="190" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom" -->
                                                         <UXControls:UXTextBlock
+                                                            Width="190"
+                                                            TextWrapping="WrapWithOverflow"
                                                             Grid.Row="0"
                                                             Grid.Column="0"
                                                             Grid.ColumnSpan="4"
                                                             HorizontalAlignment="Left"
-                                                            VerticalAlignment="Center"
+                                                            VerticalAlignment="Bottom"
                                                             FontSize="16"
                                                             Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
                                                             Text="{Binding [Brightness.15], Source={x:Static lang:LangHelper.Instance}}"
@@ -1454,13 +1477,15 @@
                                                             SelectedItem="{Binding mIns2, Mode=TwoWay}"
                                                             SelectionChanged="ComboBox_SelectionChanged"
                                                             Style="{StaticResource DdpmComboBoxStyle}" />
-
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="190" TextWrapping="WrapWithOverflow" change FontSize="16" to FontSize="15"-->
                                                         <UXControls:UXTextBlock
+                                                            TextWrapping="WrapWithOverflow"
+                                                            Width="60"
                                                             Grid.Row="1"
                                                             Grid.Column="3"
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Center"
-                                                            FontSize="16"
+                                                            FontSize="15"
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             Text="{Binding [PM], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light"
@@ -1470,9 +1495,9 @@
                                                     <Grid Grid.Column="3" />
 
                                                     <Grid Grid.Column="4">
-
+                                                        <!-- Elsa 20250113 For PIMS [PIMS-333699]change Height="24" to MinHeight="24" -->
                                                         <Grid.RowDefinitions>
-                                                            <RowDefinition Height="24" />
+                                                            <RowDefinition MinHeight="24" />
                                                             <RowDefinition Height="40" />
                                                         </Grid.RowDefinitions>
 
@@ -1486,10 +1511,12 @@
                                                             Grid.Column="0"
                                                             Grid.ColumnSpan="2"
                                                             Orientation="Horizontal">
-
+                                                            <!-- Elsa 20250113 For PIMS [PIMS-333699] add Width="140" TextWrapping="WrapWithOverflow" change VerticalAlignment="Center" to VerticalAlignment="Bottom"-->
                                                             <UXControls:UXTextBlock
+                                                                Width="140"
+                                                                TextWrapping="WrapWithOverflow"
                                                                 HorizontalAlignment="Left"
-                                                                VerticalAlignment="Center"
+                                                                VerticalAlignment="Bottom"
                                                                 FontSize="16"
                                                                 Foreground="{DynamicResource Brightness_TimeText_ForegroundColor}"
                                                                 Text="{Binding [Brightness.16], Source={x:Static lang:LangHelper.Instance}}"
@@ -1547,9 +1574,10 @@
                                                 </Grid>
 
                                                 <!--  Row: "Brightness"  -->
-
+                                                <!-- Elsa 20250113 For PIMS [PIMS-333699] add Margin="0,20,0,-20" -->
                                                 <Grid Height="40">
                                                     <UXControls:UXTextBlock
+                                                        Margin="0,20,0,-20"
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
@@ -1575,11 +1603,11 @@
                                                         VerticalAlignment="Center"
                                                         Source="{DynamicResource BrightnessImage}"
                                                         Stretch="UniformToFill" />
-
+                                                    <!-- Elsa 20250113 For PIMS [PIMS-333699]change Margin="8,0" Margin="8,-10,0,-40" -->
                                                     <UXControls:UXSlider
                                                         Name="preset2_B_slider"
                                                         Grid.Column="1"
-                                                        Margin="8,0"
+                                                        Margin="8,-10,0,-40"
                                                         HorizontalContentAlignment="Stretch"
                                                         IsEnabled="{Binding IsPRPreview, Converter={StaticResource boolReverseConverter}}"
                                                         IsSnapToTickEnabled="True"
@@ -1600,8 +1628,10 @@
                                                 </Grid>
 
                                                 <!--  Row: "Contrast"  -->
+                                                <!-- Elsa 20250113 For PIMS [PIMS-333699] add Margin="0,16,0,0" -->
                                                 <Grid Height="40">
                                                     <UXControls:UXTextBlock
+                                                        Margin="0,16,0,0"
                                                         HorizontalAlignment="Left"
                                                         VerticalAlignment="Center"
                                                         FontSize="16"
