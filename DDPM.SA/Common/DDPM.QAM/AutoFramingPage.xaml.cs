@@ -50,10 +50,10 @@ namespace DDPM.QAM
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            if (IsTextTruncated())
-                tt.Visibility = Visibility.Visible;
-            else 
-                tt.Visibility = Visibility.Hidden;
+            //if (IsTextTruncated())
+            //    tt.Visibility = Visibility.Visible;
+            //else 
+            //    tt.Visibility = Visibility.Hidden;
         }
     }
 }
