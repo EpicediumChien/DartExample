@@ -191,12 +191,14 @@ namespace DDPM.PowerMon
         {
             if(CurrentSessionInactived != null)
                 CurrentSessionInactived.Invoke(this, EventArgs.Empty);
+            writelog("GOT Session Inactived EVENT");
         }
 
         private void OnSessionActived(object? sender, EventArgs e)
         {
             if(CurrentSessionActived != null)
                 CurrentSessionActived.Invoke(this, EventArgs.Empty);
+            writelog("GOT Session Actived EVENT");
         }
 
         public void Close_SessionEvent()

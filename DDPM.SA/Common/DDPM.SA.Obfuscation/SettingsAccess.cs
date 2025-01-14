@@ -344,8 +344,8 @@ namespace DDPM.SA.Obfuscation
                 string xorHex = BitConverter.ToString(xorResult).Replace("-", "");
 
                 Console.WriteLine($"GUID: {guid}");
-                Console.WriteLine($"Random Bytes: {BitConverter.ToString(randomBytes).Replace("-", "")}");
-                Console.WriteLine($"XOR Result: {xorHex}");
+                Console.WriteLine($"Random Bytes");//: {BitConverter.ToString(randomBytes).Replace("-", "")}");
+                Console.WriteLine($"XOR Result");//: {xorHex}");
                 return xorResult;
             }
             catch (Exception e)
@@ -423,13 +423,13 @@ namespace DDPM.SA.Obfuscation
             // Combine the timestamp and random number
             string combined = hexTimestamp + hexRandomNumber;
 
-            Console.WriteLine("*** Timestamp (Hex): " + hexTimestamp + "," + hexTimestamp.Length);
-            Console.WriteLine("*** Random Number (Hex): " + hexRandomNumber + "," + hexRandomNumber.Length);
-            Console.WriteLine("*** Combined: " + combined + "," + combined.Length);
+            Console.WriteLine("*** Timestamp (Hex)");//: " + hexTimestamp + "," + hexTimestamp.Length);
+            Console.WriteLine("*** Random Number (Hex)");//: " + hexRandomNumber + "," + hexRandomNumber.Length);
+            Console.WriteLine("*** Combined");//: " + combined + "," + combined.Length);
 
             string token = content;
             byte[] secToken = Encoding.UTF8.GetBytes(token);
-            Console.WriteLine($"*** GenerateRandomNumber {secToken.Length} {hexRandomNumber.Length}");
+            Console.WriteLine($"*** GenerateRandomNumber");// {secToken.Length} {hexRandomNumber.Length}");
 
             byte[] random = VerifyTimestamp(referenceTicket, combined);
             //    byte[] byteArray = Encoding.UTF8.GetBytes(token);
@@ -443,7 +443,7 @@ namespace DDPM.SA.Obfuscation
                 512 / 8);//output 64 bytes
 
             string hMAC2 = ComputeHMACSHA512(secToken, hash, HashAlgorithmName.SHA512);
-            Console.WriteLine($"*** Message 2: {hMAC2}");
+            Console.WriteLine($"*** Message 2");//: {hMAC2}");
 
             return hMAC2.ToUpper().Equals(signature.ToUpper());
         }
