@@ -560,5 +560,26 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 DdpmCommonHelper.WriteUILog($"Catch Exception[{ex.Message}] when run UXDisplayHotkeys3TextBlock_Loaded");
             }
         }
+
+        private void UXTextBlock_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                TextBlock? tb = sender as TextBlock;
+
+                if (tb != null)
+                {
+                    if (IsTextTruncated(tb))
+                        displayHotkeys4Tooltip.Visibility = Visibility.Visible;
+                    else
+                        displayHotkeys4Tooltip.Visibility = Visibility.Hidden;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                DdpmCommonHelper.WriteUILog($"Catch Exception[{ex.Message}] when run UXDisplayHotkeys3TextBlock_Loaded");
+            }
+        }
     }
 }

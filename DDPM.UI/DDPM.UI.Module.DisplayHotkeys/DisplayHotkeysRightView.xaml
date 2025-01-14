@@ -189,7 +189,23 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
-                                <UXControls:UXTextBlock Text="{Binding [DisplayHotkeys.4], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0" />
+                                <!--Chewlin 20240114 Fix RU/UK inputsource hotkeys PIP/PBP clpping issue ADD TextTrimming="CharacterEllipsis" Width="300" -->
+                                <UXControls:UXTextBlock Loaded="UXTextBlock_Loaded" TextTrimming="CharacterEllipsis" Width="300" Text="{Binding [DisplayHotkeys.4], Source={x:Static lang:LangHelper.Instance}}" Grid.Column="0">
+                                    <UXControls:UXTextBlock.ToolTip>
+                                        <ToolTip Placement="Center" VerticalOffset="45" x:Name="displayHotkeys4Tooltip" Visibility="Hidden">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <Border.Resources>
+                                                    <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
+                                                </Border.Resources>
+                                                <StackPanel>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding [DisplayHotkeys.4], Source={x:Static lang:LangHelper.Instance}}" />
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Border>
+                                        </ToolTip>
+                                    </UXControls:UXTextBlock.ToolTip>
+                                </UXControls:UXTextBlock>
                                 <UXControls:UXTextBox Grid.Column="2" Margin="2" Height="20"
                                                       Text="{Binding SwapPIPPBPInputSourceKey,Mode=TwoWay}"
                                                       Width="230" BorderThickness="1" FontSize="14"
