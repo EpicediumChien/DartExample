@@ -10005,10 +10005,10 @@ namespace DDPM.CLI.Plugins.Display
                 isAllMonitors = false;
                 foreach (MonitorInfo mi in allMonitors)
                 {
-                    if (!String.IsNullOrWhiteSpace(mi.edid.ServiceTag))
+                    if (!String.IsNullOrWhiteSpace(mi.modelName))
                     {
                         //Check if this monitor's service tag in in the -ServiceTag list
-                        string? match = cmdLineInput.Model.FirstOrDefault(x => x.Equals(mi.edid.ModelName, StringComparison.OrdinalIgnoreCase));
+                        string? match = cmdLineInput.Model.FirstOrDefault(x => x.Equals(mi.modelName, StringComparison.OrdinalIgnoreCase));
                         if (match != null) //If found, add index value to listOut
                             listOut.Add(mi.Index);
                     }
