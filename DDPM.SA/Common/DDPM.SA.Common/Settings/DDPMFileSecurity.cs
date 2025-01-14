@@ -124,7 +124,7 @@ namespace DDPM.SA.Common.Settings
 
             //Dean 1225 add Security code to drop data save if path include symlink
             FileInfo fInfo = new FileInfo(target_file);
-            if(fInfo == null)
+            if(!fInfo.Exists)
             {
                 info = $"[SetJsonContentFromSerializedString] can't create FileInfo via target_file";
                 return false;
@@ -1436,7 +1436,7 @@ namespace DDPM.SA.Common.Settings
             else
             {
                 FileInfo fi = new FileInfo(filePath);
-                if (fi == null)
+                if (!fi.Exists)
                 {
                     if (log != null)
                         log.Error("[IsProcessInfoValid] create FileInfo from path got null object");
