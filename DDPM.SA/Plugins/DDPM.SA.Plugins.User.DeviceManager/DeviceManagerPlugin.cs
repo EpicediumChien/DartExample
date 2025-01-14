@@ -9058,7 +9058,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         /// <param name="modelName"></param>
         /// <returns>Boolean</returns>
         public Task<bool> ReadSameModelAutoApplySameModelFlag(string path, string modelName)
-        { 
+        {
             bool sameModelFlag = false;
             if (_SettingsPlugin != null && !string.IsNullOrEmpty(path) && !string.IsNullOrEmpty(modelName))
             {
@@ -14851,12 +14851,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return;
             }
             //if pxpMode
-            if (!IsPxPModeOFF(monitorInfo))
-            {
-                writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] PXP Mode on, do nothing");
-                Debug.WriteLine($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] PXP Mode on, do nothing");
-                return;
-            }
+            //20250114, PIMS-339501/PIMS-335068 confrim:should include "Switch between PCs" for both PIP and PBP modes.
+            /* if (!IsPxPModeOFF(monitorInfo))
+             {
+                 writelog($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] PXP Mode on, do nothing");
+                 Debug.WriteLine($"Kvm_SwitchInputSource:[{monitorInfo.edid.ModelName}:{monitorInfo.edid.SerialNumber}] PXP Mode on, do nothing");
+                 return;
+             }*/
             Debug.WriteLine($"Kvm_SwitchInputSource:current inputsource= {monitorInfo.inputSource}");
             writelog($"Kvm_SwitchInputSource:current inputsource= {monitorInfo.inputSource}");
             HotkeyInfo hotkey = (HotkeyInfo)param.ElementAtOrDefault(0);

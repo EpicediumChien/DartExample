@@ -211,10 +211,10 @@ namespace DDPM.UI.Module.Kvm
         public Visibility DisenableUSBKVM { get; set; } = Visibility.Visible;
         public Visibility EnableUSBKVM { get; set; } = Visibility.Collapsed;
         private string _pc1_Input { get; set; }
-        public string PC1_Input 
-        { 
+        public string PC1_Input
+        {
             get => _pc1_Input;
-            set 
+            set
             {
                 _pc1_Input = value;
                 OnPropertyChanged();
@@ -231,9 +231,9 @@ namespace DDPM.UI.Module.Kvm
             }
         }
         private string _pc3_Input { get; set; }
-        public string PC3_Input 
-        { 
-            get => _pc3_Input; 
+        public string PC3_Input
+        {
+            get => _pc3_Input;
             set
             {
                 _pc3_Input = value;
@@ -241,8 +241,8 @@ namespace DDPM.UI.Module.Kvm
             }
         }
         private string _pc4_Input { get; set; }
-        public string PC4_Input 
-        { 
+        public string PC4_Input
+        {
             get => _pc4_Input;
             set
             {
@@ -510,7 +510,7 @@ namespace DDPM.UI.Module.Kvm
         public bool PC1USB_Enable { get; set; } = true;
         public bool PC2USB_Enable { get; set; } = true;
         public bool PC3USB_Enable { get; set; } = true;
-        public bool PC4USB_Enable {  get; set; } = true;
+        public bool PC4USB_Enable { get; set; } = true;
 
         #region Hotkey
 
@@ -671,7 +671,7 @@ namespace DDPM.UI.Module.Kvm
                                     UInt16 curPxpMode = Convert.ToUInt16(ret_PxP.value);
                                     if (curPxpMode != 0)
                                     {
-                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
                                     }
                                     else
                                     {
@@ -681,7 +681,7 @@ namespace DDPM.UI.Module.Kvm
                             }
                             else
                             {
-                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
+                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
                             }
                         }
                         else
@@ -702,7 +702,7 @@ namespace DDPM.UI.Module.Kvm
                                     UInt16 curPxpMode = Convert.ToUInt16(ret_PxP.value);
                                     if (curPxpMode != 0)
                                     {
-                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
                                     }
                                     else
                                     {
@@ -712,7 +712,7 @@ namespace DDPM.UI.Module.Kvm
                             }
                             else
                             {
-                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
+                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
                             }
 
                         }
@@ -1109,7 +1109,7 @@ namespace DDPM.UI.Module.Kvm
                                     _log?.Debug("PC1 or PC2 not found in pcsList.");
                                 }
                             }
-                            
+
                         }
                         else
                         {
@@ -2067,12 +2067,12 @@ namespace DDPM.UI.Module.Kvm
                         {
                             //if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
                             //{
-                                bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
-                                _log.Debug($"[KvmViewModel] SetUSBUpstream {pcs.Key}-{pcs.Value.InputType}: {pcs.Value.USBUpstream} Done");
-                                if (bUSBuptream)
-                                {
-                                    Thread.Sleep(1000);
-                                }
+                            bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
+                            _log.Debug($"[KvmViewModel] SetUSBUpstream {pcs.Key}-{pcs.Value.InputType}: {pcs.Value.USBUpstream} Done");
+                            if (bUSBuptream)
+                            {
+                                Thread.Sleep(1000);
+                            }
                             //}
                         }
                     }
@@ -2330,7 +2330,7 @@ namespace DDPM.UI.Module.Kvm
                 {
                     _inputsList3.Add(inputSource);
                 }
-                else if(pcsList.ContainsKey("PC4") && inputSource.Type == pcsList["PC4"].InputType)
+                else if (pcsList.ContainsKey("PC4") && inputSource.Type == pcsList["PC4"].InputType)
                 {
                     _inputsList4.Add(inputSource);
                 }
@@ -2444,11 +2444,14 @@ namespace DDPM.UI.Module.Kvm
         {
             bool isSame = true;
             if (sourceDict == null && targetDict == null) return true;
-            else {
-                if (sourceDict == null || targetDict == null) return false; 
-                else if (sourceDict.Count != targetDict.Count) return false; 
-                else {
-                    foreach (var kvp in sourceDict) {
+            else
+            {
+                if (sourceDict == null || targetDict == null) return false;
+                else if (sourceDict.Count != targetDict.Count) return false;
+                else
+                {
+                    foreach (var kvp in sourceDict)
+                    {
                         if (targetDict[kvp.Key].Code != kvp.Value.Code) return false;
                         if (targetDict[kvp.Key].InputName != kvp.Value.InputName) return false;
                         if (targetDict[kvp.Key].InputType != kvp.Value.InputType) return false;

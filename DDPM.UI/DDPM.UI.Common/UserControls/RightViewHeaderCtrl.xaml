@@ -74,7 +74,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Text2, Mode=TwoWay}">
+                        <TextBlock Grid.Column="0" Text="{Binding Text2, Mode=TwoWay}"  TextWrapping="WrapWithOverflow">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
                                     <Style.Triggers>
@@ -103,7 +103,7 @@
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>
-                    </Grid>                    
+                    </Grid>
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Background" Value="Transparent" />
@@ -152,7 +152,7 @@
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>
-                    </Grid>                    
+                    </Grid>
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Background" Value="Transparent" />
