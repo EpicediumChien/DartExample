@@ -111,6 +111,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         public static bool ShowPluginById { get => showPluginById; set => showPluginById = value; }
         private static bool showPluginById = false;
         public static List<WalkThroughInfo> WalkThroughQueue { get; private set; } = new List<WalkThroughInfo>();
+        public static List<WalkThroughInfo> WalkThroughEndList { get; private set; } = new List<WalkThroughInfo>();
 
         private static readonly Dictionary<string, int> ModelTypeMapping = new Dictionary<string, int>
         {
@@ -466,7 +467,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
 
                 // If event Contains Add, then into Walkthrough
-                if (e.changedProperty.ToLower().Contains("add"))
+                if (e.changedProperty.ToLower().Contains("add") || e.changedProperty.ToLower().Contains("displaychanged"))
                 {
                     _log.Info($"[Walkthrough] {nameof(_deviceManager_DeviceChanged)} Start");
                     await CollectAndCompareDevicesAsync();
@@ -1507,8 +1508,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                 if (!Convert.ToBoolean(regValue))
                 {
-                    await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM, true);
-                    if (!WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
+                    // 0114 Wayn Remove to walkthrough end then record the registry
+                    //await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM, true);
+                    if (!WalkThroughQueue.Exists(info => info.ModelName == "DDPM") && !WalkThroughEndList.Exists(info => info.ModelName == "DDPM"))
                     {
                         WalkThroughQueue.Add(new WalkThroughInfo("DDPM", "DDPM", info));
                     }
@@ -1520,8 +1522,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 // mean null or "" or is false, add to the queue and set it to true
                 if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
                 {
+                    // 0114 Wayn Remove to walkthrough end then record the registry
                     // register model for walk through done
-                    await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
+                    //await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
 
                     // If the device is not supported, directly update the registry to true and return
                     if (!devicePages.ContainsKey(modelNumber))
@@ -1531,7 +1534,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     }
 
                     // Add the device to the queue and update the registry
-                    if (!WalkThroughQueue.Exists(info => info.ModelName == modelNumber))
+                    if (!WalkThroughQueue.Exists(info => info.ModelName == modelNumber) && !WalkThroughEndList.Exists(info => info.ModelName == modelNumber))
                     {
                         WalkThroughQueue.Add(new WalkThroughInfo(modelNumber, modelType, info));
                     }
