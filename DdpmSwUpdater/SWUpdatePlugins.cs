@@ -872,11 +872,6 @@ namespace DdpmSwUpdater
                          "SELECT * FROM RegistryValueChangeEvent WHERE " +
                          "Hive = 'HKEY_LOCAL_MACHINE'" +
                          @"AND KeyPath = 'SOFTWARE\\Dell\\Dell Display and Peripheral Manager' AND ValueName='NextProcess'");
-                /// Bruce added test
-                WqlEventQuery query_Test = new WqlEventQuery(
-                         "SELECT * FROM RegistryValueChangeEvent WHERE " +
-                         "Hive = 'HKEY_LOCAL_MACHINE'" +
-                         @"AND KeyPath = 'SOFTWARE\\Dell Display and Peripheral Manager' AND ValueName='NextProcess'");
                 watcher = new ManagementEventWatcher(query);
                 LogManage.LogMessage("Waiting for an event...");
                 watcher.EventArrived += new EventArrivedEventHandler(OnRegistryValueChanged);
