@@ -402,10 +402,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_globalperipheralInterfaceType, commodity, "IsQuickAccessMenuOSDEnabled");
-                    if (value is int intValue)
+                    if (value is bool boolValue)
                     {
-                        writelog($"Get IsQuickAccessMenuOSDEnabled Value: {intValue}");
-                        return intValue != 0;
+                        writelog($"Get IsQuickAccessMenuOSDEnabled Value: {boolValue}");
+                        return boolValue;
                     }
                     else
                     {

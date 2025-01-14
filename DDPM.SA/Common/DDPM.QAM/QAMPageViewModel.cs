@@ -208,12 +208,52 @@ namespace DDPM.QAM
                     int currentValue = 0;
                     switch (eventMsg.EventType)
                     {
+                        //add event by leo 2025/01/14 start
+                        case "Webcam_IsHDROnChanged":
+                        {
+                            SetNoneProfile();
+                        }
+                        break;
+                        case "Webcam_BrightnessChanged":
+                        {
+                            SetNoneProfile();
+                        }
+                        break;
+                        case "Webcam_ContrastChanged":
+                        {
+                            SetNoneProfile();
+                        }
+                        break;
+                        case "Webcam_SaturationChanged":
+                        {
+                            SetNoneProfile();
+                        }
+                        break;
+                        case "Webcam_SharpnessChanged":
+                        {
+                            SetNoneProfile();
+                        }
+                        break;
+                        case "Webcam_AutoWhiteBalanceChanged":
+                        {
+                            SetNoneProfile();
+                        }
+                        break;
+                        case "Webcam_IsAutoWhiteBalanceOnChanged":
+                        {
+                            SetNoneProfile();
+                        }
+                        break;
+                        //add event by leo 2025/01/14 end
+
                         case "Webcam_ZoomChanged":
+                        { //leo fixed 2025/01/14
+                            
                             if (int.TryParse(eventMsg.NewValue, out currentValue))
                                 isStatusChagneByDDPM = true;
-                                ZoomValue = currentValue;
-
-                            break;
+                            ZoomValue = currentValue;
+                        }
+                        break;
 
 
                         case "Webcam_FieldOfViewChanged":
@@ -222,6 +262,10 @@ namespace DDPM.QAM
                                 isStatusChagneByDDPM = true;
                                 FieldOfView = currentValue;
                                 FOV_Selected(ChangeFOVToSelectIndex(FieldOfView));
+
+                                //add by leo 2024/01/14
+                                SetNoneProfile();
+
                             }
 
                             break;
@@ -233,6 +277,10 @@ namespace DDPM.QAM
                             {
                                 isStatusChagneByDDPM = true;
                                 AutoFramingStatus = result;
+
+                                //add by leo 2024/01/14
+                                SetNoneProfile();
+
                             }
                             break;
                     }
@@ -259,6 +307,19 @@ namespace DDPM.QAM
                 LogMsg($"Catch exception in QAMPageViewModel_UIUpdateNotify: {ex.Message}");
             }
             
+        }
+
+        public void SetNoneProfile()
+        {
+            List<UI_Profile> temp = UI_ProfileList.ToList();
+            UI_ProfileList = new ObservableCollection<UI_Profile>();
+            foreach (var profile in temp)
+            {
+                profile.IsSelected = false;
+                UI_ProfileList.Add(profile);
+            }
+
+            OnPropertyChanged(nameof(UI_ProfileList));
         }
 
         public void OpenFullView(ContentControl content)

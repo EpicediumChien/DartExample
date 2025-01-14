@@ -24,64 +24,73 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         public LaunchView()
         {
-            InitializeComponent();
-            _vm = (PenViewModel?)Penplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
-            if (_vm == null)
+
+            try
             {
-                DdpmCommonHelper.WriteUILog("Pen ViewModel is null");
-                return;
-            }
 
-            _vm.Reset();
-            DataContext = _vm;
-            _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-            BuildModuleGroups();
-
-            //txtUnpair.Text = Strings.Unpair;
-            //txtRestore.Text = Strings.RestoreToDefault;
-
-            InitializeButtonImage();
-            //if (_vm!.IsRestoreEnable)
-            //{
-            //    btnRestore.Visibility = Visibility.Visible;
-            //}
-            //else
-            //{
-            //    btnRestore.Visibility = Visibility.Collapsed;
-            //}
-            _vm.IsAllButtonsVisible = Visibility.Visible;
-            _vm.ActiveModule = null;
-
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
-
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null)
+                InitializeComponent();
+                _vm = (PenViewModel?)Penplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
+                if (_vm == null)
                 {
-                    if (data.LockSettings.Lock_Setting_RestoreDefaults)
-                    {
-                        RestoreLockIcon.Visibility = Visibility.Visible;
-                        txtRestore.IsEnabled = false;
-                    }
-                    else
-                    {
-                        txtRestore.IsEnabled = !data.LockSettings.Lock_Pen_RestoreFactoryDefaults;
-                        RestoreLockIcon.Visibility = data.LockSettings.Lock_Pen_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+                    DdpmCommonHelper.WriteUILog("Pen ViewModel is null");
+                    return;
+                }
 
-                        //Lock Functionality 9/7
-                        //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Pen]
-                        if (data.LockSettings != null &&
-                            DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Pen"))
+                _vm.Reset();
+                DataContext = _vm;
+                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+                BuildModuleGroups();
+
+                //txtUnpair.Text = Strings.Unpair;
+                //txtRestore.Text = Strings.RestoreToDefault;
+
+                InitializeButtonImage();
+                //if (_vm!.IsRestoreEnable)
+                //{
+                //    btnRestore.Visibility = Visibility.Visible;
+                //}
+                //else
+                //{
+                //    btnRestore.Visibility = Visibility.Collapsed;
+                //}
+                _vm.IsAllButtonsVisible = Visibility.Visible;
+                _vm.ActiveModule = null;
+
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+
+                    DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                    if (data != null)
+                    {
+                        if (data.LockSettings.Lock_Setting_RestoreDefaults)
                         {
                             RestoreLockIcon.Visibility = Visibility.Visible;
                             txtRestore.IsEnabled = false;
                         }
+                        else
+                        {
+                            txtRestore.IsEnabled = !data.LockSettings.Lock_Pen_RestoreFactoryDefaults;
+                            RestoreLockIcon.Visibility = data.LockSettings.Lock_Pen_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+
+                            //Lock Functionality 9/7
+                            //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Pen]
+                            if (data.LockSettings != null &&
+                                DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Pen"))
+                            {
+                                RestoreLockIcon.Visibility = Visibility.Visible;
+                                txtRestore.IsEnabled = false;
+                            }
+                        }
                     }
                 }
+                if (_vm.Model == "PN5122W")
+                    imgInfo.Visibility = Visibility.Collapsed;
             }
-            if (_vm.Model == "PN5122W")
-                imgInfo.Visibility = Visibility.Collapsed;
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs  LaunchView() ex:" + ex.Message);
+            }
         }
 
         ~LaunchView()
@@ -168,45 +177,52 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         private void OnVbarItemClicked(VbarItem newItem)
         {
-            if (newItem.Id == _vm!.VbarSelectedIndex)
-            { return; }
-
-            if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
+            try
             {
-                _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
-                _vm.RightFrameWidthTo = _rightFrameWidth[newItem.Id + 1];
+                if (newItem.Id == _vm!.VbarSelectedIndex)
+                { return; }
 
-                InvokeGotoTwoViewModeAnimation();
+                if (_rightFrameWidth[newItem.Id + 1] != _rightFrameWidth[_vm.VbarSelectedIndex + 1])
+                {
+                    _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
+                    _vm.RightFrameWidthTo = _rightFrameWidth[newItem.Id + 1];
 
-                if (newItem.Id == 0)
-                {
-                    InvokeShrinkAnimation();
-                }
-                else
-                {
-                    if (_vm.VbarSelectedIndex == 0)
+                    InvokeGotoTwoViewModeAnimation();
+
+                    if (newItem.Id == 0)
                     {
-                        InvokeEnlargeAnimation();
+                        InvokeShrinkAnimation();
                     }
-                    _vm.ActiveModule?.OnActivated();
+                    else
+                    {
+                        if (_vm.VbarSelectedIndex == 0)
+                        {
+                            InvokeEnlargeAnimation();
+                        }
+                        _vm.ActiveModule?.OnActivated();
+                    }
                 }
+
+                _vm.VbarSelectedIndex = newItem.Id;
+
+                if (_vm.RightViewHeaders != null)
+                {
+                    rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
+                }
+                btnUnpair.Visibility = Visibility.Collapsed;
+                btnRestore.Visibility = Visibility.Collapsed;
+                _vm.SetLadningMode(false);
+                _vm.SelectVBar();
+
+                if (_vm!.VbarSelectedIndex == 0)
+                { _vm.IsAllButtonsVisible = Visibility.Hidden; }
+                else
+                { _vm.IsAllButtonsVisible = Visibility.Visible; }
             }
-
-            _vm.VbarSelectedIndex = newItem.Id;
-
-            if (_vm.RightViewHeaders != null)
+            catch (Exception ex) 
             {
-                rightViewHeaderCtrl.SetHeaders(_vm.RightViewHeaders.ToArray());
+                DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs OnVbarItemClicked() ex:" + ex.Message);
             }
-            btnUnpair.Visibility = Visibility.Collapsed;
-            btnRestore.Visibility = Visibility.Collapsed;
-            _vm.SetLadningMode(false);
-            _vm.SelectVBar();
-
-            if (_vm!.VbarSelectedIndex == 0)
-            { _vm.IsAllButtonsVisible = Visibility.Hidden; }
-            else
-            { _vm.IsAllButtonsVisible = Visibility.Visible; }
         }
 
         #endregion Vbar
@@ -284,122 +300,171 @@ namespace DDPM.UI.Plugin.PenPlugin
 
         private void Unpair_Click(object sender, RoutedEventArgs e)
         {
-            if (_vm!.Model == "PN5122W")
+            try
             {
-                UnpairModalDialog unpairModalDialog = new(eDeviceCategory.Pen);
-                Window parentWindow = Window.GetWindow(this);
-                if (parentWindow != null)
+                if (_vm!.Model == "PN5122W")
                 {
-                    unpairModalDialog.Owner = parentWindow;
-                }
+                    UnpairModalDialog unpairModalDialog = new(eDeviceCategory.Pen);
+                    Window parentWindow = Window.GetWindow(this);
+                    if (parentWindow != null)
+                    {
+                        unpairModalDialog.Owner = parentWindow;
+                    }
 
-                bool? dialogResult = unpairModalDialog.ShowDialog();
-                if (dialogResult == true)
-                {
-                    _vm.UnpairPen();
+                    bool? dialogResult = unpairModalDialog.ShowDialog();
+                    if (dialogResult == true)
+                    {
+                        _vm.UnpairPen();
+                    }
+                    return;
                 }
-                return;
-            }
-            Version win10Version = new(10, 0);
-            Version currentVersion = Environment.OSVersion.Version;
-            if (currentVersion >= win10Version)
-            {
-                Process.Start(new ProcessStartInfo("ms-settings:bluetooth")
+                Version win10Version = new(10, 0);
+                Version currentVersion = Environment.OSVersion.Version;
+                if (currentVersion >= win10Version)
                 {
-                    UseShellExecute = true
-                });
-            }
-            else
-            {
-                Process.Start(new ProcessStartInfo("control", "bthprops.cpl")
+                    Process.Start(new ProcessStartInfo("ms-settings:bluetooth")
+                    {
+                        UseShellExecute = true
+                    });
+                }
+                else
                 {
-                    UseShellExecute = true
-                });
+                    Process.Start(new ProcessStartInfo("control", "bthprops.cpl")
+                    {
+                        UseShellExecute = true
+                    });
+                }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs Unpair_Click() ex:" + ex.Message);
             }
         }
 
         private void Mainframe_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (_vm!.VbarSelectedIndex == -1)
-            { return; }
-
-            _vm.RightFrameWidthTo = 0;
-            _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
-            InvokeGotoTwoViewModeAnimation();
-            btnUnpair.Visibility = Visibility.Visible;
-            if (_vm.IsRestoreEnable)
+            try
             {
-                btnRestore.Visibility = Visibility.Visible;
+                if (_vm!.VbarSelectedIndex == -1)
+                { return; }
+
+                _vm.RightFrameWidthTo = 0;
+                _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
+                InvokeGotoTwoViewModeAnimation();
+                btnUnpair.Visibility = Visibility.Visible;
+                if (_vm.IsRestoreEnable)
+                {
+                    btnRestore.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    btnRestore.Visibility = Visibility.Collapsed;
+                }
+
+                if (_vm.VbarSelectedIndex == 0)
+                { InvokeEnlargeAnimation(); }
+
+                _vm.VbarSelectedIndex = -1;
+                _vm.SetLadningMode(true);
+                _vm.SelectVBar();
+                _vm.ClearSelectedButton();
+                _vm.IsAllButtonsVisible = Visibility.Visible;
+                _vm.SelectedBehavior = "";
             }
-            else
+            catch (Exception ex) 
             {
-                btnRestore.Visibility = Visibility.Collapsed;
+                DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs Mainframe_MouseLeftButtonDown() ex:" + ex.Message);
             }
-
-            if (_vm.VbarSelectedIndex == 0)
-            { InvokeEnlargeAnimation(); }
-
-            _vm.VbarSelectedIndex = -1;
-            _vm.SetLadningMode(true);
-            _vm.SelectVBar();
-            _vm.ClearSelectedButton();
-            _vm.IsAllButtonsVisible = Visibility.Visible;
-            _vm.SelectedBehavior = "";
         }
 
         private void Restore_Click(object sender, RoutedEventArgs e)
         {
-            RestoreModalDialog restoreModalDialog = new();
-            Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
+            try
             {
-                restoreModalDialog.Owner = parentWindow;
-            }
+                RestoreModalDialog restoreModalDialog = new();
+                Window parentWindow = Window.GetWindow(this);
+                if (parentWindow != null)
+                {
+                    restoreModalDialog.Owner = parentWindow;
+                }
 
-            bool? dialogResult = restoreModalDialog.ShowDialog();
-            if (dialogResult == true)
-            {
-                _vm!.RestoreToDefault();
+                bool? dialogResult = restoreModalDialog.ShowDialog();
+                if (dialogResult == true)
+                {
+                    _vm!.RestoreToDefault();
+                }
+                btnRestore.Visibility = Visibility.Collapsed;
             }
-            btnRestore.Visibility = Visibility.Collapsed;
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs Restore_Click() ex:" + ex.Message);
+            }
         }
 
         private void ButtonHoverIn(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            var btnName = ((Image)sender).Name;
-            _vm!.RefreshButtonImageFile(btnName, true, btnName == _vm.SelectedButton);
+            try
+            {
+                var btnName = ((Image)sender).Name;
+                _vm!.RefreshButtonImageFile(btnName, true, btnName == _vm.SelectedButton);
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs ButtonHoverIn() ex:" + ex.Message);
+            }
         }
 
         private void ButtonHoverOut(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            var btnName = ((Image)sender).Name;
-            _vm!.RefreshButtonImageFile(btnName, false, btnName == _vm.SelectedButton);
+            try
+            {
+                var btnName = ((Image)sender).Name;
+                _vm!.RefreshButtonImageFile(btnName, false, btnName == _vm.SelectedButton);
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs ButtonHoverOut() ex:" + ex.Message);
+            }
         }
 
         private void ButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (_vm!.SelectedButton != "")
-            { _vm.RefreshButtonImageFile(_vm.SelectedButton); }
-
-            var btnName = ((Image)sender).Name;
-            _vm!.SelectedButton = btnName;
-            _vm.RefreshButtonImageFile(btnName, false, true);
-
-            if (_vm.VbarSelectedIndex == 1)
+            try
             {
-                _vm.ActiveModule!.OnActivated();
+                if (_vm!.SelectedButton != "")
+                { _vm.RefreshButtonImageFile(_vm.SelectedButton); }
+
+                var btnName = ((Image)sender).Name;
+                _vm!.SelectedButton = btnName;
+                _vm.RefreshButtonImageFile(btnName, false, true);
+
+                if (_vm.VbarSelectedIndex == 1)
+                {
+                    _vm.ActiveModule!.OnActivated();
+                }
+                else
+                {
+                    OnVbarItemClicked(_vm.VbarItems[1]);
+                }
             }
-            else
+            catch (Exception ex) 
             {
-                OnVbarItemClicked(_vm.VbarItems[1]);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs ButtonClicked() ex:" + ex.Message);
             }
         }
 
         private void PushBack(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (sender is Border)
+            try
             {
-                Mainframe_MouseLeftButtonDown(this, e);
+                if (sender is Border)
+                {
+                    Mainframe_MouseLeftButtonDown(this, e);
+                }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.PenPlugin\\Views\\LaunchView.xaml.cs PushBack() ex:" + ex.Message);
             }
         }
     }

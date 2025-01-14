@@ -40,46 +40,54 @@ namespace DDPM.UI.Plugin.Common
 
         public RadialMenuModalDialog(double width, double height, PenViewModel vm)
         {
-            InitializeComponent();
-            this.Width = width;
-            this.Height = height;
-            PenActions = vm.PenAction;
-            _vm = vm;
 
-            DrawPieChart();
-
-            SelectedMenuID = 0;
-            SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
-            txtTitleBar.Text = Strings.RadialMenu;
-            txtFunction.Text = Strings.FunctionForSelectedRadial;
-            RefreshAction(true);
-            txtLabel.Text = Strings.LabelForSelectedRadial;
-            txtUseCenter.Text = Strings.UseCenterForEmulatingRightClick;
-            tsUseCenter.IsChecked = PenActions.IsUseCenter;
-            if (PenActions.IsUseCenter)
+            try
             {
-                tsUseCenter.Content = Strings.On;
+                InitializeComponent();
+                this.Width = width;
+                this.Height = height;
+                PenActions = vm.PenAction;
+                _vm = vm;
+
+                DrawPieChart();
+
+                SelectedMenuID = 0;
+                SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
+                txtTitleBar.Text = Strings.RadialMenu;
+                txtFunction.Text = Strings.FunctionForSelectedRadial;
+                RefreshAction(true);
+                txtLabel.Text = Strings.LabelForSelectedRadial;
+                txtUseCenter.Text = Strings.UseCenterForEmulatingRightClick;
+                tsUseCenter.IsChecked = PenActions.IsUseCenter;
+                if (PenActions.IsUseCenter)
+                {
+                    tsUseCenter.Content = Strings.On;
+                }
+                else
+                {
+                    tsUseCenter.Content = Strings.Off;
+                }
+                btnRestore.Caption = Strings.RestoreToDefault;
+                btnSave.Caption = Strings.Save;
+
+                NormalFillBrush.Color = Color.FromArgb(0x99, 0x13, 0x2F, 0x54);
+                //NormalBorderBrush.Color = Color.FromRgb(0x1E, 0x3F, 0x6C);
+                NormalBorderBrush.Color = Color.FromRgb(0x13, 0x2F, 0x54);
+                FocusFillBrush.StartPoint = new Point(0, 0);
+                FocusFillBrush.EndPoint = new Point(1, 0);
+                FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x06, 0x72, 0xCB), 0));
+                FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x6E, 0x69, 0xCF), 1));
+                FocusBorderBrush.StartPoint = new Point(0, 0);
+                FocusBorderBrush.EndPoint = new Point(1, 0);
+                FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x55, 0xB4, 0xFD), 0));
+                FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x6E, 0x69, 0xCF), 1));
+
+                DdpmCommonHelper.BitmapImageUpdated += imgComboImageUpdate;
             }
-            else
+            catch ( Exception ex)
             {
-                tsUseCenter.Content = Strings.Off;
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs RadialMenuModalDialog ex:" + ex.Message);
             }
-            btnRestore.Caption = Strings.RestoreToDefault;
-            btnSave.Caption = Strings.Save;
-
-            NormalFillBrush.Color = Color.FromArgb(0x99, 0x13, 0x2F, 0x54);
-            //NormalBorderBrush.Color = Color.FromRgb(0x1E, 0x3F, 0x6C);
-            NormalBorderBrush.Color = Color.FromRgb(0x13, 0x2F, 0x54);
-            FocusFillBrush.StartPoint = new Point(0, 0);
-            FocusFillBrush.EndPoint = new Point(1, 0);
-            FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x06, 0x72, 0xCB), 0));
-            FocusFillBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x6E, 0x69, 0xCF), 1));
-            FocusBorderBrush.StartPoint = new Point(0, 0);
-            FocusBorderBrush.EndPoint = new Point(1, 0);
-            FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x55, 0xB4, 0xFD), 0));
-            FocusBorderBrush.GradientStops.Add(new GradientStop(Color.FromRgb(0x6E, 0x69, 0xCF), 1));
-
-            DdpmCommonHelper.BitmapImageUpdated += imgComboImageUpdate;
         }
 
         private void imgComboImageUpdate(OSThemeEnum oSThemeEnum)
@@ -90,28 +98,35 @@ namespace DDPM.UI.Plugin.Common
 
         private void DrawPieChart()
         {
-            int numberOfSections = 8;
-            double angleStep = 360.0 / numberOfSections;
-
-            for (int i = 0; i < numberOfSections; i++)
+            try
             {
-                double startAngle = -22.5 - i * angleStep;
-                double endAngle = startAngle + angleStep;
+                int numberOfSections = 8;
+                double angleStep = 360.0 / numberOfSections;
 
-                // Create a path for each section
-                Path path = new Path
+                for (int i = 0; i < numberOfSections; i++)
                 {
-                    Name = $"Path{i}",
-                    Fill = (i == 0) ? FocusFillBrush : NormalFillBrush,
-                    Stroke = (i == 0) ? FocusBorderBrush : NormalBorderBrush,
-                    StrokeThickness = 1
-                };
+                    double startAngle = -22.5 - i * angleStep;
+                    double endAngle = startAngle + angleStep;
 
-                path.Data = CreatePieSliceGeometry(startAngle, endAngle);
-                path.MouseEnter += Path_MouseEnter;
-                path.MouseLeave += Path_MouseLeave;
-                path.MouseLeftButtonDown += Path_MouseLeftButtonDown;
-                canvas.Children.Add(path);
+                    // Create a path for each section
+                    Path path = new Path
+                    {
+                        Name = $"Path{i}",
+                        Fill = (i == 0) ? FocusFillBrush : NormalFillBrush,
+                        Stroke = (i == 0) ? FocusBorderBrush : NormalBorderBrush,
+                        StrokeThickness = 1
+                    };
+
+                    path.Data = CreatePieSliceGeometry(startAngle, endAngle);
+                    path.MouseEnter += Path_MouseEnter;
+                    path.MouseLeave += Path_MouseLeave;
+                    path.MouseLeftButtonDown += Path_MouseLeftButtonDown;
+                    canvas.Children.Add(path);
+                }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs DrawPieChart ex:" + ex.Message);
             }
         }
 
@@ -166,161 +181,191 @@ namespace DDPM.UI.Plugin.Common
 
         private void ActionRadioButton_Click(object sender, RoutedEventArgs e)
         {
-            var rb = (UXRadioButton)sender;
-            var id = int.Parse(rb.Name.Replace("Radio", ""));
-            if (id == SelectedActionID && id != 8 && id != 23)
-            { return; }
 
-            txtLabelText.Visibility = Visibility.Visible;
-            var parameter = "";
-            if (id == 8)
+            try
             {
-                Window parentWindow = Window.GetWindow(this);
-                double windowLeft = 0;
-                double windowTop = 0;
-                ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight);
-                if (parentWindow != null)
+
+                var rb = (UXRadioButton)sender;
+                var id = int.Parse(rb.Name.Replace("Radio", ""));
+                if (id == SelectedActionID && id != 8 && id != 23)
+                { return; }
+
+                txtLabelText.Visibility = Visibility.Visible;
+                var parameter = "";
+                if (id == 8)
                 {
-                    modalDialog.Owner = parentWindow;
-                    windowLeft = parentWindow.Left;
-                    windowTop = parentWindow.Top;
+                    Window parentWindow = Window.GetWindow(this);
+                    double windowLeft = 0;
+                    double windowTop = 0;
+                    ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight);
+                    if (parentWindow != null)
+                    {
+                        modalDialog.Owner = parentWindow;
+                        windowLeft = parentWindow.Left;
+                        windowTop = parentWindow.Top;
+                    }
+                    modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                    modalDialog.Left = windowLeft;
+                    modalDialog.Top = windowTop;
+                    if (modalDialog.ShowDialog()!.Value)
+                    {
+                        parameter = modalDialog.Parameter;
+                        PenActions.RadialLabels[SelectedMenuID] = parameter;
+                        spLabel.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        RefreshAction();
+                        CloseActionCombo();
+                        return;
+                    }
                 }
-                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-                modalDialog.Left = windowLeft;
-                modalDialog.Top = windowTop;
-                if (modalDialog.ShowDialog()!.Value)
+                else if (id == 23)
                 {
-                    parameter = modalDialog.Parameter;
-                    PenActions.RadialLabels[SelectedMenuID] = parameter;
-                    spLabel.Visibility = Visibility.Collapsed;
+                    Window parentWindow = Window.GetWindow(this);
+                    double windowLeft = 0;
+                    double windowTop = 0;
+                    OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues, PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter);
+                    if (parentWindow != null)
+                    {
+                        modalDialog.Owner = parentWindow;
+                        windowLeft = parentWindow.Left;
+                        windowTop = parentWindow.Top;
+                    }
+                    modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                    modalDialog.Left = windowLeft;
+                    modalDialog.Top = windowTop;
+                    if (modalDialog.ShowDialog()!.Value)
+                    {
+                        //parameter = $"{modalDialog.ID}|{modalDialog.Parameter}";
+                        //if (modalDialog.ID == 1)
+                        //{
+                        //    PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
+                        //}
+                        //else
+                        //{
+                        //    //PenActions.RadialLabels[SelectedMenuID] = Actions.OpenRunActions[modalDialog.ID];
+                        //    PenActions.RadialLabels[SelectedMenuID] = parameter;
+                        //}
+                        parameter = $"{modalDialog.Parameter}";
+                        PenActions.RadialLabels[SelectedMenuID] = parameter;
+                        spLabel.Visibility = Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        RefreshAction();
+                        CloseActionCombo();
+                        return;
+                    }
                 }
                 else
                 {
-                    RefreshAction();
-                    CloseActionCombo();
-                    return;
+                    PenActions.RadialLabels[SelectedMenuID] = Actions.RadialMenuActions[id].Caption;
+                    spLabel.Visibility = Visibility.Visible;
                 }
-            }
-            else if (id == 23)
-            {
-                Window parentWindow = Window.GetWindow(this);
-                double windowLeft = 0;
-                double windowTop = 0;
-                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues, PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter);
-                if (parentWindow != null)
-                {
-                    modalDialog.Owner = parentWindow;
-                    windowLeft = parentWindow.Left;
-                    windowTop = parentWindow.Top;
-                }
-                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-                modalDialog.Left = windowLeft;
-                modalDialog.Top = windowTop;
-                if (modalDialog.ShowDialog()!.Value)
-                {
-                    //parameter = $"{modalDialog.ID}|{modalDialog.Parameter}";
-                    //if (modalDialog.ID == 1)
-                    //{
-                    //    PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
-                    //}
-                    //else
-                    //{
-                    //    //PenActions.RadialLabels[SelectedMenuID] = Actions.OpenRunActions[modalDialog.ID];
-                    //    PenActions.RadialLabels[SelectedMenuID] = parameter;
-                    //}
-                    parameter = $"{modalDialog.Parameter}";
-                    PenActions.RadialLabels[SelectedMenuID] = parameter;
-                    spLabel.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    RefreshAction();
-                    CloseActionCombo();
-                    return;
-                }
-            }
-            else
-            {
-                PenActions.RadialLabels[SelectedMenuID] = Actions.RadialMenuActions[id].Caption;
-                spLabel.Visibility = Visibility.Visible;
-            }
 
-            SelectedActionID = id;
-            txtMenu.Text = rb.Content.ToString();
-            CloseActionCombo();
-            PenActions.RadialActions[SelectedMenuID].AssignedAction.ID = SelectedActionID;
-            PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter = parameter;
-            _vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID);
-            ActionList.ExportActionList(PenActions, "PEN");
-            RefreshAction();
+                SelectedActionID = id;
+                txtMenu.Text = rb.Content.ToString();
+                CloseActionCombo();
+                PenActions.RadialActions[SelectedMenuID].AssignedAction.ID = SelectedActionID;
+                PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter = parameter;
+                _vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID);
+                ActionList.ExportActionList(PenActions, "PEN");
+                RefreshAction();
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs ActionRadioButton_Click ex:" + ex.Message);
+            }
         }
 
         private void ActionButtonLoaded(object sender, RoutedEventArgs e)
         {
-            int id;
-            if (sender is UXRadioButton rb)
+            try
             {
-                id = (int)((UXRadioButton)sender).DataContext;
-                rb.Name = $"Radio{id}";
-                //rb.Content = Actions.RadialMenuActions[id].Caption;
-                rb.Content = _vm.ActionNames[id];
-                rb.IsChecked = id == SelectedActionID;
+                int id;
+                if (sender is UXRadioButton rb)
+                {
+                    id = (int)((UXRadioButton)sender).DataContext;
+                    rb.Name = $"Radio{id}";
+                    //rb.Content = Actions.RadialMenuActions[id].Caption;
+                    rb.Content = _vm.ActionNames[id];
+                    rb.IsChecked = id == SelectedActionID;
+                }
+                else if (sender is ActionButton btn)
+                {
+                    id = (int)((ActionButton)sender).DataContext;
+                    if ((id == 8 || id == 23) && id == SelectedActionID)
+                    {
+                        btn.Name = $"btn{id}";
+                        btn.Caption = Strings.Edit;
+                        btn.Visibility = Visibility.Visible;
+                        btn.Width = 101;
+                    }
+                    else
+                    {
+                        btn.Visibility = Visibility.Collapsed;
+                    }
+                }
             }
-            else if (sender is ActionButton btn)
+            catch (Exception ex) 
             {
-                id = (int)((ActionButton)sender).DataContext;
-                if ((id == 8 || id == 23) && id == SelectedActionID)
-                {
-                    btn.Name = $"btn{id}";
-                    btn.Caption = Strings.Edit;
-                    btn.Visibility = Visibility.Visible;
-                    btn.Width = 101;
-                }
-                else
-                {
-                    btn.Visibility = Visibility.Collapsed;
-                }
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs ActionButtonLoaded ex:" + ex.Message);
             }
         }
 
         void RefreshAction(bool all = false)
         {
-            //txtMenu.Text = Actions.RadialMenuActions[SelectedActionID].Caption;
-            txtMenu.Text = _vm.ActionNames[SelectedActionID];
-            txtLabelText.Text = PenActions.RadialLabels[SelectedMenuID];
-            var index = _vm.RadialMenuActions.IndexOf(SelectedActionID);
-            MenuItems.ItemsSource = null;
-            //MenuItems.ItemsSource = Actions.RadialMenuActionsList;
-            MenuItems.ItemsSource = _vm.RadialMenuActions;
-            //if (SelectedActionID > 7)
-            if (index > 6)
+            try
             {
-                svMenu.ScrollToVerticalOffset(index * 29);
+                //txtMenu.Text = Actions.RadialMenuActions[SelectedActionID].Caption;
+                txtMenu.Text = _vm.ActionNames[SelectedActionID];
+                txtLabelText.Text = PenActions.RadialLabels[SelectedMenuID];
+                var index = _vm.RadialMenuActions.IndexOf(SelectedActionID);
+                MenuItems.ItemsSource = null;
+                //MenuItems.ItemsSource = Actions.RadialMenuActionsList;
+                MenuItems.ItemsSource = _vm.RadialMenuActions;
+                //if (SelectedActionID > 7)
+                if (index > 6)
+                {
+                    svMenu.ScrollToVerticalOffset(index * 29);
+                }
+                RefreshLabel(all);
+                if (SelectedActionID == 8 || SelectedActionID == 23)
+                {
+                    spLabel.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    spLabel.Visibility = Visibility.Visible;
+                }
             }
-            RefreshLabel(all);
-            if (SelectedActionID == 8 || SelectedActionID == 23)
+            catch (Exception ex) 
             {
-                spLabel.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                spLabel.Visibility = Visibility.Visible;
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs RefreshAction ex:" + ex.Message);
             }
         }
         void RefreshLabel(bool all = false)
         {
-            if (all)
+            try
             {
-                for (int i = 0; i < 8; i++)
+                if (all)
                 {
-                    var tb = (UXTextBlock)FindName($"Label{i}");
-                    tb.Text = CheckLabel(PenActions.RadialLabels[i], i);
+                    for (int i = 0; i < 8; i++)
+                    {
+                        var tb = (UXTextBlock)FindName($"Label{i}");
+                        tb.Text = CheckLabel(PenActions.RadialLabels[i], i);
+                    }
+                }
+                else
+                {
+                    var tb = (UXTextBlock)FindName($"Label{SelectedMenuID}");
+                    tb.Text = CheckLabel(PenActions.RadialLabels[SelectedMenuID], SelectedMenuID);
                 }
             }
-            else
+            catch (Exception ex) 
             {
-                var tb = (UXTextBlock)FindName($"Label{SelectedMenuID}");
-                tb.Text = CheckLabel(PenActions.RadialLabels[SelectedMenuID], SelectedMenuID);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs RefreshLabel ex:" + ex.Message);
             }
         }
         string CheckLabel(string text, int id)
@@ -407,186 +452,235 @@ namespace DDPM.UI.Plugin.Common
 
         private void EditActionClick(object sender, MouseButtonEventArgs e)
         {
-            var id = int.Parse(((ActionButton)sender).Name.Replace("btn", ""));
-            var parameter = PenActions.RadialLabels[SelectedMenuID];
+            try
+            {
+                var id = int.Parse(((ActionButton)sender).Name.Replace("btn", ""));
+                var parameter = PenActions.RadialLabels[SelectedMenuID];
 
-            Window parentWindow = Window.GetWindow(this);
-            double windowLeft = 0;
-            double windowTop = 0;
-            if (id == 8)
-            {
-                ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter);
-                if (parentWindow != null)
+                Window parentWindow = Window.GetWindow(this);
+                double windowLeft = 0;
+                double windowTop = 0;
+                if (id == 8)
                 {
-                    modalDialog.Owner = parentWindow;
-                    windowLeft = parentWindow.Left;
-                    windowTop = parentWindow.Top;
+                    ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter);
+                    if (parentWindow != null)
+                    {
+                        modalDialog.Owner = parentWindow;
+                        windowLeft = parentWindow.Left;
+                        windowTop = parentWindow.Top;
+                    }
+                    modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                    modalDialog.Left = windowLeft;
+                    modalDialog.Top = windowTop;
+                    if (modalDialog.ShowDialog()!.Value && modalDialog.Parameter != parameter)
+                    {
+                        parameter = modalDialog.Parameter;
+                        PenActions.RadialLabels[SelectedMenuID] = parameter;
+                    }
+                    else
+                    {
+                        CloseActionCombo();
+                        return;
+                    }
                 }
-                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-                modalDialog.Left = windowLeft;
-                modalDialog.Top = windowTop;
-                if (modalDialog.ShowDialog()!.Value && modalDialog.Parameter != parameter)
+                else if (id == 23)
                 {
-                    parameter = modalDialog.Parameter;
-                    PenActions.RadialLabels[SelectedMenuID] = parameter;
+                    parameter = PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter;
+                    //var arr = parameter.Split('|');
+                    //OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, int.Parse(arr[0]), arr[1]);
+                    OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues, parameter);
+                    if (parentWindow != null)
+                    {
+                        modalDialog.Owner = parentWindow;
+                        windowLeft = parentWindow.Left;
+                        windowTop = parentWindow.Top;
+                    }
+                    modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
+                    modalDialog.Left = windowLeft;
+                    modalDialog.Top = windowTop;
+                    //if (modalDialog.ShowDialog()!.Value && $"{modalDialog.ID}|{modalDialog.Parameter}" != parameter)
+                    if (modalDialog.ShowDialog()!.Value && $"{modalDialog.Parameter}" != parameter)
+                    {
+                        //parameter = $"{modalDialog.ID}|{modalDialog.Parameter}";
+                        //if (modalDialog.ID == 1)
+                        //{
+                        //    PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
+                        //}
+                        //else
+                        //{
+                        //    //PenActions.RadialLabels[SelectedMenuID] = Actions.OpenRunActions[modalDialog.ID];
+                        //    PenActions.RadialLabels[SelectedMenuID] = _vm.LaunchableAppValues[modalDialog.ID];
+                        //}
+                        parameter = $"{modalDialog.Parameter}";
+                        PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
+                    }
+                    else
+                    {
+                        CloseActionCombo();
+                        return;
+                    }
                 }
-                else
-                {
-                    CloseActionCombo();
-                    return;
-                }
+                PenActions.RadialActions[SelectedMenuID].AssignedAction.ID = SelectedActionID;
+                PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter = parameter;
+                _vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID);
+                ActionList.ExportActionList(PenActions, "PEN");
+                RefreshAction();
+                CloseActionCombo();
             }
-            else if (id == 23)
+            catch (Exception ex) 
             {
-                parameter = PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter;
-                //var arr = parameter.Split('|');
-                //OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, int.Parse(arr[0]), arr[1]);
-                OpenRunModalDialog modalDialog = new(parentWindow.ActualWidth, parentWindow.ActualHeight, _vm.LaunchableAppValues, parameter);
-                if (parentWindow != null)
-                {
-                    modalDialog.Owner = parentWindow;
-                    windowLeft = parentWindow.Left;
-                    windowTop = parentWindow.Top;
-                }
-                modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
-                modalDialog.Left = windowLeft;
-                modalDialog.Top = windowTop;
-                //if (modalDialog.ShowDialog()!.Value && $"{modalDialog.ID}|{modalDialog.Parameter}" != parameter)
-                if (modalDialog.ShowDialog()!.Value && $"{modalDialog.Parameter}" != parameter)
-                {
-                    //parameter = $"{modalDialog.ID}|{modalDialog.Parameter}";
-                    //if (modalDialog.ID == 1)
-                    //{
-                    //    PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
-                    //}
-                    //else
-                    //{
-                    //    //PenActions.RadialLabels[SelectedMenuID] = Actions.OpenRunActions[modalDialog.ID];
-                    //    PenActions.RadialLabels[SelectedMenuID] = _vm.LaunchableAppValues[modalDialog.ID];
-                    //}
-                    parameter = $"{modalDialog.Parameter}";
-                    PenActions.RadialLabels[SelectedMenuID] = modalDialog.Parameter;
-                }
-                else
-                {
-                    CloseActionCombo();
-                    return;
-                }
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs EditActionClick ex:" + ex.Message);
             }
-            PenActions.RadialActions[SelectedMenuID].AssignedAction.ID = SelectedActionID;
-            PenActions.RadialActions[SelectedMenuID].AssignedAction.Parameter = parameter;
-            _vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID);
-            ActionList.ExportActionList(PenActions, "PEN");
-            RefreshAction();
-            CloseActionCombo();
         }
 
         private void RestoreClick(object sender, MouseButtonEventArgs e)
         {
-            PenActions.RestoreRadialMenu();
-            //ActionList.ExportActionList(PenActions, "PEN");
-            SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
-            RefreshAction(true);
+            try
+            {
+                PenActions.RestoreRadialMenu();
+                //ActionList.ExportActionList(PenActions, "PEN");
+                SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
+                RefreshAction(true);
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs RestoreClick ex:" + ex.Message);
+            }
         }
 
         private void SaveClick(object sender, MouseButtonEventArgs e)
         {
-            PenActions.RadialLabels[SelectedMenuID] = txtLabelText.Text.Trim();
-            //_vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID, parameter);
-            _vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID);
-            ActionList.ExportActionList(PenActions, "PEN");
-            RefreshLabel();
+            try
+            {
+                PenActions.RadialLabels[SelectedMenuID] = txtLabelText.Text.Trim();
+                //_vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID, parameter);
+                _vm.UpdateRadialMenu(SelectedMenuID, SelectedActionID);
+                ActionList.ExportActionList(PenActions, "PEN");
+                RefreshLabel();
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs SaveClick ex:" + ex.Message);
+            }
         }
 
         private void tsUseCenter_Click(object sender, RoutedEventArgs e)
         {
-            if (tsUseCenter.IsChecked!.Value)
+            try
             {
-                tsUseCenter.Content = Strings.On;
-                imgCenter.Visibility = Visibility.Visible;
+                if (tsUseCenter.IsChecked!.Value)
+                {
+                    tsUseCenter.Content = Strings.On;
+                    imgCenter.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    tsUseCenter.Content = Strings.Off;
+                    imgCenter.Visibility = Visibility.Collapsed;
+                }
+                PenActions.IsUseCenter = tsUseCenter.IsChecked!.Value;
+                _vm.UpdateRadialMenuRightClick(PenActions.IsUseCenter);
+                ActionList.ExportActionList(PenActions, "PEN");
             }
-            else
+            catch (Exception ex) 
             {
-                tsUseCenter.Content = Strings.Off;
-                imgCenter.Visibility = Visibility.Collapsed;
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs tsUseCenter_Click ex:" + ex.Message);
             }
-            PenActions.IsUseCenter = tsUseCenter.IsChecked!.Value;
-            _vm.UpdateRadialMenuRightClick(PenActions.IsUseCenter);
-            ActionList.ExportActionList(PenActions, "PEN");
         }
 
         private void Path_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (sender is Path path)
+            try
             {
-                path.Fill = FocusFillBrush;
-                path.Stroke = FocusBorderBrush;
+                if (sender is Path path)
+                {
+                    path.Fill = FocusFillBrush;
+                    path.Stroke = FocusBorderBrush;
+                }
+                if (sender is UXTextBlock tb)
+                {
+                    int id = int.Parse(tb.Name.Substring(5, 1));
+                    var pa = (Path)canvas.Children[id];
+                    pa.Fill = FocusFillBrush;
+                    pa.Stroke = FocusBorderBrush;
+                }
             }
-            if (sender is UXTextBlock tb)
+            catch (Exception ex) 
             {
-                int id = int.Parse(tb.Name.Substring(5, 1));
-                var pa = (Path)canvas.Children[id];
-                pa.Fill = FocusFillBrush;
-                pa.Stroke = FocusBorderBrush;
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs Path_MouseEnter ex:" + ex.Message);
             }
         }
 
         private void Path_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (sender is Path path)
+            try
             {
-                int id = int.Parse(path.Name.Substring(4, 1));
-                if (id == SelectedMenuID)
-                { return; }
-                path.Fill = NormalFillBrush;
-                path.Stroke = NormalBorderBrush;
+                if (sender is Path path)
+                {
+                    int id = int.Parse(path.Name.Substring(4, 1));
+                    if (id == SelectedMenuID)
+                    { return; }
+                    path.Fill = NormalFillBrush;
+                    path.Stroke = NormalBorderBrush;
+                }
+                if (sender is UXTextBlock tb)
+                {
+                    int id = int.Parse(tb.Name.Substring(5, 1));
+                    if (id == SelectedMenuID)
+                    { return; }
+                    var pa = (Path)canvas.Children[id];
+                    pa.Fill = NormalFillBrush;
+                    pa.Stroke = NormalBorderBrush;
+                }
             }
-            if (sender is UXTextBlock tb)
+            catch (Exception ex) 
             {
-                int id = int.Parse(tb.Name.Substring(5, 1));
-                if (id == SelectedMenuID)
-                { return; }
-                var pa = (Path)canvas.Children[id];
-                pa.Fill = NormalFillBrush;
-                pa.Stroke = NormalBorderBrush;
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs Path_MouseLeave ex:" + ex.Message);
             }
         }
 
         private void Path_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Path path)
+            try
             {
-                int id = int.Parse(path.Name.Substring(4, 1));
-                if (id == SelectedMenuID)
-                { return; }
+                if (sender is Path path)
+                {
+                    int id = int.Parse(path.Name.Substring(4, 1));
+                    if (id == SelectedMenuID)
+                    { return; }
 
-                var pa = (Path)canvas.Children[SelectedMenuID];
-                pa.Fill = NormalFillBrush;
-                pa.Stroke = NormalBorderBrush;
+                    var pa = (Path)canvas.Children[SelectedMenuID];
+                    pa.Fill = NormalFillBrush;
+                    pa.Stroke = NormalBorderBrush;
 
-                path.Fill = FocusFillBrush;
-                path.Stroke = FocusBorderBrush;
+                    path.Fill = FocusFillBrush;
+                    path.Stroke = FocusBorderBrush;
 
-                SelectedMenuID = id;
+                    SelectedMenuID = id;
+                }
+                if (sender is UXTextBlock tb)
+                {
+                    int id = int.Parse(tb.Name.Substring(5, 1));
+                    if (id == SelectedMenuID)
+                    { return; }
+
+                    var pa = (Path)canvas.Children[SelectedMenuID];
+                    pa.Fill = NormalFillBrush;
+                    pa.Stroke = NormalBorderBrush;
+
+                    pa = (Path)canvas.Children[id];
+                    pa.Fill = FocusFillBrush;
+                    pa.Stroke = FocusBorderBrush;
+
+                    SelectedMenuID = id;
+                }
+                SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
+                RefreshAction();
             }
-            if (sender is UXTextBlock tb)
+            catch (Exception ex) 
             {
-                int id = int.Parse(tb.Name.Substring(5, 1));
-                if (id == SelectedMenuID)
-                { return; }
-
-                var pa = (Path)canvas.Children[SelectedMenuID];
-                pa.Fill = NormalFillBrush;
-                pa.Stroke = NormalBorderBrush;
-
-                pa = (Path)canvas.Children[id];
-                pa.Fill = FocusFillBrush;
-                pa.Stroke = FocusBorderBrush;
-
-                SelectedMenuID = id;
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\RadialMenuModalDialog.xaml.cs Path_MouseLeave ex:" + ex.Message);
             }
-            SelectedActionID = PenActions.RadialActions[SelectedMenuID].AssignedAction.ID;
-            RefreshAction();
         }
     }
 }

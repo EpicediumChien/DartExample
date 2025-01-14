@@ -65,15 +65,15 @@
                             </ProgressBar.Triggers>
                         </ProgressBar>
                     </Grid>
-                    <Grid Grid.Row="1" Margin="0, 50, 0, 0" Width="400" Height="30" HorizontalAlignment="Left">
+                    <Grid Grid.Row="1" Margin="0, 50, 0, 0" HorizontalAlignment="Left">
                         <UXControls:UXTextBlock Text="{Binding [Kvm.2], Source={x:Static lang:LangHelper.Instance}}"
                                                 Foreground="{DynamicResource DefaultTheme_PbHeaderColor}"
                                                 FontSize="20" LineHeight="28" />
                     </Grid>
                     <!-- Elsa 20250109 For PIMS [PIMS-334089] change FontSize="48" to FontSize="42" & remove LineHeight="76" and add TextWrapping="WrapWithOverflow" -->
-                    <Grid Grid.Row="2" Margin="0, 8, 0 ,0" Width="476" Height="150" HorizontalAlignment="Left">
+                    <Grid Grid.Row="2" Margin="0, 8, 0 ,0" HorizontalAlignment="Left">
                         <UXControls:UXTextBlock Text="{Binding [Kvm.3], Source={x:Static lang:LangHelper.Instance}}"
-                                                FontSize="42" TextWrapping="WrapWithOverflow" />
+                                                FontSize="64" TextWrapping="WrapWithOverflow" />
                     </Grid>
                     <!-- Elsa 20250109 For PIMS [PIMS-334089] add TextWrapping="WrapWithOverflow" -->
                     <!--<Grid Grid.Row="3" Margin="0, 16, 0, 0" Width="476" Height="120" HorizontalAlignment="Left">-->
@@ -82,14 +82,14 @@
                                                 Text="{Binding [Kvm.4], Source={x:Static lang:LangHelper.Instance}}"
                                                 FontSize="16" LineHeight="24" TextWrapping="WrapWithOverflow"/>
                     <!--</Grid>-->
-                    <Grid Grid.Row="4" Margin="0, 93, 0 ,0">
+                    <Grid Grid.Row="4" Margin="0, 90, 0 ,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0">
-                            <UXControls:UXButton ButtonType="Secondary" Width="48" Height="40"
+                            <UXControls:UXButton ButtonType="Secondary" MinWidth="48" Height="40"
                                                  ButtonSize="Medium"
                                                  IconAnimation="Move"
                                                  Click="BackInputFullView"
@@ -120,26 +120,30 @@
                                         VerticalContentAlignment="Center"
                                         Padding="40,8" Margin="10,0" MinWidth="164" Height="40">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"/>
+                                    <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="14"/>
                                     <Path Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white"/>
                                 </StackPanel>
                             </UXControls:UXButton>
                             <UXControls:UXButton IconPosition="IconRight"
                                                 ButtonType="Primary"
                                                 ButtonSize="Medium"
-                                                Content="{Binding [Finish], Source={x:Static lang:LangHelper.Instance}}"
-                                                ContentStringFormat="{}{0} ⭢"
+                                                ContentStringFormat="{}{0}"
                                                 IconAnimation="Move"
                                                 Click="USBKVMFinish"
                                                 HorizontalContentAlignment="Center"
                                                 VerticalContentAlignment="Center"
-                                                Padding="40,8" Margin="10,0" Width="164" Height="40"
-                                                Visibility="{Binding NoPxP}" />
+                                                Padding="40,8" Margin="10,0" MinWidth="164" Height="40"
+                                                Visibility="{Binding NoPxP}">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Finish], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="14"/>
+                                    <Path Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white"/>
+                                </StackPanel>
+                            </UXControls:UXButton>
                         </Grid>
                         <Grid Grid.Column="2">
-                            <UXControls:UXButton ButtonSize="Medium" Width="90" Height="40"
+                            <UXControls:UXButton ButtonSize="Medium" MinWidth="90" Height="40"
                                                  ButtonType="Tertiary"
-                                                 Content="{Binding [Close], Source={x:Static lang:LangHelper.Instance}}"
+                                                 Content="{Binding [Close], Source={x:Static lang:LangHelper.Instance}}" FontSize="14"
                                                  IconAnimation="Move" Visibility="{Binding isPxP}"
                                                  Click="CloseUSBKVM" />
                         </Grid>
