@@ -394,17 +394,17 @@
                 <Border Background="Transparent" MouseDown="PushBack"></Border>
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                        <Border MaxWidth="350" Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
+                        <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="DongleConnection" Height="130">
                             <StackPanel Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal" Margin="20,18,0,0">
                                     <ContentControl Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
                                     <!-- <Image Margin="4,0,0,0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" /> -->
-                                    <UXControls:UXTextBlock Width="auto" TextWrapping="WrapWithOverflow" Name="txtDongleHost" Foreground="{DynamicResource DefaultTheme_TxtColor}" VerticalAlignment="Center" Margin="7,0,0,0"
+                                    <UXControls:UXTextBlock Width="200" TextTrimming="CharacterEllipsis" Name="txtDongleHost" Foreground="{DynamicResource DefaultTheme_TxtColor}" VerticalAlignment="Center" Margin="7,0,0,0"
                                                             HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" FontWeight="Bold" Text="{Binding [USBWirelessReceiver], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                                 <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
-                                <UXControls:UXTextBlock TextWrapping="WrapWithOverflow" Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" Margin="20,13,0,0" />
-                                <UXControls:UXTextBlock TextWrapping="WrapWithOverflow" Name="txtSlot" Style="{StaticResource ConnectionStyle3}" Margin="20,15,0,0" />
+                                <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" Margin="20,13,0,0" />
+                                <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtSlot" Style="{StaticResource ConnectionStyle3}" Margin="20,15,0,0" />
                             </StackPanel>
                         </Border>
                         <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="BLConnection" VerticalAlignment="Bottom">
