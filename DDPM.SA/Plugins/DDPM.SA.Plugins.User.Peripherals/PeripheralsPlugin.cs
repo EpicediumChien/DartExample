@@ -3492,10 +3492,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     //Console.WriteLine(isAnyUpdateAvailable ? "UpdateAvailable" : "Already Updated.");
                     _logs.DebugMsg_1($"[PeripheralsPlugin] isAnyUpdateAvailable = {(isAnyUpdateAvailable ? "UpdateAvailable" : "Already Updated.")}");
                 }
-                if (isAnyUpdateAvailable)
-                {
-                    OnUpdateNotify(isAnyUpdateAvailable);
-                }
+                OnUpdateNotify(isAnyUpdateAvailable);
                 _logs.DebugMsg_1($"[PeripheralsPlugin] IUpdateManager_IsAnyUpdateAvailableChanged done");
             }
         }

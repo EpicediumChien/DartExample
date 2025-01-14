@@ -392,13 +392,18 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].DeviceModelNumber = {updateHelper.UpdateItems[i].DeviceModelNumber}");
                             DeviceInfo? deviceInfo = deviceInfos.Find(o => o.ID.ToString().Equals(updateHelper.UpdateItems[i].DeviceId.Replace("{", "").Replace("}", "")));
                             string deviceConnectivity = string.Empty;
-                            string deviceSupplierID = string.Empty;
+                            string deviceSupplierID = updateHelper.UpdateItems[i].SupplierID;
+                            _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].SupplierID = {deviceSupplierID}");
                             string oldVer = updateHelper.UpdateItems[i].CurrentVersion;
                             if (deviceInfo != null)
                             {
                                 _logs.DebugMsg_1($"{nameof(CheckUpdate)} {nameof(deviceInfo)} is no null");
                                 deviceConnectivity = GetConnected(deviceInfo.PhysicalDeviceType);
-                                deviceSupplierID = GetODM(deviceInfo.OdmId);
+                                if (string.IsNullOrEmpty(deviceSupplierID))
+                                {
+                                    deviceSupplierID = GetODM(deviceInfo.OdmId);
+                                    _logs.DebugMsg_1($"GetODM deviceSupplierID = {deviceSupplierID}");
+                                }
                                 oldVer = deviceInfo.FirmwareVersion;
                             }
                             _logs.DebugMsg_1($"updateHelper.UpdateItems[{i}].NewVersion = {updateHelper.UpdateItems[i].NewVersion}");
@@ -893,6 +898,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     StopService();
                 }
+                _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} Rearrange go");
+                fwUpdateInfos = Rearrange(fwUpdateInfos);
+                _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} Rearrange done");
                 for (int i = 0; i < fwUpdateInfos.Count; i++)
                 {
                     _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} DeviceName : {fwUpdateInfos[i].DeviceName} Model : {fwUpdateInfos[i].Model} start");
@@ -2643,6 +2651,55 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             _logs.DebugMsg_1($"Check_CanBeOTAUpdate finish. ret : {ret}");
             return ret;
+        }
+        /// <summary>
+        /// Rearrange firmware update order
+        /// </summary>
+        /// <param name="fWUpdateInfos">Original array</param>
+        /// <returns>Arranged array</returns>
+        List<FWUpdateInfo> Rearrange(List<FWUpdateInfo> fWUpdateInfos)
+        {
+            _logs.DebugMsg_1($"{nameof(Rearrange)} start");
+            try
+            {
+                //Define sorting priorities
+                var priority = new Dictionary<DeviceType, int>
+                {
+                    { DeviceType.PhysicalDongle, 1 },
+                    { DeviceType.PhysicalAudioDongle, 2 },
+
+                    { DeviceType.LogicalWebcam, 3 },
+                    { DeviceType.PhysicalWebcam, 4 },
+
+                    { DeviceType.LogicalPen, 5 },
+                    { DeviceType.PhysicalPen, 6 },
+
+                    { DeviceType.LogicalMouse, 7 },
+                    { DeviceType.LogicalKeyboard, 8 },
+
+                    { DeviceType.LogicalWiredAudio, 9 },
+                    { DeviceType.PhysicalWiredAudio, 10 },
+                    { DeviceType.PhysicalBluetoothAudio, 11 },
+
+                    { DeviceType.Unknown, 12 }, // Display
+                    { DeviceType.PhysicalWiredDock, 13 },
+                    { DeviceType.LogicalDock, 14 }
+                };
+
+                fWUpdateInfos.Sort((x, y) =>
+                {
+                    int xPriority = x.IsDisplay ? priority[DeviceType.Unknown] : priority.GetValueOrDefault(x.DeviceType, int.MaxValue);
+                    int yPriority = y.IsDisplay ? priority[DeviceType.Unknown] : priority.GetValueOrDefault(y.DeviceType, int.MaxValue);
+
+                    return xPriority.CompareTo(yPriority);
+                });
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"{nameof(Rearrange)} error : {ex.Message}");
+            }
+            _logs.DebugMsg_1($"{nameof(Rearrange)} done");
+            return fWUpdateInfos;
         }
 
         // add @ 20241202 stephen
