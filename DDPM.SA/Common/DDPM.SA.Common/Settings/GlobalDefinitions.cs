@@ -13,5 +13,6 @@ namespace DDPM.SA.Common.Settings
         public const string Display_FWU_URL_Folder = @$"/Windows/Display/Firmware/";
         public const string SW_URL_Folder = @$"/Windows/Application/";
         public const string Dongle_BeforeGen2_Name = "Dell Universal Receiver";
+        public const string Display_ICC_URL_Folder = @"ICC/";
     }
 }
