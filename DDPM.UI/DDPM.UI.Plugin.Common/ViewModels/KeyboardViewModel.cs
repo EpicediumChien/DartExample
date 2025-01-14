@@ -1233,5 +1233,16 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
         public CTKMessageHelper CTKMessageHelper { get; set; } = new();
+
+        private bool isBatteryUnavailable { get; set; } = false;
+
+        public bool IsBatteryUnavailable 
+        {
+            get { return isBatteryUnavailable; }
+            set {
+                isBatteryUnavailable = value;
+                OnPropertyChanged(nameof(IsBatteryUnavailable));
+            }
+        }
     }
 }

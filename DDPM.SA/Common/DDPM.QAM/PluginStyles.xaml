@@ -526,9 +526,5 @@
         <Setter Property="ItemContainerStyle" Value="{StaticResource DdpmComboBoxItemContainerStyle}" />
     </Style>
 
-    <SolidColorBrush x:Key="Tooltip_BkColor" Color="#FF1D2C3B" />
-    <SolidColorBrush x:Key="Tooltip_BdColor" Color="#FF293B4D" />
-    <SolidColorBrush x:Key="Tooltip_TextColor" Color="#FFF5F6F7" />
-    
     <!--  ComboBoxItem style of DdpmComboBox  -->
 </ResourceDictionary>
