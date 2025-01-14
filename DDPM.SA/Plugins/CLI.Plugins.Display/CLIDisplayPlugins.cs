@@ -9999,20 +9999,19 @@ namespace DDPM.CLI.Plugins.Display
                 }
             }
 
-            //If -ServiceTag=[{tag0}],[{tag1}],[{tag2}],... is specified
+            //If -model=[{model0}],[{model1}],[{model2}],... is specified
             if (cmdLineInput.Model.Count > 0)
             {
                 isAllMonitors = false;
                 foreach (MonitorInfo mi in allMonitors)
                 {
-                    if (!String.IsNullOrWhiteSpace(mi.edid.ServiceTag))
+                    if (!String.IsNullOrWhiteSpace(mi.modelName))
                     {
-                        //Check if this monitor's service tag in in the -ServiceTag list
-                        string? match = cmdLineInput.Model.FirstOrDefault(x => x.Equals(mi.edid.ModelName, StringComparison.OrdinalIgnoreCase));
+                        //Check if this monitor's model name in in the -model list
+                        string? match = cmdLineInput.Model.FirstOrDefault(x => x.Equals(mi.modelName, StringComparison.OrdinalIgnoreCase));
                         if (match != null) //If found, add index value to listOut
                             listOut.Add(mi.Index);
                     }
-                    //Empty ServiceTage will not be added
                 }
             }
             //If -Index=[{idx0}],[{idx1}],[{idx2}],... is specified
