@@ -984,50 +984,66 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         method.DeleteFolder(savePath);
                         continue;
                     }
-                    _downloadTimer = new Timer();
-                    _downloadTimer.Interval = 1000;
-                    _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
-                    _downloadTimer.Start();
-                    download = new Download(_logs);
-                    string downloadInfo = "";
-                    // 將儲存路徑與從 URL 中提取的檔案名稱組合
-                    if (_IsSkipSHA)
+                    string _installationFileStoragePath;
+                    try
                     {
-                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {url}");
+                        _downloadTimer = new Timer();
+                        _downloadTimer.Interval = 1000;
+                        _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
+                        _downloadTimer.Start();
+                        download = new Download(_logs);
+                        string downloadInfo = "";
+                        // 將儲存路徑與從 URL 中提取的檔案名稱組合
+                        if (_IsSkipSHA)
+                        {
+                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {url}");
+                        }
+                        _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
+                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile go");
+                        bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA);
+                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile finish");
+                        _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
+                        _downloadTimer.Stop();
+                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                        {
+                            DeviceName = fwUpdateInfos[i].DeviceName,
+                            Model = fwUpdateInfos[i].Model,
+                            TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                            ProcessName = "Downloading",
+                            ProcessProgress = 100,
+                        };
+                        sendMessageToEvent(updateProgressInfo);
+                        if (!downloadRet)
+                        {
+                            if (downloadInfo.Equals("CA check fail"))
+                            {
+                                _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} CA check fail");
+                                fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.CAFail;
+                                _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
+                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            }
+                            else if (downloadInfo.Equals("Network fail"))
+                            {
+                                _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} Network fail");
+                                fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
+                                _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
+                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            }
+                            _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download File Fail");
+                            method.DeleteFolder(savePath);
+                            continue;
+                        }
                     }
-                    string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
-                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile go");
-                    bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA);
-                    _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile finish");
-                    _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
-                    _downloadTimer.Stop();
-                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                    catch (Exception ex)
                     {
-                        DeviceName = fwUpdateInfos[i].DeviceName,
-                        Model = fwUpdateInfos[i].Model,
-                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
-                        ProcessName = "Downloading",
-                        ProcessProgress = 100,
-                    };
-                    sendMessageToEvent(updateProgressInfo);
-                    if (!downloadRet)
-                    {
-                        if (downloadInfo.Equals("CA check fail"))
-                        {
-                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.CAFail;
-                            _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
-                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                        }
-                        else if (downloadInfo.Equals("Network fail"))
-                        {
-                            fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
-                            _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
-                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                        }
-                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download File Fail");
+                        _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download error : " + ex.Message);
+                        fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
+                        _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
+                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         method.DeleteFolder(savePath);
                         continue;
                     }
+
                     string extractPath = Path.Combine(savePath + Path.GetFileName(url).Substring(0, Path.GetFileName(url).Length - 4));
                     if (!Directory.Exists(extractPath))
                     {
@@ -1092,6 +1108,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     catch (Exception ex)
                     {
                         _logs.DebugMsg_1($"{fwUpdateInfos[i].DeviceName} FileLock Error: {ex.Message}");
+                        _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Firmware_update_unsuccessful"]}";
+                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                     }
                     method.DeleteFolder(savePath);
                     _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} DeviceName : {fwUpdateInfos[i].DeviceName} Model : {fwUpdateInfos[i].Model} done");
@@ -1126,10 +1144,6 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
                     _downloadTimer.Stop();
                     _downloadTimer = null;
-                }
-                foreach (FWUpdateInfo deviceInfo in fwUpdateInfos)
-                {
-                    deviceInfo.FWUErrorCode = FWUErrorCode.NetworkDisconnection;
                 }
                 _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                 NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
@@ -1416,62 +1430,70 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// </summary>
         private void NotificationFWupdate(string title, string info, bool isInfo = true, bool isOnlyUpdate = false, bool stayOpen = false, int timeout = 5)
         {
-            _logs.DebugMsg_1($"{nameof(NotificationFWupdate)} title : {title}, info : {info}");
-            _logs.DebugMsg_1($"{nameof(NotificationFWupdate)} _IsUITrigger : {_IsUITrigger}");
-            _logs.DebugMsg_1($"{nameof(NotificationFWupdate)} _IsShowNotify : {_IsShowNotify}");
-            _logs.DebugMsg_1($"{nameof(NotificationFWupdate)} _isForce : {_isForce}");
-            if (!_IsUITrigger)
+            try
             {
-                if (!_IsShowNotify && _isForce)
+                _logs.DebugMsg_1($"{nameof(NotificationFWupdate)} title : {title}, info : {info}");
+                _logs.DebugMsg_1($"{nameof(NotificationFWupdate)} _IsUITrigger : {_IsUITrigger}");
+                _logs.DebugMsg_1($"{nameof(NotificationFWupdate)} _IsShowNotify : {_IsShowNotify}");
+                _logs.DebugMsg_1($"{nameof(NotificationFWupdate)} _isForce : {_isForce}");
+                if (!_IsUITrigger)
                 {
-                    Task.Run(() =>
+                    if (!_IsShowNotify && _isForce)
                     {
-                        UpdateEvent();
-                    });
-                }
-                if (!string.IsNullOrEmpty(info) && _IsShowNotify)
-                {
-                    PopupContentPackage popupContentPackage = new PopupContentPackage()
+                        Task.Run(() =>
+                        {
+                            UpdateEvent();
+                        });
+                    }
+                    if (!string.IsNullOrEmpty(info) && _IsShowNotify)
                     {
-                        Title = title,
-                        Info = info,
-                        IsInfo = isInfo,
-                        IsOnlyUpdate = isOnlyUpdate,
-                        StayOpen = stayOpen,
-                        Timeout = timeout,
-                        Object = _fWUpdateInfoPackage,
-                        PopupType = PopupContentPackage_Enum.FWU
-                    };
-                    CallPopup?.AsyncFireAndForget(this, popupContentPackage, System.Threading.CancellationToken.None);
-                    //Task.Run(() =>
-                    //{
-                    //    PopupBaseManage popupBaseManage = new PopupBaseManage();
-                    //    popupBaseManage.LeftButtonClick += UpdateEvent;
-                    //    popupBaseManage.RightButtonClick += DelayEvent;
-                    //    if (isInfo)
-                    //    {
-                    //        popupBaseManage.FWU_Show(title, info, "", "", _fWUpdateInfoPackage, stayOpen, timeout);
-                    //    }
-                    //    else if (isOnlyUpdate)
-                    //    {
-                    //        popupBaseManage.Default_Event += UpdateEvent;
-                    //        popupBaseManage.FWU_Show(title, info, "Update", "", _fWUpdateInfoPackage, stayOpen, timeout);
-                    //    }
-                    //    else
-                    //    {
-                    //        popupBaseManage.Default_Event += DelayEvent;
-                    //        popupBaseManage.FWU_Show(title, info, "Update", "Delay", _fWUpdateInfoPackage, stayOpen, timeout);
-                    //    }
+                        PopupContentPackage popupContentPackage = new PopupContentPackage()
+                        {
+                            Title = title,
+                            Info = info,
+                            IsInfo = isInfo,
+                            IsOnlyUpdate = isOnlyUpdate,
+                            StayOpen = stayOpen,
+                            Timeout = timeout,
+                            Object = _fWUpdateInfoPackage,
+                            PopupType = PopupContentPackage_Enum.FWU
+                        };
+                        CallPopup?.AsyncFireAndForget(this, popupContentPackage, System.Threading.CancellationToken.None);
+                        //Task.Run(() =>
+                        //{
+                        //    PopupBaseManage popupBaseManage = new PopupBaseManage();
+                        //    popupBaseManage.LeftButtonClick += UpdateEvent;
+                        //    popupBaseManage.RightButtonClick += DelayEvent;
+                        //    if (isInfo)
+                        //    {
+                        //        popupBaseManage.FWU_Show(title, info, "", "", _fWUpdateInfoPackage, stayOpen, timeout);
+                        //    }
+                        //    else if (isOnlyUpdate)
+                        //    {
+                        //        popupBaseManage.Default_Event += UpdateEvent;
+                        //        popupBaseManage.FWU_Show(title, info, "Update", "", _fWUpdateInfoPackage, stayOpen, timeout);
+                        //    }
+                        //    else
+                        //    {
+                        //        popupBaseManage.Default_Event += DelayEvent;
+                        //        popupBaseManage.FWU_Show(title, info, "Update", "Delay", _fWUpdateInfoPackage, stayOpen, timeout);
+                        //    }
 
-                    //});
+                        //});
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(info))
+                    {
+                        CallOSD?.AsyncFireAndForget(this, (title, info, stayOpen), System.Threading.CancellationToken.None);
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                if (!string.IsNullOrEmpty(info))
-                {
-                    CallOSD?.AsyncFireAndForget(this, (title, info, stayOpen), System.Threading.CancellationToken.None);
-                }
+                _logs.DebugMsg_1($"{nameof(NotificationFWupdate)} error : {ex.Message}");
+
             }
         }
 

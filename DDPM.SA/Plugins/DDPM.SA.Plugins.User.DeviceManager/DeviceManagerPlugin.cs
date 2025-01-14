@@ -11750,7 +11750,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             if (popupBaseViewModel != null)
             {
-                writelog($"popupBaseViewModel UpdateContent");
+                //writelog($"popupBaseViewModel UpdateContent");
                 //writelog($"{nameof(OnProgressUpdateEvent)} {fWUpdateInfo.DeviceName} {fWUpdateInfo.TheLatestVersion} {fWUpdateInfo.ProcessName} {fWUpdateInfo.ProcessProgress} {DateTime.Now}");
                 popupBaseViewModel.UpdateContent(LangHelper.Instance["FW_info"], fWUpdateInfo);
             }
