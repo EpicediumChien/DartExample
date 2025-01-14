@@ -191,8 +191,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             InitializePipPbpManagerPlugin();
             //Robert_Lin, 2024-7-4
             InitializeEAPlugin();
-
-            InitializeSettingsPlugin();
         }
 
         #endregion
@@ -265,11 +263,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             // If APP WalkThrough not done, need re-launch APP
             if (IsDDPMLaunchEarly && !IsDDPMLaunchNow)
             {
+                if (_SettingsPlugin == null)
+                {
+                    _logs.DebugMsg($"Reset0x52TimerTick LauncDDPM but _SettingsPlugin NULL ... ");
+                    return Task.FromResult(Task.CompletedTask);
+                }
                 _logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect IsDDPMLaunchEarly true, IsDDPMLaunchNow false");
                 string UserId = WTSFunction.DirectGetUserID(Log);
                 string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
                 string regKeyForDDPM = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
-
                 object regValue = _SettingsPlugin.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM).Result;
                 _logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect regValue {Convert.ToBoolean(regValue).ToString()}");
                 if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
@@ -3456,18 +3458,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 GetCurrentPipPbpCondition();
             }
         }
-        private void InitializeSettingsPlugin()
+        public Task GetSettingsPlugin(ISettingsManagerDev SettingsPlugin)
         {
-            if (_SettingsPlugin != null)
-                return;
-
-            _SettingsPlugin = _agent.PluginManager.FindPluginByType<ISettingsManagerDev>(PluginResolution.Dynamic);
-
-            if (_SettingsPlugin is IFrameworkPluginConditionNotification pluginCondition)
-            {
-                pluginCondition.PluginConditionChangeHandler += OnSettingsPluginConditionChangeHandler;
-                GetCurrentSettingsPluginCondition();
-            }
+            _SettingsPlugin = SettingsPlugin;
+            return Task.CompletedTask;
         }
 
         private void GetCurrentPipPbpCondition()
@@ -3497,39 +3491,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             });
         }
 
-        private void GetCurrentSettingsPluginCondition()
-        {
-            _ = Task.Run(async () =>
-            {
-                var pluginCondition = await (_SettingsPlugin as IFrameworkPluginConditionNotification)?.CurrentConditionAsync();
-                //PluginCondition _SettingsPluginCondition;
-                lock (_SettingsPluginConditionLock)
-                {
-                    if (pluginCondition is PluginErrorCondition)
-                    {
-                        _logs.DebugMsg($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in an error condition");
-                    }
-                    else if (pluginCondition is PluginRunningCondition || pluginCondition is PluginStartedCondition)
-                    {
-                        _logs.DebugMsg($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in a running/started condition");              
-                    }
-                    else
-                    {
-                        _logs.DebugMsg($"{nameof(GetCurrentSettingsPluginCondition)} - Settings Plugin is in unknow condition: {pluginCondition}");
-                    }
-                }
-            });
-        }
-
         private void PipPbpCondition_PluginConditionChangeHandler(object sender, EventArgs e)
         {
             GetCurrentPipPbpCondition();
         }
 
-        private void OnSettingsPluginConditionChangeHandler(object sender, EventArgs e)
-        {
-            GetCurrentSettingsPluginCondition();
-        }
         public Task<UInt16[]> GetPipPbpCapabilitiesWords(MonitorInfo monitorInfo)
         {
             if (_pipPbpService != null)

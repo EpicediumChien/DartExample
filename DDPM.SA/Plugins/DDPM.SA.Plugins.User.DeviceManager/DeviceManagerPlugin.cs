@@ -10515,6 +10515,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void SettingsReady(object o, EventArgs eventArgs)
         {
+            _DisplayManagerPlugin.GetSettingsPlugin(_SettingsPlugin);
             UpdateInstancesToPeripheralPlugin(_SettingsPlugin, null);
             LoadGlobalSettingParam();
             //Migration
