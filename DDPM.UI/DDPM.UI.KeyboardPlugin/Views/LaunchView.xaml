@@ -467,7 +467,7 @@
                         <DDPMUserControls:BatteryIndicator Name="Battery" Margin="0,0,0,70" HorizontalAlignment="Center" MouseEnter="BatteryIndicator_MouseEnter"
                                                            BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}" MouseLeave="BatteryIndicator_MouseLeave"
                                                            NoBattery="{Binding IsBatteryUnavailable}" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
-                        <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="{Binding IsRestoreEnable, Converter={StaticResource BoolToVisibilityConverter}}" x:Name="btnRestore"
+                        <Border Style="{StaticResource BorderUnpair}" MinWidth="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="{Binding IsRestoreEnable, Converter={StaticResource BoolToVisibilityConverter}}" x:Name="btnRestore"
                                 BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
