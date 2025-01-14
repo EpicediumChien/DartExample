@@ -16,7 +16,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/DDPM.UI.Common;component/PluginStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <local:VbarItemViewModel x:Key="vmDesign" Text="Robert" />
+            <local:VbarItemViewModel x:Key="vmDesign" Text="Lorem ipsum dolor sit amet consectetur. Fermentum cras" />
             <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
@@ -94,9 +94,13 @@
                         </Style>
                     </ContentControl.Style>
                 </ContentControl>
+                <!-- Robert_Lin PIMS-334922] L10N: i18N: DDPM 2.0: GUI: TP1: pt-BR: Clipping found in stringID: AudioSettings
+                VbarItem in Soundbar, the text is clipped. Need to support max 2 rows, . If exceeding 2 lines (edge case), shorten it with “...” ->
+                -->
                 <!--Chewlin 20250109 for PIMS 334922 fix VarItem Animation slow loading issue,remove TextWrapping="Wrap"-->
                 <UXControls:UXTextBlock Grid.Column="1" Text="{Binding Text}" FontSize="14"
-                                        VerticalAlignment="Center" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"
+                                        VerticalAlignment="Center" HorizontalAlignment="Left"
+                                        MaxHeight="54" Margin="0,8,8,8"
                                         TextBlockType="Subtitle2" TextBlockSemanticColorType="Light">
                     <UXControls:UXTextBlock.Style>
                         <Style TargetType="UXControls:UXTextBlock">
@@ -109,6 +113,7 @@
                                 -->
                                 <DataTrigger Binding="{Binding Width, ElementName=bdRoot}"  Value="212">
                                     <Setter Property="TextWrapping"  Value="WrapWithOverflow" />
+                                    <Setter Property="TextTrimming"  Value="CharacterEllipsis" />
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding IsSelected}"  Value="True">
                                     <Setter Property="Foreground"  Value="#FFFFFF" />

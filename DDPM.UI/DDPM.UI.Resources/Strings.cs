@@ -20,7 +20,7 @@ namespace DDPM.UI.Common
 #if MULTILINGUAL_TEST
             //Robert_Lin 2025-1-13 To do multilingual test, please remove below comments
             //
-            CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("pt-PT");
+            CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("uk");
             string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
 #else
             //And comment-out below line

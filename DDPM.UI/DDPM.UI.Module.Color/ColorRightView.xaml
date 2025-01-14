@@ -387,20 +387,58 @@
                         <Expander x:Name="Expander_Advanced_Settings"  Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" >
                             <Expander.Header>
                                 <!-- Group Header:  Advanced Settings-->
+                                <!-- Robert_Lin 2025-1-14 PIMS-333569] L10N: i18N: DDPM 2.0: GUI: TP1: es-ES, es-XL, it-IT, pt-PT, pt-BR, ua-UK: Clipping found in stringID: AdvancedSettings
+                                The ColumnDefinition of Column 0 Width=140, causes the text been clipped.
+                                Change Grid ColumnDefinitions to *,Auto   Text will has "..." if it is clipped.
+                                OLD:
+                                    <Grid.ColumnDefinitions>
+                                       <ColumnDefinition Width="140" />
+                                       <ColumnDefinition />
+                                   </Grid.ColumnDefinitions>
+           
+                                   <UXControls:UXTextBlock  Margin="0,0,0,0" Text="{Binding [AdvancedSettings], Source={x:Static lang:LangHelper.Instance}}" FontSize="15" 
+                                                          TextBlockType="Caption"
+                                                          VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                 -->
                                 <Grid Height="60">
 
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="140" />
-                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <UXControls:UXTextBlock  Margin="0,0,0,0" Text="{Binding [AdvancedSettings], Source={x:Static lang:LangHelper.Instance}}" FontSize="15" 
-                                                            TextBlockType="Caption"
+                                    <UXControls:UXTextBlock  Margin="0,0,8,0" 
+                                                             Text="{Binding [AdvancedSettings], Source={x:Static lang:LangHelper.Instance}}" FontSize="15" 
+                                                            TextBlockType="Caption" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
                                                             VerticalAlignment="Center" HorizontalAlignment="Left" />
-                                    <Image Grid.Column="1" Visibility="{Binding LockMaskVisible}" 
-                                        Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                        VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
-                                        <Image.ToolTip>
+                                    
+                                    <!-- Robert_Lin 2025-1-14 Change the Icon from Image to ContentControl, which use Path to draw the LockIcon to meet Light mode requirements.
+                                    OLD:
+                                    <Image Grid.Column="1" Visibility="{Binding LockMaskVisible}" d:Visibility="Visible"
+                                       Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                                       VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
+                                       <Image.ToolTip>
+                                           <ToolTip>
+                                               <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                   <Border.Resources>
+                                                       <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                   </Border.Resources>
+                                                   <StackPanel>
+                                                       <StackPanel Orientation="Horizontal">
+                                                           <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                       </StackPanel>
+                                                   </StackPanel>
+                                               </Border>
+                                           </ToolTip>
+                                       </Image.ToolTip>
+                                   </Image>
+
+                                    -->
+                                    <ContentControl Grid.Column="1" Visibility="{Binding LockMaskVisible}" VerticalAlignment="Center"
+                                                    Template="{StaticResource icon_Lock}" Foreground="{DynamicResource LockIcon_Fill}">
+
+                                        <ContentControl.ToolTip>
+
                                             <ToolTip>
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                     <Border.Resources>
@@ -413,10 +451,10 @@
                                                     </StackPanel>
                                                 </Border>
                                             </ToolTip>
-                                        </Image.ToolTip>
-                                    </Image>
+                                        </ContentControl.ToolTip>
+                                    </ContentControl>
 
-                                </Grid>
+                                  </Grid>
                             </Expander.Header>
 
                             <Expander.Content>
