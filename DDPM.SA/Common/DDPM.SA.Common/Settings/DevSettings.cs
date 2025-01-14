@@ -184,6 +184,7 @@ namespace DDPM.SA.Common.Settings
 
         #region Multilingual
 
+        //Robert_Lin 2025-1-14 This section will be removed.
         //Usage exmaple:
         //
         //  if (DevSettings.IsMultiligualTestEnabled())
