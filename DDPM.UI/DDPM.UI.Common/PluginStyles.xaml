@@ -30,7 +30,7 @@
             <!--<TextBlock Text="{TemplateBinding Content}"
                         FontFamily="Arial" ToolTipService.InitialShowDelay="1"
                         FontSize="12"
-                        FontWeight="Normal"BorderConnection
+                        FontWeight="Normal"
                         Foreground="#F5F6F7"
                         Background="#193475F2"
                         Padding="8,12,8,12" />-->

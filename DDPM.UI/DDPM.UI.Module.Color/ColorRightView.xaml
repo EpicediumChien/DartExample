@@ -53,7 +53,7 @@
                                     <TextBlock
                         FontFamily="Roboto"
                         FontSize="13">
-                        <Run Text="Color is not available when" />
+                        <Run Text="{Binding [ColorMsg.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                         <Hyperlink Click="Hyperlink_Click">
                             <Hyperlink.Style>
                                 <Style TargetType="Hyperlink">

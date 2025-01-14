@@ -6,6 +6,7 @@
                      xmlns:local="clr-namespace:DDPM.SA.Common.UpdateProgressPage"
                      xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
                      xmlns:Alert="clr-namespace:DDPM.SA.Common.Alert"
+                     xmlns:lang="clr-namespace:DDPM.SA.Resources.Helper;assembly=DDPM.SA.Resources"
                      mc:Ignorable="d"
                      WindowStartupLocation="CenterScreen"
                      WindowStyle="None"
@@ -183,7 +184,7 @@
                         Grid.Row="6">
                 <Alert:AlertBase Margin="5"
                                  AlertType="Info"
-                                 Message="Please do not power down system until updates are complete."
+                                 Message="{Binding [UpdateProgressMsg], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
                                  Height="53" />
                 <Alert:AlertBase Margin="5"
                                  AlertType="Info"

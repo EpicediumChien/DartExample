@@ -60,13 +60,18 @@ namespace DDPM.UI.Plugin.MousePlugin
 
             if (_vm.EOLMouseList.Contains(_vm.Model))
             {
-                Battery.Visibility = Visibility.Collapsed;
+                //Battery.Visibility = Visibility.Collapsed;
                 //btnRestore.Visibility = Visibility.Collapsed;
                 //txtEOL.Text = Strings.EOLMessage;
                 txtEOL.Visibility = Visibility.Visible;
                 SectionA.Visibility = Visibility.Collapsed;
                 SectionB.Visibility = Visibility.Collapsed;
-                EOLDongle.Visibility = Visibility.Visible;
+                _vm.IsBatteryUnavailable = true;
+                //EOLDongle.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                _vm.IsBatteryUnavailable = false;
             }
             BuildModuleGroups();
 

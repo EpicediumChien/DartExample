@@ -116,19 +116,19 @@
                             <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
                                                  ButtonType="Primary" Padding="40, 8"
                                                  ButtonSize="Medium" VerticalContentAlignment="Center"
-                                                 Content="Save"  Margin="0"
+                                                 Content="{Binding [Save], Source={x:Static lang:LangHelper.Instance}}"  Margin="0"
                                                  IconAnimation="Move" Width="164" Height="40"
                                                  Click="SaveInput" Visibility="{Binding EditInput}" />
                         </Grid>
                         <Grid Grid.Column="1">
                             <UXControls:UXButton ButtonType="Tertiary" Width="90" Height="40"
                                                  ButtonSize="Medium" Margin="10, 0"
-                                                 Content="Close"
+                                                 Content="{Binding [Close], Source={x:Static lang:LangHelper.Instance}}"
                                                  IconAnimation="Move"
                                                  Click="CloseUSBKVM" Visibility="{Binding SetInput}" />
                             <UXControls:UXButton ButtonType="Tertiary" Width="90" Height="40"
                                                  ButtonSize="Medium" Margin="10, 0"
-                                                 Content="Cancel"
+                                                 Content="{Binding [Cancel], Source={x:Static lang:LangHelper.Instance}}"
                                                  IconAnimation="Move"
                                                  Click="CloseUSBKVM" Visibility="{Binding EditInput}" />
                         </Grid>

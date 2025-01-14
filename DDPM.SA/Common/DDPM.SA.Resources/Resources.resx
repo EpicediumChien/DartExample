@@ -537,4 +537,7 @@
   <data name="WebCameraSettings.2" xml:space="preserve">
     <value>Utilizes intelligent scene analysis and facial tracking to zoom and pan the view when you move</value>
   </data>
+  <data name="UpdateProgressMsg" xml:space="preserve">
+    <value>Please do not power down system until updates are complete.</value>
+  </data>
 </root>
