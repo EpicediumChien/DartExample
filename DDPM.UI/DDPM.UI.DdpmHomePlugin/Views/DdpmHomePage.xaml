@@ -200,14 +200,14 @@
                     </Style>
                 </Grid.Style>
 
-                <UXControls:UXTextBlock Grid.Row="0" Text="NO DEVICE DETECTED" 
+                <UXControls:UXTextBlock Grid.Row="0" Text="{Binding [NoDeviceDetected], Source={x:Static lang:LangHelper.Instance}}" 
                                         FontSize="20"
                                         Foreground="{DynamicResource HomePageFeature_TxtColor}" HorizontalAlignment="Center"/>
-                <UXControls:UXTextBlock Grid.Row="1" Text="Add your first device" 
+                <UXControls:UXTextBlock Grid.Row="1" Text="{Binding [Add1sDevice], Source={x:Static lang:LangHelper.Instance}}" 
                                         FontSize="64"
                                         Margin="0,16,0,50"
                                         Foreground="{DynamicResource HomePageKeyFeature_TxtColor}" HorizontalAlignment="Center"/>
-                <UXControls:UXButton Grid.Row="2" Content="Connect" ButtonType="Primary"
+                <UXControls:UXButton Grid.Row="2" Content="{Binding [Connect], Source={x:Static lang:LangHelper.Instance}}" ButtonType="Primary"
                                      MinWidth="160" Padding="24,2" FontSize="14"
                                      Command="{Binding ConnectButtonClickCommand}" />
             </Grid>
