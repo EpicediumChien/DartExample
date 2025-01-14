@@ -1529,6 +1529,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     // If the device is not supported, directly update the registry to true and return
                     if (!devicePages.ContainsKey(modelNumber))
                     {
+                        await _deviceManager.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true);
                         _log.Info($"[Walkthrough] Device {modelNumber} not found in devicePages, skipping.");
                         return;
                     }

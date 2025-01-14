@@ -243,6 +243,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private System.Timers.Timer _checkUpdateScheduleTimer;//Added 01/07 by Bruce
         DisplayUpdateHelper displayUpdateHelper;
 
+        private bool _isSysSettingReady = false;
         #endregion
 
         #region Constructor
@@ -5556,7 +5557,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task<object> ReadRegistryData(RegistryHive hive, string keyPath, string keyName)
         {
-            object settings = _SettingsPlugin.ReadRegistryData(hive, keyPath, keyName).Result;
+            object settings = null;
+            if (_SettingsPlugin != null)
+            {
+                settings = _SettingsPlugin.ReadRegistryData(hive, keyPath, keyName).Result;
+                return Task.FromResult(settings);
+            }
             return Task.FromResult(settings);
         }
 
@@ -10513,6 +10519,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void SettingsReady(object o, EventArgs eventArgs)
         {
+            _isSysSettingReady = true;
             _DisplayManagerPlugin.GetSettingsPlugin(_SettingsPlugin);
             UpdateInstancesToPeripheralPlugin(_SettingsPlugin, null);
             LoadGlobalSettingParam();
@@ -12043,7 +12050,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 regValue = ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
                 //Trace.WriteLine($"regValue {regValue.ToString()}");
                 // mean null or "" or is false, add to the queue and set it to true
-                if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
+                if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)))
                 {
                     _DisplayManagerPlugin.LauncDDPM(UserId, ddpmExePath); //
                     writelog($"CheckDeviceFirstTimesToConnect LauncDDPM : UserId : {UserId}, ddpmExePath : {ddpmExePath} END ... ");
@@ -12787,17 +12794,41 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         Task.Run(() =>
                         {
+                            bool flag = false;
                             int count = 0;
                             DeviceHelper di = null;
-                            while (count < 10)
-                            {
-                                di = GetDevices(true).Result;
-                                if (di.deviceInfo.Count > 0)
-                                    break;
+                            while (count < 60)
+                            {                               
+                                di = GetDevices().Result;
+                                if(_isSysSettingReady)
+                                {
+                                    object regValue = null;
+                                    string UserId = WTSFunction.DirectGetUserID(Log);
+                                    if (di.deviceInfo.Count > 0 )
+                                    {
+                                        string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
+                                        string regKey = string.Empty;
+                                        for (int i = 0; i < di.deviceInfo.Count; i++)
+                                        {
+                                            regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{di.deviceInfo[i].ModelNumber}";
+                                            regValue = ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey).Result;
+                                            if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)))
+                                            {
+                                                flag = true;
+                                                break;
+                                            }
+                                        }
+                                        if (flag)
+                                        {
+                                            writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - WalkThrough GetDevices flag true");
+                                            break;
+                                        }
+                                    }
+                                }
                                 Thread.Sleep(1000);
                                 count++;
                                 writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in a running condition");
-
+                                writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - WalkThrough GetDevices {count.ToString()}");
                             }
                             if (di != null && di.deviceInfo.Count > 0)
                             {
