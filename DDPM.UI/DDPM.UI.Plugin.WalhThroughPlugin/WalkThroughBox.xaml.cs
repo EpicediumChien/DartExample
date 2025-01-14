@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.UI.Common;
+using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -124,7 +125,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 UpdateText(_currentPage);
                 UpdateProgressBar(true);
                 //_currentPage++;
-                if(_currentPage != _totalPages)
+                if (_currentPage != _totalPages)
                     UpdatePosition("Left");
                 else
                     UpdatePosition("Top_Right");
@@ -199,7 +200,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void UpdatePosition(string position)
         {
-            switch (position.ToLower()) 
+            switch (position.ToLower())
             {
                 case "top_right":
                     this.Left = base.Owner.Left + base.Owner.Width - this.Width - 122;
