@@ -38,25 +38,24 @@
                         <!-- #region Row 0: Hotkey: Recent -->
                         <Grid Height="40" Margin="16,16,16,8">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Orientation="Horizontal">
                                 <!-- Text "Hotkey: Recent"-->
-                                <UXControls:UXTextBlock Text="{Binding [EazyMemorySettings.0], Source={x:Static lang:LangHelper.Instance}}" 
+                                <UXControls:UXTextBlock MaxWidth="300" TextTrimming="CharacterEllipsis" Text="{Binding [EazyMemorySettings.0], Source={x:Static lang:LangHelper.Instance}}" 
                                                         Style="{StaticResource ItemDescriptionTextStyle}"/>
                                 <!-- (i) icon and tooltip -->
-                                <Viewbox Width="16" Height="16"  Margin="16,0,0,0" Stretch="Uniform">
+                                <Viewbox Width="16" Height="16"  Margin="5,0,0,0" Stretch="Uniform">
                                     <Grid Width="16" Height="16" Background="{StaticResource FakeTransparent}">
                                         <Grid.ToolTip>
                                             <ToolTip Placement="Center" VerticalOffset="45">
-                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}"
-                                                    MaxWidth="360">
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                     <Grid>
                                                         <TextBlock Name="hotkeyRecentTooltipText"
                                                                Style="{StaticResource Tooltip_TextBlockStyle}"
-                                                               TextWrapping="Wrap"/>
+                                                               TextWrapping="Wrap" MaxWidth="350"/>
                                                     </Grid>
                                                 </Border>
                                             </ToolTip>
@@ -92,7 +91,7 @@
                            
                             -->
                             <UXControls:UXTextBox Grid.Column="2" Name="tbRecentHotkey" Margin="0"
-                                                  Text="{Binding RecentHotkey,Mode=TwoWay}" Width="230" BorderThickness="1" FontSize="14"
+                                                  Text="{Binding RecentHotkey,Mode=TwoWay}" Width="200" BorderThickness="1" FontSize="14"
                                                   HorizontalAlignment="Center" VerticalContentAlignment="Center"
                                                   AcceptsReturn="True" ContextMenu="{x:Null}" PreviewKeyDown="tbRecentHotkey_PreviewKeyDown" 
                                                   PreviewKeyUp="tbRecentHotkey_PreviewKeyUp" GotFocus="tbRecentHotkey_GotFocus" 
@@ -104,8 +103,8 @@
                         <!-- #region Row 1: Allow app to split side by side without gap -->
                         <Grid Height="40" Margin="16,8">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="450"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
@@ -121,8 +120,8 @@
                         <!-- #region Row 2: Only allow zone positioning when SHIFT is pressed -->
                         <Grid Height="40" Margin="16,8">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="450"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
@@ -143,8 +142,8 @@
                         <!-- #region Row 3: Snap across multiple monitors -->
                         <Grid Height="40" Margin="16,8">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
@@ -154,7 +153,7 @@
                                                 IsEnabled="{Binding IsSpanAcrossEnabled}"/>
                         -->
                             <TextBlock Grid.Column="0" Text="{Binding [EazyMemorySettings.5], Source={x:Static lang:LangHelper.Instance}}"
-                                       FontFamily="Roboto" FontSize="16"
+                                       FontFamily="Roboto" FontSize="17"
                                        VerticalAlignment="Center" IsEnabled="{Binding IsSpanAcrossEnabled}">
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">

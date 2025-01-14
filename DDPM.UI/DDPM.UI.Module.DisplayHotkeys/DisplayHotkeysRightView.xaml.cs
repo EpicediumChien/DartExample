@@ -513,7 +513,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
             FormattedText formattedText = new FormattedText(tb.Text, System.Globalization.CultureInfo.CurrentCulture,
                                             tb.FlowDirection, typeface, tb.FontSize, Brushes.Black);
 
-            if (formattedText.Width > tb.ActualWidth)
+            if ((int)formattedText.Width > (int)tb.ActualWidth)
                 return true;
 
             return false;

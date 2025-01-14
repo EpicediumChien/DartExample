@@ -15,9 +15,9 @@ namespace DDPM.UI.Common
         private static string GetString(string key)
         {
 
-            CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("");
-            string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
-            //string str = resManager.GetString(key, CultureInfo.CurrentUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+            //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("fr-CA");
+            //string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+            string str = resManager.GetString(key, CultureInfo.CurrentUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
             return System.Text.RegularExpressions.Regex.Unescape(str);
         }
         //private static string GetString(string key, string culture = "en-US")

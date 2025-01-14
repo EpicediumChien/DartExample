@@ -96,7 +96,7 @@
                                     <UXControls:UXToggleSwitch Grid.Column="1" ContentPlacement="Left" ContentTextVisibility="True"
                                                                Content="{Binding PowerNap_text}" IsChecked="{Binding PowerNap_Enable}" HorizontalAlignment="Right"
                                                                IsEnabled="{Binding isLockPowerNapEnable}" Opacity="{Binding LockPowerNap_Opacity}"
-                                                               FontSize="16" Width="100" Height="20" />
+                                                               FontSize="16" Height="20" />
                                 </Grid>
                                 <Grid Grid.Row="1">
                                     <Grid.RowDefinitions>
@@ -173,7 +173,7 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <Grid Grid.Row="0" Margin="16">
+                            <Grid Grid.Row="0" Margin="0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
@@ -184,7 +184,7 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <UXControls:UXTextBlock Grid.Column="0" Text="{Binding [DisplayOthers.6], Source={x:Static lang:LangHelper.Instance}}"
+                                    <UXControls:UXTextBlock Margin="30,0,0,0" Grid.Column="0" Text="{Binding [DisplayOthers.6], Source={x:Static lang:LangHelper.Instance}}"
                                                             TextBlockSemanticColorType="Light" TextBlockType="Caption" HorizontalAlignment="Left" VerticalAlignment="Center"
                                                             FontSize="20" LineHeight="28" TextTrimming="CharacterEllipsis" />
                                     <Grid Grid.Column="1" Margin="8,0" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#00000000">
