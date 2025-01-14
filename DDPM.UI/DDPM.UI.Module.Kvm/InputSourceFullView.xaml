@@ -116,7 +116,7 @@
                             <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
                                                  ButtonType="Primary" Padding="40, 8"
                                                  ButtonSize="Medium" VerticalContentAlignment="Center"
-                                                 Content="Save"  Margin="0" FontSize="14"
+                                                 Content="{Binding [Save], Source={x:Static lang:LangHelper.Instance}}" FontSize="14"
                                                  IconAnimation="Move" MinWidth="164" Height="40"
                                                  Click="SaveInput" Visibility="{Binding EditInput}" />
                         </Grid>
