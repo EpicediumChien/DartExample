@@ -123,6 +123,7 @@
                                                          Click="OpenUSBKVM"
                                                          Visibility="Collapsed"
                                                          IsEnabled="{Binding isUSBKVMButton}"/>
+                                    <!-- Elsa 20250114 change Margin="16" to Margin="14" for ar-SA next button will overflow -->
                                     <UXControls:UXButton ButtonType="Primary"
                                                          AutomationProperties.Name="Primary1"
                                                          x:Name="ONUSBKVM"
@@ -130,7 +131,7 @@
                                                          Content="{Binding [Kvm.22], Source={x:Static lang:LangHelper.Instance}}"
                                                          HorizontalAlignment="Center"
                                                          VerticalAlignment="Center"
-                                                         Margin="16" Padding="40,8"
+                                                         Margin="14" Padding="40,8"
                                                          Background="#0672CB" Opacity="{Binding USBKVMButtonOpacity}"
                                                          Foreground="#FFFFFF"
                                                          Click="OpenUSBKVM"
