@@ -11994,6 +11994,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 }
             }
         }
+
+        /// <summary>
+        /// First plugin device, check if need to launch DDPM
+        /// </summary>
+        /// <param name="mo"></param>
+        /// <param name="di"></param>
         private void CheckDeviceFirstTimesToConnect(MonitorInfo mo, DeviceInfo di)
         {
             try
@@ -12003,7 +12009,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog($"CheckDeviceFirstTimesToConnect _DisplayManagerPlugin NULL ... ");
                     return;
                 }
-                if (_DisplayManagerPlugin.GetIsDDPMLaunch().Result)
+                if (_DisplayManagerPlugin.GetIsDDPMLaunchNow().Result)
                 {
                     writelog($"CheckDeviceFirstTimesToConnect isDDPMlaunch true ... ");
                     return;
@@ -12026,9 +12032,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
                 string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{di.ModelNumber}";
-                string ddpmExePath = //@"C:\Program Files\Dell\Dell Display and Peripheral Manager\DDPM.exe";
-                                     System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Dell\Dell Display and Peripheral Manager\DDPM.exe");
-                //string debugPath = @"D:\\NEW\DDPM\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+                string ddpmExePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Dell\Dell Display and Peripheral Manager\DDPM.exe");
+                //string ddpmExePath = @"D:\\NEW\DDPM\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
 
                 if (!File.Exists(ddpmExePath))
                 {
@@ -12041,27 +12046,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 // mean null or "" or is false, add to the queue and set it to true
                 if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
                 {
-                    writelog($"CheckDeviceFirstTimesToConnect ReadRegistryData UserId : {UserId}, can not find ModelNumber : {di.ModelNumber}, StartProcess ... ");
-                    result = DDPMFileSecurity.ValidateFilePath(ddpmExePath, out string info);
-                    if (result)
-                    {
-                        result = DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
-                            null,
-                            new ProcessStartInfo
-                            {
-                                FileName = ddpmExePath,
-                                UseShellExecute = true
-                            });
-
-                        if (!result)
-                        {
-                            writelog($"CheckDeviceFirstTimesToConnect StartProcessSafely fail");
-                        }
-                    }
-                    else
-                    {
-                        writelog($"CheckDeviceFirstTimesToConnect ValidateFilePath fail");
-                    }
+                    _DisplayManagerPlugin.LauncDDPM(UserId, ddpmExePath); //
+                    writelog($"CheckDeviceFirstTimesToConnect LauncDDPM : UserId : {UserId}, ddpmExePath : {ddpmExePath} END ... ");
                 }
                 else
                 {
@@ -12806,6 +12792,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             foreach (var item in di.deviceInfo)
                             {
                                 CheckDeviceFirstTimesToConnect(null, item);
+                                break; // Trigger once then break, do not need to check all devices
                             }
                         }
                     }

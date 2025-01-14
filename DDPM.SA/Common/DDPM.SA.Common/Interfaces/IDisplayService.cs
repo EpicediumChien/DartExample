@@ -10,7 +10,11 @@ namespace DDPM.SA.Common
 {
     public interface IDisplayService : IFrameworkPlugin, IInputSource
     {
-        Task<bool> GetIsDDPMLaunch();
+        Task<bool> GetIsDDPMLaunchNow();
+
+        Task<bool> GetIsDDPMLaunchEarly();
+
+        Task<bool> LauncDDPM(string UserId, string ddpmExePath);
 
         Task Reset0x52TimerTick(int millisecond, int processID = -0xFF);
 

@@ -214,14 +214,15 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void EndProgress()
         {
-            DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
-            if(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
-                DdpmHomePlugin.DdpmHomePlugin.ShowPluginById = false;
-            //string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin._userId}";
-            //string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
-
+            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count != 0) // Error handling
+            {
+                ViewModel.WriteWalkThroughReg("DDPM");
+                DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(new WalkThroughInfo("DDPM", "DDPM", null)); // Add DDPM to the end of the queue
+                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAll(item => item.ModelName == "DDPM"); // Remove all DDPM from the queue
+            }
             if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
             {
+                DdpmHomePlugin.DdpmHomePlugin.ShowPluginById = false;
                 ViewModel.EndWalkThrough();
             }
             else
