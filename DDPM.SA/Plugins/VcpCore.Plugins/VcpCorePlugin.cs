@@ -4839,10 +4839,6 @@ namespace VcpCore.Plugins
                         break;
 
                     case "ff":
-                        D_Ctrl = "Nvidia";
-                        str_ScalarICID = "0";
-                        break;
-
                     case "00":
                         D_Ctrl = "Nvidia";
                         str_ScalarICID = "0";
@@ -4927,21 +4923,7 @@ namespace VcpCore.Plugins
                 switch (strFirst)
                 {
                     case "1":
-                        {
-                            strFirst = strFirst + str_ScalarICID + str_OEMID;
-                            string strSecond = hexValue.Substring(1);
-                            str_fwVersion = strFirst + strSecond;
-                        }
-                        break;
-
                     case "2":
-                        {
-                            strFirst = strFirst + str_ScalarICID + str_OEMID;
-                            string strSecond = hexValue.Substring(1);
-                            str_fwVersion = strFirst + strSecond;
-                        }
-                        break;
-
                     case "3":
                         {
                             strFirst = strFirst + str_ScalarICID + str_OEMID;
