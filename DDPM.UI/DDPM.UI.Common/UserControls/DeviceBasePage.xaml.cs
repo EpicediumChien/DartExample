@@ -331,11 +331,17 @@ namespace DDPM.UI.Common.UserControls
                 }
                 */
 
-            }            
+            }
 
             //tbDisplayName.Width = gridDisplayName.ActualWidth;
             //_log?.Info($"tbDisplayName.ActualWidth = {tbDisplayName.ActualWidth}");
             //_log?.Info($"gridDisplayName.ActualWidth = {gridDisplayName.ActualWidth}");
+
+            //Robert_Lin 2025-1-13 Test code to lock Display Settings group
+            //if (viewModel.GroupCount > 0)
+            //{
+            //    SetLockModuleGroup(Constants.GroupName_DisplaySettings, true);
+            //}
         }
 
         private void ChangeToNonLandingMode()

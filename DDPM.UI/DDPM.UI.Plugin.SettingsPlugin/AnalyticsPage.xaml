@@ -42,14 +42,17 @@
                         <Button Name="url_btn"
                                 Height="40"
                                 Style="{DynamicResource Button_WhiteFrame}"
-                                Content="{Binding [Analytics.2], Source={x:Static lang:LangHelper.Instance}}"
                                 Margin="20,0,20,0"
                                 FontSize="16"
                                 Grid.Row="1"
                                 MinWidth="250"
                                 HorizontalAlignment="Left"
                                 Click="url_btn_Click"
-                                IsTabStop="{Binding isTabStoppable}" />
+                                IsTabStop="{Binding isTabStoppable}">
+                            <Button.Content>
+                                <TextBlock Margin="10,0,10,0" Text="{Binding [Analytics.2], Source={x:Static lang:LangHelper.Instance}}"/>
+                            </Button.Content>
+                        </Button>
                     </Grid>
                 </Border>
             </Grid>

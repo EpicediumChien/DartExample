@@ -45,18 +45,22 @@
                                                         Foreground="{DynamicResource DefaultTheme_TxtColor}" />
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0,0,0,0">
+                                    <!-- Derek 2025/01/11 for PIMS-334386 -->
                                     <Button Style="{DynamicResource Button_WhiteFrame}"
-                                            Width="176"
+                                            MinWidth="176"
                                             Height="40"
                                             Click="ThirdPartyLicenses_Click"
                                             Cursor="Hand"
                                             Margin="0,20,5,20"
                                             Visibility="Visible"
-                                                                    VerticalAlignment="Center"
-                                                                    HorizontalAlignment="Center"
-                                                                    FontFamily="Roboto"
-                                                                    FontSize="14"
-                                            Content="{Binding [Third_Party_Licenses], Source={x:Static lang:LangHelper.Instance}}" />
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"
+                                            FontFamily="Roboto"
+                                            FontSize="14">
+                                        <Button.Content>
+                                            <TextBlock Margin="10,0,10,0" Text ="{Binding [Third_Party_Licenses], Source={x:Static lang:LangHelper.Instance}}"/>
+                                        </Button.Content>
+                                    </Button>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
@@ -78,18 +82,22 @@
                                                         TextWrapping="WrapWithOverflow"/>
                                 <StackPanel Orientation="Horizontal"
                                             Margin="0,0,0,0">
+                                    <!-- Derek 20250111 for PIMS-334386 -->
                                     <Button Style="{DynamicResource Button_WhiteFrame}"
-                                            Width="176"
+                                            MinWidth="176"
                                             Height="40"
                                             Click="LearnMore_Click"
                                             Cursor="Hand"
                                             Margin="0,20,5,20"
                                             Visibility="Visible"
-                                            Content="{Binding [Learn_more], Source={x:Static lang:LangHelper.Instance}}"
-                                                                    VerticalAlignment="Center"
-                                                                    HorizontalAlignment="Center"
-                                                                    FontFamily="Roboto"
-                                            FontSize="14" />
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center"
+                                            FontFamily="Roboto"
+                                            FontSize="14">
+                                        <Button.Content>
+                                            <TextBlock Margin="10,0,10,0" Text="{Binding [Learn_more], Source={x:Static lang:LangHelper.Instance}}"/>
+                                        </Button.Content>
+                                    </Button>
                                 </StackPanel>
                             </StackPanel>
                         </Border>

@@ -258,6 +258,8 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
             }
             */
 
+            string lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ";
+
             //Robert_Lin, 2024-7-26, for ModuleGroup:
             //  GroupName is the Id used to identify a ModuelGroup
             //  VbarText is the display string on VbarItem control

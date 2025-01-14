@@ -1979,9 +1979,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                         //WriteLog($"[ReadImportSettingsFile]strReadJson: " + strReadJson);
                         ImpSettings = RunImpExpDeserializeObject(strReadJson);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        ;
+                        WriteLog($"[ReadImportSettingsFile] exception: {ex.Message}");                        
                     }
                 }
                 else

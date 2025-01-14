@@ -312,7 +312,7 @@
             </Grid>
 
             <!-- 安裝的應用程式列表 -->
-            <ListView  Grid.Row="5" x:Name="lb_Installed_App"   Background="{DynamicResource DefaultTheme_BdBdColor}" SelectionMode="Single" SelectedIndex="{Binding Selected}">
+            <ListView  Grid.Row="5" x:Name="lb_Installed_App"   Background="{DynamicResource DefaultTheme_BdBdColor}" SelectionMode="Single" SelectedIndex="{Binding Selected}" SelectionChanged="lb_Installed_App_SelectionChanged">
                 <ListView.Template>
                     <ControlTemplate TargetType="{x:Type ListView}">
                         <Border CornerRadius="5">
@@ -369,7 +369,8 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1"  Orientation="Horizontal" HorizontalAlignment="Center">
-                    <UXControls:UXButton x:Name="btnAdd" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" Width="114" Height="40"  CornerRadius="2"   Click="btnAdd_Click" />
+                    <UXControls:UXButton x:Name="btnAdd" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" Width="114" Height="40"  CornerRadius="2" Click="btnAdd_Click" IsEnabled="False" />
+
                 </StackPanel>
             </Grid>
         </Grid>

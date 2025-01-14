@@ -22,7 +22,7 @@ namespace DDPM.SA.Common.Settings
     /// </summary>
     public class WebcamSettings
     {
-        private static readonly string target_folder = 
+        private static readonly string target_folder =
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
 
         public string VideoCaptureFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyVideos);
@@ -61,7 +61,7 @@ namespace DDPM.SA.Common.Settings
         public bool IsFirstTime = true;
 
         public WebcamSettings(DeviceInfo di = null, IDeviceManagerSA devMgr = null, ILog log = null)
-        { 
+        {
             if(di != null && devMgr != null)
             {
                 UpdateSupportedResolutions(di, devMgr, log);
@@ -338,7 +338,7 @@ namespace DDPM.SA.Common.Settings
                 {
                     string strPath = Path.Combine(fileFolder, $"{model}.json");
                     bool result = devMgr.WriteSerializedContentToFile(strPath, json).Result;//1007 apply signature
-                    
+
                     if(!result)
                         log?.Error($"[ExportWebcamSettings] DeviceManagerSA is null(model:{model})");
                     return result;
@@ -409,51 +409,59 @@ namespace DDPM.SA.Common.Settings
         public static WebcamSettings ImportWebcamSettings(string model, DeviceInfo di, IDeviceManagerSA devMgr = null, ILog log = null)
         {
             WebcamSettings tmp = null;
-            if (devMgr != null)
-            {
-                log?.Info(@$"[WebcamSettings] ImportWebcamSettings Start  !");
-                var filePath = Path.Combine(target_folder, $"{model}.json");
-                var hasFile = File.Exists(filePath);
-                log?.Info(@$"[WebcamSettings] file {filePath} exist = {hasFile}");
 
-                string jsonString = string.Empty;
-                if (hasFile && devMgr != null)
+            try
+            {
+                if (devMgr != null)
                 {
-                    string info = string.Empty;
-                    //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
-                    if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
+                    log?.Info(@$"[WebcamSettings] ImportWebcamSettings Start  !");
+                    var filePath = Path.Combine(target_folder, $"{model}.json");
+                    var hasFile = File.Exists(filePath);
+                    log?.Info(@$"[WebcamSettings] file {filePath} exist = {hasFile}");
+
+                    string jsonString = string.Empty;
+                    if (hasFile && devMgr != null)
                     {
-                        jsonString = devMgr.ReadSerializedContentFromFile(filePath).Result;
-                        log?.Info(@$"[WebcamSettings] ImportWebcamSettings jsonString:{jsonString}!");
-                        if (!string.IsNullOrEmpty(jsonString))
+                        string info = string.Empty;
+                        //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
+                        if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
                         {
-                            tmp = JsonConvert.DeserializeObject<WebcamSettings>(jsonString) ?? new WebcamSettings(di, devMgr, log);
-                            tmp = ReAlignWebcamResolution(tmp, model, di, devMgr, log);
-                            //return tmp;
+                            jsonString = devMgr.ReadSerializedContentFromFile(filePath).Result;
+                            log?.Info(@$"[WebcamSettings] ImportWebcamSettings jsonString:{jsonString}!");
+                            if (!string.IsNullOrEmpty(jsonString))
+                            {
+                                tmp = JsonConvert.DeserializeObject<WebcamSettings>(jsonString) ?? new WebcamSettings(di, devMgr, log);
+                                tmp = ReAlignWebcamResolution(tmp, model, di, devMgr, log);
+                                //return tmp;
+                            }
+                            else
+                                log?.Error($"[ImportWebcamSettings][ReadSerializedContentFromFile] empty string output(model:{model})");
                         }
                         else
-                            log?.Error($"[ImportWebcamSettings][ReadSerializedContentFromFile] empty string output(model:{model})");
-                    }
-                    else
-                    {
-                        log?.Error($"[ImportWebcamSettings] ValidateFilePath failed(model:{model}): {info}");
+                        {
+                            log?.Error($"[ImportWebcamSettings] ValidateFilePath failed(model:{model}): {info}");
+                        }
                     }
                 }
+                else
+                {
+                    log?.Error("[ExportWebcamSettings] The input devMgr is null");
+                }
+                //Init a new data
+                if (tmp == null)
+                {
+                    log?.Info(@$"[WebcamSettings][ImportWebcamSettings] init via di(jsonString:{JsonConvert.SerializeObject(di)})");
+                    tmp = new WebcamSettings(di, devMgr, log);
+                    tmp = ReAlignWebcamResolution(tmp, model, di, devMgr, log);
+                }
+                if (!ExportWebcamSettings(tmp, model, devMgr, log))
+                {
+                    log?.Info(@$"[WebcamSettings][ImportWebcamSettings] try to use ExportWebcamSettings to init file fail");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                log?.Error("[ExportWebcamSettings] The input devMgr is null");
-            }
-            //Init a new data
-            if (tmp == null)
-            {
-                log?.Info(@$"[WebcamSettings][ImportWebcamSettings] init via di(jsonString:{JsonConvert.SerializeObject(di)})");
-                tmp = new WebcamSettings(di, devMgr, log);
-                tmp = ReAlignWebcamResolution(tmp, model, di, devMgr, log);
-            }
-            if (!ExportWebcamSettings(tmp, model, devMgr, log))
-            {
-                log?.Info(@$"[WebcamSettings][ImportWebcamSettings] try to use ExportWebcamSettings to init file fail");
+                log?.Info("DDPM.SA.Common\\Settings\\WebcamSettings.cs ImportWebcamSettings ex:" + ex.Message);
             }
             return tmp;
         }

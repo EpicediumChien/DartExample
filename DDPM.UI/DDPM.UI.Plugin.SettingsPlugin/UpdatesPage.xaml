@@ -51,8 +51,8 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <StackPanel Grid.Row="0" Margin="0,0,0,24" Orientation="Horizontal" x:Name="spFWUpdate">
-                                    <!-- Derek PIMS 334386 change Width="176" to MinWidth="176" add Padding="10,0,10,0" on 1/10 -->
-                                    <Button MinWidth="176" Padding="10,0,10,0"
+                                    <!-- 2025/01/11 Derek PIMS 334386 change Width="176" to MinWidth="176" add move content to textblock -->
+                                    <Button MinWidth="176"
                                             Height="40"
                                             Click="CheckUpdate_Click"
                                             Cursor="Hand"
@@ -61,8 +61,10 @@
                                             x:Name="btnFWU"
                                             HorizontalAlignment="Left"
                                             AutomationProperties.Name="Primary1"
-                                            Content="{Binding [Updates.2], Source={x:Static lang:LangHelper.Instance}}"
                                             Style="{StaticResource Button_WhiteFrame}" >
+                                        <Button.Content>
+                                            <TextBlock Margin="10,0,10,0" Text="{Binding [Updates.2], Source={x:Static lang:LangHelper.Instance}}"></TextBlock>
+                                        </Button.Content>
                                     </Button>
                                     <StackPanel Orientation="Horizontal">
                                         <Grid  Height="20"
@@ -192,7 +194,7 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <Button Grid.Column="0"
-                                            Width="195"
+                                            MinWidth="195"
                                             Height="40"
                                             AutomationProperties.Name="Primary1"
                                             Style="{DynamicResource Buttom_BlueFrame}"

@@ -8,12 +8,9 @@ using DDPM.UI.Common.Models;
 using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF.Controls;
-using Microsoft.VisualBasic.Logging;
-using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Security.Policy;
 using System.Windows;
 using System.Windows.Media;
 using VcpCore.Common;
@@ -451,6 +448,7 @@ namespace DDPM.UI.Module.Brightness
 
             return configs.All(config => !config.isBusy);
         }
+
         /// <summary>
         /// Catch OSD menu event
         /// </summary>
@@ -493,7 +491,6 @@ namespace DDPM.UI.Module.Brightness
                     if (!IsBusyALS)
                         NotifyPropertyChanged("IsBusyALS");
                     DdpmCommonHelper.WriteUILog($"[OnVCPChangedEvent][BrightnessViewModel] ModelName = {SelectedHomeDevice.MonitorInfo.modelName}, IsBusyALS = {IsBusyALS.ToString()}");
-
                 }
                 catch (Exception ex)
                 {
@@ -697,8 +694,8 @@ namespace DDPM.UI.Module.Brightness
                 //}
                 Trace.WriteLine($"6. {DateTime.Now.ToString("MM/dd/yyyy hh:mm ss fff")}");
                 //Check if support ALS
-                if ( (SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("66") || isLuminance == true) &&
-                      SelectedHomeDevice != null && 
+                if ((SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("66") || isLuminance == true) &&
+                      SelectedHomeDevice != null &&
                       SelectedHomeDevice.MonitorInfo != null)
                 {
                     //fixed releate PIMS-287891
@@ -725,7 +722,7 @@ namespace DDPM.UI.Module.Brightness
                     }
                     GetALSContentAndSyncUI(SelectedHomeDevice.MonitorInfo);
                     SynchronizeBtnExpectedResult(DdpmCommonHelper.DeviceManagerSA.CheckisShowSynchronize(SelectedHomeDevice.MonitorInfo, alsList).Result);
-                    //CheckisShowSynchronize(alsList);                    
+                    //CheckisShowSynchronize(alsList);
                 }
 
                 //OSD control back event
@@ -788,7 +785,7 @@ namespace DDPM.UI.Module.Brightness
                                 ((BrightnessRightView)MyModule.GetRightView()).Expander_Schedule.IsExpanded = true;
                             }
                         }));
-                        isRunScheduledNG = true;                        
+                        isRunScheduledNG = true;
                     }
                 }
             }
@@ -2425,10 +2422,10 @@ namespace DDPM.UI.Module.Brightness
                     Start_ALSConfig.isPrimaryMonitorSync = onoff;
                 }
                 if (property.Equals("AUTOBRILEVEL") && //PIMS-314583
-                    Start_ALSConfig.AutoBrightnessRangeLevel != null && 
+                    Start_ALSConfig.AutoBrightnessRangeLevel != null &&
                     Start_ALSConfig.AutoBrightnessRangeLevel.Count > 0)
                 {
-                    SetBrightnessLevelDataToObject(level);                    
+                    SetBrightnessLevelDataToObject(level);
                 }
                 SetALSAll(Start_ALSConfig, ALSFeatureQueryType.All, 0);
             }
@@ -2628,7 +2625,7 @@ namespace DDPM.UI.Module.Brightness
                     if (hd.MonitorInfo.IsDellMonitor &&
                         !hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
                     {
-                        _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;                        
+                        _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;
                     }
                 }
             }
@@ -2660,7 +2657,7 @@ namespace DDPM.UI.Module.Brightness
                         if (hd.MonitorInfo.IsDellMonitor &&
                             hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
                         {
-                            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;                            
+                            _ = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(hd.MonitorInfo, 0x10, nNewValue).Result;
                         }
                     }
                 }
@@ -3845,6 +3842,7 @@ namespace DDPM.UI.Module.Brightness
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
         }
+
         private bool _isBusyALS = false;
 
         public bool IsBusyALS
@@ -3852,6 +3850,7 @@ namespace DDPM.UI.Module.Brightness
             get => _isBusyALS;
             set => SetProperty(ref _isBusyALS, value);
         }
+
         public void SetIsBusy(bool busy)
         {
             List<ALSConfig> tmp = DdpmCommonHelper.DeviceManagerSA.GetAllExistAlsConfig().Result;
@@ -3866,6 +3865,7 @@ namespace DDPM.UI.Module.Brightness
                 NotifyPropertyChanged("IsBusyALS");
             DdpmCommonHelper.WriteUILog($"[SetIsBusy][BrightnessViewModel] ModelName = {SelectedHomeDevice.MonitorInfo.modelName}, IsBusyALS = {IsBusyALS.ToString()}");
         }
+
         #endregion UI Enable Flags
     }
 }

@@ -336,6 +336,12 @@ namespace DDPM.UI.Common.UserControls
         {
             return vm.FindFirstNoBuddyItem();
         }
+
+        public SplitItem? FindItemByProfileId(int profileId)
+        {
+            return vm.FindItemByProfileId(profileId);
+        }
+
         //public SplitItem? ReplaceByFriendlyName(string friendlyName, )
         //{
         //    int idx = 0;
@@ -352,7 +358,7 @@ namespace DDPM.UI.Common.UserControls
         //        idx++;
         //    }
         //}
-        #endregion
+        #endregion Find
 
         #region Recent List 
         public void MoveSelectedItemToSecondPosition()

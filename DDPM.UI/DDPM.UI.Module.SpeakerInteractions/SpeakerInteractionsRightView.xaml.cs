@@ -18,7 +18,7 @@ namespace DDPM.UI.Module.SpeakerInteractions
 
         bool isZoomInstalled = IsProgramInstalled("Zoom");
 
-        bool isMeetInstalled = IsProgramInstalled("Google Meet");
+        bool isMeetInstalled = IsProgramInstalled("Google Meet");// Awalys need
         public SpeakerInteractionsRightView(SoundBarViewModel vm)
         {
             InitializeComponent();
@@ -48,14 +48,15 @@ namespace DDPM.UI.Module.SpeakerInteractions
                 {
                     DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] ZoomButton Visibility");
                 }
-                if (!matchingMeet.Any())//!isMeetInstalled)
+                if (!matchingMeet.Any())//!isMeetInstalled)// Awalys need
                 { 
-                    GoogleMeetButton.Visibility = System.Windows.Visibility.Collapsed;
+                    GoogleMeetButton.Visibility = System.Windows.Visibility.Visible;
                     DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] GoogleMeetButton Collapsed");
                 }
                 else
                 {
-                    DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] GoogleMeetButton Visibility");
+                    GoogleMeetButton.Visibility = System.Windows.Visibility.Visible;
+                    //DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] GoogleMeetButton Visibility");
                 }
             }
             else
