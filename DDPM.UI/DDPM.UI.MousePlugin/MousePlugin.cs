@@ -34,7 +34,7 @@ namespace DDPM.UI.Plugin.MousePlugin
         private readonly ILog _log;
         private readonly IConsole _console;
         private readonly IPluginManager _pluginManager;
-        private MouseViewModel? _viewModel;
+        private Mous¦YeViewModel? _viewModel;
 
         private bool _isConfigured;
         private readonly CancellationTokenSource StartupCancellationTokenSource = new();

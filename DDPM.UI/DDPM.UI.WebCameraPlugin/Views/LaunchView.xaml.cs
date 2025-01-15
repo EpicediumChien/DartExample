@@ -1842,13 +1842,19 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             /*CopyMemory(writeableBitmap.BackBuffer, (IntPtr)ptr, ImageBufferSize);
                             writeableBitmap.AddDirtyRect(react);*/
                         }
-                        writeableBitmap.Unlock();
+                        //Leo 2025/01/15 fixed by elie request
+                        //writeableBitmap.Unlock();
                     });
                 }
             }
             catch (Exception ex) 
             {
                 DdpmCommonHelper.WriteUILog($"MediaFrameReader_FrameArrived Exception occurred 2 : {ex.Message}");
+            }
+            finally
+            {
+                //Leo 2025/01/15 fixed by elie request
+                writeableBitmap.Unlock();
             }
 
             _running = false;
