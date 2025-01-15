@@ -2934,7 +2934,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     else if (deviceType.Contains("HEADSET"))
                     {
                         type = OSDType_Device.Headset;
-                        message = "Dell Headset ";
+                        //message = "Dell Headset ";
                     }
                     else if (SACommonHelper.EOLKBList.Contains(deviceInfo.ModelNumber))
                     {
@@ -3009,23 +3009,22 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     writelog($"MuteStatusChanged: Error: deviceInfo is null");
                     return;
                 }
-
                 DeviceChangedEventArgs _EventArgs = new();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
                 _EventArgs.device_peripherals = deviceInfo;
                 _EventArgs.changedProperty = "MuteStatusChanged";
                 OnNotify(_EventArgs);
-                string osdinfo = string.Empty;
-                switch (deviceInfo.ModelNumber)
-                {
-                    //According to Figma string design. deviceInfo.Name
-                    case "SP3022":
-                        osdinfo = "Dell Speakerphone";
-                        break;
-                    case "SB522A":
-                        osdinfo = "Dell Soundbar";
-                        break;
-                }
+                //string osdinfo = string.Empty;
+                //switch (deviceInfo.ModelNumber)
+                //{
+                //    //According to Figma string design. deviceInfo.Name
+                //    case "SP3022":
+                //        osdinfo = "Dell Speakerphone";
+                //        break;
+                //    case "SB522A":
+                //        osdinfo = "Dell Soundbar";
+                //        break;
+                //}
                 _logs.DebugMsg_1("[PeripheralsPlugin] ILogicalWiredAudio_MuteStatusChanged ... out " + newMuteStatus.ToString() + " , OSD in");
                 try
                 {
@@ -3044,12 +3043,17 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     //{
                     //    Task.Run(async () => _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, osdinfo, newMuteStatus));
                     //}
+                    OSDType_Device type = OSDType_Device.Unknown;
+                    var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
+                    var model = SACommonHelper.MappingModel(deviceInfo.ModelNumber);
+                    var message = $"{deviceInfo.Name.Replace(deviceInfo.ModelNumber, "").Trim()} {model}";
+
                     OSDEventArgs args = new OSDEventArgs()
                     {
                         Requester = "Mute.Status",
                         DeviceName = Screen.PrimaryScreen.DeviceName,
                         osd_type = OSDType.Mute,
-                        Message = osdinfo,
+                        Message = message,
                         Status = newMuteStatus
                     };
                     OnOSDNotify(args);
@@ -3244,12 +3248,16 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     //{
                     //    Task.Run(async () => _ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.Mute, deviceInfo.Name, newValue));
                     //}
+                    OSDType_Device type = OSDType_Device.Unknown;
+                    var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
+                    var model = SACommonHelper.MappingModel(deviceInfo.ModelNumber);
+                    var message = $"{deviceInfo.Name.Replace(deviceInfo.ModelNumber, "").Trim()} {model}";
                     OSDEventArgs args = new OSDEventArgs()
                     {
                         Requester = "Mute.Status",
                         DeviceName = Screen.PrimaryScreen.DeviceName,
                         osd_type = OSDType.Mute,
-                        Message = "Dell Headset " + deviceInfo.ModelNumber,
+                        Message = message,
                         Status = newValue
                     };
                     OnOSDNotify(args);
