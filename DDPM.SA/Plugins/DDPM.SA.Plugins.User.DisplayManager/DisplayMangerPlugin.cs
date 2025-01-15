@@ -261,31 +261,31 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
 
             // If APP WalkThrough not done, need re-launch APP
-            if (IsDDPMLaunchEarly && !IsDDPMLaunchNow)
-            {
-                if (_SettingsPlugin == null)
-                {
-                    _logs.DebugMsg($"Reset0x52TimerTick LauncDDPM but _SettingsPlugin NULL ... ");
-                    return Task.FromResult(Task.CompletedTask);
-                }
-                _logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect IsDDPMLaunchEarly true, IsDDPMLaunchNow false");
-                string UserId = WTSFunction.DirectGetUserID(Log);
-                string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
-                string regKeyForDDPM = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
-                object regValue = _SettingsPlugin.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM).Result;
-                //_logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect regValue {Convert.ToBoolean(regValue).ToString()}");
-                if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)))
-                {
-                    string ddpmExePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Dell\Dell Display and Peripheral Manager\DDPM.exe");
-                    //string ddpmExePath = @"D:\\NEW\DDPM\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
-                    LauncDDPM(UserId, ddpmExePath);
-                    _logs.DebugMsg($"LauncDDPM From Reset0x52TimerTick ... ");
-                }
-                else
-                {
-                    _logs.DebugMsg($"LauncDDPM From Reset0x52TimerTick Reg Exit ... ");
-                }
-            }
+            //if (IsDDPMLaunchEarly && !IsDDPMLaunchNow)
+            //{
+            //    if (_SettingsPlugin == null)
+            //    {
+            //        _logs.DebugMsg($"Reset0x52TimerTick LauncDDPM but _SettingsPlugin NULL ... ");
+            //        return Task.FromResult(Task.CompletedTask);
+            //    }
+            //    _logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect IsDDPMLaunchEarly true, IsDDPMLaunchNow false");
+            //    string UserId = WTSFunction.DirectGetUserID(Log);
+            //    string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
+            //    string regKeyForDDPM = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
+            //    object regValue = _SettingsPlugin.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM).Result;
+            //    //_logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect regValue {Convert.ToBoolean(regValue).ToString()}");
+            //    if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)))
+            //    {
+            //        string ddpmExePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Dell\Dell Display and Peripheral Manager\DDPM.exe");
+            //        //string ddpmExePath = @"D:\\NEW\DDPM\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+            //        LauncDDPM(UserId, ddpmExePath);
+            //        _logs.DebugMsg($"LauncDDPM From Reset0x52TimerTick ... ");
+            //    }
+            //    else
+            //    {
+            //        _logs.DebugMsg($"LauncDDPM From Reset0x52TimerTick Reg Exit ... ");
+            //    }
+            //}
             return Task.FromResult(Task.CompletedTask);
         }
 

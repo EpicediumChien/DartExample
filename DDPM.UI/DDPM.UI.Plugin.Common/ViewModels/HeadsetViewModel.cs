@@ -1135,9 +1135,34 @@ namespace DDPM.UI.Plugin.ViewModels
                     DeviceInfoDTP.AncMode = di.AncMode;//_deviceManager.GetAncModeAsync(CurrentDeviceID.ToString()).Result;
                     CheckANCUI(true);
                     // PIMS-333300
-                    OnPropertyChanged(nameof(Sidetone_String));
-                    OnPropertyChanged(nameof(SidetoneStatus));
-                    OnPropertyChanged(nameof(SidetoneSliderStatus));
+                    switch (DeviceInfoDTP.AncMode)
+                    {
+                        case 0:
+                            DeviceInfoDTP.Sidetone = true;
+                            _isSidetoneStatus = true;
+                            break;
+
+                        case 1:
+                            DeviceInfoDTP.Sidetone = true;
+                            _isSidetoneStatus = true;
+                            break;
+
+                        case 2:  
+                            DeviceInfoDTP.Sidetone = false;
+                            _isSidetoneStatus = false;
+                            break;
+                    }
+                    if (IsDTPReady)
+                    {
+                        _deviceManager.SetSidetoneAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.Sidetone).Wait();
+                        //_debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
+                    }
+                    else
+                        _deviceManager.SetSidetone(true, CurrentDeviceInfo!.ID).Wait();
+                    //OnPropertyChanged(nameof(Sidetone_String));
+                    //OnPropertyChanged(nameof(SidetoneStatus));
+                    //OnPropertyChanged(nameof(SidetoneSliderStatus));
+                    CheckSidetoneUI(true);
                     _log.Info($"[HeadsetViewModel] HandleNotification DTH Event AncModeChanged {Model.ToString() + " : " + di.AncMode.ToString()}");
                     break;
 
