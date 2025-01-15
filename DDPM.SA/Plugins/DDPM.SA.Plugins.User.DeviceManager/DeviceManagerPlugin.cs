@@ -681,6 +681,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _pwr_Mon.Enable_Event();
                     _pwr_Mon.HotkeyPressed += HotkeyPressed;
                     _pwr_Mon.Enable_HotkeyHook();
+                    _pwr_Mon.Enable_SessionEvent();
                 }
                 System.Windows.Threading.Dispatcher.Run();
             });
