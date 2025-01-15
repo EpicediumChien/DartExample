@@ -1277,6 +1277,15 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Utilizes intelligent scene analysis and facial tracking to zoom and pan the view when you move.
+        /// </summary>
+        internal static string WebCameraSettings_2 {
+            get {
+                return ResourceManager.GetString("WebCameraSettings.2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to will be updated to .
         /// </summary>
         internal static string will_be_updated_to {
