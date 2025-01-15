@@ -1036,6 +1036,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     catch (Exception ex)
                     {
+                        if (_downloadTimer != null)
+                        {
+                            _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
+                            _downloadTimer.Stop();
+                            _downloadTimer = null;
+                        }
                         _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download error : " + ex.Message);
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
                         _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
