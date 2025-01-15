@@ -395,100 +395,85 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 else if (alsSynchronizeList.Count == 2)//Test case for 2 monitors
                 {
                     //25 Test Scenario : 2 same monitors with ALS Function
-                    if (alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName)
+                    if (alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName &&
+                        alsSynchronizeList[0].isSupportALS == 2 && 
+                        alsSynchronizeList[1].isSupportALS == 2)
                     {
-                        if (alsSynchronizeList[0].isSupportALS == 2 && alsSynchronizeList[1].isSupportALS == 2)
+                        if (CheckALSOnOff(alsSynchronizeList) == false)
                         {
-                            if (CheckALSOnOff(alsSynchronizeList) == false)
-                            {
-                                //SynchronizeBtnExpectedResult("C");
-                                return Task.FromResult("C");
-                            }
-                            else
-                            {
-                                //SynchronizeBtnExpectedResult("D");
-                                return Task.FromResult("D");
-                            }
+                            //SynchronizeBtnExpectedResult("C");
+                            return Task.FromResult("C");
                         }
+                        else
+                        {
+                            //SynchronizeBtnExpectedResult("D");
+                            return Task.FromResult("D");
+                        }                        
                     }
                     //26 Test Scenario : 2 different monitors with ALS Function
-                    if (alsSynchronizeList[0].ModelName != alsSynchronizeList[1].ModelName)
+                    if (alsSynchronizeList[0].ModelName != alsSynchronizeList[1].ModelName &&
+                        alsSynchronizeList[0].isSupportALS == 2 && 
+                        alsSynchronizeList[1].isSupportALS == 2)
                     {
-                        if (alsSynchronizeList[0].isSupportALS == 2 && alsSynchronizeList[1].isSupportALS == 2)
+                        if (CheckALSOnOff(alsSynchronizeList) == false)
                         {
-                            if (CheckALSOnOff(alsSynchronizeList) == false)
-                            {
-                                //SynchronizeBtnExpectedResult("C");
-                                return Task.FromResult("C");
-                            }
-                            else
-                            {
-                                //SynchronizeBtnExpectedResult("D");
-                                return Task.FromResult("D");
-                            }
+                            //SynchronizeBtnExpectedResult("C");
+                            return Task.FromResult("C");
+                        }
+                        else
+                        {
+                            //SynchronizeBtnExpectedResult("D");
+                            return Task.FromResult("D");
                         }
                     }
                     //13 Test Scenario : 2 same UP series monitors
-                    if (alsSynchronizeList[0].ModelName.Contains("UP") && alsSynchronizeList[1].ModelName.Contains("UP"))
+                    if (alsSynchronizeList[0].ModelName.Contains("UP") && alsSynchronizeList[1].ModelName.Contains("UP") &&
+                        alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName)
                     {
-                        if (alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName)
-                        {
-                            //SynchronizeBtnExpectedResult("A");
-                            return Task.FromResult("A");
-                        }
+                        //SynchronizeBtnExpectedResult("A");
+                        return Task.FromResult("A");                        
                     }
                     //14 Test Scenario : 2 same non UP series monitors without ALS function
-                    if (!alsSynchronizeList[0].ModelName.Contains("UP") && !alsSynchronizeList[1].ModelName.Contains("UP"))
+                    if (!alsSynchronizeList[0].ModelName.Contains("UP") && !alsSynchronizeList[1].ModelName.Contains("UP") &&
+                        alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName &&
+                        alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
                     {
-                        if (alsSynchronizeList[0].ModelName == alsSynchronizeList[1].ModelName)
-                        {
-                            if (alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
-                            {
-                                //Expected Result B:
-                                //SynchronizeBtnExpectedResult("B");
-                                return Task.FromResult("B");
-                            }
-                        }
+                        //Expected Result B:
+                        //SynchronizeBtnExpectedResult("B");
+                        return Task.FromResult("B");                     
                     }
                     //15 Test Scenario : 2 different UP series monitors
-                    if (alsSynchronizeList[0].ModelName.Contains("UP") && alsSynchronizeList[1].ModelName.Contains("UP"))
+                    if (alsSynchronizeList[0].ModelName.Contains("UP") && alsSynchronizeList[1].ModelName.Contains("UP") &&
+                        alsSynchronizeList[0].ModelName != alsSynchronizeList[1].ModelName)
                     {
-                        if (alsSynchronizeList[0].ModelName != alsSynchronizeList[1].ModelName)
-                        {
-                            //Expected Result E.
-                            //SynchronizeBtnExpectedResult("E");
-                            return Task.FromResult("E");
-                        }
+                        //Expected Result E.
+                        //SynchronizeBtnExpectedResult("E");
+                        return Task.FromResult("E");
                     }
                     //16 Test Scenario : 2 different Non UP series monitors without ALS function
-                    if (!alsSynchronizeList[0].ModelName.Contains("UP") && !alsSynchronizeList[1].ModelName.Contains("UP"))
+                    if (!alsSynchronizeList[0].ModelName.Contains("UP") && !alsSynchronizeList[1].ModelName.Contains("UP") &&
+                        alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
                     {
-                        if (alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
-                        {
-                            //Expected Result B.
-                            //SynchronizeBtnExpectedResult("B");
-                            return Task.FromResult("B");
-                        }
+                        //Expected Result B.
+                        //SynchronizeBtnExpectedResult("B");
+                        return Task.FromResult("B");
                     }
                     //17 Test Scenario : UP monitor and Non UP series monitor without ALS function
-                    if ((alsSynchronizeList[0].ModelName.Contains("UP") || alsSynchronizeList[1].ModelName.Contains("UP")) && (!alsSynchronizeList[0].ModelName.Contains("UP") || !alsSynchronizeList[1].ModelName.Contains("UP")))
+                    if ((alsSynchronizeList[0].ModelName.Contains("UP") || alsSynchronizeList[1].ModelName.Contains("UP")) && 
+                        (!alsSynchronizeList[0].ModelName.Contains("UP") || !alsSynchronizeList[1].ModelName.Contains("UP")) &&
+                        alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
                     {
-                        if (alsSynchronizeList[0].isSupportALS == 0 && alsSynchronizeList[1].isSupportALS == 0)
-                        {
                             //"Synchronize between monitors" is NOT displayed.
                             //SynchronizeBtnExpectedResult("E");
-                            return Task.FromResult("E");
-                        }
+                            return Task.FromResult("E");                        
                     }
                     //18 Test Scenario : UP monitor and ALS function monitor
-                    if (alsSynchronizeList[0].ModelName.Contains("UP") || alsSynchronizeList[1].ModelName.Contains("UP"))
+                    if (alsSynchronizeList[0].ModelName.Contains("UP") || alsSynchronizeList[1].ModelName.Contains("UP") &&
+                        ((alsSynchronizeList[0].isSupportALS == 2) ^ (alsSynchronizeList[1].isSupportALS == 2)))
                     {
-                        if ((alsSynchronizeList[0].isSupportALS == 2) ^ (alsSynchronizeList[1].isSupportALS == 2))
-                        {
-                            //"Synchronize between monitors" is NOT displayed.
-                            //SynchronizeBtnExpectedResult("E");
-                            return Task.FromResult("E");
-                        }
+                        //"Synchronize between monitors" is NOT displayed.
+                        //SynchronizeBtnExpectedResult("E");
+                        return Task.FromResult("E");                        
                     }
                     //else
                     //{

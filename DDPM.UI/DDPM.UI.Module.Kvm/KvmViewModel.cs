@@ -512,6 +512,11 @@ namespace DDPM.UI.Module.Kvm
         public bool PC3USB_Enable { get; set; } = true;
         public bool PC4USB_Enable {  get; set; } = true;
 
+        public double PC1USB_Opacity { get; set; } = 1;
+        public double PC2USB_Opacity { get; set; } = 1;
+        public double PC3USB_Opacity { get; set; } = 1;
+        public double PC4USB_Opacity { get; set; } = 1;
+
         #region Hotkey
 
         private string _kvmHotkeyTooltip = LangHelper.Instance["None"];
@@ -2255,12 +2260,15 @@ namespace DDPM.UI.Module.Kvm
                         pcsList["PC1"].InputType == "Thunderbolt1")
                     {
                         PC1USB_Enable = false;
+                        PC1USB_Opacity = 0.5;
                     }
                     else
                     {
                         PC1USB_Enable = true;
+                        PC1USB_Opacity = 1;
                     }
                     OnPropertyChanged("PC1USB_Enable");
+                    OnPropertyChanged("PC1USB_Opacity");
                 }
                 if (pcsList.ContainsKey("PC2"))
                 {
@@ -2270,12 +2278,15 @@ namespace DDPM.UI.Module.Kvm
                         pcsList["PC2"].InputType == "Thunderbolt1")
                     {
                         PC2USB_Enable = false;
+                        PC2USB_Opacity = 0.5;
                     }
                     else
                     {
                         PC2USB_Enable = true;
+                        PC2USB_Opacity = 1;
                     }
                     OnPropertyChanged("PC2USB_Enable");
+                    OnPropertyChanged("PC2USB_Opacity");
                 }
                 if (pcsList.ContainsKey("PC3"))
                 {
@@ -2285,12 +2296,15 @@ namespace DDPM.UI.Module.Kvm
                         pcsList["PC3"].InputType == "Thunderbolt1")
                     {
                         PC3USB_Enable = false;
+                        PC3USB_Opacity = 0.5;
                     }
                     else
                     {
                         PC3USB_Enable = true;
+                        PC3USB_Opacity = 1;
                     }
                     OnPropertyChanged("PC3USB_Enable");
+                    OnPropertyChanged("PC3USB_Opacity");
                 }
                 if (pcsList.ContainsKey("PC4"))
                 {
@@ -2300,12 +2314,15 @@ namespace DDPM.UI.Module.Kvm
                         pcsList["PC4"].InputType == "Thunderbolt1")
                     {
                         PC4USB_Enable = false;
+                        PC4USB_Opacity = 0.5;
                     }
                     else
                     {
                         PC4USB_Enable = true;
+                        PC4USB_Opacity = 1;
                     }
                     OnPropertyChanged("PC4USB_Enable");
+                    OnPropertyChanged("PC4USB_Opacity");
                 }
             }
         }

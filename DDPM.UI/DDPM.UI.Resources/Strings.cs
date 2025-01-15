@@ -1,4 +1,7 @@
-﻿using System.Globalization;
+﻿//Robert_Lin 2025-1-14, to simple swich betwwen Teesting and Release mode, please comment out the following line in Release mode
+//#define MULTILINGUAL_TEST
+
+using System.Globalization;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Navigation;
@@ -14,10 +17,17 @@ namespace DDPM.UI.Common
         private static ResourceManager resManager = Resources.Resources.ResourceManager;
         private static string GetString(string key)
         {
-
-            //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("pl-PL");
-            // string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+#if MULTILINGUAL_TEST
+            //Robert_Lin 2025-1-13 To do multilingual test, please remove below comments
+            //
+            CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("pt-PT");
+            string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+#else
+            //And comment-out below line
             string str = resManager.GetString(key, CultureInfo.CurrentUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+#endif
+
+            //This statement is required
             return System.Text.RegularExpressions.Regex.Unescape(str);
         }
         //private static string GetString(string key, string culture = "en-US")

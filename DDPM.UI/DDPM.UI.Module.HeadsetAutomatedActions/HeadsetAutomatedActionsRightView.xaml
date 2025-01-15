@@ -263,7 +263,7 @@
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
                                             <!--<UXControls:UXTextBlock x:Name="PauseMusicText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{Binding IsChecked, ElementName=WearDetectionToggleSwitch, Converter={StaticResource BooleanToForegroundConverter},ConverterParameter={Binding IsDarkTheme}}" Text="{Binding [HeadsetAutomatedActions.5], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0" />-->
-                                            <UXControls:UXTextBlock x:Name="PauseMusicText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Margin="20,0,0,0">
+                                            <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" MaxWidth="300" x:Name="PauseMusicText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Margin="20,0,0,0">
                                                 <UXControls:UXTextBlock.Foreground>
                                                     <MultiBinding Converter="{StaticResource BooleanToForegroundConverter}">
                                                         <Binding Path="IsChecked" ElementName="WearDetectionToggleSwitch" />
@@ -275,9 +275,9 @@
                                                 </UXControls:UXTextBlock.Text>
                                             </UXControls:UXTextBlock>
 
-                                            <Image ToolTipService.HorizontalOffset="-180" x:Name="PauseMusicImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
+                                            <Image x:Name="PauseMusicImage" Grid.Column="1" Width="16" Height="16" Margin="8" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                                 <Image.ToolTip>
-                                                    <ToolTip x:Name="PauseMusicToolTip" Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                                    <ToolTip Placement="Left" x:Name="PauseMusicToolTip" Style="{StaticResource InfoToolTipStyle}" VerticalOffset="8" HorizontalOffset="6">
                                                         <TextBlock x:Name="PauseMusicToolTipText" 
                                                                    Style="{StaticResource TabInfoToolTipTextStyle}" 
                                                                    Text="{Binding PauseMusicToolTip}" 

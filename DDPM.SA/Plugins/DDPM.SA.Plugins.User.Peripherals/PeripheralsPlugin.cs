@@ -11,6 +11,7 @@
 #endregion
 
 using DDPM.SA.Common;
+using DDPM.SA.Common.Settings;
 using DDPM.SA.Common.UI;
 using DDPM.SA.Resources.Helper;
 using Dell.Client.Framework.Common;
@@ -63,9 +64,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private DeviceHelper _deviceHelper;
         private UpdateHelper _updateHelper;
         //Bruce, FWU need it
-        private int _IODongleCount;
-        //Bruce, FWU need it
-        private int _AudioDongleCount;
+        private int _IODongleCount_Gen3Ago;
         private RFDeviceHelper _rfDeviceHelper;
         private ClientInfo _clientInfo;
         private static Logs _logs;
@@ -90,6 +89,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private static List<Guid> LogicalDevices2 = new();
         private static List<Guid> LogicalDevices3 = new();
         private static List<Guid> LogicalDevicesPen = new();
+        private static List<Guid> LogicalDevicHeadset = new();
         private static List<Guid> IDevices = new();
 
         //private IDeviceManagerSA _DeviceManagerPlugin;
@@ -1410,10 +1410,8 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     if (_iDeviceManager == null)
                         return;
                     //Bruce, FWU need it
-                    _IODongleCount = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalDongle)).Count;
-                    _AudioDongleCount = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalAudioDongle)).Count;
-                    _logs.DebugMsg_1("[PeripheralsPlugin] _IODongleCount " + _IODongleCount);
-                    _logs.DebugMsg_1("[PeripheralsPlugin] _HeadsetDongleCount " + _AudioDongleCount);
+                    _IODongleCount_Gen3Ago = _iDeviceManager.Devices.ToList().FindAll(o => o.Type.Equals(DeviceType.PhysicalDongle) && o.Name.ToLower().Equals(GlobalDefinitions.Dongle_BeforeGen2_Name.ToLower())).Count;
+                    _logs.DebugMsg_1("[PeripheralsPlugin] _IODongleCount_Gen3Ago : " + _IODongleCount_Gen3Ago);
                     //_deviceHelper.DPeMSDKVersion = IndiLogic.DPeM.Broker.Assembly.GetName();
                     foreach (var device in _iDeviceManager.Devices)
                     {
@@ -1473,26 +1471,22 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 ThumbnailImageRawData = item.ThumbnailImageRawData,
                             };
 
-                            if (item.ParentPhysicalDevice.Type == DeviceType.PhysicalDongle)
+                            if (item.ParentPhysicalDevice.Type == DeviceType.PhysicalDongle &&
+                                item.ParentPhysicalDevice is IPhysicalDeviceDongle _physicalDeviceDongle)
                             {
-                                if (item.ParentPhysicalDevice is IPhysicalDeviceDongle _physicalDeviceDongle)
-                                {
-                                    info.PairingStatusName = UpdateParingStausText(_physicalDeviceDongle.PairingStatus);
-                                    info.MaxPairingSlots = _physicalDeviceDongle.MaxPairingSlots;
-                                    info.PairedDeviceCount = _physicalDeviceDongle.PairedDeviceCount;
-                                    info.IsPhysicalDeviceDongle = true; //Because if it is a physical device dongle it will return true.
-                                }
+                                info.PairingStatusName = UpdateParingStausText(_physicalDeviceDongle.PairingStatus);
+                                info.MaxPairingSlots = _physicalDeviceDongle.MaxPairingSlots;
+                                info.PairedDeviceCount = _physicalDeviceDongle.PairedDeviceCount;
+                                info.IsPhysicalDeviceDongle = true; //Because if it is a physical device dongle it will return true.                                
                             }
 
-                            if (item.ParentPhysicalDevice.Type == DeviceType.PhysicalAudioDongle)
+                            if (item.ParentPhysicalDevice.Type == DeviceType.PhysicalAudioDongle &&
+                                item.ParentPhysicalDevice is IPhysicalAudioDeviceDongle _physicalAudioDeviceDongle)
                             {
-                                if (item.ParentPhysicalDevice is IPhysicalAudioDeviceDongle _physicalAudioDeviceDongle)
-                                {
-                                    info.PairingStatusName = UpdateParingStausText(_physicalAudioDeviceDongle.PairingStatus);
-                                    info.MaxPairingSlots = _physicalAudioDeviceDongle.MaxPairingSlots;
-                                    info.PairedDeviceCount = _physicalAudioDeviceDongle.PairedDeviceCount;
-                                    info.IsPhysicalDeviceDongle = false;
-                                }
+                                info.PairingStatusName = UpdateParingStausText(_physicalAudioDeviceDongle.PairingStatus);
+                                info.MaxPairingSlots = _physicalAudioDeviceDongle.MaxPairingSlots;
+                                info.PairedDeviceCount = _physicalAudioDeviceDongle.PairedDeviceCount;
+                                info.IsPhysicalDeviceDongle = false;                                
                             }
 
                             if (item.ParentPhysicalDevice.Type == DeviceType.PhysicalPen)
@@ -1602,26 +1596,22 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             }
 
                             // << 241206 by Hess fix no event issue
-                            if (item is ILogicalDevice _logicalDevice)
+                            if (item is ILogicalDevice _logicalDevice &&
+                                !LogicalDevices.Contains(_logicalDevice.Id))
                             {
-                                if (!LogicalDevices.Contains(_logicalDevice.Id))
-                                {
-                                    _logicalDevice.BatteryStatusChanged += ILogicalDevice_BatteryStatusChanged;
-                                    _logicalDevice.BatteryLevelChanged += ILogicalDevice_BatteryLevelChanged;
-                                    LogicalDevices.Add(_logicalDevice.Id);
+                                _logicalDevice.BatteryStatusChanged += ILogicalDevice_BatteryStatusChanged;
+                                _logicalDevice.BatteryLevelChanged += ILogicalDevice_BatteryLevelChanged;
+                                LogicalDevices.Add(_logicalDevice.Id);
 
-                                    CheckLowBatteryOSD(info);
-                                }
+                                CheckLowBatteryOSD(info);
                             }
                             // >>
                             // << 241228 by Hess add new event
-                            if (item is IDevice _IDevice)
+                            if (item is IDevice _IDevice &&
+                                !IDevices.Contains(_IDevice.Id))
                             {
-                                if (!IDevices.Contains(_IDevice.Id))
-                                {
-                                    device.NameChanged += (name) => OnDeviceNameChanged(device, name);
-                                    IDevices.Add(_IDevice.Id);
-                                }
+                                device.NameChanged += (name) => OnDeviceNameChanged(device, name);
+                                IDevices.Add(_IDevice.Id);
                             }
                             // >>
 
@@ -1714,6 +1704,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
 
                             if (item is ILogicalDeviceHeadset _logicalDeviceHeadset)
                             {
+                                _logs.DebugMsg_1($"[LogicalDevicHeadset] ScanDevices Add DTH event ... in ");
                                 _logs.DebugMsg_1("[PeripheralsPlugin] ILogicalDeviceHeadset ... FirmwareVersion " + item.FirmwareVersion.ToString("X4"));
                                 info.FirmwareVersion = item.FirmwareVersion.ToString("X4");
                                 info.IsReady = _logicalDeviceHeadset.IsReady;
@@ -1767,6 +1758,12 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 _logicalDeviceHeadset.AncGainChanged += _logicalDeviceHeadset_AncGainChanged;
                                 //Elie. R17.1 drop this function.1123
                                 //_logicalDeviceHeadset.WearDetectionChanged += _logicalDeviceHeadset_WearDetectionChanged;
+                                var headset = (ILogicalDeviceHeadset)item;
+                                if (!LogicalDevicHeadset.Contains(headset.Id))
+                                {
+                                    LogicalDevicHeadset.Add(headset.Id);
+                                    _logs.DebugMsg_1($"[LogicalDevicHeadset] ScanDevices Add DTH event, LogicalDevicHeadset Headset ID : {headset.Id.ToString()} ... ");
+                                }
                             }
 
                             if (item is ILogicalDeviceDock _logicalDeviceDock)
@@ -2648,6 +2645,26 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         _logicalDevicePen.KeyCaptureProgressDataChanged -= Pen_KeyCaptureProgressDataChanged;
                         LogicalDevicesPen.Remove(iLogicalDevice.Id);
                     }
+                    if (LogicalDevicHeadset.Contains(iLogicalDevice.Id) && iLogicalDevice is ILogicalDeviceHeadset _logicalDeviceHeadset)
+                    {
+                        _logs.DebugMsg_1($"[LogicalDevicHeadset] IPhysicalDevice_DeviceRemovedEvent Remove DTH event ... in");
+                        _logicalDeviceHeadset.IsReadyChanged -= _logicalDeviceHeadset_IsReadyChanged;
+                        _logicalDeviceHeadset.IsDirtyChanged -= _logicalDeviceHeadset_IsDirtyChanged;
+                        _logicalDeviceHeadset.MicNoiseCancellationChanged -= _logicalDeviceHeadset_MicNoiseCancellationChanged;
+                        _logicalDeviceHeadset.MicNCIncomingChanged -= _logicalDeviceHeadset_MicNCIncomingChanged;
+                        _logicalDeviceHeadset.SidetoneChanged -= _logicalDeviceHeadset_SidetoneChanged;
+                        _logicalDeviceHeadset.BusyLightChanged -= _logicalDeviceHeadset_BusyLightChanged;
+                        _logicalDeviceHeadset.VoiceGuidanceChanged -= _logicalDeviceHeadset_VoiceGuidanceChanged;
+                        _logicalDeviceHeadset.SelectedPresetChanged -= _logicalDeviceHeadset_SelectedPresetChanged;
+                        _logicalDeviceHeadset.SidetoneLevelChanged -= _logicalDeviceHeadset_SidetoneLevelChanged;
+                        _logicalDeviceHeadset.MuteStatusChanged -= _logicalDeviceHeadset_MuteStatusChanged;
+                        _logicalDeviceHeadset.BandsGainChanged -= _logicalDeviceHeadset_BandsGainChanged;
+                        _logicalDeviceHeadset.AncModeChanged -= _logicalDeviceHeadset_AncModeChanged;
+                        _logicalDeviceHeadset.AncGainChanged -= _logicalDeviceHeadset_AncGainChanged;
+                        LogicalDevicHeadset.Remove(iLogicalDevice.Id);
+                        _logs.DebugMsg_1($"[LogicalDevicHeadset] IPhysicalDevice_DeviceRemovedEvent Remove ID : {iLogicalDevice.Id.ToString()} ... ");
+                    }
+
                     //if (LowBatteryIDs.Contains(iLogicalDevice.Id.ToString()))
                     //    LowBatteryIDs.Remove(iLogicalDevice.Id.ToString());
                     ScanDevices();
@@ -3457,7 +3474,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                             _updateItems.Thumbprint = updateItem.Thumbprint;
 
                             _updateHelper.UpdateItems.Add(_updateItems);
-                        }        
+                        }
                     }
                     else
                     {
@@ -3467,10 +3484,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     //Console.WriteLine(isAnyUpdateAvailable ? "UpdateAvailable" : "Already Updated.");
                     _logs.DebugMsg_1($"[PeripheralsPlugin] isAnyUpdateAvailable = {(isAnyUpdateAvailable ? "UpdateAvailable" : "Already Updated.")}");
                 }
-                if (isAnyUpdateAvailable)
-                {
-                    OnUpdateNotify(isAnyUpdateAvailable);
-                }
+                OnUpdateNotify(isAnyUpdateAvailable);
                 _logs.DebugMsg_1($"[PeripheralsPlugin] IUpdateManager_IsAnyUpdateAvailableChanged done");
             }
         }
@@ -3680,14 +3694,9 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
             };
         }
         //Bruce, FWU need it
-        public Task<int> GetIODongleCount()
+        public Task<int> GetIODongleCountGen3AgoCount()
         {
-            return System.Threading.Tasks.Task.FromResult(_IODongleCount);
-        }
-        //Bruce, FWU need it
-        public Task<int> GetAudioDongleCount()
-        {
-            return System.Threading.Tasks.Task.FromResult(_AudioDongleCount);
+            return System.Threading.Tasks.Task.FromResult(_IODongleCount_Gen3Ago);
         }
 
         public void DisplayNotification(string bannerInfo, string hyperlinkText, string bannerItemType)

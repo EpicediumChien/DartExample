@@ -822,7 +822,7 @@ namespace VcpCore.Common
             public static string Vertical_Sync_Offset(byte[] EDID)
             {
                 if (EDID == null || EDID.Length < 128) return "";
-                int val = ((EDID[65] << 2) & 0x0030) | ((((int)EDID[64] >> 4) & 0x000F));
+                int val = ((EDID[65] << 2) & 0x0030) | (((int)EDID[64] >> 4) & 0x000F);
                 return val.ToString() + " lines";
             }
 

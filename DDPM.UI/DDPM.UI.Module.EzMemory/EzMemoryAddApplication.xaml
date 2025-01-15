@@ -254,7 +254,8 @@
        
 
         <!-- 上方的返回按鈕與標題 -->
-        <StackPanel Grid.Column="0" Margin="20,0,0,0">
+        <!-- Robert_Lin, 2025-1-14 Margin of the Back arraow : Left=60, Top=72-->
+        <StackPanel Grid.Column="0" Margin="60,72,0,0">
             <StackPanel Grid.Column="0" Margin="0,0,0,0" Orientation="Horizontal" HorizontalAlignment="left">
                 <Border Grid.Column="0" Name="prevBtn" IsEnabled="{Binding IsPrevButtonEnabled}" MouseLeftButtonDown="btnCancel_Click" Background="Transparent">
                     <Viewbox Width="16" Height="16">
@@ -284,10 +285,14 @@
                 <RowDefinition Height="1.5*" />
                 <RowDefinition Height="30" />
             </Grid.RowDefinitions>
+            
             <!-- 搜尋框 -->
-
+            <!-- Robert_Lin 2025-1-14, Search TextBox Width is fit to its container 
+            OLD:
+                   <UXControls:UXTextBox x:Name="edFilter" FontSize="14" Width="487" Height="40" TextChanged="edFilter_TextChanged" HorizontalContentAlignment="Left" VerticalAlignment="Center"/>
+            -->
             <Grid Grid.Row="3" >
-                <UXControls:UXTextBox x:Name="edFilter" FontSize="14" Width="487" Height="40" TextChanged="edFilter_TextChanged" HorizontalContentAlignment="Left" VerticalAlignment="Center"/>
+                <UXControls:UXTextBox x:Name="edFilter" FontSize="14" Height="40" TextChanged="edFilter_TextChanged" HorizontalContentAlignment="Stretch" VerticalAlignment="Center"/>
             </Grid>
 
             <!-- 排序按鈕 -->
@@ -312,7 +317,7 @@
             </Grid>
 
             <!-- 安裝的應用程式列表 -->
-            <ListView  Grid.Row="5" x:Name="lb_Installed_App"   Background="{DynamicResource DefaultTheme_BdBdColor}" SelectionMode="Single" SelectedIndex="{Binding Selected}">
+            <ListView  Grid.Row="5" x:Name="lb_Installed_App"   Background="{DynamicResource DefaultTheme_BdBdColor}" SelectionMode="Single" SelectedIndex="{Binding Selected}" SelectionChanged="lb_Installed_App_SelectionChanged">
                 <ListView.Template>
                     <ControlTemplate TargetType="{x:Type ListView}">
                         <Border CornerRadius="5">
@@ -359,18 +364,30 @@
                 </ListView.ItemTemplate>
             </ListView>
             <!-- 底部按鈕 -->
-            <Grid Grid.Row="6" Margin="0,0,0,0">
-                <Grid.ColumnDefinitions>
+            <Grid Grid.Row="6" Margin="0,20,0,0">
+                <!-- Robert_Lin 2025-1-14 [PIMS-332067] L10N: i18N: DDPM 2.0: GUI: TP1: es-ES, es-XL, fr-CA, it-IT, pt-PT: StringID: EazyMemory.33 was clipped -->
+                <!-- NEW -->
+                <WrapPanel HorizontalAlignment="Center">
+                    <Button x:Name="btnSelect" Content="{Binding [EazyMemory.33], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                            Style="{StaticResource PrimaryButtonStyle}" Click="btnSelect_Click"/>
+                    <Button x:Name="btnAdd" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" Margin="20,0,0,0"
+                            Style="{StaticResource PrimaryButtonStyle}"  IsEnabled="False"  Click="btnAdd_Click"/>
+                </WrapPanel>
+                
+                <!-- OLD -->
+                
+                <!--<Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center">
-                    <UXControls:UXButton x:Name="btnSelect" Content="{Binding [EazyMemory.33], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="177" Height="40"  CornerRadius="2"   Click="btnSelect_Click" />
+                    <UXControls:UXButton x:Name="btnSelect_OLD" Content="{Binding [EazyMemory.33], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Width="177" Height="40"  CornerRadius="2"   Click="btnSelect_Click" />
                 </StackPanel>
 
                 <StackPanel Grid.Column="1"  Orientation="Horizontal" HorizontalAlignment="Center">
-                    <UXControls:UXButton x:Name="btnAdd" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" Width="114" Height="40"  CornerRadius="2"   Click="btnAdd_Click" />
-                </StackPanel>
+                    <UXControls:UXButton x:Name="btnAdd_OLD" Content="{Binding [Confirm], Source={x:Static lang:LangHelper.Instance}}" Width="114" Height="40"  CornerRadius="2" Click="btnAdd_Click" IsEnabled="False" />
+
+                </StackPanel>-->
             </Grid>
         </Grid>
     </Grid>

@@ -639,11 +639,47 @@ namespace DDPM.UI.Common.ViewModels
             //    OpenFullViewCommand?.Execute(this);
             FullView = content;
             FullView.Visibility = Visibility.Visible;
+            OnPropertyChanged("IsFullViewOpened");
         }
 
         public void CloseFullView()
         {
             FullView = null;
+            OnPropertyChanged("IsFullViewOpened");
+        }
+
+        //Robert_Lin 2025-1-11 added to hide (Visibilily=Collapsed) the FullView 
+        public void HideFullView()
+        {
+            if (FullView != null)
+            {
+                FullView.Visibility = Visibility.Collapsed;
+                OnPropertyChanged("IsFullViewOpened");
+            }
+        }
+        public void ShowFullView()
+        {
+            if (FullView != null)
+            {
+                FullView.Visibility = Visibility.Visible;
+                OnPropertyChanged("IsFullViewOpened");
+            }
+        }
+ 
+        //Robert_Lin, 2025-1-11 a flag to indicate if FullView is opened
+        public bool IsFullViewOpened
+        {
+            get
+            {
+                if (FullView != null)
+                {
+                    if (FullView.Visibility == Visibility.Visible)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
 
         #endregion FullView
@@ -1026,10 +1062,13 @@ namespace DDPM.UI.Common.ViewModels
             //1 DisplayPlugin is activate
             if (!DdpmCommonHelper.IsDisplayPluginActivated)
                 return;
-            //2 DeviceManagerPlugin is ready
+            //2 If FullView is opened, then ignore this event
+            if (IsFullViewOpened)
+                return;
+            //3 DeviceManagerPlugin is ready
             if (DdpmCommonHelper.DeviceManagerSA == null)
                 return;
-            //3 Has Monitor
+            //4 Has Monitor
             if (HomeDeviceCount == 0) 
                 return;
 

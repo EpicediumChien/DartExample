@@ -9,6 +9,7 @@
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:commonModel="clr-namespace:DDPM.UI.Common.Models;assembly=DDPM.UI.Common"
              xmlns:DDPMUserControls="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
+             xmlns:commCtrls="clr-namespace:DDPM.UI.Common.UserControls;assembly=DDPM.UI.Common"
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
@@ -142,7 +143,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="UIDebugPanel" Grid.Row="0" Orientation="Horizontal" Visibility="Hidden">
+        <StackPanel x:Name="UIDebugPanel" Grid.Row="0" Orientation="Horizontal" Visibility="Hidden" d:Visibility="Visible">
 
             <!--<UXControls:UXTextBlock TextBlock.Text="DDPM 2.0"
                                     TextBlockType="Header2" />-->
@@ -160,6 +161,8 @@
                 <TextBlock Foreground="Cyan" Text="cxItem=" Margin="8,0,0,0" />
                 <TextBlock Foreground="Cyan" Text="{Binding cxItem}" />
                 <Button Content="+" Margin="12,0" Click="addItem_Click" Visibility="Collapsed" />
+                
+                <local:AddDeviceButton Width="12" Height="12" Visibility="Collapsed"/>
             </StackPanel>
         </StackPanel>
 
@@ -197,14 +200,14 @@
                     </Style>
                 </Grid.Style>
 
-                <UXControls:UXTextBlock Grid.Row="0" Text="NO DEVICE DETECTED" 
+                <UXControls:UXTextBlock Grid.Row="0" Text="{Binding [NoDeviceDetected], Source={x:Static lang:LangHelper.Instance}}" 
                                         FontSize="20"
                                         Foreground="{DynamicResource HomePageFeature_TxtColor}" HorizontalAlignment="Center"/>
-                <UXControls:UXTextBlock Grid.Row="1" Text="Add your first device" 
+                <UXControls:UXTextBlock Grid.Row="1" Text="{Binding [Add1sDevice], Source={x:Static lang:LangHelper.Instance}}" 
                                         FontSize="64"
                                         Margin="0,16,0,50"
                                         Foreground="{DynamicResource HomePageKeyFeature_TxtColor}" HorizontalAlignment="Center"/>
-                <UXControls:UXButton Grid.Row="2" Content="Connect" ButtonType="Primary"
+                <UXControls:UXButton Grid.Row="2" Content="{Binding [Connect], Source={x:Static lang:LangHelper.Instance}}" ButtonType="Primary"
                                      MinWidth="160" Padding="24,2" FontSize="14"
                                      Command="{Binding ConnectButtonClickCommand}" />
             </Grid>
@@ -255,7 +258,7 @@
                         <!--
                         <WrapPanel HorizontalAlignment="Center" />
                         -->
-                        <local:HomeDevicesPanel HorizontalContentAlignment="Center" />
+                        <local:HomeDevicesPanel HorizontalContentAlignment="Center" VerticalAlignment="Center" />
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
 
@@ -389,10 +392,16 @@
                                                      ToolTipService.InitialShowDelay="1000"
                                                      ToolTipService.BetweenShowDelay="2000">
 
+                                            <!-- Robert_Lin, 2025-1-9 Apply the tooltip to DDPM standard style defined 
+                                                 in ModuleStyle.xaml
+                                            OLD:
                                             <Border Background="{DynamicResource  Tooltip_BkColor}"
                                                         BorderBrush="{DynamicResource Tooltip_BdColor}"
                                                         CornerRadius="4" Padding="8,12">
-                                                <Border.Resources>
+                                            -->
+                                            <Border>
+                                                <!-- Robert_Lin, 2025-1-9 comment-out to use DDPM Standard style -->
+                                                <!--<Border.Resources>
                                                     <Style TargetType="TextBlock">
                                                         <Setter Property="Foreground" Value="{DynamicResource Tooltip_TextColor}" />
                                                         <Setter Property="FontSize" Value="12" />
@@ -403,20 +412,23 @@
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
-                                                </Border.Resources>
+                                                </Border.Resources>-->
                                                 <Border.Style>
-                                                    <Style TargetType="Border">
+                                                    <Style TargetType="Border" BasedOn="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <Setter Property="Visibility" Value="Visible" />
                                                         <Style.Triggers>
+                                                            <!-- When ConnectionHoverView is shown, then force tooltip to hide -->
                                                             <DataTrigger Binding="{Binding IsConnectionHoverViewShow}"
-                                                                             Value="True">
+                                                                         Value="True">
                                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Border.Style>
                                                 <StackPanel>
-                                                    <TextBlock Text="{Binding TooltipModelName}" />
+                                                    <!-- Robert_Lin, 2025-1-9, apply DDPM Standrd style in ModuleStyle.xaml -->
+                                                    <TextBlock Text="{Binding TooltipModelName}" 
+                                                               Style="{StaticResource Tooltip_TextBlockStyle}"/>
                                                 </StackPanel>
                                             </Border>
                                         </ToolTip>

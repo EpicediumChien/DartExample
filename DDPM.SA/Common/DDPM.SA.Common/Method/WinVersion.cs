@@ -98,7 +98,7 @@ namespace DDPM.SA.Common.Method
             ManagementObjectCollection moc = mc.GetInstances();
             if (moc.Count != 0)
             {
-                foreach (ManagementObject mo in mc.GetInstances())
+                foreach (ManagementObject mo in mc.GetInstances().Cast<ManagementObject>())
                 {
                     try
                     {

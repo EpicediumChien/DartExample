@@ -21,6 +21,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
+using IndiLogic.DPeM.Broker;
 using Microsoft;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
@@ -115,8 +116,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private Dictionary<string, string> USBUpstream = new Dictionary<string, string>(); // Port name, Upstream Port num
 
         private string[] OrientationString = new string[] { "", "Landscape", "Portrait", "Landscape_flipped", "Portrait_flipped" };//OSD orientation
-        private readonly string Display_FWU_URL = GlobalDefinitions.major_url;//@$"https://clientperipherals.dell.com/DDPM/";
-        private readonly string Display_FWU_URL_Folder = @$"/Windows/Display/Firmware/";
 
         //Derek 2024/10/21
         private Process uiProcess = null;
@@ -152,7 +151,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// </summary>
         private readonly Dictionary<string, DateTime> LastProcessedTimestamps = new();
 
-        private bool IsDDPMLaunch = false;
+        private ISettingsManagerDev _SettingsPlugin;
+        private readonly object _SettingsPluginConditionLock = new object();
+        private bool IsDDPMLaunchEarly = false;
+        private bool IsDDPMLaunchNow = false;
         #endregion
 
         #region Constructor
@@ -204,9 +206,38 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(_CacheTable);
         }
 
-        public Task<bool> GetIsDDPMLaunch()
+        public Task<bool> GetIsDDPMLaunchNow()
         {
-            return Task.FromResult(IsDDPMLaunch);
+            return Task.FromResult(IsDDPMLaunchNow);
+        }
+        public Task<bool> GetIsDDPMLaunchEarly()
+        {
+            return Task.FromResult(IsDDPMLaunchEarly);
+        }
+        public Task<bool> LauncDDPM(string UserId, string ddpmExePath)
+        {
+            _logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect UserId : {UserId}, StartProcess ... ");
+            bool result = DDPMFileSecurity.ValidateFilePath(ddpmExePath, out string info);
+            if (result)
+            {
+                result = DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                    null,
+                    new ProcessStartInfo
+                    {
+                        FileName = ddpmExePath,
+                        UseShellExecute = true
+                    });
+
+                if (!result)
+                {
+                    _logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect StartProcessSafely fail");
+                }
+            }
+            else
+            {
+                _logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect ValidateFilePath fail");
+            }
+            return Task.FromResult(result);
         }
         public Task Reset0x52TimerTick(int millisecond, int processID = -0xFF)
         {
@@ -217,18 +248,44 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 CreateProcessExitEvent(processID);
 
             _VcpCorePlugin.Reset0x52TimerTick(millisecond);
-
+            IsDDPMLaunchEarly = IsDDPMLaunchNow;
             if (millisecond == 2000) // 8000 mean UI close, 2000 mean UI open
             {
-                IsDDPMLaunch = true;
+                IsDDPMLaunchNow = true;
                 _logs.DebugMsg("[DisplayMangerPlugin] Reset0x52TimerTick: millisecond = 2000 , UI Open");
             }
             else
             {
-                IsDDPMLaunch = false;
+                IsDDPMLaunchNow = false;
                 _logs.DebugMsg("[DisplayMangerPlugin] Reset0x52TimerTick: millisecond = 8000 , UI Close");
             }
 
+            // If APP WalkThrough not done, need re-launch APP
+            if (IsDDPMLaunchEarly && !IsDDPMLaunchNow)
+            {
+                if (_SettingsPlugin == null)
+                {
+                    _logs.DebugMsg($"Reset0x52TimerTick LauncDDPM but _SettingsPlugin NULL ... ");
+                    return Task.FromResult(Task.CompletedTask);
+                }
+                _logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect IsDDPMLaunchEarly true, IsDDPMLaunchNow false");
+                string UserId = WTSFunction.DirectGetUserID(Log);
+                string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
+                string regKeyForDDPM = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
+                object regValue = _SettingsPlugin.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM).Result;
+                //_logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect regValue {Convert.ToBoolean(regValue).ToString()}");
+                if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)))
+                {
+                    string ddpmExePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Dell\Dell Display and Peripheral Manager\DDPM.exe");
+                    //string ddpmExePath = @"D:\\NEW\DDPM\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+                    LauncDDPM(UserId, ddpmExePath);
+                    _logs.DebugMsg($"LauncDDPM From Reset0x52TimerTick ... ");
+                }
+                else
+                {
+                    _logs.DebugMsg($"LauncDDPM From Reset0x52TimerTick Reg Exit ... ");
+                }
+            }
             return Task.FromResult(Task.CompletedTask);
         }
 
@@ -417,69 +474,69 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     //if (!inputSourcelist.ContainsKey(tmp.ToString()))
                     //{
-                        InputInfo inputInfo = new InputInfo();
-                        inputInfo.InputName = tmp.Name;
-                        inputInfo.Code = tmp.value;
-                        //if (objGetVCP.result && usbUpstreamList.Count > 0)
-                        //{
-                        //    string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
-                        //    string newstrUpstream = getUpstream;
-                        //    if (getUpstream.Length < 16)
-                        //    {
-                        //        for (int i = 0; i < (16 - getUpstream.Length); i++)
-                        //        {
-                        //            newstrUpstream = "0" + newstrUpstream;
-                        //        }
-                        //    }
-                        //    _logs.DebugMsg("[DisplayMangerPlugin][GetInputSourcelist] newstrUpstream : " + newstrUpstream);
-                        //    _logs.DebugMsg("[DisplayMangerPlugin][GetInputSourcelist] input_num : " + input_num);
-                        //    if (newstrUpstream.Length == 16)
-                        //    {
-                        //        string subUpstream = newstrUpstream.Substring(input_num * 2, 2);
-                        //        if (subUpstream == "11")
-                        //        {
-                        //            //if (usbUpstreamList.Count > 0)//0708 non-EE issue
-                        //            //    inputInfo.USBUpstream = usbUpstreamList[0];
-                        //            inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "11").Key;
-                        //        }
-                        //        else if (subUpstream == "10")
-                        //        {
-                        //            //if (usbUpstreamList.Count > 1)//0708 non-EE issue
-                        //            //    inputInfo.USBUpstream = usbUpstreamList[1];
-                        //            inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "10").Key;
-                        //        }
-                        //        else if (subUpstream == "01")
-                        //        {
-                        //            //if (usbUpstreamList.Count > 2)//0708 non-EE issue
-                        //            //    inputInfo.USBUpstream = usbUpstreamList[2];
-                        //            inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "01").Key;
-                        //        }
-                        //        else if (subUpstream == "00")
-                        //        {
-                        //            //if (usbUpstreamList.Count > 3)//0708 non-EE issue
-                        //            //    inputInfo.USBUpstream = usbUpstreamList[3];
-                        //            inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "00").Key;
-                        //        }
-                        //        //inputInfo.USBUpstream = GetUSBUpstream(monitorInfo, tmp.Name).Result;
-                        //    }
-                        //    else
-                        //    {
-                        //        _logs.DebugMsg("[DisplayMangerPlugin][GetInputSourcelist] newstrUpstream length is not 16");
-                        //    }
-                        //}
-                        //else
-                        //{
-                        inputInfo.USBUpstream = string.Empty;
-                        //}
-                        if (inputSourcelist.ContainsKey(tmp.Name))
-                        {
-                            inputSourcelist[tmp.Name] = inputInfo;
-                        }
-                        else
-                        {
-                            inputSourcelist.Add(tmp.Name, inputInfo);
-                        }
-                        input_num = input_num + 1;
+                    InputInfo inputInfo = new InputInfo();
+                    inputInfo.InputName = tmp.Name;
+                    inputInfo.Code = tmp.value;
+                    //if (objGetVCP.result && usbUpstreamList.Count > 0)
+                    //{
+                    //    string getUpstream = Convert.ToString((uint)objGetVCP.value, 2);
+                    //    string newstrUpstream = getUpstream;
+                    //    if (getUpstream.Length < 16)
+                    //    {
+                    //        for (int i = 0; i < (16 - getUpstream.Length); i++)
+                    //        {
+                    //            newstrUpstream = "0" + newstrUpstream;
+                    //        }
+                    //    }
+                    //    _logs.DebugMsg("[DisplayMangerPlugin][GetInputSourcelist] newstrUpstream : " + newstrUpstream);
+                    //    _logs.DebugMsg("[DisplayMangerPlugin][GetInputSourcelist] input_num : " + input_num);
+                    //    if (newstrUpstream.Length == 16)
+                    //    {
+                    //        string subUpstream = newstrUpstream.Substring(input_num * 2, 2);
+                    //        if (subUpstream == "11")
+                    //        {
+                    //            //if (usbUpstreamList.Count > 0)//0708 non-EE issue
+                    //            //    inputInfo.USBUpstream = usbUpstreamList[0];
+                    //            inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "11").Key;
+                    //        }
+                    //        else if (subUpstream == "10")
+                    //        {
+                    //            //if (usbUpstreamList.Count > 1)//0708 non-EE issue
+                    //            //    inputInfo.USBUpstream = usbUpstreamList[1];
+                    //            inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "10").Key;
+                    //        }
+                    //        else if (subUpstream == "01")
+                    //        {
+                    //            //if (usbUpstreamList.Count > 2)//0708 non-EE issue
+                    //            //    inputInfo.USBUpstream = usbUpstreamList[2];
+                    //            inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "01").Key;
+                    //        }
+                    //        else if (subUpstream == "00")
+                    //        {
+                    //            //if (usbUpstreamList.Count > 3)//0708 non-EE issue
+                    //            //    inputInfo.USBUpstream = usbUpstreamList[3];
+                    //            inputInfo.USBUpstream = USBUpstream.FirstOrDefault(kv => kv.Value == "00").Key;
+                    //        }
+                    //        //inputInfo.USBUpstream = GetUSBUpstream(monitorInfo, tmp.Name).Result;
+                    //    }
+                    //    else
+                    //    {
+                    //        _logs.DebugMsg("[DisplayMangerPlugin][GetInputSourcelist] newstrUpstream length is not 16");
+                    //    }
+                    //}
+                    //else
+                    //{
+                    inputInfo.USBUpstream = string.Empty;
+                    //}
+                    if (inputSourcelist.ContainsKey(tmp.Name))
+                    {
+                        inputSourcelist[tmp.Name] = inputInfo;
+                    }
+                    else
+                    {
+                        inputSourcelist.Add(tmp.Name, inputInfo);
+                    }
+                    input_num = input_num + 1;
                     //}
                 }
             }
@@ -931,30 +988,26 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<bool> isScreenPartition(MonitorInfo monitorInfo)
         {
             ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, 0xF2).Result;
-            if (objGetVCP != null && objGetVCP.result)
+            if (objGetVCP != null && objGetVCP.result &&
+                (uint)objGetVCP.value != 0)
             {
-                if ((uint)objGetVCP.value != 0)
+                string strSP = Convert.ToString((uint)objGetVCP.value, 2);
+                string strSP_16 = strSP;
+                //add 16 to string
+                if (strSP.Length < 16)
                 {
-                    string strSP = Convert.ToString((uint)objGetVCP.value, 2);
-                    string strSP_16 = strSP;
-                    //add 16 to string
-                    if (strSP.Length < 16)
+                    for (int i = 0; i < (16 - strSP.Length); i++)
                     {
-                        for (int i = 0; i < (16 - strSP.Length); i++)
-                        {
-                            strSP_16 = "0" + strSP_16;
-                        }
-                    }
-                    _logs.DebugMsg("[DisplayMangerPlugin][isScreenPartition] strSP_16 : " + strSP_16);
-                    //find 8
-                    if (strSP_16.Length == 16)
-                    {
-                        if (strSP_16.Substring(7, 1) == "1")
-                        {
-                            return Task.FromResult(true);
-                        }
+                        strSP_16 = "0" + strSP_16;
                     }
                 }
+                _logs.DebugMsg("[DisplayMangerPlugin][isScreenPartition] strSP_16 : " + strSP_16);
+                //find 8
+                if (strSP_16.Length == 16 &&
+                    strSP_16.Substring(7, 1) == "1")
+                {
+                    return Task.FromResult(true);                    
+                }                
             }
             return Task.FromResult(false);
         }
@@ -1155,15 +1208,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 ALSConfig aconfig = AllALSConfig[idx];
                 AllALSConfig[idx] = param;
-                if (AllALSConfig.Count > 1) // If only one monitor, do not need show Busy
+                if (AllALSConfig.Count > 1 && // If only one monitor, do not need show Busy
+                    GetBitValue(param.AllValue, 5) == 1)
                 {
-                    if (GetBitValue(param.AllValue, 5) == 1)
+                    for (int i = 0; i < AllALSConfig.Count; i++)
                     {
-                        for (int i = 0; i < AllALSConfig.Count; i++)
-                        {
-                            AllALSConfig[i].isBusy = true;
-                            _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue ... {AllALSConfig[i].Edid.ModelName} ... Busy ... ");
-                        }
+                        AllALSConfig[i].isBusy = true;
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue ... {AllALSConfig[i].Edid.ModelName} ... Busy ... ");
                     }
                 }
                 //CheckisPrimaryMonitorSyncOnOff(monitorInfos, param, "0");
@@ -2661,12 +2712,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties _DisplayPropertiesPlugin.GetDisplaySupportedProperties go");
                 rc = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfo).Result;
                 bool? supported_OSD_Orientation = IsSupportWriteOSDOrientation(monitorInfo.CapabilityString);
-                if (supported_OSD_Orientation == true)
+                if (supported_OSD_Orientation == true &&
+                    rc != null)
                 {
-                    if (rc != null)
-                    {
-                        rc.OSD_Orientations = IsSupportOSDOrientation(monitorInfo.CapabilityString);
-                    }
+                    rc.OSD_Orientations = IsSupportOSDOrientation(monitorInfo.CapabilityString);
                 }
             }
             _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties done");
@@ -3400,6 +3449,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 pipPbpCondition.PluginConditionChangeHandler += PipPbpCondition_PluginConditionChangeHandler;
                 GetCurrentPipPbpCondition();
             }
+        }
+        public Task GetSettingsPlugin(ISettingsManagerDev SettingsPlugin)
+        {
+            _SettingsPlugin = SettingsPlugin;
+            return Task.CompletedTask;
         }
 
         private void GetCurrentPipPbpCondition()
@@ -4686,33 +4740,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(displayUpdateHelper);
         }
 
-        private string GetTestServerURL()
-        {
-            RegistryKey localKey64 = RegistryKey.OpenBaseKey(Microsoft.Win32.RegistryHive.LocalMachine, RegistryView.Registry64);
-            string ret = Display_FWU_URL + Display_FWU_URL_Folder;
-            if (localKey64 != null)
-            {
-                RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\DDPM Subagent\\", false);
-                if (registryKey != null)
-                {
-                    var obj = registryKey?.GetValue("TestServerURL");
-                    if (obj != null)
-                    {
-                        string s = obj.ToString();
-                        if (!string.IsNullOrEmpty(s))
-                        {
-                            ret = s + Display_FWU_URL_Folder;
-                        }
-                    }
-                }
-            }
-            return ret;
-        }
-
         private DisplayUpdateHelper GetDisplayFWMetadata(bool isSkipCA, ISettingsManagerDev settingsPlugin)
         {
             _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetDisplayFWMetadata)} start");
-            string display_FWU_URL = GetTestServerURL();
+            string display_FWU_URL = Download.GetTestServerURL() + GlobalDefinitions.Display_FWU_URL_Folder;
             DisplayUpdateHelper ret = new DisplayUpdateHelper();
             if (!isSkipCA)
             {
@@ -4759,8 +4790,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     }
                     if (!string.IsNullOrEmpty(jsonString))
                     {
-                        string testServer = GetTestServerURL();
-
                         Dictionary<string, Display_Firmwares_item> data = JsonSerializer.Deserialize<Dictionary<string, Display_Firmwares_item>>(jsonString);
                         foreach (MonitorInfo monitorInfo in monitorInfos)
                         {
@@ -4791,7 +4820,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         firmwares_item.url = display_FWU_URL + firmwares_item.url;
                                     }
                                     firmwares_item.CurrentVersion = monitorInfo.FwVersion;
-                                    firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
+                                    //firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
                                     firmwares_item.ServiceTag = monitorInfo.edid.ServiceTag;
                                     firmwares_item.SupplierID = monitorInfo.SupplierID;
                                     firmwares_item.D_Ctrl = monitorInfo.D_Ctrl;

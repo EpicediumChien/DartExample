@@ -811,12 +811,6 @@ namespace DDPM.CLI.Plugins.Display
                     }
                     break;
                 case "EXPORTSETTINGS":
-                    {
-                        var ret = ExportSettingsx(devMgr, commandLineInput);
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.result;
-                    }
-                    break;
                 case "IMPORTSETTINGS":
                     {
                         var ret = ExportSettingsx(devMgr, commandLineInput);
@@ -9999,20 +9993,19 @@ namespace DDPM.CLI.Plugins.Display
                 }
             }
 
-            //If -ServiceTag=[{tag0}],[{tag1}],[{tag2}],... is specified
+            //If -model=[{model0}],[{model1}],[{model2}],... is specified
             if (cmdLineInput.Model.Count > 0)
             {
                 isAllMonitors = false;
                 foreach (MonitorInfo mi in allMonitors)
                 {
-                    if (!String.IsNullOrWhiteSpace(mi.edid.ServiceTag))
+                    if (!String.IsNullOrWhiteSpace(mi.modelName))
                     {
-                        //Check if this monitor's service tag in in the -ServiceTag list
-                        string? match = cmdLineInput.Model.FirstOrDefault(x => x.Equals(mi.edid.ModelName, StringComparison.OrdinalIgnoreCase));
+                        //Check if this monitor's model name in in the -model list
+                        string? match = cmdLineInput.Model.FirstOrDefault(x => x.Equals(mi.modelName, StringComparison.OrdinalIgnoreCase));
                         if (match != null) //If found, add index value to listOut
                             listOut.Add(mi.Index);
                     }
-                    //Empty ServiceTage will not be added
                 }
             }
             //If -Index=[{idx0}],[{idx1}],[{idx2}],... is specified
@@ -10293,13 +10286,7 @@ namespace DDPM.CLI.Plugins.Display
                         restult_onoff = devMgr.GetAutoColorPresetStatus(monitor).Result.ToString();
                         writelog($"Autocolorpreset GET Exit");
                         Trace.WriteLine("restult_onoff:", restult_onoff);
-                        if (restult_onoff == "ON")
-                        {
-                            retcode = true;
-                            S_Autocolorpreset_RESPONSE.Value = restult_onoff;
-                            S_Autocolorpreset_RESPONSE.Result = "PASS";
-                        }
-                        else if (restult_onoff == "OFF")
+                        if (restult_onoff == "ON" || restult_onoff == "OFF")
                         {
                             retcode = true;
                             S_Autocolorpreset_RESPONSE.Value = restult_onoff;
@@ -10331,13 +10318,7 @@ namespace DDPM.CLI.Plugins.Display
                         restult_onoff = devMgr.GetAutoColorPresetStatus(monitor).Result.ToString();
                         writelog($"Autocolorpreset GET idx Exit");
                         Trace.WriteLine("restult_onoff:", restult_onoff);
-                        if (restult_onoff == "ON")
-                        {
-                            retcode = true;
-                            S_Autocolorpreset_RESPONSE.Value = restult_onoff;
-                            S_Autocolorpreset_RESPONSE.Result = "PASS";
-                        }
-                        else if (restult_onoff == "OFF")
+                        if (restult_onoff == "ON" || restult_onoff == "OFF")
                         {
                             retcode = true;
                             S_Autocolorpreset_RESPONSE.Value = restult_onoff;
@@ -10369,13 +10350,7 @@ namespace DDPM.CLI.Plugins.Display
                             restult_onoff = devMgr.GetAutoColorPresetStatus(monitor).Result.ToString();
                             writelog($"Autocolorpreset GET Exit");
                             Trace.WriteLine("restult_onoff:", restult_onoff);
-                            if (restult_onoff == "ON")
-                            {
-                                retcode = true;
-                                S_Autocolorpreset_RESPONSE.Value = restult_onoff;
-                                S_Autocolorpreset_RESPONSE.Result = "PASS";
-                            }
-                            else if (restult_onoff == "OFF")
+                            if (restult_onoff == "ON" || restult_onoff == "OFF")
                             {
                                 retcode = true;
                                 S_Autocolorpreset_RESPONSE.Value = restult_onoff;
@@ -10408,13 +10383,7 @@ namespace DDPM.CLI.Plugins.Display
                             restult_onoff = devMgr.GetAutoColorPresetStatus(monitor).Result.ToString();
                             writelog($"Autocolorpreset GET Exit");
                             Trace.WriteLine("restult_onoff:", restult_onoff);
-                            if (restult_onoff == "ON")
-                            {
-                                retcode = true;
-                                S_Autocolorpreset_RESPONSE.Value = restult_onoff;
-                                S_Autocolorpreset_RESPONSE.Result = "PASS";
-                            }
-                            else if (restult_onoff == "OFF")
+                            if (restult_onoff == "ON" || restult_onoff == "OFF")
                             {
                                 retcode = true;
                                 S_Autocolorpreset_RESPONSE.Value = restult_onoff;
@@ -12983,16 +12952,14 @@ namespace DDPM.CLI.Plugins.Display
                                     {
                                         string[] ss = capability.Split(ss_1[1] + "(");
                                         ss = ss[1].Split(")");
-                                        if (commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE"))
+                                        if (commandLineInput.Options[1].Option_Name.ToUpper().Equals("VALUE") && 
+                                            ss[0].Contains(commandLineInput.Options[1].Option_Value))
                                         {
-                                            if (ss[0].Contains(commandLineInput.Options[1].Option_Value))
-                                            {
-                                                retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
+                                            retcode = SetVCPCode(devMgr, monitor, commandLineInput.Options[0].Option_Value, commandLineInput.Options[1].Option_Value).Result;
 
-                                                cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
-                                                vcp_value = true;
-                                                Trace.WriteLine($"retcode : {retcode}");
-                                            }
+                                            cli_Response.Value = $"{retcode.ToString()}, VCP is set.";
+                                            vcp_value = true;
+                                            Trace.WriteLine($"retcode : {retcode}");
                                         }
                                     }
                                     else if (capability.Contains(ss_1[1]))

@@ -106,7 +106,7 @@
                                                            VerticalAlignment="Center"
                                                            Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                             </Grid>
-                            <Grid Height="40"
+                            <Grid Height="60"
                                   Margin="0,8">
                                 <UXControls:UXTextBlock Text="{Binding [DisplayProperties.3], Source={x:Static lang:LangHelper.Instance}}"
                                                         FontSize="16"
@@ -123,7 +123,7 @@
                                                    LinkType="InLine"
                                                    Icon="M29.86 29.86h-27.74v-27.72h13.88v-2.14h-16v32h32v-16h-2.12zM20.86 0v2.12h7.56l-15.060 15.060 1.52 1.5 14.98-15v7.46h2.14v-11.14z"
                                                    HorizontalAlignment="Right"
-                                                   VerticalAlignment="Center"
+                                                   VerticalAlignment="Center" Margin="0,25,0,0"
                                                    Height="40">
                                     <UXControls:UXLink.Resources>
                                         <Style TargetType="Border">
@@ -152,7 +152,7 @@
                                             <UXControls:UXAlertItem AlertItemType="Info"
                                                                     Margin="8,8,8,8"
                                                                     Label=""
-                                                                    Message="Disconnect all USB storage devices from monitor." />
+                                                                    Message="{Binding [Disconnect_all_USB_storage_devices_from_monitor], Source={x:Static lang:LangHelper.Instance}}" />
                                         </UXControls:UXAlert>
                                         <StackPanel Orientation="Horizontal">
                                             <!--Bruce 0607 fix typo-->

@@ -534,4 +534,7 @@
   <data name="RPG_Game" xml:space="preserve">
     <value>RPG Oyunu</value>
   </data>
+  <data name="WebCameraSettings.2" xml:space="preserve">
+    <value>Yapay Zeka Otomatik Çerçeveleme akıllı sahne analizi ve hareket ettiğinizde görünümü yakınlaştırıp kaydırmak için yüz takibi sağlar</value>
+  </data>
 </root>

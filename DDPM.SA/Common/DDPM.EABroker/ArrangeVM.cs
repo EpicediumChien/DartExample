@@ -96,6 +96,7 @@ namespace DDPM.EABroker
         private int _workWindowUsedCount = 0;
         private bool _isWorkUIEnabled = true;        
         private ObservableCollection<string> _workWinCellInfos = new ObservableCollection<string>();
+        private string _workWinsInfoText = ""; //Multiple lines info
 
         //ScreenIdWindows
         private List<ScreenIdWindow> _screenIdWindows = new List<ScreenIdWindow>();
@@ -1037,6 +1038,13 @@ namespace DDPM.EABroker
             OnPropertyChanged("WorkWindowUsedCount");
             RefreshWorkWinInfos();
 
+            //Robert_Lin, 2025-1-8, To save WorkWindows Info to log file
+            //Default is not logged, can be enabled by DevSettings
+            if (DevSettings.IsDumpWorkWindowsInfoOnRefreshEnabled())
+            {
+                WriteLog(WorkWinsInfoText);
+            }
+
             //Robert_Lin, 2024-10-18 Workaround
             //If ScreenCount>2, we assume it may have one Dell monitor, but no WorkWindow created, then we will
             //Redo this method by raise a "DisplaySettingsChanged" event
@@ -1090,19 +1098,36 @@ namespace DDPM.EABroker
         public void RefreshWorkWinInfos()
         {
             ObservableCollection<string> newInfo = new ObservableCollection<string>();
-            int idx = 0;
+            StringBuilder sb = new StringBuilder();
+            int idx = -1;
             foreach (EAWorkWindow workWin in _workWindows)
             {
+                idx++;
                 if (workWin == null)
                     continue;
                 if (!workWin.IsUsed)
                     continue;
 
+
                 string workInfo = $"{idx}:{workWin.CellListJson}";
                 newInfo.Add(workInfo);
+
+                if (workWin.IsWorkForSpanScreen)
+                {
+                    sb.AppendLine($"[{idx}] SpanScreen");
+                }
+                else
+                {
+                    sb.AppendLine($"[{idx}]");
+                    sb.AppendLine($"{workWin.GetWorkScreenInfoText()}");
+                }
+
+                sb.AppendLine($"Cells: {workWin.CellListJson}");
             }
             WorkWinCellInfos = newInfo;
             OnPropertyChanged("WorkWinCellInfos");
+
+            WorkWinsInfoText = sb.ToString();
         }
 
         public bool NotifyEASelectedLayoutChanged(MonitorInfo monitorInfo, SplitJson spJson)
@@ -1129,6 +1154,13 @@ namespace DDPM.EABroker
             }
             return false;
         }
+
+        public string WorkWinsInfoText
+        {
+            get => _workWinsInfoText;
+            set => SetProperty(ref _workWinsInfoText, value);
+        }
+
         #endregion WorkWindows
 
         #region AWS Window
@@ -1690,22 +1722,20 @@ namespace DDPM.EABroker
         #region Telemetry
         public void SendTelemetry_EasyArrangeLayout()
         {
-            if (_easyArrangeService != null)
+            if (_easyArrangeService != null && 
+                HoveringSplit != null)
             {
-                if (HoveringSplit != null)
+                MonitorInfo? monitorInfo = null;
+                if (WorkScreen != null)
                 {
-                    MonitorInfo? monitorInfo = null;
-                    if (WorkScreen != null)
+                    List<MonitorInfo> monitorInfos = GetMonitorsFromDeviceName(WorkScreen.DeviceName);
+                    if ((monitorInfos != null) && (monitorInfos.Count > 0))
                     {
-                        List<MonitorInfo> monitorInfos = GetMonitorsFromDeviceName(WorkScreen.DeviceName);
-                        if ((monitorInfos != null) && (monitorInfos.Count > 0))
-                        {
-                            monitorInfo = monitorInfos[0];
-                        }
+                        monitorInfo = monitorInfos[0];
                     }
-                    string eventValue = GetEasyArrangeLayoutTelemetryEventValueFromISplitCtrl(HoveringSplit);
-                    _easyArrangeService.SendEasyArrangeLayoutTelemetry(eventValue, monitorInfo);
                 }
+                string eventValue = GetEasyArrangeLayoutTelemetryEventValueFromISplitCtrl(HoveringSplit);
+                _easyArrangeService.SendEasyArrangeLayoutTelemetry(eventValue, monitorInfo);
             }
         }
         /// <summary>

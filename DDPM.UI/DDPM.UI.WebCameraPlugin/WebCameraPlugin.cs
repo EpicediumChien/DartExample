@@ -76,50 +76,59 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if (_viewModel?.IsRecording ?? true)
-                return;
 
-            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType != null)
+            try
             {
-                if (e.device_peripherals.LogicalDeviceType.Contains("Webcam"))
+
+                if (_viewModel?.IsRecording ?? true)
+                    return;
+
+                if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType != null)
                 {
-                    if (e.type == DeviceChangedType.Peripherals_UnPlug)
+                    if (e.device_peripherals.LogicalDeviceType.Contains("Webcam"))
                     {
-                        if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID)
+                        if (e.type == DeviceChangedType.Peripherals_UnPlug)
                         {
-                            if (_viewModel.IsMicEnumerationOnEnabled)
+                            if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID)
                             {
-                                _viewModel.AlertType = WebcamAlert.Alert4;
-                                _viewModel.AlertVisibility = System.Windows.Visibility.Visible;
-                                timer.Start();
-                                //_viewModel!.OnGoBackClicked();
+                                if (_viewModel.IsMicEnumerationOnEnabled)
+                                {
+                                    _viewModel.AlertType = WebcamAlert.Alert4;
+                                    _viewModel.AlertVisibility = System.Windows.Visibility.Visible;
+                                    timer.Start();
+                                    //_viewModel!.OnGoBackClicked();
+                                }
                             }
+                            return;
                         }
-                        return;
-                    }
-                    if (e.type == DeviceChangedType.Peripherals_PlugIn)
-                    {
-                        if (e.device_peripherals.Name == _viewModel!.CurrentDeviceInfo!.Name)
+                        if (e.type == DeviceChangedType.Peripherals_PlugIn)
                         {
-                            timer.Stop();
-                            //Mouse.OverrideCursor = null;
-                            //_viewModel.CurrentCursor = Cursors.Arrow;
-                            //_viewModel.IsMicEnumerationOnEnabled = true;
-                            _viewModel.AlertVisibility = Visibility.Collapsed;
-                            _console.ShowPluginById(PluginId);
-                            GetPeripheralsAsync();
-                            _viewModel!.SetCurrentDevice(e.device_peripherals.ID.ToString());
+                            if (e.device_peripherals.Name == _viewModel!.CurrentDeviceInfo!.Name)
+                            {
+                                timer.Stop();
+                                //Mouse.OverrideCursor = null;
+                                //_viewModel.CurrentCursor = Cursors.Arrow;
+                                //_viewModel.IsMicEnumerationOnEnabled = true;
+                                _viewModel.AlertVisibility = Visibility.Collapsed;
+                                _console.ShowPluginById(PluginId);
+                                GetPeripheralsAsync();
+                                _viewModel!.SetCurrentDevice(e.device_peripherals.ID.ToString());
+                            }
+                            return;
                         }
-                        return;
+                        _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
                     }
-                    _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
-                }
-                else
-                {
-                    if (e.type == DeviceChangedType.Peripherals_UnPlug || e.type == DeviceChangedType.Peripherals_PlugIn)
-                        _viewModel!.OnGoBackClicked();
+                    else
+                    {
+                        if (e.type == DeviceChangedType.Peripherals_UnPlug || e.type == DeviceChangedType.Peripherals_PlugIn)
+                            _viewModel!.OnGoBackClicked();
+                    }
                 }
             }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\WebCameraPlugin.cs  DeviceManager_DeviceChanged() ex:" + ex.Message);
+            } 
         }
 
         private void Timer_Tick(object? sender, EventArgs e)

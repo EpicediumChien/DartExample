@@ -25,7 +25,7 @@
                             Height="53"
                             Margin="0,5,0,15"
                             CornerRadius="5"
-                            Visibility="{Binding GreayoutAlart}">   
+                            Visibility="{Binding GreayoutAlart}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="38" />
@@ -53,7 +53,7 @@
                                     <TextBlock
                         FontFamily="Roboto"
                         FontSize="13">
-                        <Run Text="Color is not available when" />
+                        <Run Text="{Binding [ColorMsg.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" />
                         <Hyperlink Click="Hyperlink_Click">
                             <Hyperlink.Style>
                                 <Style TargetType="Hyperlink">
@@ -165,7 +165,7 @@
                         IsEnabled="{Binding ColorEnable}"
                         Opacity="{Binding ColorOpacity}"
                         Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0">
-                        
+
                         <Expander  x:Name="Expander_Auto" Style="{StaticResource RightExpanderStyle}" Expanded="expanderHasExpanded" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" >
                             <Expander.Header>
                                 <!-- Group Header: Auto-->
@@ -247,10 +247,14 @@
 
 
                                                                     <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="Auto" />     <!-- App Icon-->
-                                                                        <ColumnDefinition Width="*" />      <!-- App Name-->
-                                                                        <ColumnDefinition Width="Auto" />    <!-- Preset for App, combobox-->
-                                                                        <ColumnDefinition Width="12" />     <!--Delete button-->
+                                                                        <ColumnDefinition Width="Auto" />
+                                                                        <!-- App Icon-->
+                                                                        <ColumnDefinition Width="*" />
+                                                                        <!-- App Name-->
+                                                                        <ColumnDefinition Width="Auto" />
+                                                                        <!-- Preset for App, combobox-->
+                                                                        <ColumnDefinition Width="12" />
+                                                                        <!--Delete button-->
                                                                         <ColumnDefinition Width="Auto" />
                                                                         <ColumnDefinition Width="Auto" />
                                                                     </Grid.ColumnDefinitions>
@@ -312,9 +316,9 @@
                                         </StackPanel>
 
                                     </Border>
-                                    <Border Opacity="0.6" Visibility="{Binding LockMaskVisible}"/>                                      
+                                    <Border Opacity="0.6" Visibility="{Binding LockMaskVisible}"/>
                                 </Grid>
-                                
+
                             </Expander.Content>
                         </Expander>
                     </Border>
@@ -347,7 +351,7 @@
 
                                 <Image Grid.Column="4" Stretch="None" Margin="10,0,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
                                     <Image.ToolTip>
-                                        <ToolTip>
+                                        <ToolTip Placement="Center" VerticalOffset="45">
                                             <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                 <Border.Resources>
                                                     <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />

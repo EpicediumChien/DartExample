@@ -14,6 +14,7 @@ using Dell.Client.Framework.UX.WPF.Controls;
 using System.Linq;
 using DDPM.UI.Common;
 using DDPM.UI.Resources.Helper;
+using System.Linq.Expressions;
 
 namespace DDPM.UI.Module.WebCameraCapture
 {
@@ -26,234 +27,278 @@ namespace DDPM.UI.Module.WebCameraCapture
 
         public WebCameraCaptureRightView(WebCameraViewModel vm)
         {
-            InitializeComponent();
-            _vm = vm;
+            try
+            {
+                InitializeComponent();
+                _vm = vm;
 
-            txtCaptureFolder.Text = Utility.CheckTextLength(_vm.VideoCaptureFolder, 155, 14);
-            btnOpen.Caption = LangHelper.Instance["WebCameraCapture.2"];
-            InitializeResolution();
-            InitializeFPS();
+                txtCaptureFolder.Text = Utility.CheckTextLength(_vm.VideoCaptureFolder, 155, 14);
+                btnOpen.Caption = LangHelper.Instance["WebCameraCapture.2"];
+                InitializeResolution();
+                InitializeFPS();
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraCapture\\WebCameraCaptureRightView.xaml.cs WebCameraCaptureRightView() ex:" + ex.Message);
+            }
 
         }
         private void InitializeResolution()
         {
-            var Res = _vm.WebcamSettings?.SupportedFPSs?.Keys.ToList() ?? new List<string>();
-            switch (Res.Count)
+            try
             {
-                case 2:
+                var Res = _vm.WebcamSettings?.SupportedFPSs?.Keys.ToList() ?? new List<string>();
+                switch (Res.Count)
+                {
+                    case 2:
 
-                    _vm.btnRes0_width = 201;
-                    txtRes0.Text = Res[0];
-                    _vm.btnRes1_width = 201;
-                    txtRes1.Text = Res[1];
-                    _vm.btnRes1_radius_v = new CornerRadius(0, 5, 5, 0);
-                    btnRes2.Visibility = Visibility.Collapsed;
-                    btnRes2_Col.Width = new GridLength(0);
-                    btnRes3.Visibility = Visibility.Collapsed;
-                    btnRes3_Col.Width = new GridLength(0);
+                        _vm.btnRes0_width = 201;
+                        txtRes0.Text = Res[0];
+                        _vm.btnRes1_width = 201;
+                        txtRes1.Text = Res[1];
+                        _vm.btnRes1_radius_v = new CornerRadius(0, 5, 5, 0);
+                        btnRes2.Visibility = Visibility.Collapsed;
+                        btnRes2_Col.Width = new GridLength(0);
+                        btnRes3.Visibility = Visibility.Collapsed;
+                        btnRes3_Col.Width = new GridLength(0);
 
-                    /*btnRes0.Width = 201;
-                    txtRes0.Text = Res[0];
-                    btnRes1.Width = 201;
-                    txtRes1.Text = Res[1];
-                    btnRes1.CornerRadius = new CornerRadius(0, 5, 5, 0);
-                    btnRes2.Visibility = Visibility.Collapsed;
-                    btnRes2_Col.Width = new GridLength(0);
-                    btnRes3.Visibility = Visibility.Collapsed;
-                    btnRes3_Col.Width = new GridLength(0);*/
-                    break;
-                case 3:
-                    _vm.btnRes0_width = 134;
-                    txtRes0.Text = Res[0];
-                    _vm.btnRes1_width = 134;
-                    txtRes1.Text = Res[1];
-                    _vm.btnRes2_width = 134;
-                    txtRes2.Text = Res[2];
-                    btnRes2.CornerRadius = new CornerRadius(0, 5, 5, 0);
-                    btnRes3.Visibility = Visibility.Collapsed;
-                    btnRes3_Col.Width = new GridLength(0);
-                    break;
-                case 4:
-                    btnRes0.Width = 100.5;
-                    txtRes0.Text = Res[0];
-                    btnRes1.Width = 100.5;
-                    txtRes1.Text = Res[1];
-                    btnRes2.Width = 100.5;
-                    txtRes2.Text = Res[2];
-                    btnRes3.Width = 100.5;
-                    txtRes3.Text = Res[3];
-                    btnRes3.CornerRadius = new CornerRadius(0, 5, 5, 0);
-                    break;
+                        /*btnRes0.Width = 201;
+                        txtRes0.Text = Res[0];
+                        btnRes1.Width = 201;
+                        txtRes1.Text = Res[1];
+                        btnRes1.CornerRadius = new CornerRadius(0, 5, 5, 0);
+                        btnRes2.Visibility = Visibility.Collapsed;
+                        btnRes2_Col.Width = new GridLength(0);
+                        btnRes3.Visibility = Visibility.Collapsed;
+                        btnRes3_Col.Width = new GridLength(0);*/
+                        break;
+                    case 3:
+                        _vm.btnRes0_width = 134;
+                        txtRes0.Text = Res[0];
+                        _vm.btnRes1_width = 134;
+                        txtRes1.Text = Res[1];
+                        _vm.btnRes2_width = 134;
+                        txtRes2.Text = Res[2];
+                        btnRes2.CornerRadius = new CornerRadius(0, 5, 5, 0);
+                        btnRes3.Visibility = Visibility.Collapsed;
+                        btnRes3_Col.Width = new GridLength(0);
+                        break;
+                    case 4:
+                        btnRes0.Width = 100.5;
+                        txtRes0.Text = Res[0];
+                        btnRes1.Width = 100.5;
+                        txtRes1.Text = Res[1];
+                        btnRes2.Width = 100.5;
+                        txtRes2.Text = Res[2];
+                        btnRes3.Width = 100.5;
+                        txtRes3.Text = Res[3];
+                        btnRes3.CornerRadius = new CornerRadius(0, 5, 5, 0);
+                        break;
+                }
+            }
+            catch(Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraCapture\\WebCameraCaptureRightView.xaml.cs InitializeResolution() ex:" + ex.Message);
             }
         }
         private void InitializeFPS()
         {
-            var FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
-            switch (FPS.Count)
+            try
             {
-                case 1:
-                    btnFPS0.Width = 402;
-                    txtFPS0.Text = FPS[0];
-                    btnFPS0.CornerRadius = new CornerRadius(5, 5, 5, 5);
-                    btnFPS1.Visibility = Visibility.Collapsed;
-                    btnFPS2.Visibility = Visibility.Collapsed;
-                    break;
-                case 2:
-                    btnFPS0.Width = 201;
-                    txtFPS0.Text = FPS[0];
-                    btnFPS0.CornerRadius = new CornerRadius(5, 0, 0, 5);
-                    btnFPS1.Width = 201;
-                    txtFPS1.Text = FPS[1];
-                    btnFPS1.CornerRadius = new CornerRadius(0, 5, 5, 0);
-                    btnFPS1.Visibility = Visibility.Visible;
-                    btnFPS2.Visibility = Visibility.Collapsed;
-                    break;
-                case 3:
-                    btnFPS0.Width = 134;
-                    txtFPS0.Text = FPS[0];
-                    btnFPS0.CornerRadius = new CornerRadius(5, 0, 0, 5);
-                    btnFPS1.Width = 134;
-                    txtFPS1.Text = FPS[1];
-                    btnFPS1.CornerRadius = new CornerRadius(0);
-                    btnFPS1.Visibility = Visibility.Visible;
-                    btnFPS2.Width = 134;
-                    txtFPS2.Text = FPS[2];
-                    btnFPS2.Visibility = Visibility.Visible;
-                    btnFPS2.CornerRadius = new CornerRadius(0, 5, 5, 0);
-                    break;
+                var FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
+                switch (FPS.Count)
+                {
+                    case 1:
+                        btnFPS0.Width = 402;
+                        txtFPS0.Text = FPS[0];
+                        btnFPS0.CornerRadius = new CornerRadius(5, 5, 5, 5);
+                        btnFPS1.Visibility = Visibility.Collapsed;
+                        btnFPS2.Visibility = Visibility.Collapsed;
+                        break;
+                    case 2:
+                        btnFPS0.Width = 201;
+                        txtFPS0.Text = FPS[0];
+                        btnFPS0.CornerRadius = new CornerRadius(5, 0, 0, 5);
+                        btnFPS1.Width = 201;
+                        txtFPS1.Text = FPS[1];
+                        btnFPS1.CornerRadius = new CornerRadius(0, 5, 5, 0);
+                        btnFPS1.Visibility = Visibility.Visible;
+                        btnFPS2.Visibility = Visibility.Collapsed;
+                        break;
+                    case 3:
+                        btnFPS0.Width = 134;
+                        txtFPS0.Text = FPS[0];
+                        btnFPS0.CornerRadius = new CornerRadius(5, 0, 0, 5);
+                        btnFPS1.Width = 134;
+                        txtFPS1.Text = FPS[1];
+                        btnFPS1.CornerRadius = new CornerRadius(0);
+                        btnFPS1.Visibility = Visibility.Visible;
+                        btnFPS2.Width = 134;
+                        txtFPS2.Text = FPS[2];
+                        btnFPS2.Visibility = Visibility.Visible;
+                        btnFPS2.CornerRadius = new CornerRadius(0, 5, 5, 0);
+                        break;
+                }
+                _vm.SetFPS_Selected(_vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution].IndexOf(_vm.WebcamSettings.CurrentFPS));
             }
-            _vm.SetFPS_Selected(_vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution].IndexOf(_vm.WebcamSettings.CurrentFPS));
+            catch(Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraCapture\\WebCameraCaptureRightView.xaml.cs InitializeFPS() ex:" + ex.Message);
+            }
+
         }
         private async void btnResolution_Click(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Border bdr)
+
+            try
             {
-                int idx;
-                if (!(bdr.Tag is string))
-                    return;
-                bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
-                if (!r)
-                    return;
-                _vm.SetResolution_Selected(idx);
-                InitializeFPS();
 
-                //for default 30 fps
-                //try
-                //{
-                //    if (_vm.WebcamSettings?.SupportedFPSs != null && _vm.WebcamSettings.SelectedResolution != null)
-                //    {
-                //        if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.SelectedResolution))
-                //        {
-                //            List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
-                //            int index = FPS.FindIndex(x => x == "30");
-                //            if (index != -1)
-                //            {
-                //                _vm.SetFPS_Selected(index);
-                //            }
-                //        }
-                //    }
-                //}
-                //catch (Exception ex)
-                //{
-                //    DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraCapture\\WebCameraCaptureRightView.xaml.cs btnResolution_Click : " + ex.Message);
-                //}
-
-                foreach (var property in _vm.allProperties)
+                if (sender is Border bdr)
                 {
-                    string properties_temp = property.GetFriendlyName();
-                    if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase))
+                    int idx;
+                    if (!(bdr.Tag is string))
+                        return;
+                    bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
+                    if (!r)
+                        return;
+                    _vm.SetResolution_Selected(idx);
+                    InitializeFPS();
+
+                    //for default 30 fps
+                    //try
+                    //{
+                    //    if (_vm.WebcamSettings?.SupportedFPSs != null && _vm.WebcamSettings.SelectedResolution != null)
+                    //    {
+                    //        if (_vm.WebcamSettings.SupportedFPSs.ContainsKey(_vm.WebcamSettings.SelectedResolution))
+                    //        {
+                    //            List<string> FPS = _vm.WebcamSettings.SupportedFPSs[_vm.WebcamSettings.SelectedResolution];
+                    //            int index = FPS.FindIndex(x => x == "30");
+                    //            if (index != -1)
+                    //            {
+                    //                _vm.SetFPS_Selected(index);
+                    //            }
+                    //        }
+                    //    }
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraCapture\\WebCameraCaptureRightView.xaml.cs btnResolution_Click : " + ex.Message);
+                    //}
+
+                    foreach (var property in _vm.allProperties)
                     {
-                        var encodingProperties = property.EncodingProperties;
-                        //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
-
-
-                        Application.Current.Dispatcher.Invoke(() =>
+                        string properties_temp = property.GetFriendlyName();
+                        if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase) && property.EncodingProperties.Subtype != "MJPG")
                         {
-                            _vm.AlertType = WebcamAlert.Alert1;
-                            _vm.AlertVisibility = Visibility.Visible;
-                        });
+                            DdpmCommonHelper.WriteUILog($"[btnResolution_Click] properties_temp: {properties_temp}");
+                            var encodingProperties = property.EncodingProperties;
+                            //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                            DdpmCommonHelper.WriteUILog($"[btnResolution_Click] encodingProperties: {encodingProperties} Subtype: {encodingProperties.Subtype}");
+
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                _vm.AlertType = WebcamAlert.Alert1;
+                                _vm.AlertVisibility = Visibility.Visible;
+                            });
 
 
-                        bool set_ok = false;
-                        while (set_ok != true)
-                        {
-                            try
+                            bool set_ok = false;
+                            while (set_ok != true)
                             {
-                                //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
-                                await _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
-                                set_ok = true;
+                                try
+                                {
+                                    //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
+                                    await _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                                    set_ok = true;
+                                }
+                                catch
+                                {
+                                    _vm._log.Debug("WebCameraCaptureRightView.cs set Resolution fail!");
+                                    await Task.Delay(250);
+                                }
                             }
-                            catch
+
+                            Application.Current.Dispatcher.Invoke(() =>
                             {
-                                _vm._log.Debug("WebCameraCaptureRightView.cs set Resolution fail!");
-                                await Task.Delay(250);
-                            }
+                                _vm.AlertVisibility = Visibility.Hidden;
+                            });
+
+
+
+                            break;
                         }
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            _vm.AlertVisibility = Visibility.Hidden;
-                        });
-
-
-
-                        break;
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraCapture\\WebCameraCaptureRightView.xaml.cs btnResolution_Click() ex:" + ex.Message);
             }
         }
 
         private async void btnFPS_Click(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Border bdr)
+
+            try
             {
-                int idx;
-                if (!(bdr.Tag is string))
-                    return;
-                bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
-                if (!r)
-                    return;
-                _vm.SetFPS_Selected(idx);
-                foreach (var property in _vm.allProperties)
+
+                if (sender is Border bdr)
                 {
-                    string properties_temp = property.GetFriendlyName();
-                    if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase))
+                    int idx;
+                    if (!(bdr.Tag is string))
+                        return;
+                    bool r = int.TryParse(bdr.Tag.ToString()!, out idx);
+                    if (!r)
+                        return;
+                    _vm.SetFPS_Selected(idx);
+                    foreach (var property in _vm.allProperties)
                     {
-                        var encodingProperties = property.EncodingProperties;
+                        string properties_temp = property.GetFriendlyName();
 
-                        //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
-
-                        Application.Current.Dispatcher.Invoke(() =>
+                        if (properties_temp.Contains(_vm.WebcamSettings.CurrentResolution, StringComparison.OrdinalIgnoreCase) && properties_temp.Contains(_vm.WebcamSettings.CurrentFPS, StringComparison.OrdinalIgnoreCase) && property.EncodingProperties.Subtype != "MJPG")
                         {
-                            _vm.AlertType = WebcamAlert.Alert1;
-                            _vm.AlertVisibility = Visibility.Visible;
-                        });
+                            DdpmCommonHelper.WriteUILog($"[btnFPS_Click] properties_temp: {properties_temp}");
+                            var encodingProperties = property.EncodingProperties;
+                            DdpmCommonHelper.WriteUILog($"[btnFPS_Click] encodingProperties: {encodingProperties} Subtype: {encodingProperties.Subtype}");
+                            //_ = _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
 
-                        bool set_ok = false;
-                        while (set_ok != true)
-                        {
-                            try
+                            Application.Current.Dispatcher.Invoke(() =>
                             {
-                                //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
-                                await _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
-                                set_ok = true;
-                            }
-                            catch
+                                _vm.AlertType = WebcamAlert.Alert1;
+                                _vm.AlertVisibility = Visibility.Visible;
+                            });
+
+                            bool set_ok = false;
+                            while (set_ok != true)
                             {
-                                _vm._log.Debug("WebCameraCaptureRightView.cs set FPS fail!");
-                                await Task.Delay(250);
+                                try
+                                {
+                                    //參數設置需要一段硬體初始時間,中間再設定參數會造成設定失敗crush,所以要防呆
+                                    await _vm.MediaCapture!.VideoDeviceController.SetMediaStreamPropertiesAsync(MediaStreamType.VideoPreview, encodingProperties);
+                                    set_ok = true;
+                                }
+                                catch
+                                {
+                                    _vm._log.Debug("WebCameraCaptureRightView.cs set FPS fail!");
+                                    await Task.Delay(250);
+                                }
                             }
+
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                _vm.AlertVisibility = Visibility.Hidden;
+                            });
+
+                            break;
                         }
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            _vm.AlertVisibility = Visibility.Hidden;
-                        });
-
-                        break;
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraCapture\\WebCameraCaptureRightView.xaml.cs btnFPS_Click() ex:" + ex.Message);
+            }
+
         }
 
         private void Open_Click(object sender, MouseButtonEventArgs e)
@@ -275,13 +320,20 @@ namespace DDPM.UI.Module.WebCameraCapture
 
         private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Border elm)
+            try
             {
-                var val = elm.Tag.ToString();
-                if (val == "0")
-                    _vm.Undo();
-                else
-                    _vm.Redo();
+                if (sender is Border elm)
+                {
+                    var val = elm.Tag.ToString();
+                    if (val == "0")
+                        _vm.Undo();
+                    else
+                        _vm.Redo();
+                }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraCapture\\WebCameraCaptureRightView.xaml.cs Image_MouseLeftButtonDown() ex:" + ex.Message);
             }
         }
 

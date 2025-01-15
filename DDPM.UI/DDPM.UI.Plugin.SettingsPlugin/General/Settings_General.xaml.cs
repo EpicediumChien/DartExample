@@ -134,6 +134,12 @@ namespace DDPM.UI.Plugin.SettingsPlugin
                 reportsStackPanel.Orientation = System.Windows.Controls.Orientation.Vertical;
             else
                 reportsStackPanel.Orientation = System.Windows.Controls.Orientation.Horizontal;
+
+            //Derek 20250111 for PIMS-334386
+            if (btnSaveDiagnosticReport.ActualWidth < btnSaveMonitorAssetReport.ActualWidth)
+                btnSaveDiagnosticReport.Width = btnSaveMonitorAssetReport.ActualWidth;
+            else
+                btnSaveMonitorAssetReport.Width = btnSaveDiagnosticReport.ActualWidth;
         }
     }
 }

@@ -340,5 +340,10 @@ namespace DDPM.UI.Module.EzMemory
                 _log.Error($"{nameof(EzMemoryAddApplication)} btnSelect_Click: Error - {ex.Message}");
             }
         }
+
+        private void lb_Installed_App_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            btnAdd.IsEnabled = lb_Installed_App.SelectedItems.Count > 0;
+        }
     }
 }

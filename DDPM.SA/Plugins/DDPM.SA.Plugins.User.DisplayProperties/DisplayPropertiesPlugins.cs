@@ -443,10 +443,10 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
             return Task.FromResult(ret);
         }
 
-        public void SetExtendMode(MonitorInfo info)
+        public void SetExtendMode(MonitorInfo monitorInfo)
         {
             List<MonitorInfo> monitorInfos = _GetMonitors();
-            List<MonitorInfo> monitorInfos1 = monitorInfos.FindAll(o => o.DisplayName == info.DisplayName);
+            List<MonitorInfo> monitorInfos1 = monitorInfos.FindAll(o => o.DisplayName == monitorInfo.DisplayName);
             if (monitorInfos1.Count >= 2)
             {
                 _SetDisplayConfig(0, IntPtr.Zero, 0, IntPtr.Zero, (uint)(SetDisplayConfigFlags.SDC_APPLY | SetDisplayConfigFlags.SDC_TOPOLOGY_EXTEND));
@@ -616,21 +616,17 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 };
                 if (!resolutions.ContainsKey((resolution.Resolutions_Width, resolution.Resolutions_High, resolution.Frequency)))
                 {
-                    if (!found_Recommended)
+                    if (!found_Recommended &&
+                        GetOptimalScreenResolution(monitorInfo, resolution, currentOrientation))
                     {
-                        if (GetOptimalScreenResolution(monitorInfo, resolution, currentOrientation))
-                        {
-                            resolution.isRecommended = true;
-                            found_Recommended = true;
-                        }
+                        resolution.isRecommended = true;
+                        found_Recommended = true;                        
                     }
-                    if (!found_Current)
+                    if (!found_Current &&
+                        resolution.Equals(currentProperties))
                     {
-                        if (resolution.Equals(currentProperties))
-                        {
-                            resolution.isCurrent = true;
-                            found_Current = true;
-                        }
+                        resolution.isCurrent = true;
+                        found_Current = true;
                     }
                     resolution.BitsPerPixel = currentProperties.BitsPerPixel;
                     resolutions.Add((resolution.Resolutions_Width, resolution.Resolutions_High, resolution.Frequency), resolution);

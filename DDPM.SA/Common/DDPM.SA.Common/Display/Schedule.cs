@@ -17,6 +17,44 @@
         public double Contrast1 { get; set; } = 75;
         public double Brightness2 { get; set; } = 75;
         public double Contrast2 { get; set; } = 75;
+
+        public scheduleInfo()
+        {
+            IsEnable = false;
+            model = string.Empty;
+            serviceTag = string.Empty;
+            Pre1Name = "Day";
+            Pre2Name = "Night";
+            Hours1 = 8;
+            Mins1 = 0;
+            Duration1 = 60;
+            Hours2 = 5;
+            Mins2 = 0;
+            Duration2 = 60;
+            Brightness1 = 75;
+            Contrast1 = 75;
+            Brightness2 = 75;
+            Contrast2 = 75;
+        }
+
+        public scheduleInfo(scheduleInfo exist)
+        {
+            IsEnable = exist.IsEnable;
+            model = exist.model;
+            serviceTag = exist.serviceTag;
+            Pre1Name = exist.Pre1Name;
+            Pre2Name = exist.Pre2Name;
+            Hours1 = exist.Hours1;
+            Mins1 = exist.Mins1;
+            Duration1 = exist.Duration1;
+            Hours2 = exist.Hours2;
+            Mins2 = exist.Mins2;
+            Duration2 = exist.Duration2;
+            Brightness1 = exist.Brightness1;
+            Contrast1 = exist.Contrast1;
+            Brightness2 = exist.Brightness2;
+            Contrast2 = exist.Contrast2;
+        }
     }
 
     //#region DDM Schedule Brightness/Contrast

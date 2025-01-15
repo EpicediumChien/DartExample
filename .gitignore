@@ -484,3 +484,15 @@ testcoverage/
 /DDPM.UI/CommonDll
 /DDPM.SA/dll/Dell.TechHub.Peripheral.Common.dll
 /DDPM.UI/CommonDll/DDPM.Peripherals.interface.dll
+/DDPM.SA/DdpmSwUpdater/CommonDll/ja/DDPM.SA.Resources.resources.dll
+/DDPM.SA/DdpmSwUpdater/CommonDll/ko/DDPM.SA.Resources.resources.dll
+/DDPM.SA/DdpmSwUpdater/CommonDll/zh-Hans/DDPM.SA.Resources.resources.dll
+/DDPM.SA/DdpmSwUpdater/CommonDll/zh-Hant/DDPM.SA.Resources.resources.dll
+/DDPM.SA/DdpmSwUpdater/CommonDll/ja/DDPM.SA.Resources.resources.dll
+/DDPM.SA/DdpmSwUpdater/CommonDll/ko/DDPM.SA.Resources.resources.dll
+/DDPM.SA/DdpmSwUpdater/CommonDll/zh-Hans/DDPM.SA.Resources.resources.dll
+/DDPM.SA/DdpmSwUpdater/CommonDll/zh-Hant/DDPM.SA.Resources.resources.dll
+/DdpmSwUpdater/CommonDll/ja/DDPM.SA.Resources.resources.dll
+/DdpmSwUpdater/CommonDll/ko/DDPM.SA.Resources.resources.dll
+/DdpmSwUpdater/CommonDll/zh-Hans/DDPM.SA.Resources.resources.dll
+/DdpmSwUpdater/CommonDll/zh-Hant/DDPM.SA.Resources.resources.dll

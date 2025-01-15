@@ -88,9 +88,9 @@ namespace DDPM.CLI.Plugins.Peripherals
                 if (_commandLineInput.PluginsType.Equals("AUDIO"))
                 {
 
-                    List<DeviceInfo> _deviceinfo = null;
-                    _deviceinfo = _devMgr.GetDevices().Result.deviceInfo;
-                    foreach (var g in _deviceinfo)
+                    List<DeviceInfo> deviceInfoList = null;
+                    deviceInfoList = _devMgr.GetDevices().Result.deviceInfo;
+                    foreach (var g in deviceInfoList)
                     {
                         if (g.LogicalDeviceType == "LogicalHeadset")
                         {
@@ -133,9 +133,28 @@ namespace DDPM.CLI.Plugins.Peripherals
 
                 }
                 if (commandLineInput.Command.Equals("SET") &&
-                    commandLineInput.TargetType.Equals("DOCK"))
+                    commandLineInput.TargetType.Equals("DOCK") && 
+                    commandLineInput.TargetFeature.Equals("SILENTFWUPDATE"))
                 {
-                    if (commandLineInput.TargetFeature.Equals("SILENTFWUPDATE"))// for dock firmware update.
+                    //switch (commandLineInput.TargetFeature)
+                    //{
+                    //    case "FIRMWAREUPDATE":
+                    //    case "UODFWUPDATE":
+                    //    case "LOCKUIUPDATE":
+                    //    case "UNLOCKUIUPDATE":
+                    writelog("FIRMWAREUPDATE SET DOCK SILENTFWUPDATE Entry");
+                    var ret = FWUpdate(commandLineInput);
+                    writelog("FIRMWAREUPDATE SET DOCK SILENTFWUPDATE DONE");
+                    result.ExitCode = ret.code;
+                    result.serialize_Json_response = ret.json;
+                    return result;
+                    //}
+                }
+
+                if (commandLineInput.Command.Equals("SET"))
+                {
+                    if (commandLineInput.TargetType.Equals("APP") && 
+                        commandLineInput.TargetFeature.Equals("UPDATE"))
                     {
                         //switch (commandLineInput.TargetFeature)
                         //{
@@ -143,64 +162,20 @@ namespace DDPM.CLI.Plugins.Peripherals
                         //    case "UODFWUPDATE":
                         //    case "LOCKUIUPDATE":
                         //    case "UNLOCKUIUPDATE":
-                        writelog("FIRMWAREUPDATE SET DOCK SILENTFWUPDATE Entry");
-                        var ret = FWUpdate(commandLineInput);
-                        writelog("FIRMWAREUPDATE SET DOCK SILENTFWUPDATE DONE");
+                        writelog("FIRMWAREUPDATE SET UPDATE Entry");
+                        var ret = SWAPPUpdate(commandLineInput);
+                        writelog("FIRMWAREUPDATE SET UPDATE DONE");
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.json;
                         return result;
                         //}
-                    }
-                }
-
-                if (commandLineInput.Command.Equals("SET"))
-                {
-                    if (commandLineInput.TargetType.Equals("APP"))
-                    {
-                        if (commandLineInput.TargetFeature.Equals("UPDATE"))// for dock firmware update.
-                        {
-                            //switch (commandLineInput.TargetFeature)
-                            //{
-                            //    case "FIRMWAREUPDATE":
-                            //    case "UODFWUPDATE":
-                            //    case "LOCKUIUPDATE":
-                            //    case "UNLOCKUIUPDATE":
-                            writelog("FIRMWAREUPDATE SET UPDATE Entry");
-                            var ret = SWAPPUpdate(commandLineInput);
-                            writelog("FIRMWAREUPDATE SET UPDATE DONE");
-                            result.ExitCode = ret.code;
-                            result.serialize_Json_response = ret.json;
-                            return result;
-                            //}
-                        }
                     }
 
                 }
                 else if (commandLineInput.Command.Equals("GET"))
                 {
-                    if (commandLineInput.TargetType.Equals("APP"))
-                    {
-                        if (commandLineInput.TargetFeature.Equals("UPDATE"))// for dock firmware update.
-                        {
-                            //switch (commandLineInput.TargetFeature)
-                            //{
-                            //    case "FIRMWAREUPDATE":
-                            //    case "UODFWUPDATE":
-                            //    case "LOCKUIUPDATE":
-                            //    case "UNLOCKUIUPDATE":
-                            writelog("FIRMWAREUPDATE GET UPDATE Entry");
-                            var ret = SWAPPUpdate_get(commandLineInput);
-                            writelog("FIRMWAREUPDATE GET UPDATE DONE");
-                            result.ExitCode = ret.code;
-                            result.serialize_Json_response = ret.json;
-                            return result;
-                            //}
-                        }
-                    }
-                }
-                if (commandLineInput.Command.Equals("GET") && commandLineInput.TargetType.Equals("APP"))
-                {
-                    if (commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))// for dock firmware update.
+                    if (commandLineInput.TargetType.Equals("APP") && 
+                        commandLineInput.TargetFeature.Equals("UPDATE"))
                     {
                         //switch (commandLineInput.TargetFeature)
                         //{
@@ -208,33 +183,49 @@ namespace DDPM.CLI.Plugins.Peripherals
                         //    case "UODFWUPDATE":
                         //    case "LOCKUIUPDATE":
                         //    case "UNLOCKUIUPDATE":
-                        writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION Entry");
+                        writelog("FIRMWAREUPDATE GET UPDATE Entry");
                         var ret = SWAPPUpdate_get(commandLineInput);
-                        writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION DONE");
+                        writelog("FIRMWAREUPDATE GET UPDATE DONE");
                         result.ExitCode = ret.code;
                         result.serialize_Json_response = ret.json;
                         return result;
                         //}
                     }
                 }
-                if (commandLineInput.Command.Equals("SET") && commandLineInput.TargetType.Equals("APP"))
+                if (commandLineInput.Command.Equals("GET") && commandLineInput.TargetType.Equals("APP") && 
+                    commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))
                 {
-                    if (commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))// for dock firmware update.
-                    {
-                        //switch (commandLineInput.TargetFeature)
-                        //{
-                        //    case "FIRMWAREUPDATE":
-                        //    case "UODFWUPDATE":
-                        //    case "LOCKUIUPDATE":
-                        //    case "UNLOCKUIUPDATE":
-                        writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION Entry");
-                        var ret = SWAPPUpdate(commandLineInput);
-                        writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION DONE");
-                        result.ExitCode = ret.code;
-                        result.serialize_Json_response = ret.json;
-                        return result;
-                        //}
-                    }
+                    //switch (commandLineInput.TargetFeature)
+                    //{
+                    //    case "FIRMWAREUPDATE":
+                    //    case "UODFWUPDATE":
+                    //    case "LOCKUIUPDATE":
+                    //    case "UNLOCKUIUPDATE":
+                    writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION Entry");
+                    var ret = SWAPPUpdate_get(commandLineInput);
+                    writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION DONE");
+                    result.ExitCode = ret.code;
+                    result.serialize_Json_response = ret.json;
+                    return result;
+                    //}
+                }
+                if (commandLineInput.Command.Equals("SET") && 
+                    commandLineInput.TargetType.Equals("APP") && 
+                    commandLineInput.TargetFeature.Equals("UPDATESOURCELOCATION"))
+                {
+                    //switch (commandLineInput.TargetFeature)
+                    //{
+                    //    case "FIRMWAREUPDATE":
+                    //    case "UODFWUPDATE":
+                    //    case "LOCKUIUPDATE":
+                    //    case "UNLOCKUIUPDATE":
+                    writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION Entry");
+                    var ret = SWAPPUpdate(commandLineInput);
+                    writelog("FIRMWAREUPDATE GET UPDATESOURCELOCATION DONE");
+                    result.ExitCode = ret.code;
+                    result.serialize_Json_response = ret.json;
+                    return result;
+                    //}
                 }
                 if (commandLineInput.Command.Equals("SET"))
                 {

@@ -289,7 +289,7 @@ namespace DDPM.SA.Plugin.CLIManager
                                 Command = commandLineInput.Command,
                                 TargetFeature = commandLineInput.TargetFeature,
                                 Result = "PASS",
-                                Value = data.Enable_Display_NetworkKVM ? "ON" : "OFF"
+                                Value = (data.Enable_Display_NetworkKVM ? "ON" : "OFF") + (data.Lock_Display_NetworkKVM ? ", DISABLE" : ", ENABLE"),
                             }, Formatting.Indented);
                         }
                         else if (commandLineInput.Command == "SET")
@@ -766,7 +766,13 @@ namespace DDPM.SA.Plugin.CLIManager
         private (int code, string result) EntryNetworkKVM(string command)
         {
             WriteLog($"EntryNetworkKVM({command}) Entry");
-            var validOptions = new List<string> { "ON", "OFF", "ENABLE", "DISABLE" };
+            var validOptions = new List<string> { "ON", "OFF" };
+
+            if (command == "NETWORKKVM")
+            {
+                validOptions.AddRange(["ENABLE", "DISABLE"]);
+            }
+
             string output = string.Empty;
             bool retcode = false;
 
@@ -808,29 +814,67 @@ namespace DDPM.SA.Plugin.CLIManager
             }
             else if (_commandLineInput.Command == "GET" && _commandLineInput.Options.Count == 0)
             {
-                command = $"/get {command}";
-                var commandResult = RunDDMCommand(command);
+                var commandResult = RunDDMCommand($"/get {command}");
 
-                switch (commandResult.exitCode)
+                if (command == "NETWORKKVM")
                 {
-                    case 0:
-                        retcode = true;
-                        response.Result = "PASS";
-                        response.Value = "OFF";
-                        break;
+                    switch (commandResult.exitCode)
+                    {
+                        case 0x0110:
+                            retcode = true;
+                            response.Result = "PASS";
+                            response.Value = "ENABLE, ON";
+                            break;
 
-                    case 1:
-                        retcode = true;
-                        response.Result = "PASS";
-                        response.Value = "ON";
-                        break;
+                        case 0x0010:
+                            retcode = true;
+                            response.Result = "PASS";
+                            response.Value = "DISABLE, ON";
+                            break;
 
-                    default:
-                        retcode = false;
-                        response.Result = "FAIL";
-                        response.Message = commandResult.message;
-                        response.Value = commandResult.value;
-                        break;
+                        case 0x0100:
+                            retcode = true;
+                            response.Result = "PASS";
+                            response.Value = "ENABLE, OFF";
+                            break;
+
+                        case 0x0000:
+                            retcode = true;
+                            response.Result = "PASS";
+                            response.Value = "DISABLE, OFF";
+                            break;
+
+                        default:
+                            retcode = false;
+                            response.Result = "FAIL";
+                            response.Message = commandResult.message;
+                            response.Value = commandResult.value;
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (commandResult.exitCode)
+                    {
+                        case 0:
+                            retcode = true;
+                            response.Result = "PASS";
+                            response.Value = "OFF";
+                            break;
+
+                        case 1:
+                            retcode = true;
+                            response.Result = "PASS";
+                            response.Value = "ON";
+                            break;
+
+                        default:
+                            retcode = false;
+                            response.Result = "FAIL";
+                            response.Message = commandResult.message;
+                            response.Value = commandResult.value;
+                            break;
+                    }
                 }
             }
             else
@@ -932,21 +976,17 @@ namespace DDPM.SA.Plugin.CLIManager
 
             if (_commandLineInput.Command == "SET" && _commandLineInput.Options.Count == 0)
             {
-                var cmds = new List<string> { command, "exit" };
                 retcode = true;
                 response.Result = "PASS";
 
-                foreach (var cmd in cmds)
-                {
-                    var commandResult = RunDDMCommand($"/{cmd}");
+                var commandResult = RunDDMCommand($"/{command}");
 
-                    if (commandResult.exitCode != 0)
-                    {
-                        retcode = false;
-                        response.Result = "FAIL";
-                        response.Message = commandResult.message;
-                        response.Value = commandResult.value;
-                    }
+                if (commandResult.exitCode != 0)
+                {
+                    retcode = false;
+                    response.Result = "FAIL";
+                    response.Message = commandResult.message;
+                    response.Value = commandResult.value;
                 }
             }
             else
@@ -969,13 +1009,13 @@ namespace DDPM.SA.Plugin.CLIManager
         private const int MAX_DEFER_WAIT_TIME_SEC = 5;
         private Dictionary<string, bool> deferResponse = new Dictionary<string, bool>();
 
-        public void sendToastResult(string _defer_id, bool isDefer)
+        public void sendToastResult(string defer_id, bool isDefer)
         {
-            WriteLog("@@stephen CLIManagerPlugin::sendToastResult _defer_id = " + _defer_id);
+            WriteLog("@@stephen CLIManagerPlugin::sendToastResult defer_id = " + defer_id);
             WriteLog("@@stephen CLIManagerPlugin::sendToastResult isDefer = " + isDefer);
-            if (!deferResponse.ContainsKey(_defer_id))
+            if (!deferResponse.ContainsKey(defer_id))
             {
-                deferResponse.Add(_defer_id, isDefer);
+                deferResponse.Add(defer_id, isDefer);
             }
         }
         public Task<bool> checkDefer(int from, string guid, string commanddata)

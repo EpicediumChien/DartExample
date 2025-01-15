@@ -74,9 +74,6 @@ namespace DdpmSwUpdater
 
         private string _notificationStr = "";
         private SWUErrorCode _updateErrorCode;
-        private string URL = $"https://clientperipherals.dell.com/DDPM/";
-        private string URL_Folder = $"/Windows/Application/";
-        private string TestURL_Folder = $"/ddpm/Application/";
         private bool _bFirstInstance;
         private Mutex? _instanceMutex;
         private string? _applicationName;
@@ -606,6 +603,7 @@ namespace DdpmSwUpdater
         public SWUErrorCode Install(SWUpdateInfo swUpdateInfo)
         {
             //[Dean 1206] modify for checkmarx test
+            int exitCode = -1;
             try
             {
                 _SWUpdateInfo = swUpdateInfo;
@@ -650,6 +648,7 @@ namespace DdpmSwUpdater
 
                         //For checkmarx test, [code part2]
                         string fileFullPath_sanitized = DDPMFileSecurity.SanitizePath(fileFullPath, out string info);
+
                         if (!string.IsNullOrEmpty(fileFullPath_sanitized))
                         {
                             if (DDPMFileSecurity.ValidateFilePath(fileFullPath, out info))
@@ -664,6 +663,7 @@ namespace DdpmSwUpdater
                                 _clientProcess.StartInfo = startInfo;
                                 _clientProcess.Start();
                                 _clientProcess.WaitForExit();
+                                exitCode = _clientProcess.ExitCode;
                             }
                             else
                             {
@@ -692,7 +692,15 @@ namespace DdpmSwUpdater
                         return _updateErrorCode;
                     }
                 }
-                _updateErrorCode = SWUErrorCode.NoError;
+                LogManage.LogMessage(swUpdateInfo.SoftwareName + nameof(Install) + " exit code : " + exitCode);
+                if (exitCode == 0)
+                {
+                    _updateErrorCode = SWUErrorCode.NoError;
+                }
+                else
+                {
+                    _updateErrorCode = SWUErrorCode.Unknow;
+                }
                 CancelRegEvent();
                 return _updateErrorCode;
             }
@@ -853,10 +861,6 @@ namespace DdpmSwUpdater
             LogManage.LogMessage($"{title} Message:{info}");
         }
         ManagementEventWatcher watcher;
-        /// <summary>
-        /// Bruce added test
-        /// </summary>
-        ManagementEventWatcher watcher_Test;
         private void RegEvent()
         {
             LogManage.LogMessage($"RegEvent start");
@@ -868,18 +872,10 @@ namespace DdpmSwUpdater
                          "SELECT * FROM RegistryValueChangeEvent WHERE " +
                          "Hive = 'HKEY_LOCAL_MACHINE'" +
                          @"AND KeyPath = 'SOFTWARE\\Dell\\Dell Display and Peripheral Manager' AND ValueName='NextProcess'");
-                /// Bruce added test
-                WqlEventQuery query_Test = new WqlEventQuery(
-                         "SELECT * FROM RegistryValueChangeEvent WHERE " +
-                         "Hive = 'HKEY_LOCAL_MACHINE'" +
-                         @"AND KeyPath = 'SOFTWARE\\Dell Display and Peripheral Manager' AND ValueName='NextProcess'");
                 watcher = new ManagementEventWatcher(query);
-                watcher_Test = new ManagementEventWatcher(query_Test);
                 LogManage.LogMessage("Waiting for an event...");
                 watcher.EventArrived += new EventArrivedEventHandler(OnRegistryValueChanged);
                 watcher.Start();
-                watcher_Test.EventArrived += new EventArrivedEventHandler(OnRegistryValueChanged);
-                watcher_Test.Start();
                 LogManage.LogMessage($"RegEvent watcher done");
             }
             catch (ManagementException ex)
@@ -895,14 +891,12 @@ namespace DdpmSwUpdater
         private void CancelRegEvent()
         {
             LogManage.LogMessage($"CancelRegEvent start");
-            if (watcher != null && watcher_Test != null)
+            if (watcher != null)
             {
                 LogManage.LogMessage($"CancelRegEvent watcher is not null");
                 LogManage.LogMessage($"CancelRegEvent stop watcher go");
                 watcher.Stop();
                 watcher.EventArrived -= new EventArrivedEventHandler(OnRegistryValueChanged);
-                watcher_Test.Stop();
-                watcher_Test.EventArrived -= new EventArrivedEventHandler(OnRegistryValueChanged);
                 LogManage.LogMessage($"CancelRegEvent stop watcher done");
             }
             LogManage.LogMessage($"CancelRegEvent done");
@@ -925,23 +919,6 @@ namespace DdpmSwUpdater
                         ProcessProgress = nextProcess != null ? int.Parse(nextProcess) : 0.0,
                     };
                     sendMessageToEvent(updateProgressInfo);
-                }
-                else/// Bruce added test
-                {
-                    RegistryKey registryKey_Test = localKey64.OpenSubKey("SOFTWARE\\Dell Display and Peripheral Manager\\", false);
-                    if (registryKey_Test != null)
-                    {
-                        string curProcess = (registryKey_Test.GetValue("Process")?.ToString());
-                        string nextProcess = (registryKey_Test.GetValue("NextProcess")?.ToString());
-                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
-                        {
-                            DeviceName = _SWUpdateInfo.SoftwareName,
-                            TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                            ProcessName = "Installing",
-                            ProcessProgress = nextProcess != null ? int.Parse(nextProcess) : 0.0,
-                        };
-                        sendMessageToEvent(updateProgressInfo);
-                    }
                 }
             }
         }

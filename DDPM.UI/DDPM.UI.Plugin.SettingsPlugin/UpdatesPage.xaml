@@ -51,8 +51,8 @@
                                     <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <StackPanel Grid.Row="0" Margin="0,0,0,24" Orientation="Horizontal" x:Name="spFWUpdate">
-                                    <!-- Derek PIMS 334386 change Width="176" to MinWidth="176" add Padding="10,0,10,0" on 1/10 -->
-                                    <Button MinWidth="176" Padding="10,0,10,0"
+                                    <!-- 2025/01/11 Derek PIMS 334386 change Width="176" to MinWidth="176" add move content to textblock -->
+                                    <Button MinWidth="176"
                                             Height="40"
                                             Click="CheckUpdate_Click"
                                             Cursor="Hand"
@@ -61,8 +61,10 @@
                                             x:Name="btnFWU"
                                             HorizontalAlignment="Left"
                                             AutomationProperties.Name="Primary1"
-                                            Content="{Binding [Updates.2], Source={x:Static lang:LangHelper.Instance}}"
                                             Style="{StaticResource Button_WhiteFrame}" >
+                                        <Button.Content>
+                                            <TextBlock Margin="10,0,10,0" Text="{Binding [Updates.2], Source={x:Static lang:LangHelper.Instance}}"></TextBlock>
+                                        </Button.Content>
                                     </Button>
                                     <StackPanel Orientation="Horizontal">
                                         <Grid  Height="20"
@@ -116,23 +118,23 @@
                                                                            IsChecked="{Binding IsCheckUpdate}"
                                                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                                            Margin="0,20,0,20" />
-                                                        <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility}" Margin="0,17,16,17">
-                                                            <UXControls:UXAlertItem Background="#364861" AlertItemType="Info"  Message="{Binding UXAlertItemMessage}" Opacity="0.6" />
-                                                        </UXControls:UXAlert>
-                                                        <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility_2}"
+                                                    <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility}" Margin="0,17,16,17">
+                                                        <UXControls:UXAlertItem Background="#364861" AlertItemType="Info"  Message="{Binding UXAlertItemMessage}" Opacity="0.6" />
+                                                    </UXControls:UXAlert>
+                                                    <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility_2}"
                                                                         Margin="0,17,16,17">
-                                                            <UXControls:UXAlertItem Background="#364861"
+                                                        <UXControls:UXAlertItem Background="#364861"
                                                                                 AlertItemType="Info"
                                                                                 Message="{Binding UXAlertItemMessage_2}"
                                                                                 Opacity="0.6" />
-                                                        </UXControls:UXAlert>
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
-                                        </ListBox>
-                                    </StackPanel>
+                                                    </UXControls:UXAlert>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </StackPanel>
                                 <StackPanel  Grid.Row="2" Margin="0,0,0,24" Visibility="{Binding Recommended_UpdateList}">
-                                    <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" FontSize="16" Grid.Row="0" Text="Recommended" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,16,0,0" />
+                                    <UXControls:UXTextBlock Foreground="{DynamicResource DefaultTheme_TxtColor}" FontSize="16" Grid.Row="0" Text="{Binding [Recommended], Source={x:Static lang:LangHelper.Instance}}" TextBlockType="Header1" HorizontalAlignment="Left" Margin="20,16,0,0" />
                                     <ListBox PreviewMouseWheel="HandlePreviewMouseWheel" Height="auto" ItemsSource="{Binding Recommended_UpdateList_UI}" Background="Transparent" BorderThickness="0" Margin="20,0,0,0">
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
@@ -170,21 +172,21 @@
                                                                            IsChecked="{Binding IsCheckUpdate}"
                                                                            Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                                            Margin="0,20,0,20" />
-                                                        <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility}" Margin="0,17,16,17" HorizontalAlignment="Stretch">
-                                                            <UXControls:UXAlertItem Background="#364861" AlertItemType="Info"  Message="{Binding UXAlertItemMessage}" Opacity="0.6" />
-                                                        </UXControls:UXAlert>
-                                                        <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility_2}"
+                                                    <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility}" Margin="0,17,16,17" HorizontalAlignment="Stretch">
+                                                        <UXControls:UXAlertItem Background="#364861" AlertItemType="Info"  Message="{Binding UXAlertItemMessage}" Opacity="0.6" />
+                                                    </UXControls:UXAlert>
+                                                    <UXControls:UXAlert Visibility="{Binding UXAlertItemVisibility_2}"
                                                                         Margin="0,17,16,17" HorizontalAlignment="Stretch">
-                                                            <UXControls:UXAlertItem Background="#364861"
+                                                        <UXControls:UXAlertItem Background="#364861"
                                                                                 AlertItemType="Info"
                                                                                 Message="{Binding UXAlertItemMessage_2}"
                                                                                 Opacity="0.6" />
-                                                        </UXControls:UXAlert>
-                                                    </StackPanel>
-                                                </DataTemplate>
-                                            </ListBox.ItemTemplate>
-                                        </ListBox>
-                                    </StackPanel>
+                                                    </UXControls:UXAlert>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+                                </StackPanel>
                                 <Grid Grid.Row="4" Margin="4" Visibility="{Binding IsAnyUpdate}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
@@ -192,7 +194,7 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <Button Grid.Column="0"
-                                            Width="195"
+                                            MinWidth="195"
                                             Height="40"
                                             AutomationProperties.Name="Primary1"
                                             Style="{DynamicResource Buttom_BlueFrame}"

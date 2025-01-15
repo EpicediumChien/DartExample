@@ -282,7 +282,7 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <DDPMUserControls:BatteryIndicator Name="Battery" Margin="0,0,0,70" HorizontalAlignment="Center" MouseEnter="BatteryIndicator_MouseEnter"
                                                            BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}" MouseLeave="BatteryIndicator_MouseLeave"
-                                                           ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
+                                                           NoBattery="{Binding IsBatteryUnavailable}" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
                         <!--<Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="{Binding IsRestoreEnable, Converter={StaticResource BoolToVisibilityConverter}}" x:Name="btnRestore">
                         <Grid>
                         <UXControls:UXTextBlock Name="txtRestore" Foreground="#F5F6F7" VerticalAlignment="Center"
@@ -292,8 +292,8 @@
                         <ContentControl Name="EOLDongle" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Height="40" Visibility="Collapsed" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
                         <!-- <Image Name="EOLDongle" Source="/DDPM.UI.Resources;component/Resources/Images/EOLDongle.png" Stretch="Fill" Visibility="Collapsed"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="40" Height="40" /> -->
-                        <Border Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair"
-                    BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
+                        <Border Padding="10,0,10,0" Width="Auto" Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair"
+                                BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
                             <UXControls:UXTextBlock Name="txtUnpair" Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}"/>
                         </Border>
                     </StackPanel>

@@ -399,12 +399,12 @@
                                 <StackPanel Orientation="Horizontal" Margin="20,18,0,0">
                                     <ContentControl Margin="4,0,0,0" Width="16" Height="16" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
                                     <!-- <Image Margin="4,0,0,0" Width="16" Height="16" Source="/DDPM.UI.Resources;component/Resources/Images/Dongle.png" /> -->
-                                    <UXControls:UXTextBlock Name="txtDongleHost" Foreground="{DynamicResource DefaultTheme_TxtColor}" VerticalAlignment="Center" Margin="7,0,0,0"
+                                    <UXControls:UXTextBlock Width="200" TextTrimming="CharacterEllipsis" Name="txtDongleHost" Foreground="{DynamicResource DefaultTheme_TxtColor}" VerticalAlignment="Center" Margin="7,0,0,0"
                                                             HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" FontWeight="Bold" Text="{Binding [USBWirelessReceiver], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                                 <Line X1="15" Y1="10" X2="235" Y2="10" Stroke="{DynamicResource EQLine_Color}" StrokeThickness="2" />
-                                <UXControls:UXTextBlock Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" Margin="20,13,0,0" />
-                                <UXControls:UXTextBlock Name="txtSlot" Style="{StaticResource ConnectionStyle3}" Margin="20,15,0,0" />
+                                <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtFirmware" Style="{StaticResource ConnectionStyle3}" Margin="20,13,0,0" />
+                                <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" Name="txtSlot" Style="{StaticResource ConnectionStyle3}" Margin="20,15,0,0" />
                             </StackPanel>
                         </Border>
                         <Border Style="{StaticResource BorderConnection}" Margin="{Binding ConnectionPopupMargin}" Visibility="Collapsed" x:Name="BLConnection" VerticalAlignment="Bottom">
@@ -466,7 +466,7 @@
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <DDPMUserControls:BatteryIndicator Name="Battery" Margin="0,0,0,70" HorizontalAlignment="Center" MouseEnter="BatteryIndicator_MouseEnter"
                                                            BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}" MouseLeave="BatteryIndicator_MouseLeave"
-                                                           ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
+                                                           NoBattery="{Binding IsBatteryUnavailable}" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
                         <Border Style="{StaticResource BorderUnpair}" Width="176" MouseLeftButtonDown="Restore_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="{Binding IsRestoreEnable, Converter={StaticResource BoolToVisibilityConverter}}" x:Name="btnRestore"
                                 BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
                             <Grid>
@@ -499,11 +499,10 @@
                         <ContentControl Name="EOLDongle" VerticalAlignment="Top" HorizontalAlignment="Left" Width="40" Height="40" Visibility="Collapsed" Template="{StaticResource icon_Dongle}" Foreground="{DynamicResource DefaultTheme_PathColor}" />
                         <!-- <Image Name="EOLDongle" Source="/DDPM.UI.Resources;component/Resources/Images/EOLDongle.png" Stretch="Fill" Visibility="Collapsed"
                                VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="" Width="40" Height="40" /> -->
-                        <Border Style="{StaticResource BorderUnpair}" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair"
+                        <Border Style="{StaticResource BorderUnpair}" Width="auto" MouseLeftButtonDown="Unpair_Click" Cursor="Hand" Margin="8,0,0,70" Visibility="Visible" x:Name="btnUnpair"
                                 BorderBrush="{DynamicResource Button_UXStyleColor_ForWhiteFrame}">
-                            <UXControls:UXTextBlock Name="txtUnpair" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}" 
+                            <UXControls:UXTextBlock Padding="10,0,10,0" Name="txtUnpair" Text="{Binding [Unpair], Source={x:Static lang:LangHelper.Instance}}" 
                                       Foreground="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=Border}}"
-                                      TextWrapping="Wrap"
                                       VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="14" />
                         </Border>
                     </StackPanel>

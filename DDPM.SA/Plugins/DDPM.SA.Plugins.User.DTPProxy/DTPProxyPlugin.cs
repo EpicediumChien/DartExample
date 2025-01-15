@@ -402,10 +402,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 if (await GetCommodityInterfaceInstanceAsync(_globalperipheralMethodInfo) is ICommodity commodity)
                 {
                     var value = GetPropertyValue(_globalperipheralInterfaceType, commodity, "IsQuickAccessMenuOSDEnabled");
-                    if (value is int intValue)
+                    if (value is bool boolValue)
                     {
-                        writelog($"Get IsQuickAccessMenuOSDEnabled Value: {intValue}");
-                        return intValue != 0;
+                        writelog($"Get IsQuickAccessMenuOSDEnabled Value: {boolValue}");
+                        return boolValue;
                     }
                     else
                     {
@@ -8745,9 +8745,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         }
 
         /////////////////////////Get////////////////////////////////
-        public async Task<string> GetProfileNameAsync(string Guid)
+        public async Task<string> GetProfileNameAsync(string item)
         {
-            string guid = Guid;
+            string guid = item;
 
             try
             {
@@ -10887,22 +10887,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 writelog($"commodity: {commodity.GetType().Name} Property: {property}");
 
+                var obj = interfaceType.GetProperty(property).GetGetMethod().Invoke(commodity, null);
 
-                var propertyInfo = interfaceType.GetProperty(property);
-                if (propertyInfo == null)
-                {
-                    writelog($"Property '{property}' not found on type '{interfaceType.Name}', == null");
-                    return null;
-                }
-
-                var getMethod = propertyInfo.GetGetMethod();
-                if (getMethod == null)
-                {
-                    writelog($"Property '{property}' on type '{interfaceType.Name}' does not have a getter, == null");
-                    return null;
-                }
-
-                var obj = getMethod.Invoke(commodity, null);
                 if (obj == null)
                 {
                     writelog($"obj = getMethod.Invoke(commodity, null), the obj == null");

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DDPM.UI.Common;
+using DDPM.UI.Plugin.DdpmHomePlugin.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -124,7 +125,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 UpdateText(_currentPage);
                 UpdateProgressBar(true);
                 //_currentPage++;
-                if(_currentPage != _totalPages)
+                if (_currentPage != _totalPages)
                     UpdatePosition("Left");
                 else
                     UpdatePosition("Top_Right");
@@ -199,7 +200,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void UpdatePosition(string position)
         {
-            switch (position.ToLower()) 
+            switch (position.ToLower())
             {
                 case "top_right":
                     this.Left = base.Owner.Left + base.Owner.Width - this.Width - 122;
@@ -214,14 +215,15 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void EndProgress()
         {
-            DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
-            if(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
-                DdpmHomePlugin.DdpmHomePlugin.ShowPluginById = false;
-            //string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin._userId}";
-            //string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
-
+            if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count != 0) // Error handling
+            {
+                ViewModel.WriteWalkThroughReg("DDPM");
+                DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(new WalkThroughInfo("DDPM", "DDPM", null)); // Add DDPM to the end of the queue
+                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAll(item => item.ModelName == "DDPM"); // Remove all DDPM from the queue
+            }
             if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 0)
             {
+                DdpmHomePlugin.DdpmHomePlugin.ShowPluginById = false;
                 ViewModel.EndWalkThrough();
             }
             else
