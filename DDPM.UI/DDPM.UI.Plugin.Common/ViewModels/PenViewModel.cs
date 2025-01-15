@@ -61,13 +61,20 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void PrepareDeviceInfo(List<DeviceInfo> deviceInfos)
         {
-            DeviceInfos.Clear();
-            foreach (DeviceInfo deviceInfo in deviceInfos)
+            try
             {
-                if (deviceInfo.LogicalDeviceType.Contains("Pen"))
+                DeviceInfos.Clear();
+                foreach (DeviceInfo deviceInfo in deviceInfos)
                 {
-                    DeviceInfos.Add(deviceInfo.ID, deviceInfo);
+                    if (deviceInfo.LogicalDeviceType.Contains("Pen"))
+                    {
+                        DeviceInfos.Add(deviceInfo.ID, deviceInfo);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\PenViewModel.cs  PrepareDeviceInfo ex:" + ex.Message);
             }
         }
 
@@ -98,233 +105,269 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void PrepareActionItems()
         {
-            //JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues))!;
-            Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetEraserSinglePressValues();
-            JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
-            foreach (var jo in jsonObject.EnumerateArray())
+            try
             {
-                _EraserActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
-            }
-
-            task = DdpmCommonHelper.DeviceManagerSA!.GetSideSwitchSinglePressValues();
-            jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
-            foreach (var jo in jsonObject.EnumerateArray())
-            {
-                //var id = jo.GetProperty("actionId").GetInt32();
-                //if (id != 63)
-                _SideSwitchActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
-            }
-
-            task = DdpmCommonHelper.DeviceManagerSA!.GetMenuSinglePressValues();
-            jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
-            foreach (var jo in jsonObject.EnumerateArray())
-            {
-                var id = jo.GetProperty("actionId").GetInt32();
-                if (id != 63)
-                    _MenuActions.Add(id, jo.GetProperty("actionName").GetString()!);
-            }
-
-            task = DdpmCommonHelper.DeviceManagerSA!.GetLaunchableAppValues();
-            jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
-            //var i = 1;
-            //LaunchableAppValues.Add(Strings.Browse);
-            foreach (var jo in jsonObject.EnumerateArray())
-            {
-                LaunchableAppValues.Add(jo.GetString()!);
-            }
-            LaunchableAppValues.Sort();
-            for (int i = 0; i < LaunchableAppValues.Count; i++)
-            {
-                string str = LaunchableAppValues[i];
-                if (str.Length > 2 && str.Substring(str.Length - 3, 3) == "...")
+                //JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues))!;
+                Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetEraserSinglePressValues();
+                JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
+                foreach (var jo in jsonObject.EnumerateArray())
                 {
-                    LaunchableAppValues.Remove(str);
-                    LaunchableAppValues.Insert(0, str);
-                    i = 100;
+                    _EraserActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
                 }
+
+                task = DdpmCommonHelper.DeviceManagerSA!.GetSideSwitchSinglePressValues();
+                jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
+                foreach (var jo in jsonObject.EnumerateArray())
+                {
+                    //var id = jo.GetProperty("actionId").GetInt32();
+                    //if (id != 63)
+                    _SideSwitchActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
+                }
+
+                task = DdpmCommonHelper.DeviceManagerSA!.GetMenuSinglePressValues();
+                jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
+                foreach (var jo in jsonObject.EnumerateArray())
+                {
+                    var id = jo.GetProperty("actionId").GetInt32();
+                    if (id != 63)
+                        _MenuActions.Add(id, jo.GetProperty("actionName").GetString()!);
+                }
+
+                task = DdpmCommonHelper.DeviceManagerSA!.GetLaunchableAppValues();
+                jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
+                //var i = 1;
+                //LaunchableAppValues.Add(Strings.Browse);
+                foreach (var jo in jsonObject.EnumerateArray())
+                {
+                    LaunchableAppValues.Add(jo.GetString()!);
+                }
+                LaunchableAppValues.Sort();
+                for (int i = 0; i < LaunchableAppValues.Count; i++)
+                {
+                    string str = LaunchableAppValues[i];
+                    if (str.Length > 2 && str.Substring(str.Length - 3, 3) == "...")
+                    {
+                        LaunchableAppValues.Remove(str);
+                        LaunchableAppValues.Insert(0, str);
+                        i = 100;
+                    }
+                }
+                ActionNames = _EraserActions.Union(_SideSwitchActions).Union(_MenuActions).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                RadialMenuActions = _MenuActions.OrderBy(x => x.Value).Select(x => x.Key).ToList();
+                IsActionItemsReady = true;
             }
-            ActionNames = _EraserActions.Union(_SideSwitchActions).Union(_MenuActions).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-            RadialMenuActions = _MenuActions.OrderBy(x => x.Value).Select(x => x.Key).ToList();
-            IsActionItemsReady = true;
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\PenViewModel.cs PrepareActionItems ex:" + ex.Message);
+            }
+
         }
 
         private void InitializeButton()
         {
-            //Model = "PN7522W";
-            //Model = "PN9315A";
-            //Model = "PN5122W";
-            //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
+            try
+            {
+                //Model = "PN7522W";
+                //Model = "PN9315A";
+                //Model = "PN5122W";
+                //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
 
-            RefreshButtonImageFile(PenButtonName.TopButton.ToString());
-            RefreshButtonImageFile(PenButtonName.TopBarrelButton.ToString());
-            RefreshButtonImageFile(PenButtonName.BottomBarrelButton.ToString());
-            CheckRestoreStatus();
-            OnPropertyChanged(nameof(IsRestoreEnable));
+                RefreshButtonImageFile(PenButtonName.TopButton.ToString());
+                RefreshButtonImageFile(PenButtonName.TopBarrelButton.ToString());
+                RefreshButtonImageFile(PenButtonName.BottomBarrelButton.ToString());
+                CheckRestoreStatus();
+                OnPropertyChanged(nameof(IsRestoreEnable));
 
-            TopButtonBackground = $"/DDPM.UI.Resources;component/Resources/Images/{Model}Top.png";
-            OnPropertyChanged(nameof(TopButtonBackground));
+                TopButtonBackground = $"/DDPM.UI.Resources;component/Resources/Images/{Model}Top.png";
+                OnPropertyChanged(nameof(TopButtonBackground));
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\PenViewModel.cs InitializeButton() ex:" + ex.Message);
+            }
         }
 
         public void RefreshButtonImageFile(string btnName, bool IsHover = false, bool IsSelected = false)
         {
-            PenButtonName _btnName = (PenButtonName)Enum.Parse(typeof(PenButtonName), btnName, true);
-            var property = typeof(PenViewModel).GetProperty($"{btnName}ImageFile");
-            int btnType = 1;
-            switch (_btnName)
+            try
             {
-                case PenButtonName.TopButton:
-                    btnType = 1;
-                    break;
-
-                default:
-                    if (Model == "PN7522W")
-                        btnType = 2;
-                    else if (Model == "PN9315A")
-                        btnType = 3;
-                    else if (Model == "PN5122W")
-                        btnType = 4;
-                    break;
-            }
-
-            var IsDefault = false;
-            if (_btnName == PenButtonName.TopButton && PenAction.TopButtonClickAction.DefaultActionID == PenAction.TopButtonClickAction.AssignedAction.ID
-               && PenAction.TopButtonDoubleClickAction.DefaultActionID == PenAction.TopButtonDoubleClickAction.AssignedAction.ID
-               && PenAction.TopButtonPressHoldAction.DefaultActionID == PenAction.TopButtonPressHoldAction.AssignedAction.ID)
-            {
-                IsDefault = true;
-            }
-            else if (_btnName == PenButtonName.TopBarrelButton && PenAction.TopBarrelButtonClickAction.DefaultActionID == PenAction.TopBarrelButtonClickAction.AssignedAction.ID)
-            {
-                IsDefault = true;
-            }
-            else if (_btnName == PenButtonName.BottomBarrelButton && PenAction.BottomBarrelButtonClickAction.DefaultActionID == PenAction.BottomBarrelButtonClickAction.AssignedAction.ID)
-            {
-                IsDefault = true;
-            }
-
-            if (IsDefault)
-            {
-                if (IsSelected)
+                PenButtonName _btnName = (PenButtonName)Enum.Parse(typeof(PenButtonName), btnName, true);
+                var property = typeof(PenViewModel).GetProperty($"{btnName}ImageFile");
+                int btnType = 1;
+                switch (_btnName)
                 {
-                    property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}5.png");
+                    case PenButtonName.TopButton:
+                        btnType = 1;
+                        break;
+
+                    default:
+                        if (Model == "PN7522W")
+                            btnType = 2;
+                        else if (Model == "PN9315A")
+                            btnType = 3;
+                        else if (Model == "PN5122W")
+                            btnType = 4;
+                        break;
                 }
-                else
+
+                var IsDefault = false;
+                if (_btnName == PenButtonName.TopButton && PenAction.TopButtonClickAction.DefaultActionID == PenAction.TopButtonClickAction.AssignedAction.ID
+                   && PenAction.TopButtonDoubleClickAction.DefaultActionID == PenAction.TopButtonDoubleClickAction.AssignedAction.ID
+                   && PenAction.TopButtonPressHoldAction.DefaultActionID == PenAction.TopButtonPressHoldAction.AssignedAction.ID)
                 {
-                    if (IsHover)
+                    IsDefault = true;
+                }
+                else if (_btnName == PenButtonName.TopBarrelButton && PenAction.TopBarrelButtonClickAction.DefaultActionID == PenAction.TopBarrelButtonClickAction.AssignedAction.ID)
+                {
+                    IsDefault = true;
+                }
+                else if (_btnName == PenButtonName.BottomBarrelButton && PenAction.BottomBarrelButtonClickAction.DefaultActionID == PenAction.BottomBarrelButtonClickAction.AssignedAction.ID)
+                {
+                    IsDefault = true;
+                }
+
+                if (IsDefault)
+                {
+                    if (IsSelected)
                     {
-                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}2.png");
+                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}5.png");
                     }
                     else
                     {
-                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}1.png");
+                        if (IsHover)
+                        {
+                            property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}2.png");
+                        }
+                        else
+                        {
+                            property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}1.png");
+                        }
                     }
-                }
-            }
-            else
-            {
-                if (IsSelected)
-                {
-                    property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}6.png");
                 }
                 else
                 {
-                    if (IsHover)
+                    if (IsSelected)
                     {
-                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}4.png");
+                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}6.png");
                     }
                     else
                     {
-                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}3.png");
+                        if (IsHover)
+                        {
+                            property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}4.png");
+                        }
+                        else
+                        {
+                            property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/PButton{btnType}3.png");
+                        }
                     }
                 }
+                var a = property.GetValue(this);
+                OnPropertyChanged(property!.Name);
             }
-            var a = property.GetValue(this);
-            OnPropertyChanged(property!.Name);
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\PenViewModel.cs RefreshButtonImageFile ex:" + ex.Message);
+            }
         }
 
         public bool IsRestoreEnable { get; set; } = true;
 
         private void CheckRestoreStatus(bool? status = null)
         {
-            IsRestoreEnable = false;
-            if (PenAction.TopButtonClickAction.DefaultActionID != PenAction.TopButtonClickAction.AssignedAction.ID)
+            try
             {
-                IsRestoreEnable = true;
+                IsRestoreEnable = false;
+                if (PenAction.TopButtonClickAction.DefaultActionID != PenAction.TopButtonClickAction.AssignedAction.ID)
+                {
+                    IsRestoreEnable = true;
+                }
+                else if (PenAction.TopButtonDoubleClickAction.DefaultActionID != PenAction.TopButtonDoubleClickAction.AssignedAction.ID)
+                {
+                    IsRestoreEnable = true;
+                }
+                else if (PenAction.TopButtonPressHoldAction.DefaultActionID != PenAction.TopButtonPressHoldAction.AssignedAction.ID)
+                {
+                    IsRestoreEnable = true;
+                }
+                else if (PenAction.TopBarrelButtonClickAction.DefaultActionID != PenAction.TopBarrelButtonClickAction.AssignedAction.ID)
+                {
+                    IsRestoreEnable = true;
+                }
+                else if (PenAction.BottomBarrelButtonClickAction.DefaultActionID != PenAction.BottomBarrelButtonClickAction.AssignedAction.ID)
+                {
+                    IsRestoreEnable = true;
+                }
+                else if (PenAction.IsTopBarrelHoverClickOn)
+                {
+                    IsRestoreEnable = true;
+                }
+                else if (PenAction.IsBottomBarrelHoverClickOn)
+                {
+                    IsRestoreEnable = true;
+                }
+                else if (TiltSensitivity != 0)
+                {
+                    IsRestoreEnable = true;
+                }
+                else if (TipSensitivity != 50)
+                {
+                    IsRestoreEnable = true;
+                }
+                OnPropertyChanged(nameof(IsRestoreEnable));
             }
-            else if (PenAction.TopButtonDoubleClickAction.DefaultActionID != PenAction.TopButtonDoubleClickAction.AssignedAction.ID)
+            catch (Exception ex)
             {
-                IsRestoreEnable = true;
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\PenViewModel.cs CheckRestoreStatus ex:" + ex.Message);
             }
-            else if (PenAction.TopButtonPressHoldAction.DefaultActionID != PenAction.TopButtonPressHoldAction.AssignedAction.ID)
-            {
-                IsRestoreEnable = true;
-            }
-            else if (PenAction.TopBarrelButtonClickAction.DefaultActionID != PenAction.TopBarrelButtonClickAction.AssignedAction.ID)
-            {
-                IsRestoreEnable = true;
-            }
-            else if (PenAction.BottomBarrelButtonClickAction.DefaultActionID != PenAction.BottomBarrelButtonClickAction.AssignedAction.ID)
-            {
-                IsRestoreEnable = true;
-            }
-            else if (PenAction.IsTopBarrelHoverClickOn)
-            {
-                IsRestoreEnable = true;
-            }
-            else if (PenAction.IsBottomBarrelHoverClickOn)
-            {
-                IsRestoreEnable = true;
-            }
-            else if (TiltSensitivity != 0)
-            {
-                IsRestoreEnable = true;
-            }
-            else if (TipSensitivity != 50)
-            {
-                IsRestoreEnable = true;
-            }
-            OnPropertyChanged(nameof(IsRestoreEnable));
         }
 
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
-            base.HandleNotification(changeType, di, property);
-
-            switch (changeType)
+            try
             {
-                case DeviceChangedType.Peripherals_SettingsChange:
-                    if (DeviceInfos.ContainsKey(di.ID))
-                    {
-                        DeviceInfos.Remove(di.ID);
-                        DeviceInfos.Add(di.ID, di);
-                    }
-                    else
-                    {
-                        return;
-                    }
-                    if (di.ID == CurrentDeviceID)
-                    {
-                        CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
-                        switch (property)
-                        {
-                            //case "MousePrimaryButtonChanged":
-                            //  PrimaryButtonIndex = (int)di.MousePrimaryButton;
-                            //  break;
-                            //case "TouchScrollSensitivityLevelChanged":
-                            //  TouchScrollSensitivityLevel = di.TouchScrollSensitivityLevel;
-                            //  break;
-                            //case "DpiValueChanged":
-                            //  DPIValue = int.Parse(di.DPIValue);
-                            //  break;
-                            default:
-                                break;
-                        }
-                        GenerateInfo();
-                    }
-                    break;
+                base.HandleNotification(changeType, di, property);
 
-                default:
-                    break;
+                switch (changeType)
+                {
+                    case DeviceChangedType.Peripherals_SettingsChange:
+                        if (DeviceInfos.ContainsKey(di.ID))
+                        {
+                            DeviceInfos.Remove(di.ID);
+                            DeviceInfos.Add(di.ID, di);
+                        }
+                        else
+                        {
+                            return;
+                        }
+                        if (di.ID == CurrentDeviceID)
+                        {
+                            CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
+                            switch (property)
+                            {
+                                //case "MousePrimaryButtonChanged":
+                                //  PrimaryButtonIndex = (int)di.MousePrimaryButton;
+                                //  break;
+                                //case "TouchScrollSensitivityLevelChanged":
+                                //  TouchScrollSensitivityLevel = di.TouchScrollSensitivityLevel;
+                                //  break;
+                                //case "DpiValueChanged":
+                                //  DPIValue = int.Parse(di.DPIValue);
+                                //  break;
+                                default:
+                                    break;
+                            }
+                            GenerateInfo();
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\PenViewModel.cs HandleNotification ex:" + ex.Message);
             }
         }
 
@@ -381,10 +424,17 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void SetTiltSensitivity()
         {
-            if (_tiltSensitivity != CurrentDeviceInfo!.TiltSensitivity)
+            try
             {
-                DdpmCommonHelper.DeviceManagerSA!.SetTiltSensitivity(itemID, _tiltSensitivity / 50);
-                CheckRestoreStatus();
+                if (_tiltSensitivity != CurrentDeviceInfo!.TiltSensitivity)
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetTiltSensitivity(itemID, _tiltSensitivity / 50);
+                    CheckRestoreStatus();
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\PenViewModel.cs SetTiltSensitivity() ex:" + ex.Message);
             }
         }
 
@@ -683,65 +733,72 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void UpdateAction(int actionID, string parameter = "")
         {
-            if (SelectedButton != "")
+            try
             {
-                SelectedAction!.AssignedAction.ID = actionID;
-                SelectedAction.AssignedAction.Parameter = parameter;
-                RefreshButtonInfo();
-                CheckRestoreStatus();
-                var actionName = actionID == 8 || actionID == 23 ? parameter : "";
-                JObject jobj = new()
+                if (SelectedButton != "")
+                {
+                    SelectedAction!.AssignedAction.ID = actionID;
+                    SelectedAction.AssignedAction.Parameter = parameter;
+                    RefreshButtonInfo();
+                    CheckRestoreStatus();
+                    var actionName = actionID == 8 || actionID == 23 ? parameter : "";
+                    JObject jobj = new()
                 {
                     { "actionId", actionID }
                 };
-                switch (SelectedButton)
-                {
-                    case "TopButton":
-                        //var value = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\"}}";
-                        if (string.IsNullOrEmpty(actionName))
-                        { actionName = _EraserActions[actionID]; }
+                    switch (SelectedButton)
+                    {
+                        case "TopButton":
+                            //var value = $"{{\"actionId\":{actionID},\"actionName\":\"{Actions.PenActions[actionID].Caption}\"}}";
+                            if (string.IsNullOrEmpty(actionName))
+                            { actionName = _EraserActions[actionID]; }
 
-                        jobj.Add("actionName", actionName);
-                        byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
-                        if (SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
-                        {
-                            DdpmCommonHelper.DeviceManagerSA!.SetEraserSinglePressSetting(itemID, newValue);
-                        }
-                        else if (SelectedBehavior == ButtonBehavior.DoubleClick.ToString())
-                        {
-                            if (actionID == 64)
+                            jobj.Add("actionName", actionName);
+                            byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
+                            if (SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
                             {
-                                newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":65,\"actionName\":\"{actionName}\"}}");
+                                DdpmCommonHelper.DeviceManagerSA!.SetEraserSinglePressSetting(itemID, newValue);
                             }
-                            DdpmCommonHelper.DeviceManagerSA!.SetEraserDoublePressSetting(itemID, newValue);
-                        }
-                        else
-                        {
-                            if (actionID == 64)
+                            else if (SelectedBehavior == ButtonBehavior.DoubleClick.ToString())
                             {
-                                newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":77,\"actionName\":\"{actionName}\"}}");
+                                if (actionID == 64)
+                                {
+                                    newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":65,\"actionName\":\"{actionName}\"}}");
+                                }
+                                DdpmCommonHelper.DeviceManagerSA!.SetEraserDoublePressSetting(itemID, newValue);
                             }
-                            DdpmCommonHelper.DeviceManagerSA!.SetEraserLongPressSetting(itemID, newValue);
-                        }
-                        break;
-                    case "TopBarrelButton":
-                        if (string.IsNullOrEmpty(actionName))
-                        { actionName = _SideSwitchActions[actionID]; }
+                            else
+                            {
+                                if (actionID == 64)
+                                {
+                                    newValue = Encoding.UTF8.GetBytes($"{{\"actionId\":77,\"actionName\":\"{actionName}\"}}");
+                                }
+                                DdpmCommonHelper.DeviceManagerSA!.SetEraserLongPressSetting(itemID, newValue);
+                            }
+                            break;
+                        case "TopBarrelButton":
+                            if (string.IsNullOrEmpty(actionName))
+                            { actionName = _SideSwitchActions[actionID]; }
 
-                        jobj.Add("actionName", actionName);
-                        byte[] newValue2 = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
-                        DdpmCommonHelper.DeviceManagerSA!.SetSideTopSwitchSinglePressSetting(itemID, newValue2);
-                        break;
-                    case "BottomBarrelButton":
-                        if (string.IsNullOrEmpty(actionName))
-                        { actionName = _SideSwitchActions[actionID]; }
+                            jobj.Add("actionName", actionName);
+                            byte[] newValue2 = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
+                            DdpmCommonHelper.DeviceManagerSA!.SetSideTopSwitchSinglePressSetting(itemID, newValue2);
+                            break;
+                        case "BottomBarrelButton":
+                            if (string.IsNullOrEmpty(actionName))
+                            { actionName = _SideSwitchActions[actionID]; }
 
-                        jobj.Add("actionName", actionName);
-                        byte[] newValue3 = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
-                        DdpmCommonHelper.DeviceManagerSA!.SetSideBottomSwitchSinglePressSetting(itemID, newValue3);
-                        break;
+                            jobj.Add("actionName", actionName);
+                            byte[] newValue3 = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
+                            DdpmCommonHelper.DeviceManagerSA!.SetSideBottomSwitchSinglePressSetting(itemID, newValue3);
+                            break;
+                    }
+                    ActionList.ExportActionList(PenAction, "PEN");
                 }
-                ActionList.ExportActionList(PenAction, "PEN");
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\PenViewModel.cs UpdateAction ex:" + ex.Message);
             }
         }
         public ObservableCollection<int> SuggestedActionsTopButton { get => new(Actions.SuggestedActionsPenTopButton); }
@@ -757,22 +814,29 @@ namespace DDPM.UI.Plugin.ViewModels
             get => (SelectedButton == PenButtonName.TopBarrelButton.ToString() && PenAction.IsTopBarrelHoverClickOn) || (SelectedButton == PenButtonName.BottomBarrelButton.ToString() && PenAction.IsBottomBarrelHoverClickOn);
             set
             {
-                if (SelectedButton == PenButtonName.TopBarrelButton.ToString())
+                try
                 {
-                    DdpmCommonHelper.DeviceManagerSA!.SetIsSideTopButtonHoverClick(itemID, value);
-                    PenAction.IsTopBarrelHoverClickOn = value;
-                    ActionList.ExportActionList(PenAction, "PEN");
+                    if (SelectedButton == PenButtonName.TopBarrelButton.ToString())
+                    {
+                        DdpmCommonHelper.DeviceManagerSA!.SetIsSideTopButtonHoverClick(itemID, value);
+                        PenAction.IsTopBarrelHoverClickOn = value;
+                        ActionList.ExportActionList(PenAction, "PEN");
+                    }
+                    if (SelectedButton == PenButtonName.BottomBarrelButton.ToString())
+                    {
+                        DdpmCommonHelper.DeviceManagerSA!.SetIsSideBottomButtonHoverClick(itemID, value);
+                        PenAction.IsBottomBarrelHoverClickOn = value;
+                        ActionList.ExportActionList(PenAction, "PEN");
+                    }
+                    CheckRestoreStatus();
+                    OnPropertyChanged();
+                    //IsMicEnumerationOnText = value ? Strings.On : Strings.Off;
+                    OnPropertyChanged(nameof(IsHoverClickToggleText));
                 }
-                if (SelectedButton == PenButtonName.BottomBarrelButton.ToString())
+                catch (Exception ex)
                 {
-                    DdpmCommonHelper.DeviceManagerSA!.SetIsSideBottomButtonHoverClick(itemID, value);
-                    PenAction.IsBottomBarrelHoverClickOn = value;
-                    ActionList.ExportActionList(PenAction, "PEN");
+                    DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\PenViewModel.cs IsHoverClickOn set ex:" + ex.Message);
                 }
-                CheckRestoreStatus();
-                OnPropertyChanged();
-                //IsMicEnumerationOnText = value ? Strings.On : Strings.Off;
-                OnPropertyChanged(nameof(IsHoverClickToggleText));
             }
         }
         public string IsHoverClickToggleText
@@ -784,16 +848,23 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public void UpdateRadialMenu(int index, int id)
         {
-            //byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":{index},\"actionId\":{id},\"actionName\":\"{parameter}\"}}");
-            JObject jobj = new()
+            try
             {
-                { "menuIndex", index },
-                { "actionId", id },
-                { "actionName", PenAction.RadialLabels[index] },
-                { "menuLabel", PenAction.RadialLabels[index] }
-            };
-            byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
-            DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting(itemID, newValue);
+                //byte[] newValue = Encoding.UTF8.GetBytes($"{{\"menuIndex\":{index},\"actionId\":{id},\"actionName\":\"{parameter}\"}}");
+                JObject jobj = new()
+                {
+                    { "menuIndex", index },
+                    { "actionId", id },
+                    { "actionName", PenAction.RadialLabels[index] },
+                    { "menuLabel", PenAction.RadialLabels[index] }
+                };
+                byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
+                DdpmCommonHelper.DeviceManagerSA!.SetMenuSinglePressSetting(itemID, newValue);
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\PenViewModel.cs UpdateRadialMenu set ex:" + ex.Message);
+            }
         }
         public void UpdateRadialMenuRightClick(bool value)
         {

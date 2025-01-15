@@ -38,126 +38,141 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         public LaunchView()
         {
-            InitializeComponent();
-            _vm = (MouseViewModel?)Mouseplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
-            if (_vm == null)
+            try
             {
-                DdpmCommonHelper.WriteUILog("Mouse ViewModel is null");
-                return;
-            }
-
-            // for Light mode check by leo
-            if (UXSystemParameters.Instance.OSTheme == OSThemeEnum.Light)
-            {
-                buttonColorFocusedT = new(System.Windows.Media.Color.FromArgb(0xFF, 0x0, 0x0, 0x0));
-                buttonColorFocusedF = new(System.Windows.Media.Color.FromArgb(0x80, 0x0, 0x0, 0x0));
-            }
-            UXSystemParameters.Instance.ParameterChangedEvent += MSUXSystemParametersChanged;
-
-
-            DataContext = _vm;
-            _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
-
-            if (_vm.EOLMouseList.Contains(_vm.Model))
-            {
-                //Battery.Visibility = Visibility.Collapsed;
-                //btnRestore.Visibility = Visibility.Collapsed;
-                //txtEOL.Text = Strings.EOLMessage;
-                txtEOL.Visibility = Visibility.Visible;
-                SectionA.Visibility = Visibility.Collapsed;
-                SectionB.Visibility = Visibility.Collapsed;
-                _vm.IsBatteryUnavailable = true;
-                //EOLDongle.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                _vm.IsBatteryUnavailable = false;
-            }
-            BuildModuleGroups();
-
-            //txtUnpair.Text = Strings.Unpair;
-            //txtRestore.Text = Strings.RestoreToDefault;
-            ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
-            ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
-            //txtDongleHost.Text = Strings.USBWirelessReceiver;
-
-            //txtActionCaption.Text = ActionCaption;
-            // txtAllApp.Text = AllAppCaption;
-            SetAppFocus();
-            // txtWord.Text = WordCaption;
-            //txtExcel.Text = ExcelCaption;
-            //txtPowerPoint.Text = PowerPointCaption;
-            //txtOutlook.Text = OutlookCaption;
-
-            InitializeButtonImage();
-            //if(_vm!.IsRestoreEnable) {
-            //  btnRestore.Visibility = Visibility.Visible;
-            //}
-            //else {
-            //  btnRestore.Visibility = Visibility.Collapsed;
-            //}
-            _vm!.IsAllButtonsVisible = Visibility.Visible;
-            _vm.ActiveModule = null;
-
-            if (_vm.ConnectionType == "Wired")
-                btnUnpair.Visibility = Visibility.Collapsed;
-
-            //lock/unlock, no ui element currently
-            if (DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
-
-
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null)
+                InitializeComponent();
+                _vm = (MouseViewModel?)Mouseplugin.PluginIoc?.GetService<IPeripheralViewModel>()!;
+                if (_vm == null)
                 {
-                    if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                    DdpmCommonHelper.WriteUILog("Mouse ViewModel is null");
+                    return;
+                }
+
+                // for Light mode check by leo
+                if (UXSystemParameters.Instance.OSTheme == OSThemeEnum.Light)
+                {
+                    buttonColorFocusedT = new(System.Windows.Media.Color.FromArgb(0xFF, 0x0, 0x0, 0x0));
+                    buttonColorFocusedF = new(System.Windows.Media.Color.FromArgb(0x80, 0x0, 0x0, 0x0));
+                }
+                UXSystemParameters.Instance.ParameterChangedEvent += MSUXSystemParametersChanged;
+
+
+                DataContext = _vm;
+                _vm.VbarItemClickCommand = new RelayCommand<VbarItem>(OnVbarItemClicked!);
+
+                if (_vm.EOLMouseList.Contains(_vm.Model))
+                {
+                    //Battery.Visibility = Visibility.Collapsed;
+                    //btnRestore.Visibility = Visibility.Collapsed;
+                    //txtEOL.Text = Strings.EOLMessage;
+                    txtEOL.Visibility = Visibility.Visible;
+                    SectionA.Visibility = Visibility.Collapsed;
+                    SectionB.Visibility = Visibility.Collapsed;
+                    _vm.IsBatteryUnavailable = true;
+                    //EOLDongle.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    _vm.IsBatteryUnavailable = false;
+                }
+                BuildModuleGroups();
+
+                //txtUnpair.Text = Strings.Unpair;
+                //txtRestore.Text = Strings.RestoreToDefault;
+                ConnectionStyle1 = (Style)FindResource("ConnectionStyle1");
+                ConnectionStyle2 = (Style)FindResource("ConnectionStyle2");
+                //txtDongleHost.Text = Strings.USBWirelessReceiver;
+
+                //txtActionCaption.Text = ActionCaption;
+                // txtAllApp.Text = AllAppCaption;
+                SetAppFocus();
+                // txtWord.Text = WordCaption;
+                //txtExcel.Text = ExcelCaption;
+                //txtPowerPoint.Text = PowerPointCaption;
+                //txtOutlook.Text = OutlookCaption;
+
+                InitializeButtonImage();
+                //if(_vm!.IsRestoreEnable) {
+                //  btnRestore.Visibility = Visibility.Visible;
+                //}
+                //else {
+                //  btnRestore.Visibility = Visibility.Collapsed;
+                //}
+                _vm!.IsAllButtonsVisible = Visibility.Visible;
+                _vm.ActiveModule = null;
+
+                if (_vm.ConnectionType == "Wired")
+                    btnUnpair.Visibility = Visibility.Collapsed;
+
+                //lock/unlock, no ui element currently
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent += DeviceManagerSA_ITSettingsActionEvent;
+
+
+                    DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                    if (data != null)
                     {
-                        //RestoreLockIcon.Visibility = Visibility.Visible;
-                        //txtRestore.IsEnabled = false;
-                    }
-                    else
-                    {
-                        //txtRestore.IsEnabled = !data.LockSettings.Lock_Mouse_RestoreFactoryDefaults;
-                        //RestoreLockIcon.Visibility = data.LockSettings.Lock_Mouse_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
-                    }
-                    //Lock Functionality 9/7
-                    //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Mouse]
-                    if (data.LockSettings != null &&
-                        DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Mouse"))
-                    {
-                        //RestoreLockIcon.Visibility = Visibility.Visible;
-                        //txtRestore.IsEnabled = false;
+                        if (data.LockSettings.Lock_Setting_RestoreDefaults)
+                        {
+                            //RestoreLockIcon.Visibility = Visibility.Visible;
+                            //txtRestore.IsEnabled = false;
+                        }
+                        else
+                        {
+                            //txtRestore.IsEnabled = !data.LockSettings.Lock_Mouse_RestoreFactoryDefaults;
+                            //RestoreLockIcon.Visibility = data.LockSettings.Lock_Mouse_RestoreFactoryDefaults ? Visibility.Visible : Visibility.Collapsed;
+                        }
+                        //Lock Functionality 9/7
+                        //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Mouse]
+                        if (data.LockSettings != null &&
+                            DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Mouse"))
+                        {
+                            //RestoreLockIcon.Visibility = Visibility.Visible;
+                            //txtRestore.IsEnabled = false;
+                        }
                     }
                 }
+                //Unloaded += LaunchView_Unloaded;
+                //if (DdpmCommonHelper.DeviceManagerSA != null)
+                //{
+                //    DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
+                //    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+                //}
             }
-            //Unloaded += LaunchView_Unloaded;
-            //if (DdpmCommonHelper.DeviceManagerSA != null)
-            //{
-            //    DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
-            //    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
-            //}
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  LaunchView() ex:" + ex.Message);
+            }
         }
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
         {
-            if (_vm != null && e.type == DeviceChangedType.Peripherals_SettingsChange && e.changedProperty == "CopilotEnableChanged")
+            try
             {
-                _vm.IsCopilotEnabled = e.device_peripherals.Message != "false";
-                if (!_vm.IsCopilotEnabled)
-                    _vm.RemoveCopilotAction();
-                Dispatcher.Invoke(new Action(() =>
-                {
-                    _vm.RefreshButtonImageFile(_vm.SelectedButton, false, true);
 
-                    if (_vm.VbarSelectedIndex == 1)
+                if (_vm != null && e.type == DeviceChangedType.Peripherals_SettingsChange && e.changedProperty == "CopilotEnableChanged")
+                {
+                    _vm.IsCopilotEnabled = e.device_peripherals.Message != "false";
+                    if (!_vm.IsCopilotEnabled)
+                        _vm.RemoveCopilotAction();
+                    Dispatcher.Invoke(new Action(() =>
                     {
-                        _vm.ActiveModule!.OnActivated();
-                    }
-                    else
-                    {
-                        OnVbarItemClicked(_vm.VbarItems[1]);
-                    }
-                }));
+                        _vm.RefreshButtonImageFile(_vm.SelectedButton, false, true);
+
+                        if (_vm.VbarSelectedIndex == 1)
+                        {
+                            _vm.ActiveModule!.OnActivated();
+                        }
+                        else
+                        {
+                            OnVbarItemClicked(_vm.VbarItems[1]);
+                        }
+                    }));
+                }
+            }
+            catch(Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  DeviceManagerSA_DeviceChanged ex:" + ex.Message);
             }
         }
 
@@ -202,23 +217,30 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
         {
-            var rst = DdpmCommonHelper.ApplyRestoreFactoryDefaultsEventData(e, "Lock_Mouse_RestoreFactoryDefaults");
-            Dispatcher.Invoke(new Action(() =>
+            try
             {
-                //no ui element currently
-                //RestoreLockIcon.Visibility = rst.isLocked;
-                //txtRestore.IsEnabled = rst.isEnabled;
-
-                //Lock Functionality 9/7
-                //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Mouse]
-                DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null && data.LockSettings != null &&
-                DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Mouse"))
+                var rst = DdpmCommonHelper.ApplyRestoreFactoryDefaultsEventData(e, "Lock_Mouse_RestoreFactoryDefaults");
+                Dispatcher.Invoke(new Action(() =>
                 {
-                    //RestoreLockIcon.Visibility = Visibility.Visible;
-                    //txtRestore.IsEnabled = false;
-                }
-            }));
+                    //no ui element currently
+                    //RestoreLockIcon.Visibility = rst.isLocked;
+                    //txtRestore.IsEnabled = rst.isEnabled;
+
+                    //Lock Functionality 9/7
+                    //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Mouse]
+                    DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
+                    if (data != null && data.LockSettings != null &&
+                    DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Mouse"))
+                    {
+                        //RestoreLockIcon.Visibility = Visibility.Visible;
+                        //txtRestore.IsEnabled = false;
+                    }
+                }));
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  DeviceManagerSA_ITSettingsActionEvent ex:" + ex.Message);
+            }
         }
 
         #region Init for Modules
@@ -343,94 +365,122 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void App_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            UXTextBlock button = (UXTextBlock)sender;
-            var app = button.Name.Replace("txt", "");
-            if (_vm!.SelectedApp == app)
-            { return; }
+            try
+            {
+                UXTextBlock button = (UXTextBlock)sender;
+                var app = button.Name.Replace("txt", "");
+                if (_vm!.SelectedApp == app)
+                { return; }
 
-            _vm.SelectedApp = app;
-            //_vm.OnPropertyChanged(nameof(_vm.SelectedApp));
-            SetAppFocus();
-            _vm.ActiveModule?.OnActivated();
+                _vm.SelectedApp = app;
+                //_vm.OnPropertyChanged(nameof(_vm.SelectedApp));
+                SetAppFocus();
+                _vm.ActiveModule?.OnActivated();
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  App_MouseLeftButtonDown ex:" + ex.Message);
+            }
         }
 
         private void Unpair_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (_vm!.ConnectionType == "Dongle")
+            try
             {
-                UnpairModalDialog unpairModalDialog = new(eDeviceCategory.Mouse);
-                Window parentWindow = Window.GetWindow(this);
-                if (parentWindow != null)
+                if (_vm!.ConnectionType == "Dongle")
                 {
-                    unpairModalDialog.Owner = parentWindow;
-                }
-
-                bool? dialogResult = unpairModalDialog.ShowDialog();
-                if (dialogResult == true)
-                {
-                    _vm.Unpair();
-                }
-            }
-            else
-            {
-                Version win10Version = new(10, 0);
-                Version currentVersion = Environment.OSVersion.Version;
-                if (currentVersion >= win10Version)
-                {
-                    Process.Start(new ProcessStartInfo("ms-settings:bluetooth")
+                    UnpairModalDialog unpairModalDialog = new(eDeviceCategory.Mouse);
+                    Window parentWindow = Window.GetWindow(this);
+                    if (parentWindow != null)
                     {
-                        UseShellExecute = true
-                    });
+                        unpairModalDialog.Owner = parentWindow;
+                    }
+
+                    bool? dialogResult = unpairModalDialog.ShowDialog();
+                    if (dialogResult == true)
+                    {
+                        _vm.Unpair();
+                    }
                 }
                 else
                 {
-                    Process.Start(new ProcessStartInfo("control", "bthprops.cpl")
+                    Version win10Version = new(10, 0);
+                    Version currentVersion = Environment.OSVersion.Version;
+                    if (currentVersion >= win10Version)
                     {
-                        UseShellExecute = true
-                    });
+                        Process.Start(new ProcessStartInfo("ms-settings:bluetooth")
+                        {
+                            UseShellExecute = true
+                        });
+                    }
+                    else
+                    {
+                        Process.Start(new ProcessStartInfo("control", "bthprops.cpl")
+                        {
+                            UseShellExecute = true
+                        });
+                    }
                 }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  Unpair_Click ex:" + ex.Message);
             }
         }
 
         private void Mainframe_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (_vm!.VbarSelectedIndex == -1)
-            { return; }
+            try
+            {
+                if (_vm!.VbarSelectedIndex == -1)
+                { return; }
 
-            _vm.RightFrameWidthTo = 0;
-            _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
-            InvokeGotoTwoViewModeAnimation();
-            if (_vm.ConnectionType != "Wired")
-                btnUnpair.Visibility = Visibility.Visible;
+                _vm.RightFrameWidthTo = 0;
+                _vm.RightFrameWidthFrom = _rightFrameWidth[_vm.VbarSelectedIndex + 1];
+                InvokeGotoTwoViewModeAnimation();
+                if (_vm.ConnectionType != "Wired")
+                    btnUnpair.Visibility = Visibility.Visible;
 
-            AppCaptionArea.Visibility = Visibility.Collapsed;
-            //if(_vm.IsRestoreEnable) {
-            //  btnRestore.Visibility = Visibility.Visible;
-            //}
-            //else {
-            //  btnRestore.Visibility = Visibility.Collapsed;
-            //}
+                AppCaptionArea.Visibility = Visibility.Collapsed;
+                //if(_vm.IsRestoreEnable) {
+                //  btnRestore.Visibility = Visibility.Visible;
+                //}
+                //else {
+                //  btnRestore.Visibility = Visibility.Collapsed;
+                //}
 
-            _vm.VbarSelectedIndex = -1;
-            _vm.SetLadningMode(true);
-            _vm.SelectVBar();
-            _vm.ClearSelectedButton();
-            SetAppFocus();
-            _vm.IsAllButtonsVisible = Visibility.Visible;
+                _vm.VbarSelectedIndex = -1;
+                _vm.SetLadningMode(true);
+                _vm.SelectVBar();
+                _vm.ClearSelectedButton();
+                SetAppFocus();
+                _vm.IsAllButtonsVisible = Visibility.Visible;
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  Mainframe_MouseLeftButtonDown ex:" + ex.Message);
+            }
         }
 
         private void BatteryIndicator_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (_vm!.ConnectionType == "Dongle")
+            try
             {
-                txtFirmware.Text = $"{Strings.ReceiverFirmwareVersion} {_vm.PhysicalDeviceFWVersion}";
-                txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
-                DongleConnection.Visibility = Visibility.Visible;
+                if (_vm!.ConnectionType == "Dongle")
+                {
+                    txtFirmware.Text = $"{Strings.ReceiverFirmwareVersion} {_vm.PhysicalDeviceFWVersion}";
+                    txtSlot.Text = $"{_vm.CurrentDeviceInfo!.MaxPairingSlots - _vm.CurrentDeviceInfo.PairedDeviceCount} of {_vm.CurrentDeviceInfo.MaxPairingSlots} slots available";
+                    DongleConnection.Visibility = Visibility.Visible;
+                }
+                else if (_vm!.ConnectionType == "Bluetooth")
+                {
+                    SetBLConnectionStatus();
+                    BLConnection.Visibility = Visibility.Visible;
+                }
             }
-            else if (_vm!.ConnectionType == "Bluetooth")
+            catch (Exception ex) 
             {
-                SetBLConnectionStatus();
-                BLConnection.Visibility = Visibility.Visible;
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  BatteryIndicator_MouseEnter ex:" + ex.Message);
             }
         }
 
@@ -442,260 +492,323 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void SetBLConnectionStatus()
         {
-            if (_vm == null)
-                return;
-
-            string hostName = Dns.GetHostName();
-
-            txt1.Style = ConnectionStyle2;
-            txtBLHost1.Style = ConnectionStyle2;
-            txt2.Style = ConnectionStyle2;
-            txtBLHost2.Style = ConnectionStyle2;
-            txt3.Style = ConnectionStyle2;
-            txtBLHost3.Style = ConnectionStyle2;
-
-            _vm.ImgBL1 = false;
-            _vm.ImgBL2 = false;
-            _vm.ImgBL3 = false;
-
-            switch (_vm!.Model)
+            try
             {
-                case "MS700":
-                    txt3.Visibility = Visibility.Visible;
-                    Host3.Visibility = Visibility.Visible;
-                    txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
-                    txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
-                    txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
-                    if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        txt1.Style = ConnectionStyle1;
-                        txtBLHost1.Style = ConnectionStyle1;
-                        _vm.ImgBL1 = true;
-                    }
-                    else if (txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
-                    {
+                if (_vm == null)
+                    return;
+
+                string hostName = Dns.GetHostName();
+
+                txt1.Style = ConnectionStyle2;
+                txtBLHost1.Style = ConnectionStyle2;
+                txt2.Style = ConnectionStyle2;
+                txtBLHost2.Style = ConnectionStyle2;
+                txt3.Style = ConnectionStyle2;
+                txtBLHost3.Style = ConnectionStyle2;
+
+                _vm.ImgBL1 = false;
+                _vm.ImgBL2 = false;
+                _vm.ImgBL3 = false;
+
+                switch (_vm!.Model)
+                {
+                    case "MS700":
+                        txt3.Visibility = Visibility.Visible;
+                        Host3.Visibility = Visibility.Visible;
+                        txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName1) ? Strings.ReadyToBePaired : _vm.PairedHostName1;
+                        txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                        txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
+                        if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            txt1.Style = ConnectionStyle1;
+                            txtBLHost1.Style = ConnectionStyle1;
+                            _vm.ImgBL1 = true;
+                        }
+                        else if (txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            txt2.Style = ConnectionStyle1;
+                            txtBLHost2.Style = ConnectionStyle1;
+                            _vm.ImgBL2 = true;
+                        }
+                        else
+                        {
+                            txt3.Style = ConnectionStyle1;
+                            txtBLHost3.Style = ConnectionStyle1;
+                            _vm.ImgBL3 = true;
+                        }
+                        break;
+
+                    case "MS5320W":
+                    case "MS7421W":
+                        Host1.Visibility = Visibility.Collapsed;
+                        txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                        txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
+                        if (txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            txt2.Style = ConnectionStyle1;
+                            txtBLHost2.Style = ConnectionStyle1;
+                            _vm.ImgBL2 = true;
+                        }
+                        else
+                        {
+                            txt3.Style = ConnectionStyle1;
+                            txtBLHost3.Style = ConnectionStyle1;
+                            _vm.ImgBL3 = true;
+                        }
+                        break;
+
+                    case "MS900":
+                        Host3.Visibility = Visibility.Collapsed;
+                        txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
+                        txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
+                        if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
+                        {
+                            txt1.Style = ConnectionStyle1;
+                            txtBLHost1.Style = ConnectionStyle1;
+                            _vm.ImgBL1 = true;
+                        }
+                        else
+                        {
+                            txt2.Style = ConnectionStyle1;
+                            txtBLHost2.Style = ConnectionStyle1;
+                            _vm.ImgBL2 = true;
+                        }
+                        break;
+
+                    default:
+                        Host1.Visibility = Visibility.Collapsed;
+                        Host3.Visibility = Visibility.Collapsed;
                         txt2.Style = ConnectionStyle1;
+                        txtBLHost2.Text = hostName;
                         txtBLHost2.Style = ConnectionStyle1;
                         _vm.ImgBL2 = true;
-                    }
-                    else
-                    {
-                        txt3.Style = ConnectionStyle1;
-                        txtBLHost3.Style = ConnectionStyle1;
-                        _vm.ImgBL3 = true;
-                    }
-                    break;
-
-                case "MS5320W":
-                case "MS7421W":
-                    Host1.Visibility = Visibility.Collapsed;
-                    txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
-                    txtBLHost3.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
-                    if (txtBLHost2.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        txt2.Style = ConnectionStyle1;
-                        txtBLHost2.Style = ConnectionStyle1;
-                        _vm.ImgBL2 = true;
-                    }
-                    else
-                    {
-                        txt3.Style = ConnectionStyle1;
-                        txtBLHost3.Style = ConnectionStyle1;
-                        _vm.ImgBL3 = true;
-                    }
-                    break;
-
-                case "MS900":
-                    Host3.Visibility = Visibility.Collapsed;
-                    txtBLHost1.Text = string.IsNullOrEmpty(_vm.PairedHostName2) ? Strings.ReadyToBePaired : _vm.PairedHostName2;
-                    txtBLHost2.Text = string.IsNullOrEmpty(_vm.PairedHostName3) ? Strings.ReadyToBePaired : _vm.PairedHostName3;
-                    if (txtBLHost1.Text.Equals(hostName, StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        txt1.Style = ConnectionStyle1;
-                        txtBLHost1.Style = ConnectionStyle1;
-                        _vm.ImgBL1 = true;
-                    }
-                    else
-                    {
-                        txt2.Style = ConnectionStyle1;
-                        txtBLHost2.Style = ConnectionStyle1;
-                        _vm.ImgBL2 = true;
-                    }
-                    break;
-
-                default:
-                    Host1.Visibility = Visibility.Collapsed;
-                    Host3.Visibility = Visibility.Collapsed;
-                    txt2.Style = ConnectionStyle1;
-                    txtBLHost2.Text = hostName;
-                    txtBLHost2.Style = ConnectionStyle1;
-                    _vm.ImgBL2 = true;
-                    break;
+                        break;
+                }
+                if (txtBLHost1.Text.Length > 20)
+                    txtBLHost1.Text = txtBLHost1.Text.Substring(0, 20);
+                if (txtBLHost2.Text.Length > 20)
+                    txtBLHost2.Text = txtBLHost2.Text.Substring(0, 20);
+                if (txtBLHost3.Text.Length > 20)
+                    txtBLHost3.Text = txtBLHost3.Text.Substring(0, 20);
             }
-            if (txtBLHost1.Text.Length > 20)
-                txtBLHost1.Text = txtBLHost1.Text.Substring(0, 20);
-            if (txtBLHost2.Text.Length > 20)
-                txtBLHost2.Text = txtBLHost2.Text.Substring(0, 20);
-            if (txtBLHost3.Text.Length > 20)
-                txtBLHost3.Text = txtBLHost3.Text.Substring(0, 20);
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  SetBLConnectionStatus ex:" + ex.Message);
+            }
         }
 
         private void Restore_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            RestoreModalDialog restoreModalDialog = new();
-            Window parentWindow = Window.GetWindow(this);
-            if (parentWindow != null)
+            try
             {
-                restoreModalDialog.Owner = parentWindow;
-            }
+                RestoreModalDialog restoreModalDialog = new();
+                Window parentWindow = Window.GetWindow(this);
+                if (parentWindow != null)
+                {
+                    restoreModalDialog.Owner = parentWindow;
+                }
 
-            bool? dialogResult = restoreModalDialog.ShowDialog();
-            if (dialogResult == true)
+                bool? dialogResult = restoreModalDialog.ShowDialog();
+                if (dialogResult == true)
+                {
+                    _vm!.RestoreToDefault();
+                    ((Border)sender).Visibility = Visibility.Collapsed;
+                }
+            }
+            catch (Exception ex)
             {
-                _vm!.RestoreToDefault();
-                ((Border)sender).Visibility = Visibility.Collapsed;
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  SetBLConnectionStatus ex:" + ex.Message);
             }
         }
 
         private void InitializeButtonImage()
         {
-            switch (_vm!.Model.ToUpper())
+            try
             {
-                case "MS300":
-                    SectionA.Margin = new Thickness(210, 64, 0, 0);
-                    break;
+                switch (_vm!.Model.ToUpper())
+                {
+                    case "MS300":
+                        SectionA.Margin = new Thickness(210, 64, 0, 0);
+                        break;
 
-                case "MS355":
-                    SectionA.Margin = new Thickness(210, 91, 0, 0);
-                    break;
+                    case "MS355":
+                        SectionA.Margin = new Thickness(210, 91, 0, 0);
+                        break;
 
-                case "MS7421W":
-                    SectionA.Margin = new Thickness(210, 98, 0, 0);
-                    SectionB.Margin = new Thickness(127, 170, 0, 0);
-                    this.Resources["B4Margin"] = new Thickness(0, -8, 0, 0);
-                    break;
+                    case "MS7421W":
+                        SectionA.Margin = new Thickness(210, 98, 0, 0);
+                        SectionB.Margin = new Thickness(127, 170, 0, 0);
+                        this.Resources["B4Margin"] = new Thickness(0, -8, 0, 0);
+                        break;
 
-                case "MS3320W":
-                    SectionA.Margin = new Thickness(210, 108, 0, 0);
-                    break;
+                    case "MS3320W":
+                        SectionA.Margin = new Thickness(210, 108, 0, 0);
+                        break;
 
-                case "MS5120W":
-                    SectionA.Margin = new Thickness(210, 108, 0, 0);
-                    SectionB.Margin = new Thickness(127, 164, 0, 0);
-                    this.Resources["B4Margin"] = new Thickness(0, -6, 0, 0);
-                    break;
+                    case "MS5120W":
+                        SectionA.Margin = new Thickness(210, 108, 0, 0);
+                        SectionB.Margin = new Thickness(127, 164, 0, 0);
+                        this.Resources["B4Margin"] = new Thickness(0, -6, 0, 0);
+                        break;
 
-                case "MS5320W":
-                    SectionA.Margin = new Thickness(210, 81, 0, 0);
-                    SectionB.Margin = new Thickness(126, 150, 0, 0);
-                    this.Resources["B4Margin"] = new Thickness(0, -6, 0, 0);
-                    break;
+                    case "MS5320W":
+                        SectionA.Margin = new Thickness(210, 81, 0, 0);
+                        SectionB.Margin = new Thickness(126, 150, 0, 0);
+                        this.Resources["B4Margin"] = new Thickness(0, -6, 0, 0);
+                        break;
 
-                case "MS900":
-                    SectionA.Margin = new Thickness(230, 50, 0, 0);
-                    SectionB.Margin = new Thickness(156, 126, 0, 0);
-                    this.Resources["B4Margin"] = new Thickness(0, -15, 0, 0);
-                    break;
+                    case "MS900":
+                        SectionA.Margin = new Thickness(230, 50, 0, 0);
+                        SectionB.Margin = new Thickness(156, 126, 0, 0);
+                        this.Resources["B4Margin"] = new Thickness(0, -15, 0, 0);
+                        break;
 
-                case "MS3220":
-                case "MS3220T":
-                    SectionA.Margin = new Thickness(210, 106, 0, 0);
-                    SectionB.Margin = new Thickness(140, 173, 0, 0);
-                    this.Resources["B4Margin"] = new Thickness(0, -6, 0, 0);
-                    break;
+                    case "MS3220":
+                    case "MS3220T":
+                        SectionA.Margin = new Thickness(210, 106, 0, 0);
+                        SectionB.Margin = new Thickness(140, 173, 0, 0);
+                        this.Resources["B4Margin"] = new Thickness(0, -6, 0, 0);
+                        break;
 
-                case "MS700":
-                    SectionA.Visibility = Visibility.Collapsed;
-                    break;
+                    case "MS700":
+                        SectionA.Visibility = Visibility.Collapsed;
+                        break;
+                }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  InitializeButtonImage ex:" + ex.Message);
             }
         }
 
         private void ButtonHoverIn(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            var btnName = ((Image)sender).Name;
-            _vm!.RefreshButtonImageFile(btnName, true, btnName == _vm.SelectedButton);
+            try
+            {
+                var btnName = ((Image)sender).Name;
+                _vm!.RefreshButtonImageFile(btnName, true, btnName == _vm.SelectedButton);
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  ButtonHoverIn ex:" + ex.Message);
+            }
         }
 
         private void ButtonHoverOut(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            var btnName = ((Image)sender).Name;
-            _vm!.RefreshButtonImageFile(btnName, false, btnName == _vm.SelectedButton);
+            try
+            {
+                var btnName = ((Image)sender).Name;
+                _vm!.RefreshButtonImageFile(btnName, false, btnName == _vm.SelectedButton);
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs ButtonHoverOut ex:" + ex.Message);
+            }
         }
 
         private void ButtonClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (_vm!.SelectedButton != "")
-            { _vm.RefreshButtonImageFile(_vm.SelectedButton); }
-
-            var btnName = ((Image)sender).Name;
-            _vm!.SelectedButton = btnName;
-            _vm.RefreshButtonImageFile(btnName, false, true);
-
-            if (_vm.VbarSelectedIndex == 1)
+            try
             {
-                _vm.ActiveModule!.OnActivated();
+                if (_vm!.SelectedButton != "")
+                { _vm.RefreshButtonImageFile(_vm.SelectedButton); }
+
+                var btnName = ((Image)sender).Name;
+                _vm!.SelectedButton = btnName;
+                _vm.RefreshButtonImageFile(btnName, false, true);
+
+                if (_vm.VbarSelectedIndex == 1)
+                {
+                    _vm.ActiveModule!.OnActivated();
+                }
+                else
+                {
+                    OnVbarItemClicked(_vm.VbarItems[1]);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                OnVbarItemClicked(_vm.VbarItems[1]);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs ButtonClicked ex:" + ex.Message);
             }
         }
 
         private void SetAppFocus()
         {
-            bdrAllApp.Visibility = Visibility.Collapsed;
-            bdrWord.Visibility = Visibility.Collapsed;
-            bdrExcel.Visibility = Visibility.Collapsed;
-            bdrPowerPoint.Visibility = Visibility.Collapsed;
-            bdrOutlook.Visibility = Visibility.Collapsed;
-            txtAllApp.Foreground = buttonColorFocusedF;
-            txtWord.Foreground = buttonColorFocusedF;
-            txtExcel.Foreground = buttonColorFocusedF;
-            txtPowerPoint.Foreground = buttonColorFocusedF;
-            txtOutlook.Foreground = buttonColorFocusedF;
-            switch (_vm!.SelectedApp)
+            try
             {
-                case "Word":
-                    bdrWord.Visibility = Visibility.Visible;
-                    txtWord.Foreground = buttonColorFocusedT;
-                    break;
+                bdrAllApp.Visibility = Visibility.Collapsed;
+                bdrWord.Visibility = Visibility.Collapsed;
+                bdrExcel.Visibility = Visibility.Collapsed;
+                bdrPowerPoint.Visibility = Visibility.Collapsed;
+                bdrOutlook.Visibility = Visibility.Collapsed;
+                txtAllApp.Foreground = buttonColorFocusedF;
+                txtWord.Foreground = buttonColorFocusedF;
+                txtExcel.Foreground = buttonColorFocusedF;
+                txtPowerPoint.Foreground = buttonColorFocusedF;
+                txtOutlook.Foreground = buttonColorFocusedF;
+                switch (_vm!.SelectedApp)
+                {
+                    case "Word":
+                        bdrWord.Visibility = Visibility.Visible;
+                        txtWord.Foreground = buttonColorFocusedT;
+                        break;
 
-                case "Excel":
-                    bdrExcel.Visibility = Visibility.Visible;
-                    txtExcel.Foreground = buttonColorFocusedT;
-                    break;
+                    case "Excel":
+                        bdrExcel.Visibility = Visibility.Visible;
+                        txtExcel.Foreground = buttonColorFocusedT;
+                        break;
 
-                case "PowerPoint":
-                    bdrPowerPoint.Visibility = Visibility.Visible;
-                    txtPowerPoint.Foreground = buttonColorFocusedT;
-                    break;
+                    case "PowerPoint":
+                        bdrPowerPoint.Visibility = Visibility.Visible;
+                        txtPowerPoint.Foreground = buttonColorFocusedT;
+                        break;
 
-                case "Outlook":
-                    bdrOutlook.Visibility = Visibility.Visible;
-                    txtOutlook.Foreground = buttonColorFocusedT;
-                    break;
+                    case "Outlook":
+                        bdrOutlook.Visibility = Visibility.Visible;
+                        txtOutlook.Foreground = buttonColorFocusedT;
+                        break;
 
-                default:
-                    bdrAllApp.Visibility = Visibility.Visible;
-                    txtAllApp.Foreground = buttonColorFocusedT;
-                    break;
+                    default:
+                        bdrAllApp.Visibility = Visibility.Visible;
+                        txtAllApp.Foreground = buttonColorFocusedT;
+                        break;
+                }
+                _vm.RefreshButtonInfo();
+                _vm.CheckRestoreStatus();
             }
-            _vm.RefreshButtonInfo();
-            _vm.CheckRestoreStatus();
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs SetAppFocus ex:" + ex.Message);
+            }
         }
 
         private void App_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            UXTextBlock button = (UXTextBlock)sender;
-            button.Foreground = buttonColorFocusedT;
+            try
+            {
+                UXTextBlock button = (UXTextBlock)sender;
+                button.Foreground = buttonColorFocusedT;
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs SetAppFocus ex:" + ex.Message);
+            }
         }
 
         private void App_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            UXTextBlock button = (UXTextBlock)sender;
-            if (button.Name != $"txt{_vm!.SelectedApp}")
+            try
             {
-                button.Foreground = buttonColorFocusedF;
+                UXTextBlock button = (UXTextBlock)sender;
+                if (button.Name != $"txt{_vm!.SelectedApp}")
+                {
+                    button.Foreground = buttonColorFocusedF;
+                }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs App_MouseLeave ex:" + ex.Message);
             }
         }
 
@@ -716,9 +829,16 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void PushBack(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (sender is Border)
+            try
             {
-                Mainframe_MouseLeftButtonDown(this, e);
+                if (sender is Border)
+                {
+                    Mainframe_MouseLeftButtonDown(this, e);
+                }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs PushBack ex:" + ex.Message);
             }
         }
     }
