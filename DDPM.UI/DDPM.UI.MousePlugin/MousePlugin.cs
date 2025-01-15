@@ -34,7 +34,7 @@ namespace DDPM.UI.Plugin.MousePlugin
         private readonly ILog _log;
         private readonly IConsole _console;
         private readonly IPluginManager _pluginManager;
-        private Mous¦YeViewModel? _viewModel;
+        private MouseViewModel? _viewModel;
 
         private bool _isConfigured;
         private readonly CancellationTokenSource StartupCancellationTokenSource = new();
@@ -56,35 +56,42 @@ namespace DDPM.UI.Plugin.MousePlugin
 
         private void DeviceManager_DeviceChanged(object? sender, DeviceChangedEventArgs e)
         {
-            if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType != null)
+            try
             {
-                if (e.device_peripherals.LogicalDeviceType.Contains("Mouse"))
+                if (e.device_peripherals != null && e.device_peripherals.LogicalDeviceType != null)
                 {
-                    if (e.type == DeviceChangedType.Peripherals_UnPlug)
+                    if (e.device_peripherals.LogicalDeviceType.Contains("Mouse"))
                     {
-                        if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
+                        if (e.type == DeviceChangedType.Peripherals_UnPlug)
                         {
-                            _viewModel.OnGoBackClicked();
-                            return;
+                            if (e.device_peripherals.ID == _viewModel!.CurrentDeviceID && _viewModel.CurrentInstanceID == 0)
+                            {
+                                _viewModel.OnGoBackClicked();
+                                return;
+                            }
+                            if (_viewModel.DeviceInfos.ContainsKey(e.device_peripherals.ID))
+                                _viewModel.DeviceInfos.Remove(e.device_peripherals.ID);
+                            //GetPeripheralsAsync();
                         }
-                        if (_viewModel.DeviceInfos.ContainsKey(e.device_peripherals.ID))
-                            _viewModel.DeviceInfos.Remove(e.device_peripherals.ID);
-                        //GetPeripheralsAsync();
-                    }
-                    if (e.type == DeviceChangedType.Peripherals_PlugIn &&
-                        e.device_peripherals.ModelNumber == _viewModel?.CurrentDeviceInfo?.ModelNumber && 
-                        !_viewModel.DeviceInfos.ContainsKey(e.device_peripherals.ID))
-                    {
-                        _viewModel.DeviceInfos.Add(e.device_peripherals.ID, e.device_peripherals);
-                    }
-                    _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
+                        if (e.type == DeviceChangedType.Peripherals_PlugIn &&
+                            e.device_peripherals.ModelNumber == _viewModel?.CurrentDeviceInfo?.ModelNumber &&
+                            !_viewModel.DeviceInfos.ContainsKey(e.device_peripherals.ID))
+                        {
+                            _viewModel.DeviceInfos.Add(e.device_peripherals.ID, e.device_peripherals);
+                        }
+                        _viewModel?.HandleNotification(e.type, e.device_peripherals, e.changedProperty);
 
+                    }
+                    else
+                    {
+                        if (e.type == DeviceChangedType.Peripherals_UnPlug || e.type == DeviceChangedType.Peripherals_PlugIn)
+                            _viewModel!.OnGoBackClicked();
+                    }
                 }
-                else
-                {
-                    if (e.type == DeviceChangedType.Peripherals_UnPlug || e.type == DeviceChangedType.Peripherals_PlugIn)
-                        _viewModel!.OnGoBackClicked();
-                }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\MousePlugin.cs  DeviceManager_DeviceChanged ex:" + ex.Message);
             }
         }
 
