@@ -94,7 +94,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Border x:Name="MainBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="13" Width="520" Height="655" Margin="0,10,0,0">
+        <Border x:Name="MainBorder" Style="{DynamicResource RightGroupBorderStyleForAudio}" CornerRadius="13" Width="520" Height="auto" Margin="0,10,0,0">
             <StackPanel x:Name="MainStackPanel" Orientation="Vertical" Margin="16">
                 <Grid>
                     <Grid.ColumnDefinitions>
