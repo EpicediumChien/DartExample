@@ -1603,7 +1603,12 @@ namespace DDPM.UI.Module.PipPbp
                 if (SelectedHomeDevice == null) return false;
                 if (SelectedHomeDevice.HasCapability_UsbKvm)
                 {
-                    return IsUsbKvmOn;
+                    //Robert_Lin, PIMS-302450, USB Switch button should be grayed-out and disabled when "NKVM is ON"
+                    //This means that if the selected option is "No KVM" then USB Switch button should be enabled
+                    //OLD:
+                    //return IsUsbKvmOn;
+                    //NEW:
+                    return !IsNetworkKvmOn;
                 }
                 return false;
             }
