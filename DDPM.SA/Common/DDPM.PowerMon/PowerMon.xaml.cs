@@ -256,13 +256,55 @@ namespace DDPM.PowerMon
         public event EventHandler SystemResume;
         //public event EventHandler MonitorTurnedOff;
         //public event EventHandler PowerSettingChanged;
+        public event EventHandler CurrentSessionActived;
+        public event EventHandler CurrentSessionInactived;
         private static ILog log = null;
+
 
         public PowerMonitor(ILog Log)
         {
             InitializeComponent();
             log = Log;
         }
+
+        private void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e)
+        {
+            switch (e.Reason)
+            {
+                case SessionSwitchReason.SessionLock:
+                    WriteLog("Session locked.");
+                    break;
+                case SessionSwitchReason.SessionUnlock:
+                    WriteLog("Session unlocked.");
+                    break;
+                case SessionSwitchReason.SessionLogon:
+                    WriteLog("Session logon.");
+                    break;
+                case SessionSwitchReason.SessionLogoff:
+                    WriteLog("Session logoff.");
+                    break;
+                default:
+                    WriteLog($"Session switch event: {e.Reason}");
+                    break;
+            }
+            CheckCurrentSessionState();
+        }
+
+        private void CheckCurrentSessionState()
+        {
+            bool isSessionActive = SystemInformation.UserInteractive;
+            WriteLog($"Current session({Process.GetCurrentProcess().SessionId}) is {(isSessionActive ? "active" : "inactive")}.");
+            if (isSessionActive)
+            {
+                CurrentSessionActived?.Invoke(this, EventArgs.Empty);
+            }
+            else
+            {
+                CurrentSessionInactived?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        //add function to handle current session
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -276,27 +318,40 @@ namespace DDPM.PowerMon
             m_hSuspendResumeNotify = _RegisterSuspendResumeNotification(helper.Handle, DEVICE_NOTIFY_WINDOW_HANDLE);
 
             isWindowLoaded = true;
+
+            // Add code to support session change event hook, and check if current session is active
+            SystemEvents.SessionSwitch += new SessionSwitchEventHandler(SystemEvents_SessionSwitch);
+            CheckCurrentSessionState();
         }
 
         private void Window_Unloaded(object sender, RoutedEventArgs e)
         {
-            if (m_hPowerNotify != IntPtr.Zero)
+            try
             {
-                _UnregisterPowerSettingNotification(m_hPowerNotify);
-                m_hPowerNotify = IntPtr.Zero;
-            }
+                if (m_hPowerNotify != IntPtr.Zero)
+                {
+                    _UnregisterPowerSettingNotification(m_hPowerNotify);
+                    m_hPowerNotify = IntPtr.Zero;
+                }
 
-            if (m_hSuspendResumeNotify != IntPtr.Zero)
+                if (m_hSuspendResumeNotify != IntPtr.Zero)
+                {
+                    _UnregisterSuspendResumeNotification(m_hSuspendResumeNotify);
+                    m_hSuspendResumeNotify = IntPtr.Zero;
+                }
+
+                if (isHotkeyHooked)
+                    UnRegisterAllHotKey();
+
+                isWindowLoaded = false;
+                isHotkeyHooked = false;
+
+                SystemEvents.SessionSwitch -= new SessionSwitchEventHandler(SystemEvents_SessionSwitch);
+            }
+            catch (Exception ex)
             {
-                _UnregisterSuspendResumeNotification(m_hSuspendResumeNotify);
-                m_hSuspendResumeNotify= IntPtr.Zero;
+                WriteLog($"[Window_Unloaded] Exception occurred: {ex.Message}");
             }
-
-            if (isHotkeyHooked)
-                UnRegisterAllHotKey();
-
-            isWindowLoaded = false;
-            isHotkeyHooked = false;
         }
 
         public void Enable_HotkeyHook()

@@ -113,22 +113,25 @@ namespace DDPM.SA.Common.Settings
 
             //Elsa Add Security
             //Dean 0913 if file not exist, this check will cause the fail and never init
-            if (File.Exists(target_file))
+            if (File.Exists(target_file) && 
+                !IsFilePathValid(target_file, out info))
             {
-                if (!IsFilePathValid(target_file, out info))
-                {
-                    info = $"[SetJsonContentFromSerializedString] {info}";
-                    return false;
-                }
+                info = $"[SetJsonContentFromSerializedString] {info}";
+                return false;
             }
 
             //Dean 1225 add Security code to drop data save if path include symlink
-            FileInfo fInfo = new FileInfo(target_file);
-            if(fInfo == null)
+            FileInfo fInfo = default;
+            try
+            {
+                fInfo = new FileInfo(target_file);
+            }
+            catch(Exception ex)
             {
                 info = $"[SetJsonContentFromSerializedString] can't create FileInfo via target_file";
                 return false;
             }
+
             if(string.IsNullOrEmpty(fInfo.DirectoryName))
             {
                 info = $"[SetJsonContentFromSerializedString] retrieve file's folder via target_file fail";
@@ -1436,7 +1439,7 @@ namespace DDPM.SA.Common.Settings
             else
             {
                 FileInfo fi = new FileInfo(filePath);
-                if (fi == null)
+                if (!fi.Exists)
                 {
                     if (log != null)
                         log.Error("[IsProcessInfoValid] create FileInfo from path got null object");

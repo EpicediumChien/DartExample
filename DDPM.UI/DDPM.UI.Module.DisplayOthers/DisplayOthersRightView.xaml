@@ -201,7 +201,7 @@
                                                     </Border.Resources>
                                                     <StackPanel>
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBlock MaxWidth="350" Text="{Binding Tooltip_Settings}" />
+                                                            <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" Text="{Binding Tooltip_Settings}" />
                                                         </StackPanel>
                                                     </StackPanel>
                                                 </Border>

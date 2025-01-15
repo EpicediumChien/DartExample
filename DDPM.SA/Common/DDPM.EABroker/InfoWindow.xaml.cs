@@ -241,17 +241,9 @@ namespace DDPM.EABroker
 
             Rect rcArrange = hoveringCellObj.rc;
 
-            if (_vm.HoveringWindow.Equals("scr"))
+            if (_vm.HoveringWindow.Equals("scr") || _vm.HoveringWindow.Equals("aws"))
             {
                 rcArrange = _vm.GetHoveringRectFromAwsBuddyWindow();
-                if (rcArrange.IsEmpty)
-                    rcArrange = _vm.AwsWindow.CalculateHoveringCellArrangeRect();
-                if (rcArrange.IsEmpty)
-                    return;
-            }
-            else if (_vm.HoveringWindow.Equals("aws"))
-            {
-                rcArrange = _vm.GetHoveringRectFromAwsBuddyWindow(); 
                 if (rcArrange.IsEmpty)
                     rcArrange = _vm.AwsWindow.CalculateHoveringCellArrangeRect();
                 if (rcArrange.IsEmpty)

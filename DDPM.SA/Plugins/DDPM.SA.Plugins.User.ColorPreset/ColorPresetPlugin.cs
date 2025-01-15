@@ -2553,16 +2553,11 @@ namespace ColorPreset.Plugins
 
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = ColorForManual_VCPE2Code_value;
 
-                if (colorPresetSetting_Migration.ColorManagement == 0)
+                if (colorPresetSetting_Migration.ColorManagement == 0 || 
+                    colorPresetSetting_Migration.ColorManagement == 1)
                 {
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status = 0;
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType = 0;
-                }
-                else if (colorPresetSetting_Migration.ColorManagement == 1)
-                {
-                    Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status = 0;
-                    Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType = 0;
-
                 }
                 else if (colorPresetSetting_Migration.ColorManagement == 2) // color_manage_off_bymonitor
                 {
@@ -2674,16 +2669,11 @@ namespace ColorPreset.Plugins
 
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = ColorForManual_VCPE2Code_value;
 
-                    if (colorPresetSetting_Migration.ColorManagement == 0)
+                    if (colorPresetSetting_Migration.ColorManagement == 0 || 
+                        colorPresetSetting_Migration.ColorManagement == 1)
                     {
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status = 0;
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType = 0;
-                    }
-                    else if (colorPresetSetting_Migration.ColorManagement == 1)
-                    {
-                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status = 0;
-                        Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_RunType = 0;
-
                     }
                     else if (colorPresetSetting_Migration.ColorManagement == 2) // color_manage_off_bymonitor
                     {

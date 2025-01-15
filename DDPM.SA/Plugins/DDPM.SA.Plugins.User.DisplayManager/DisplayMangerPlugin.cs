@@ -273,8 +273,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
                 string regKeyForDDPM = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
                 object regValue = _SettingsPlugin.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM).Result;
-                _logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect regValue {Convert.ToBoolean(regValue).ToString()}");
-                if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)) || !Convert.ToBoolean(regValue))
+                //_logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect regValue {Convert.ToBoolean(regValue).ToString()}");
+                if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)))
                 {
                     string ddpmExePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Dell\Dell Display and Peripheral Manager\DDPM.exe");
                     //string ddpmExePath = @"D:\\NEW\DDPM\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
@@ -3704,7 +3704,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             get
             {
-                if (_eaService != null)
+                if (_eaService == null)
                     return "EAPlugin is not constructed.";
                 if (!_isEaPluginConfigured)
                     return "EAPlugin Condition is NOT configured.";

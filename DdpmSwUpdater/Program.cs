@@ -32,15 +32,12 @@ internal class Program
                         LogManage.LogMessage($"Is DDM call");
                     }
                     string registryKey = @"SOFTWARE\Dell\Dell Display and Peripheral Manager";
-                    ///Bruce added Test///
-                    string registryKey_test = @"SOFTWARE\Dell Display and Peripheral Manager";
                     try
                     {
                         string folderName = FindParentFolderName();
                         if (!string.IsNullOrEmpty(folderName))
                         {
                             DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey, "DdpmSwUpdater", folderName);
-                            DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey_test, "DdpmSwUpdater", folderName);
                         }
                     }
                     catch (Exception ex) { LogManage.LogMessage($"DDPMRegistryHelper.WriteRegistryKey error : {ex.Message}"); }
@@ -68,13 +65,14 @@ internal class Program
                             DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey, nameof(FailureMessage), FailureMessage);
                             DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey, nameof(SW_Update_date), SW_Update_date);
                             DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey, nameof(ErrorCode), ErrorCode);
-                            ///Bruce added Test///
-                            DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey_test, nameof(UpdateVersion), UpdateVersion);
-                            DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey_test, nameof(Results), Results);
-                            DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey_test, nameof(FailureMessage), FailureMessage);
-                            DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey_test, nameof(SW_Update_date), SW_Update_date);
-                            DDPMRegistryHelper.WriteRegistryKey(RegistryHive.LocalMachine, registryKey_test, nameof(ErrorCode), ErrorCode);
-                            ///Bruce added Test///
+                        }
+                        if (ret.Equals(SWUErrorCode.NoError))
+                        {
+                            Method method = new Method(LogManage.logs);
+                            LogManage.LogMessage($"DdpmSwUpdater DeleteFolder go");
+                            method.DeleteFolder(@"C:\Program Files\Dell\Dell Display Manager 2");
+                            method.Dispose();
+                            LogManage.LogMessage($"DdpmSwUpdater DeleteFolder done");
                         }
                     }
                     catch (Exception ex) { LogManage.LogMessage($"DDPMRegistryHelper.WriteRegistryKey error : {ex.Message}"); }
@@ -184,7 +182,7 @@ internal class Program
                 currentFolder = parentFolder;
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             LogManage.LogMessage($"FindParentFolderName Error : {ex.Message}");
         }

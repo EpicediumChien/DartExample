@@ -176,9 +176,9 @@
                             <StackPanel x:Name="NoiseControlStackPanel" Orientation="Vertical">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="8">
                                     <UXControls:UXTextBlock x:Name="NoiseControlTextBlock" Text="{Binding [HeadsetAudioSettings.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" Margin="8,20,8,20" />
-                                    <Image ToolTipService.HorizontalOffset="-150" Width="16" Height="16" Margin="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
+                                    <Image Width="16" Height="16" Margin="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform">
                                         <Image.ToolTip>
-                                            <ToolTip>
+                                            <ToolTip Placement="Left">
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                     <Border.Resources>
                                                         <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
@@ -243,7 +243,7 @@
                                                             </StackPanel>
                                                             <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
                                                                 <Image.ToolTip>
-                                                                    <ToolTip>
+                                                                    <ToolTip Placement="Center" VerticalOffset="45">
                                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                                             <Border.Resources>
                                                                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
@@ -281,9 +281,9 @@
                                                                 <Path x:Name="TransparencyButtonPath" Width="36" Height="36" Data="M32.1058 18.1425C32.1058 17.7653 31.8275 17.4406 31.4621 17.4406C31.0967 17.4406 30.8184 17.7653 30.8184 18.1425V26.4946C30.8184 26.8718 31.0967 27.1964 31.4621 27.1964C31.8275 27.1964 32.1058 26.8718 32.1058 26.4946V18.1425ZM29.4136 20.5288C29.4136 20.1516 29.1353 19.8269 28.7699 19.8269C28.4045 19.8269 28.1262 20.1516 28.1262 20.5288V25.3014C28.1262 25.6786 28.4045 26.0032 28.7699 26.0032C29.1353 26.0032 29.4136 25.6786 29.4136 25.3014V20.5288Z M3.8952 18.1425C3.8952 17.7653 4.1735 17.4406 4.5389 17.4406C4.9043 17.4406 5.1826 17.7653 5.1826 18.1425V26.4946C5.1826 26.8718 4.9043 27.1964 4.5389 27.1964C4.1735 27.1964 3.8952 26.8718 3.8952 26.4946V18.1425ZM6.58739 20.5288C6.58739 20.1516 6.86569 19.8269 7.23109 19.8269C7.59649 19.8269 7.8748 20.1516 7.8748 20.5288V25.3014C7.8748 25.6786 7.59649 26.0032 7.23109 26.0032C6.86569 26.0032 6.58739 25.6786 6.58739 25.3014V20.5288Z M10.565 17.5452C10.565 12.9802 13.9027 9.29842 17.9978 9.29842C22.093 9.29842 25.4307 12.9802 25.4307 17.5452V18.6331H23.9207C23.5553 18.6331 23.2769 18.9578 23.2769 19.335V26.4939C23.2769 26.8711 23.5553 27.1957 23.9207 27.1957H24.4591C25.7166 27.1957 26.7181 26.0698 26.7181 24.7041V17.5452C26.7181 12.2258 22.8238 7.89474 17.9978 7.89474C13.1719 7.89474 9.27755 12.2258 9.27755 17.5452V24.7041C9.27755 26.0698 10.2791 27.1957 11.5366 27.1957H12.075C12.4404 27.1957 12.7187 26.8711 12.7187 26.4939V19.335C12.7187 18.9578 12.4404 18.6331 12.075 18.6331H10.565V17.5452ZM11.4313 20.0368V25.7857C10.9519 25.7272 10.565 25.2742 10.565 24.7041V20.0368H11.4313ZM24.5644 20.0368H25.4307V24.7041C25.4307 25.2742 25.0437 25.7272 24.5644 25.7857V20.0368Z"/>
                                                                 <UXControls:UXTextBlock x:Name="TransparencyButtonTextBlock" Text="{Binding [HeadsetAudioSettings.2], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="WrapWithOverflow" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" Margin="0,8,0,0" />
                                                             </StackPanel>
-                                                            <Image ToolTipService.HorizontalOffset="-250" Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
+                                                            <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
                                                                 <Image.ToolTip>
-                                                                    <ToolTip>
+                                                                    <ToolTip Placement="left">
                                                                         <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                                             <Border.Resources>
                                                                                 <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
@@ -406,9 +406,9 @@
                                                             <Path x:Name="CollaborationPath" Width="25" Height="25" Data="M15.1875 14.5625C16.125 14.5625 16.9062 15.3013 16.9062 16.1878V19.4384H9.09375V16.1878C9.09375 15.3013 9.875 14.5625 10.7344 14.5625H15.1875ZM15.1875 13.085H10.7344C8.9375 13.085 7.53125 14.4886 7.53125 16.1878V20.9159H18.4688V16.1878C18.4688 14.4886 16.9844 13.085 15.1875 13.085Z M12.8438 4.88477C10.8906 4.88477 9.25 6.36231 9.25 8.20923C9.25 10.0562 10.8125 11.5337 12.8438 11.5337C14.7969 11.5337 16.4375 10.0562 16.4375 8.20923C16.3594 6.43618 14.7969 4.88477 12.8438 4.88477ZM12.8438 10.13C11.75 10.13 10.8125 9.31739 10.8125 8.28311C10.8125 7.24883 11.75 6.43618 12.8438 6.43618C13.9375 6.43618 14.875 7.24883 14.875 8.28311C14.7969 9.31739 13.9375 10.13 12.8438 10.13Z M22.1406 8.2832H17.8438C17.8438 8.80034 17.7656 9.31748 17.6094 9.76074H22.1406C23.0781 9.76074 23.9375 10.4995 23.9375 11.4599V15.0799H19.875C19.9531 15.4493 20.0313 15.8925 20.0313 16.2619V16.5574H25.5V11.4599C25.5 9.68687 24.0156 8.2832 22.1406 8.2832Z M3.85938 9.76074H7.92188C7.76562 9.31748 7.6875 8.80034 7.6875 8.2832H3.85938C1.98438 8.2832 0.5 9.68687 0.5 11.4599V16.5574H5.96875V16.2619C5.96875 15.8187 6.04688 15.4493 6.125 15.0799H2.0625V11.4599C2.0625 10.4995 2.84375 9.76074 3.85938 9.76074Z M5.96875 0.0830078C4.01562 0.0830078 2.375 1.56055 2.375 3.48135C2.375 5.32828 3.9375 6.80582 5.96875 6.80582C6.82813 6.80582 7.6875 6.51031 8.3125 5.99317C8.54688 5.54991 8.85938 5.18052 9.25 4.81114C9.48438 4.36788 9.5625 3.92461 9.5625 3.40748C9.48438 1.56055 7.92188 0.0830078 5.96875 0.0830078ZM5.96875 5.32828C4.79688 5.32828 3.9375 4.51563 3.9375 3.48135C3.9375 2.3732 4.79688 1.56055 5.96875 1.56055C7.0625 1.56055 8 2.44707 8 3.48135C7.92188 4.51563 7.0625 5.32828 5.96875 5.32828Z M19.7188 0.0830078C17.7656 0.0830078 16.125 1.56055 16.125 3.48135C16.125 4.07237 16.2812 4.58951 16.5156 5.03277C16.75 5.32828 16.9844 5.54991 17.2187 5.9193C17.8437 6.51031 18.7031 6.8797 19.7188 6.8797C21.6719 6.8797 23.3125 5.40216 23.3125 3.48135C23.2344 1.56055 21.6719 0.0830078 19.7188 0.0830078ZM19.7188 5.32828C18.5469 5.32828 17.6875 4.51563 17.6875 3.48135C17.6875 2.44707 18.625 1.56055 19.7188 1.56055C20.8125 1.56055 21.75 2.44707 21.75 3.48135C21.6719 4.51563 20.8125 5.32828 19.7188 5.32828Z"/>
                                                             <UXControls:UXTextBlock x:Name="CollaborationTextBlock" Text="{Binding [Collaboration], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" TextAlignment="Center" />
                                                         </StackPanel>
-                                                        <Image ToolTipService.HorizontalOffset="-100" Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
+                                                        <Image Width="16" Height="16" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0">
                                                             <Image.ToolTip>
-                                                                <ToolTip>
+                                                                <ToolTip Placement="Left">
                                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                                         <Border.Resources>
                                                                             <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
@@ -565,14 +565,14 @@
                                         <UXControls:UXTextBlock x:Name="AudioOutputPresetsTextBlock1" Text="{Binding [HeadsetAudioSettings.6], Source={x:Static lang:LangHelper.Instance}}" Grid.Row="0" Grid.Column="0"  Foreground="{DynamicResource TextBlock_ForegroundColor}" FontSize="16" Margin="20,20,0,20" />
                                         <Image Width="16" Height="16" Grid.Row="0" Grid.Column="0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png" Stretch="Uniform" Margin="8,20,0,20" HorizontalAlignment="Left">
                                             <Image.ToolTip>
-                                                <ToolTip>
+                                                <ToolTip Placement="Left">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <Border.Resources>
                                                             <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
                                                         </Border.Resources>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
-                                                                <TextBlock Text="{Binding AudioOutputPresetsToolTip}" />
+                                                                <TextBlock MaxWidth="350" TextWrapping="WrapWithOverflow" Text="{Binding AudioOutputPresetsToolTip}" />
                                                             </StackPanel>
                                                         </StackPanel>
                                                     </Border>

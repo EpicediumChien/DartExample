@@ -494,7 +494,7 @@
 
                                                     <Image Grid.Column="1" Stretch="None" Margin="10,0,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
                                                         <Image.ToolTip>
-                                                            <ToolTip>
+                                                            <ToolTip Placement="Center" VerticalOffset="45" HorizontalOffset="50">
                                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                                     <Border.Resources>
                                                                         <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />

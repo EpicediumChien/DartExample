@@ -22,18 +22,13 @@ namespace DDPM.QAM
         {
             //DdpmCommonHelper.DeviceManagerSA!.WriteLog($"PresetsPage -> SetProfile_Click");
 
-            if (sender is Border border && border.DataContext is UI_Profile selectedProfile)
+            if (sender is Border border && 
+                border.DataContext is UI_Profile selectedProfile && 
+                DataContext is QAMPageViewModel vm)
             {
-                //DdpmCommonHelper.DeviceManagerSA!.WriteLog($"border.DataContext is UI_Profile, {selectedProfile.Profile_Name}");
-
-                if (DataContext is QAMPageViewModel vm)
-                {
-                    //DdpmCommonHelper.DeviceManagerSA!.WriteLog($"DataContext is QAMPageViewModel");
-
-                    vm.isStatusChagneByDDPM = false;
-                    vm.SetProfile(selectedProfile);
-                    vm.SendSelectProfileToDDPM();
-                }
+                vm.isStatusChagneByDDPM = false;
+                vm.SetProfile(selectedProfile);
+                vm.SendSelectProfileToDDPM();
             }
         }
 
