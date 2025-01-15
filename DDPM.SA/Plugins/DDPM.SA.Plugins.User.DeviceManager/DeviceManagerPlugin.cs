@@ -487,14 +487,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 // retrieve the monitor object from cursor's position
                 Screen currentScreen = Screen.FromPoint(cursorPosition);
                 MonitorInfo monitorInfoFind = _AllInfoMonitors.Find(x => x.DisplayName.ToUpper().Equals(currentScreen.DeviceName.ToUpper()));
-                if (monitorInfoFind != null)
+                if (monitorInfoFind != null && 
+                    monitorInfoFind.edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && 
+                    monitorInfoFind.edid.SerialNumber.Equals(monitorInfo.edid.SerialNumber))
                 {
-                    if (monitorInfoFind.edid.ServiceTag.Equals(monitorInfo.edid.ServiceTag) && monitorInfoFind.edid.SerialNumber.Equals(monitorInfo.edid.SerialNumber))
-                    {
-                        previousCursorPosition = cursorPosition;
-                        KvmAutoSwitchCounter = 0;
-                        writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag} =>vcpcode:E7; cursorPosition = {cursorPosition};Timer:{_USBKVMAutoSwitchTimer.Enabled}");
-                    }
+                    previousCursorPosition = cursorPosition;
+                    KvmAutoSwitchCounter = 0;
+                    writelog($"[USBKVM_Auto_Switch]updatePBPModeStatus:{monitorInfo.modelName}:{monitorInfo.edid.ServiceTag} =>vcpcode:E7; cursorPosition = {cursorPosition};Timer:{_USBKVMAutoSwitchTimer.Enabled}");
                 }
             }
             if ("E9".Equals(vcpcode, StringComparison.OrdinalIgnoreCase) || vcpcode.Equals("2"))
@@ -2224,50 +2223,48 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             if (!String.IsNullOrEmpty(monitorSetting.Input.strInputSourceList)/* != null && monitorSetting.Input.strInputSourceList != string.Empty*/)
                             {
                                 inputSourcelist = InputSourceListDeserialize(monitorSetting.Input.strInputSourceList);
-                                if (inputSourcelist != null)
+                                if (inputSourcelist != null && 
+                                    inputSourcelist.Count != 0)
                                 {
-                                    if (inputSourcelist.Count != 0)
-                                    {
-                                        //copyinputlist = inputSourcelist;
-                                        //foreach (var input in inputSourcelist)
-                                        //{
-                                        //    string usbUpstream = GetUSBUpstream(monitorInfo, input.Key).Result;
-                                        //    if (string.IsNullOrEmpty(usbUpstream))
-                                        //    {
-                                        //        writelog("[DeviceMangerPlugin] usbUpstream is null or empty ...");
-                                        //    }
-                                        //    else
-                                        //    {
-                                        //        input.Value.USBUpstream = usbUpstream;
-                                        //    }
-                                        //    //Maybe Migration...
-                                        //    //if (input.Value.USBUpstream == string.Empty && monitorInfo.CapabilityDic.ContainsKey("EE") && monitorInfo.CapabilityDic.ContainsKey("E7"))
-                                        //    //{
-                                        //    //readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
-                                        //    //if (readinputlist != null)
-                                        //    //{
-                                        //    //    if (readinputlist.Count != 0)
-                                        //    //    {
-                                        //    //        foreach (var readinput in readinputlist)
-                                        //    //        {
-                                        //    //            foreach (var copyinput in copyinputlist)
-                                        //    //            {
-                                        //    //                if (readinput.Value.Code == copyinput.Value.Code)
-                                        //    //                {
-                                        //    //                    readinput.Value.InputName = copyinput.Value.InputName;
-                                        //    //                    break;
-                                        //    //                }
-                                        //    //            }
-                                        //    //        }
-                                        //    //        bool b1 = SetInputSourcelist(monitorInfo, readinputlist).Result;
-                                        //    //        return Task.FromResult(readinputlist);
-                                        //    //    }
-                                        //    //}
-                                        //    //break;
-                                        //    //}
-                                        //}
-                                        return Task.FromResult(inputSourcelist);
-                                    }
+                                    //copyinputlist = inputSourcelist;
+                                    //foreach (var input in inputSourcelist)
+                                    //{
+                                    //    string usbUpstream = GetUSBUpstream(monitorInfo, input.Key).Result;
+                                    //    if (string.IsNullOrEmpty(usbUpstream))
+                                    //    {
+                                    //        writelog("[DeviceMangerPlugin] usbUpstream is null or empty ...");
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        input.Value.USBUpstream = usbUpstream;
+                                    //    }
+                                    //    //Maybe Migration...
+                                    //    //if (input.Value.USBUpstream == string.Empty && monitorInfo.CapabilityDic.ContainsKey("EE") && monitorInfo.CapabilityDic.ContainsKey("E7"))
+                                    //    //{
+                                    //    //readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
+                                    //    //if (readinputlist != null)
+                                    //    //{
+                                    //    //    if (readinputlist.Count != 0)
+                                    //    //    {
+                                    //    //        foreach (var readinput in readinputlist)
+                                    //    //        {
+                                    //    //            foreach (var copyinput in copyinputlist)
+                                    //    //            {
+                                    //    //                if (readinput.Value.Code == copyinput.Value.Code)
+                                    //    //                {
+                                    //    //                    readinput.Value.InputName = copyinput.Value.InputName;
+                                    //    //                    break;
+                                    //    //                }
+                                    //    //            }
+                                    //    //        }
+                                    //    //        bool b1 = SetInputSourcelist(monitorInfo, readinputlist).Result;
+                                    //    //        return Task.FromResult(readinputlist);
+                                    //    //    }
+                                    //    //}
+                                    //    //break;
+                                    //    //}
+                                    //}
+                                    return Task.FromResult(inputSourcelist);
                                 }
                             }
                         }
@@ -2305,19 +2302,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     foreach (DDPMMonitorSettings monitorSettings in settings)
                     {
-                        if (monitorSettings != null)
+                        if (monitorSettings != null && 
+                            monitorSettings.ServiceTag == monitorInfo.edid.ServiceTag)
                         {
-                            if (monitorSettings.ServiceTag == monitorInfo.edid.ServiceTag)
+                            string strinputlist = string.Empty;
+                            strinputlist = InputSourceListSerialize(inputlist);
+                            monitorSettings.Input.strInputSourceList = strinputlist;
+                            if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
                             {
-                                string strinputlist = string.Empty;
-                                strinputlist = InputSourceListSerialize(inputlist);
-                                monitorSettings.Input.strInputSourceList = strinputlist;
-                                if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
-                                {
-                                    return Task.FromResult(true);
-                                }
-                                break;
+                                return Task.FromResult(true);
                             }
+                            break;
                         }
                     }
                 }
@@ -2468,17 +2463,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<bool> USBSwitch(MonitorInfo monitorInfo, string inputsource1, string upstream1, string inputsource2, string upstream2)
         {
             Dictionary<string, InputInfo> inputSourceList = GetInputSourcelist(monitorInfo).Result;
-            if (inputSourceList != null)
+            if (inputSourceList != null && 
+                _DisplayManagerPlugin.USBSwitch(monitorInfo, inputsource1, upstream1, inputsource2, upstream2).Result)
             {
-                if (_DisplayManagerPlugin.USBSwitch(monitorInfo, inputsource1, upstream1, inputsource2, upstream2).Result)
+                inputSourceList[inputsource1].USBUpstream = upstream1;
+                inputSourceList[inputsource2].USBUpstream = upstream2;
+                //string strInputList = InputSourceListSerialize(inputSourceList);
+                if (SetInputSourcelist(monitorInfo, inputSourceList).Result)
                 {
-                    inputSourceList[inputsource1].USBUpstream = upstream1;
-                    inputSourceList[inputsource2].USBUpstream = upstream2;
-                    //string strInputList = InputSourceListSerialize(inputSourceList);
-                    if (SetInputSourcelist(monitorInfo, inputSourceList).Result)
-                    {
-                        return Task.FromResult(true);
-                    }
+                    return Task.FromResult(true);
                 }
             }
             return Task.FromResult(false);
@@ -6715,18 +6708,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     foreach (DDPMMonitorSettings monitorSettings in settings)
                     {
-                        if (monitorSettings != null)
+                        if (monitorSettings != null && 
+                            monitorSettings.ServiceTag == monitorInfo.edid.ServiceTag)
                         {
-                            if (monitorSettings.ServiceTag == monitorInfo.edid.ServiceTag)
+                            strUSBKVMPCsList = USBKVMPCsListSerialize(pcsList);
+                            monitorSettings.KVM.strUSBKVMPCsList = strUSBKVMPCsList;
+                            if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
                             {
-                                strUSBKVMPCsList = USBKVMPCsListSerialize(pcsList);
-                                monitorSettings.KVM.strUSBKVMPCsList = strUSBKVMPCsList;
-                                if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
-                                {
-                                    return Task.FromResult(true);
-                                }
-                                break;
+                                return Task.FromResult(true);
                             }
+                            break;
                         }
                     }
                 }
@@ -6787,21 +6778,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 foreach (DDPMMonitorSettings setting in settings)
                 {
-                    if (setting != null)
+                    if (setting != null && setting.ServiceTag == monitorInfo.edid.ServiceTag)
                     {
-                        if (setting.ServiceTag == monitorInfo.edid.ServiceTag)
+                        setting.KVM.isOnUSBKVM = isON;
+                        if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
                         {
-                            setting.KVM.isOnUSBKVM = isON;
-                            if (_SettingsPlugin.WriteMonitorSettings(monitorInfo.modelName, settings).Result)
+                            if (isON)
                             {
-                                if (isON)
-                                {
-                                    bool b = SentKVMtoTelementry(monitorInfo, "KVMMode", "USB").Result;
-                                }
-                                return Task.FromResult(true);
+                                bool b = SentKVMtoTelementry(monitorInfo, "KVMMode", "USB").Result;
                             }
-                            break;
+                            return Task.FromResult(true);
                         }
+                        break;
                     }
                 }
             }
@@ -7245,13 +7233,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //Read App Settings
                 DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
                 //Don't return null, return empty array instead
-                if (appSettings != null)
+                if (appSettings != null && 
+                    appSettings.UserSettings != null && 
+                    appSettings.UserSettings.EACustomList != null)
                 {
-                    if (appSettings.UserSettings != null)
-                    {
-                        if (appSettings.UserSettings.EACustomList != null)
-                            return Task.FromResult(appSettings.UserSettings.EACustomList);
-                    }
+                    return Task.FromResult(appSettings.UserSettings.EACustomList);
                 }
             }
             //Failed, return an empty array instead of null
@@ -7265,14 +7251,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 //Read App Settings
                 DDPMSettings appSettings = _SettingsPlugin.ReloadAppConfigData().Result;
-                if (appSettings != null)
+                if (appSettings != null && 
+                    appSettings.UserSettings != null)
                 {
-                    if (appSettings.UserSettings != null)
-                    {
-                        appSettings.UserSettings.EACustomList = (SplitJson[])customList.Clone();
-                        //Writeback to app settings
-                        _SettingsPlugin.SetAppConfigData(appSettings);
-                    }
+                    appSettings.UserSettings.EACustomList = (SplitJson[])customList.Clone();
+                    //Writeback to app settings
+                    _SettingsPlugin.SetAppConfigData(appSettings);
                 }
             }
             //Failed, return an empty array instead of null
@@ -11881,12 +11865,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private void OnCheckSWUpdateScheduleEvent()
         {
             DDPMSettings data = ReloadAppConfigData().Result;
-            if (data != null)
+            if (data != null && 
+                !data.LockSettings.Lock_Settings_Updates)
             {
-                if (!data.LockSettings.Lock_Settings_Updates)
-                {
-                    SW_CheckSWUpdate();
-                }
+                SW_CheckSWUpdate();
             }
         }
 
@@ -12084,12 +12066,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //0617 Bruce 在其他電腦有發現List有item，但是item會是null，故新增判斷
                 if (deviceInfo != null)
                 {
-                    if (deviceInfo.Type == DeviceType.LogicalDock)
+                    if (deviceInfo.Type == DeviceType.LogicalDock && 
+                        _peripheralslist.FindAll(o => o.ID.Equals(deviceInfo.ID)).Count == 1)
                     {
-                        if (_peripheralslist.FindAll(o => o.ID.Equals(deviceInfo.ID)).Count == 1)
-                        {
-                            dockCount++;
-                        }
+                        dockCount++;
                     }
                     if (dockCount >= 2)
                     {
@@ -12158,67 +12138,64 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //1106 add PBP mode status
             Task.Run(() => updatePBPModeStatus(e.monitor, e.vcpcode)).ConfigureAwait(false);
             //Jason add USB change
-            if (e.vcpcode.Equals("E7"))
+            if (e.vcpcode.Equals("E7") && 
+                _DisplayManagerPlugin != null)
             {
-                if (_DisplayManagerPlugin != null)
+                Dictionary<string, InputInfo> inputSourceList = GetInputSourcelist(e.monitor).Result;
+                foreach (var input in inputSourceList)
                 {
-                    Dictionary<string, InputInfo> inputSourceList = GetInputSourcelist(e.monitor).Result;
-                    foreach (var input in inputSourceList)
+                    string usbUpstream = GetUSBUpstream(e.monitor, input.Key).Result;
+                    //Update USBKVM
+                    if (GetOnUSBKVM(e.monitor).Result)
                     {
-                        string usbUpstream = GetUSBUpstream(e.monitor, input.Key).Result;
-                        //Update USBKVM
-                        if (GetOnUSBKVM(e.monitor).Result)
+                        List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(e.monitor.modelName).Result;
+                        if (settings != null)
                         {
-                            List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(e.monitor.modelName).Result;
-                            if (settings != null)
+                            //get monitor setting
+                            DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == e.monitor.edid.ServiceTag);
+                            if (monitorSetting != null)
                             {
-                                //get monitor setting
-                                DDPMMonitorSettings monitorSetting = settings.Find(x => x.ServiceTag == e.monitor.edid.ServiceTag);
-                                if (monitorSetting != null)
+                                try
                                 {
-                                    try
+                                    if (!string.IsNullOrEmpty(monitorSetting.KVM.strUSBKVMPCsList))
                                     {
-                                        if (!string.IsNullOrEmpty(monitorSetting.KVM.strUSBKVMPCsList))
+                                        Dictionary<string, PCsInfo> USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
+                                        if (USBKVMPCsList != null)
                                         {
-                                            Dictionary<string, PCsInfo> USBKVMPCsList = USBKVMPCsListDeserialize(monitorSetting.KVM.strUSBKVMPCsList);
-                                            if (USBKVMPCsList != null)
+                                            if (USBKVMPCsList.Count != 0)
                                             {
-                                                if (USBKVMPCsList.Count != 0)
+                                                foreach (var pc in USBKVMPCsList)
                                                 {
-                                                    foreach (var pc in USBKVMPCsList)
+                                                    if (!string.IsNullOrEmpty(pc.Key) && 
+                                                        pc.Value != null && 
+                                                        pc.Value.InputType == input.Key)
                                                     {
-                                                        if (!string.IsNullOrEmpty(pc.Key) && pc.Value != null)
-                                                        {
-                                                            if (pc.Value.InputType == input.Key)
-                                                            {
-                                                                pc.Value.USBUpstream = usbUpstream;
-                                                                bool b = SetUSBKVMPCsList(e.monitor, USBKVMPCsList).Result;
-                                                                break;
-                                                            }
-                                                        }
+                                                        pc.Value.USBUpstream = usbUpstream;
+                                                        bool b = SetUSBKVMPCsList(e.monitor, USBKVMPCsList).Result;
+                                                        break;
                                                     }
                                                 }
                                             }
-                                            else
-                                            {
-                                                writelog("[show_displays] USBKVMPCsList is null");
-                                            }
+                                        }
+                                        else
+                                        {
+                                            writelog("[show_displays] USBKVMPCsList is null");
                                         }
                                     }
-                                    catch (Exception ex)
-                                    {
-                                        ;
-                                    }
                                 }
-                                else
+                                catch (Exception ex)
                                 {
-                                    writelog("[show_displays] monitorSetting is null");
+                                    ;
                                 }
                             }
                             else
                             {
-                                writelog("[show_displays] settings is null");
+                                writelog("[show_displays] monitorSetting is null");
                             }
+                        }
+                        else
+                        {
+                            writelog("[show_displays] settings is null");
                         }
                     }
                 }
@@ -12878,21 +12855,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     //Check if actived monitor has its color preset section in config file
                     if (_InfoMonitors.edid.ModelName.Trim().IndexOf(config.ModelName.Trim()) >= 0 &&
-                        (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()))
+                        (_InfoMonitors.edid.SerialNumber.Trim() == config.SerialNumber.Trim() || _InfoMonitors.edid.ServiceTag.Trim() == config.ServiceTag.Trim()) && 
+                        config.RunType == (int)ColorPresetRunType.Auto)
                     {
-                        if (config.RunType == (int)ColorPresetRunType.Auto)
+                        writelog("CheckAutoColorPresetEnableOnStartedCondition, config.RunType is ColorPresetRunType.Auto");
+
+                        _ = Task.Run(async () =>
                         {
-                            writelog("CheckAutoColorPresetEnableOnStartedCondition, config.RunType is ColorPresetRunType.Auto");
+                            await AutoSetColorPresetForMonitorConfig(_InfoMonitors, "ON");
+                        });
 
-                            _ = Task.Run(async () =>
-                            {
-                                await AutoSetColorPresetForMonitorConfig(_InfoMonitors, "ON");
-                            });
+                        writelog("CheckAutoColorPresetEnableOnStartedCondition, AutoSetColorPresetForMonitorConfig(_InfoMonitors, \"ON\")");
 
-                            writelog("CheckAutoColorPresetEnableOnStartedCondition, AutoSetColorPresetForMonitorConfig(_InfoMonitors, \"ON\")");
-
-                            break;
-                        }
+                        break;
                     }
                 }
 
@@ -13506,16 +13481,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (!string.IsNullOrEmpty(monitorSettings.KVM.strUSBKVMPCsList))
                     {
                         Dictionary<string, PCsInfo> USBKVMPCsList = USBKVMPCsListDeserialize(monitorSettings.KVM.strUSBKVMPCsList);
-                        if (USBKVMPCsList != null)
+                        if (USBKVMPCsList != null && 
+                            USBKVMPCsList.Count != 0)
                         {
-                            if (USBKVMPCsList.Count != 0)
+                            foreach (var pc in USBKVMPCsList)
                             {
-                                foreach (var pc in USBKVMPCsList)
+                                if (!string.IsNullOrEmpty(pc.Key) && pc.Value != null)
                                 {
-                                    if (!string.IsNullOrEmpty(pc.Key) && pc.Value != null)
-                                    {
-                                        usbKVMInputs.Add(new InputSourceObj((ushort)pc.Value.Code, pc.Value.InputType));
-                                    }
+                                    usbKVMInputs.Add(new InputSourceObj((ushort)pc.Value.Code, pc.Value.InputType));
                                 }
                             }
                         }
@@ -13847,12 +13820,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     List<HotkeyInfo> findHotkeyInfoList = hotkeySetting.HotkeyInfo.Where(x => !x.Job.Equals(hotkeyInfo.Job) && (x.Hotkey.Count == hotkeyInfo.Hotkey.Count)).ToList();
 
-                    if (findHotkeyInfoList != null)
+                    if (findHotkeyInfoList != null && 
+                        findHotkeyInfoList.Any(x => KeysTostr(x.Hotkey).Equals(KeysTostr(hotkeyInfo.Hotkey))))
                     {
-                        if (findHotkeyInfoList.Any(x => KeysTostr(x.Hotkey).Equals(KeysTostr(hotkeyInfo.Hotkey))))
-                        {
-                            return Task.FromResult(HotkeyWarning.ConflictInbox);
-                        }
+                        return Task.FromResult(HotkeyWarning.ConflictInbox);
                     }
                 }
                 /* since all monitor use same hotkeys,no need this anymore
@@ -15006,13 +14977,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return true;
             }
             ObjGetVCP pxpMode = GetPxpMode(mo).Result;
-            if (pxpMode != null && pxpMode.result)
+            if (pxpMode != null && 
+                pxpMode.result && !ushort.TryParse(pxpMode.value.ToString(), out pxpModeValue))
             {
-                if (!ushort.TryParse(pxpMode.value.ToString(), out pxpModeValue))
-                {
-                    writelog($"[IsPxPModeOFF]GetPxpMode,monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],parse pxpMode value[{pxpMode.value.ToString()}] fail.");
-                    Debug.WriteLine($"[IsPxPModeOFF]GetPxpMode parse pxpMode value[{pxpMode.value.ToString()}] fail.");
-                }
+                writelog($"[IsPxPModeOFF]GetPxpMode,monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],parse pxpMode value[{pxpMode.value.ToString()}] fail.");
+                Debug.WriteLine($"[IsPxPModeOFF]GetPxpMode parse pxpMode value[{pxpMode.value.ToString()}] fail.");
             }
             Debug.WriteLine($"[IsPxPModeOFF]GetPxpMode,monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],result={pxpMode.result},value=[{pxpMode.value.ToString()}],pxpModeValue={pxpModeValue},ret={pxpModeValue == 0}");
             writelog($"[IsPxPModeOFF]GetPxpMode,monitor [{mo.AliasDeviceName}:{mo.edid.ServiceTag}],result={pxpMode.result},value=[{pxpMode.value.ToString()}],pxpModeValue={pxpModeValue},ret={pxpModeValue == 0}");
@@ -15503,29 +15472,27 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     foreach (PowerNapSetting setting in read)
                     {
                         MonitorInfo monitorInfo = _AllInfoMonitors.Find(x => x.edid.SerialNumber.Equals(setting.SerialNumber));
-                        if (monitorInfo != null)
+                        if (monitorInfo != null && 
+                            setting.Status)
                         {
-                            if (setting.Status)
+                            switch (setting.RunType)
                             {
-                                switch (setting.RunType)
-                                {
-                                    case PowerNapType.ReduceBrightness:
-                                        allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { true }, PowerNapReduceBrightness));
-                                        //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapReduceBrightness));
-                                        Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} ReduceBrightness - Enqueue:true");
-                                        writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] ReduceBrightness - Enqueue:true");
-                                        break;
+                                case PowerNapType.ReduceBrightness:
+                                    allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { true }, PowerNapReduceBrightness));
+                                    //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapReduceBrightness));
+                                    Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} ReduceBrightness - Enqueue:true");
+                                    writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] ReduceBrightness - Enqueue:true");
+                                    break;
 
-                                    case PowerNapType.SleepIfRunning:
-                                        allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { true }, PowerNapSuspendMonitor));
-                                        //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapSuspendMonitor));
-                                        Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} SleepIfRunning - Enqueue:true");
-                                        writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] SleepIfRunning - Enqueue:true");
-                                        break;
+                                case PowerNapType.SleepIfRunning:
+                                    allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { true }, PowerNapSuspendMonitor));
+                                    //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { true }, PowerNapSuspendMonitor));
+                                    Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} SleepIfRunning - Enqueue:true");
+                                    writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] SleepIfRunning - Enqueue:true");
+                                    break;
 
-                                    case PowerNapType.Off:
-                                        break;
-                                }
+                                case PowerNapType.Off:
+                                    break;
                             }
                         }
                     }
@@ -15547,29 +15514,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     foreach (PowerNapSetting setting in read)
                     {
                         MonitorInfo monitorInfo = _AllInfoMonitors.Find(x => x.edid.SerialNumber.Equals(setting.SerialNumber));
-                        if (monitorInfo != null)
+                        if (monitorInfo != null && setting.Status)
                         {
-                            if (setting.Status)
+                            switch (setting.RunType)
                             {
-                                switch (setting.RunType)
-                                {
-                                    case PowerNapType.ReduceBrightness:
-                                        allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { false }, PowerNapReduceBrightness));
-                                        //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapReduceBrightness));
-                                        Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} ReduceBrightness - Enqueue:false");
-                                        writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] ReduceBrightness - Enqueue:false");
-                                        break;
+                                case PowerNapType.ReduceBrightness:
+                                    allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { false }, PowerNapReduceBrightness));
+                                    //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapReduceBrightness));
+                                    Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} ReduceBrightness - Enqueue:false");
+                                    writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] ReduceBrightness - Enqueue:false");
+                                    break;
 
-                                    case PowerNapType.SleepIfRunning:
-                                        allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
-                                        //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
-                                        Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} SleepIfRunning - Enqueue:false");
-                                        writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] SleepIfRunning - Enqueue:false");
-                                        break;
+                                case PowerNapType.SleepIfRunning:
+                                    allJobs.Add(new JobInfo(1000, monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
+                                    //_powerNapJobQueue.Enqueue(new JobInfo(monitorInfo, new object[] { false }, PowerNapSuspendMonitor));
+                                    Debug.WriteLine($"{setting.ModelName}:{setting.SerialNumber} SleepIfRunning - Enqueue:false");
+                                    writelog($"powerNap [{setting.ModelName}:{setting.SerialNumber}] SleepIfRunning - Enqueue:false");
+                                    break;
 
-                                    case PowerNapType.Off:
-                                        break;
-                                }
+                                case PowerNapType.Off:
+                                    break;
                             }
                         }
                     }
@@ -15717,33 +15681,31 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             var rt = false;
             var Displaysettings_Function = new Displaysettings_Function();
             MonitorInfo monitorInfo = _AllInfoMonitors.FirstOrDefault(x => x.edid.ServiceTag.Equals(powerNapSetting.ServiceTag));
-            if (monitorInfo != null)
+            if (monitorInfo != null && 
+                powerNapSetting.Status)
             {
-                if (powerNapSetting.Status)
+                string powerNapTelementryData = string.Empty;
+                switch (powerNapSetting.RunType)
                 {
-                    string powerNapTelementryData = string.Empty;
-                    switch (powerNapSetting.RunType)
-                    {
-                        case PowerNapType.Off:
-                            powerNapTelementryData = "Off";
-                            break;
+                    case PowerNapType.Off:
+                        powerNapTelementryData = "Off";
+                        break;
 
-                        case PowerNapType.ReduceBrightness:
-                            powerNapTelementryData = "Reduce_brightness";
-                            break;
+                    case PowerNapType.ReduceBrightness:
+                        powerNapTelementryData = "Reduce_brightness";
+                        break;
 
-                        case PowerNapType.SleepIfRunning:
-                            powerNapTelementryData = "Sleep";
-                            break;
-                    }
-                    Debug.WriteLine($"powerNapTelementry:{monitorInfo.edid.SerialNumber}=> {powerNapTelementryData}");
-                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap...");
-                    rt = Displaysettings_Function.Send_PowerNap_Telementry(_TelementryScheduler, monitorInfo, powerNapTelementryData, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
-                    if (rt)
-                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap Success ...");
-                    else
-                        writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap Fail ...");
+                    case PowerNapType.SleepIfRunning:
+                        powerNapTelementryData = "Sleep";
+                        break;
                 }
+                Debug.WriteLine($"powerNapTelementry:{monitorInfo.edid.SerialNumber}=> {powerNapTelementryData}");
+                writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap...");
+                rt = Displaysettings_Function.Send_PowerNap_Telementry(_TelementryScheduler, monitorInfo, powerNapTelementryData, GetMonitorCurrentResolution(monitorInfo), GetMonitorMaxResolution(monitorInfo));
+                if (rt)
+                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap Success ...");
+                else
+                    writelog("[DeviceMangerPlugin] [Telementry] Send Telementry for PowerNap Fail ...");
             }
             return Task.FromResult(ret);
         }
@@ -16316,21 +16278,19 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         List<HotkeyData> hotkeyDatas = new List<HotkeyData>();
                         foreach (DDPMMonitorSettings monitorSettings in monitorSettingsList)
                         {
-                            if (monitorSettings != null)
+                            if (monitorSettings != null && 
+                                monitorSettings.hotkeyData.Count > 0)
                             {
-                                if (monitorSettings.hotkeyData.Count > 0)
+                                writelog("[UpdateHotkeyInfo] monitor : " + monitorSettings.Model);
+                                foreach (HotkeyData hotkey in monitorSettings.hotkeyData)
                                 {
-                                    writelog("[UpdateHotkeyInfo] monitor : " + monitorSettings.Model);
-                                    foreach (HotkeyData hotkey in monitorSettings.hotkeyData)
+                                    writelog("[UpdateHotkeyInfo] hotkeyType : " + hotkey.hotkeyType);
+                                    if ((hotkey.hotkeyType != HotkeyType.FavoriteInputSource &&
+                                        hotkey.hotkeyType != HotkeyType.SwitchInputSource) &&
+                                        !hotkeyDatas.Exists(x => x.hotkeyType == hotkey.hotkeyType))
                                     {
-                                        writelog("[UpdateHotkeyInfo] hotkeyType : " + hotkey.hotkeyType);
-                                        if ((hotkey.hotkeyType != HotkeyType.FavoriteInputSource &&
-                                            hotkey.hotkeyType != HotkeyType.SwitchInputSource) &&
-                                            !hotkeyDatas.Exists(x => x.hotkeyType == hotkey.hotkeyType))
-                                        {
-                                            writelog("[UpdateHotkeyInfo] add hotkeyType to hotkeyDatas.");
-                                            hotkeyDatas.Add(hotkey);
-                                        }
+                                        writelog("[UpdateHotkeyInfo] add hotkeyType to hotkeyDatas.");
+                                        hotkeyDatas.Add(hotkey);
                                     }
                                 }
                             }
@@ -16643,57 +16603,55 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         foreach (var Hotkey in ddmUserSettings.Hotkeys)
                         {
-                            if (Hotkey.Keys != null)
+                            if (Hotkey.Keys != null && 
+                                Hotkey.Keys.Count != 0)
                             {
-                                if (Hotkey.Keys.Count != 0)
+                                DDMtoDDPM dDMtodDPM = new DDMtoDDPM();
+                                if (dDMtodDPM.HotkeyMap.TryGetValue(Hotkey.Function, out HotkeyType hotkeyType))
                                 {
-                                    DDMtoDDPM dDMtodDPM = new DDMtoDDPM();
-                                    if (dDMtodDPM.HotkeyMap.TryGetValue(Hotkey.Function, out HotkeyType hotkeyType))
+                                    writelog($"[DDMtoDDPM_Hotkey] Fun is {Hotkey.Function}");
+                                    HotkeySettings hotkeySettings = new HotkeySettings();
+                                    HotkeyInfo hotkeyInfo = new HotkeyInfo();
+                                    hotkeySettings.ServiceTag = "DDPM";
+                                    hotkeySettings.SerialNumber = "DDPM";
+                                    hotkeySettings.ModelName = "DDPM";
+                                    hotkeyInfo = new HotkeyInfo();
+                                    hotkeyInfo.Job = hotkeyType;
+                                    hotkeyInfo.Hotkey = new List<VirtualKey>();
+                                    if (hotkeyInfo.Hotkey != null)
                                     {
-                                        writelog($"[DDMtoDDPM_Hotkey] Fun is {Hotkey.Function}");
-                                        HotkeySettings hotkeySettings = new HotkeySettings();
-                                        HotkeyInfo hotkeyInfo = new HotkeyInfo();
-                                        hotkeySettings.ServiceTag = "DDPM";
-                                        hotkeySettings.SerialNumber = "DDPM";
-                                        hotkeySettings.ModelName = "DDPM";
-                                        hotkeyInfo = new HotkeyInfo();
-                                        hotkeyInfo.Job = hotkeyType;
-                                        hotkeyInfo.Hotkey = new List<VirtualKey>();
-                                        if (hotkeyInfo.Hotkey != null)
+                                        foreach (int key in Hotkey.Keys)
                                         {
-                                            foreach (int key in Hotkey.Keys)
+                                            writelog($"[DDMtoDDPM_Hotkey] Key is {key}");
+                                            if (key == -1)
                                             {
-                                                writelog($"[DDMtoDDPM_Hotkey] Key is {key}");
-                                                if (key == -1)
-                                                {
-                                                    continue;
-                                                }
-                                                else if (key == 262144)
-                                                {
-                                                    hotkeyInfo.Hotkey.Add(VirtualKey.Menu);
-                                                }
-                                                else if (key == 131072)
-                                                {
-                                                    hotkeyInfo.Hotkey.Add(VirtualKey.Control);
-                                                }
-                                                else if (key == 65536)
-                                                {
-                                                    hotkeyInfo.Hotkey.Add(VirtualKey.Shift);
-                                                }
-                                                else
-                                                {
-                                                    VirtualKey Vkey = (VirtualKey)key;
-                                                    hotkeyInfo.Hotkey.Add(Vkey);
-                                                }
+                                                continue;
                                             }
-                                            if (hotkeyInfo.Hotkey.Count != 0)
+                                            else if (key == 262144)
                                             {
-                                                hotkeySettings.HotkeyInfo.Add(hotkeyInfo);
+                                                hotkeyInfo.Hotkey.Add(VirtualKey.Menu);
+                                            }
+                                            else if (key == 131072)
+                                            {
+                                                hotkeyInfo.Hotkey.Add(VirtualKey.Control);
+                                            }
+                                            else if (key == 65536)
+                                            {
+                                                hotkeyInfo.Hotkey.Add(VirtualKey.Shift);
+                                            }
+                                            else
+                                            {
+                                                VirtualKey Vkey = (VirtualKey)key;
+                                                hotkeyInfo.Hotkey.Add(Vkey);
                                             }
                                         }
-                                        hotkeySettingList.Add(hotkeySettings);
-                                        bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
+                                        if (hotkeyInfo.Hotkey.Count != 0)
+                                        {
+                                            hotkeySettings.HotkeyInfo.Add(hotkeyInfo);
+                                        }
                                     }
+                                    hotkeySettingList.Add(hotkeySettings);
+                                    bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
                                 }
                             }
                         }
@@ -17880,12 +17838,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_TelementryScheduler != null)
             {
-                if (mi == null)
+                if (mi == null && (_AllInfoMonitors != null) && 
+                    (_AllInfoMonitors.Count > 0))
                 {
-                    if ((_AllInfoMonitors != null) && (_AllInfoMonitors.Count > 0))
-                    {
-                        mi = _AllInfoMonitors[0];
-                    }
+                    mi = _AllInfoMonitors[0];
                 }
                 EasyArrangeTelemetry easyArrangeTelemetry = new EasyArrangeTelemetry();
                 easyArrangeTelemetry.EasyArrange = eventValue;
