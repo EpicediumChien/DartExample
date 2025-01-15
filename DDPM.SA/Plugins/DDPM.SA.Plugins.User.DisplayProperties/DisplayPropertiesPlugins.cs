@@ -616,21 +616,17 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                 };
                 if (!resolutions.ContainsKey((resolution.Resolutions_Width, resolution.Resolutions_High, resolution.Frequency)))
                 {
-                    if (!found_Recommended)
+                    if (!found_Recommended &&
+                        GetOptimalScreenResolution(monitorInfo, resolution, currentOrientation))
                     {
-                        if (GetOptimalScreenResolution(monitorInfo, resolution, currentOrientation))
-                        {
-                            resolution.isRecommended = true;
-                            found_Recommended = true;
-                        }
+                        resolution.isRecommended = true;
+                        found_Recommended = true;                        
                     }
-                    if (!found_Current)
+                    if (!found_Current &&
+                        resolution.Equals(currentProperties))
                     {
-                        if (resolution.Equals(currentProperties))
-                        {
-                            resolution.isCurrent = true;
-                            found_Current = true;
-                        }
+                        resolution.isCurrent = true;
+                        found_Current = true;
                     }
                     resolution.BitsPerPixel = currentProperties.BitsPerPixel;
                     resolutions.Add((resolution.Resolutions_Width, resolution.Resolutions_High, resolution.Frequency), resolution);

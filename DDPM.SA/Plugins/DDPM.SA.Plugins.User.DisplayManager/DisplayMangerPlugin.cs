@@ -21,6 +21,7 @@ using Dell.Client.Framework.Common.Annotations;
 using Dell.Client.Framework.Common.Extensions;
 using Dell.Client.Framework.Common.PluginConditions;
 using Dell.Client.Framework.Interfaces;
+using IndiLogic.DPeM.Broker;
 using Microsoft;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
@@ -150,7 +151,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         /// </summary>
         private readonly Dictionary<string, DateTime> LastProcessedTimestamps = new();
 
-        private bool IsDDPMLaunch = false;
+        private ISettingsManagerDev _SettingsPlugin;
+        private readonly object _SettingsPluginConditionLock = new object();
+        private bool IsDDPMLaunchEarly = false;
+        private bool IsDDPMLaunchNow = false;
         #endregion
 
         #region Constructor
@@ -202,9 +206,38 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.FromResult(_CacheTable);
         }
 
-        public Task<bool> GetIsDDPMLaunch()
+        public Task<bool> GetIsDDPMLaunchNow()
         {
-            return Task.FromResult(IsDDPMLaunch);
+            return Task.FromResult(IsDDPMLaunchNow);
+        }
+        public Task<bool> GetIsDDPMLaunchEarly()
+        {
+            return Task.FromResult(IsDDPMLaunchEarly);
+        }
+        public Task<bool> LauncDDPM(string UserId, string ddpmExePath)
+        {
+            _logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect UserId : {UserId}, StartProcess ... ");
+            bool result = DDPMFileSecurity.ValidateFilePath(ddpmExePath, out string info);
+            if (result)
+            {
+                result = DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(
+                    null,
+                    new ProcessStartInfo
+                    {
+                        FileName = ddpmExePath,
+                        UseShellExecute = true
+                    });
+
+                if (!result)
+                {
+                    _logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect StartProcessSafely fail");
+                }
+            }
+            else
+            {
+                _logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect ValidateFilePath fail");
+            }
+            return Task.FromResult(result);
         }
         public Task Reset0x52TimerTick(int millisecond, int processID = -0xFF)
         {
@@ -215,18 +248,44 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 CreateProcessExitEvent(processID);
 
             _VcpCorePlugin.Reset0x52TimerTick(millisecond);
-
+            IsDDPMLaunchEarly = IsDDPMLaunchNow;
             if (millisecond == 2000) // 8000 mean UI close, 2000 mean UI open
             {
-                IsDDPMLaunch = true;
+                IsDDPMLaunchNow = true;
                 _logs.DebugMsg("[DisplayMangerPlugin] Reset0x52TimerTick: millisecond = 2000 , UI Open");
             }
             else
             {
-                IsDDPMLaunch = false;
+                IsDDPMLaunchNow = false;
                 _logs.DebugMsg("[DisplayMangerPlugin] Reset0x52TimerTick: millisecond = 8000 , UI Close");
             }
 
+            // If APP WalkThrough not done, need re-launch APP
+            if (IsDDPMLaunchEarly && !IsDDPMLaunchNow)
+            {
+                if (_SettingsPlugin == null)
+                {
+                    _logs.DebugMsg($"Reset0x52TimerTick LauncDDPM but _SettingsPlugin NULL ... ");
+                    return Task.FromResult(Task.CompletedTask);
+                }
+                _logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect IsDDPMLaunchEarly true, IsDDPMLaunchNow false");
+                string UserId = WTSFunction.DirectGetUserID(Log);
+                string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{UserId}";
+                string regKeyForDDPM = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.DDPM";
+                object regValue = _SettingsPlugin.ReadRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKeyForDDPM).Result;
+                //_logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect regValue {Convert.ToBoolean(regValue).ToString()}");
+                if (regValue == null || (regValue is string strValue && string.IsNullOrEmpty(strValue)))
+                {
+                    string ddpmExePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Dell\Dell Display and Peripheral Manager\DDPM.exe");
+                    //string ddpmExePath = @"D:\\NEW\DDPM\DDPM.UI\\bin\\net8.0-windows10.0.19041.0\\DDPM.exe";
+                    LauncDDPM(UserId, ddpmExePath);
+                    _logs.DebugMsg($"LauncDDPM From Reset0x52TimerTick ... ");
+                }
+                else
+                {
+                    _logs.DebugMsg($"LauncDDPM From Reset0x52TimerTick Reg Exit ... ");
+                }
+            }
             return Task.FromResult(Task.CompletedTask);
         }
 
@@ -929,30 +988,26 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         public Task<bool> isScreenPartition(MonitorInfo monitorInfo)
         {
             ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, 0xF2).Result;
-            if (objGetVCP != null && objGetVCP.result)
+            if (objGetVCP != null && objGetVCP.result &&
+                (uint)objGetVCP.value != 0)
             {
-                if ((uint)objGetVCP.value != 0)
+                string strSP = Convert.ToString((uint)objGetVCP.value, 2);
+                string strSP_16 = strSP;
+                //add 16 to string
+                if (strSP.Length < 16)
                 {
-                    string strSP = Convert.ToString((uint)objGetVCP.value, 2);
-                    string strSP_16 = strSP;
-                    //add 16 to string
-                    if (strSP.Length < 16)
+                    for (int i = 0; i < (16 - strSP.Length); i++)
                     {
-                        for (int i = 0; i < (16 - strSP.Length); i++)
-                        {
-                            strSP_16 = "0" + strSP_16;
-                        }
-                    }
-                    _logs.DebugMsg("[DisplayMangerPlugin][isScreenPartition] strSP_16 : " + strSP_16);
-                    //find 8
-                    if (strSP_16.Length == 16)
-                    {
-                        if (strSP_16.Substring(7, 1) == "1")
-                        {
-                            return Task.FromResult(true);
-                        }
+                        strSP_16 = "0" + strSP_16;
                     }
                 }
+                _logs.DebugMsg("[DisplayMangerPlugin][isScreenPartition] strSP_16 : " + strSP_16);
+                //find 8
+                if (strSP_16.Length == 16 &&
+                    strSP_16.Substring(7, 1) == "1")
+                {
+                    return Task.FromResult(true);                    
+                }                
             }
             return Task.FromResult(false);
         }
@@ -1153,15 +1208,13 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 ALSConfig aconfig = AllALSConfig[idx];
                 AllALSConfig[idx] = param;
-                if (AllALSConfig.Count > 1) // If only one monitor, do not need show Busy
+                if (AllALSConfig.Count > 1 && // If only one monitor, do not need show Busy
+                    GetBitValue(param.AllValue, 5) == 1)
                 {
-                    if (GetBitValue(param.AllValue, 5) == 1)
+                    for (int i = 0; i < AllALSConfig.Count; i++)
                     {
-                        for (int i = 0; i < AllALSConfig.Count; i++)
-                        {
-                            AllALSConfig[i].isBusy = true;
-                            _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue ... {AllALSConfig[i].Edid.ModelName} ... Busy ... ");
-                        }
+                        AllALSConfig[i].isBusy = true;
+                        _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue ... {AllALSConfig[i].Edid.ModelName} ... Busy ... ");
                     }
                 }
                 //CheckisPrimaryMonitorSyncOnOff(monitorInfos, param, "0");
@@ -2659,12 +2712,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties _DisplayPropertiesPlugin.GetDisplaySupportedProperties go");
                 rc = _DisplayPropertiesPlugin.GetDisplaySupportedProperties(monitorInfo).Result;
                 bool? supported_OSD_Orientation = IsSupportWriteOSDOrientation(monitorInfo.CapabilityString);
-                if (supported_OSD_Orientation == true)
+                if (supported_OSD_Orientation == true &&
+                    rc != null)
                 {
-                    if (rc != null)
-                    {
-                        rc.OSD_Orientations = IsSupportOSDOrientation(monitorInfo.CapabilityString);
-                    }
+                    rc.OSD_Orientations = IsSupportOSDOrientation(monitorInfo.CapabilityString);
                 }
             }
             _logs.DebugMsg("[DisplayMangerPlugin] GetDisplaySupportedProperties done");
@@ -3398,6 +3449,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 pipPbpCondition.PluginConditionChangeHandler += PipPbpCondition_PluginConditionChangeHandler;
                 GetCurrentPipPbpCondition();
             }
+        }
+        public Task GetSettingsPlugin(ISettingsManagerDev SettingsPlugin)
+        {
+            _SettingsPlugin = SettingsPlugin;
+            return Task.CompletedTask;
         }
 
         private void GetCurrentPipPbpCondition()
@@ -4764,7 +4820,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                         firmwares_item.url = display_FWU_URL + firmwares_item.url;
                                     }
                                     firmwares_item.CurrentVersion = monitorInfo.FwVersion;
-                                    firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
+                                    //firmwares_item.TheLastVersion = firmwares_item.TheLastVersion;
                                     firmwares_item.ServiceTag = monitorInfo.edid.ServiceTag;
                                     firmwares_item.SupplierID = monitorInfo.SupplierID;
                                     firmwares_item.D_Ctrl = monitorInfo.D_Ctrl;

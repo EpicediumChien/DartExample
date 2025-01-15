@@ -26,9 +26,9 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         private Dictionary<string, List<WalkThroughPageData>> _devicePages = DDPM.UI.WalkThroughData.WalkThroughData.GetDevicePages((int)DdpmCommonHelper.PreviousOsTheme);
         public object _currentDeviceinfo = string.Empty;
         public string last_logicalDeviceType = string.Empty;
-
         public WalkThroughPageViewModel()
         {
+
             if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Exists(info => info.ModelName == "DDPM"))
             {
                 //IsPeripheralVisible = false;
@@ -73,7 +73,13 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 {
                     UpdateLastlogicalDeviceType();
                     // If _devicePages No ModelNumber, remove and next 
-                    DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
+                    if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count != 0) // Error handling
+                    {
+                        WriteWalkThroughReg(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName);
+                        DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0]);
+                        DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
+                        DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDeviceFromQueue RemoveAt {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName}");
+                    }
                 }
             }
 
@@ -130,8 +136,14 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             else
             {
                 UpdateLastlogicalDeviceType();
-                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
-                if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
+                if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count != 0) // Error handling
+                {
+                    WriteWalkThroughReg(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName);
+                    DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0]);
+                    DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
+                    DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDeviceFromQueue RemoveAt {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName}");
+                }
+                if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)//After remove, still WalkThrough need to show
                 {
                     ProgressValue = 0;// second round set 0
                     InitializeDeviceFromQueue();
@@ -193,6 +205,14 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             }
             ControlIcon(true);
         }
+
+        public bool WriteWalkThroughReg(string Model)
+        {
+            string regPath = $@"SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings\Local\{DdpmHomePlugin.DdpmHomePlugin.UserId}";
+            string regKey = $"IsFirstTimeWalkThroughDone_com.dell.DPM.Plugin.LogicalDevice.{Model}";
+            return DdpmCommonHelper.DeviceManagerSA!.WriteRegistryData(DDPM.SA.Common.Settings.RegistryHive.LocalMachine, regPath, regKey, true).Result;
+        }
+
         public void UpdateLastlogicalDeviceType()
         {
             if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count == 1)
@@ -369,6 +389,29 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         {
             get => _img3Source;
             set => SetProperty(ref _img3Source, value);
+        }
+
+        private Visibility _consentPageVisibility { get; set; } = Visibility.Visible;
+
+        public Visibility ConsentPageVisibility
+        {
+            get { return _consentPageVisibility; }
+            set
+            { 
+                _consentPageVisibility = value;
+                OnPropertyChanged(nameof(ConsentPageVisibility));
+                OnPropertyChanged(nameof(AppWalkThroughVisibility));
+            }
+        }
+
+        public Visibility AppWalkThroughVisibility
+        {
+            get
+            {
+                if (_consentPageVisibility == Visibility.Visible)
+                    return Visibility.Collapsed;
+                return Visibility.Visible;
+            }
         }
     }
 }

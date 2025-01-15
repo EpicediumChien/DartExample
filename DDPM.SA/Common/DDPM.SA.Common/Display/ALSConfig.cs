@@ -113,36 +113,36 @@ namespace DDPM.SA.Common
         /// <returns></returns>
         public bool checkValue(ALSFeatureQueryType type, ALSConfig source, ALSConfig target)
         {
-            bool result = false;
+            bool checkValueResult = false;
             switch (type)
             {
                 case ALSFeatureQueryType.AutoBrightness:
                     if(source.isAutoBrightness == target.isAutoBrightness)
-                        result = true;
+                        checkValueResult = true;
                     break;
                 case ALSFeatureQueryType.AutoColorTemperature:
                     if (source.isAutoColorTemp == target.isAutoColorTemp)
-                        result = true;
+                        checkValueResult = true;
                     break;
                 case ALSFeatureQueryType.PrimaryMonitorSync:
                     if (source.isPrimaryMonitorSync == target.isPrimaryMonitorSync)
-                        result = true;
+                        checkValueResult = true;
                     break;
                 case ALSFeatureQueryType.AutoBrightnessRangeLevel:
                     if (source.AutoBrightnessRangeLevel == target.AutoBrightnessRangeLevel)
-                        result = true;
+                        checkValueResult = true;
                     break;
                 case ALSFeatureQueryType.BrightnessValue:
                     if (source.BrightnessValue == target.BrightnessValue)
-                        result = true;
+                        checkValueResult = true;
                     break;
                 case ALSFeatureQueryType.ContrastValue:
                     if (source.ContrastValue == target.ContrastValue)
-                        result = true;
+                        checkValueResult = true;
                     break;
                 case ALSFeatureQueryType.ColorPresetString:
                     if (source.ColorPresetString == target.ColorPresetString)
-                        result = true;
+                        checkValueResult = true;
                     break;
                 case ALSFeatureQueryType.no_PrimaryMonitorSyncCheck:
                     if (source.isAutoBrightness == target.isAutoBrightness &&
@@ -151,18 +151,18 @@ namespace DDPM.SA.Common
                         source.BrightnessValue == target.BrightnessValue &&
                         source.ContrastValue == target.ContrastValue &&
                         source.ColorPresetString == target.ColorPresetString)
-                        result = true;
+                        checkValueResult = true;
                     break;
                 case ALSFeatureQueryType.ALSValueSyncCheck:
                     {
                         if (source.isAutoBrightness == target.isAutoBrightness &&
                             source.isAutoColorTemp == target.isAutoColorTemp &&
                             source.AutoBrightnessRangeLevel == target.AutoBrightnessRangeLevel)
-                            result = true;
+                            checkValueResult = true;
                         break;
                     }
             }
-            return result;
+            return checkValueResult;
         }
     }
 }
