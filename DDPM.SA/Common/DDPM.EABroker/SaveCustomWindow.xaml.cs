@@ -100,9 +100,10 @@ namespace DDPM.EABroker
             DataContext = _viewModel;
 
             if ((_eaArgs != null) && (_eaArgs.SplitJson != null))
+            {
                 _viewModel.IsOverlapLayout = _eaArgs.SplitJson.IsOverlapLayout;
-
-            _inputSplit = eaArgs.SplitJson;
+                _inputSplit = eaArgs.SplitJson;
+            }                
 
             //Robert_Lin, 2024-12-6, use the method in CommonFunctions
             double dpiX = CommonFunctions.GetDpiX();

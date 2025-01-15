@@ -7027,7 +7027,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             get
             {
-                if (_DisplayManagerPlugin != null)
+                if (_DisplayManagerPlugin == null)
                     return "DisplayManagerPlugin is not constructed.";
                 return _DisplayManagerPlugin.EALastError;
             }

@@ -3704,7 +3704,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             get
             {
-                if (_eaService != null)
+                if (_eaService == null)
                     return "EAPlugin is not constructed.";
                 if (!_isEaPluginConfigured)
                     return "EAPlugin Condition is NOT configured.";

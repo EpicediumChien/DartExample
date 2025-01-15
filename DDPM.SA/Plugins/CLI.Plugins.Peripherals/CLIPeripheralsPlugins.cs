@@ -1600,9 +1600,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     if (result == "0")
                                     {
                                         x.Result = "PASS";
-                                        var retvalue = _devMgr.GetAntiFlicker(x.Guid).Result;
-                                        if (retvalue != null)
+
+                                        try
                                         {
+                                            var retvalue = _devMgr.GetAntiFlicker(x.Guid).Result;
                                             if (!string.IsNullOrEmpty(retvalue.ToString()))
                                             {
                                                 switch (retvalue.ToString())
@@ -1616,13 +1617,14 @@ namespace DDPM.CLI.Plugins.Peripherals
                                                     default:
                                                         break;
                                                 }
-                                            }
+                                            }                                            
                                         }
-                                        else
+                                        catch(Exception ex)
                                         {
                                             x.Value = "Interface return null";
+                                            writelog("SetPeripheralProperty: _devMgr.GetAntiFlicker FAIL, message: " + ex.Message);
                                         }
-
+                                          
                                         //x.Value += "," + (data.LockSettings.Lock_Webcam_AntiFlicker ? "LOCK" : "UNLOCK");
                                         x.Message = "N/A";
                                     }
