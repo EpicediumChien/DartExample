@@ -252,7 +252,7 @@ namespace DDPM.UI.Common.Models
                     //    Some of Keyboard/Mouse need to convert ModelNumber to model
                     //    Show "{Name} + " {model}"
                     //NEW Code:
-                    if (DdpmCommonHelper.IsPeripheralEOLModel(DeviceInfo.ModelNumber))
+                    if (DDPM.SA.Common.UI.SACommonHelper.IsPeripheralEOLModel(DeviceInfo.ModelNumber))//change function source from SA, collect all related function together
                     {
                         //EOL 的 Keyboard/Mouse, Name已包含 {ModelNumber}, homepage tooltip 直接顯示 {Name}
                         return DeviceInfo.Name;
@@ -290,7 +290,7 @@ namespace DDPM.UI.Common.Models
                                 break;
                         } //switch(deviceInfo.ModelNumber)
 
-                        return DdpmCommonHelper.MappingName(model, DeviceInfo.Name) + $" {model}";
+                        return DDPM.SA.Common.UI.SACommonHelper.MappingName(model, DeviceInfo.Name) + $" {model}";
                     }
 
                     //OLD Code:
