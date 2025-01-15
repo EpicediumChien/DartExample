@@ -1036,6 +1036,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     catch (Exception ex)
                     {
+                        if (_downloadTimer != null)
+                        {
+                            _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
+                            _downloadTimer.Stop();
+                            _downloadTimer = null;
+                        }
                         _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download error : " + ex.Message);
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
                         _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
@@ -2553,15 +2559,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 // 要運行的安裝程式路徑和命令行參數
                 arguments = (fwUpdateInfo.IsUOD ? "/uod " : "") + "/silent" + " /pipename:" + namedPipeName;
-                //deviceIndex commandLine
-                _logs.DebugMsg_1($"BuildArgs deviceIndex go");
-                arguments += $" /deviceIndex:" + fwUpdateInfo.DeviceIndex;
-                _logs.DebugMsg_1($"BuildArgs deviceIndex done");
-
-                _logs.DebugMsg_1($"BuildArgs Log go");
-                if (fwUpdateInfo.DeviceType == DeviceType.LogicalMouse ||
-                    fwUpdateInfo.DeviceType == DeviceType.LogicalKeyboard)
+                if (fwUpdateInfo.DeviceType != DeviceType.LogicalDock &&
+                    fwUpdateInfo.DeviceType != DeviceType.PhysicalWiredDock)
                 {
+                    //deviceIndex commandLine
+                    _logs.DebugMsg_1($"BuildArgs deviceIndex go");
+                    arguments += $" /deviceIndex:" + fwUpdateInfo.DeviceIndex;
+                    _logs.DebugMsg_1($"BuildArgs deviceIndex done");
+
                     //updatepath commandLine
                     _logs.DebugMsg_1($"BuildArgs updatepath go");
                     switch (fwUpdateInfo.Connectivity)
@@ -2580,6 +2585,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             break;
                     }
                     _logs.DebugMsg_1($"BuildArgs updatepath done");
+
                     _logs.DebugMsg_1($"BuildArgs DeviceType go");
                     //DeviceType commandLine
                     switch (fwUpdateInfo.DeviceType)
@@ -2594,17 +2600,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             break;
                     }
                     _logs.DebugMsg_1($"BuildArgs DeviceType done");
-                }
 
-                //devicePath commandLine
-                if (fwUpdateInfo.DeviceType != DeviceType.LogicalDock &&
-                    fwUpdateInfo.DeviceType != DeviceType.PhysicalWiredDock)
-                {
+                    //devicePath commandLine
                     _logs.DebugMsg_1($"BuildArgs devicePath go");
                     arguments += $" /devicePath:" + fwUpdateInfo.DevicePath;
                     _logs.DebugMsg_1($"BuildArgs devicePath done");
                 }
-
                 _logs.DebugMsg_1($"BuildArgs Log go");
                 //Log commandLine
                 switch (fwUpdateInfo.DeviceType)
