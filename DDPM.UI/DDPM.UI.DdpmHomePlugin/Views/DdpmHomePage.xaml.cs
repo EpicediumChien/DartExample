@@ -911,7 +911,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //dispTimer.Start();
         }
 
-        [Obsolete]
+        [Obsolete("This method is obsolete. Moved to WalkThroughPage.xaml before app walk through.")]
         private void _ddpmHomePageViewModel_ShowConsent(object? sender, EventArgs e)
         {
             Dispatcher.Invoke(() =>
