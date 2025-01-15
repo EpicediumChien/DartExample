@@ -237,9 +237,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView() ex:" + ex.Message);
             }
 
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView() end");
@@ -295,7 +295,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     btnPreset_Click(this, null);
                 }));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  ChangeProfileByQAM() ex:" + ex.Message);
             }
@@ -1526,7 +1526,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 _vm!.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
             }
-            catch (Exception ex)  
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 1: " + ex.Message);
             }
@@ -1543,7 +1543,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     _pwr_Mon = null;
                 }
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 2: " + ex.Message);
             }
@@ -1842,19 +1842,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             /*CopyMemory(writeableBitmap.BackBuffer, (IntPtr)ptr, ImageBufferSize);
                             writeableBitmap.AddDirtyRect(react);*/
                         }
-                        //Leo 2025/01/15 fixed by elie request
-                        //writeableBitmap.Unlock();
+                        writeableBitmap.Unlock();
                     });
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog($"MediaFrameReader_FrameArrived Exception occurred 2 : {ex.Message}");
-            }
-            finally
-            {
-                //Leo 2025/01/15 fixed by elie request
-                writeableBitmap.Unlock();
             }
 
             _running = false;
@@ -2030,7 +2024,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs StartRecordingAsync() : " + ex.Message);
                 // File I/O errors are reported as exceptions
-               // Debug.WriteLine("Exception when starting video recording: " + ex.ToString());
+                // Debug.WriteLine("Exception when starting video recording: " + ex.ToString());
             }
         }
 
@@ -2072,7 +2066,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (_vm.MediaCapture != null)
                     await _vm.MediaCapture.ResumeRecordAsync();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  ResumeRecordingAsync() ex: " + ex.Message);
             }
@@ -2190,9 +2184,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 StartRecord();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnRecord_Click() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnRecord_Click() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnRecord_Click() end");
         }
@@ -2220,9 +2214,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 txtTimer.Text = "00:00:00";
                 btnPreset.IsEnabled = true;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs UserStopRecord() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs UserStopRecord() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs UserStopRecord() end");
 
@@ -2248,9 +2242,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //Derek 1212
                 DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm!.CurrentProfileName, false);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs ProfileSelected() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs ProfileSelected() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs ProfileSelected() end");
         }
@@ -2304,7 +2298,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnPreset_Click() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnPreset_Click() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnPreset_Click() end");
         }
@@ -2331,9 +2325,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 txtCaption.Text = Strings.EditPreset;
                 _vm.TooltipVisibility = Visibility.Visible;
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs EditPreset() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs EditPreset() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs EditPreset() end");
         }
@@ -2363,9 +2357,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 }
                 btnPreset_Click(this, null);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs DeletePreset() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs DeletePreset() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs DeletePreset() end");
         }
@@ -2380,7 +2374,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 btnPause.Visibility = Visibility.Visible;
                 btnPlay.Visibility = Visibility.Collapsed;
             }
-            catch (Exception ex )
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnPlay_Click() ex:" + ex.Message);
             }
@@ -2397,7 +2391,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 btnPause.Visibility = Visibility.Collapsed;
                 btnPlay.Visibility = Visibility.Visible;
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnPause_Click() ex:" + ex.Message);
             }
@@ -2519,7 +2513,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs AddPreset() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs AddPreset() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs AddPreset() end");
         }
@@ -2550,9 +2544,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     btnSave.IsEnabled = true;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  NameTextChanged() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  NameTextChanged() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  NameTextChanged() end");
         }
@@ -2635,9 +2629,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.EnableVBar();
                 _vm.TooltipVisibility = Visibility.Collapsed;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  SaveClick() ex: " +ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  SaveClick() ex: " + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  SaveClick() end");
         }
