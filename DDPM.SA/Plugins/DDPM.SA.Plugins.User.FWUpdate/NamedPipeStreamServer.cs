@@ -31,9 +31,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             PipeSecurity pipeSecurity = NPipeSecurity.CreatePipeSecurity_System();
             this._Connections = new List<NamedPipeStreamConnection>();
             NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
-            _Log.DebugMsg_1("NamedPipeStreamServer PrintPipeAcl state go");
-            PrintPipeAcl(state);
-            _Log.DebugMsg_1("NamedPipeStreamServer PrintPipeAcl state done");
+
+            //[Dean] this call is used at prove phase, do not use it in production
+            //_Log.DebugMsg_1("NamedPipeStreamServer PrintPipeAcl state go");
+            //PrintPipeAcl(state);
+            //_Log.DebugMsg_1("NamedPipeStreamServer PrintPipeAcl state done");
             state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
             this.thumbPrint = thumbPrint;
             this.skipSHA = skipSHA;
@@ -45,9 +47,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             NamedPipeServerStream? asyncState = result.AsyncState as NamedPipeServerStream;
             if (asyncState != null)
             {
-                _Log.DebugMsg_1("ClientConnected PrintPipeAcl asyncState go");
-                PrintPipeAcl(asyncState);
-                _Log.DebugMsg_1("ClientConnected PrintPipeAcl asyncState done");
+                //_Log.DebugMsg_1("ClientConnected PrintPipeAcl asyncState go");
+                //[Dean] this call is used at prove phase, do not use it in production
+                //PrintPipeAcl(asyncState);
+                //_Log.DebugMsg_1("ClientConnected PrintPipeAcl asyncState done");
                 asyncState.EndWaitForConnection(result);
                 if (asyncState.IsConnected)
                 {
@@ -85,14 +88,17 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                 }
                 NamedPipeServerStream state = NamedPipeServerStreamAcl.Create(base.PipeName, PipeDirection.InOut, NamedPipeServerStream.MaxAllowedServerInstances, PipeTransmissionMode.Message, PipeOptions.Asynchronous, 0, 0, pipeSecurity);
-                _Log.DebugMsg_1("ClientConnected PrintPipeAcl state go");
-                PrintPipeAcl(state);
-                _Log.DebugMsg_1("ClientConnected PrintPipeAcl state done");
+                //_Log.DebugMsg_1("ClientConnected PrintPipeAcl state go");
+                //[Dean] this call is used at prove phase, do not use it in production
+                //PrintPipeAcl(state);
+               // _Log.DebugMsg_1("ClientConnected PrintPipeAcl state done");
                 state.BeginWaitForConnection(new AsyncCallback(this.ClientConnected), state);
                 
             }
         }
-        private void PrintPipeAcl(NamedPipeServerStream pipeServer)
+
+        //[Dean] prove stage used, do not use in production
+        /*private void PrintPipeAcl(NamedPipeServerStream pipeServer)
         {
             PipeSecurity pipeSecurity = pipeServer.GetAccessControl();
             AuthorizationRuleCollection acl = pipeSecurity.GetAccessRules(true, true, typeof(NTAccount));
@@ -107,7 +113,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     _Log.DebugMsg_1($"[PrintPipeAcl]Access Control Type: {pipeRule.AccessControlType}");
                 }
             }
-        }
+        }*/
 
         private void Connection_DisconnectedEvent(object? sender, EventArgs e)
         {
