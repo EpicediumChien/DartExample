@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:common="clr-namespace:DDPM.UI.Common;assembly=DDPM.UI.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
              mc:Ignorable="d"     
@@ -10,15 +11,10 @@
              d:DesignWidth="1378">
 
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <!-- <ResourceDictionary Source="/DDPM.UI.Common;component/ModuleStyle.xaml" /> -->
-            </ResourceDictionary.MergedDictionaries>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        </ResourceDictionary>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
-    <Grid Width="1378" Height="753">
+    <Grid Width="1378" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}">
         <Image x:Name="imgBkGlow"
                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png"
                Stretch="UniformToFill"
@@ -152,82 +148,109 @@
 
         <StackPanel>
             <Grid Margin="0" Visibility="{Binding DDPMVisibility}">
-
-                <Grid Grid.Column="0" Margin="0, 0, 0, 0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <!-- Customizable Keys Title -->
-                    <Grid Grid.Row="0" Margin="0, 8, 0, 0" Width="Auto" Height="Auto" HorizontalAlignment="Center">
-                        <UXControls:UXTextBlock x:Name="AppMainText" Text="{Binding [WalkThroughDDPM_Main.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="64" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"/>
-                    </Grid>
-
-                    <!-- Description Text -->
-                    <Grid Grid.Row="1" Margin="0, 16, 0, 0" Width="Auto" Height="Auto" HorizontalAlignment="Center">
-                        <UXControls:UXTextBlock x:Name="AppSubText" Text="{Binding [WalkThroughDDPM_Sub.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"  FontSize="18" TextWrapping="Wrap" />
-                    </Grid>
-
-
-                    <!-- First Button Group -->
-                    <Grid Grid.Row="2" Margin="0, 16, 0, 0">
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <!-- Next Button -->
-                            <UXControls:UXButton x:Name="MainNextBtn" IconPosition="IconRight" HorizontalContentAlignment="Center" ButtonType="Primary" Padding="40, 8" ButtonSize="Medium" VerticalContentAlignment="Center" Margin="-5, 0, 0, 0" IconAnimation="Move" Width="194" Height="40" Click="MainNextBtn_Click">
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <UXControls:UXTextBlock Margin="8,0" Text="{Binding [WalkThrough.2], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"/>
-                                    <Path x:Name="MainArrowPath" Margin="0,2" Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white">
-                                        <Path.RenderTransform>
-                                            <ScaleTransform ScaleX="1" ScaleY="1"/>
-                                        </Path.RenderTransform>
-                                    </Path>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Margin="0" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}" Visibility="{Binding ConsentPageVisibility, FallbackValue=Collapsed}"
+                      VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Border CornerRadius="4" Height="320" Width="801" Background="Transparent">
+                        <Grid>
+                            <Image Source="/DDPM.UI.Resources;component/Resources/Images/ConsentBg.png" Stretch="Fill" Opacity="0.2" />
+                            <StackPanel Orientation="Vertical" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <UXControls:UXTextBlock Name="txtCaption" VerticalAlignment="Center" FontWeight="Light" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="40" Margin="0" />
+                                <UXControls:UXTextBlock Name="txtCaption2" VerticalAlignment="Center" FontWeight="Light" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="40" Margin="0,0,0,10" />
+                                <UXControls:UXTextBlock Name="txtMessage" VerticalAlignment="Center" FontWeight="Normal" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="16" LineHeight="24" Width="660" >
+                                    <Run Name="txt1" FontFamily="Roboto" FontWeight="Normal"/>
+                                    <Run Name="txt2" FontFamily="Roboto" FontWeight="Normal" Cursor="Hand" TextDecorations="Underline" MouseLeftButtonDown="OpenPrivacy" />
+                                </UXControls:UXTextBlock>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
+                                    <Button x:Name="txtNo" Style="{StaticResource SecondaryButtonStyle}" Click="No_MouseLeftButtonDown" Content="N/A" />
+                                    <Button x:Name="txtYes" Style="{StaticResource PrimaryButtonStyle}" Margin="12,0,0,0" Click="Yes_MouseLeftButtonDown" Content="N/A" />
+                                    <!--<UXControls:UXButton Name="txtNo" MinWidth="136.5" MinHeight="40" HorizontalAlignment="Center" ButtonType="Secondary" Click="No_MouseLeftButtonDown" Content="N/A" FontFamily="Roboto" FontSize="14" FontWeight="Medium" CornerRadius="2"/>
+                                    <UXControls:UXButton Name="txtYes" MinWidth="136.5" MinHeight="40" Margin="12,0,0,0" ButtonType="Primary" HorizontalAlignment="Center" Click="Yes_MouseLeftButtonDown" Content="N/A" FontFamily="Roboto" FontSize="14" FontWeight="Medium" CornerRadius="2" />-->
                                 </StackPanel>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+                <Grid Grid.Row="1" Visibility="{Binding AppWalkThroughVisibility, FallbackValue=Collapsed}">
+                    <Grid Grid.Column="0" Margin="0, 0, 0, 0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                                <!-- 滑鼠進入觸發 -->
-                                <UXControls:UXButton.Triggers>
-                                    <EventTrigger RoutedEvent="MouseEnter">
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <!-- 放大縮小 -->
-                                                <DoubleAnimation Storyboard.TargetName="MainArrowPath" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" From="1" To="1.2" Duration="0:0:1" AutoReverse="True" RepeatBehavior="Forever" />
-                                                <DoubleAnimation Storyboard.TargetName="MainArrowPath" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" From="1" To="1.2" Duration="0:0:1" AutoReverse="True" RepeatBehavior="Forever" />
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </EventTrigger>
+                        <!-- Customizable Keys Title -->
+                        <Grid Grid.Row="0" Margin="0, 8, 0, 0" Width="Auto" Height="Auto" HorizontalAlignment="Center">
+                            <UXControls:UXTextBlock x:Name="AppMainText" Text="{Binding [WalkThroughDDPM_Main.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" FontSize="64" TextWrapping="Wrap" HorizontalAlignment="Center" TextAlignment="Center"/>
+                        </Grid>
 
-                                    <!-- 定滑鼠離開停止 -->
-                                    <EventTrigger RoutedEvent="MouseLeave">
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <!-- 停止，縮回原大小 -->
-                                                <DoubleAnimation Storyboard.TargetName="MainArrowPath" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.2" />
-                                                <DoubleAnimation Storyboard.TargetName="MainArrowPath" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.2" />
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </EventTrigger>
-                                </UXControls:UXButton.Triggers>
-                            </UXControls:UXButton>
-                        </StackPanel>
+                        <!-- Description Text -->
+                        <Grid Grid.Row="1" Margin="0, 16, 0, 0" Width="Auto" Height="Auto" HorizontalAlignment="Center">
+                            <UXControls:UXTextBlock x:Name="AppSubText" Text="{Binding [WalkThroughDDPM_Sub.0], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"  FontSize="18" TextWrapping="Wrap" />
+                        </Grid>
+
+
+                        <!-- First Button Group -->
+                        <Grid Grid.Row="2" Margin="0, 16, 0, 0">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <!-- Next Button -->
+                                <UXControls:UXButton x:Name="MainNextBtn" IconPosition="IconRight" HorizontalContentAlignment="Center" ButtonType="Primary" Padding="40, 8" ButtonSize="Medium" VerticalContentAlignment="Center" Margin="-5, 0, 0, 0" IconAnimation="Move" Width="194" Height="40" Click="MainNextBtn_Click">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <UXControls:UXTextBlock Margin="8,0" Text="{Binding [WalkThrough.2], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"/>
+                                        <Path x:Name="MainArrowPath" Margin="0,2" Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white">
+                                            <Path.RenderTransform>
+                                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                            </Path.RenderTransform>
+                                        </Path>
+                                    </StackPanel>
+
+                                    <!-- 滑鼠進入觸發 -->
+                                    <UXControls:UXButton.Triggers>
+                                        <EventTrigger RoutedEvent="MouseEnter">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <!-- 放大縮小 -->
+                                                    <DoubleAnimation Storyboard.TargetName="MainArrowPath" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" From="1" To="1.2" Duration="0:0:1" AutoReverse="True" RepeatBehavior="Forever" />
+                                                    <DoubleAnimation Storyboard.TargetName="MainArrowPath" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" From="1" To="1.2" Duration="0:0:1" AutoReverse="True" RepeatBehavior="Forever" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+
+                                        <!-- 定滑鼠離開停止 -->
+                                        <EventTrigger RoutedEvent="MouseLeave">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <!-- 停止，縮回原大小 -->
+                                                    <DoubleAnimation Storyboard.TargetName="MainArrowPath" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.2" />
+                                                    <DoubleAnimation Storyboard.TargetName="MainArrowPath" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.2" />
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                    </UXControls:UXButton.Triggers>
+                                </UXControls:UXButton>
+                            </StackPanel>
+                        </Grid>
+
                     </Grid>
 
-                </Grid>
+                    <!-- Keyboard Image -->
+                    <Grid Grid.Row="3" Margin="64, 64, 96, 0" HorizontalAlignment="Center">
+                        <Image x:Name="MainAppImage1" Grid.Row="0" Source="{Binding AppDeviceImage}" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="721"  Height="384" />
+                        <Image x:Name="MainAppImage2" Grid.Row="0" Source="{Binding AppDeviceImage}" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="682"  Height="364" />
+                    </Grid>
 
-                <!-- Keyboard Image -->
-                <Grid Grid.Row="3" Margin="64, 64, 96, 0" HorizontalAlignment="Center">
-                    <Image x:Name="MainAppImage1" Grid.Row="0" Source="{Binding AppDeviceImage}" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="721"  Height="384" />
-                    <Image x:Name="MainAppImage2" Grid.Row="0" Source="{Binding AppDeviceImage}" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="682"  Height="364" />
-                </Grid>
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="1378" Height="735">
+                        <!-- 第一張圖片 -->
+                        <Image x:Name="img1" Width="550" Height="292" Source="{Binding Img1Source}" Stretch="UniformToFill" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="146,368,0,0" />
 
-                <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="1378" Height="735">
-                    <!-- 第一張圖片 -->
-                    <Image x:Name="img1" Width="550" Height="292" Source="{Binding Img1Source}" Stretch="UniformToFill" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="146,368,0,0" />
-
-                    <!-- 第二張圖片，位於第一張圖片之上 -->
-                    <Image x:Name="img2" Width="683" Height="343" Source="{Binding Img2Source}" Stretch="UniformToFill" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="561,317,0,0" />
+                        <!-- 第二張圖片，位於第一張圖片之上 -->
+                        <Image x:Name="img2" Width="683" Height="343" Source="{Binding Img2Source}" Stretch="UniformToFill" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="561,317,0,0" />
+                    </Grid>
                 </Grid>
             </Grid>
         </StackPanel>
@@ -237,26 +260,6 @@
                     <Image x:Name="img3" Width="1378" Height="671" Source="{Binding Img3Source}" Stretch="UniformToFill" VerticalAlignment="Top"  />
                 </Grid>
             </Grid>
-            <!-- Keep Consent XAML, it will move to here
-            <Grid Margin="0" Visibility="{Binding ConsentVisibility}">
-                <Border CornerRadius="4" Height="320" Width="801" VerticalAlignment="Center" HorizontalAlignment="Center" Background="Transparent">
-                    <Grid>
-                        <Image Source="/DDPM.UI.Resources;component/Resources/Images/ConsentBg.png" Stretch="Fill" Opacity="0.2" />
-                        <StackPanel Orientation="Vertical" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <UXControls:UXTextBlock Name="txtCaption" VerticalAlignment="Center" FontWeight="Light" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="40" Margin="0" />
-                            <UXControls:UXTextBlock Name="txtCaption2" VerticalAlignment="Center" FontWeight="Light" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="40" Margin="0,0,0,10" />
-                            <UXControls:UXTextBlock Name="txtMessage" VerticalAlignment="Center" FontWeight="Normal" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="16" LineHeight="24" Width="660" >
-                                <Run Name="txt1" FontFamily="Roboto" FontWeight="Normal"/>
-                                <Run Name="txt2" FontFamily="Roboto" FontWeight="Normal" Cursor="Hand" TextDecorations="Underline" MouseLeftButtonDown="OpenPrivacy" />
-                            </UXControls:UXTextBlock>
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,0">
-                                <UXControls:UXButton Name="txtNo" MinWidth="136.5" MinHeight="40" HorizontalAlignment="Center" ButtonType="Secondary" Click="No_MouseLeftButtonDown" Content="N/A" FontFamily="Roboto" FontSize="14" FontWeight="Medium" CornerRadius="2"/>
-                                <UXControls:UXButton Name="txtYes" MinWidth="136.5" MinHeight="40" Margin="12,0,0,0" ButtonType="Primary" HorizontalAlignment="Center" Click="Yes_MouseLeftButtonDown" Content="N/A" FontFamily="Roboto" FontSize="14" FontWeight="Medium" CornerRadius="2" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-            </Grid>-->
         </StackPanel>
     </Grid>
 </UserControl>
