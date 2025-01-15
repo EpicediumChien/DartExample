@@ -1011,8 +1011,8 @@ namespace DDPM.SA.Plugin.CLIManager
 
         public void sendToastResult(string defer_id, bool isDefer)
         {
-            WriteLog("@@stephen CLIManagerPlugin::sendToastResult defer_id = " + defer_id);
-            WriteLog("@@stephen CLIManagerPlugin::sendToastResult isDefer = " + isDefer);
+            // WriteLog("@@stephen CLIManagerPlugin::sendToastResult defer_id = " + defer_id);
+            // WriteLog("@@stephen CLIManagerPlugin::sendToastResult isDefer = " + isDefer);
             if (!deferResponse.ContainsKey(defer_id))
             {
                 deferResponse.Add(defer_id, isDefer);
@@ -1058,21 +1058,21 @@ namespace DDPM.SA.Plugin.CLIManager
             {
                 Thread.Sleep(1000);
                 // check defer response
-                WriteLog("@@stephen CLIManagerPlugin::checkToastResult Sleep(1000)");
-                WriteLog($"@@stephen CLIManagerPlugin::checkToastResult deferResponse.ContainsKey({key}) = " + deferResponse.ContainsKey(key));
+                // WriteLog("@@stephen CLIManagerPlugin::checkToastResult Sleep(1000)");
+                // WriteLog($"@@stephen CLIManagerPlugin::checkToastResult deferResponse.ContainsKey({key}) = " + deferResponse.ContainsKey(key));
 
                 if (deferResponse.ContainsKey(key))
                 {
-                    WriteLog("@@stephen CLIManagerPlugin::checkToastResult deferResponse.ContainsKey " + key);
+                    // WriteLog("@@stephen CLIManagerPlugin::checkToastResult deferResponse.ContainsKey " + key);
                     if (deferResponse[key])
                     {
-                        WriteLog("@@stephen CLIManagerPlugin::checkToastResult deferResponse[did] =  " + deferResponse[key]);
+                        // WriteLog("@@stephen CLIManagerPlugin::checkToastResult deferResponse[did] =  " + deferResponse[key]);
                         deferResponse.Remove(key);
                         // add deferitem to deferControlPanel
                         DeferControlPanel.addToSchedule(item);
                         return true;
                     }
-                    WriteLog("@@stephen CLIManagerPlugin::checkToastResult deferResponse[did]2 =  " + deferResponse[key]);
+                    // WriteLog("@@stephen CLIManagerPlugin::checkToastResult deferResponse[did]2 =  " + deferResponse[key]);
                     deferResponse.Remove(key);
                     break;
                 }
@@ -1120,8 +1120,8 @@ namespace DDPM.SA.Plugin.CLIManager
             EventHandler<CLIEventToastArgs> Handler = CLIToastEvent;
             if (Handler != null)
             {
-                WriteLog($"@@stephen CLIManagerPlugin::onCLIToastEventNotify CLIEventToastArgs e.defer_id = {e.defer_id}");
-                WriteLog($"@@stephen CLIManagerPlugin::onCLIToastEventNotify CLIEventToastArgs e.toast_message = {e.toast_message}");
+                // WriteLog($"@@stephen CLIManagerPlugin::onCLIToastEventNotify CLIEventToastArgs e.defer_id = {e.defer_id}");
+                // WriteLog($"@@stephen CLIManagerPlugin::onCLIToastEventNotify CLIEventToastArgs e.toast_message = {e.toast_message}");
                 Handler.Invoke(this, e);
             }
         }
