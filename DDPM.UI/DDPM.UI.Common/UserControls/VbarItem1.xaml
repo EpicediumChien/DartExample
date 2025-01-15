@@ -236,7 +236,7 @@
                                          d:Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam"
                -->
                 <!-- Elsa 20250106 For PIMS [PIMS-334921] add Width="145" TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow"-->
-                <UXControls:UXTextBlock Grid.Column="1" FontSize="14" Focusable="False" TextTrimming="CharacterEllipsis" TextWrapping="Wrap"
+                <UXControls:UXTextBlock Grid.Column="1" FontSize="14" Focusable="False" 
                                         MaxHeight="54" Margin="0,8,8,8"
                                         Text="{Binding Text, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                          d:Text="Personalização de teclas"
@@ -247,6 +247,10 @@
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"  Value="True">
                                     <Setter Property="Foreground"  Value="#FFFFFF" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Width, ElementName=bdOuter}"  Value="212">
+                                    <Setter Property="TextWrapping"  Value="WrapWithOverflow" />
+                                    <Setter Property="TextTrimming"  Value="CharacterEllipsis" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>

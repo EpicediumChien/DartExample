@@ -117,12 +117,29 @@ namespace DDPM.UI.Module.EzMemory
                     if (_vm.currentEditprofile != null)
                     {
                         _vm.currentEditprofileSetting = _vm.LoadEmMonitorSettings(_vm.currentEditprofile.ID);
+                        //No monitor settings for current profile.ID, then assign default settings (Manual/Current Time)
                         if (_vm.currentEditprofileSetting == null)
                         {
+                            _vm.IsManualLaunch = true;
+                            _vm.IsAutoLaunch = false;
+                            DateTime now = DateTime.Now;
+
+                            string ampm = now.Hour >= 12
+                                ? CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator
+                                : CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+
+                            string hour = now.ToString("hh");
+                            string minute = now.ToString("mm");
+
+                            _vm.SelectedHour = hour;
+                            _vm.SelectedMinute = minute;
+                            _vm.SelectedAMPM = ampm;
+
+                            _vm.IsLaunchAtStartup = false;
+
                             //Assign default settings
                             _vm.currentEditprofileSetting = new EzProfileSettingDDPM(_vm.currentEditprofile.ID,
                                 false, GetAutoLaunchTime(), false);
-                            _vm.IsLaunchAtStartup = false;
                         }
 
                     }
