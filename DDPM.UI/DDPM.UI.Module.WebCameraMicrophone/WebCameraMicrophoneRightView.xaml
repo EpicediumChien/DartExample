@@ -155,6 +155,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
                         <Grid Grid.Column="0" HorizontalAlignment="Left">
@@ -225,28 +226,28 @@
 
                         </Grid>
 
+                        <!-- #region Wraning Icon -->
+                        <Image Grid.Column="1" Name="imgWarn" Margin="0,0,10,0" Source="/DDPM.UI.Common;component/Resources/Warring.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16" VerticalAlignment="Center">
+                            <Image.ToolTip>
+                                <ToolTip Placement="Right" VerticalOffset="-85" HorizontalOffset="15">
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <Border.Resources>
+                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                        </Border.Resources>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding [WebCameraMicrophone.2], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="Wrap" Width="345" />
+                                        </StackPanel>
+                                    </Border>
+                                </ToolTip>
+                            </Image.ToolTip>
+                        </Image>
+                        <!-- #endregion Wraning Icon -->
                         <Grid Grid.Column="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <!-- #region Wraning Icon -->
-                            <Image Grid.Column="4" Name="imgWarn" Margin="0,0,10,0" Source="/DDPM.UI.Common;component/Resources/Warring.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16" VerticalAlignment="Center">
-                                <Image.ToolTip>
-                                    <ToolTip Placement="Right" VerticalOffset="-85" HorizontalOffset="-15">
-                                        <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                            <Border.Resources>
-                                                <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
-                                            </Border.Resources>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding [WebCameraMicrophone.2], Source={x:Static lang:LangHelper.Instance}}" TextWrapping="Wrap" Width="345" />
-                                            </StackPanel>
-                                        </Border>
-                                    </ToolTip>
-                                </Image.ToolTip>
-                            </Image>
-                            <!-- #endregion Wraning Icon -->
 
                             <!-- #region ToggleSwitch -->
                             <UXControls:UXToggleSwitch Grid.Column="5" Name="tsMicOn" Click="UXToggleSwitch_Click" IsChecked="{Binding Path= IsMicEnumerationOn}" Content="{Binding Path=IsMicEnumerationOnText}" 
