@@ -606,6 +606,7 @@ namespace NGA.ThickClient
         private void ConsoleWindow_Closed_1(object sender, EventArgs e)
         {
             Console.WriteLine("ConsoleWindow_Closed_1()");
+            GC.Collect();
             Environment.Exit(0);
 
             /* _log?.Info($"{nameof(MainWindow)} - ConsoleWindow_Closed");
