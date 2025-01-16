@@ -77,8 +77,8 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                     {
                         WriteWalkThroughReg(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName);
                         DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0]);
-                        DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                         DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDeviceFromQueue RemoveAt {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName}");
+                        DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);                      
                     }
                 }
             }
@@ -140,8 +140,8 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 {
                     WriteWalkThroughReg(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName);
                     DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0]);
-                    DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                     DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDeviceFromQueue RemoveAt {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName}");
+                    DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                 }
                 if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)//After remove, still WalkThrough need to show
                 {
