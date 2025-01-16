@@ -173,7 +173,7 @@ namespace DDPM.UI.Plugin.ViewModels
                                 {
                                     _isQuickPauseStatus = false;
                                     DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = 0;
-                                    _isNormalChecked = true;
+                                    //_isNormalChecked = true;
                                     _isSensitiveChecked = false;
                                 }
                                 if (event_param[eventtype].ToString().ToLower() == "sensitive")
