@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.NetworkInformation;
 using System.Security;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -427,42 +428,73 @@ namespace DDPM.SA.Plugins.SWUpdate
                         method.DeleteFolder(savePath);
                         continue;
                     }
-                    _downloadTimer = new Timer();
-                    _downloadTimer.Interval = 1000;
-                    _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
-                    _downloadTimer.Start();
-                    download = new Download(_logs);
-                    string downloadInfo = "";
-                    // 將儲存路徑與從 URL 中提取的檔案名稱組合
-                    if (_IsSkipSHA)
+                    if (!NetworkInterface.GetIsNetworkAvailable())
                     {
-                        _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {url}");
+                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
+                        _notificationStr = $"{swUpdateInfos[i].SoftwareName}{LangHelper.Instance["Update_failed_due_to_network_error"]}";
+                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " Download File Fail : " + _notificationStr);
+                        method.DeleteFolder(savePath);
+                        continue;
                     }
-                    string _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
-                    bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA);
-                    _downloadTimer.Stop();
-                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                    string _installationFileStoragePath;
+                    try
                     {
-                        DeviceName = swUpdateInfos[i].SoftwareName,
-                        TheLatestVersion = swUpdateInfos[i].TheLatestVersion,
-                        ProcessName = LangHelper.Instance["Downloading_and_installing"],
-                        ProcessProgress = 100,
-                    };
-                    if (!downloadRet)
+                        _downloadTimer = new Timer();
+                        _downloadTimer.Interval = 1000;
+                        _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
+                        _downloadTimer.Start();
+                        download = new Download(_logs);
+                        string downloadInfo = "";
+                        // 將儲存路徑與從 URL 中提取的檔案名稱組合
+                        if (_IsSkipSHA)
+                        {
+                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {url}");
+                        }
+                        _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
+                        bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA);
+                        _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
+                        _downloadTimer.Stop();
+                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                        {
+                            DeviceName = swUpdateInfos[i].SoftwareName,
+                            TheLatestVersion = swUpdateInfos[i].TheLatestVersion,
+                            ProcessName = LangHelper.Instance["Downloading_and_installing"],
+                            ProcessProgress = 100,
+                        };
+                        if (!downloadRet)
+                        {
+                            if (downloadInfo.Equals("CA check fail"))
+                            {
+                                swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
+                                _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
+                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                                method.DeleteFolder(savePath);
+                            }
+                            else if (downloadInfo.Equals("Network fail"))
+                            {
+                                swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
+                                _notificationStr = LangHelper.Instance["Update_failed_due_to_network_error"];
+                                NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                                method.DeleteFolder(savePath);
+                            }
+                            _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " Download File Fail");
+                            continue;
+                        }
+                    }
+                    catch (Exception ex)
                     {
-                        if (downloadInfo.Equals("CA check fail"))
+                        if (_downloadTimer != null)
                         {
-                            swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
-                            _notificationStr = LangHelper.Instance["Software_update_unsuccessful"];
-                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                            _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
+                            _downloadTimer.Stop();
+                            _downloadTimer = null;
                         }
-                        else if (downloadInfo.Equals("Network fail"))
-                        {
-                            swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
-                            _notificationStr = LangHelper.Instance["Update_failed_due_to_network_error"];
-                            NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
-                        }
-                        _logs.DebugMsg_1(swUpdateInfos[i].SoftwareName + " Download File Fail");
+                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
+                        _notificationStr = LangHelper.Instance["Update_failed_due_to_network_error"];
+                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                        _logs.DebugMsg_1(nameof(DownloadAndInstall) + " Error：Update failed due to network error. Try again. ex:" + ex.Message); // 輸出錯誤訊息
+                        method.DeleteFolder(savePath);
                         continue;
                     }
                     string extractPath = Path.Combine(savePath + Path.GetFileName(url).Substring(0, Path.GetFileName(url).Length - 4));
@@ -568,7 +600,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 };
             }
         }
-        
+
         /// <summary>
         /// 跳出通知
         /// </summary>

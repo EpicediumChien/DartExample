@@ -111,8 +111,9 @@ namespace DDPM.UI.Common
             error
         }
 
-        public static List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
-        public static List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
+        //Using object from DDPM.SA.Common.UI.SACommonHelper [Dean]0115
+        public static List<string> EOLKBList = DDPM.SA.Common.UI.SACommonHelper.EOLKBList;// new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
+        public static List<string> EOLMouseList = DDPM.SA.Common.UI.SACommonHelper.EOLMouseList;// new () { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
 
         /// <summary>
         /// 
@@ -540,7 +541,7 @@ namespace DDPM.UI.Common
                 //2 HomeDevices             TooltipModelName property
                 //3 PeripheralViewModel.cs  MappingModel()
                 //If you need to modify, please also modify them.
-                switch (deviceInfo.ModelNumber)
+                /*switch (deviceInfo.ModelNumber)
                 {
                     //Keyboard
                     case "KB740":
@@ -566,7 +567,8 @@ namespace DDPM.UI.Common
                     default:
                         model = deviceInfo.ModelNumber;
                         break;
-                } //switch(deviceInfo.ModelNumber)
+                } //switch(deviceInfo.ModelNumber)*/
+                model = DDPM.SA.Common.UI.SACommonHelper.MappingModel(deviceInfo.ModelNumber);
 
                 if (deviceInfo.ColorCode != 0)
                 {
@@ -576,7 +578,8 @@ namespace DDPM.UI.Common
             return $"{model}{colorCode}";
         }
 
-        public static string MappingEOLName(string model)
+        //Using this from DDPM.SA.Common.UI.SACommonHelper [Dean]0115
+        /*public static string MappingEOLName(string model)
         {
             switch (model)
             {
@@ -595,9 +598,10 @@ namespace DDPM.UI.Common
                 default:
                     return model;
             }
-        }
+        }*/
 
-        public static string MappingName(string model, string name)
+        //Using this from DDPM.SA.Common.UI.SACommonHelper [Dean]0115
+        /*public static string MappingName(string model, string name)
         {
             name = name.Replace(model, "").Trim();
             switch (CultureInfo.InstalledUICulture.Name)
@@ -613,7 +617,9 @@ namespace DDPM.UI.Common
                 default:
                     return name;
             }
-        }
+        }*/
+
+        //Collect all the peripheral model name which is EOL model to DDPM.SA.Common.UI.SACommonHelper [Dean]0115
         /// <summary>
         /// Check if the specifc peripheral model is EOL model.
         /// Based on "Copy of Peripheral-SupportedDeviceList_20241224.xlsx"
@@ -621,7 +627,7 @@ namespace DDPM.UI.Common
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public static bool IsPeripheralEOLModel(string model)
+        /*public static bool IsPeripheralEOLModel(string model)
         {
             switch (model)
             {
@@ -641,7 +647,7 @@ namespace DDPM.UI.Common
                 default:
                     return false;
             }
-        }
+        }*/
         #endregion
 
         public static Canvas CanvasIconCreator(VbarIcon vbarIcon, Geometry? clip = null)

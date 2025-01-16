@@ -41,7 +41,7 @@ namespace DDPM.UI.Resources.Helper
 #if MULTILINGUAL_TEST
                 //Robert_Lin 2025-1-13 To do multilingual test, please remove below comments
                 //
-                CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("pt-PT");
+                CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("fr-CA");
                 string str = _resourceManager.GetString(name, cultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
 #else
                 //And comment out the following line

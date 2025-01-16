@@ -14,7 +14,7 @@
                 BorderThickness="{Binding BorderThickness, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" BorderBrush="#0DFFFFFF"
                 Background="{DynamicResource RightView_Header_BkColor}"
                 Margin="0" MouseLeftButtonDown="OnClick">
-            <UXControls:UXTextBlock x:Name="TabCaption" Text="{Binding Caption, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" FontSize="{Binding CaptionSize, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" FontFamily="Roboto" FontWeight="Light"
+            <UXControls:UXTextBlock TextWrapping="WrapWithOverflow" x:Name="TabCaption" Text="{Binding Caption, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" FontSize="{Binding CaptionSize, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}" FontFamily="Roboto" FontWeight="Light"
                                     Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Border>
         <Image x:Name="InfoIcon" Margin="0,8,8,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Fill" Visibility="Hidden"
