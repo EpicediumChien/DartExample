@@ -835,7 +835,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         // ProximitySensor按鈕diable & 功能關閉
                         _vm.is_ProximitySensor_enable = true;
-                        _vm.IsChecked_ProximitySensor = true;
+                        //_vm.IsChecked_ProximitySensor = true; // Jim 20250116 modify for PIMS-297931 by lio comment
 
                         //autoframe功能關閉 & 區域隱藏
                         _vm.is_AutoFramingVisibility = true;
@@ -1117,7 +1117,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //_vm.IsAutoFramingOn = true;
 
                 _vm.is_ProximitySensor_enable = true;
-                _vm.IsChecked_ProximitySensor = true;
+                //_vm.IsChecked_ProximitySensor = true; // Jim 20250116 modify for PIMS-297931 by lio comment
             }
 
 
