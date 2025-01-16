@@ -77,9 +77,24 @@
                 </StackPanel>
                 <StackPanel Orientation="Vertical" x:Name="Section2" Margin="0,16,0,5000">
                     <StackPanel x:Name="HoverClick" Orientation="Horizontal">
-                        <Grid Width="288">
+                        <!-- Robert_Lin 2025-1-16 PIMS-334240 L10N: i18N: DDPM 2.0: GUI: TP1: es-ES, pt-BR, pt-PT: Overlapping found in StringID: PenButtonSettings.6
+                        Text is overlapping with ToogleSwitch, separate them with 2 columns. add TextTrimming="CharacterEllipsis" to the TextBlock.
+                        OLD:
+                         <Grid Width="288">
                             <UXControls:UXTextBlock Name="txtHoverClick" Style="{StaticResource TextStyle1}" Margin="0,10,0,25" VerticalAlignment="Center" HorizontalAlignment="Left" />
                             <UXControls:UXToggleSwitch Margin="0,10,0,25" IsChecked="{Binding IsHoverClickOn}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                       Foreground="{DynamicResource DefaultTheme_TxtColor}" FontFamily="Roboto" FontSize="16" FontWeight="Normal"
+                                                       Content="{Binding IsHoverClickToggleText}" />
+                        </Grid>
+                        
+                        -->
+                        <Grid Width="288">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <UXControls:UXTextBlock Name="txtHoverClick" Style="{StaticResource TextStyle1}" Margin="0,10,0,25" VerticalAlignment="Center" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"/>
+                            <UXControls:UXToggleSwitch Margin="0,10,0,25" IsChecked="{Binding IsHoverClickOn}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1"
                                                        Foreground="{DynamicResource DefaultTheme_TxtColor}" FontFamily="Roboto" FontSize="16" FontWeight="Normal"
                                                        Content="{Binding IsHoverClickToggleText}" />
                         </Grid>
@@ -95,25 +110,41 @@
                     </Border>
                     <StackPanel Name="Behaviors">
                         <Border Name="bdrClickOnce" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="Behavior_MouseLeftButtonDown" Cursor="Hand">
+                            <!-- Robert_Lin 2025-1-16 PIMS-332086 L10N: i18N: DDPM 2.0: GUI: TP1: pt-BR: StringID: PenButtonSettings.5 overlaps with icon.
+                            Issue found at Prss and Hold, but we will fix it in all 3 actions. Text requirements: Single line, Trimming end with "..."
+                            The same solution with PIMS-334240
+                            -->
                             <Grid HorizontalAlignment="Left" Width="288" Height="45" Margin="0,0,0,0">
-                                <UXControls:UXTextBlock Name="txtClickOnce" Style="{StaticResource UXTextBlockStyle1}" />
-                                <Image Name="imgClickOnce" Source="{DynamicResource down_Expand}" Stretch="Uniform"
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <UXControls:UXTextBlock Name="txtClickOnce" Style="{StaticResource UXTextBlockStyle1}" TextTrimming="CharacterEllipsis"/>
+                                <Image Name="imgClickOnce" Source="{DynamicResource down_Expand}" Stretch="Uniform" Grid.Column="1"
                                        Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="16" Height="16">
                                 </Image>
                             </Grid>
                         </Border>
                         <Border Name="bdrDoubleClick" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="Behavior_MouseLeftButtonDown" Cursor="Hand">
                             <Grid HorizontalAlignment="Left" Width="288" Height="45">
-                                <UXControls:UXTextBlock Name="txtDoubleClick" Style="{StaticResource UXTextBlockStyle1}" />
-                                <Image Name="imgDoubleClick" Source="{DynamicResource down_Expand}" Stretch="Uniform"
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <UXControls:UXTextBlock Name="txtDoubleClick" Style="{StaticResource UXTextBlockStyle1}" TextTrimming="CharacterEllipsis"/>
+                                <Image Name="imgDoubleClick" Source="{DynamicResource down_Expand}" Stretch="Uniform" Grid.Column="1"
                                        Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="16" Height="16">
                                 </Image>
                             </Grid>
                         </Border>
                         <Border Name="bdrPressAndHold" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="Behavior_MouseLeftButtonDown" Cursor="Hand">
                             <Grid HorizontalAlignment="Left" Width="288" Height="45">
-                                <UXControls:UXTextBlock Name="txtPressAndHold" Style="{StaticResource UXTextBlockStyle1}" />
-                                <Image Name="imgPressAndHold" Source="{DynamicResource down_Expand}"  Stretch="Uniform"
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <UXControls:UXTextBlock Name="txtPressAndHold" Style="{StaticResource UXTextBlockStyle1}" TextTrimming="CharacterEllipsis"/>
+                                <Image Name="imgPressAndHold" Source="{DynamicResource down_Expand}"  Stretch="Uniform" Grid.Column="1"
                                        Style="{StaticResource ActionArrowStyle}" HorizontalAlignment="Right" VerticalAlignment="Center" Cursor="Hand" Width="16" Height="16">
                                 </Image>
                             </Grid>
