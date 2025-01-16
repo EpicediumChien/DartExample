@@ -598,5 +598,16 @@ namespace NGA.ThickClient
             return SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
         }
         #endregion Win32
+
+        private void ConsoleWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+        }
+
+        private void ConsoleWindow_Closed_1(object sender, EventArgs e)
+        {
+            Console.WriteLine("ConsoleWindow_Closed_1");
+            GC.Collect();
+            Environment.Exit(0);
+        }
     }
 }
