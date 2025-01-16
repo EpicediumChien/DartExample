@@ -21,6 +21,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
     {
         private string PrivacyUrl = "https://www.dell.com/learn/us/en/uscorp1/policies-privacy-country-specific-privacy-policy";
         private WalkThroughPageViewModel ViewModel => (WalkThroughPageViewModel)DataContext;
+        private WalkThroughBox msgBox;
         public WalkThroughPage()
         {
             InitializeComponent();
@@ -35,10 +36,14 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             txtCaption2.Text = LangHelper.Instance["AppName"];
             txt1.Text = LangHelper.Instance["Consent.2"];
             txt2.Text = LangHelper.Instance["Analytics.2"];
+            Application.Current.MainWindow.MouseLeftButtonUp -= MouseDragEvent;
+            Application.Current.MainWindow.MouseLeftButtonUp += MouseDragEvent;
+            ViewModel.ControlIcon(false);
         }
 
         ~WalkThroughPage()
         {
+            Application.Current.MainWindow.MouseLeftButtonUp -= MouseDragEvent;
         }
 
         private void SkipBtn_Click(object sender, RoutedEventArgs e)
@@ -107,7 +112,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void MainNextBtn_Click(object sender, RoutedEventArgs e)
         {
-            WalkThroughBox msgBox = new WalkThroughBox(ViewModel, Window.GetWindow(this));
+            msgBox = new WalkThroughBox(ViewModel, Window.GetWindow(this));
             msgBox.WindowStartupLocation = WindowStartupLocation.Manual;
             //msgBox.ShowDialog();
             msgBox.Show();
@@ -155,6 +160,13 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         private void Close()
         {
             ViewModel.ConsentPageVisibility = Visibility.Collapsed;
+        }
+
+        private void MouseDragEvent(object sender, RoutedEventArgs e)
+        {
+            if (msgBox != null) { 
+                msgBox.RefreshWalkThroughBoxPosition();
+            }
         }
     }
 }
