@@ -38,7 +38,6 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             txt2.Text = LangHelper.Instance["Analytics.2"];
             Application.Current.MainWindow.MouseLeftButtonUp -= MouseDragEvent;
             Application.Current.MainWindow.MouseLeftButtonUp += MouseDragEvent;
-            ViewModel.ControlIcon(false);
         }
 
         ~WalkThroughPage()
