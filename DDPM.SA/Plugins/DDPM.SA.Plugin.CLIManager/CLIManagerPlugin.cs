@@ -1029,7 +1029,8 @@ namespace DDPM.SA.Plugin.CLIManager
             {
                 defer_id = did,
                 toast_message = commanddata,
-                is_defer = true
+                is_defer = true,
+                count = item.count
             });
 
             bool result = checkToastResult(did, item);
@@ -1045,7 +1046,8 @@ namespace DDPM.SA.Plugin.CLIManager
             {
                 defer_id = did,
                 toast_message = item.commanddata,
-                is_defer = true
+                is_defer = true,
+                count = item.count
             });
 
             bool result = checkToastResult(did, item);
@@ -1090,7 +1092,8 @@ namespace DDPM.SA.Plugin.CLIManager
             {
                 defer_id = did,
                 toast_message = item.commanddata,
-                is_defer = false
+                is_defer = false,
+                count = item.count
             });
 
             return Task.CompletedTask;

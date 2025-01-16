@@ -796,15 +796,31 @@ namespace DDPM.SA.Plugin.User.CLIManager
         //private void OnEventToast(object sender, EventArgs e) { }
         private void _CliManagerPlugin_CLIToastEvent(object? sender, CLIEventToastArgs e)
         {
+            var header = string.Empty;
+            if (e.toast_message.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase) || e.toast_message.Contains("dock=fwupdate", StringComparison.OrdinalIgnoreCase))
+            {
+                header = e.is_defer ? "Update available​" : "Update will be applied​";
+                e.toast_message = e.is_defer ? $"[Device Marketing Name with Model in parenthesis] has a pending firmware update. During update, device may be intermittently available. Do not disconnect the device during the update. This update can be deferred {e.count + 1} times before it is required.​" : "There is a required firmware update for [Device Marketing Name with Model in parenthesis]. During update, device may be intermittently available. Do not disconnect the device during the update.​";
+            }
+            else if (e.toast_message.Contains("app=update", StringComparison.OrdinalIgnoreCase))
+            {
+                header = e.is_defer ? "Update available​" : "Update will be applied​";
+                e.toast_message = e.is_defer ? $"Dell Display and Peripheral Manager has a pending update. This update can be deferred {e.count + 1} times before it is required.​" : "There is a required software update for Dell Display and Peripheral Manager.​";
+            }
+            else
+            {
+                header = e.is_defer ? "Pending Changes to settings​" : "Changes to settings will be applied​";
+                e.toast_message = e.is_defer ? $"Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator.​\nThe configuration can be deferred {e.count + 1} times before it is required.​" : "Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator​.";
+            }
             //throw new NotImplementedException();
             //Console.WriteLine($"value = {CLIEventToastArgs.toast_message}");
             if (e.is_defer)
             {
-                showToast(e.defer_id, e.toast_message);
+                showToast(e.defer_id, header, e.toast_message);
             }
             else
             {
-                showNotification(e.defer_id, e.toast_message);
+                showNotification(e.defer_id, header, e.toast_message);
             }
 
 
@@ -876,26 +892,26 @@ namespace DDPM.SA.Plugin.User.CLIManager
         private const string DEFER_MSG_HEADER = @"Update available";
         private const string DEFER_MSG_BODY = @"There has a pending update. During update, device may be intermittently available. Do not disconnect the device during the update. This update can be deferred before it is required.";
 
-        public void showNotification(string id, string msg)
+        public void showNotification(string id, string header, string msg)
         {
 
             new ToastContentBuilder()
                 .AddArgument("deferid", id)
-                .AddText(NOTIFICATION_MSG_HEADER)
-                .AddText(NOTIFICATION_MSG_BODY)
+                .AddText(header)
+                .AddText(msg)
                 .AddButton(new ToastButton()
                     .SetContent("Ok")
-                //.AddArgument("action", "OK")
+            //.AddArgument("action", "OK")
                 )
                 .Show();
         }
-        public void showToast(string id, string msg)
+        public void showToast(string id, string header, string msg)
         {
 
             new ToastContentBuilder()
                 .AddArgument("deferid", id)
-                .AddText(DEFER_MSG_HEADER)
-                .AddText(DEFER_MSG_BODY)
+                .AddText(header)
+                .AddText(msg)
                 .AddButton(new ToastButton()
                     .SetContent("Update now")
                     .AddArgument("action", "runnow")
