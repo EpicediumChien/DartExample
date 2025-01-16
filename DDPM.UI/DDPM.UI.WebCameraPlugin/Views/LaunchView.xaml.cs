@@ -958,7 +958,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes2_width = 133;*/
 
                         //camera控制權
-                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+                        //_vm.bdrPrioritize_show = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by lio comment
+                        _vm.bdrPrioritize_show = Visibility.Visible; // Jim 20250116 modify for PIMS-297931 by lio comment
                     }
                     break;
                 case "U3223QZ":
@@ -1038,7 +1039,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes2_width = 133;*/
 
                         //camera控制權
-                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+                        //_vm.bdrPrioritize_show = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by lio comment
+                        _vm.bdrPrioritize_show = Visibility.Visible; // Jim 20250116 modify for PIMS-297931 by lio comment
                     }
                     break;
 
