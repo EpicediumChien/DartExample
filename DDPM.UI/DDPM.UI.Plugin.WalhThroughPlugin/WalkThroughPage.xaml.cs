@@ -48,8 +48,8 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 ViewModel.UpdateLastlogicalDeviceType();
                 ViewModel.WriteWalkThroughReg(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName);
                 DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0]);
-                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                 DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDeviceFromQueue RemoveAt {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName}");
+                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                 if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
                 {
                     ViewModel.InitializeDeviceFromQueue();
