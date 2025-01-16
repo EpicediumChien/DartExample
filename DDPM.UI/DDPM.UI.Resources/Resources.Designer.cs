@@ -1294,6 +1294,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connect your monitor via USB 3.0 to enable 4K UHD resolution..
+        /// </summary>
+        internal static string Camera_26 {
+            get {
+                return ResourceManager.GetString("Camera.26", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Capture.
         /// </summary>
         internal static string Camera_3 {
@@ -9552,6 +9561,24 @@ namespace DDPM.UI.Resources {
         internal static string WebCameraPresenceDetection_11 {
             get {
                 return ResourceManager.GetString("WebCameraPresenceDetection.11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to seconds.
+        /// </summary>
+        internal static string WebCameraPresenceDetection_12 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to minutes.
+        /// </summary>
+        internal static string WebCameraPresenceDetection_13 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.13", resourceCulture);
             }
         }
         
