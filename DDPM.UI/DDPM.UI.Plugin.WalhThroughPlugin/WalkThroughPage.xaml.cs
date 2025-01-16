@@ -27,7 +27,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             InitializeComponent();
             DataContext = new WalkThroughPageViewModel();
 
-            ViewModel.ControlIcon(true);
+            ViewModel.ControlIcon(true, false);
 
             // Consent Page wording
             txtYes.Content = LangHelper.Instance["ConsentYes"];
@@ -43,6 +43,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         ~WalkThroughPage()
         {
+            ViewModel.ControlIcon(true, true);
             Application.Current.MainWindow.MouseLeftButtonUp -= MouseDragEvent;
         }
 

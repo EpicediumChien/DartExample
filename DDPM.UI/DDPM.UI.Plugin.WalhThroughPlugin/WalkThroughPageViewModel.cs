@@ -228,14 +228,14 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             SkipButtonVisibility = _currentPageIndex < _currentTotalPage ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        public void ControlIcon(bool show_hide)
+        public void ControlIcon(bool show_hide, bool IsEnabled = true)
         {
             IConsole? console = DdpmCommonHelper.MyConsole;
             if (console != null)
             {
 
                 var args = new EventManagerArgs();
-                args.Tag = show_hide; //true=Show, false=Hide
+                args.Tag = new List<bool> { show_hide, IsEnabled }; //true=Show, false=Hide
                 console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, args);
                 console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, this, args);
             }

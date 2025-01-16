@@ -183,7 +183,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public virtual bool SetCurrentDevice(string instanceIDs)
         {
-            _console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, new EventManagerArgs() { Tag = true });
+            _console.RaiseEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, this, new EventManagerArgs() { Tag = new List<bool> { true, true } });
             IsIDInvalid = false;
             if (instanceIDs.Substring(instanceIDs.Length - 2, 1) == "-")
             {
