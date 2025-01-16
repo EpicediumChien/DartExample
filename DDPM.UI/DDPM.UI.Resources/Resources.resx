@@ -3501,4 +3501,13 @@
   <data name="ColorMsg.1" xml:space="preserve">
     <value>To access presence sensing features, use the link below to download compitible webcam firmware</value>
   </data>
+  <data name="Camera.26" xml:space="preserve">
+    <value>Connect your monitor via USB 3.0 to enable 4K UHD resolution.</value>
+  </data>
+  <data name="WebCameraPresenceDetection.12" xml:space="preserve">
+    <value>seconds</value>
+  </data>
+  <data name="WebCameraPresenceDetection.13" xml:space="preserve">
+    <value>minutes</value>
+  </data>
 </root>
