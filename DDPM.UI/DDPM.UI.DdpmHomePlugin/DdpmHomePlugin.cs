@@ -1118,9 +1118,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private void Handler_ShowAddDeviceIcon(object sender, EventManagerArgs e)
         {
             if (e.Tag != null &&
-                e.Tag is bool)
-            {                                
-                bool isShow = (bool)e.Tag;
+                e.Tag is List<bool>)
+            {
+                List<bool> param = (List<bool>)e.Tag;
+                bool isShow = param[0];
                 if (isShow)
                 {
                     if (_iconAddDevice != null)
@@ -1130,7 +1131,20 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     if (_iconAddDevice != null)
                         _iconAddDevice.Visibility = Visibility.Collapsed;
-                }                
+                }
+
+
+                bool isEnabled = param[1];
+                if (isEnabled)
+                {
+                    if (_iconAddDevice != null)
+                        _iconAddDevice.IsEnabled = isEnabled;
+                }
+                else
+                {
+                    if (_iconAddDevice != null)
+                        _iconAddDevice.IsEnabled = isEnabled;
+                }
             }
         }
 
@@ -1142,9 +1156,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private void Handler_ShowSettingsIcon(object sender, EventManagerArgs e)
         {
             if (e.Tag != null &&
-                e.Tag is bool)
+                e.Tag is List<bool>)
             {
-                bool isShow = (bool)e.Tag;
+                List<bool> param = (List<bool>)e.Tag;
+                bool isShow = param[0];
                 if (isShow)
                 {
                     if (_iconGear != null)
@@ -1154,7 +1169,19 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 {
                     if (_iconGear != null)
                         _iconGear.Visibility = Visibility.Collapsed;
-                }                
+                }
+
+                bool isEnabled = param[1];
+                if (isEnabled)
+                {
+                    if (_iconGear != null)
+                        _iconGear.IsEnabled = isEnabled;
+                }
+                else
+                {
+                    if (_iconGear != null)
+                        _iconGear.IsEnabled = isEnabled;
+                }
             }
         }
 
