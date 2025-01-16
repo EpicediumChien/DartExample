@@ -15,7 +15,6 @@ using System.Windows.Forms;
 using VcpCore.Common;
 using DDPM.Easy.Common;
 using DDPM.SA.Common.Display;
-using DDPM.SA.Common.Settings;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
