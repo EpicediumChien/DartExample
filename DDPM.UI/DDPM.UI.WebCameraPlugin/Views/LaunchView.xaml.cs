@@ -1549,11 +1549,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 2: " + ex.Message);
             }
             Console.WriteLine("LaunchView_Unloaded end");
-            if ( _vm?.close_app == true )
+            /*if ( _vm?.close_app == true )
             {
                 Console.WriteLine("force exit");
                 Environment.Exit(0);
-            }
+            }*/
             //await _vm.CleanupMediaCapture();
         }
 
