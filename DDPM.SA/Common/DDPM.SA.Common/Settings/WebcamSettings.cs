@@ -450,6 +450,13 @@ namespace DDPM.SA.Common.Settings
                 //Init a new data
                 if (tmp == null)
                 {
+
+                    //add by leo 2025/01/16
+                    //Creating a profile for the first time
+                    //ProximitySensor status is restored to original factory initialization to Off.
+                    devMgr!.SetIsProximitySensorEnable(di.ID.ToString() , false);
+
+
                     log?.Info(@$"[WebcamSettings][ImportWebcamSettings] init via di(jsonString:{JsonConvert.SerializeObject(di)})");
                     tmp = new WebcamSettings(di, devMgr, log);
                     tmp = ReAlignWebcamResolution(tmp, model, di, devMgr, log);
