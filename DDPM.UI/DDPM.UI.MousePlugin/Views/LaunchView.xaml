@@ -300,7 +300,7 @@
                 </StackPanel>
             </Grid>
         </Grid>
-        <Grid x:Name="AppCaptionArea" Width="250" Height="280" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,172" Visibility="Collapsed">
+        <Grid x:Name="AppCaptionArea" Width="250" Height="380" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,172" Visibility="Collapsed">
             <StackPanel Orientation="Vertical">
                 <!-- Elsa 20250107 For PIMS [PIMS-332080] add Height="50" Width="170" TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow" -->
                 <UXControls:UXTextBlock Name="txtActionCaption" Margin="0" HorizontalAlignment="Left" Height="50" Width="170" TextTrimming="CharacterEllipsis" TextWrapping="WrapWithOverflow"
