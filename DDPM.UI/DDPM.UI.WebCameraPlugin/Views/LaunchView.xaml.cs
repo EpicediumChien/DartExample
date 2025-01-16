@@ -846,7 +846,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
 
                         //攝影機控制區域內windows hello隱藏
-                        _vm.brdHello_show = Visibility.Visible;
+                        if (_vm.UPD_Visibility == Visibility.Collapsed) // Jim 20250116 modify for PIMS-319086
+                            _vm.brdHello_show = Visibility.Collapsed;   // Jim 20250116 modify for PIMS-319086
+                        else
+                            _vm.brdHello_show = Visibility.Visible;
                         //PRESENCE DETECTION區域內windows hello隱藏
                         _vm.brdHello_show_control = Visibility.Visible;
 
@@ -885,11 +888,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //攝影機控制區域內windows hello隱藏
                         //_vm.brdHello_show = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
-                        _vm.brdHello_show = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
+                        //_vm.brdHello_show = Visibility.Visible;   // Jim 20250115 modify for PIMS-297931
+                        _vm.brdHello_show = Visibility.Collapsed;   // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
                         //PRESENCE DETECTION區域內windows hello隱藏
                         //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
-                        _vm.brdHello_show_control = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
-
+                        //_vm.brdHello_show_control = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
+                        _vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
 
                         //連接usb 3.0提示訊息 Camera.14
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
@@ -971,11 +975,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         //攝影機控制區域內windows hello隱藏
                         //_vm.brdHello_show = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
-                        _vm.brdHello_show = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
+                        //_vm.brdHello_show = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
+                        _vm.brdHello_show = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
                         //PRESENCE DETECTION區域內windows hello隱藏
                         //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
-                        _vm.brdHello_show_control = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
-
+                        //_vm.brdHello_show_control = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
+                        _vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
 
                         //連接usb 3.0提示訊息 Camera.15
                         //Connect your monitor via USB 3.0 and select 'High Data Speed' under USB-C Prioritization to enable 4K UHD resolution.
