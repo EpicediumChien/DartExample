@@ -1,6 +1,7 @@
 ﻿using Dell.Client.Framework.UX.WPF.Controls;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -92,8 +93,9 @@ namespace DDPM.SA.Common.UI
                     return "MS300";
 
                 default:
-                    return modelNumber;
+                    break;
             }
+            return modelNumber;
         }
 
         public static string MappingEOLName(string model)
@@ -118,5 +120,54 @@ namespace DDPM.SA.Common.UI
         }
         public static readonly List<string> EOLKBList = new() { "WK636", "KM713", "WK717", "KM714", "KM717" };
         public static readonly List<string> EOLMouseList = new() { "WM116", "WM514", "UV514", "WM126", "WM326", "WM527" };
+
+        /// <summary>
+        /// Check if the specifc peripheral model is EOL model.
+        /// Based on "Copy of Peripheral-SupportedDeviceList_20241224.xlsx"
+        /// Used by Homepage tooltip text.
+        /// *** Major consumer is DDPM UI *** [Dean]0115 move this from UI DdpmCommonHelper to SA SACommonHelper
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static bool IsPeripheralEOLModel(string model)
+        {
+            switch (model)
+            {
+                //Keyboard : (Marketname)
+                case "WK636": //Dell WK636  Wireless Keyboard
+                case "WK717": //Dell Premier Wireless Keyboard WK717
+                case "KM713": //Dell KM713  Wireless Keyboard
+
+                //Mouse
+                case "WM116": //Dell WM116  Wireless Mouse
+                case "WM514": //Dell WM514  Wireless Mouse
+                case "UV514": //Dell UV514  Wireless Mouse
+                case "WM126": //(Alex 說 IL 還沒能 support, Robert_Lin, 2024-12-24)
+                case "WM326": //Dell WM326  Wireless Mouse
+                case "WM527": //Dell WM527 Wireless Mouse
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        //[Dean]0115 move this from UI DdpmCommonHelper to SA SACommonHelper, Major consumer is DDPM UI
+        public static string MappingName(string model, string name)
+        {
+            name = name.Replace(model, "").Trim();
+            switch (CultureInfo.InstalledUICulture.Name)
+            {
+                case "ja-JP":
+                    if (model == "WB7022")
+                        return "Dell Digital Hi-Resolution Webcam";
+                    if (model == "U3223QZ")
+                        return "Dell Digital Hi-End 32 4K Video Conferencing Monitor";
+                    if (model == "U3224KB")
+                        return "Dell Digital Hi-End 32 6K Monitor";
+                    return name;
+                default:
+                    return name;
+            }
+        }
     }
 }

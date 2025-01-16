@@ -248,13 +248,13 @@ namespace DDPM.QAM
 
                         case "Webcam_ZoomChanged":
                         { //leo fixed 2025/01/14
-                            
                             if (int.TryParse(eventMsg.NewValue, out currentValue))
+                            {
                                 isStatusChagneByDDPM = true;
-                            ZoomValue = currentValue;
+                                ZoomValue = currentValue;
+                            }
                         }
                         break;
-
 
                         case "Webcam_FieldOfViewChanged":
                             if (int.TryParse(eventMsg.NewValue, out currentValue))
@@ -311,15 +311,22 @@ namespace DDPM.QAM
 
         public void SetNoneProfile()
         {
-            List<UI_Profile> temp = UI_ProfileList.ToList();
-            UI_ProfileList = new ObservableCollection<UI_Profile>();
-            foreach (var profile in temp)
+            try
             {
-                profile.IsSelected = false;
-                UI_ProfileList.Add(profile);
-            }
+                List<UI_Profile> temp = UI_ProfileList.ToList();
+                UI_ProfileList = new ObservableCollection<UI_Profile>();
+                foreach (var profile in temp)
+                {
+                    profile.IsSelected = false;
+                    UI_ProfileList.Add(profile);
+                }
 
-            OnPropertyChanged(nameof(UI_ProfileList));
+                OnPropertyChanged(nameof(UI_ProfileList));
+            }
+            catch (Exception ex)
+            {
+                LogMsg($"Catch exception in  SetNoneProfile : {ex.Message}");
+            }
         }
 
         public void OpenFullView(ContentControl content)
