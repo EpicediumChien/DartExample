@@ -1986,7 +1986,7 @@ namespace DDPM.UI.Plugin.ViewModels
                                 if (!IsSettingProfile)
                                 {
                                     ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
-                                    System.Windows.MessageBox.Show("2");
+                                    //System.Windows.MessageBox.Show("2");
                                 }
                                 break;
                             default:
@@ -1997,7 +1997,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         if (!IsSettingProfile)
                         {
                             ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
-                            System.Windows.MessageBox.Show("1");
+                            //System.Windows.MessageBox.Show("1");
                         }
                     }
                 }
