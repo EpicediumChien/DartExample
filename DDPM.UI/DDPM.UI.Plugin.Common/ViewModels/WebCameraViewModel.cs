@@ -1984,7 +1984,10 @@ namespace DDPM.UI.Plugin.ViewModels
                             case nameof(Saturation):
                             case nameof(Sharpness):
                                 if (!IsSettingProfile)
+                                {
                                     ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
+                                    System.Windows.MessageBox.Show("2");
+                                }
                                 break;
                             default:
                                 break;
@@ -1992,7 +1995,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     else
                     {
                         if (!IsSettingProfile)
+                        {
                             ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
+                            System.Windows.MessageBox.Show("1");
+                        }
                     }
                 }
                 propertyInfo.SetValue(CurrentProfile, convertedValue);
