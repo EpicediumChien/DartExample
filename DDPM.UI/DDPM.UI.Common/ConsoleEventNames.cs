@@ -35,6 +35,11 @@ namespace DDPM.UI.Common
         /// Trigger from MainWindow, when DDPM move to a new position (position is changed)
         /// </summary>
         public const string MainWindow_MoveToNewPosition = "MainWindow.MoveToNewPosition";
+
+        public const string MainWindow_ConsoleWindow_Closed = "MainWindow.ConsoleWindow.Closed";
+
+        
+
         #endregion MainWindow
 
         #region DisplayPlugin
