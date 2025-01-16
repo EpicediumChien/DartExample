@@ -1933,7 +1933,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             DdpmCommonHelper.WriteUILog($"StartRecord");
 
-            _vm!.IsRecording = true;
+            
             _vm.IsMicEnumerationOnEnabled = false;
 
             if (_vm!.WebcamCountdown)
@@ -1956,7 +1956,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void StopRecord()
         {
-            _ = StopRecordingAsync();
+            if (_vm!.IsRecording)
+            {
+                _ = StopRecordingAsync();
+            }
 
         }
         private void Timer_Tick(object? sender, EventArgs e)
@@ -1994,10 +1997,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         /// <returns></returns>
         private async Task StartRecordingAsync()
         {
+            
             stopwatch.Start();
             RecordingTimer.Start();
             try
             {
+                _vm!.IsRecording = true;
                 //var picturesLibrary = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
                 // Fall back to the local app storage if the Pictures Library is not available
                 //_vm._captureFolder = picturesLibrary.SaveFolder ?? ApplicationData.Current.LocalFolder;
@@ -2022,6 +2027,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
+                if(_vm!.IsRecording)
+                    _vm!.IsRecording = false;
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs StartRecordingAsync() : " + ex.Message);
                 // File I/O errors are reported as exceptions
                 // Debug.WriteLine("Exception when starting video recording: " + ex.ToString());
@@ -2203,6 +2210,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             try
             {
                 StopRecord();
+                
                 RecordingTimer.Stop();
                 stopwatch.Stop();
                 stopwatch.Reset();
@@ -2213,6 +2221,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 txtTimer.Visibility = Visibility.Collapsed;
                 txtTimer.Text = "00:00:00";
                 btnPreset.IsEnabled = true;
+                if (_vm!.WebcamCountdown)
+                {
+                    CountDownBox.Visibility = Visibility.Collapsed;
+                    _timer.Stop();
+                }
             }
             catch (Exception ex)
             {

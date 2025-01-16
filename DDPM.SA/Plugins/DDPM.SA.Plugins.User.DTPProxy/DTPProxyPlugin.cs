@@ -10911,7 +10911,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private bool SetPropertyValue(Type interfaceType, ICommodity commodity, string property, object value)
         {
-            Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {value ?? ""}");
+            try
+            {
+                writelog($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {JsonConvert.SerializeObject(value)}");
+            }
+            catch (Exception ex)
+            {
+                writelog($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {value ?? ""}");
+            }
             if (!IsDTPReady)
                 return false;
 
@@ -10929,7 +10936,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private bool SetPropertyValue(Type interfaceType, ICommodity commodity, string property, byte[] value)
         {
-            Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {Encoding.UTF8.GetString(value)}");
+            writelog($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {Encoding.UTF8.GetString(value)}");
             if (!IsDTPReady)
                 return false;
 

@@ -123,6 +123,17 @@ namespace DDPM.UI.Plugin.ViewModels
             if (!IsCopilotEnabled)
                 RemoveCopilotAction();
 
+            try
+            {
+                DdpmCommonHelper.WriteUILog($"[KeyboardViewModel] CurrentDeviceInfo : {JsonConvert.SerializeObject(CurrentDeviceInfo)}");
+                Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA!.GetKbProgrammableKeys(deviceID.ToString());
+                var jArray = JArray.FromObject(task1.Result);
+                DdpmCommonHelper.WriteUILog($"[KeyboardViewModel] CurrentDeviceInfo : {JsonConvert.SerializeObject(jArray)}");
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[KeyboardViewModel] Exception : {ex}");
+            }
             InitializeKey();
             if (CurrentDeviceInfo!.IsCollabsKeysSupported)
             {
