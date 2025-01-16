@@ -58,7 +58,10 @@ namespace DDPM.UI.Module.WebCameraMicrophone
                     }
                 }
                 if (_vm != null && _vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
+                {
+                    DdpmCommonHelper.WriteUILog($"[WebCameraMicrophoneRightView] Webcam {_vm.CurrentDeviceInfo?.ModelNumber} IsMicEnumerationSupported is true.");
                     imgWarn.Visibility = Visibility.Hidden;
+                }
             }
             catch (Exception ex) 
             {
