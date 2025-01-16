@@ -23,7 +23,8 @@ namespace DDPM.QAM
         {
             if (DataContext is QAMPageViewModel vm)
             {
-                vm.isStatusChagneByDDPM = false;
+                vm.isStatusChangeByDDPM = false;
+                vm.SetNoneProfile(); //Derek 2025/01/16
                 //DdpmCommonHelper.DeviceManagerSA?.WriteLog($"ToggleButton_Click -> {vm.isStatusChagneByDDPM}");
                 vm.SetAutoFramingStatus();
 

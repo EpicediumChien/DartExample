@@ -30,7 +30,7 @@ namespace DDPM.QAM
             if (DataContext is QAMPageViewModel vm)
             {
                 vm.IsSliderDragging = false;
-                vm.isStatusChagneByDDPM = false;
+                vm.isStatusChangeByDDPM = false;
                 vm.SetZoom();
             }
         }
