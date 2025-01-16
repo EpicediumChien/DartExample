@@ -182,7 +182,7 @@ namespace DDPM.UI.Module.Brightness
 
         private void Synchronize_Scheduled(BrightnessViewModel _vm)
         {
-            if ((bool)ScheduledSynchronizeSwitch.IsChecked)
+            if (_vm.IsSynchronize_Scheduled)
             {
                 Task.Run(() =>
                 {
@@ -193,7 +193,7 @@ namespace DDPM.UI.Module.Brightness
                             if (hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
                             {
                                 if (!hd.MonitorInfo.CapabilityDic.ContainsKey("66"))
-                                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, vm.ScheduleMap);
+                                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, _vm.ScheduleMap);
                             }
                         }
                     }
@@ -226,7 +226,7 @@ namespace DDPM.UI.Module.Brightness
 
         private void Synchronize_LuminanceScheduled(BrightnessViewModel _vm)
         {
-            if ((bool)ScheduledLuminanceSynchronizeSwitch.IsChecked)
+            if (_vm.IsSynchronize_Scheduled)
             {
                 Task.Run(() =>
                 {
@@ -249,7 +249,7 @@ namespace DDPM.UI.Module.Brightness
                                     DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, ScheduleMap);
                                 }
                                 else
-                                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, vm.ScheduleMap);
+                                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, _vm.ScheduleMap);
                             }
                         }
                     }

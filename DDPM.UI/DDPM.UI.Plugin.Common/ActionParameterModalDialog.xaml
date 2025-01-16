@@ -81,8 +81,8 @@
         </Grid>
         <Grid VerticalAlignment="Center" Width="482" Height="324">
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="72,0" VerticalAlignment="Center">
-                <UXControls:UXTextBlock Name="txtCaption" Style="{StaticResource CaptionTextStyle}" HorizontalAlignment="Left" />
-                <UXControls:UXTextBlock Name="txtDescription" Style="{StaticResource DescriptionTextStyle}"  Margin="0,10,0,17" />
+                <UXControls:UXTextBlock TextWrapping="WrapWithOverflow" Name="txtCaption" Style="{StaticResource CaptionTextStyle}" HorizontalAlignment="Left" />
+                <UXControls:UXTextBlock TextWrapping="WrapWithOverflow" Name="txtDescription" Style="{StaticResource DescriptionTextStyle}"  Margin="0,10,0,17" />
                 <StackPanel Name="spKeystroke" Visibility="Collapsed">
                     <UXControls:UXTextBox Name="txtKeystroke" Width="338" Height="40" Padding="8,11" FontWeight="Medium" FontFamily="Roboto" MaxLength="8000"
                                 HorizontalAlignment="Left" Background="{DynamicResource Keystroke_BgColor}" BorderThickness="1" Foreground="{DynamicResource Keystroke_FgColor}" BorderBrush="{DynamicResource ActionParameterModalDialogTextBoxBorderColor}" IsEnabled="False"
