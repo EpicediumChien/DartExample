@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Windows.ApplicationModel.VoiceCommands;
 using UserControl = System.Windows.Controls.UserControl;
 
 namespace DDPM.UI.Module.WebCameraSettings
@@ -307,11 +308,28 @@ namespace DDPM.UI.Module.WebCameraSettings
                     _vm.SelectedFovIndex = index;
                     _vm.SetFOV_Selected(index);
                     //_vm.FieldOfView = val;
+
+                    //Derek 2025/01/17
+                    InfoQAMSetProfileToNone();
                 }
             }
             catch (Exception ex) 
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs FOV_Click() ex:" + ex.Message);
+            }
+        }
+
+        private void InfoQAMSetProfileToNone()
+        {
+            try
+            {
+                //Derek 2025/01/17
+                DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile("DDPMSetProfileToNoneByFOV", false);
+
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"InfoQAMSetProfileToNone catch exception: {ex.Message}");
             }
         }
 
@@ -534,6 +552,21 @@ namespace DDPM.UI.Module.WebCameraSettings
             catch (Exception ex) 
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraSettings\\WebCameraSettingsRightView.xaml.cs AutofocusSlider_KeyUp() ex:" + ex.Message);
+            }
+        }
+
+        //Derek 2025/01/17
+        private void AutoFrameSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //Derek 2025/01/17
+                DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile("DDPMSetProfileToNoneByAutoFrame", false);
+
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"AutoFrameSwitch_Click catch exception: {ex.Message}");
             }
         }
     }

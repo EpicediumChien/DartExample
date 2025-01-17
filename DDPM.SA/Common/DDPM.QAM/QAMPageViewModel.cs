@@ -305,6 +305,10 @@ namespace DDPM.QAM
                 {
                     SetNoneProfile();
                 }
+                else if (e.UI_Field_Name.StartsWith("DDPMSetProfileToCurrent")) //Derek 2025/01/17
+                {
+                    SetProfile();
+                }
 
             }
             catch (Exception ex)

@@ -155,6 +155,42 @@ namespace DDPM.UI.Module.WebCameraColorImage
         {
             _vm.IsSliderDragging = false;
             _vm.SetBrightness();
+
+            //Derek 2025/01/17
+            InfoQAMSetProfileToNone(0);
+        }
+
+        private void InfoQAMSetProfileToNone(int type)
+        {
+            try
+            {
+                string infoType = string.Empty;
+
+                switch (type)
+                {
+                    case 0:
+                        infoType = "DDPMSetProfileToNoneByBrightness";
+                        break;
+
+                    case 1:
+                        infoType = "DDPMSetProfileToNoneBySharpness";
+                        break;
+
+                    case 2:
+                        infoType = "DDPMSetProfileToNoneByContrast"; 
+                        break;
+
+                    case 3:
+                        infoType = "DDPMSetProfileToNoneBySaturation";
+                        break;
+                }
+
+                DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile(infoType, false);
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"InfoQAMSetProfileToNone catch exception: {ex.Message}");
+            }
         }
 
         private void SharpnessSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
@@ -166,6 +202,9 @@ namespace DDPM.UI.Module.WebCameraColorImage
         {
             _vm.IsSliderDragging = false;
             _vm.SetSharpness();
+
+            //Derek 2025/01/17
+            InfoQAMSetProfileToNone(1);
         }
 
         private void ContrastSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
@@ -177,6 +216,9 @@ namespace DDPM.UI.Module.WebCameraColorImage
         {
             _vm.IsSliderDragging = false;
             _vm.SetContrast();
+
+            //Derek 2025/01/17
+            InfoQAMSetProfileToNone(2);
         }
 
         private void SaturationSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
@@ -188,6 +230,9 @@ namespace DDPM.UI.Module.WebCameraColorImage
         {
             _vm.IsSliderDragging = false;
             _vm.SetSaturation();
+
+            //Derek 2025/01/17
+            InfoQAMSetProfileToNone(3);
         }
 
         private void AntiFlicker_Click(object sender, MouseButtonEventArgs e)
@@ -261,6 +306,32 @@ namespace DDPM.UI.Module.WebCameraColorImage
         {
             _vm.IsSliderDragging = false;
             _vm.SetAutoWhiteBalance();
+        }
+
+        private void HDRToggleSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //Derek 2025/01/17
+                DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile("DDPMSetProfileToNoneByHDR", false);
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"HDRToggleSwitch_Click catch exception: {ex.Message}");
+            }
+        }
+
+        private void AWB_ToggleSwitch_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //Derek 2025/01/17
+                DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile("DDPMSetProfileToNoneByAWB", false);
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"AWB_ToggleSwitch_Click catch exception: {ex.Message}");
+            }
         }
     }
 }
