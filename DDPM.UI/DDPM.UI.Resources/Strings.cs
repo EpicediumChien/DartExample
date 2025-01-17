@@ -17,15 +17,15 @@ namespace DDPM.UI.Common
         private static ResourceManager resManager = Resources.Resources.ResourceManager;
         private static string GetString(string key)
         {
-
+#if MULTILINGUAL_TEST
             //Robert_Lin 2025-1-13 To do multilingual test, please remove below comments
             //
-            CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("ru");
+            CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("fr-CA");
             string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
-
+#else
             //And comment-out below line
-            //string str = resManager.GetString(key, CultureInfo.CurrentUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
-
+            string str = resManager.GetString(key, CultureInfo.CurrentUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+#endif
 
             //This statement is required
             return System.Text.RegularExpressions.Regex.Unescape(str);
