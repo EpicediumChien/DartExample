@@ -27,7 +27,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             InitializeComponent();
             DataContext = new WalkThroughPageViewModel();
 
-            ViewModel.ControlIcon(true);
+            ViewModel.ControlIcon(true, false);
 
             // Consent Page wording
             txtYes.Content = LangHelper.Instance["ConsentYes"];
@@ -38,11 +38,11 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             txt2.Text = LangHelper.Instance["Analytics.2"];
             Application.Current.MainWindow.MouseLeftButtonUp -= MouseDragEvent;
             Application.Current.MainWindow.MouseLeftButtonUp += MouseDragEvent;
-            ViewModel.ControlIcon(false);
         }
 
         ~WalkThroughPage()
         {
+            ViewModel.ControlIcon(true, true);
             Application.Current.MainWindow.MouseLeftButtonUp -= MouseDragEvent;
         }
 
@@ -53,8 +53,8 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 ViewModel.UpdateLastlogicalDeviceType();
                 ViewModel.WriteWalkThroughReg(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName);
                 DdpmHomePlugin.DdpmHomePlugin.WalkThroughEndList.Add(DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0]);
-                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                 DdpmCommonHelper.WriteUILog($"[WalkThroughPageViewModel] InitializeDeviceFromQueue RemoveAt {DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue[0].ModelName}");
+                DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.RemoveAt(0);
                 if (DdpmHomePlugin.DdpmHomePlugin.WalkThroughQueue.Count > 0)
                 {
                     ViewModel.InitializeDeviceFromQueue();
