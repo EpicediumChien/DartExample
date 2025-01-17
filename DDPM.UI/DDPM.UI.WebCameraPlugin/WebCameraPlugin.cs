@@ -70,6 +70,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 _console.RegisterForEvent(ConsoleEventNames.MainWindow_Activate, MainWindowActivate);
                 _console.RegisterForEvent(ConsoleEventNames.MainWindow_DeActivate, MainWindowDeActivate);
+                _console.RegisterForEvent(ConsoleEventNames.MainWindow_ConsoleWindow_Closed , MainWindowClosed );
             }
         }
 
@@ -770,6 +771,16 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return;
             _viewModel.running_state = false;
             _viewModel.mre.Set();
+        }
+
+        private void MainWindowClosed (object sender, EventManagerArgs e)
+        {
+            this._log?.Write(LogMsgType.Debug, "WebCamera plugin receive MainWindow DeActivate event");
+
+            if (_viewModel == null)
+                return;
+
+            _viewModel.close_app = true;
         }
     }
 }

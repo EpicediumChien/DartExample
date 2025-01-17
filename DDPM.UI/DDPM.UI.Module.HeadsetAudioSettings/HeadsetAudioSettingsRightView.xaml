@@ -981,8 +981,8 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="315*" />
-                                            <ColumnDefinition Width="67*"/>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <!--<UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Foreground="{Binding Path=IsTransparencyChecked, Converter={StaticResource BooleanToInverseForegroundConverter}}" Text="{Binding [HeadsetAudioSettings.19], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Display1" Margin="20,26,0,0" />-->
                                         <UXControls:UXTextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" Text="{Binding [HeadsetAudioSettings.19], Source={x:Static lang:LangHelper.Instance}}" TextBlockSemanticColorType="Light" TextBlockType="Display1" Margin="20,26,0,0">

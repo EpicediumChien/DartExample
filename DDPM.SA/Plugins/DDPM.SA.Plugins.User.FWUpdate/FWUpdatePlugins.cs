@@ -859,7 +859,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _logs.DebugMsg_1($"{nameof(Filter)} minVersion currentVersion:{currentVersion}");
                             _logs.DebugMsg_1($"{nameof(Filter)} minVersion new_MinVersion:{new_MinVersion}");
                             if (currentVersion > 0 && new_MinVersion > 0 &&
-                                currentVersion <= new_MinVersion)
+                                currentVersion < new_MinVersion)
                             {
                                 _forCLI_FWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
                             }
