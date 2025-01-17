@@ -280,6 +280,8 @@ namespace NGA.ThickClientCore
                 {
                     _log?.Info("[ThickClientCore] _mainWindow_Closing ");
                     DdpmCommonHelper.MyConsole.RaiseEvent(ConsoleEventNames.MainWindow_Force_Camera_Unlock, this, new EventManagerArgs());
+
+                    DdpmCommonHelper.MyConsole.RaiseEvent(ConsoleEventNames.MainWindow_ConsoleWindow_Closed, this, new EventManagerArgs());
                     _log?.Info("[ThickClientCore] MainWindow_Force_Camera_Unlock event raised");
                 }
                 catch (Exception ex)
@@ -448,6 +450,8 @@ namespace NGA.ThickClientCore
 
             _log?.Info("Resources are disposed");
             _disposeResources = false;
+
+            Application.Current.Shutdown();
         }
 
         #endregion

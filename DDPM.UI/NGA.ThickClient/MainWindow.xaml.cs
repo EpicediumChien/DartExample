@@ -118,7 +118,7 @@ namespace NGA.ThickClient
                 masthead.MaximizeButtonEnabled = true;
 
                 //Robert_Lin, 2024-6-26 remove dell logo from left of titlebar
-                masthead.IconVisible = false;                
+                masthead.IconVisible = false;
             }
 
             IConsole? console = formBuilder.GetSubsystem<IConsole>();
@@ -248,7 +248,7 @@ namespace NGA.ThickClient
         /// <param name="screenWidth">Usable screenWidth</param>
         private void AdjustWindowSize(double screenHeight, double screenWidth)
         {
-             //2024-5-8 Robert_Lin, to support resizeable MainWindow,
+            //2024-5-8 Robert_Lin, to support resizeable MainWindow,
             //Sharap Viswanathan, Karthik suggest to comment out the method
             if (_isMainWindowResizable)
             {
