@@ -11418,15 +11418,31 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         //Derek 1212
         public Task SyncWebcamProfile(string profileName, bool isActionFromQAM = true)
         {
-            UpdateUINotify e = new UpdateUINotify();
+            try
+            {
+                if (profileName == string.Empty)
+                {
+                    writelog($"SyncWebcamProfile --> profileName is empty!!!");
 
-            if (isActionFromQAM)
-                e.UI_Field_Name = $"WebcamProfileFromQAM:{profileName}"; //message to DDPM
-            else
-                e.UI_Field_Name = $"WebcamProfileFromDDPM:{profileName}";//message to QAM
+                    return Task.CompletedTask;
+                }
 
-            OnUIUpdateNotify(e);
+                UpdateUINotify e = new UpdateUINotify();
 
+                if ("DDPMSetProfileToNone" == profileName)
+                    e.UI_Field_Name = $"DDPMSetProfileToNone"; //Derek 2025/01/17 DDPMSetProfileToNone
+                else if (isActionFromQAM)
+                    e.UI_Field_Name = $"WebcamProfileFromQAM:{profileName}"; //message to DDPM
+                else
+                    e.UI_Field_Name = $"WebcamProfileFromDDPM:{profileName}";//message to QAM
+
+                OnUIUpdateNotify(e);
+            }
+            catch (Exception ex)
+            {
+                writelog($"SyncWebcamProfile catch exception: {ex.Message}");
+            }
+            
             return Task.CompletedTask;
         }
 
