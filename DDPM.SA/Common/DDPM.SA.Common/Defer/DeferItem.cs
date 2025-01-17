@@ -28,7 +28,7 @@ namespace DDPM.SA.Common.Defer
             deferid = id.ToString();
             guid = _guid;
             createtime = dateTime.ToString();
-            count = 1;
+            count = 2;
             commandfrom = _from;
             commanddata = _commanddata;
         }

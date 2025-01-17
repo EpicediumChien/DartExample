@@ -791,7 +791,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //連接usb 3.0提示訊息 Camera.14
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
                         _vm.MessageBoxVisibilityUsbType = Visibility.Visible;
-                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
+                        //_vm.usbtype_info_v = LangHelper.Instance["Camera.25"]; // Jim 20250115 modify PIMS-294596
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.26"]; // Jim 20250115 modify PIMS-294596
 
                         //fps與解析度,排除4k
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
@@ -834,7 +835,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                         // ProximitySensor按鈕diable & 功能關閉
                         _vm.is_ProximitySensor_enable = true;
-                        _vm.IsChecked_ProximitySensor = true;
+                        //_vm.IsChecked_ProximitySensor = true; // Jim 20250116 modify for PIMS-297931 by lio comment
 
                         //autoframe功能關閉 & 區域隱藏
                         _vm.is_AutoFramingVisibility = true;
@@ -845,14 +846,18 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
 
                         //攝影機控制區域內windows hello隱藏
-                        _vm.brdHello_show = Visibility.Visible;
+                        if (_vm.UPD_Visibility == Visibility.Collapsed) // Jim 20250116 modify for PIMS-319086
+                            _vm.brdHello_show = Visibility.Collapsed;   // Jim 20250116 modify for PIMS-319086
+                        else
+                            _vm.brdHello_show = Visibility.Visible;
                         //PRESENCE DETECTION區域內windows hello隱藏
                         _vm.brdHello_show_control = Visibility.Visible;
 
                         //連接usb 3.0提示訊息 Camera.14
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
                         _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed;
-                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
+                        //_vm.usbtype_info_v = LangHelper.Instance["Camera.25"]; // Jim 20250115 modify PIMS-294596
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.26"]; // Jim 20250115 modify PIMS-294596
 
                         //fps與解析度,排除4k
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
@@ -882,15 +887,19 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
 
                         //攝影機控制區域內windows hello隱藏
-                        _vm.brdHello_show = Visibility.Collapsed;
+                        //_vm.brdHello_show = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
+                        //_vm.brdHello_show = Visibility.Visible;   // Jim 20250115 modify for PIMS-297931
+                        _vm.brdHello_show = Visibility.Collapsed;   // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
                         //PRESENCE DETECTION區域內windows hello隱藏
-                        _vm.brdHello_show_control = Visibility.Collapsed;
-
+                        //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
+                        //_vm.brdHello_show_control = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
+                        _vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
 
                         //連接usb 3.0提示訊息 Camera.14
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
                         _vm.MessageBoxVisibilityUsbType = Visibility.Visible;
-                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
+                        //_vm.usbtype_info_v = LangHelper.Instance["Camera.25"]; // Jim 20250115 modify PIMS-294596
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.26"]; // Jim 20250115 modify PIMS-294596
 
                         //fps與解析度,排除4k Camera.14
 
@@ -920,7 +929,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
 
                         //camera控制權
-                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+                        //_vm.bdrPrioritize_show = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
+                        _vm.bdrPrioritize_show = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
                     }
                     else
                     {
@@ -938,7 +948,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //連接usb 3.0提示訊息 Camera.14
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
                         _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed;
-                        _vm.usbtype_info_v = LangHelper.Instance["Camera.25"];
+                        //_vm.usbtype_info_v = LangHelper.Instance["Camera.25"]; // Jim 20250115 modify PIMS-294596
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.26"]; // Jim 20250115 modify PIMS-294596
 
                         //fps與解析度,排除4k Camera.14
                         //2025/01/07
@@ -951,7 +962,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes2_width = 133;*/
 
                         //camera控制權
-                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+                        //_vm.bdrPrioritize_show = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by lio comment
+                        _vm.bdrPrioritize_show = Visibility.Visible; // Jim 20250116 modify for PIMS-297931 by lio comment
                     }
                     break;
                 case "U3223QZ":
@@ -962,10 +974,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //身分偵測整個功能區域隱藏保留
 
                         //攝影機控制區域內windows hello隱藏
-                        _vm.brdHello_show = Visibility.Collapsed;
+                        //_vm.brdHello_show = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
+                        //_vm.brdHello_show = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
+                        _vm.brdHello_show = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
                         //PRESENCE DETECTION區域內windows hello隱藏
-                        _vm.brdHello_show_control = Visibility.Collapsed;
-
+                        //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
+                        //_vm.brdHello_show_control = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
+                        _vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
 
                         //連接usb 3.0提示訊息 Camera.15
                         //Connect your monitor via USB 3.0 and select 'High Data Speed' under USB-C Prioritization to enable 4K UHD resolution.
@@ -997,7 +1012,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         }
 
                         //camera控制權
-                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+                        //_vm.bdrPrioritize_show = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
+                        _vm.bdrPrioritize_show = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
 
                     }
                     else
@@ -1028,7 +1044,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.btnRes2_width = 133;*/
 
                         //camera控制權
-                        _vm.bdrPrioritize_show = Visibility.Collapsed;
+                        //_vm.bdrPrioritize_show = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by lio comment
+                        _vm.bdrPrioritize_show = Visibility.Visible; // Jim 20250116 modify for PIMS-297931 by lio comment
                     }
                     break;
 
@@ -1105,7 +1122,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //_vm.IsAutoFramingOn = true;
 
                 _vm.is_ProximitySensor_enable = true;
-                _vm.IsChecked_ProximitySensor = true;
+                //_vm.IsChecked_ProximitySensor = true; // Jim 20250116 modify for PIMS-297931 by lio comment
             }
 
 
@@ -1509,6 +1526,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         bool in_CameraPlugin = true;
         private async void LaunchView_Unloaded(object sender, RoutedEventArgs e)
         {
+            Console.WriteLine("LaunchView_Unloaded start");
 
             in_CameraPlugin = false;
             exit_status_thread = true;
@@ -1547,6 +1565,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 2: " + ex.Message);
             }
+            Console.WriteLine("LaunchView_Unloaded end");
+            /*if ( _vm?.close_app == true )
+            {
+                Console.WriteLine("force exit");
+                Environment.Exit(0);
+            }*/
             //await _vm.CleanupMediaCapture();
         }
 
@@ -1933,7 +1957,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             DdpmCommonHelper.WriteUILog($"StartRecord");
 
-            _vm!.IsRecording = true;
+            
             _vm.IsMicEnumerationOnEnabled = false;
 
             if (_vm!.WebcamCountdown)
@@ -1956,7 +1980,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void StopRecord()
         {
-            _ = StopRecordingAsync();
+            if (_vm!.IsRecording)
+            {
+                _ = StopRecordingAsync();
+            }
 
         }
         private void Timer_Tick(object? sender, EventArgs e)
@@ -1994,10 +2021,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         /// <returns></returns>
         private async Task StartRecordingAsync()
         {
+            
             stopwatch.Start();
             RecordingTimer.Start();
             try
             {
+                _vm!.IsRecording = true;
                 //var picturesLibrary = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
                 // Fall back to the local app storage if the Pictures Library is not available
                 //_vm._captureFolder = picturesLibrary.SaveFolder ?? ApplicationData.Current.LocalFolder;
@@ -2022,6 +2051,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
+                if(_vm!.IsRecording)
+                    _vm!.IsRecording = false;
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs StartRecordingAsync() : " + ex.Message);
                 // File I/O errors are reported as exceptions
                 // Debug.WriteLine("Exception when starting video recording: " + ex.ToString());
@@ -2203,6 +2234,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             try
             {
                 StopRecord();
+                
                 RecordingTimer.Stop();
                 stopwatch.Stop();
                 stopwatch.Reset();
@@ -2213,6 +2245,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 txtTimer.Visibility = Visibility.Collapsed;
                 txtTimer.Text = "00:00:00";
                 btnPreset.IsEnabled = true;
+                if (_vm!.WebcamCountdown)
+                {
+                    CountDownBox.Visibility = Visibility.Collapsed;
+                    _timer.Stop();
+                }
             }
             catch (Exception ex)
             {

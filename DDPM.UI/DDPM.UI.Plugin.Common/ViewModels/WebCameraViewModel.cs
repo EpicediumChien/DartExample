@@ -95,6 +95,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public ManualResetEvent mre = new ManualResetEvent(false);
 
+        public bool close_app = false;
 
         public bool ShowLockMask
         {

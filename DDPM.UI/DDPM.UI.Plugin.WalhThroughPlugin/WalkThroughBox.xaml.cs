@@ -143,6 +143,10 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
                 _currentPage--;
                 UpdateText(_currentPage);
                 UpdateProgressBar(false);
+                if (_currentPage == 1)
+                    UpdatePosition("Top_Right");
+                else
+                    UpdatePosition("Left");
             }
             else
             {
@@ -243,6 +247,14 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         private void SkipBtn_Click(object sender, RoutedEventArgs e)
         {
             EndProgress();
+        }
+
+        public void RefreshWalkThroughBoxPosition()
+        {
+            if (_currentPage == _totalPages || _currentPage == 1)
+                UpdatePosition("Top_Right");
+            else
+                UpdatePosition("Left");
         }
     }
 }

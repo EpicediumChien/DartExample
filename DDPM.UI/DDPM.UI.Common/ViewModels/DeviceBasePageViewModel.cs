@@ -823,6 +823,7 @@ namespace DDPM.UI.Common.ViewModels
                 VbarItem1? vbarItem = VbarItems.Find(x => x.Text.Equals(mgGaming.VbarText));
                 if (vbarItem != null)
                 {
+                    //Robert_Lin 2025-1-16 Test to force Gamin VbarItem to be visible
                     vbarItem.Visibility = (homeDev.HasCapability_Gaming ? Visibility.Visible : Visibility.Collapsed);
 
                     //Robert_Lin, 2024-8-28, If "KVM" vbar item become Collapsed, and it's current selected Group
