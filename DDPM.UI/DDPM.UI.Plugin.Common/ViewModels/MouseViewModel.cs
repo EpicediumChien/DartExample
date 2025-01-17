@@ -179,7 +179,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     DdpmCommonHelper.DeviceManagerSA!.SetReportRate(CurrentDeviceInfo!.ID.ToString(), hz);
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs MouseSettingsRightView ex:" + ex.Message);
             }
@@ -202,7 +202,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs PrepareDeviceInfo ex:" + ex.Message);
             }
@@ -224,7 +224,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 SelectedButton = btn;
                 InitializeButton();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs RemoveCopilotAction ex:" + ex.Message);
             }
@@ -380,7 +380,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 CheckRestoreStatus();
                 //OnPropertyChanged(nameof(IsRestoreEnable));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs InitializeButton ex:" + ex.Message);
             }
@@ -418,7 +418,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(IsRestoreEnable));
                 OnPropertyChanged(nameof(RestoreToDefaultText));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs CheckRestoreStatus() ex:" + ex.Message);
             }
@@ -479,7 +479,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 var a = property.GetValue(this);
                 OnPropertyChanged(property!.Name);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs RefreshButtonImageFile ex:" + ex.Message);
             }
@@ -503,7 +503,8 @@ namespace DDPM.UI.Plugin.ViewModels
                             switch (property)
                             {
                                 case "MousePrimaryButtonChanged":
-                                    PrimaryButtonIndex = di.MousePrimaryButton == MouseButton.Left ? 0 : 1;
+                                    _primaryButtonIndex = di.MousePrimaryButton == MouseButton.Left ? 0 : 1;
+                                    OnPropertyChanged(nameof(PrimaryButtonIndex));
                                     break;
 
                                 case "TouchScrollSensitivityLevelChanged":
@@ -550,7 +551,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         break;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs HandleNotification ex:" + ex.Message);
             }
@@ -588,7 +589,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         OnPropertyChanged(nameof(IsMediumVisible));
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs ButtonCollection set ex:" + ex.Message);
                 }
@@ -611,7 +612,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     _primaryButtonIndex = value;
                     OnPropertyChanged();
-                    //MouseButton button = _primaryButtonIndex == 0 ? MouseButton.Left : MouseButton.Right;
+                    `                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            MouseButton button = _primaryButtonIndex == 0 ? MouseButton.Left : MouseButton.Right;
                     //DdpmCommonHelper.DeviceManagerSA!.SetPrimaryMouseButton(button, CurrentDeviceInfo!.ID);
                     CallUser32dll.SetPrimaryButtonToLeft(_primaryButtonIndex == 0);
                 }
@@ -702,7 +703,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged(nameof(DPITextMargin));
                     OnPropertyChanged(nameof(DPIValueText));
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs DPIValue set ex:" + ex.Message);
                 }
@@ -722,7 +723,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         DdpmCommonHelper.DeviceManagerSA!.SetDPILevel(_DPIValue, CurrentDeviceInfo.ID);
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs SetDPIValue set ex:" + ex.Message);
             }
@@ -765,7 +766,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsRestoreEnable = false;
                 OnPropertyChanged(nameof(IsRestoreEnable));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs RestoreToDefault  ex:" + ex.Message);
             }
@@ -802,7 +803,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         OnPropertyChanged();
                     }
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs IsAllButtonsVisible set  ex:" + ex.Message);
                 }
@@ -951,7 +952,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged(nameof(SideButtonBackImageFile));
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs RefreshButtonInfo()  ex:" + ex.Message);
             }
@@ -1062,7 +1063,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     ActionList.ExportActionList(MouseAction, Model);
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs UpdateAction  ex:" + ex.Message);
             }
