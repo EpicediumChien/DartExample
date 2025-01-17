@@ -601,11 +601,14 @@ namespace NGA.ThickClient
 
         private void ConsoleWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            //DdpmCommonHelper.WriteUILog("[NGA.ThickClient] ConsoleWindow_Closing ");
+            //_Console?.RaiseEvent(ConsoleEventNames.MainWindow_Force_Camera_Unlock, null, null);
+            //DdpmCommonHelper.WriteUILog("[NGA.ThickClient] MainWindow_Force_Camera_Unlock event raised");
         }
 
         private void ConsoleWindow_Closed_1(object sender, EventArgs e)
         {
-            Console.WriteLine("ConsoleWindow_Closed_1()");
+            DdpmCommonHelper.WriteUILog("[NGA.ThickClient] ConsoleWindow_Closed_1 ");
             GC.Collect();
             Environment.Exit(0);
 

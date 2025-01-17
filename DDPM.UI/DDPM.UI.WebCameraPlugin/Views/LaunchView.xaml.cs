@@ -51,6 +51,8 @@ using MessageBox = System.Windows.MessageBox;
 using WebcamProfile = DDPM.SA.Common.Settings.WebcamProfile;
 using static Windows.Foundation.UniversalApiContract;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
+using System.Linq.Expressions;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -88,6 +90,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         public Thread status_thread;
         public bool exit_status_thread = false;
+        private IConsole _console;
 
         enum PresenceDetectionView { InternalUPDSupport, MicrosoftHPDSupport, MicrosoftHPDNotSupport }
 
@@ -104,6 +107,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     DdpmCommonHelper.WriteUILog("Webcam ViewModel is null");
                     return;
+                }
+
+                _console = WebCameraplugin.PluginIoc?.GetService<IConsole>()!;
+                if(_console != null)
+                {
+                    _console.RegisterForEvent(ConsoleEventNames.MainWindow_Force_Camera_Unlock, OnWebcamCloseEvent);
+                    DdpmCommonHelper.WriteUILog("[LaunchView] MainWindow_Force_Camera_Unlock event registered");
                 }
 
                 InitializeComponent();
@@ -243,6 +253,23 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
 
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView() end");
+        }
+
+        private void OnWebcamCloseEvent(object sender, EventManagerArgs e)
+        {
+            DdpmCommonHelper.WriteUILog($"[WebcamPlugin][OnWebcamCloseEvent] event MainWindow_Force_Camera_Unlock received");
+            if (writeableBitmap != null)
+            {
+                try
+                {
+                    writeableBitmap.Unlock();
+                    DdpmCommonHelper.WriteUILog($"[WebcamPlugin][OnWebcamCloseEvent] preview unlocked");
+                }
+                catch(Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog($"[WebcamPlugin][OnWebcamCloseEvent] writeableBitmap.Unlock() exception: {ex.Message}");
+                }
+            }            
         }
 
         private void DeviceManagerSA_UIUpdateNotify(object? sender, UpdateUINotify e)

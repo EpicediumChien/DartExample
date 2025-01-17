@@ -19,6 +19,7 @@ using Microsoft;
 using NGA.BaseClientCore;
 using NGA.Common;
 using NGA.ThickClient.Interfaces;
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Threading;
@@ -253,6 +254,7 @@ namespace NGA.ThickClientCore
                 _mainWindow = GetMainWindow(_formBuilder, args.ToArray());
                 if (_mainWindow != null)
                 {
+                    _mainWindow.Closing += _mainWindow_Closing;
                     _mainWindow.Closed += MainWindow_Closed;
                     _mainWindow.Show();
                 }
@@ -267,6 +269,24 @@ namespace NGA.ThickClientCore
             });
 
             ValidateAndStartSystray();
+        }
+
+        private void _mainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            _log?.Info("MainWindow_Closing");
+            if (DdpmCommonHelper.MyConsole != null)
+            {
+                try
+                {
+                    _log?.Info("[ThickClientCore] _mainWindow_Closing ");
+                    DdpmCommonHelper.MyConsole.RaiseEvent(ConsoleEventNames.MainWindow_Force_Camera_Unlock, this, new EventManagerArgs());
+                    _log?.Info("[ThickClientCore] MainWindow_Force_Camera_Unlock event raised");
+                }
+                catch (Exception ex)
+                {
+                    _log?.Error(ex, "Error while raising MainWindow_Force_Camera_Unlock event");
+                }
+            }
         }
 
         private void MainWindow_Closed(object? sender, EventArgs e)
@@ -416,6 +436,7 @@ namespace NGA.ThickClientCore
             if (_mainWindow != null)
             {
                 _mainWindow.Closed -= MainWindow_Closed;
+                _mainWindow.Closing -= _mainWindow_Closing;
             }
 
             base.Dispose();
