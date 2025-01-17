@@ -632,8 +632,9 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 taskInfoQueue.Enqueue(taskInfo);
 
-                return 0;
+                
             }
+            return 0;
         }
 
         private async Task<NotifyArgs> runCommandTaskAsync(string sid, string gid)
