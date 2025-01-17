@@ -721,6 +721,12 @@ namespace DDPM.SA.Common
                     }
                     return;
                 }
+                if (commandInput.Command == "SET" && commandInput.TargetFeature == "TELEMETRYCONSENT")
+                {
+                    commandInput.isITCommands = true;
+                    commandInput.isNormalCommands = true;
+                    return;
+                }
                 if (commandInput.Options.Count == 0)//recognized only normal command -> CLIProxy
                 {
                     commandInput.isNormalCommands = true;

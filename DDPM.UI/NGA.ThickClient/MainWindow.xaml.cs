@@ -118,7 +118,7 @@ namespace NGA.ThickClient
                 masthead.MaximizeButtonEnabled = true;
 
                 //Robert_Lin, 2024-6-26 remove dell logo from left of titlebar
-                masthead.IconVisible = false;                
+                masthead.IconVisible = false;
             }
 
             IConsole? console = formBuilder.GetSubsystem<IConsole>();
@@ -248,7 +248,7 @@ namespace NGA.ThickClient
         /// <param name="screenWidth">Usable screenWidth</param>
         private void AdjustWindowSize(double screenHeight, double screenWidth)
         {
-             //2024-5-8 Robert_Lin, to support resizeable MainWindow,
+            //2024-5-8 Robert_Lin, to support resizeable MainWindow,
             //Sharap Viswanathan, Karthik suggest to comment out the method
             if (_isMainWindowResizable)
             {
@@ -601,11 +601,14 @@ namespace NGA.ThickClient
 
         private void ConsoleWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            //DdpmCommonHelper.WriteUILog("[NGA.ThickClient] ConsoleWindow_Closing ");
+            //_Console?.RaiseEvent(ConsoleEventNames.MainWindow_Force_Camera_Unlock, null, null);
+            //DdpmCommonHelper.WriteUILog("[NGA.ThickClient] MainWindow_Force_Camera_Unlock event raised");
         }
 
         private void ConsoleWindow_Closed_1(object sender, EventArgs e)
         {
-            Console.WriteLine("ConsoleWindow_Closed_1()");
+            DdpmCommonHelper.WriteUILog("[NGA.ThickClient] ConsoleWindow_Closed_1 ");
             GC.Collect();
             Environment.Exit(0);
 
