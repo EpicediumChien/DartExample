@@ -3967,7 +3967,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Paste Value Only.
+        ///   Looks up a localized string similar to Paste Values Only.
         /// </summary>
         internal static string Excel_12 {
             get {
@@ -10015,7 +10015,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Paste and Match Formatting.
+        ///   Looks up a localized string similar to Paste and Merge Formatting.
         /// </summary>
         internal static string Word_10 {
             get {

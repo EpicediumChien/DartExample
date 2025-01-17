@@ -258,7 +258,7 @@ namespace DDPM.UI.Common
         public static readonly string PanHoldAndMoveMouse = GetString("Excel.9");
         public static readonly string PasteFormatOnly = GetString("Excel.10");
         public static readonly string PasteFormulas = GetString("Excel.11");
-        public static readonly string PasteValueOnly = GetString("Excel.12");
+        public static readonly string PasteValuesOnly = GetString("Excel.12");
         public static readonly string PreviousSheet = GetString("Excel.13");
         public static readonly string SortAtoZ = GetString("Excel.14");
 

@@ -129,7 +129,7 @@ namespace DDPM.UI.Common
           //{ 212, new ActionItem(ActionCategory.ExcelAction, Strings.PanHoldAndMoveMouse, false, false) },  //IL not support
           { 213, new ActionItem(ActionCategory.ExcelAction, Strings.PasteFormatOnly, false, false) },
           { 214, new ActionItem(ActionCategory.ExcelAction, Strings.PasteFormulas, false, false) },
-          { 215, new ActionItem(ActionCategory.ExcelAction, Strings.PasteValueOnly, false, false) },
+          { 215, new ActionItem(ActionCategory.ExcelAction, Strings.PasteValuesOnly, false, false) },
           { 216, new ActionItem(ActionCategory.ExcelAction, Strings.PreviousComment, false, false) },
           { 217, new ActionItem(ActionCategory.ExcelAction, Strings.PreviousSheet, false, false) },
           { 218, new ActionItem(ActionCategory.ExcelAction, Strings.Save, false, false) },
