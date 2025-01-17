@@ -2825,7 +2825,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void ChangeDevNameWidth()
         {
-            //txtCaption.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
+            txtCaption.MaxWidth = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
         }
 
         private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -2842,7 +2842,18 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             //NarratorModeSupport.RecurseUitems( start) ;
 
-            DdpmCommonHelper.WriteUILog($"Webcam landing page UserControl_Loaded");
+            //Derek 2025/01/17 info QAM select current profile
+            try
+            {
+                //Derek 2025/01/17
+                DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile("DDPMSetProfileToCurrent", false);
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"UserControl_Loaded catch exception: {ex.Message}");
+            }
+
+            //DdpmCommonHelper.WriteUILog($"Webcam landing page UserControl_Loaded");
         }
     }
 }

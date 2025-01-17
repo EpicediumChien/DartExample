@@ -41,7 +41,7 @@ namespace DDPM.QAM
         private WebcamSettings webcamSettings; //Derek 2025/01/09
         private ILog? logger;
 
-        public bool isStatusChagneByDDPM = false;
+        public bool isStatusChangeByDDPM = false;
         public QAMPageViewModel(IDeviceManagerSA? devMgr = null, ILog? log = null)
         {
             try
@@ -148,7 +148,7 @@ namespace DDPM.QAM
         {
             try
             {
-                isStatusChagneByDDPM = true;
+                isStatusChangeByDDPM = true;
 
                 ZoomValue = DdpmCommonHelper.DeviceManagerSA!.GetZoom(CurrentDeviceInfo!.ID.ToString()).Result;
 
@@ -167,7 +167,7 @@ namespace DDPM.QAM
                 LogMsg($"LoadCurrentStatus Catch exception [{e.Message}]");
             }
 
-            isStatusChagneByDDPM = false;
+            isStatusChangeByDDPM = false;
         }
 
         private int ChangeFOVToSelectIndex(int fov)
@@ -209,62 +209,63 @@ namespace DDPM.QAM
                     switch (eventMsg.EventType)
                     {
                         //add event by leo 2025/01/14 start
-                        case "Webcam_IsHDROnChanged":
-                        {
-                            SetNoneProfile();
-                        }
-                        break;
-                        case "Webcam_BrightnessChanged":
-                        {
-                            SetNoneProfile();
-                        }
-                        break;
-                        case "Webcam_ContrastChanged":
-                        {
-                            SetNoneProfile();
-                        }
-                        break;
-                        case "Webcam_SaturationChanged":
-                        {
-                            SetNoneProfile();
-                        }
-                        break;
-                        case "Webcam_SharpnessChanged":
-                        {
-                            SetNoneProfile();
-                        }
-                        break;
-                        case "Webcam_AutoWhiteBalanceChanged":
-                        {
-                            SetNoneProfile();
-                        }
-                        break;
-                        case "Webcam_IsAutoWhiteBalanceOnChanged":
-                        {
-                            SetNoneProfile();
-                        }
-                        break;
+                        //Marked by Derek 2025/01/16 use another solution to implement
+                        //case "Webcam_IsHDROnChanged":
+                        //{
+                        //    SetNoneProfile();
+                        //}
+                        //break;
+                        //case "Webcam_BrightnessChanged":
+                        //{
+                        //    SetNoneProfile();
+                        //}
+                        //break;
+                        //case "Webcam_ContrastChanged":
+                        //{
+                        //    SetNoneProfile();
+                        //}
+                        //break;
+                        //case "Webcam_SaturationChanged":
+                        //{
+                        //    SetNoneProfile();
+                        //}
+                        //break;
+                        //case "Webcam_SharpnessChanged":
+                        //{
+                        //    SetNoneProfile();
+                        //}
+                        //break;
+                        //case "Webcam_AutoWhiteBalanceChanged":
+                        //{
+                        //    SetNoneProfile();
+                        //}
+                        //break;
+                        //case "Webcam_IsAutoWhiteBalanceOnChanged":
+                        //{
+                        //    SetNoneProfile();
+                        //}
+                        //break;
                         //add event by leo 2025/01/14 end
 
                         case "Webcam_ZoomChanged":
-                        { //leo fixed 2025/01/14
-                            if (int.TryParse(eventMsg.NewValue, out currentValue))
-                            {
-                                isStatusChagneByDDPM = true;
-                                ZoomValue = currentValue;
+                            { //leo fixed 2025/01/14
+                                if (int.TryParse(eventMsg.NewValue, out currentValue))
+                                {
+                                    isStatusChangeByDDPM = true;
+                                    ZoomValue = currentValue;
+                                }
                             }
-                        }
-                        break;
+                            break;
 
                         case "Webcam_FieldOfViewChanged":
                             if (int.TryParse(eventMsg.NewValue, out currentValue))
                             {
-                                isStatusChagneByDDPM = true;
+                                isStatusChangeByDDPM = true;
                                 FieldOfView = currentValue;
                                 FOV_Selected(ChangeFOVToSelectIndex(FieldOfView));
 
-                                //add by leo 2024/01/14
-                                SetNoneProfile();
+                                //add by leo 2025/01/14
+                                //SetNoneProfile();
 
                             }
 
@@ -275,11 +276,11 @@ namespace DDPM.QAM
                             bool result = false;
                             if (bool.TryParse(eventMsg.NewValue, out result))
                             {
-                                isStatusChagneByDDPM = true;
+                                isStatusChangeByDDPM = true;
                                 AutoFramingStatus = result;
 
-                                //add by leo 2024/01/14
-                                SetNoneProfile();
+                                //add by leo 2025/01/14
+                                //SetNoneProfile();
 
                             }
                             break;
@@ -292,13 +293,21 @@ namespace DDPM.QAM
 
                     if (null != msgs && msgs.Length == 2)
                     {
-                        isStatusChagneByDDPM = true; //Derek 1227
+                        isStatusChangeByDDPM = true; //Derek 1227
 
                         if (SetProfile(msgs[1]))
                             LogMsg($"QAMPageViewModel_UIUpdateNotify: set webcam profile:{msgs[1]} successfully.");
                         else
                             LogMsg($"QAMPageViewModel_UIUpdateNotify: set webcam profile:{msgs[1]} fail!");
                     }
+                }
+                else if (e.UI_Field_Name.StartsWith("DDPMSetProfileToNone")) //Derek 2025/01/16
+                {
+                    SetNoneProfile();
+                }
+                else if (e.UI_Field_Name.StartsWith("DDPMSetProfileToCurrent")) //Derek 2025/01/17
+                {
+                    SetProfile();
                 }
 
             }
@@ -315,6 +324,7 @@ namespace DDPM.QAM
             {
                 List<UI_Profile> temp = UI_ProfileList.ToList();
                 UI_ProfileList = new ObservableCollection<UI_Profile>();
+
                 foreach (var profile in temp)
                 {
                     profile.IsSelected = false;
@@ -407,7 +417,7 @@ namespace DDPM.QAM
                     {
                         _AutoFramingStatus = CurrentProfile.IsAutoFramingOn;
 
-                        if (!isStatusChagneByDDPM) //Derek 1227 to improve performance
+                        if (!isStatusChangeByDDPM) //Derek 1227 to improve performance
                         {
                             bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingOn).Result;
                             LogMsg($"SetProfile --> SetIsAutoFramingOn result is {result}");
@@ -476,7 +486,7 @@ namespace DDPM.QAM
 
                     if (CurrentDeviceInfo.IsPropertyFocusSupported)
                     {
-                        if (!isStatusChagneByDDPM)
+                        if (!isStatusChangeByDDPM)
                         {
                             bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn).Result;
                             LogMsg($"SetProfile --> SetIsFocusOn result is {result}");
@@ -490,7 +500,7 @@ namespace DDPM.QAM
 
                     if (CurrentDeviceInfo.IsPropertyPrioritySupported)
                     {
-                        if (!isStatusChagneByDDPM)
+                        if (!isStatusChangeByDDPM)
                         {
                             bool result = DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Priority).Result;
                             LogMsg($"SetProfile --> SetPriority result is {result}");
@@ -501,7 +511,7 @@ namespace DDPM.QAM
 
                     if (CurrentDeviceInfo.IsPropertyHDRSupported)
                     {
-                        if (!isStatusChagneByDDPM)
+                        if (!isStatusChangeByDDPM)
                         {
                             bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsHDROn).Result;
 
@@ -513,7 +523,7 @@ namespace DDPM.QAM
 
                     if (CurrentDeviceInfo.IsPropertyWhiteBalanceSupported)
                     {
-                        if (!isStatusChagneByDDPM)
+                        if (!isStatusChangeByDDPM)
                         {
                             bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoWhiteBalanceOn).Result;
                             LogMsg($"SetProfile --> SetIsAutoWhiteBalanceOn result is {result}");
@@ -593,7 +603,7 @@ namespace DDPM.QAM
 
         public void SetAutoFramingStatus()
         {
-            if (!isStatusChagneByDDPM)
+            if (!isStatusChangeByDDPM)
             {
                 bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), _AutoFramingStatus).Result;
 
@@ -639,7 +649,7 @@ namespace DDPM.QAM
             {
                 _FieldOfView = value;
 
-                if (!isStatusChagneByDDPM)
+                if (!isStatusChangeByDDPM)
                 {
                     bool result = DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), _FieldOfView).Result;
                     
@@ -656,6 +666,7 @@ namespace DDPM.QAM
                 FOV_IsSelected[j] = false;
             }
             FOV_IsSelected[index] = true;
+
             OnPropertyChanged(nameof(FOV_IsSelected));
         }
         #endregion
@@ -685,7 +696,7 @@ namespace DDPM.QAM
 
         public void SetZoom()
         {
-            if (!isStatusChagneByDDPM)
+            if (!isStatusChangeByDDPM)
             {
                 bool result = DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), _ZoomValue).Result;
                 LogMsg($"QAM set Zoom value to {_ZoomValue}, result is {result}");
