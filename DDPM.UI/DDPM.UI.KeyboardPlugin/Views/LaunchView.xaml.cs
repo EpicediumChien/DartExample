@@ -170,13 +170,12 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 //Lock Functionality 9/7
                 //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Display]
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null && data.LockSettings != null)
+                if (data != null && 
+                    data.LockSettings != null && 
+                    DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Keyboard"))
                 {
-                    if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Keyboard"))
-                    {
-                        RestoreLockIcon.Visibility = Visibility.Visible;
-                        txtRestore.IsEnabled = false;
-                    }
+                    RestoreLockIcon.Visibility = Visibility.Visible;
+                    txtRestore.IsEnabled = false;
                 }
             }));
         }
