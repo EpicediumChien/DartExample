@@ -612,7 +612,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     _primaryButtonIndex = value;
                     OnPropertyChanged();
-                    `                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            MouseButton button = _primaryButtonIndex == 0 ? MouseButton.Left : MouseButton.Right;
+                    //MouseButton button = _primaryButtonIndex == 0 ? MouseButton.Left : MouseButton.Right;
                     //DdpmCommonHelper.DeviceManagerSA!.SetPrimaryMouseButton(button, CurrentDeviceInfo!.ID);
                     CallUser32dll.SetPrimaryButtonToLeft(_primaryButtonIndex == 0);
                 }
