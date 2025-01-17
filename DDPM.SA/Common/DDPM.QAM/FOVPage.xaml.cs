@@ -53,13 +53,25 @@ namespace DDPM.QAM
             if (sender is Border bdr && 
                 DataContext is QAMPageViewModel vm)
             {
-                var index = int.Parse(bdr.Tag.ToString()!);
-                var val = vm.FOVs[index];
-                if (val == vm.FieldOfView)
-                { return; }
-                vm.FOV_Selected(index);
-                vm.isStatusChagneByDDPM = false;
-                vm.FieldOfView = val;
+                try
+                {
+                    var index = int.Parse(bdr.Tag.ToString()!);
+                    var val = vm.FOVs[index];
+
+                    if (val == vm.FieldOfView)
+                    { 
+                        return; 
+                    }
+
+                    vm.FOV_Selected(index);
+                    vm.isStatusChangeByDDPM = false;
+                    vm.SetNoneProfile(); //Derek 2025/01/16
+                    vm.FieldOfView = val;
+                }
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.DeviceManagerSA?.WriteLog($"FOV_Click catch exception {ex.Message}");
+                }
             }
         }
     }

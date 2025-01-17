@@ -95,6 +95,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public ManualResetEvent mre = new ManualResetEvent(false);
 
+        public bool close_app = false;
 
         public bool ShowLockMask
         {
@@ -1984,7 +1985,9 @@ namespace DDPM.UI.Plugin.ViewModels
                             case nameof(Saturation):
                             case nameof(Sharpness):
                                 if (!IsSettingProfile)
+                                {
                                     ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
+                                }
                                 break;
                             default:
                                 break;
@@ -1992,7 +1995,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     else
                     {
                         if (!IsSettingProfile)
+                        {
                             ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
+                        }
                     }
                 }
                 propertyInfo.SetValue(CurrentProfile, convertedValue);

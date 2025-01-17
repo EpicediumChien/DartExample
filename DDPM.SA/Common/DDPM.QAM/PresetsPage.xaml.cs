@@ -26,7 +26,7 @@ namespace DDPM.QAM
                 border.DataContext is UI_Profile selectedProfile && 
                 DataContext is QAMPageViewModel vm)
             {
-                vm.isStatusChagneByDDPM = false;
+                vm.isStatusChangeByDDPM = false;
                 vm.SetProfile(selectedProfile);
                 vm.SendSelectProfileToDDPM();
             }

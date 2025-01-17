@@ -1294,6 +1294,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connect your monitor via USB 3.0 to enable 4K UHD resolution..
+        /// </summary>
+        internal static string Camera_26 {
+            get {
+                return ResourceManager.GetString("Camera.26", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Capture.
         /// </summary>
         internal static string Camera_3 {
@@ -3958,7 +3967,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Paste Value Only.
+        ///   Looks up a localized string similar to Paste Values Only.
         /// </summary>
         internal static string Excel_12 {
             get {
@@ -9556,6 +9565,24 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to seconds.
+        /// </summary>
+        internal static string WebCameraPresenceDetection_12 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.12", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to minutes.
+        /// </summary>
+        internal static string WebCameraPresenceDetection_13 {
+            get {
+                return ResourceManager.GetString("WebCameraPresenceDetection.13", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Detects your presence when you are in the field of view.
         /// </summary>
         internal static string WebCameraPresenceDetection_2 {
@@ -9988,7 +10015,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Paste and Match Formatting.
+        ///   Looks up a localized string similar to Paste and Merge Formatting.
         /// </summary>
         internal static string Word_10 {
             get {

@@ -7,6 +7,7 @@
         mc:Ignorable="d"
         xmlns:controls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
         xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
+        xmlns:UXControls="clr-namespace:Dell.Client.Framework.UX.WPF.Controls;assembly=DCF.UX.WPF"
         Title="WalkThroughBox"   
         ResizeMode="NoResize"  
         ShowInTaskbar="False"
@@ -26,7 +27,8 @@
             </Grid.RowDefinitions>
 
             <controls:UXTextBlock Name="HeaderText" Grid.Row="0" Margin="36,36,45,24" FontFamily="Roboto" FontSize="20"  Text="{Binding strTitle}" />
-            <controls:UXTextBlock Name="SubHeaderText" Grid.Row="1" MaxWidth="372" MaxHeight="54" Margin="36,-75,24,8" FontFamily="Roboto" FontSize="16"  Text="{Binding strContent}" TextWrapping="WrapWithOverflow" />
+            <!-- Elsa 20250116 change Margin="36,-75,24,8" to Margin="36,-85,24,8" for text clipping -->
+            <controls:UXTextBlock Name="SubHeaderText" Grid.Row="1" MaxWidth="372" MaxHeight="54" Margin="36,-85,24,8" FontFamily="Roboto" FontSize="16"  Text="{Binding strContent}" TextWrapping="WrapWithOverflow" />
 
             <!-- Button panel with ArrowButton, NextBtn, and SkipBtn -->
             <StackPanel Name="ButtonPanel" Grid.Row="2" Margin="0,20,0,10" Orientation="Horizontal" Visibility="{Binding isButtonsShown}">
@@ -35,8 +37,9 @@
                 </controls:UXButton>
 
                 <!-- Next Button -->
-                <controls:UXButton x:Name="NextBtn" IconPosition="IconRight" HorizontalContentAlignment="Center" ButtonType="Primary" Padding="40, 8" ButtonSize="Medium" VerticalContentAlignment="Center" Margin="16,-144,0,0" IconAnimation="Move" Width="164" Height="40" Click="NextBtn_Click">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Elsa 20250116 change Width="164" to MinWidth="164" for Next Button's Text clipping -->
+                <controls:UXButton x:Name="NextBtn" IconPosition="IconRight" HorizontalContentAlignment="Center" ButtonType="Primary" Padding="10, 8" ButtonSize="Medium" VerticalContentAlignment="Center" Margin="16,-144,0,0" IconAnimation="Move" MinWidth="164" Height="40" Click="NextBtn_Click">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center" Width="{Binding ActualWidth, ElementName=border_second}">
                         <controls:UXTextBlock Margin="8,0" Text="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" Foreground="White"/>
                         <Path x:Name="ArrowPath" Margin="0,2" Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white">
                             <Path.RenderTransform>
@@ -67,7 +70,9 @@
                 </controls:UXButton>
 
                 <!-- Skip Button -->
-                <controls:UXButton x:Name="SkipBtn" Visibility="{Binding SkipButtonVisibility}" ButtonType="Tertiary" Width="90" Height="40" ButtonSize="Medium" Margin="10, -144, 0, 0" Content="{Binding [WalkThrough.1], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" IconAnimation="Move" Click="SkipBtn_Click" />
+                <!-- Elsa 20250116 change controls:UXButton to UXControls:UXButton, Width="90" to MinWidth="90" for Skip Button clipping-->
+                <UXControls:UXButton x:Name="SkipBtn" Visibility="{Binding SkipButtonVisibility}" ButtonType="Tertiary" MinWidth="90" Height="40" ButtonSize="Medium" Margin="10, -144, 0, 0" Content="{Binding [WalkThrough.1], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}" IconAnimation="Move" Click="SkipBtn_Click" />
+                
             </StackPanel>
 
             <!-- ProgressBar -->

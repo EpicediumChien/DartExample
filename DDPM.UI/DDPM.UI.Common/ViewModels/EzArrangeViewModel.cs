@@ -733,20 +733,20 @@ namespace DDPM.UI.Common.ViewModels
             }
             else
             {
+                //2.1 Automatic Startup
+                if (CurrentSelectedProfileSetting.StartUpLaunch)
+                    AutomaticStartupValue = Strings.Yes; // "Yes";
+                else
+                    AutomaticStartupValue = Strings.No; // "No";
+
+                //2.2 Launch By Time
                 if (CurrentSelectedProfileSetting.Auto)
                 {
-                    //2.1 Automatic Startup
-                    if (CurrentSelectedProfileSetting.StartUpLaunch)
-                        AutomaticStartupValue = Strings.Yes; // "Yes";
-                    else
-                        AutomaticStartupValue = Strings.No; // "No";
                     //2.2 Launch By Time
                     LaunchByTimeValue = ConvertAutoLaunchtimeToTime(CurrentSelectedProfileSetting.AutoStartTime);
                 }
                 else
                 {
-                    //2.1 Automatic Startup
-                    AutomaticStartupValue = Strings.No; // "No";
                     //2.2 Launch By Time
                     LaunchByTimeValue = "_";
                 }

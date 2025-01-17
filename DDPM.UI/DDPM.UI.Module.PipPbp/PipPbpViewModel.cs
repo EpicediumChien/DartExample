@@ -1598,8 +1598,10 @@ namespace DDPM.UI.Module.PipPbp
         {
             get
             {
-                if (IsFullscreenItemSelected)
-                    return false;
+                //Robert_Lin, 2025-1-17 fix with Bee June's comment in PIMS-302450
+                //Tye, Bee June: When PxP id turn out, no need to gray out the USB switch.
+                //if (IsFullscreenItemSelected)
+                //    return false;
                 if (SelectedHomeDevice == null) return false;
                 if (SelectedHomeDevice.HasCapability_UsbKvm)
                 {

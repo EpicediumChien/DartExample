@@ -35,6 +35,17 @@ namespace DDPM.UI.Common
         /// Trigger from MainWindow, when DDPM move to a new position (position is changed)
         /// </summary>
         public const string MainWindow_MoveToNewPosition = "MainWindow.MoveToNewPosition";
+
+        public const string MainWindow_ConsoleWindow_Closed = "MainWindow.ConsoleWindow.Closed";
+
+        /// <summary>
+        /// Request to unlock camera lock if camera previewing.
+        /// var args = not use
+        /// args.Tag = not use
+        /// (IConsole) _console.RaiseEvent(ConsoleEventNames.Masthead_Force_Camera_Unlock, null, null);
+        /// </summary>
+        public const string MainWindow_Force_Camera_Unlock = "Force_Camera_Unlock";
+
         #endregion MainWindow
 
         #region DisplayPlugin
