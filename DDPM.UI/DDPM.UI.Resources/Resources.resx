@@ -2575,7 +2575,7 @@
     <value>Paste Formulas</value>
   </data>
   <data name="Excel.12" xml:space="preserve">
-    <value>Paste Value Only</value>
+    <value>Paste Values Only</value>
   </data>
   <data name="Excel.13" xml:space="preserve">
     <value>Previous Sheet</value>
@@ -2761,7 +2761,7 @@
     <value>Autoscroll</value>
   </data>
   <data name="Word.10" xml:space="preserve">
-    <value>Paste and Match Formatting</value>
+    <value>Paste and Merge Formatting</value>
   </data>
   <data name="Word.11" xml:space="preserve">
     <value>Previous Change</value>
