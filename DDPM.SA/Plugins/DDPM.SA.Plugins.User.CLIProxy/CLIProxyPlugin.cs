@@ -822,7 +822,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
 
                 if (args.Contains("deferid"))
                 {
-                    Console.WriteLine("@@@stephen args[\"deferid\"] = " + args["deferid"]);
+                    Console.WriteLine("@@ args[\"deferid\"] = " + args["deferid"]);
                     derferid = args["deferid"];
                 }
 
@@ -830,12 +830,14 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 {
                     if (args["action"] == "defer")
                     {
-                        Console.WriteLine("@@@stephen isDefer = true");
+                        Console.WriteLine("@@ isDefer = true");
+                        WriteLog($"[Defer selection] : Defer");
                         _CliManagerPlugin.sendToastResult(derferid, true);
                     }
                     else
                     {
-                        Console.WriteLine("@@@stephen isDefer = false");
+                        Console.WriteLine("@@ isDefer = false");
+                        WriteLog($"[Defer selection] : Update Now");
                         _CliManagerPlugin.sendToastResult(derferid, false);
                     }
                 }
