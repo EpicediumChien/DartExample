@@ -1147,8 +1147,8 @@ namespace DDPM.SA.Plugins.CMAManager
         private const int INTERVAL_CHECK_SECONDS = 10 * 60 * 1000; // 10 mins*/
 
         // test
-        private const long DAY_IN_SECONDS = 4 * 60;    // 4min
-        private const int INTERVAL_CHECK_SECONDS = 5 * 60 * 1000; // 5 mins
+        private const long DAY_IN_SECONDS = 24 * 60 * 60;    // 24 hours
+        private const int INTERVAL_CHECK_SECONDS = 10 * 60; // 10 mins
         private System.Timers.Timer timerDefer;
 
         private void initDeferControlPanel()
