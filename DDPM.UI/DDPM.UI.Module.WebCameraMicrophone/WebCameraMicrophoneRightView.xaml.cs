@@ -57,13 +57,16 @@ namespace DDPM.UI.Module.WebCameraMicrophone
                         //}
                     }
                 }
-                if (_vm != null && _vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
-                {
-                    DdpmCommonHelper.WriteUILog($"[WebCameraMicrophoneRightView] Webcam {_vm.CurrentDeviceInfo?.ModelNumber} IsMicEnumerationSupported is true.");
-                    imgWarn.Visibility = Visibility.Hidden;
-                }
+
+                // << 250107 update by Hess to meet PO's new requirement
+                //if (_vm != null && _vm.CurrentDeviceInfo!.IsMicEnumerationSupported)
+                //{
+                //    DdpmCommonHelper.WriteUILog($"[WebCameraMicrophoneRightView] Webcam {_vm.CurrentDeviceInfo?.ModelNumber} IsMicEnumerationSupported is true.");
+                //    imgWarn.Visibility = Visibility.Hidden;
+                //}
+                // >>
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraMicrophone\\WebCameraMicrophoneRightView.xaml.cs WebCameraMicrophoneRightView() ex:" + ex.Message);
             }
@@ -103,7 +106,7 @@ namespace DDPM.UI.Module.WebCameraMicrophone
                     }));
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraMicrophone\\WebCameraMicrophoneRightView.xaml.cs DeviceManagerSA_ITSettingsActionEvent() ex:" + ex.Message);
             }
@@ -149,7 +152,7 @@ namespace DDPM.UI.Module.WebCameraMicrophone
                         _vm.Redo();
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebCameraMicrophone\\WebCameraMicrophoneRightView.xaml.cs Image_MouseLeftButtonDown() ex:" + ex.Message);
             }
