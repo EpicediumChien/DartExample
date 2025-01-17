@@ -1045,10 +1045,10 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        public override bool SetCurrentDevice(string deviceID)
+        public override bool SetCurrentDevice(string instanceIDs)
         {
             _log.Info($"[HeadsetViewModel] SetCurrentDevice ...");
-            if (!base.SetCurrentDevice(deviceID))
+            if (!base.SetCurrentDevice(instanceIDs))
                 return false;
             _log.Info($"[HeadsetViewModel] SetCurrentDevice GUID ... {CurrentDeviceID.ToString()}");
             return true;
