@@ -267,10 +267,12 @@ namespace DDPM.UI.Plugin.ViewModels
                                 break;
 
                             case "BackLightingLevelChanged":
-                                BackLightingLevel = di.BackLightingLevel;
+                                _backLightingLevel = di.BackLightingLevel;
+                                OnPropertyChanged(nameof(BackLightingLevel));
                                 break;
                             case "CollaborationScreenShareEnable":
-                                IsCollaborationScreenShareEnable = di.IsCollaborationScreenShareEnable;
+                                _isCollaborationScreenShareEnable = di.IsCollaborationScreenShareEnable;
+                                OnPropertyChanged(nameof(IsCollaborationScreenShareEnable));
                                 break;
 
                             default:
@@ -296,8 +298,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     TabManualFocused = false;
                     IsSliderVisible = false;
                     value = 1;
-                    if (NeedSetting)
-                        BackLightingLevel = 0;
+                    // << 250107 updated by Hess to fix PIMS-340197
+                    //if (NeedSetting)
+                    //    BackLightingLevel = 0;
+                    // >>
                     break;
 
                 case 1:
