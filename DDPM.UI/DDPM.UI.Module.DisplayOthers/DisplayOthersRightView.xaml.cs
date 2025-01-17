@@ -364,5 +364,28 @@ namespace DDPM.UI.Module.DisplayOthers
             IConsole? console = DdpmHomePlugin.PluginIoc.GetService<IConsole>();
             console?.ShowHomePage();
         }
+
+        //Elsa 20250116 add For others-Application Settings tooltip issue
+        private double GetTextblockWidch(double but1width, double but2width)
+        {
+            double textblock1Widch = 568 - 88 - but1width - but2width;
+            return textblock1Widch;
+        }
+
+        //Elsa 20250116 add For others-Application Settings tooltip issue
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+
+            double width = GetTextblockWidch(import.ActualWidth, export.ActualWidth);
+            double textWidth = Utility.GetTextWidth(textblock1.Text, textblock1.FontSize, "Roboto");
+            if (width > textWidth)
+            {
+                textblock1.Width = Utility.GetTextWidth(textblock1.Text, textblock1.FontSize, "Roboto");
+            }
+            else
+            {
+                textblock1.Width = width;
+            }
+        }
     }
 }
