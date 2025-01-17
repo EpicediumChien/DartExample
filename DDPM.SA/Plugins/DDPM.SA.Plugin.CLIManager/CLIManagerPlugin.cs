@@ -1007,7 +1007,7 @@ namespace DDPM.SA.Plugin.CLIManager
         // add @ 20241210 stephen: check defer with toast notification
 
         private List<DeferItem> DeferItems = new List<DeferItem>();
-        private const int MAX_DEFER_WAIT_TIME_SEC = 5;
+        private const int MAX_DEFER_WAIT_TIME_SEC = 300;
         private Dictionary<string, bool> deferResponse = new Dictionary<string, bool>();
 
         public void sendToastResult(string defer_id, bool isDefer)
