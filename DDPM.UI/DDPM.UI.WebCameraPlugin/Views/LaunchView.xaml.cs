@@ -2825,7 +2825,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void ChangeDevNameWidth()
         {
-            //txtCaption.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
+            txtCaption.MaxWidth = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
         }
 
         private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
