@@ -479,6 +479,7 @@ namespace DDPM.PowerMon
         public void CloseByCaller()
         {
             Close();
+            //Environment.Exit(0);
         }
     }
 }
