@@ -11,6 +11,7 @@ using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using DdmLibrary.Utility;
 using DPeMPublic.Common;
+using Microsoft.VisualBasic.Logging;
 
 namespace DDPM.QAM
 {
@@ -305,10 +306,10 @@ namespace DDPM.QAM
                 {
                     SetNoneProfile();
                 }
-                else if (e.UI_Field_Name.StartsWith("DDPMSetProfileToCurrent")) //Derek 2025/01/17
-                {
-                    SetProfile();
-                }
+                //else if (e.UI_Field_Name.StartsWith("DDPMSetProfileToCurrent")) //Derek 2025/01/18 don't need to use this message
+                //{
+                //    SetProfile();
+                //}
 
             }
             catch (Exception ex)
@@ -380,7 +381,8 @@ namespace DDPM.QAM
                     }
                 }
                     
-                LogMsg($"Could not found {name} in current UI_ProfileList.");
+                LogMsg($"Could not found {name} in current UI_ProfileList, set profile to none");
+                SetNoneProfile(); //Derek 2025/01/18
 
                 return false;
             }
@@ -413,6 +415,11 @@ namespace DDPM.QAM
                 {
                     CurrentProfile = webcamSettings.PresetProfiles[selProfile.Profile_Name_Key];
 
+                    LogMsg($"CurrentProfile settings are: Name = {CurrentProfile.Name}, Sharpness = {CurrentProfile.Sharpness}, Brightness = {CurrentProfile.Brightness}" +
+                        $", Saturation = {CurrentProfile.Saturation}, AutoFramingFrameSize = {CurrentProfile.AutoFramingFrameSize}, Name = {CurrentProfile.Name}, IsAutoWhiteBalanceOn = {CurrentProfile.IsAutoWhiteBalanceOn}" +
+                        $", IsAutoFramingOn = {CurrentProfile.IsAutoFramingOn}, FieldOfView = {CurrentProfile.FieldOfView}, IsHDROn = {CurrentProfile.IsHDROn}, AutoWhiteBalance = {CurrentProfile.AutoWhiteBalance}" +
+                        $", Contrast = {CurrentProfile.Contrast}");
+
                     if (CurrentDeviceInfo!.IsPropertyAutoFramingSensitivitySupported || CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported || CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
                     {
                         _AutoFramingStatus = CurrentProfile.IsAutoFramingOn;
@@ -420,28 +427,31 @@ namespace DDPM.QAM
                         if (!isStatusChangeByDDPM) //Derek 1227 to improve performance
                         {
                             bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingOn).Result;
-                            LogMsg($"SetProfile --> SetIsAutoFramingOn result is {result}");
+                            LogMsg($"SetProfile --> SetIsAutoFramingOn to {CurrentProfile.IsAutoFramingOn} result is {result}");
 
-                            if (CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
-                            {
-                                result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingTransitionOn).Result;
+                            //Derek 2025/01/18  DDPM doesn't set this property
+                            //if (CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
+                            //{
+                            //    result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoFramingTransitionOn).Result;
 
-                                LogMsg($"SetProfile --> SetIsAutoFramingTransitionOn result is {result}");
-                            }
+                            //    LogMsg($"SetProfile --> SetIsAutoFramingTransitionOn result is {result}");
+                            //}
 
-                            if (CurrentDeviceInfo.IsPropertyAutoFramingSensitivitySupported)
-                            {
-                                result = DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingSensitivity(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingSensitivity).Result;
+                            //Derek 2025/01/18  DDPM doesn't set this property
+                            //if (CurrentDeviceInfo.IsPropertyAutoFramingSensitivitySupported)
+                            //{
+                            //    result = DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingSensitivity(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingSensitivity).Result;
 
-                                LogMsg($"SetProfile --> SetAutoFramingSensitivity result is {result}");
-                            }
+                            //    LogMsg($"SetProfile --> SetAutoFramingSensitivity to {CurrentProfile.AutoFramingSensitivity} result is {result}");
+                            //}
 
-                            if (CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported)
-                            {
-                                result = DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingFrameSize).Result;
+                            //Derek 2025/01/18  DDPM doesn't set this property
+                            //if (CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported)
+                            //{
+                            //    result = DdpmCommonHelper.DeviceManagerSA!.SetAutoFramingFrameSize(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoFramingFrameSize).Result;
 
-                                LogMsg($"SetProfile --> SetAutoFramingFrameSize result is {result}");
-                            }
+                            //    LogMsg($"SetProfile --> SetAutoFramingFrameSize result is {result}");
+                            //}
                         }
                         else
                             LogMsg($"SetProfile SetIsAutoFramingOn/SetIsAutoFramingTransitionOn... has modified by UI");
@@ -484,30 +494,32 @@ namespace DDPM.QAM
                     //    }
                     //}
 
-                    if (CurrentDeviceInfo.IsPropertyFocusSupported)
-                    {
-                        if (!isStatusChangeByDDPM)
-                        {
-                            bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn).Result;
-                            LogMsg($"SetProfile --> SetIsFocusOn result is {result}");
+                    //Derek 2025/01/18  DDPM doesn't set this property
+                    //if (CurrentDeviceInfo.IsPropertyFocusSupported)
+                    //{
+                    //    if (!isStatusChangeByDDPM)
+                    //    {
+                    //        bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsFocusOn).Result;
+                    //        LogMsg($"SetProfile --> SetIsFocusOn result is {result}");
 
-                            result = DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Focus).Result;
-                            LogMsg($"SetProfile --> SetFocus result is {result}");
-                        }
-                        else
-                            LogMsg($"SetProfile --> SetIsFocusOn/SetFocus has modified by UI");
-                    }
+                    //        result = DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Focus).Result;
+                    //        LogMsg($"SetProfile --> SetFocus result is {result}");
+                    //    }
+                    //    else
+                    //        LogMsg($"SetProfile --> SetIsFocusOn/SetFocus has modified by UI");
+                    //}
 
-                    if (CurrentDeviceInfo.IsPropertyPrioritySupported)
-                    {
-                        if (!isStatusChangeByDDPM)
-                        {
-                            bool result = DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Priority).Result;
-                            LogMsg($"SetProfile --> SetPriority result is {result}");
-                        }
-                        else
-                            LogMsg($"SetProfile --> SetPriority has modified by UI");
-                    }
+                    //Derek 2025/01/18  DDPM doesn't set this property
+                    //if (CurrentDeviceInfo.IsPropertyPrioritySupported)
+                    //{
+                    //    if (!isStatusChangeByDDPM)
+                    //    {
+                    //        bool result = DdpmCommonHelper.DeviceManagerSA!.SetPriority(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Priority).Result;
+                    //        LogMsg($"SetProfile --> SetPriority result is {result}");
+                    //    }
+                    //    else
+                    //        LogMsg($"SetProfile --> SetPriority has modified by UI");
+                    //}
 
                     if (CurrentDeviceInfo.IsPropertyHDRSupported)
                     {
@@ -515,7 +527,7 @@ namespace DDPM.QAM
                         {
                             bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsHDROn).Result;
 
-                            LogMsg($"SetProfile --> SetIsHDROn result is {result}");
+                            LogMsg($"SetProfile --> SetIsHDROn to {CurrentProfile.IsHDROn} result is {result}");
                         }
                         else
                             LogMsg($"SetProfile --> SetIsHDROn has modified by UI");
@@ -526,14 +538,60 @@ namespace DDPM.QAM
                         if (!isStatusChangeByDDPM)
                         {
                             bool result = DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.IsAutoWhiteBalanceOn).Result;
-                            LogMsg($"SetProfile --> SetIsAutoWhiteBalanceOn result is {result}");
+                            LogMsg($"SetProfile --> SetIsAutoWhiteBalanceOn to {CurrentProfile.IsAutoWhiteBalanceOn} result is {result}");
 
                             result = DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.AutoWhiteBalance).Result;
-                            LogMsg($"SetProfile --> SetAutoWhiteBalance result is {result}");
+                            LogMsg($"SetProfile --> SetAutoWhiteBalance to {CurrentProfile.AutoWhiteBalance} result is {result}");
                         }
                         else
                             LogMsg($"SetProfile --> SetIsAutoWhiteBalanceOn/SetAutoWhiteBalance has modified by UI");
                     }
+
+                    //Derek 2025/01/18 Add DDPM extra setting properties
+                    if (CurrentDeviceInfo.IsPropertyBrightnessSupported)
+                    {
+                        if (!isStatusChangeByDDPM)
+                        {
+                            bool result = DdpmCommonHelper.DeviceManagerSA!.SetBrightness(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Brightness).Result;
+                            LogMsg($"SetProfile --> SetBrightness to {CurrentProfile.Brightness} result is {result}");
+                        }
+                        else
+                            LogMsg($"SetProfile --> SetBrightness has modified by UI");
+                    }
+
+                    if (CurrentDeviceInfo.IsPropertySharpnessSupported)
+                    {
+                        if (!isStatusChangeByDDPM)
+                        {
+                            bool result = DdpmCommonHelper.DeviceManagerSA!.SetSharpness(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Sharpness).Result;
+                            LogMsg($"SetProfile --> SetSharpness to {CurrentProfile.Sharpness} result is {result}");
+                        }
+                        else
+                            LogMsg($"SetProfile --> SetSharpness has modified by UI");
+                    }
+
+                    if (CurrentDeviceInfo.IsPropertyContrastSupported)
+                    {
+                        if (!isStatusChangeByDDPM)
+                        {
+                            bool result = DdpmCommonHelper.DeviceManagerSA!.SetContrast(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Contrast).Result;
+                            LogMsg($"SetProfile --> SetContrast to {CurrentProfile.Contrast} result is {result}");
+                        }
+                        else
+                            LogMsg($"SetProfile --> SetContrast has modified by UI");
+                    }
+
+                    if (CurrentDeviceInfo.IsPropertySaturationSupported)
+                    {
+                        if (!isStatusChangeByDDPM)
+                        {
+                            bool result = DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Saturation).Result;
+                            LogMsg($"SetProfile --> SetSaturation to {CurrentProfile.Saturation} result is {result}");
+                        }
+                        else
+                            LogMsg($"SetProfile --> SetSaturation has modified by UI");
+                    }
+                    //end Added
 
                     List<UI_Profile> temp = UI_ProfileList.ToList();
                     UI_ProfileList = new ObservableCollection<UI_Profile>();
@@ -548,7 +606,7 @@ namespace DDPM.QAM
 
                             //Derek 2025/01/09
                             webcamSettings.SelectedProfileName = selectedProfileName;
-                            SaveSelectProfile(); 
+                            SaveSelectProfile();
                         }
                         UI_ProfileList.Add(profile);
                     }
@@ -571,7 +629,7 @@ namespace DDPM.QAM
             try
             {
                 bool result = WebcamSettings.ExportWebcamSettings(webcamSettings,
-                                                        CurrentDeviceInfo.ModelNumber,
+                                                        CurrentDeviceInfo?.ModelNumber,
                                                         DdpmCommonHelper.DeviceManagerSA,
                                                         logger);
 
