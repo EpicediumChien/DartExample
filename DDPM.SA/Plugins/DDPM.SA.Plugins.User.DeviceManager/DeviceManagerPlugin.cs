@@ -10008,40 +10008,40 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.CompletedTask;//Task.FromResult(true);
         }
 
-        public Task SetBrightness(string Guid, int newValue)
+        public Task<bool> SetBrightness(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetBrightness requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetBrightness(Guid, newValue);
-            return Task.CompletedTask;//Task.FromResult(true);
+
+            return _DTPProxyPlugin.SetBrightness(Guid, newValue);
         }
 
-        public Task SetSharpness(string Guid, int newValue)
+        public Task<bool> SetSharpness(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetSharpness requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetSharpness(Guid, newValue);
-            return Task.CompletedTask;//Task.FromResult(true);
+
+            return _DTPProxyPlugin.SetSharpness(Guid, newValue);
         }
 
-        public Task SetContrast(string Guid, int newValue)
+        public Task<bool> SetContrast(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetContrast requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetContrast(Guid, newValue);
-            return Task.CompletedTask;//Task.FromResult(true);
+
+            return _DTPProxyPlugin.SetContrast(Guid, newValue);
         }
 
-        public Task SetSaturation(string Guid, int newValue)
+        public Task<bool> SetSaturation(string Guid, int newValue)
         {
             writelog("DeviceMangerPlugin received SetSaturation requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            _DTPProxyPlugin.SetSaturation(Guid, newValue);
-            return Task.CompletedTask;//Task.FromResult(true);
+            
+            return _DTPProxyPlugin.SetSaturation(Guid, newValue);
         }
 
         public Task SetAntiFlicker(string Guid, int newValue)
@@ -14100,7 +14100,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog($"ALT+Z conditons: devcnt = {devCnt}, global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
 
                 //Derek PIMS-329759 Problem 1
-                if (1 == devCnt && _GlobalSettingParam != null &&
+                //Derek 20250118 workable only zoom meeting is active //_IsZoomMeetingActive &&
+                if (1 == devCnt && _GlobalSettingParam != null && 
                     _GlobalSettingParam.GlobalSetting_WidgetSettings != null &&
                     _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
                 {

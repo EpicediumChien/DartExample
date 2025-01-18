@@ -313,7 +313,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     _vm!.CurrentProfileName = profileName;
                     _vm.IsSettingProfile = true;
-                    _vm.SetProfile();
+                    //Derek 2025/01/18 cancel this action due to it has done by QAM
+                    //_vm.SetProfile();
                     _vm.IsSettingProfile = false;
                     isProfilePropertyChanged = false;
                 }
