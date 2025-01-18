@@ -98,8 +98,13 @@ namespace DDPM.SA.Common
 
         void sendToastResult(string defer_id, bool isDefer); // add @ 20241210 stephen
 
+        void sendDeviceCheckResult(bool result); // add @ 20250116 stephen
+
+
         event EventHandler<CLIEventArgs> CLIActionEvent;
         event EventHandler<CLIEventToastArgs> CLIToastEvent;    // add @ 20241210 stephen
+        event EventHandler<CLIEventDeviceConnArgs> CLIDeviceCheckEvent;    // add @ 20250116 stephen
+
     }
 
     /// <summary>
@@ -113,6 +118,8 @@ namespace DDPM.SA.Common
         Task<bool> checkDefer(int from, string guid, string commanddata); // add @ 20241210 stephen
         Task<bool> checkDeferSchedule(int from, string guid, DeferItem item); // add @ 20241210 stephen
         Task showNotification(int from, string guid, DeferItem item); // add @ 20241219 stephen
+
+        Task<bool> checkDeviceConn(int from, string guid, string commanddata, string str_command); // add @ 20250116 stephen
 
 
         //For remote management to subscribe event with result
@@ -130,5 +137,11 @@ namespace DDPM.SA.Common
         public string defer_id { get; set; }
         public string toast_message { get; set; }
         public bool is_defer { get; set; }
+    }
+
+    // add @ 20250116 stephen
+    public class CLIEventDeviceConnArgs : EventArgs
+    {
+        public string commands { get; set; }
     }
 }
