@@ -363,6 +363,7 @@
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>
+                        <!-- Robert_Lin 2025-1-18 TO DO: need a new image for LightMode -->
                         <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/Alert.png" Stretch="Fill"
                                VerticalAlignment="Top" Width="16" Height="16" Visibility="{Binding CopilotInfoVisibility}">
                             <Image.ToolTip>
