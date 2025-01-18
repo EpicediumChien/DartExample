@@ -1143,7 +1143,7 @@ namespace DDPM.SA.Plugin.CLIManager
             for (int i = 0; i < MAX_SECOND_WAIT_RESULT; i++)
             {
                 Thread.Sleep(1000);
-                WriteLog($"@@stephen CLIManagerPlugin::checkDeviceConnResult wait = {i} ");
+                WriteLog($"@@  CLIManagerPlugin::checkDeviceConnResult wait = {i} ");
                 if (resultReset)
                 {
                     Thread.Sleep(1000);
@@ -1154,8 +1154,8 @@ namespace DDPM.SA.Plugin.CLIManager
                     break;
                 }
             }
-            WriteLog($"@@stephen CLIManagerPlugin::checkDeviceConnResult resultReset = {resultReset}");
-            WriteLog($"@@stephen CLIManagerPlugin::checkDeviceConnResult resultDeviceCheck = {resultDeviceConn}");
+            WriteLog($"@@  CLIManagerPlugin::checkDeviceConnResult resultReset = {resultReset}");
+            WriteLog($"@@  CLIManagerPlugin::checkDeviceConnResult resultDeviceCheck = {resultDeviceConn}");
 
             return resultDeviceConn;
 
@@ -1185,7 +1185,7 @@ namespace DDPM.SA.Plugin.CLIManager
 
         public void sendDeviceCheckResult(bool result)
         {
-            Console.Write("@@stephen CLIManagerPlugin::sendDeviceCheckResult result = " + result);
+            Console.Write("@@  CLIManagerPlugin::sendDeviceCheckResult result = " + result);
 
             resultDeviceConn = result;
             resultReset = true;
@@ -1198,7 +1198,7 @@ namespace DDPM.SA.Plugin.CLIManager
             EventHandler<CLIEventDeviceConnArgs> Handler = CLIDeviceCheckEvent;
             if (Handler != null)
             {
-                WriteLog($"@@stephen CLIManagerPlugin::onCLIDeviceCheckEventNotify CLIEventDeviceConnArgs e.commands = {e.commands}");
+                WriteLog($"@@  CLIManagerPlugin::onCLIDeviceCheckEventNotify CLIEventDeviceConnArgs e.commands = {e.commands}");
                 Handler.Invoke(this, e);
             }
         }
