@@ -1600,7 +1600,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 2: " + ex.Message);
+                DdpmCommonHelper.WriteUILog("PowerEvent Control got exception: " + ex.Message);
             }
 
 
@@ -1638,7 +1638,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 3: " + ex.Message);
+                DdpmCommonHelper.WriteUILog("Free MediaFrameReader got exception: " + ex.Message);
             }
 
             try
@@ -1651,21 +1651,21 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DdpmCommonHelper.WriteUILog($"FreeWebcamResource got exception 4:{ex.ToString()}");
             }
 
-            try
-            {
-                await CleanupMediaCaptureAsync();
+            //try
+            //{
+            //    await CleanupMediaCaptureAsync();
 
-                if (_pwr_Mon != null)
-                {
-                    _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
-                    _pwr_Mon.Close_Event();
-                    _pwr_Mon = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 2: " + ex.Message);
-            }
+            //    if (_pwr_Mon != null)
+            //    {
+            //        _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
+            //        _pwr_Mon.Close_Event();
+            //        _pwr_Mon = null;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 2: " + ex.Message);
+            //}
             DdpmCommonHelper.WriteUILog("Webcam LaunchView_Unloaded end");
             /*if ( _vm?.close_app == true )
             {
