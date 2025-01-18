@@ -1587,6 +1587,25 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             try
             {
+                DdpmCommonHelper.WriteUILog($"FreeWebcamResource Free PowerEventControl");
+
+                if (_pwr_Mon != null)
+                {
+                    _pwr_Mon.UnRegisterAllHotKey();
+
+                    _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
+                    _pwr_Mon.Close_Event();
+                    //_pwr_Mon = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 2: " + ex.Message);
+            }
+
+
+            try
+            {
                 in_CameraPlugin = false;
                 exit_status_thread = true;
                 _vm?.mre.Set();
