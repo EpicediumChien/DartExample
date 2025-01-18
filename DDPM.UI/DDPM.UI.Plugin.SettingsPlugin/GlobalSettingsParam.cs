@@ -11,7 +11,9 @@ namespace DDPM.UI.Plugin.SettingsPlugin
     {
         public static class Global
         {
-            public static GlobalSettingParam SettingParam;
+            private static GlobalSettingParam settingParam;
+
+            public static GlobalSettingParam SettingParam { get => settingParam; set => settingParam = value; }
         }
     }
 }
