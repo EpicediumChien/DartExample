@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Management;
 using System.Net.Http;
+using System.Net.NetworkInformation;
 using System.Security;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -222,40 +223,67 @@ namespace DdpmSwUpdater
                         continue;
                     }
                     LogManage.LogMessage($"CheckFold2 ok");
-                    _downloadTimer = new Timer();
-                    _downloadTimer.Interval = 1000;
-                    _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
-                    int count = 0;
+                    if (!NetworkInterface.GetIsNetworkAvailable())
+                    {
+                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
+                        _notificationStr = $"{swUpdateInfos[i].SoftwareName} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
+                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
+                        LogManage.LogMessage(swUpdateInfos[i].SoftwareName + " Download File Fail : " + _notificationStr);
+                        method.DeleteFolder(savePath);
+                        continue;
+                    }
                     string _installationFileStoragePath = string.Empty;
-                    do
+                    try
                     {
-                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.Unknow;
-                        LogManage.LogMessage($"Download start try count : {count++}");
-                        _downloadTimer.Start();
-                        download = new Download(LogManage.logs);
-                        string downloadInfo = "";
-                        // 將儲存路徑與從 URL 中提取的檔案名稱組合
-                        _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
-                        bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, isSkipCA);
-                        _downloadTimer.Stop();
-                        LogManage.LogMessage($"Download done");
-                        if (!downloadRet)
+                        _downloadTimer = new Timer();
+                        _downloadTimer.Interval = 1000;
+                        _downloadTimer.Elapsed += new ElapsedEventHandler(DownloadTimer_Elapsed);
+                        int count = 0;
+                        do
                         {
-                            if (downloadInfo.Equals("CA check fail"))
+                            swUpdateInfos[i].SWUErrorCode = SWUErrorCode.Unknow;
+                            LogManage.LogMessage($"Download start try count : {count++}");
+                            _downloadTimer.Start();
+                            download = new Download(LogManage.logs);
+                            string downloadInfo = "";
+                            // 將儲存路徑與從 URL 中提取的檔案名稱組合
+                            _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
+                            bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, isSkipCA);
+                            _downloadTimer.Stop();
+                            LogManage.LogMessage($"Download done");
+                            if (!downloadRet)
                             {
-                                swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
+                                if (downloadInfo.Equals("CA check fail"))
+                                {
+                                    swUpdateInfos[i].SWUErrorCode = SWUErrorCode.CAFail;
+                                }
+                                else if (downloadInfo.StartsWith("Network fail"))
+                                {
+                                    swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
+                                }
+                                LogManage.LogMessage($"{swUpdateInfos[i].SoftwareName} Download File Fail : {downloadInfo}");
+                                //continue;
                             }
-                            else if (downloadInfo.StartsWith("Network fail"))
-                            {
-                                swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
-                            }
-                            LogManage.LogMessage($"{swUpdateInfos[i].SoftwareName} Download File Fail : {downloadInfo}");
-                            //continue;
+                        } while (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.CAFail && count < 3);
+                        if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.CAFail || string.IsNullOrEmpty(_installationFileStoragePath))
+                        {
+                            LogManage.LogMessage($"{swUpdateInfos[i].SoftwareName} Download File Fail retry 3 count");
+                            method.DeleteFolder(savePath);
+                            continue;
                         }
-                    } while (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.CAFail && count < 3);
-                    if (swUpdateInfos[i].SWUErrorCode == SWUErrorCode.CAFail || string.IsNullOrEmpty(_installationFileStoragePath))
+                    }
+                    catch (Exception ex)
                     {
-                        LogManage.LogMessage($"{swUpdateInfos[i].SoftwareName} Download File Fail retry 3 count");
+                        if (_downloadTimer != null)
+                        {
+                            _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
+                            _downloadTimer.Stop();
+                            _downloadTimer = null;
+                        }
+                        LogManage.LogMessage(swUpdateInfos[i].SoftwareName + " Download error : " + ex.Message);
+                        swUpdateInfos[i].SWUErrorCode = SWUErrorCode.NetworkDisconnection;
+                        _notificationStr = $"{swUpdateInfos[i].SoftwareName} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
+                        NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                         method.DeleteFolder(savePath);
                         continue;
                     }
