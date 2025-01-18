@@ -300,31 +300,28 @@ namespace DDPM.UI.Common
           { 91, new ActionItem(ActionCategory.None, Strings.WindowsSearch, false, true) }
         };
 
-        public static List<int> OpenRunActionsList => OpenRunActions.Select(x => x.Key).ToList();
-        public static List<int> RadialMenuActionsList => RadialMenuActions.Select(x => x.Key).ToList();
-
-        public static List<int> AllActionsKnM
+        public static List<int> OpenRunActionsList()
         {
-            get
-            {
-                return KnMActions.Where(x => x.Value.Category != ActionCategory.None || x.Key == 0).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return OpenRunActions.Select(x => x.Key).ToList();
+        }
+        public static List<int> RadialMenuActionsList()
+        {
+            return RadialMenuActions.Select(x => x.Key).ToList();
         }
 
-        public static List<int> AllActionsPenBarrelButton
+        public static List<int> AllActionsKnM()
         {
-            get
-            {
-                return PenActions.Where(x => x.Value.IsForBarrelButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return KnMActions.Where(x => x.Value.Category != ActionCategory.None || x.Key == 0).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
-        public static List<int> AllActionsPenTopButton
+        public static List<int> AllActionsPenBarrelButton()
         {
-            get
-            {
-                return PenActions.Where(x => x.Value.IsForTopButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return PenActions.Where(x => x.Value.IsForBarrelButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
+        }
+
+        public static List<int> AllActionsPenTopButton()
+        {
+            return PenActions.Where(x => x.Value.IsForTopButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
         public static List<int> WindowsActionsKnM
