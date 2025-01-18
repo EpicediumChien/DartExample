@@ -13,6 +13,7 @@
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
         </Style>
+        
     </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Disabled">
@@ -379,12 +380,18 @@
                         </Grid>
                     </Border>
 
-                    <!-- RightGroupBorder.AdvancedSettings -->
+                    <!-- RightGroupBorder.AdvancedSettings 
+                    Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}">
+                    -->
                     <Border 
                          IsEnabled="{Binding ColorEnable}"
                          Opacity="{Binding ColorOpacity}"
                          Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0" Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}">
-                        <Expander x:Name="Expander_Advanced_Settings"  Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" >
+                        <!-- Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}" 
+                        -->
+                        <Expander x:Name="Expander_Advanced_Settings"  Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}" 
+                                  KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}"
+                                  KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" >
                             <Expander.Header>
                                 <!-- Group Header:  Advanced Settings-->
                                 <!-- Robert_Lin 2025-1-14 PIMS-333569] L10N: i18N: DDPM 2.0: GUI: TP1: es-ES, es-XL, it-IT, pt-PT, pt-BR, ua-UK: Clipping found in stringID: AdvancedSettings
@@ -526,9 +533,22 @@
                                             </Grid>
 
                                             <Grid Grid.Column="1" Grid.Row="2"  Margin="0,0,0,0">
-                                                <UXControls:UXRadioButton  x:Name="rb_ICCprofile_based_Colorpreset" IsEnabled="False" Content="{Binding [Color.3], Source={x:Static lang:LangHelper.Instance}}"  FontSize="14" Click="rb_ICCprofile_based_Colorpreset_click" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
+                                                <UXControls:UXRadioButton  x:Name="rb_ICCprofile_based_Colorpreset" IsEnabled="False"
+                                                                           Content="{Binding [Color.3], Source={x:Static lang:LangHelper.Instance}}"  FontSize="14"
+                                                                           Click="rb_ICCprofile_based_Colorpreset_click" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" 
+                                                                           IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" 
+                                                                           KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
                                             </Grid>
 
+                                            <!-- Robert_Lin 2025-1-18 [#PIMS-333922] L10N_ i18N_ DDPM 2.0_ GUI_ TP1_ es-ES, es-XL, it-IT, pt-BR, pt-PT, ua-UK_ Clipping found in stringID_ Color.5
+                                            Issue: The Link text is clipped. 
+                                            Fix solution: 
+                                            1 Change StackPanel to WrapPanel so the RadioButon can be wrapped to next row. Top-allign make it's Circle control will be top-allign.
+                                            2 Use UXTextBlock as the content of the UXRadioButton, to make sure it has the same color with RadioButton, and support TextWrap.
+                                            3 Use UXHyperlink replace UXLink. It's IsEnabled bind to RadioButton. And use ICommand binding to replace UXLink.Click.
+                                            
+                                            OLD:
+                                            
                                             <Grid Grid.Column="1" Grid.Row="3"  Margin="0,0,0,0">
                                                 <StackPanel Orientation="Horizontal">
                                                     <UXControls:UXRadioButton  x:Name="rb_Colorpreset_based_ICCprofile" IsEnabled="False" Content="{Binding [Color.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Click="rb_Colorpreset_based_ICCprofile_click" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
@@ -542,6 +562,28 @@
                                                         </UXControls:UXLink.Resources>
                                                     </UXControls:UXLink>
                                                 </StackPanel>
+                                            </Grid>
+                                            
+                                            -->
+                                            <Grid Grid.Column="1" Grid.Row="3"  Margin="0,0,0,0">
+                                                <WrapPanel>
+                                                    <UXControls:UXRadioButton  x:Name="rb_Colorpreset_based_ICCprofile" IsEnabled="False" 
+                                                                               FontSize="14" Click="rb_Colorpreset_based_ICCprofile_click" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" 
+                                                                               IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" 
+                                                                               VerticalAlignment="Top" 
+                                                                               KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" >
+                                                        <UXControls:UXTextBlock TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="14">
+                                                            <Run Text="{Binding [Color.4], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                                                                 Foreground="{Binding ElementName=rb_Colorpreset_based_ICCprofile, Path=Foreground}"/>
+                                                            <UXControls:UXHyperlink ColorScheme="Primary" IconPosition="None" Margin="0,0,0,-4"
+                                                                                    HyperlinkText="{Binding [Color.5], Source={x:Static lang:LangHelper.Instance}}"
+                                                                                    IsEnabled="{Binding ElementName=rb_Colorpreset_based_ICCprofile, Path=IsEnabled}"
+                                                                                    Command="{Binding ICC_profile_hyperlink_ClickCommand}"
+                                                                                    />
+                                                         </UXControls:UXTextBlock>
+                                                    </UXControls:UXRadioButton>
+                                                    
+                                                 </WrapPanel>
                                             </Grid>
                                         </Grid>
                                     </Border>
