@@ -28,6 +28,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Timers;
 using VcpCore.Common;
+using Windows.ApplicationModel.Background;
 using static System.Reflection.Metadata.BlobBuilder;
 using IDs = DDPM.SA.Common.IDs;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -78,6 +79,8 @@ namespace DdpmSwUpdater
         private Mutex? _instanceMutex;
         private string? _applicationName;
         bool _SkipSHA = false;
+        int _Process = 0;
+        Timer _processTimer = new Timer();
         #region Events
         public event EventHandler<UpdateProgressInfo>? ProgressUpdate_Notify;
 
@@ -92,15 +95,10 @@ namespace DdpmSwUpdater
         /// </summary>
         /// <param name="swUpdateInfos">更新的裝置資訊表</param>
         /// <returns>回傳裝置資訊表(在這個方法裡將原本傳入的裝置資訊表，再寫入對應裝置的下載安裝的結果碼)</returns>
-        public Task<List<SWUpdateInfo>> DownloadAndInstall(string installPath)
+        public Task<List<SWUpdateInfo>> DownloadAndInstall(string installPath, SWUpdateHelper swUpdateHelper, bool isSkipCA, bool skipSHA)
         {
-            List<string> InfoPkey = new List<string>(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
-            //InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
-            bool isSkipCA = GetCheckCAStatus();
-            _SkipSHA = GetCheckSHAStatus();
+            _SkipSHA = skipSHA;
             LogManage.LogMessage(nameof(DownloadAndInstall) + " start");
-            SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(isSkipCA, out string getMetadataInfo, null, InfoPkey, LogManage.logs);
-            LogManage.LogMessage($"GetMetadata {getMetadataInfo}");
             List<SWUpdateInfo> swUpdateInfos = new List<SWUpdateInfo>();
             if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)
             {
@@ -345,16 +343,10 @@ namespace DdpmSwUpdater
         /// </summary>
         /// <param name="swUpdateInfos">更新的裝置資訊表</param>
         /// <returns>回傳裝置資訊表(在這個方法裡將原本傳入的裝置資訊表，再寫入對應裝置的下載安裝的結果碼)</returns>
-        public bool DownloadAndExecutionSwUpdater()
+        public bool DownloadAndExecutionSwUpdater(SWUpdateHelper swUpdateHelper, bool isSkipCA, bool skipSHA)
         {
-            List<string> InfoPkey = new List<string>(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
-            //InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
-            bool isSkipCA = GetCheckCAStatus();
-            _SkipSHA = GetCheckSHAStatus();
-            LogManage.LogMessage(nameof(DownloadAndExecutionSwUpdater) + " start");
-            SWUpdateHelper swUpdateHelper = SWUpdateSetting.GetSWMetadata(isSkipCA, out string getMetadataInfo, null, InfoPkey, LogManage.logs);
-            LogManage.LogMessage($"GetMetadata {getMetadataInfo}");
             List<SWUpdateInfo> swUpdateInfos = new List<SWUpdateInfo>();
+            _SkipSHA = skipSHA;
             bool ret = false;
             if (swUpdateHelper.Softwares != null && swUpdateHelper.Softwares.Count > 0)
             {
@@ -712,26 +704,7 @@ namespace DdpmSwUpdater
                 return _updateErrorCode;
             }
         }
-        private bool GetCheckCAStatus()
-        {
-            bool isSkipCA = false;
-            object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Dell\\DDPM Subagent", "SkipCA");
-            if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
-            {
-                isSkipCA = o.ToString().Equals("1") ? true : false;
-            }
-            return isSkipCA;
-        }
-        private bool GetCheckSHAStatus()
-        {
-            bool isSkipSHA = false;
-            object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Dell\\DDPM Subagent", "SkipSHA");
-            if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
-            {
-                isSkipSHA = o.ToString().Equals("1") ? true : false;
-            }
-            return isSkipSHA;
-        }
+
         private bool CheckFold(string path, out string folderInfo, out string pathSymbolicLinInfo)
         {
             folderInfo = "Error";
@@ -876,6 +849,10 @@ namespace DdpmSwUpdater
                 LogManage.LogMessage("Waiting for an event...");
                 watcher.EventArrived += new EventArrivedEventHandler(OnRegistryValueChanged);
                 watcher.Start();
+                LogManage.LogMessage("Waiting for _processTimer event...");
+                _processTimer.Interval = TimeSpan.FromSeconds(15).TotalMilliseconds;
+                _processTimer.Elapsed += new ElapsedEventHandler(InstallingProcessTimer_Elapsed);
+                _processTimer.Start();
                 LogManage.LogMessage($"RegEvent watcher done");
             }
             catch (ManagementException ex)
@@ -899,6 +876,14 @@ namespace DdpmSwUpdater
                 watcher.EventArrived -= new EventArrivedEventHandler(OnRegistryValueChanged);
                 LogManage.LogMessage($"CancelRegEvent stop watcher done");
             }
+            if (_processTimer != null)
+            {
+                LogManage.LogMessage($"CancelRegEvent _processTimer is not null");
+                LogManage.LogMessage($"CancelRegEvent stop _processTimer go");
+                _processTimer.Stop();
+                _processTimer.Elapsed -= new ElapsedEventHandler(InstallingProcessTimer_Elapsed);
+                LogManage.LogMessage($"CancelRegEvent stop _processTimer done");
+            }
             LogManage.LogMessage($"CancelRegEvent done");
         }
         private void OnRegistryValueChanged(object sender, EventArrivedEventArgs e)
@@ -911,16 +896,45 @@ namespace DdpmSwUpdater
                 {
                     string curProcess = (registryKey.GetValue("Process")?.ToString());
                     string nextProcess = (registryKey.GetValue("NextProcess")?.ToString());
-                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                    if (!string.IsNullOrEmpty(nextProcess) && int.TryParse(nextProcess, out int process))
                     {
-                        DeviceName = _SWUpdateInfo.SoftwareName,
-                        TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                        ProcessName = "Installing",
-                        ProcessProgress = nextProcess != null ? int.Parse(nextProcess) : 0.0,
-                    };
-                    sendMessageToEvent(updateProgressInfo);
+                        _Process = process;
+                        ResetTimer();
+                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                        {
+                            DeviceName = _SWUpdateInfo.SoftwareName,
+                            TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
+                            ProcessName = "Installing",
+                            ProcessProgress = _Process,
+                        };
+                        sendMessageToEvent(updateProgressInfo);
+                    }
                 }
             }
+        }
+        private void InstallingProcessTimer_Elapsed(object? sender, ElapsedEventArgs e)
+        {
+            LogManage.LogMessage($"InstallingProcessTimer_Elapsed _Process :{_Process}");
+            UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+            {
+                DeviceName = _SWUpdateInfo.SoftwareName,
+                TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
+                ProcessName = "Installing",
+                ProcessProgress = _Process++,
+            };
+            sendMessageToEvent(updateProgressInfo);
+        }
+        private void ResetTimer()
+        {
+            LogManage.LogMessage($"ResetTimer start");
+            if (_processTimer != null)
+            {
+                LogManage.LogMessage($"ResetTimer go");
+                _processTimer.Stop();
+                _processTimer.Interval = TimeSpan.FromSeconds(15).TotalMilliseconds;
+                _processTimer.Start();
+            }
+            LogManage.LogMessage($"ResetTimer done");
         }
         private void sendMessageToEvent(UpdateProgressInfo fWUpdateInfo)
         {
