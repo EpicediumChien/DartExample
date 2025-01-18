@@ -306,10 +306,10 @@ namespace DDPM.QAM
                 {
                     SetNoneProfile();
                 }
-                else if (e.UI_Field_Name.StartsWith("DDPMSetProfileToCurrent")) //Derek 2025/01/17
-                {
-                    SetProfile();
-                }
+                //else if (e.UI_Field_Name.StartsWith("DDPMSetProfileToCurrent")) //Derek 2025/01/18 don't need to use this message
+                //{
+                //    SetProfile();
+                //}
 
             }
             catch (Exception ex)
@@ -381,7 +381,8 @@ namespace DDPM.QAM
                     }
                 }
                     
-                LogMsg($"Could not found {name} in current UI_ProfileList.");
+                LogMsg($"Could not found {name} in current UI_ProfileList, set profile to none");
+                SetNoneProfile(); //Derek 2025/01/18
 
                 return false;
             }
@@ -605,7 +606,7 @@ namespace DDPM.QAM
 
                             //Derek 2025/01/09
                             webcamSettings.SelectedProfileName = selectedProfileName;
-                            SaveSelectProfile(); 
+                            SaveSelectProfile();
                         }
                         UI_ProfileList.Add(profile);
                     }
@@ -628,7 +629,7 @@ namespace DDPM.QAM
             try
             {
                 bool result = WebcamSettings.ExportWebcamSettings(webcamSettings,
-                                                        CurrentDeviceInfo.ModelNumber,
+                                                        CurrentDeviceInfo?.ModelNumber,
                                                         DdpmCommonHelper.DeviceManagerSA,
                                                         logger);
 

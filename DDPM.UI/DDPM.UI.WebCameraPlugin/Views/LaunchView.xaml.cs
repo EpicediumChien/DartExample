@@ -2476,6 +2476,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     _vm.IsSettingProfile = false;
                 }
                 btnPreset_Click(this, null);
+
+                //Derek 2025/01/18
+                DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm.CurrentProfileName, false);
             }
             catch (Exception ex)
             {
@@ -2748,6 +2751,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.ClearUndo();
                 _vm.EnableVBar();
                 _vm.TooltipVisibility = Visibility.Collapsed;
+
+                //Derek 2025/01/18
+                DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm.CurrentProfileName, false);
             }
             catch (Exception ex)
             {
@@ -2928,8 +2934,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //Derek 2025/01/17 info QAM select current profile
             try
             {
-                //Derek 2025/01/17
-                DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile("DDPMSetProfileToCurrent", false);
+                //Derek 2025/01/17 
+                //DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile("DDPMSetProfileToCurrent", false);
+                DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile(_vm?.CurrentProfileName, false);
             }
             catch (Exception ex)
             {
