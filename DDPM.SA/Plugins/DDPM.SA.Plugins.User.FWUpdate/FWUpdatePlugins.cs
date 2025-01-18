@@ -2776,10 +2776,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     { DeviceType.LogicalWiredAudio, 9 },
                     { DeviceType.PhysicalWiredAudio, 10 },
                     { DeviceType.PhysicalBluetoothAudio, 11 },
+                    { DeviceType.LogicalHeadset, 12 },
 
-                    { DeviceType.Unknown, 12 }, // Display
-                    { DeviceType.PhysicalWiredDock, 13 },
-                    { DeviceType.LogicalDock, 14 }
+                    { DeviceType.Unknown, 13 }, // Display
+                    { DeviceType.PhysicalWiredDock, 14 },
+                    { DeviceType.LogicalDock, 15 }
                 };
 
                 fWUpdateInfos.Sort((x, y) =>
