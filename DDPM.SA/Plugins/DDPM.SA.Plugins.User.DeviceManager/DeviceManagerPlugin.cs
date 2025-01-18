@@ -14097,12 +14097,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 int devCnt = GetWebcamDeviceCount();
 
-                writelog($"ALT+Z conditons: devcnt = {devCnt}, global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
+                writelog($"ALT+Z conditons: devcnt = {devCnt}, " +
+                    $"global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}" +
+                    $" IsZoomMeetingActive = {_IsZoomMeetingActive}");
 
                 //Derek PIMS-329759 Problem 1
                 //Derek 20250118 workable only zoom meeting is active //_IsZoomMeetingActive &&
                 if (1 == devCnt && _GlobalSettingParam != null && 
-                    _GlobalSettingParam.GlobalSetting_WidgetSettings != null &&
+                    _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _IsZoomMeetingActive && 
                     _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
                 {
                     CallQAM_UI(this);
