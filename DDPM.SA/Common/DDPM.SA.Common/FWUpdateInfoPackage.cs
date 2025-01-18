@@ -121,6 +121,7 @@ namespace DDPM.SA.Common
         public string Thumbprint { get; set; }
         public string ServiceTag { get; set; }
         public string SupplierID { get; set; }
+        public int InstanceId { get; set; }
         public string D_Ctrl { get; set; }
         public string Connectivity { get; set; }
         public string Update_date { get; set; }
