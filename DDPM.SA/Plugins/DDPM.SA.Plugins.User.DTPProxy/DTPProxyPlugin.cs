@@ -2878,7 +2878,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                
+
                 return false;
             }
 
@@ -2920,7 +2920,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                
+
                 return false;
             }
 
@@ -4437,8 +4437,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
-                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                Debug.WriteLine($"[StartKeyCapturePen]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[StartKeyCapturePen]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 return false;
             }
 
@@ -4475,8 +4475,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
-                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                Debug.WriteLine($"[FinishKeyCapturePen]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[FinishKeyCapturePen]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 return false;
             }
 
@@ -4519,8 +4519,52 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
-                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                Debug.WriteLine($"[KeyCaptureData]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[KeyCaptureData]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return string.Empty;
+            }
+
+        }
+        public async Task<string> GetIsdDriverVersion()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "IsdDriverVersion");
+
+                    if (value == null)
+                    {
+                        Debug.WriteLine("IsdDriverVersion is null.");
+                        writelog("IsdDriverVersion is null.");
+                        return "";
+                    }
+                    else if (value is string stringValue)
+                    {
+                        Debug.WriteLine($"IsdDriverVersion: {stringValue}");
+                        writelog($"IsdDriverVersion: {stringValue}");
+                        return stringValue;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("IsdDriverVersion is not a string.");
+                        writelog("IsdDriverVersion is not a string.");
+                        return "";
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsdDriverVersion]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetIsdDriverVersion]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 return string.Empty;
             }
 
@@ -4538,14 +4582,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetEraserDoublePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetEraserDoublePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetEraserDoublePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetEraserDoublePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4561,14 +4605,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetEraserLongPressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetEraserLongPressSettingCould not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetEraserLongPressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetEraserLongPressSettingCould not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4584,14 +4628,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetEraserSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetEraserSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetEraserSinglePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetEraserSinglePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4607,14 +4651,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetIsSideBottomButtonHoverClick]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetIsSideBottomButtonHoverClick]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4630,14 +4674,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetIsSideTopButtonHoverClick]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetIsSideTopButtonHoverClick]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetIsSideTopButtonHoverClick]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetIsSideTopButtonHoverClick]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4653,14 +4697,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetMenuSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetMenuSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetMenuSinglePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetMenuSinglePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4676,14 +4720,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetMenuCenterRightClickSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetMenuCenterRightClickSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetMenuCenterRightClickSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetMenuCenterRightClickSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4699,14 +4743,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetSideBottomSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetSideBottomSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetSideBottomSwitchSinglePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetSideBottomSwitchSinglePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4722,8 +4766,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
@@ -4745,14 +4789,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetTiltSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetTiltSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetTiltSensitivity]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetTiltSensitivity]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4768,14 +4812,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetTipSensitivity]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetTipSensitivity]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
         public async Task<bool> RestoreToDefaultPen()
