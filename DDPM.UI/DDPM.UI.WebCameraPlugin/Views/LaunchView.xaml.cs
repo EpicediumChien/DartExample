@@ -313,7 +313,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     _vm!.CurrentProfileName = profileName;
                     _vm.IsSettingProfile = true;
-                    _vm.SetProfile();
+                    //Derek 2025/01/18 cancel this action due to it has done by QAM
+                    //_vm.SetProfile();
                     _vm.IsSettingProfile = false;
                     isProfilePropertyChanged = false;
                 }
@@ -918,11 +919,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //攝影機控制區域內windows hello隱藏
                         //_vm.brdHello_show = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
                         //_vm.brdHello_show = Visibility.Visible;   // Jim 20250115 modify for PIMS-297931
-                        _vm.brdHello_show = Visibility.Collapsed;   // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        //_vm.brdHello_show = Visibility.Collapsed;   // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        _vm.brdHello_show = Visibility.Visible; // Jim 20250117 modify for PIMS-297931 by dell PO decdie comment
                         //PRESENCE DETECTION區域內windows hello隱藏
                         //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
                         //_vm.brdHello_show_control = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
-                        _vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        _vm.brdHello_show_control = Visibility.Visible; // Jim 20250117 modify for PIMS-297931 by dell PO decdie comment
 
                         //連接usb 3.0提示訊息 Camera.14
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
@@ -1005,11 +1008,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //攝影機控制區域內windows hello隱藏
                         //_vm.brdHello_show = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
                         //_vm.brdHello_show = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
-                        _vm.brdHello_show = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        //_vm.brdHello_show = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        _vm.brdHello_show = Visibility.Visible; // Jim 20250117 modify for PIMS-297931 by dell PO decdie comment
                         //PRESENCE DETECTION區域內windows hello隱藏
                         //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
                         //_vm.brdHello_show_control = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
-                        _vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        _vm.brdHello_show_control = Visibility.Visible; // Jim 20250117 modify for PIMS-297931 by dell PO decdie comment
 
                         //連接usb 3.0提示訊息 Camera.15
                         //Connect your monitor via USB 3.0 and select 'High Data Speed' under USB-C Prioritization to enable 4K UHD resolution.
@@ -1587,6 +1592,25 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             try
             {
+                DdpmCommonHelper.WriteUILog($"FreeWebcamResource Free PowerEventControl");
+
+                if (_pwr_Mon != null)
+                {
+                    _pwr_Mon.UnRegisterAllHotKey();
+
+                    _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
+                    _pwr_Mon.Close_Event();
+                    //_pwr_Mon = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("PowerEvent Control got exception: " + ex.Message);
+            }
+
+
+            try
+            {
                 in_CameraPlugin = false;
                 exit_status_thread = true;
                 _vm?.mre.Set();
@@ -1619,7 +1643,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 3: " + ex.Message);
+                DdpmCommonHelper.WriteUILog("Free MediaFrameReader got exception: " + ex.Message);
             }
 
             try
@@ -1632,21 +1656,21 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 DdpmCommonHelper.WriteUILog($"FreeWebcamResource got exception 4:{ex.ToString()}");
             }
 
-            try
-            {
-                await CleanupMediaCaptureAsync();
+            //try
+            //{
+            //    await CleanupMediaCaptureAsync();
 
-                if (_pwr_Mon != null)
-                {
-                    _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
-                    _pwr_Mon.Close_Event();
-                    _pwr_Mon = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 2: " + ex.Message);
-            }
+            //    if (_pwr_Mon != null)
+            //    {
+            //        _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
+            //        _pwr_Mon.Close_Event();
+            //        _pwr_Mon = null;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 2: " + ex.Message);
+            //}
             DdpmCommonHelper.WriteUILog("Webcam LaunchView_Unloaded end");
             /*if ( _vm?.close_app == true )
             {
@@ -2475,6 +2499,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     _vm.IsSettingProfile = false;
                 }
                 btnPreset_Click(this, null);
+
+                //Derek 2025/01/18
+                DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm.CurrentProfileName, false);
             }
             catch (Exception ex)
             {
@@ -2747,6 +2774,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.ClearUndo();
                 _vm.EnableVBar();
                 _vm.TooltipVisibility = Visibility.Collapsed;
+
+                //Derek 2025/01/18
+                DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm.CurrentProfileName, false);
             }
             catch (Exception ex)
             {
@@ -2927,8 +2957,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //Derek 2025/01/17 info QAM select current profile
             try
             {
-                //Derek 2025/01/17
-                DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile("DDPMSetProfileToCurrent", false);
+                //Derek 2025/01/17 
+                //DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile("DDPMSetProfileToCurrent", false);
+                DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile(_vm?.CurrentProfileName, false);
             }
             catch (Exception ex)
             {

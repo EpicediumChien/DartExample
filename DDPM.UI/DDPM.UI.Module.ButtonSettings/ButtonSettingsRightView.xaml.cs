@@ -190,7 +190,7 @@ namespace DDPM.UI.Module.ButtonSettings
                 {
                     sourceList = _vm.SelectedApp switch
                     {
-                        "AllApp" => Actions.AllActionsKnM,
+                        "AllApp" => Actions.AllActionsKnM(),
                         "Word" => Actions.WordActions,
                         "Excel" => Actions.ExcelActions,
                         "PowerPoint" => Actions.PowerPointActions,

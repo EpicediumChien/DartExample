@@ -609,8 +609,8 @@ namespace NGA.ThickClient
         private void ConsoleWindow_Closed_1(object sender, EventArgs e)
         {
             DdpmCommonHelper.WriteUILog("[NGA.ThickClient] ConsoleWindow_Closed_1 ");
-            GC.Collect();
-            Environment.Exit(0);
+            //GC.Collect();
+            //Environment.Exit(0);
 
             /* _log?.Info($"{nameof(MainWindow)} - ConsoleWindow_Closed");
              if (_Console != null)

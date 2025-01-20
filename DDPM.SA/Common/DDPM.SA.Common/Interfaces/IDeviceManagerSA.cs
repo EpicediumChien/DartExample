@@ -1174,13 +1174,13 @@ namespace DDPM.SA.Common
 
         Task<bool> SetAutoWhiteBalance(string Guid, int newValue);
 
-        Task SetBrightness(string Guid, int newValue);
+        Task<bool> SetBrightness(string Guid, int newValue);
 
-        Task SetSharpness(string Guid, int newValue);
+        Task<bool> SetSharpness(string Guid, int newValue);
 
-        Task SetContrast(string Guid, int newValue);
+        Task<bool> SetContrast(string Guid, int newValue);
 
-        Task SetSaturation(string Guid, int newValue);
+        Task<bool> SetSaturation(string Guid, int newValue);
 
         Task SetAntiFlicker(string Guid, int newValue);
 

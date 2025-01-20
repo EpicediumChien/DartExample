@@ -2873,78 +2873,88 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return false;
             }
         }
-        public async Task SetBrightness(string Guid, int newValue)
+        public async Task<bool> SetBrightness(string Guid, int newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return;
+                
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_webcamInterfaceType, commodity, "Brightness", newValue);
+                return SetPropertyValue(_webcamInterfaceType, commodity, "Brightness", newValue);
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+
+                return false;
             }
         }
-        public async Task SetSharpness(string Guid, int newValue)
+        public async Task<bool> SetSharpness(string Guid, int newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return;
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_webcamInterfaceType, commodity, "Sharpness", newValue);
+                return SetPropertyValue(_webcamInterfaceType, commodity, "Sharpness", newValue);
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+
+                return false;
             }
         }
-        public async Task SetContrast(string Guid, int newValue)
+        public async Task<bool> SetContrast(string Guid, int newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return;
+                
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_webcamInterfaceType, commodity, "Contrast", newValue);
+                return SetPropertyValue(_webcamInterfaceType, commodity, "Contrast", newValue);
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+
+                return false;
             }
         }
-        public async Task SetSaturation(string Guid, int newValue)
+        public async Task<bool> SetSaturation(string Guid, int newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return;
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_webcamInterfaceType, commodity, "Saturation", newValue);
+                return SetPropertyValue(_webcamInterfaceType, commodity, "Saturation", newValue);
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+
+                return false;
             }
         }
         public async Task SetAntiFlicker(string Guid, int newValue)

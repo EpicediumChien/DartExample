@@ -72,17 +72,21 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             _log?.Info("CallFWU start");
             if (vm != null)
             {
+                if (vm.FWUpdateInfoPackage.FWUpdateInfo.Count > 0)
+                {
+                    _log?.Info("CallFWU DownloadAndInstall go");
+                    List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true).Result;
+                    _log?.Info("CallFWU DownloadAndInstall finish");
+
+                }
                 if (vm.SWUpdateInfoPackage.SWUpdateInfo.Count > 0)
                 {
                     _log?.Info("CallFWU SW_DownloadAndInstall go");
                     List<SWUpdateInfo> swUpdateInfos = DdpmCommonHelper.DeviceManagerSA.SW_DownloadAndInstall(vm.SWUpdateInfoPackage.SWUpdateInfo, true).Result;
                     _log?.Info("CallFWU SW_DownloadAndInstall finish");
                 }
-                else if (vm.FWUpdateInfoPackage.FWUpdateInfo.Count > 0)
+                else
                 {
-                    _log?.Info("CallFWU DownloadAndInstall go");
-                    List<FWUpdateInfo> fwUpdateInfos = DdpmCommonHelper.DeviceManagerSA.DownloadAndInstall(vm.FWUpdateInfoPackage.FWUpdateInfo, true).Result;
-                    _log?.Info("CallFWU DownloadAndInstall finish");
                     _log?.Info("CallFWU restart DDPM go");
                     string? exePath = Assembly.GetExecutingAssembly().Location;
                     if (!string.IsNullOrEmpty(exePath))

@@ -12,6 +12,7 @@ using PInvoke;
 using System.Diagnostics;
 using System.Security;
 using Newtonsoft.Json.Linq;
+using DDPM.SA.Common.Settings;
 
 namespace DdpmSwUpdater
 {
@@ -32,8 +33,11 @@ namespace DdpmSwUpdater
             SWUErrorCode ret = SWUErrorCode.NoError;
             CloseDDPM();
             {
+                bool isSkipCA = LogManage.GetCheckCAStatus();
+                bool isSkipSHA = LogManage.GetCheckSHAStatus();
+                SWUpdateHelper swUpdateHelper = LogManage.GetSWUMetadata(isSkipCA);
                 CallUpdateProgressUI().Wait();
-                List<SWUpdateInfo> retSWUpdate = _SWUpdatePlugins.DownloadAndInstall("").Result;
+                List<SWUpdateInfo> retSWUpdate = _SWUpdatePlugins.DownloadAndInstall("", swUpdateHelper, isSkipCA, isSkipSHA).Result;
                 if (_UpdateProgress != null)
                 {
                     _SWUpdatePlugins.ProgressUpdate_Notify -= _UpdateProgress._FWUpdatePlugin_ProgressUpdate;
@@ -55,6 +59,7 @@ namespace DdpmSwUpdater
             LogManage.LogMessage($"{nameof(LaunchUpdate)} done");
             return Task.FromResult(ret);
         }
+
         private void CloseDDPM()
         {
             try

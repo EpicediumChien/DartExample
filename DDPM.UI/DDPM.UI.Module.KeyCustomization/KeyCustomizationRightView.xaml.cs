@@ -184,7 +184,7 @@ namespace DDPM.UI.Module.KeyCustomization
                 }
                 else
                 {
-                    sourceList = Actions.AllActionsKnM;
+                    sourceList = Actions.AllActionsKnM();
                 }
                 searchText = txtSearchText.Text;
                 sourceList.ForEach(x =>

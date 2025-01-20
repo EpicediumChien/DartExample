@@ -75,7 +75,7 @@ namespace DDPM.UI.Common.Tests
         public void TestAllActionsKnM()
         {
             // Act
-            var result = Actions.AllActionsKnM;
+            var result = Actions.AllActionsKnM();
             // Assert
             Assert.That(result, Is.Not.Null);
         }

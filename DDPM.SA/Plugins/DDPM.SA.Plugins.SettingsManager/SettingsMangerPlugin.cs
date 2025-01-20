@@ -33,7 +33,6 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using Windows.Media.AppBroadcasting;
 using Windows.Storage;
-using DDPM.SA.Obfuscation;
 using System.Net.NetworkInformation;
 using System.Windows.Interop;
 using DDPMSettings = DDPM.SA.Common.Settings;
