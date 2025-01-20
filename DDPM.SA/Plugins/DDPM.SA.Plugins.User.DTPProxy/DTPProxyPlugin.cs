@@ -2878,7 +2878,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                
+
                 return false;
             }
 
@@ -2920,7 +2920,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                
+
                 return false;
             }
 
@@ -4507,6 +4507,50 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     {
                         Debug.WriteLine("KeyCaptureData is not a string.");
                         writelog("KeyCaptureData is not a string.");
+                        return "";
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return string.Empty;
+            }
+
+        }
+        public async Task<string> GetIsdDriverVersion()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "IsdDriverVersion");
+
+                    if (value == null)
+                    {
+                        Debug.WriteLine("IsdDriverVersion is null.");
+                        writelog("IsdDriverVersion is null.");
+                        return "";
+                    }
+                    else if (value is string stringValue)
+                    {
+                        Debug.WriteLine($"IsdDriverVersion: {stringValue}");
+                        writelog($"IsdDriverVersion: {stringValue}");
+                        return stringValue;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("IsdDriverVersion is not a string.");
+                        writelog("IsdDriverVersion is not a string.");
                         return "";
                     }
                 }
