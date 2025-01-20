@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -51,5 +52,85 @@ namespace DDPM.UI.Common.UserControls
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(GearButton), new FrameworkPropertyMetadata(typeof(GearButton)));
         }
+
+        public GearButton()
+        {
+            this.Loaded += GearButton_Loaded;
+
+        }
+        private void GearButton_Loaded(object sender, RoutedEventArgs e)
+        {
+            _indication = GetTemplateChild("indication") as Border;
+        }
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            //SetOrangeDotVisible(true);
+            //GlowEffect_Trigger();
+        }
+        #region Glow and Breathe effect
+
+        private Storyboard? _storyboardGlow = null;
+        private Border? _indication = null;
+        
+
+        /// <summary>
+        /// Call this method to blinking for 2 sec when detect a new update added.
+        /// After triggered, the OrangeDot will keep in "On" state.
+        /// </summary>
+        public void GlowEffect_Trigger()
+        {
+            //To make it running on UI thread
+            Dispatcher.Invoke(() =>
+            {
+                if (_storyboardGlow == null)
+                {
+                    object oSB = TryFindResource("glowAnimation");
+                    if (oSB == null)
+                        return;
+
+                    _storyboardGlow = oSB as Storyboard;
+                }
+                if (_storyboardGlow != null)
+                {
+                    if (_indication != null)
+                    {
+                        _storyboardGlow.Begin(_indication);
+                        _indication.Visibility = Visibility.Visible;
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// Call with (isVisible=false) when available updates count is changed from 1 => 0
+        /// </summary>
+        /// <param name="isVisible"></param>
+        public void SetOrangeDotVisible(bool isVisible)
+        {
+            //To make it running on UI thread
+            Dispatcher.Invoke(() =>
+            {
+                if (_indication == null)
+                {
+                   _indication = GetTemplateChild("indication") as Border;
+                }
+
+                if (_indication == null)
+                    return;
+
+                if (isVisible)
+                {
+                    _indication.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    _indication.Visibility = Visibility.Collapsed;
+                }
+            });
+        }
+        #endregion Glow and Breathe effect
+
     }
 }
