@@ -835,7 +835,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
                         _vm.MessageBoxVisibilityUsbType = Visibility.Visible;
                         //_vm.usbtype_info_v = LangHelper.Instance["Camera.25"]; // Jim 20250115 modify PIMS-294596
-                        _vm.usbtype_info_v = LangHelper.Instance["Camera.26"].Replace("monitor", "webcam"); // Jim 20250115 modify PIMS-294596 //20250120 WB7022 is External webcam not Monitor; 
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.27"]; // Jim 20250115 modify PIMS-294596 //20250120 WB7022 is External webcam not Monitor; 
 
                         //fps與解析度,排除4k
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
@@ -900,7 +900,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
                         _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed;
                         //_vm.usbtype_info_v = LangHelper.Instance["Camera.25"]; // Jim 20250115 modify PIMS-294596
-                        _vm.usbtype_info_v = LangHelper.Instance["Camera.26"]; // Jim 20250115 modify PIMS-294596
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.27"]; // Jim 20250115 modify PIMS-294596
 
                         //fps與解析度,排除4k
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
