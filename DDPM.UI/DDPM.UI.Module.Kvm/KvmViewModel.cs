@@ -819,6 +819,22 @@ namespace DDPM.UI.Module.Kvm
         {
             Debug.WriteLine("load kvm hotkey setting done");
             //Handling the result and final process
+            OnPropertyChanged("IsSwitchPCsVisible");
+        }
+
+        //Robert_Lin 2025-1-20 for [PIMS-339501] [DDPM Win 2.0][R19] USB KVM Setup -It doesn't show "Switch between PCs" hotkey when set up to PIP mode finished
+        //Rquirements:
+        //                                    PIP mode               PBP mode              Fullscreen/Single display
+        //Switch between PCs                  Collapsed              Collapsed             Visible
+        //Switch keyboard and mouse           Visible                Visible               Collapsed
+        //Change PIP psition                  Visible                Visible               Collased
+        //[ ] Automatically ....              Visible & Disabled     Visible & Enabled     Visible & Disabled
+        public bool IsSwitchPCsVisible
+        {
+            get
+            {
+                return (_curPxpMode == PipMode_Off);
+            }
         }
 
         #endregion Hotkey

@@ -82,14 +82,14 @@
                     <Grid Grid.Column="0" Grid.Row="2" Margin="0, 8, 0 ,0" HorizontalAlignment="Left">
                         <!-- Elsa 20250108 For PIMS [PIMS-334050] change FontSize="48" LineHeight="76" to FontSize="42" LineHeight="40" add TextWrapping="WrapWithOverflow" -->
                         <UXControls:UXTextBlock Text="{Binding [Kvm.6], Source={x:Static lang:LangHelper.Instance}}"
-                                                FontSize="64" LineHeight="40" TextWrapping="Wrap"/>
+                                                FontSize="64" LineHeight="40" TextWrapping="WrapWithOverflow"/>
                     </Grid>
                     <!--<Grid Grid.Column="0" Grid.Row="3" Margin="0, 16, 0, 0" Width="476" Height="120" HorizontalAlignment="Left">-->
                     <!-- Elsa 20250108 For PIMS [PIMS-334050] change FontSize="16" to FontSize="15" and add TextWrapping="WrapWithOverflow" -->
                     <UXControls:UXTextBlock Grid.Column="0" Grid.Row="3" Margin="0, 16, 0, 0" Height="120" HorizontalAlignment="Left"
                             Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}"
                             Text="{Binding [Kvm.7], Source={x:Static lang:LangHelper.Instance}}" 
-                                                FontSize="16" LineHeight="24" TextTrimming="None" TextWrapping="Wrap"/>
+                                                FontSize="16" LineHeight="24" TextTrimming="None" TextWrapping="WrapWithOverflow"/>
                     <!--</Grid>-->
                     <Grid Grid.Row="4" Margin="0, 90, 0 ,0">
                         <Grid.ColumnDefinitions>
