@@ -105,10 +105,10 @@ namespace DdpmSwUpdater
                 //{
                 //    writer.WriteLine($"{DateTime.Now}: {message}");
                 //}
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
+                //if (!Directory.Exists(path))
+                //{
+                //    Directory.CreateDirectory(path);
+                //}
                 if (logs != null)
                 {
                     logs.DebugMsg_1(message);
