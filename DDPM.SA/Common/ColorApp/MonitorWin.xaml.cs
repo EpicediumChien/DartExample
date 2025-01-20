@@ -210,7 +210,7 @@ namespace DDPM.ColorApp
         private void writelog(string? text, log_type log_type = log_type.info)
         {
             text = "[ColorApp] " + text;
-            Console.WriteLine(text);
+            //Console.WriteLine(text);
 
             if (Log != null) // Elie, the instance of Log is from DTH. So we just check if it's null or not.
             {
@@ -277,7 +277,6 @@ namespace DDPM.ColorApp
                         Trace.WriteLine("Mi.DisplayName = " + Mi.DisplayName);
                         Trace.WriteLine("Mi.modelName = " + Mi.modelName);
 
-
                         Trace.WriteLine("screen.WorkingArea.Height = " + screen.WorkingArea.Height);
                         Trace.WriteLine("s.WorkingArea.Height = " + s?.WorkingArea.Height);
 
@@ -289,7 +288,6 @@ namespace DDPM.ColorApp
 
                         writelog("Mi.DisplayName = " + Mi.DisplayName);
                         writelog("Mi.modelName = " + Mi.modelName);
-
 
                         writelog("screen.WorkingArea.Height = " + screen.WorkingArea.Height);
                         writelog("s.WorkingArea.Height = " + s?.WorkingArea.Height);
@@ -308,11 +306,10 @@ namespace DDPM.ColorApp
                     //    return;
 
                     string strFilePath = data.ActiveWindowFilePath;
-
-                    writelog("EventAppStatus_SendValue ActiveWindowTitle = " + data.ActiveWindowTitle);
-                    writelog("EventAppStatus_SendValue ActiveWindowProcessId = " + data.ActiveWindowProcessId.ToString());
-                    writelog("EventAppStatus_SendValue ActiveWindowProcessModuleName = " + data.ActiveWindowProcessModuleName);
-                    writelog("EventAppStatus_SendValue ActiveWindowFilePath = " + data.ActiveWindowFilePath);
+                    //writelog("EventAppStatus_SendValue ActiveWindowTitle = " + data.ActiveWindowTitle);
+                    //writelog("EventAppStatus_SendValue ActiveWindowProcessId = " + data.ActiveWindowProcessId.ToString());
+                    //writelog("EventAppStatus_SendValue ActiveWindowProcessModuleName = " + data.ActiveWindowProcessModuleName);
+                    //writelog("EventAppStatus_SendValue ActiveWindowFilePath = " + data.ActiveWindowFilePath);
 
                     MonitorInfo actived_mi = null;
 
@@ -406,9 +403,6 @@ namespace DDPM.ColorApp
                         appconfigs.Clear();
 
                     appconfigs = ddmLib.ReadColorPresetSettings().Result;
-
-                    Trace.WriteLine("appconfigs.Count = " + appconfigs.Count.ToString());
-                    writelog("appconfigs.Count = " + appconfigs.Count.ToString());
 
                     foreach (var config in appconfigs)
                     {
@@ -529,13 +523,13 @@ namespace DDPM.ColorApp
                                 else
                                     reqKey = (config.AppInfo[reqAppName]).Color;
 
-                                writelog("reqAppName = " + reqAppName + "," + "reqKey [ColorPresetName] = " + reqKey.ToString());
+                                //writelog("reqAppName = " + reqAppName + "," + "reqKey [ColorPresetName] = " + reqKey.ToString());
                             }
 
                             //if (string.IsNullOrEmpty(reqKey))
                             if (reqKey == -1)
                             {
-                                writelog("reqAppName = " + reqAppName + "," + "reqKey [ColorPresetName] is string.IsNullOrEmpty");
+                                //writelog("reqAppName = " + reqAppName + "," + "reqKey [ColorPresetName] is string.IsNullOrEmpty");
                                 //Trace.WriteLine("reqKey is string.IsNullOrEmpty");
                                 return;
                             }
@@ -546,8 +540,8 @@ namespace DDPM.ColorApp
                                 //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey);
                                 //writelog("reqAppName = " + reqAppName + "," + "reqKey  [ColorPresetName] is " + reqKey);
 
-                                writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey.ToString());
-                                writelog("reqAppName = " + reqAppName + "," + "reqKey  [ColorPresetName] is " + reqKey.ToString());
+                                //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey.ToString());
+                                //writelog("reqAppName = " + reqAppName + "," + "reqKey  [ColorPresetName] is " + reqKey.ToString());
 
                                 Pre_reqKey = reqKey;
                                 //
@@ -562,8 +556,8 @@ namespace DDPM.ColorApp
                                 //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey);
                                 //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + reqKey);
 
-                                writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey.ToString());
-                                writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + reqKey.ToString());
+                                //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey.ToString());
+                                //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + reqKey.ToString());
 
                                 writelog("Pre_reqKey and reqKey is the same");
 
