@@ -199,12 +199,14 @@ namespace DDPM.EABroker
                         }
                         else
                         {
-                            _vm.WriteLog($"  * ReadSettings of Monitor(Model:{attachedMonitors[0].modelName}, ServiceTag:{attachedMonitors[0].edid.ServiceTag}) RecentList is null");
+                            //_vm.WriteLog($"  * ReadSettings of Monitor(Model:{attachedMonitors[0].modelName}, ServiceTag:{attachedMonitors[0].edid.ServiceTag}) RecentList is null");
+                            _vm.WriteLog("  * ReadSettings of Monitor RecentList is null");
                         }
                     }
                     else
                     {
-                        _vm.WriteLog($"  * ReadSettings of Monitor(Model:{attachedMonitors[0].modelName}, ServiceTag:{attachedMonitors[0].edid.ServiceTag}) return null");
+                        //_vm.WriteLog($"  * ReadSettings of Monitor(Model:{attachedMonitors[0].modelName}, ServiceTag:{attachedMonitors[0].edid.ServiceTag}) return null");
+                        _vm.WriteLog("  * ReadSettings of Monitor return null");
                     }
                 }
                 if (!isRecentListLoaded)
@@ -826,7 +828,7 @@ namespace DDPM.EABroker
             }
 
             _rcIcon1 = _vm.GetFrameworkElementRect(_vm.AwsIcon1.UC);
-            _vm.WriteLog($"@ RefreshCellRects() - Icon1: {ArrangeVM.FormatRect(_rcIcon1)}");
+            //_vm.WriteLog($"@ RefreshCellRects() - Icon1: {ArrangeVM.FormatRect(_rcIcon1)}");
 
             /*
             foreach (CellObj objCell in _vm.AwsIcon1.CellList)
@@ -870,7 +872,7 @@ namespace DDPM.EABroker
             }
 
             _rcIcon2 = _vm.GetFrameworkElementRect(_vm.AwsIcon2.UC);
-            _vm.WriteLog($"@ RefreshCellRects() - Icon2: {ArrangeVM.FormatRect(_rcIcon2)}");
+            //_vm.WriteLog($"@ RefreshCellRects() - Icon2: {ArrangeVM.FormatRect(_rcIcon2)}");
 
             /*
             foreach (CellObj objCell in _vm.AwsIcon2.CellList)
@@ -916,7 +918,7 @@ namespace DDPM.EABroker
 
 
             _rcIcon3 = _vm.GetFrameworkElementRect(_vm.AwsIcon3.UC);
-            _vm.WriteLog($"@ RefreshCellRects() - Icon3: {ArrangeVM.FormatRect(_rcIcon3)}");
+            //_vm.WriteLog($"@ RefreshCellRects() - Icon3: {ArrangeVM.FormatRect(_rcIcon3)}");
 
             /*
             foreach (CellObj objCell in _vm.AwsIcon3.CellList)
@@ -962,7 +964,7 @@ namespace DDPM.EABroker
             }
 
             _rcIcon4 = _vm.GetFrameworkElementRect(_vm.AwsIcon4.UC);
-            _vm.WriteLog($"@ RefreshCellRects() - Icon4: {ArrangeVM.FormatRect(_rcIcon4)}");
+            //_vm.WriteLog($"@ RefreshCellRects() - Icon4: {ArrangeVM.FormatRect(_rcIcon4)}");
 
             /*
             foreach (CellObj objCell in _vm.AwsIcon4.CellList)
