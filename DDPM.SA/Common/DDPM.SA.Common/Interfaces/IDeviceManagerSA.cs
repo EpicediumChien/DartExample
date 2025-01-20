@@ -1016,71 +1016,41 @@ namespace DDPM.SA.Common
         #region Pen
 
         Task<string> GetEraserDoublePressValues();
-
         Task<string> GetEraserSinglePressValues();
-
         Task<string> GetEraserLongPressValues();
-
         Task<string> GetSideSwitchSinglePressValues();
-
         Task<string> GetMenuSinglePressValues();
-
         Task<string> GetLaunchableAppValues();
-
         Task<string> GetEraserDoublePressSetting();
-
         Task<string> GetEraserSinglePressSetting();
-
         Task<string> GetEraserLongPressSetting();
-
         Task<string> GetSideTopSwitchSinglePressSetting();
-
         Task<string> GetSideBottomSwitchSinglePressSetting();
-
         Task<string> GetMenuSinglePressSetting();
-
         Task<bool> GetMenuCenterRightClickSetting();
-
         Task<bool> GetIsSideTopButtonHoverClick();
-
         Task<bool> GetIsSideBottomButtonHoverClick();
-
         Task<string> PairingPen();
-
         Task<JArray> GetPenDeviceItemsEx();
-
         Task<bool> StartKeyCapturePen();
-
         Task<bool> FinishKeyCapturePen();
-
         Task<string> KeyCaptureData();
+        Task<string> GetIsdDriverVersion();
 
         Task UnPairPen(string Guid);
 
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
-
         Task SetEraserLongPressSetting(string itemID, byte[] newValue);
-
         Task SetEraserSinglePressSetting(string itemID, byte[] newValue);
-
         Task SetIsSideBottomButtonHoverClick(string itemID, bool newValue);
-
         Task SetIsSideTopButtonHoverClick(string itemID, bool newValue);
-
         Task SetMenuSinglePressSetting(string itemID, byte[] newValue);
-
         Task SetMenuCenterRightClickSetting(string itemID, bool newValue);
-
         Task SetSideBottomSwitchSinglePressSetting(string itemID, byte[] newValue);
-
         Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue);
-
         Task SetTiltSensitivity(string itemID, int newValue);
-
         Task SetTipSensitivity(string itemID, int newValue);
-
         Task<bool> RestoreToDefaultPen();
-
         Task<bool> RestoreRadialMenuToDefault();
 
         #endregion Pen
