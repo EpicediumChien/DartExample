@@ -23,15 +23,32 @@ namespace DdpmSwUpdater
         public static bool fromDDPM = true;
         public static void SetPath()
         {
-            DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
-            string AppDataPath = WTSFunction.GetActiveUserLocalAppDataPath(null);
+            //DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
+            //[Dean] 20250120 change log location to be C:\ProgramData\Dell\DdpmSwUpdater
+            string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);// WTSFunction.GetActiveUserLocalAppDataPath(null);
             if (!string.IsNullOrEmpty(AppDataPath))
             {
-                path = AppDataPath + "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-DdpmSwUpdater";
+                path = AppDataPath + @"\Dell\DdpmSwUpdater";// "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-DdpmSwUpdater";
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
                 }
+#if RELEASE
+                try
+                {
+                    bool acl = DDPMFileSecurity.CheckFolderACL(path, out string info);
+                    if(!acl)
+                    {
+                        LogMessage($"SetPath error : {info}");
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogMessage($"SetPath error : {ex.Message}");
+                    return;
+                }
+#endif
                 logFilePath = path + "\\" + logFilePath;
             }
             logs = new Logs(logFilePath, "DdpmSwUpdater");
