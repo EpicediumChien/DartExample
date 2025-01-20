@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
-             d:DesignHeight="671" d:DesignWidth="1378"
+             d:DesignHeight="671" d:DesignWidth="1078"
              SizeChanged="UserControl_SizeChanged">
 
     <UserControl.Resources>
@@ -73,14 +73,14 @@
                     <!-- Elsa 20250109 For PIMS [PIMS-334089] change FontSize="48" to FontSize="42" & remove LineHeight="76" and add TextWrapping="WrapWithOverflow" -->
                     <Grid Grid.Row="2" Margin="0, 8, 0 ,0" HorizontalAlignment="Left">
                         <UXControls:UXTextBlock Text="{Binding [Kvm.3], Source={x:Static lang:LangHelper.Instance}}"
-                                                FontSize="64" TextWrapping="WrapWithOverflow" />
+                                                FontSize="64" TextWrapping="Wrap" />
                     </Grid>
                     <!-- Elsa 20250109 For PIMS [PIMS-334089] add TextWrapping="WrapWithOverflow" -->
                     <!--<Grid Grid.Row="3" Margin="0, 16, 0, 0" Width="476" Height="120" HorizontalAlignment="Left">-->
                     <UXControls:UXTextBlock Grid.Row="3" Margin="0, 16, 0, 0" Height="120" HorizontalAlignment="Left"
                                                 Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}}" 
                                                 Text="{Binding [Kvm.4], Source={x:Static lang:LangHelper.Instance}}"
-                                                FontSize="16" LineHeight="24" TextWrapping="WrapWithOverflow"/>
+                                                FontSize="16" LineHeight="24" TextWrapping="Wrap"/>
                     <!--</Grid>-->
                     <Grid Grid.Row="4" Margin="0, 90, 0 ,0">
                         <Grid.ColumnDefinitions>
