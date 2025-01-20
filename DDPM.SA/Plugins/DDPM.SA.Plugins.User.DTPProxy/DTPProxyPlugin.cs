@@ -10075,8 +10075,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
             }
 
-            writelog($"Register Commodity event...");
-            _comdity = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId("DellPeripheral.Headset"), CancellationToken.None);
+            writelog($"Register Webcam Commodity event by DellPeripheral.Headset...");
+            _comdityHeadset = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId("DellPeripheral.Headset"), CancellationToken.None);
             if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _headsetcom)
             {
                 try
