@@ -12,6 +12,7 @@
 
 using DDPM.SA.Common;
 using DDPM.SA.Common.CLI;
+using DDPM.SA.Common.Defer;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
@@ -390,6 +391,9 @@ namespace DDPM.SA.Plugin.User.CLIManager
 
             // add @ 20241210 stephen
             _CliManagerPlugin.CLIToastEvent += _CliManagerPlugin_CLIToastEvent;
+
+            // add @ 20250116 stephen
+            _CliManagerPlugin.CLIDeviceCheckEvent += _CliManagerPlugin_CLIDeviceCheckEvent;
 
             relay_registered = true;
         }
@@ -912,5 +916,77 @@ namespace DDPM.SA.Plugin.User.CLIManager
         }
 
         #endregion
+
+        // add @ 20250116 stephen
+        private void _CliManagerPlugin_CLIDeviceCheckEvent(object? sender, CLIEventDeviceConnArgs e)
+        {
+            //throw new NotImplementedException();
+            //Console.WriteLine($"value = {CLIEventToastArgs.toast_message}");
+            bool result = checkDeviceConn(e.commands);
+        }
+
+        private bool checkDeviceConn(string data)
+        {
+            bool isDeviceConn = false;
+
+            FwRule rule = genFwRule(data);
+
+            bool result = _DevManagerPlugin.checkDeviceConnStatus(rule).Result;
+            try
+            {
+                _CliManagerPlugin.sendDeviceCheckResult(result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            return result;
+        }
+
+        private FwRule genFwRule(string data)
+        {
+            WriteLog($"genFwRule call.");
+            FwRule rule = new FwRule();
+
+            rule.devicetype = string.Empty;
+            rule.model = string.Empty;
+            rule.servicetag = string.Empty;
+
+            string[] args = data.ToLower().Split(' ');
+            foreach (string arg in args)
+            {
+                if (arg.Contains("value"))
+                {
+                    string[] rootArg = arg.Split('=');
+
+                    foreach (string subAge in rootArg)
+                    {
+                        if (subAge.Contains("defer") || subAge.Contains("force"))
+                        {
+                            rule.devicetype = subAge.Split(',')[0];
+                            continue;
+                        }
+
+                        if (subAge.Contains("model"))
+                        {
+                            rule.model = subAge.Split(',')[0];
+                            continue;
+                        }
+
+                        if (subAge.Contains("servicetag"))
+                        {
+                            rule.servicetag = subAge.Split(',')[0];
+                            continue;
+                        }
+                    }
+
+
+                }
+            }
+
+            return rule;
+        }
+
     }
 }

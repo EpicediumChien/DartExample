@@ -16,6 +16,7 @@ using DDPM.OSDs;
 using DDPM.PowerMon;
 using DDPM.QAM;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Defer;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Popup;
@@ -18297,6 +18298,53 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 default:
                     break;
             }
+        }
+
+        // add @ 20250116 stephen
+        public Task<bool> checkDeviceConnStatus(FwRule rule)
+        {
+
+            if (!rule.devicetype.Equals("display"))
+            {
+                return Task.FromResult(true);
+            }
+
+            bool hasModel = false;
+            bool hasServiceTag = false;
+
+            if (rule.model.Equals(string.Empty))
+            {
+                hasModel = true;
+            }
+
+            if (rule.servicetag.Equals(string.Empty))
+            {
+                hasServiceTag = true;
+            }
+
+            foreach (MonitorInfo info in _AllInfoMonitors)
+            {
+                if (!hasModel)
+                {
+                    if (info.edid.ModelName.ToLower().Equals(rule.model))
+                    {
+                        hasModel = true;
+                    }
+                }
+
+                if (!hasServiceTag)
+                {
+                    if (info.edid.ServiceTag.ToLower().Equals(rule.servicetag))
+                    {
+                        hasServiceTag = true;
+                        break;
+                    }
+                }
+            }
+
+            bool result = hasModel && hasServiceTag;
+
+            return Task.FromResult(result);
         }
     }
 }
