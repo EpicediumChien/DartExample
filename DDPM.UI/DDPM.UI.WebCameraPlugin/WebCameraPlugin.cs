@@ -780,14 +780,32 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             if (_viewModel == null)
                 return;
 
-            //_viewModel.close_app = true;
             try
             {
-                _viewModel.running_state = false;
-                _viewModel.mre.Set();
+
+                foreach(Thread t in _viewModel.thread_list)
+                {
+                    if ( t != null)
+                    {
+                        Console.WriteLine(t.Name +" " + t.IsAlive);
+
+                        if( t.IsAlive )
+                        {
+                            t.Interrupt(); 
+                        }
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Null thread");
+                    }
+                }
+
+                Console.WriteLine("D:\\DDPM\\DDPM.UI\\DDPM.UI.WebCameraPlugin\\WebCameraPlugin.cs MainWindowClosed 2");
             }
             catch (Exception ex)
             {
+                Console.WriteLine("D:\\DDPM\\DDPM.UI\\DDPM.UI.WebCameraPlugin\\WebCameraPlugin.cs MainWindowClosed 2 ex:" + ex.ToString());
                 this._log?.Write(LogMsgType.Debug, $"WebCamera plugin got exception: {ex.ToString()}");
             }
 
