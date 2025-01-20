@@ -184,106 +184,150 @@ namespace CLI.Subagent
                     return;
                 }
 
-                if (commandLineInputs.Count == 1)
+                /*                if (commandLineInputs.Count == 1)
+                                {
+                                    var commandLineInput = commandLineInputs[0];
+                                    var isDefer = false;
+                                    var isForceWithNotice = false;
+                                    var isForceWithNoNotice = false;
+                                    var cmds = string.Join(" ", args.Select(_ => _.ToUpper()));
+
+                                    if (commandLineInput.Command == "SET")
+                                    {
+                                        /// FirmwareUpdate & Update
+                                        /// Default: defer
+                                        /// FirmwareUpdate support: defer, forceWithNotice
+                                        /// Update support: defer, forceWithNotice, forceWithNoNotice
+                                        /// Need to replace defer with empty strings for subsequent CLI use.
+                                        if ((commandLineInput.TargetType == "APP" && commandLineInput.TargetFeature == "FIRMWAREUPDATE" && commandLineInput.Options.Count > 0) ||
+                                            (commandLineInput.TargetType == "APP" && commandLineInput.TargetFeature == "UPDATE"))
+                                        {
+                                            foreach (var option in commandLineInput.Options)
+                                            {
+                                                if (option.Option_Value.Contains(",DEFER"))
+                                                {
+                                                    isDefer = true;
+                                                    if (CLIDefer(args, commandLineInput, option))
+                                                    {
+                                                        return;
+                                                    }
+                                                }
+                                                else if (option.Option_Value.Contains(",FORCEWITHNOTICE"))
+                                                {
+                                                    isForceWithNotice = true;
+                                                    CLIForceWithNotice(args);
+                                                    break;
+                                                }
+                                                else if (option.Option_Value.Contains(",FORCEWITHNONOTICE") && commandLineInput.TargetFeature == "FIRMWAREUPDATE")
+                                                {
+                                                    _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput);
+                                                    return;
+                                                }
+                                                else if (option.Option_Value.Contains(",FORCEWITHNONOTICE") && commandLineInput.TargetFeature == "UPDATE")
+                                                {
+                                                    isForceWithNoNotice = true;
+                                                    break;
+                                                }
+                                            }
+
+                                            if (!(isDefer || isForceWithNotice || isForceWithNoNotice))
+                                            {
+                                                if (CLIDefer(args, commandLineInput))
+                                                {
+                                                    return;
+                                                }
+                                            }
+                                        }
+                                        /// SilentFWUpdate not supported defer, forceWithNotice, forceWithNoNotice
+                                        else if (commandLineInput.TargetType == "DOCK" && commandLineInput.TargetFeature == "SILENTFWUPDATE" && commandLineInput.Options.Count > 0)
+                                        {
+                                            if (commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITHNOTICE") || _.Option_Value.Contains("FORCEWITHNONOTICE")))
+                                            {
+                                                _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput);
+                                                return;
+                                            }
+                                        }
+                                        /// Set commands
+                                        /// Default: forceWithNotice
+                                        /// Support: defer, forceWithNotice, forceWithNoNotice
+                                        /// Need to replace defer, forceWithNotice, forceWithNoNotice with empty strings for subsequent CLI use.
+                                        else if (commandLineInput.Options.Count > 0)
+                                        {
+                                            foreach (var option in commandLineInput.Options)
+                                            {
+                                                if (option.Option_Value.Contains(",DEFER"))
+                                                {
+                                                    isDefer = true;
+                                                    if (CLIDefer(args, commandLineInput, option))
+                                                    {
+                                                        return;
+                                                    }
+                                                }
+                                                else if (option.Option_Value.Contains(",FORCEWITHNOTICE"))
+                                                {
+                                                    isForceWithNotice = true;
+                                                    CLIForceWithNotice(args, option);
+                                                    break;
+                                                }
+                                                else if (option.Option_Value.Contains(",FORCEWITHNONOTICE"))
+                                                {
+                                                    isForceWithNoNotice = true;
+                                                    option.Option_Value = option.Option_Value.Replace(",FORCEWITHNONOTICE", "");
+                                                    break;
+                                                }
+                                            }
+
+                                            if (!(isDefer || isForceWithNotice || isForceWithNoNotice))
+                                            {
+                                                CLIForceWithNotice(args);
+                                            }
+                                        }
+                                    }
+                                }*/
+
+                // add start @ 20250120 stephen: test for defer and firmware with connect check
+                bool hasDefer = false;
+                bool hasFwUpdate = false;
+                string cmds = string.Empty;
+
+
+                foreach (string arg in args)
                 {
-                    var commandLineInput = commandLineInputs[0];
-                    var isDefer = false;
-                    var isForceWithNotice = false;
-                    var isForceWithNoNotice = false;
-                    var cmds = string.Join(" ", args.Select(_ => _.ToUpper()));
+                    //Console.WriteLine("@@@@stephen RunManagement arg = " + arg);
 
-                    if (commandLineInput.Command == "SET")
+                    cmds = cmds + arg + " ";
+                    if (arg.ToLower().Contains("firmwareupdate"))
                     {
-                        /// FirmwareUpdate & Update
-                        /// Default: defer
-                        /// FirmwareUpdate support: defer, forceWithNotice
-                        /// Update support: defer, forceWithNotice, forceWithNoNotice
-                        /// Need to replace defer with empty strings for subsequent CLI use.
-                        if ((commandLineInput.TargetType == "APP" && commandLineInput.TargetFeature == "FIRMWAREUPDATE" && commandLineInput.Options.Count > 0) ||
-                            (commandLineInput.TargetType == "APP" && commandLineInput.TargetFeature == "UPDATE"))
-                        {
-                            foreach (var option in commandLineInput.Options)
-                            {
-                                if (option.Option_Value.Contains(",DEFER"))
-                                {
-                                    isDefer = true;
-                                    if (CLIDefer(args, commandLineInput, option))
-                                    {
-                                        return;
-                                    }
-                                }
-                                else if (option.Option_Value.Contains(",FORCEWITHNOTICE"))
-                                {
-                                    isForceWithNotice = true;
-                                    CLIForceWithNotice(args);
-                                    break;
-                                }
-                                else if (option.Option_Value.Contains(",FORCEWITHNONOTICE") && commandLineInput.TargetFeature == "FIRMWAREUPDATE")
-                                {
-                                    _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput);
-                                    return;
-                                }
-                                else if (option.Option_Value.Contains(",FORCEWITHNONOTICE") && commandLineInput.TargetFeature == "UPDATE")
-                                {
-                                    isForceWithNoNotice = true;
-                                    break;
-                                }
-                            }
+                        hasFwUpdate = true;
+                    }
 
-                            if (!(isDefer || isForceWithNotice || isForceWithNoNotice))
-                            {
-                                if (CLIDefer(args, commandLineInput))
-                                {
-                                    return;
-                                }
-                            }
-                        }
-                        /// SilentFWUpdate not supported defer, forceWithNotice, forceWithNoNotice
-                        else if (commandLineInput.TargetType == "DOCK" && commandLineInput.TargetFeature == "SILENTFWUPDATE" && commandLineInput.Options.Count > 0)
-                        {
-                            if (commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITHNOTICE") || _.Option_Value.Contains("FORCEWITHNONOTICE")))
-                            {
-                                _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput);
-                                return;
-                            }
-                        }
-                        /// Set commands
-                        /// Default: forceWithNotice
-                        /// Support: defer, forceWithNotice, forceWithNoNotice
-                        /// Need to replace defer, forceWithNotice, forceWithNoNotice with empty strings for subsequent CLI use.
-                        else if (commandLineInput.Options.Count > 0)
-                        {
-                            foreach (var option in commandLineInput.Options)
-                            {
-                                if (option.Option_Value.Contains(",DEFER"))
-                                {
-                                    isDefer = true;
-                                    if (CLIDefer(args, commandLineInput, option))
-                                    {
-                                        return;
-                                    }
-                                }
-                                else if (option.Option_Value.Contains(",FORCEWITHNOTICE"))
-                                {
-                                    isForceWithNotice = true;
-                                    CLIForceWithNotice(args, option);
-                                    break;
-                                }
-                                else if (option.Option_Value.Contains(",FORCEWITHNONOTICE"))
-                                {
-                                    isForceWithNoNotice = true;
-                                    option.Option_Value = option.Option_Value.Replace(",FORCEWITHNONOTICE", "");
-                                    break;
-                                }
-                            }
-
-                            if (!(isDefer || isForceWithNotice || isForceWithNoNotice))
-                            {
-                                CLIForceWithNotice(args);
-                            }
-                        }
+                    if (arg.ToLower().Contains("defer"))
+                    {
+                        hasDefer = true;
                     }
                 }
+
+                if (hasFwUpdate) {
+                    if (_CliManagerPlugin.checkDeviceConn(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds.Trim(), cmds).Result)
+                    {
+                        // true: device not found
+                        Console.WriteLine("hasFwUpdate = true, checkDeviceConn = device not found ");
+                        return;
+                    }
+
+                }
+
+                if (hasDefer)
+                {
+                    //Console.WriteLine("@@@@stephen check Defer Result ");
+
+                    if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds.Trim()).Result)
+                    {
+                        Console.WriteLine("hasDefer = true, checkDefer = true, add to defer schedule ");
+                        return;
+                    }
+                }
+                // add end @ 20250120
 
                 List<int> returnCode = new List<int>();
                 foreach (CommandLineInput commandLineInput in commandLineInputs)
