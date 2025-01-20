@@ -1364,7 +1364,7 @@ namespace DDPM.SA.Common
             {
                 switch (commandLineInput.TargetFeature)
                 {
-                    //case "DISPLAY":
+                    case "DISPLAY":
                     case "ADVANCED":
                     case "APP":
                     case "AUDIO":
