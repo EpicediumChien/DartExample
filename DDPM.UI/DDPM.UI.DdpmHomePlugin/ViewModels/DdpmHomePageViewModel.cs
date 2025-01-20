@@ -701,7 +701,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 if (DeviceManagerPlugin != null) //Should be always true
                 {
                     List<MonitorInfo> monitors = DeviceManagerPlugin.GetMonitors().Result;
-                    if (monitors.Count > 0) 
+                    //Robert_Lin 2025-1-20 to prevent monitors is null
+                    if ((monitors != null) && (monitors.Count > 0))
                     {
                         _log.Info($"PleaseWait-Monitor count={monitors.Count}");
                         PrepareMonitorInfos(monitors);
