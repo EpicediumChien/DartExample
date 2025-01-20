@@ -80,7 +80,7 @@
                         <Grid Grid.Row="1" Margin="0, 50, 0, 0" HorizontalAlignment="Left">
                             <UXControls:UXTextBlock Text="{Binding [Kvm.16], Source={x:Static lang:LangHelper.Instance}}"
                                                     Foreground="{DynamicResource DefaultTheme_PbHeaderColor}"
-                                                    FontSize="20"  LineHeight="28" TextWrapping="Wrap" />
+                                                    FontSize="20"  LineHeight="28" TextWrapping="WrapWithOverflow" />
                         </Grid>
                         <!-- Elsa 20250108 For PIMS [PIMS-334058] change FontSize="48" LineHeight="76" to FontSize="40" LineHeight="40" and add TextWrapping="WrapWithOverflow" -->
                         <Grid Grid.Row="2" Margin="0, 8, 0, 0" HorizontalAlignment="Left">
@@ -92,7 +92,7 @@
                         <UXControls:UXTextBlock Grid.Row="3" Margin="0, 16, 0, 0" Height="120" HorizontalAlignment="Left"
                                                     Width="{Binding [Kvm.4], Source={x:Static lang:LangHelper.Instance}}" 
                                                     Text="{Binding [Kvm.18], Source={x:Static lang:LangHelper.Instance}}"
-                                                    FontSize="16" LineHeight="24" TextWrapping="Wrap"/>
+                                                    FontSize="16" LineHeight="24" TextWrapping="WrapWithOverflow"/>
                         <!--</Grid>-->
                     </StackPanel>
                 </Grid>
