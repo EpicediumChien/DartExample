@@ -289,7 +289,7 @@ namespace DDPM.SA.Plugin.CLIManager
                                 Command = commandLineInput.Command,
                                 TargetFeature = commandLineInput.TargetFeature,
                                 Result = "PASS",
-                                Value = (data.Enable_Display_NetworkKVM ? "ON" : "OFF") + (data.Lock_Display_NetworkKVM ? ", DISABLE" : ", ENABLE"),
+                                Value = (data.Lock_Display_NetworkKVM ? "DISABLE" : "ENABLE") + (data.Enable_Display_NetworkKVM ? ", ON" : ", OFF"),
                             }, Formatting.Indented);
                         }
                         else if (commandLineInput.Command == "SET")
