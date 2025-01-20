@@ -277,7 +277,7 @@
                     <Grid x:Name="gdBattery" Margin="5" VerticalAlignment="Bottom">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <DDPMUserControls:BatteryIndicator   HorizontalAlignment="Center" ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" />
-                            <StackPanel Orientation="Horizontal" Visibility="{Binding FunctionsVisibility}">
+                            <StackPanel Orientation="Horizontal" Visibility="Visible"> <!-- Visibility="{Binding FunctionsVisibility}" -->
                                 <Border Cursor="Hand" Margin="8,0,0,0" Visibility="Visible" x:Name="btnFolder" Height="40" VerticalAlignment="Bottom" MouseLeftButtonDown="btnFolder_Click"
                             Border.CornerRadius="2" Width="40" BorderThickness="0" BorderBrush="{DynamicResource DefaultTheme_SetupSelectBdColor}" IsEnabled="{Binding IsNotRecording}">
                                     <Border.ToolTip>
