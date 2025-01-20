@@ -36,6 +36,7 @@ using Dell.Client.Framework.Security;
 using System.Data;
 using System.Runtime.Intrinsics.X86;
 using System.Security.Policy;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 //using System.Windows.Forms;
 
 namespace DDPM.UI.Module.EzMemory
@@ -112,51 +113,61 @@ namespace DDPM.UI.Module.EzMemory
                 //In Add mode, the new ProfileId will be generted when clicking Finish button.
                 //             So the per-monitor settings will be always null. we can skip it (to restore)
                 //But in Edit mode, we can restore its monitor settings with current editing profileId.
-                if (_vm.IsEditProfile)
-                {
-                    if (_vm.currentEditprofile != null)
-                    {
-                        _vm.currentEditprofileSetting = _vm.LoadEmMonitorSettings(_vm.currentEditprofile.ID);
-                        if (_vm.currentEditprofileSetting == null)
-                        {
-                            //Assign default settings
-                            _vm.currentEditprofileSetting = new EzProfileSettingDDPM(_vm.currentEditprofile.ID,
-                                false, GetAutoLaunchTime(), false);
-                            _vm.IsLaunchAtStartup = false;
-                        }
+                // 使用 CultureInfo 來取得 AM 和 PM
+                string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
+                string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
 
-                    }
-                }
-                else
+                //Add mode: Always reset to defaults
+                if (!_vm.IsEditProfile)
                 {
                     _vm.IsManualLaunch = true;
                     _vm.IsAutoLaunch = false;
+                    _vm.IsLaunchAtStartup = false;
+
+                    //Always use current time
+                    DateTime now = DateTime.Now;
+                    string hour = now.ToString("hh");
+                    string minute = now.ToString("mm");
+                    string ampm = now.Hour >= 12 ? pmDesignator : amDesignator;
+
+                    _vm.SelectedHour = hour;
+                    _vm.SelectedMinute = minute;
+                    _vm.SelectedAMPM = ampm;
+                    return;
                 }
 
-                if (_vm.IsEditProfile)
+                //Edit mode: Always restore from per-monitor settings
+                _vm.currentEditprofileSetting = _vm.LoadEmMonitorSettings(_vm.currentEditprofile.ID);
+                //If no per-monitor settings for current profile.ID, then assign default settings (Manual/Current Time)
+                if (_vm.currentEditprofileSetting == null)
                 {
-                    if (_vm.currentEditprofileSetting == null)
-                    {
-                        //Assign default settings
-                        _vm.IsLaunchAtStartup = false;
-                    }
-                    else
-                    {
-                        _vm.IsLaunchAtStartup = _vm.currentEditprofileSetting.StartUpLaunch;
+                    _vm.IsManualLaunch = true;
+                    _vm.IsAutoLaunch = false;
+                    _vm.IsLaunchAtStartup = false;
 
-                        _vm.IsAutoLaunch = _vm.currentEditprofileSetting.Auto;
-                        _vm.IsManualLaunch = !_vm.currentEditprofileSetting.Auto;
+                    //Always use current time
+                    DateTime now = DateTime.Now;
+                    string hour = now.ToString("hh");
+                    string minute = now.ToString("mm");
+                    string ampm = now.Hour >= 12 ? pmDesignator : amDesignator;
 
-                     }
+                    _vm.SelectedHour = hour;
+                    _vm.SelectedMinute = minute;
+                    _vm.SelectedAMPM = ampm;
+                    return;
+                }
 
+                //Has saved settings, then apply the settings
+                _vm.IsManualLaunch = !_vm.currentEditprofileSetting.Auto;
+                _vm.IsAutoLaunch = _vm.currentEditprofileSetting.Auto;
+
+                if (_vm.currentEditprofileSetting.Auto)
+                {
+                    //Use the Time from currentEditprofileSetting
                     long autoStartTimeInSeconds = (long)_vm.currentEditprofileSetting.AutoStartTime!;
-                    TimeSpan time = TimeSpan.FromSeconds(autoStartTimeInSeconds);
+                    TimeSpan timeSpan = TimeSpan.FromSeconds(autoStartTimeInSeconds);
 
-                    // 使用 CultureInfo 來取得 AM 和 PM
-                    string amDesignator = CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
-                    string pmDesignator = CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator;
-
-                    int hourValue = time.Hours;
+                    int hourValue = timeSpan.Hours;
                     if (hourValue == 0)
                     {
                         _vm.SelectedHour = "12";
@@ -179,25 +190,22 @@ namespace DDPM.UI.Module.EzMemory
                         _vm.SelectedAMPM = amDesignator; // AM
                         _vm.SelectedHour = hourValue.ToString("D2");
                     }
-
-                    _vm.SelectedMinute = time.Minutes.ToString("D2");
                 }
                 else
                 {
+                    _vm.IsManualLaunch = true;
+                    _vm.IsAutoLaunch = false;
+                    _vm.IsLaunchAtStartup = false;
+
+                    //Always use current time
                     DateTime now = DateTime.Now;
-
-                    string ampm = now.Hour >= 12
-                        ? CultureInfo.CurrentCulture.DateTimeFormat.PMDesignator
-                        : CultureInfo.CurrentCulture.DateTimeFormat.AMDesignator;
-
                     string hour = now.ToString("hh");
                     string minute = now.ToString("mm");
+                    string ampm = now.Hour >= 12 ? pmDesignator : amDesignator;
 
                     _vm.SelectedHour = hour;
                     _vm.SelectedMinute = minute;
                     _vm.SelectedAMPM = ampm;
-
-                    _vm.IsLaunchAtStartup = false;
                 }
             }
             catch (Exception ex)
@@ -496,7 +504,8 @@ namespace DDPM.UI.Module.EzMemory
                         //Set new added SplitItem as Current selected
                         if (_vm.CurrentSelectspItem != null)
                         {
-                            _vm.CurrentSelectspItem.IsSelected = false;
+                            if (_vm.CurrentSelectspItem.ProfileID != profileID)
+                                _vm.CurrentSelectspItem.IsSelected = false;
                         }
                         _vm.CurrentSelectspItem = spItem;
                         //_vm.CurrentSelectspItem.IsSelected = true;

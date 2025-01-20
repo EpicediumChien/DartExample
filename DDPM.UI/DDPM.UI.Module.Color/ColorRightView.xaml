@@ -13,6 +13,7 @@
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="{DynamicResource DefaultTheme_TxtColor}" />
         </Style>
+        
     </UserControl.Resources>
     <Grid>
         <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Disabled">
@@ -379,28 +380,72 @@
                         </Grid>
                     </Border>
 
-                    <!-- RightGroupBorder.AdvancedSettings -->
+                    <!-- RightGroupBorder.AdvancedSettings 
+                    Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}">
+                    -->
                     <Border 
                          IsEnabled="{Binding ColorEnable}"
                          Opacity="{Binding ColorOpacity}"
                          Style="{StaticResource RightGroupBorderStyle}" Margin="0,16,0,0" Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}">
-                        <Expander x:Name="Expander_Advanced_Settings"  Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" >
+                        <!-- Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}" 
+                        -->
+                        <Expander x:Name="Expander_Advanced_Settings"  Visibility="{Binding IsisAdvanced_Settings, UpdateSourceTrigger=PropertyChanged}" 
+                                  KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}"
+                                  KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" >
                             <Expander.Header>
                                 <!-- Group Header:  Advanced Settings-->
+                                <!-- Robert_Lin 2025-1-14 PIMS-333569] L10N: i18N: DDPM 2.0: GUI: TP1: es-ES, es-XL, it-IT, pt-PT, pt-BR, ua-UK: Clipping found in stringID: AdvancedSettings
+                                The ColumnDefinition of Column 0 Width=140, causes the text been clipped.
+                                Change Grid ColumnDefinitions to *,Auto   Text will has "..." if it is clipped.
+                                OLD:
+                                    <Grid.ColumnDefinitions>
+                                       <ColumnDefinition Width="140" />
+                                       <ColumnDefinition />
+                                   </Grid.ColumnDefinitions>
+           
+                                   <UXControls:UXTextBlock  Margin="0,0,0,0" Text="{Binding [AdvancedSettings], Source={x:Static lang:LangHelper.Instance}}" FontSize="15" 
+                                                          TextBlockType="Caption"
+                                                          VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                 -->
                                 <Grid Height="60">
 
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="140" />
-                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <UXControls:UXTextBlock  Margin="0,0,0,0" Text="{Binding [AdvancedSettings], Source={x:Static lang:LangHelper.Instance}}" FontSize="15" 
-                                                            TextBlockType="Caption"
+                                    <UXControls:UXTextBlock  Margin="0,0,8,0" 
+                                                             Text="{Binding [AdvancedSettings], Source={x:Static lang:LangHelper.Instance}}" FontSize="15" 
+                                                            TextBlockType="Caption" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
                                                             VerticalAlignment="Center" HorizontalAlignment="Left" />
-                                    <Image Grid.Column="1" Visibility="{Binding LockMaskVisible}" 
-                                        Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
-                                        VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
-                                        <Image.ToolTip>
+                                    
+                                    <!-- Robert_Lin 2025-1-14 Change the Icon from Image to ContentControl, which use Path to draw the LockIcon to meet Light mode requirements.
+                                    OLD:
+                                    <Image Grid.Column="1" Visibility="{Binding LockMaskVisible}" d:Visibility="Visible"
+                                       Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Lock.png"
+                                       VerticalAlignment="Center" HorizontalAlignment="Center" Width="16" Height="16">
+                                       <Image.ToolTip>
+                                           <ToolTip>
+                                               <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                   <Border.Resources>
+                                                       <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                   </Border.Resources>
+                                                   <StackPanel>
+                                                       <StackPanel Orientation="Horizontal">
+                                                           <TextBlock Text="{Binding [ITLockToolTip.0], Source={x:Static lang:LangHelper.Instance}}" />
+                                                       </StackPanel>
+                                                   </StackPanel>
+                                               </Border>
+                                           </ToolTip>
+                                       </Image.ToolTip>
+                                   </Image>
+
+                                    -->
+                                    <ContentControl Grid.Column="1" Visibility="{Binding LockMaskVisible}" VerticalAlignment="Center"
+                                                    Template="{StaticResource icon_Lock}" Foreground="{DynamicResource LockIcon_Fill}">
+
+                                        <ContentControl.ToolTip>
+
                                             <ToolTip>
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                     <Border.Resources>
@@ -413,10 +458,10 @@
                                                     </StackPanel>
                                                 </Border>
                                             </ToolTip>
-                                        </Image.ToolTip>
-                                    </Image>
+                                        </ContentControl.ToolTip>
+                                    </ContentControl>
 
-                                </Grid>
+                                  </Grid>
                             </Expander.Header>
 
                             <Expander.Content>
@@ -456,7 +501,7 @@
 
                                                     <Image Grid.Column="1" Stretch="None" Margin="10,0,0,0" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Icon_Info.png">
                                                         <Image.ToolTip>
-                                                            <ToolTip>
+                                                            <ToolTip Placement="Center" VerticalOffset="45" HorizontalOffset="50">
                                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                                     <Border.Resources>
                                                                         <Style TargetType="TextBlock" BasedOn="{StaticResource Tooltip_TextBlockStyle}" />
@@ -488,9 +533,22 @@
                                             </Grid>
 
                                             <Grid Grid.Column="1" Grid.Row="2"  Margin="0,0,0,0">
-                                                <UXControls:UXRadioButton  x:Name="rb_ICCprofile_based_Colorpreset" IsEnabled="False" Content="{Binding [Color.3], Source={x:Static lang:LangHelper.Instance}}"  FontSize="14" Click="rb_ICCprofile_based_Colorpreset_click" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
+                                                <UXControls:UXRadioButton  x:Name="rb_ICCprofile_based_Colorpreset" IsEnabled="False"
+                                                                           Content="{Binding [Color.3], Source={x:Static lang:LangHelper.Instance}}"  FontSize="14"
+                                                                           Click="rb_ICCprofile_based_Colorpreset_click" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" 
+                                                                           IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" 
+                                                                           KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
                                             </Grid>
 
+                                            <!-- Robert_Lin 2025-1-18 [#PIMS-333922] L10N_ i18N_ DDPM 2.0_ GUI_ TP1_ es-ES, es-XL, it-IT, pt-BR, pt-PT, ua-UK_ Clipping found in stringID_ Color.5
+                                            Issue: The Link text is clipped. 
+                                            Fix solution: 
+                                            1 Change StackPanel to WrapPanel so the RadioButon can be wrapped to next row. Top-allign make it's Circle control will be top-allign.
+                                            2 Use UXTextBlock as the content of the UXRadioButton, to make sure it has the same color with RadioButton, and support TextWrap.
+                                            3 Use UXHyperlink replace UXLink. It's IsEnabled bind to RadioButton. And use ICommand binding to replace UXLink.Click.
+                                            
+                                            OLD:
+                                            
                                             <Grid Grid.Column="1" Grid.Row="3"  Margin="0,0,0,0">
                                                 <StackPanel Orientation="Horizontal">
                                                     <UXControls:UXRadioButton  x:Name="rb_Colorpreset_based_ICCprofile" IsEnabled="False" Content="{Binding [Color.4], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Click="rb_Colorpreset_based_ICCprofile_click" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" />
@@ -504,6 +562,28 @@
                                                         </UXControls:UXLink.Resources>
                                                     </UXControls:UXLink>
                                                 </StackPanel>
+                                            </Grid>
+                                            
+                                            -->
+                                            <Grid Grid.Column="1" Grid.Row="3"  Margin="0,0,0,0">
+                                                <WrapPanel>
+                                                    <UXControls:UXRadioButton  x:Name="rb_Colorpreset_based_ICCprofile" IsEnabled="False" 
+                                                                               FontSize="14" Click="rb_Colorpreset_based_ICCprofile_click" KeyboardNavigation.TabNavigation="{Binding TabNavigation}" 
+                                                                               IsTabStop="{Binding isTabStoppable}" KeyboardNavigation.AcceptsReturn="{Binding isTabStoppable}" 
+                                                                               VerticalAlignment="Top" 
+                                                                               KeyboardNavigation.IsTabStop="{Binding isTabStoppable}" >
+                                                        <UXControls:UXTextBlock TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="14">
+                                                            <Run Text="{Binding [Color.4], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}"
+                                                                 Foreground="{Binding ElementName=rb_Colorpreset_based_ICCprofile, Path=Foreground}"/>
+                                                            <UXControls:UXHyperlink ColorScheme="Primary" IconPosition="None" Margin="0,0,0,-4"
+                                                                                    HyperlinkText="{Binding [Color.5], Source={x:Static lang:LangHelper.Instance}}"
+                                                                                    IsEnabled="{Binding ElementName=rb_Colorpreset_based_ICCprofile, Path=IsEnabled}"
+                                                                                    Command="{Binding ICC_profile_hyperlink_ClickCommand}"
+                                                                                    />
+                                                         </UXControls:UXTextBlock>
+                                                    </UXControls:UXRadioButton>
+                                                    
+                                                 </WrapPanel>
                                             </Grid>
                                         </Grid>
                                     </Border>

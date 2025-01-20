@@ -74,7 +74,8 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Text2, Mode=TwoWay}">
+                        <!--Chewlin 20250116 Fix pip/pbp Clipping issue ADD TextTrimming="CharacterEllipsis" Padding="10,0,10,0"-->
+                        <TextBlock Grid.Column="0" Text="{Binding Text2, Mode=TwoWay}" TextTrimming="CharacterEllipsis" Padding="10,0,10,0">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
                                     <Style.Triggers>
@@ -103,7 +104,7 @@
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>
-                    </Grid>                    
+                    </Grid>
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Background" Value="Transparent" />
@@ -152,7 +153,7 @@
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>
-                    </Grid>                    
+                    </Grid>
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Background" Value="Transparent" />

@@ -823,23 +823,33 @@ namespace DDPM.SA.Common.CLI
                 {
                     if (value.ToUpper().Equals("TRUE"))
                     {
-                        if (data_user != null)
-                        {                            
-                            if (commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
+                        if (commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
+                        {
+                            if (data_user != null)
+                            {
                                 param.isTelemetryConsentOn = true;
-                            else
-                                return CLI_Response_TypeNotSupport(commandLineInput, result);
+                                data_user.LockSettings.Lock_Settings_TelemetryConsent = true;
+                            }
+                            if (data_IT != null)
+                                data_IT.Lock_Settings_TelemetryConsent = true;
                         }
+                        else
+                            return CLI_Response_TypeNotSupport(commandLineInput, result);
                     }
                     else if (value.ToUpper().Equals("FALSE"))
                     {
-                        if (data_user != null)
+                        if (commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
                         {
-                            if (commandLineInput.TargetFeature.Equals("TELEMETRYCONSENT"))
+                            if (data_user != null)
+                            {
                                 param.isTelemetryConsentOn = false;
-                            else
-                                return CLI_Response_TypeNotSupport(commandLineInput, result);
+                                data_user.LockSettings.Lock_Settings_TelemetryConsent = true;
+                            }
+                            if (data_IT != null)
+                                data_IT.Lock_Settings_TelemetryConsent = true;
                         }
+                        else
+                            return CLI_Response_TypeNotSupport(commandLineInput, result);
                     }
                     else if (value.ToUpper().Equals("LOCK") || value.ToUpper().Equals("UNLOCK"))
                     {

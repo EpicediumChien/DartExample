@@ -44,6 +44,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Threading;
 using System.Windows.Markup;
 using Microsoft;
+using CommunityToolkit.Mvvm.Input;
 
 
 //using System.Management;
@@ -187,6 +188,8 @@ namespace DDPM.UI.Module.Color
 
         public Visibility IsisAdvanced_Settings
         {
+            //Robert)Lin debug 2025-1-18
+            //get => Visibility.Visible;
             get { return isAdvanced_Settings; }
             set
             {
@@ -1820,5 +1823,32 @@ namespace DDPM.UI.Module.Color
             set => SetProperty(ref _isBusy, value);
         }
         #endregion UI Enable Flags
+
+        //Robert_Lin 2025-1-18 added to handle Advanced Settings / ICC profile hylerlink click command
+        private ICommand? _ICC_profile_hyperlink_ClickCommand;
+        public ICommand ICC_profile_hyperlink_ClickCommand
+        {
+            get
+            {
+                if (_ICC_profile_hyperlink_ClickCommand == null)
+                {
+                    _ICC_profile_hyperlink_ClickCommand = new RelayCommand(Handle_ICC_profile_hyperlink_ClickCommand);
+                }
+                return _ICC_profile_hyperlink_ClickCommand;
+            }
+        }
+        private void Handle_ICC_profile_hyperlink_ClickCommand()
+        {
+            var psi = new System.Diagnostics.ProcessStartInfo();
+
+            psi.FileName = "ms-settings:display";
+            psi.UseShellExecute = true;
+
+            //System.Diagnostics.Process.Start(psi);
+            DDPM.SA.Common.Settings.DDPMFileSecurity.StartProcessSafely(null, psi);
+        }
+        //Robert_Lin 2025-1-18 added to handle Advanced Settings / ICC profile hylerlink click command
+        ////////////////////////////
+
     }
 }

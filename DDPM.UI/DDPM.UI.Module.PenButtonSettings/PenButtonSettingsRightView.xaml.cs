@@ -185,7 +185,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                     }
                     else
                     {
-                        sourceList = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.AllActionsPenTopButton : Actions.AllActionsPenBarrelButton;
+                        sourceList = _vm.SelectedButton == PenButtonName.TopButton.ToString() ? Actions.AllActionsPenTopButton() : Actions.AllActionsPenBarrelButton();
                     }
                     searchText = txtSearchText.Text;
                     sourceList.ForEach(x =>

@@ -48,16 +48,24 @@ namespace DDPM.UI.Module.SpeakerInteractions
                 {
                     DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] ZoomButton Visibility");
                 }
-                if (!matchingMeet.Any())//!isMeetInstalled)// Awalys need
-                { 
-                    GoogleMeetButton.Visibility = System.Windows.Visibility.Visible;
-                    DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] GoogleMeetButton Collapsed");
+                if(_vm.Model == "SB522A")
+                {
+                    GoogleMeetButton.Visibility = System.Windows.Visibility.Collapsed;
                 }
                 else
                 {
                     GoogleMeetButton.Visibility = System.Windows.Visibility.Visible;
-                    //DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] GoogleMeetButton Visibility");
                 }
+                //if (!matchingMeet.Any())//!isMeetInstalled)// Awalys need
+                //{ 
+                //    GoogleMeetButton.Visibility = System.Windows.Visibility.Visible;
+                //    DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] GoogleMeetButton Collapsed");
+                //}
+                //else
+                //{
+                //    GoogleMeetButton.Visibility = System.Windows.Visibility.Visible;
+                //    //DdpmCommonHelper.WriteUILog($"[SpeakerInteractionsRightView] GoogleMeetButton Visibility");
+                //}
             }
             else
             {

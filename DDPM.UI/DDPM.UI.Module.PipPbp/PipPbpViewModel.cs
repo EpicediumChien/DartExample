@@ -1598,12 +1598,19 @@ namespace DDPM.UI.Module.PipPbp
         {
             get
             {
-                if (IsFullscreenItemSelected)
-                    return false;
+                //Robert_Lin, 2025-1-17 fix with Bee June's comment in PIMS-302450
+                //Tye, Bee June: When PxP id turn out, no need to gray out the USB switch.
+                //if (IsFullscreenItemSelected)
+                //    return false;
                 if (SelectedHomeDevice == null) return false;
                 if (SelectedHomeDevice.HasCapability_UsbKvm)
                 {
-                    return IsUsbKvmOn;
+                    //Robert_Lin, PIMS-302450, USB Switch button should be grayed-out and disabled when "NKVM is ON"
+                    //This means that if the selected option is "No KVM" then USB Switch button should be enabled
+                    //OLD:
+                    //return IsUsbKvmOn;
+                    //NEW:
+                    return !IsNetworkKvmOn;
                 }
                 return false;
             }

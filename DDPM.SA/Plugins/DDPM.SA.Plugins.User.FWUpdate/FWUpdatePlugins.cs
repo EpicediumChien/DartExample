@@ -515,6 +515,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)),
                                     IsDisplay = false,
                                     SupplierID = deviceSupplierID,
+                                    InstanceId = updateHelper.UpdateItems[i].InstanceId,
                                     Connectivity = deviceConnectivity,
                                     Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
                                     ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
@@ -558,6 +559,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                         updateHelper.UpdateItems[i].DeviceType == DeviceType.LogicalDock)),
                                         IsDisplay = false,
                                         SupplierID = deviceSupplierID,
+                                        InstanceId = updateHelper.UpdateItems[i].InstanceId,
                                         Connectivity = deviceConnectivity,
                                         Available_date = _fWUpdateInfoPackage.TheLastCheckTime.ToString("yyyy/MM/dd HH:mm:ss"),
                                         ServiceTag = ((updateHelper.UpdateItems[i].DeviceType == DeviceType.PhysicalWiredDock ||
@@ -859,7 +861,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             _logs.DebugMsg_1($"{nameof(Filter)} minVersion currentVersion:{currentVersion}");
                             _logs.DebugMsg_1($"{nameof(Filter)} minVersion new_MinVersion:{new_MinVersion}");
                             if (currentVersion > 0 && new_MinVersion > 0 &&
-                                currentVersion <= new_MinVersion)
+                                currentVersion < new_MinVersion)
                             {
                                 _forCLI_FWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
                             }
@@ -1036,6 +1038,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                     catch (Exception ex)
                     {
+                        if (_downloadTimer != null)
+                        {
+                            _downloadTimer.Elapsed -= new ElapsedEventHandler(DownloadTimer_Elapsed);
+                            _downloadTimer.Stop();
+                            _downloadTimer = null;
+                        }
                         _logs.DebugMsg_1(fwUpdateInfos[i].DeviceName + " Download error : " + ex.Message);
                         fwUpdateInfos[i].FWUErrorCode = FWUErrorCode.NetworkDisconnection;
                         _notificationStr = $"{fwUpdateInfos[i].DeviceName} {fwUpdateInfos[i].Model} {LangHelper.Instance["Update_failed_due_to_network_error"]}";
@@ -2553,15 +2561,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 // 要運行的安裝程式路徑和命令行參數
                 arguments = (fwUpdateInfo.IsUOD ? "/uod " : "") + "/silent" + " /pipename:" + namedPipeName;
-                //deviceIndex commandLine
-                _logs.DebugMsg_1($"BuildArgs deviceIndex go");
-                arguments += $" /deviceIndex:" + fwUpdateInfo.DeviceIndex;
-                _logs.DebugMsg_1($"BuildArgs deviceIndex done");
-
-                _logs.DebugMsg_1($"BuildArgs Log go");
-                if (fwUpdateInfo.DeviceType == DeviceType.LogicalMouse ||
-                    fwUpdateInfo.DeviceType == DeviceType.LogicalKeyboard)
+                if (fwUpdateInfo.DeviceType != DeviceType.LogicalDock &&
+                    fwUpdateInfo.DeviceType != DeviceType.PhysicalWiredDock)
                 {
+                    //deviceIndex commandLine
+                    _logs.DebugMsg_1($"BuildArgs deviceIndex go");
+                    arguments += $" /deviceIndex:" + fwUpdateInfo.DeviceIndex;
+                    _logs.DebugMsg_1($"BuildArgs deviceIndex done");
+
                     //updatepath commandLine
                     _logs.DebugMsg_1($"BuildArgs updatepath go");
                     switch (fwUpdateInfo.Connectivity)
@@ -2573,6 +2580,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         case "RF":
                             arguments += $" /updatepath:RF";
                             _logs.DebugMsg_1($"BuildArgs Add : /updatepath:RF");
+                            _logs.DebugMsg_1($"GetDeviceID go");
+                            string deviceID = GetDeviceID(fwUpdateInfo);
+                            _logs.DebugMsg_1($"GetDeviceID done");
+                            if (!string.IsNullOrEmpty(deviceID))
+                            {
+                                _logs.DebugMsg_1($"GetDeviceID deviceID is not null");
+                                _logs.DebugMsg_1($"BuildArgs Add :{deviceID}");
+                                arguments += deviceID;
+                            }
                             break;
                         case "Bluetooth":
                             arguments += $" /updatepath:BLE";
@@ -2580,6 +2596,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             break;
                     }
                     _logs.DebugMsg_1($"BuildArgs updatepath done");
+
                     _logs.DebugMsg_1($"BuildArgs DeviceType go");
                     //DeviceType commandLine
                     switch (fwUpdateInfo.DeviceType)
@@ -2594,17 +2611,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                             break;
                     }
                     _logs.DebugMsg_1($"BuildArgs DeviceType done");
-                }
 
-                //devicePath commandLine
-                if (fwUpdateInfo.DeviceType != DeviceType.LogicalDock &&
-                    fwUpdateInfo.DeviceType != DeviceType.PhysicalWiredDock)
-                {
+                    //devicePath commandLine
                     _logs.DebugMsg_1($"BuildArgs devicePath go");
                     arguments += $" /devicePath:" + fwUpdateInfo.DevicePath;
                     _logs.DebugMsg_1($"BuildArgs devicePath done");
                 }
-
                 _logs.DebugMsg_1($"BuildArgs Log go");
                 //Log commandLine
                 switch (fwUpdateInfo.DeviceType)
@@ -2676,6 +2688,66 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _logs.DebugMsg_1($"Check_CanBeOTAUpdate finish. ret : {ret}");
             return ret;
         }
+        string GetDeviceID(FWUpdateInfo fwUpdateInfo)
+        {
+            _logs.DebugMsg_1($"GetDeviceID start");
+            string ret = string.Empty;
+            try
+            {
+                if (fwUpdateInfo.DeviceType != DeviceType.LogicalHeadset)
+                {
+                    // 提取 deviceId 並將三個字節組合起來，作為參數傳遞給 FW 更新程序
+                    int deviceId = fwUpdateInfo.InstanceId;
+
+                    byte device_id_1 = (byte)(deviceId & 0xFF);
+                    byte device_id_2 = (byte)((deviceId >> 8) & 0xFF);
+                    byte device_id_3 = (byte)((deviceId >> 16) & 0xFF);
+
+                    // 組合三個字節
+                    ret = $" /deviceID:{device_id_1:X2}{device_id_2:X2}{device_id_3:X2}";
+                }
+                else
+                {
+                    // 對於耳機，將 instance id 視為 deviceHandle 並傳遞給耳機的 FW 更新程序
+                    int deviceHandleId = fwUpdateInfo.InstanceId;
+
+                    ret = $" /deviceID:{deviceHandleId:X4}";
+                }
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"GetDeviceID eroor : {ex.Message}");
+            }
+            _logs.DebugMsg_1($"GetDeviceID ret : {ret}");
+            _logs.DebugMsg_1($"GetDeviceID done");
+            return ret;
+            /*IL Sample
+            if (updaterItemModel->_deviceType != IDevice::DeviceTypeLogicalHeadset) // Check if device is not headset type
+            {
+                //
+                // Extract the deviceId and combine the three bytes to pass to FW updater as arguments.
+                //
+                int deviceId = updaterItemModel->_instanceId;
+
+                uchar device_id_1 = (deviceId & 0xFF);
+                uchar device_id_2 = ((deviceId >> 8) & 0xFF);
+                uchar device_id_3 = ((deviceId >> 16) & 0xFF);
+
+                //
+                // combine the 3 bytes
+                //
+                arguments << ("/deviceID:" + QString("%1").arg(QString::number(device_id_1, 16), 2, QChar('0')) + QString("%1").arg(QString::number(device_id_2, 16), 2, QChar('0')) + QString("%1").arg(QString::number(device_id_3, 16), 2, QChar('0')));
+            }
+            else
+            {
+                //
+                // For headset treat the instance id as deviceHandle and pass it to FW updater of headset
+                //
+                int deviceHandleId = updaterItemModel->_instanceId;
+
+                arguments << ("/deviceID:" + QString("%1").arg(QString::number(deviceHandleId, 16), 4, QChar('0')));
+            }*/
+        }
         /// <summary>
         /// Rearrange firmware update order
         /// </summary>
@@ -2704,10 +2776,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     { DeviceType.LogicalWiredAudio, 9 },
                     { DeviceType.PhysicalWiredAudio, 10 },
                     { DeviceType.PhysicalBluetoothAudio, 11 },
+                    { DeviceType.LogicalHeadset, 12 },
 
-                    { DeviceType.Unknown, 12 }, // Display
-                    { DeviceType.PhysicalWiredDock, 13 },
-                    { DeviceType.LogicalDock, 14 }
+                    { DeviceType.Unknown, 13 }, // Display
+                    { DeviceType.PhysicalWiredDock, 14 },
+                    { DeviceType.LogicalDock, 15 }
                 };
 
                 fWUpdateInfos.Sort((x, y) =>

@@ -86,8 +86,11 @@ internal class Program
             {
                 LogManage.fromDDPM = false;
                 LogManage.LogMessage($"args.Length <= 0 go to copy");
+                bool isSkipCA = LogManage.GetCheckCAStatus();
+                bool isSkipSHA = LogManage.GetCheckSHAStatus();
+                SWUpdateHelper swUpdateHelper = LogManage.GetSWUMetadata(isSkipCA);
                 SWUpdatePlugins swUpdatePlugins = new SWUpdatePlugins();
-                swUpdatePlugins.DownloadAndExecutionSwUpdater();
+                swUpdatePlugins.DownloadAndExecutionSwUpdater(swUpdateHelper, isSkipCA, isSkipSHA);
                 //string exeFilePath = CopyToProgram();
                 //if (!string.IsNullOrEmpty(exeFilePath))
                 //{

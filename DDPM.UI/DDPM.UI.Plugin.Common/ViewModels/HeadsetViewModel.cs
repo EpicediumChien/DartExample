@@ -173,8 +173,8 @@ namespace DDPM.UI.Plugin.ViewModels
                                 {
                                     _isQuickPauseStatus = false;
                                     DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = 0;
-                                    _isNormalChecked = true;
-                                    _isSensitiveChecked = false;
+                                    //_isNormalChecked = true;
+                                    //_isSensitiveChecked = false;
                                 }
                                 if (event_param[eventtype].ToString().ToLower() == "sensitive")
                                 {
@@ -1135,9 +1135,34 @@ namespace DDPM.UI.Plugin.ViewModels
                     DeviceInfoDTP.AncMode = di.AncMode;//_deviceManager.GetAncModeAsync(CurrentDeviceID.ToString()).Result;
                     CheckANCUI(true);
                     // PIMS-333300
-                    OnPropertyChanged(nameof(Sidetone_String));
-                    OnPropertyChanged(nameof(SidetoneStatus));
-                    OnPropertyChanged(nameof(SidetoneSliderStatus));
+                    switch (DeviceInfoDTP.AncMode)
+                    {
+                        case 0:
+                            DeviceInfoDTP.Sidetone = true;
+                            _isSidetoneStatus = true;
+                            break;
+
+                        case 1:
+                            DeviceInfoDTP.Sidetone = true;
+                            _isSidetoneStatus = true;
+                            break;
+
+                        case 2:  
+                            DeviceInfoDTP.Sidetone = false;
+                            _isSidetoneStatus = false;
+                            break;
+                    }
+                    if (IsDTPReady)
+                    {
+                        _deviceManager.SetSidetoneAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.Sidetone).Wait();
+                        //_debouncerHeadsetSidetoneCheck.Debounce("SidetoneCheck");
+                    }
+                    else
+                        _deviceManager.SetSidetone(true, CurrentDeviceInfo!.ID).Wait();
+                    //OnPropertyChanged(nameof(Sidetone_String));
+                    //OnPropertyChanged(nameof(SidetoneStatus));
+                    //OnPropertyChanged(nameof(SidetoneSliderStatus));
+                    CheckSidetoneUI(true);
                     _log.Info($"[HeadsetViewModel] HandleNotification DTH Event AncModeChanged {Model.ToString() + " : " + di.AncMode.ToString()}");
                     break;
 
@@ -3041,7 +3066,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (value == false)
                     DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = 0;
                 else
-                    DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = 1;
+                    DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = 2;
 
                 //_debouncerHeadsetQuickPause.Debounce("QuickPauseCheck");
                 _debouncerHeadset.Debounce("QuickPauseCheck");

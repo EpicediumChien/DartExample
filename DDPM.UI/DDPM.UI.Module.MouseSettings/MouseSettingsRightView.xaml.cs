@@ -15,11 +15,18 @@ namespace DDPM.UI.Module.MouseSettings
 
         public MouseSettingsRightView(MouseViewModel vm)
         {
-            InitializeComponent();
-            _vm = vm;
+            try
+            {
+                InitializeComponent();
+                _vm = vm;
 
-            txtDPIMessage.Text = Strings.DPIMessage;
-            txtPollingRateMessage.Text = Strings.PollingRateMessage;
+                txtDPIMessage.Text = Strings.DPIMessage;
+                txtPollingRateMessage.Text = Strings.PollingRateMessage;
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.MouseSettings\\MouseSettingsRightView.xaml.cs MouseSettingsRightView ex:" + ex.Message);
+            }
         }
 
         private void DPISlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
@@ -52,43 +59,57 @@ namespace DDPM.UI.Module.MouseSettings
         private readonly TimeSpan _debounceInterval = TimeSpan.FromMilliseconds(500); // Adjust as needed
         private void DPISlider_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            switch (e.Key)
+            try
             {
-                case Key.Left:
-                case Key.Right:
-                case Key.Up:
-                case Key.Down:
-                    DateTime now = DateTime.Now;
+                switch (e.Key)
+                {
+                    case Key.Left:
+                    case Key.Right:
+                    case Key.Up:
+                    case Key.Down:
+                        DateTime now = DateTime.Now;
 
-                    if (now - _lastKeyUpTime > _debounceInterval)
-                    {
-                        _lastKeyUpTime = now;
-                        _vm.IsSliderDragging = false;
-                        //_vm.DPIValue = (int)DPISlider.Value;
-                        _vm.SetDPIValue();
-                    }
-                    else
-                    {
-                        e.Handled = true;
-                    }
-                    break;
-                default:
-                    return;
+                        if (now - _lastKeyUpTime > _debounceInterval)
+                        {
+                            _lastKeyUpTime = now;
+                            _vm.IsSliderDragging = false;
+                            //_vm.DPIValue = (int)DPISlider.Value;
+                            _vm.SetDPIValue();
+                        }
+                        else
+                        {
+                            e.Handled = true;
+                        }
+                        break;
+                    default:
+                        return;
+                }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.MouseSettings\\MouseSettingsRightView.xaml.cs DPISlider_KeyUp ex:" + ex.Message);
             }
         }
 
         private void DPISlider_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            switch (e.Key)
+            try
             {
-                case Key.Left:
-                case Key.Right:
-                case Key.Up:
-                case Key.Down:
-                    _vm.IsSliderDragging = true;
-                    break;
-                default:
-                    return;
+                switch (e.Key)
+                {
+                    case Key.Left:
+                    case Key.Right:
+                    case Key.Up:
+                    case Key.Down:
+                        _vm.IsSliderDragging = true;
+                        break;
+                    default:
+                        return;
+                }
+            }
+            catch (Exception ex) 
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.MouseSettings\\MouseSettingsRightView.xaml.cs DPISlider_PreviewKeyDown ex:" + ex.Message);
             }
         }
     }

@@ -289,7 +289,7 @@ namespace DDPM.SA.Plugin.CLIManager
                                 Command = commandLineInput.Command,
                                 TargetFeature = commandLineInput.TargetFeature,
                                 Result = "PASS",
-                                Value = (data.Enable_Display_NetworkKVM ? "ON" : "OFF") + (data.Lock_Display_NetworkKVM ? ", DISABLE" : ", ENABLE"),
+                                Value = (data.Lock_Display_NetworkKVM ? "DISABLE" : "ENABLE") + (data.Enable_Display_NetworkKVM ? ", ON" : ", OFF"),
                             }, Formatting.Indented);
                         }
                         else if (commandLineInput.Command == "SET")
@@ -353,14 +353,14 @@ namespace DDPM.SA.Plugin.CLIManager
                     else
                         rst = CLIHandlerApp.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
-                    //break;
+                //break;
                 case "INAPPBRICONT":             //InAppBriCont              DDPMW-1342/1343
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
                         rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
                     else
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
-                    //break;
+                //break;
                 //case "INAPPAUTOBRITEMP":         //InAppAutoBriTemp          DDPMW-1341
                 case "INAPPAUTOBRIGHTNESSCOLOR"://1004 InAppAutoBrightnessColor DDPMW1341
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
@@ -368,25 +368,25 @@ namespace DDPM.SA.Plugin.CLIManager
                     else
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
-                    //break;
+                //break;
                 case "INAPPRESTOREDEFAULTS":     //InAppRestoreDefaults      DDPMW-1333
                     if (commandLineInput.PluginsType.Equals("APP"))
                         rst = CLIHandlerApp.CLI_App_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
                     else
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
-                    //break;
+                //break;
                 //case "INAPPRESTORE":             //InAppRestore              Same as InAppRestoreDefaults
-                    //break;
+                //break;
                 case "RESTOREFACTORYDEFAULTS":   //RestoreFactoryDefaults    DDPMW-2013/2014/2015/2111/2114
                     if (peripheral_DeviceType.FindIndex(x => x.Equals(commandLineInput.PluginsType)) >= 0)
                         rst = CLIHandlerPeripheral.CLI_Peripheral_RestoreFactoryDefault(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
-                    else if(commandLineInput.PluginsType.Equals("DISPLAY"))
+                    else if (commandLineInput.PluginsType.Equals("DISPLAY"))
                         rst = CLIHandlerDisplay.CLI_Display_RestoreFactoryDefault(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
                     else
                         rst = CLIHandlerPeripheral.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
-                    //break;
+                //break;
                 case "SCREENNOTIFICATION":       //ScreenNotification        DDPMW-1901
                     if (commandLineInput.PluginsType.Equals("APP"))
                         rst = CLIHandlerApp.CLI_Common_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
@@ -427,7 +427,7 @@ namespace DDPM.SA.Plugin.CLIManager
                     else
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
-                    //break;
+                //break;
                 case "EASYARRANGELAYOUT":        //EasyArrangeLayout         DDPMW-1350
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
                         rst = CLIHandlerDisplay.CLI_Display_LockUnlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
@@ -440,21 +440,21 @@ namespace DDPM.SA.Plugin.CLIManager
                     else
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
-                    //break;
+                //break;
                 case "POWERNAP":                 //PowerNap                  DDPMW-1361
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
                         rst = CLIHandlerDisplay.CLI_Display_LockUnlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
                     else
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
-                    //break;
+                //break;
                 case "INAPPEXPORTIMPORT":      //INAPPEXPORTIMPORT       DDPMW-1335
                     if (commandLineInput.PluginsType.Equals("DISPLAY"))
                         rst = CLIHandlerDisplay.CLI_Display_LockUnlock(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
                     else
                         rst = CLIHandlerDisplay.CLI_Response_TypeNotSupport(commandLineInput, rst);
                     return rst;
-                    //break;
+                //break;
                 case "COLLABSCREENSHARE":        //CollabScreenShare         DDPMW-1843
                     if (commandLineInput.PluginsType.Equals("KEYBOARD"))
                         rst = CLIHandlerPeripheral.CLI_Peripheral_LockUlockWithUserAction(Log, data, _SettingsPluginIT, commandLineInput, command_guid);
@@ -561,7 +561,8 @@ namespace DDPM.SA.Plugin.CLIManager
                 {
                     WriteLog($"Duplicated result from Proxy: ID:{result.command_guid_string}");
                 }
-                Task.Run(() => {
+                Task.Run(() =>
+                {
                     EventHandler<CLIEventResult> handler = CLIActionResult;
                     handler?.Invoke(this, result);
                 });
@@ -1006,13 +1007,13 @@ namespace DDPM.SA.Plugin.CLIManager
         // add @ 20241210 stephen: check defer with toast notification
 
         private List<DeferItem> DeferItems = new List<DeferItem>();
-        private const int MAX_DEFER_WAIT_TIME_SEC = 5;
+        private const int MAX_DEFER_WAIT_TIME_SEC = 300;
         private Dictionary<string, bool> deferResponse = new Dictionary<string, bool>();
 
         public void sendToastResult(string defer_id, bool isDefer)
         {
-            WriteLog("@@stephen CLIManagerPlugin::sendToastResult defer_id = " + defer_id);
-            WriteLog("@@stephen CLIManagerPlugin::sendToastResult isDefer = " + isDefer);
+            WriteLog("@@ CLIManagerPlugin::sendToastResult defer_id = " + defer_id);
+            WriteLog("@@ CLIManagerPlugin::sendToastResult isDefer = " + isDefer);
             if (!deferResponse.ContainsKey(defer_id))
             {
                 deferResponse.Add(defer_id, isDefer);
@@ -1058,21 +1059,21 @@ namespace DDPM.SA.Plugin.CLIManager
             {
                 Thread.Sleep(1000);
                 // check defer response
-                WriteLog("@@stephen CLIManagerPlugin::checkToastResult Sleep(1000)");
-                WriteLog($"@@stephen CLIManagerPlugin::checkToastResult deferResponse.ContainsKey({key}) = " + deferResponse.ContainsKey(key));
+                WriteLog("@@ CLIManagerPlugin::checkToastResult Sleep(1000)");
+                WriteLog($"@@ CLIManagerPlugin::checkToastResult deferResponse.ContainsKey({key}) = " + deferResponse.ContainsKey(key));
 
                 if (deferResponse.ContainsKey(key))
                 {
-                    WriteLog("@@stephen CLIManagerPlugin::checkToastResult deferResponse.ContainsKey " + key);
+                    WriteLog("@@ CLIManagerPlugin::checkToastResult deferResponse.ContainsKey " + key);
                     if (deferResponse[key])
                     {
-                        WriteLog("@@stephen CLIManagerPlugin::checkToastResult deferResponse[did] =  " + deferResponse[key]);
+                        WriteLog("@@ CLIManagerPlugin::checkToastResult deferResponse[did] =  " + deferResponse[key]);
                         deferResponse.Remove(key);
                         // add deferitem to deferControlPanel
                         DeferControlPanel.addToSchedule(item);
                         return true;
                     }
-                    WriteLog("@@stephen CLIManagerPlugin::checkToastResult deferResponse[did]2 =  " + deferResponse[key]);
+                    WriteLog("@@ CLIManagerPlugin::checkToastResult deferResponse[did]2 =  " + deferResponse[key]);
                     deferResponse.Remove(key);
                     break;
                 }
@@ -1120,8 +1121,8 @@ namespace DDPM.SA.Plugin.CLIManager
             EventHandler<CLIEventToastArgs> Handler = CLIToastEvent;
             if (Handler != null)
             {
-                WriteLog($"@@stephen CLIManagerPlugin::onCLIToastEventNotify CLIEventToastArgs e.defer_id = {e.defer_id}");
-                WriteLog($"@@stephen CLIManagerPlugin::onCLIToastEventNotify CLIEventToastArgs e.toast_message = {e.toast_message}");
+                WriteLog($"@@ CLIManagerPlugin::onCLIToastEventNotify CLIEventToastArgs e.defer_id = {e.defer_id}");
+                WriteLog($"@@ CLIManagerPlugin::onCLIToastEventNotify CLIEventToastArgs e.toast_message = {e.toast_message}");
                 Handler.Invoke(this, e);
             }
         }

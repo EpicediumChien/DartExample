@@ -37,6 +37,7 @@ namespace DDPM.SA.Common.Method
 
         // << 250102 added by Hess to change MousePrimaryButton
         private const uint SPI_SETMOUSEBUTTONSWAP = 0x0021;
+        private const uint SPIF_UPDATEINIFILE = 0x0001;
         private const uint SPIF_SENDCHANGE = 0x0002;
         private const int SM_SWAPBUTTON = 0x0017;
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -63,7 +64,7 @@ namespace DDPM.SA.Common.Method
         }
         public static void SetPrimaryButtonToLeft(bool isLeftPrimary)
         {
-            _SystemParametersInfo(SPI_SETMOUSEBUTTONSWAP, (uint)(isLeftPrimary ? 0 : 1), false, SPIF_SENDCHANGE);
+            _SystemParametersInfo(SPI_SETMOUSEBUTTONSWAP, (uint)(isLeftPrimary ? 0 : 1), false, SPIF_UPDATEINIFILE | SPIF_SENDCHANGE);
         }
         // >>
     }

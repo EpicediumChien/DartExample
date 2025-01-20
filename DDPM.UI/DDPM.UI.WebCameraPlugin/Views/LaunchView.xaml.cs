@@ -51,6 +51,8 @@ using MessageBox = System.Windows.MessageBox;
 using WebcamProfile = DDPM.SA.Common.Settings.WebcamProfile;
 using static Windows.Foundation.UniversalApiContract;
 using Dell.Client.Framework.Common;
+using Dell.Client.Framework.UX.WPF;
+using System.Linq.Expressions;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -88,6 +90,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         public Thread status_thread;
         public bool exit_status_thread = false;
+        private IConsole _console;
 
         enum PresenceDetectionView { InternalUPDSupport, MicrosoftHPDSupport, MicrosoftHPDNotSupport }
 
@@ -104,6 +107,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     DdpmCommonHelper.WriteUILog("Webcam ViewModel is null");
                     return;
+                }
+
+                _console = WebCameraplugin.PluginIoc?.GetService<IConsole>()!;
+                if (_console != null)
+                {
+                    _console.RegisterForEvent(ConsoleEventNames.MainWindow_Force_Camera_Unlock, OnWebcamCloseEvent);
+                    DdpmCommonHelper.WriteUILog("[LaunchView] MainWindow_Force_Camera_Unlock event registered");
                 }
 
                 InitializeComponent();
@@ -203,23 +213,36 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     status_thread = new Thread(() =>
                     {
                         DateTime dt = DateTime.Now;
+                        Console.WriteLine("[CAM THREAD START] " + status_thread.Name + " " + dt.ToString("yyyyMMddHHmmssfff"));
+                        status_thread.Name = "t-" + dt.ToString("yyyyMMddHHmmssfff");
                         while (_vm.mre.WaitOne())
                         {
 
                             if (exit_status_thread)
+                            {
+                                Console.WriteLine("[CAM THREAD END] " + status_thread.Name + " " + dt.ToString("yyyyMMddHHmmssfff"));
                                 return;
+                            }
 
                             if (!_vm.IsRecording)
                             {
-                                Dispatcher.Invoke(new Action(() =>
+                                try
                                 {
-                                    status_change();
-                                }));
+                                    Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        status_change();
+                                    }));
+                                }
+                                catch (Exception ex)
+                                {
+                                    return;
+                                }
                             }
 
                             _vm.mre.Reset();
                         }
                     });
+                    _vm.thread_list.Add(status_thread);
                     _vm.mre.Reset();
                     status_thread.Start();
                 }
@@ -237,12 +260,31 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 DdpmCommonHelper.BitmapImageUpdated += ImageUpdate;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView() ex:" + ex.Message);
             }
 
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView() end");
+        }
+
+        private void OnWebcamCloseEvent(object sender, EventManagerArgs e)
+        {
+            DdpmCommonHelper.WriteUILog($"[WebcamPlugin][OnWebcamCloseEvent] event MainWindow_Force_Camera_Unlock received");
+
+            FreeWebcamResource();
+            //if (writeableBitmap != null)
+            //{
+            //    try
+            //    {
+            //        writeableBitmap.Unlock();
+            //        DdpmCommonHelper.WriteUILog($"[WebcamPlugin][OnWebcamCloseEvent] preview unlocked");
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        DdpmCommonHelper.WriteUILog($"[WebcamPlugin][OnWebcamCloseEvent] writeableBitmap.Unlock() exception: {ex.Message}");
+            //    }
+            //}
         }
 
         private void DeviceManagerSA_UIUpdateNotify(object? sender, UpdateUINotify e)
@@ -284,7 +326,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     _vm!.CurrentProfileName = profileName;
                     _vm.IsSettingProfile = true;
-                    _vm.SetProfile();
+                    //Derek 2025/01/18 cancel this action due to it has done by QAM
+                    //_vm.SetProfile();
                     _vm.IsSettingProfile = false;
                     isProfilePropertyChanged = false;
                 }
@@ -295,7 +338,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     btnPreset_Click(this, null);
                 }));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  ChangeProfileByQAM() ex:" + ex.Message);
             }
@@ -1530,10 +1573,21 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         bool in_CameraPlugin = true;
         private async void LaunchView_Unloaded(object sender, RoutedEventArgs e)
         {
+            Console.WriteLine("LaunchView_Unloaded start");
 
-            in_CameraPlugin = false;
-            exit_status_thread = true;
-            _vm?.mre.Set();
+            FreeWebcamResource();
+
+            Console.WriteLine("LaunchView_Unloaded end");
+        }
+
+        private bool _resourcesReleased = false;
+
+        private void ReleaseResources()
+        {
+            if (_resourcesReleased)
+            {
+                return;
+            }
 
             if (DdpmCommonHelper.DeviceManagerSA != null)
             {
@@ -1543,31 +1597,110 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
                 DdpmCommonHelper.DeviceManagerSA.SystemSessionEnd -= DeviceManagerSA_OnSystemSessionEnd;
             }
+
+            _resourcesReleased = true;
+        }
+
+        private async void FreeWebcamResource()
+        {
+            DdpmCommonHelper.WriteUILog("FreeWebcamResource");
+
+            try
+            {
+                DdpmCommonHelper.WriteUILog($"FreeWebcamResource Free PowerEventControl");
+
+                if (_pwr_Mon != null)
+                {
+                    _pwr_Mon.UnRegisterAllHotKey();
+
+                    _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
+                    _pwr_Mon.Close_Event();
+                    //_pwr_Mon = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("PowerEvent Control got exception: " + ex.Message);
+            }
+
+
+            try
+            {
+                in_CameraPlugin = false;
+                exit_status_thread = true;
+                _vm?.mre.Set();
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"FreeWebcamResource got exception 1:{ex.ToString()}");
+            }
+
+            try
+            {
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
+                    DdpmCommonHelper.DeviceManagerSA.SystemSuspend -= DeviceManagerSA_OnSystemSuspend;
+                    DdpmCommonHelper.DeviceManagerSA.SystemResume -= DeviceManagerSA_OnSystemResume;
+                    //DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+                    DdpmCommonHelper.DeviceManagerSA.SystemSessionEnd -= DeviceManagerSA_OnSystemSessionEnd;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"FreeWebcamResource got exception 2:{ex.ToString()}");
+            }
+
+
             try
             {
                 _vm!.MediaFrameReader!.FrameArrived -= MediaFrameReader_FrameArrived;
             }
-            catch (Exception ex)  
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 1: " + ex.Message);
+                DdpmCommonHelper.WriteUILog("Free MediaFrameReader got exception: " + ex.Message);
             }
-            _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
-            _vm.WebcamSettingChanged -= WebcamSettingChanged;
+
+            try
+            {
+                _vm.ProfilePropertyChanged -= ProfilePropertyChanged;
+                _vm.WebcamSettingChanged -= WebcamSettingChanged;
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"FreeWebcamResource got exception 4:{ex.ToString()}");
+            }
+
             try
             {
                 await CleanupMediaCaptureAsync();
-
-                if (_pwr_Mon != null)
-                {
-                    _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
-                    _pwr_Mon.Close_Event();
-                    _pwr_Mon = null;
-                }
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 2: " + ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  FreeWebcamResource()  CleanupMediaCaptureAsync() ex 2: " + ex.Message);
             }
+
+            //try
+            //{
+            //    await CleanupMediaCaptureAsync();
+
+            //    if (_pwr_Mon != null)
+            //    {
+            //        _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
+            //        _pwr_Mon.Close_Event();
+            //        _pwr_Mon = null;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 2: " + ex.Message);
+            //}
+            DdpmCommonHelper.WriteUILog("Webcam LaunchView_Unloaded end");
+            /*if ( _vm?.close_app == true )
+            {
+                Console.WriteLine("force exit");
+                Environment.Exit(0);
+            }*/
             //await _vm.CleanupMediaCapture();
         }
 
@@ -1867,7 +2000,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     });
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog($"MediaFrameReader_FrameArrived Exception occurred 2 : {ex.Message}");
             }
@@ -1954,7 +2087,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             DdpmCommonHelper.WriteUILog($"StartRecord");
 
-            _vm!.IsRecording = true;
+
             _vm.IsMicEnumerationOnEnabled = false;
 
             if (_vm!.WebcamCountdown)
@@ -1977,7 +2110,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void StopRecord()
         {
-            _ = StopRecordingAsync();
+            if (_vm!.IsRecording)
+            {
+                _ = StopRecordingAsync();
+            }
 
         }
         private void Timer_Tick(object? sender, EventArgs e)
@@ -2015,10 +2151,12 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         /// <returns></returns>
         private async Task StartRecordingAsync()
         {
+
             stopwatch.Start();
             RecordingTimer.Start();
             try
             {
+                _vm!.IsRecording = true;
                 //var picturesLibrary = await StorageLibrary.GetLibraryAsync(KnownLibraryId.Pictures);
                 // Fall back to the local app storage if the Pictures Library is not available
                 //_vm._captureFolder = picturesLibrary.SaveFolder ?? ApplicationData.Current.LocalFolder;
@@ -2043,9 +2181,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
+                if (_vm!.IsRecording)
+                    _vm!.IsRecording = false;
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs StartRecordingAsync() : " + ex.Message);
                 // File I/O errors are reported as exceptions
-               // Debug.WriteLine("Exception when starting video recording: " + ex.ToString());
+                // Debug.WriteLine("Exception when starting video recording: " + ex.ToString());
             }
         }
 
@@ -2087,7 +2227,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (_vm.MediaCapture != null)
                     await _vm.MediaCapture.ResumeRecordAsync();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  ResumeRecordingAsync() ex: " + ex.Message);
             }
@@ -2145,31 +2285,39 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         // 20240626 jim add
         private async Task CleanupMediaCaptureAsync()
         {
-            if (_vm!.MediaFrameReader != null)
+
+            try
             {
                 _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
-                try
-                {
-                    await _vm.MediaFrameReader.StopAsync();
-
-                }
-                catch (Exception ex)
-                {
-                    DdpmCommonHelper.WriteUILog($"Error stopping MediaFrameReader: {ex.Message}");
-                }
-
-                try
-                {
-                    if (_vm.MediaFrameReader != null)
-                        _vm.MediaFrameReader.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    DdpmCommonHelper.WriteUILog($"Error Dispose MediaFrameReader: {ex.Message}");
-                }
-
-                _vm.MediaFrameReader = null;
             }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"Error del MediaFrameReader FrameArrived: {ex.Message}");
+            }
+
+            try
+            {
+                await _vm.MediaFrameReader.StopAsync();
+
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"Error stopping MediaFrameReader: {ex.Message}");
+            }
+
+            try
+            {
+                if (_vm.MediaFrameReader != null)
+                {
+                    _vm.MediaFrameReader.Dispose();
+                    _vm.MediaFrameReader = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"Error Dispose MediaFrameReader: {ex.Message}");
+            }
+
             if (_vm!.MediaCapture != null)
             {
                 _vm!.MediaCapture.Dispose();
@@ -2205,9 +2353,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                 StartRecord();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnRecord_Click() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnRecord_Click() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnRecord_Click() end");
         }
@@ -2224,6 +2372,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             try
             {
                 StopRecord();
+
                 RecordingTimer.Stop();
                 stopwatch.Stop();
                 stopwatch.Reset();
@@ -2234,10 +2383,15 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 txtTimer.Visibility = Visibility.Collapsed;
                 txtTimer.Text = "00:00:00";
                 btnPreset.IsEnabled = true;
+                if (_vm!.WebcamCountdown)
+                {
+                    CountDownBox.Visibility = Visibility.Collapsed;
+                    _timer.Stop();
+                }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs UserStopRecord() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs UserStopRecord() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs UserStopRecord() end");
 
@@ -2263,9 +2417,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //Derek 1212
                 DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm!.CurrentProfileName, false);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs ProfileSelected() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs ProfileSelected() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs ProfileSelected() end");
         }
@@ -2319,7 +2473,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnPreset_Click() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnPreset_Click() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnPreset_Click() end");
         }
@@ -2346,9 +2500,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 txtCaption.Text = Strings.EditPreset;
                 _vm.TooltipVisibility = Visibility.Visible;
             }
-            catch ( Exception ex )
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs EditPreset() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs EditPreset() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs EditPreset() end");
         }
@@ -2377,10 +2531,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     _vm.IsSettingProfile = false;
                 }
                 btnPreset_Click(this, null);
+
+                //Derek 2025/01/18
+                DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm.CurrentProfileName, false);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs DeletePreset() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs DeletePreset() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs DeletePreset() end");
         }
@@ -2395,7 +2552,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 btnPause.Visibility = Visibility.Visible;
                 btnPlay.Visibility = Visibility.Collapsed;
             }
-            catch (Exception ex )
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnPlay_Click() ex:" + ex.Message);
             }
@@ -2412,7 +2569,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 btnPause.Visibility = Visibility.Collapsed;
                 btnPlay.Visibility = Visibility.Visible;
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs btnPause_Click() ex:" + ex.Message);
             }
@@ -2534,7 +2691,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs AddPreset() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs AddPreset() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs AddPreset() end");
         }
@@ -2565,9 +2722,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     btnSave.IsEnabled = true;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  NameTextChanged() ex:"+ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  NameTextChanged() ex:" + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  NameTextChanged() end");
         }
@@ -2649,10 +2806,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 _vm.ClearUndo();
                 _vm.EnableVBar();
                 _vm.TooltipVisibility = Visibility.Collapsed;
+
+                //Derek 2025/01/18
+                DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm.CurrentProfileName, false);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  SaveClick() ex: " +ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  SaveClick() ex: " + ex.Message);
             }
             DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  SaveClick() end");
         }
@@ -2809,7 +2969,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void ChangeDevNameWidth()
         {
-            //txtCaption.Width = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
+            txtCaption.MaxWidth = this.ActualWidth - RightGrid.ActualWidth - VbarGrid.ActualWidth - 100;
         }
 
         private void RightFrame_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -2826,7 +2986,19 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             //NarratorModeSupport.RecurseUitems( start) ;
 
-            DdpmCommonHelper.WriteUILog($"Webcam landing page UserControl_Loaded");
+            //Derek 2025/01/17 info QAM select current profile
+            try
+            {
+                //Derek 2025/01/17 
+                //DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile("DDPMSetProfileToCurrent", false);
+                DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile(_vm?.CurrentProfileName, false);
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"UserControl_Loaded catch exception: {ex.Message}");
+            }
+
+            //DdpmCommonHelper.WriteUILog($"Webcam landing page UserControl_Loaded");
         }
     }
 }

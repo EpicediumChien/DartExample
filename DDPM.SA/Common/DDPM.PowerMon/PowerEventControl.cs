@@ -17,6 +17,8 @@ namespace DDPM.PowerMon
         public event EventHandler MonitorTurnedOn = null;
         public event EventHandler SystemSuspend = null;
         public event EventHandler SystemResume = null;
+        public event EventHandler CurrentSessionActived = null;
+        public event EventHandler CurrentSessionInactived = null;
 
         public event EventHandler<KeyPressedEventArgs> HotkeyPressed = null;
 
@@ -109,7 +111,7 @@ namespace DDPM.PowerMon
             _pwr_Mon.MonitorTurnedOn += MonitorEvent_On;
             _pwr_Mon.SystemSuspend += OnSystemSuspend;
             _pwr_Mon.SystemResume += OnSystemResume;
-            _pwr_Mon.ShowDialog();            
+            _pwr_Mon.ShowDialog();
         }
 
         //For monitor event only
@@ -117,12 +119,38 @@ namespace DDPM.PowerMon
         {
             if (_pwr_Mon != null)
             {
-                _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
-                _pwr_Mon.SystemSuspend -= OnSystemSuspend;
-                _pwr_Mon.SystemResume -= OnSystemResume;
-                _pwr_Mon.HotkeyPressed -= HotkeyEvent_Pressed;
-                _pwr_Mon.CloseByCaller();
-                _pwr_Mon = null;
+                try
+                {
+                    _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
+                    _pwr_Mon.SystemSuspend -= OnSystemSuspend;
+                    _pwr_Mon.SystemResume -= OnSystemResume;
+                    _pwr_Mon.HotkeyPressed -= HotkeyEvent_Pressed;
+                    _pwr_Mon.CurrentSessionActived -= OnSessionActived;
+                    _pwr_Mon.CurrentSessionInactived -= OnSessionInactived;
+                    //_pwr_Mon = null;
+
+                    try
+                    {
+                        if (_pwr_Mon != null)
+                        {
+                            _pwr_Mon.CloseByCaller();
+                            _pwr_Mon = null;
+                        }
+                    }
+                    catch (Exception ex2)
+                    {
+                        writelog("Close Event got exception: " + ex2.Message, log_type.error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    writelog("Close Event got exception2: " + ex.Message, log_type.error);
+
+                }
+                finally
+                {
+                    GC.Collect();
+                }
             }
         }
 
@@ -150,6 +178,42 @@ namespace DDPM.PowerMon
             }
             _pwr_Mon.HotkeyPressed += HotkeyEvent_Pressed;
             _pwr_Mon.Enable_HotkeyHook();
+        }
+
+        public void Enable_SessionEvent()
+        {
+            if (_pwr_Mon == null)
+            {
+                _pwr_Mon = new PowerMonitor(_log);
+            }
+            _pwr_Mon.CurrentSessionActived += OnSessionActived;
+            _pwr_Mon.CurrentSessionInactived += OnSessionInactived;
+
+            if (!_pwr_Mon.isWindowLoaded)
+                _pwr_Mon.ShowDialog();
+        }
+
+        private void OnSessionInactived(object? sender, EventArgs e)
+        {
+            if (CurrentSessionInactived != null)
+                CurrentSessionInactived.Invoke(this, EventArgs.Empty);
+            writelog("GOT Session Inactived EVENT");
+        }
+
+        private void OnSessionActived(object? sender, EventArgs e)
+        {
+            if (CurrentSessionActived != null)
+                CurrentSessionActived.Invoke(this, EventArgs.Empty);
+            writelog("GOT Session Actived EVENT");
+        }
+
+        public void Close_SessionEvent()
+        {
+            if (_pwr_Mon != null)
+            {
+                _pwr_Mon.CurrentSessionActived -= OnSessionActived;
+                _pwr_Mon.CurrentSessionInactived -= OnSessionInactived;
+            }
         }
     }
 }

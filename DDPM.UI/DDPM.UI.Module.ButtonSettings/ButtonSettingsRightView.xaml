@@ -61,7 +61,7 @@
                         <Border Name="bdrSuggested" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,16,0,0" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave">
                             <StackPanel>
                                 <Grid>
-                                    <UXControls:UXTextBlock Name="txtSuggestedActions" Style="{StaticResource ActionsTextBlockStyle}" />
+                                    <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" MaxWidth="240" Name="txtSuggestedActions" Style="{StaticResource ActionsTextBlockStyle}" />
                                     <Image x:Name="imgSuggested" Source="{DynamicResource down_Expand}"  MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
                                            Style="{StaticResource ActionArrowStyle}" Margin="0,19,15,19">
                                         <Image.RenderTransform>
@@ -97,7 +97,7 @@
                         <Border Name="bdrProductivity" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,16,0,0" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave">
                             <StackPanel>
                                 <Grid>
-                                    <UXControls:UXTextBlock Name="txtProductivityActions" Style="{StaticResource ActionsTextBlockStyle}" />
+                                    <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" MaxWidth="240" Name="txtProductivityActions" Style="{StaticResource ActionsTextBlockStyle}" />
                                     <Image x:Name="imgProductivity" Source="{DynamicResource down_Expand}" MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
                                            Style="{StaticResource ActionArrowStyle}" Margin="0,19,15,19">
                                         <Image.RenderTransform>
@@ -139,7 +139,7 @@
                         <Border Name="bdrWindows" Style="{StaticResource ActionsBorderStyle}" MouseLeftButtonDown="SectionBorderClick" Margin="0,16,0,0" MouseEnter="SectionBorderMouseEnter" MouseLeave="SectionBorderMouseLeave">
                             <StackPanel>
                                 <Grid>
-                                    <UXControls:UXTextBlock Name="txtWindowsActions" Style="{StaticResource ActionsTextBlockStyle}" />
+                                    <UXControls:UXTextBlock TextTrimming="CharacterEllipsis" MaxWidth="240" Name="txtWindowsActions" Style="{StaticResource ActionsTextBlockStyle}" />
                                     <Image x:Name="imgWindows" Source="{DynamicResource down_Expand}" MouseLeftButtonDown="SectionButtonClick" HorizontalAlignment="Right" VerticalAlignment="Top"
                                            Style="{StaticResource ActionArrowStyle}" Margin="0,19,15,19">
                                         <Image.RenderTransform>

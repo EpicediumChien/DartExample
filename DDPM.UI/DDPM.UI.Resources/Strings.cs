@@ -20,7 +20,7 @@ namespace DDPM.UI.Common
 #if MULTILINGUAL_TEST
             //Robert_Lin 2025-1-13 To do multilingual test, please remove below comments
             //
-            CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("pt-PT");
+            CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("uk");
             string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
 #else
             //And comment-out below line
@@ -258,7 +258,7 @@ namespace DDPM.UI.Common
         public static readonly string PanHoldAndMoveMouse = GetString("Excel.9");
         public static readonly string PasteFormatOnly = GetString("Excel.10");
         public static readonly string PasteFormulas = GetString("Excel.11");
-        public static readonly string PasteValueOnly = GetString("Excel.12");
+        public static readonly string PasteValuesOnly = GetString("Excel.12");
         public static readonly string PreviousSheet = GetString("Excel.13");
         public static readonly string SortAtoZ = GetString("Excel.14");
 

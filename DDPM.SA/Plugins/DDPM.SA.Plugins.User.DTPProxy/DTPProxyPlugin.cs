@@ -91,7 +91,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private MethodInfo _webcamMethodInfo;
         private MethodInfo _dongleMethodInfo;
 
-        private ItemId _itemID;
+        private ItemId _itemID = null;
         private ICommodity _comdity;
         private const string GlobalPeripheralItemID = "DellPeripheral.GlobalPeripheral";
         private const string PenItemID = "DellPeripheral.Pen";
@@ -2873,78 +2873,88 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 return false;
             }
         }
-        public async Task SetBrightness(string Guid, int newValue)
+        public async Task<bool> SetBrightness(string Guid, int newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return;
+                
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_webcamInterfaceType, commodity, "Brightness", newValue);
+                return SetPropertyValue(_webcamInterfaceType, commodity, "Brightness", newValue);
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+
+                return false;
             }
         }
-        public async Task SetSharpness(string Guid, int newValue)
+        public async Task<bool> SetSharpness(string Guid, int newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return;
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_webcamInterfaceType, commodity, "Sharpness", newValue);
+                return SetPropertyValue(_webcamInterfaceType, commodity, "Sharpness", newValue);
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+
+                return false;
             }
         }
-        public async Task SetContrast(string Guid, int newValue)
+        public async Task<bool> SetContrast(string Guid, int newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                return;
+                
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_webcamInterfaceType, commodity, "Contrast", newValue);
+                return SetPropertyValue(_webcamInterfaceType, commodity, "Contrast", newValue);
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+
+                return false;
             }
         }
-        public async Task SetSaturation(string Guid, int newValue)
+        public async Task<bool> SetSaturation(string Guid, int newValue)
         {
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
 
-                return;
+                return false;
             }
 
             if (await GetCommodityInterfaceInstanceAsync(_webcamMethodInfo) is ICommodity commodity)
             {
-                SetPropertyValue(_webcamInterfaceType, commodity, "Saturation", newValue);
+                return SetPropertyValue(_webcamInterfaceType, commodity, "Saturation", newValue);
             }
             else
             {
                 Debug.WriteLine($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
                 writelog($"Could not retrieve the Commodity Interface {_webcamInterfaceType} for the {_itemID} item.");
+
+                return false;
             }
         }
         public async Task SetAntiFlicker(string Guid, int newValue)
@@ -10911,9 +10921,28 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private bool SetPropertyValue(Type interfaceType, ICommodity commodity, string property, object value)
         {
-            Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {value ?? ""}");
+            if (_itemID != null)
+            {
+                try
+                {
+                    writelog($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {JsonConvert.SerializeObject(value)}");
+                }
+                catch (Exception ex)
+                {
+                    writelog($"SetPropertyValue got Exception: {ex.ToString()}");
+                }
+            }
+            else
+            {
+                writelog($"SetPropertyValue _itemID is null (object)");
+            }
+
+
             if (!IsDTPReady)
+            {
+                writelog($"SetPropertyValue IsDTPReady: {IsDTPReady}");
                 return false;
+            }
 
             try
             {
@@ -10922,14 +10951,31 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             catch (Exception ex)
             {
-                writelog($"Error while setting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
+                var itemId = _itemID != null ? _itemID.ToString() : "null";
+                writelog($"Error while setting {interfaceType}.{property} on item \"{itemId}\".\n{ex} (object)");
+
                 return false;
             }
         }
 
         private bool SetPropertyValue(Type interfaceType, ICommodity commodity, string property, byte[] value)
         {
-            Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {Encoding.UTF8.GetString(value)}");
+            if (_itemID != null)
+            {
+                try
+                {
+                    writelog($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {JsonConvert.SerializeObject(value)}");
+                }
+                catch (Exception ex)
+                {
+                    writelog($"SetPropertyValue got Exception: {ex.ToString()}");
+                }
+            }
+            else
+            {
+                writelog($"SetPropertyValue _itemID is null (byte[])");
+            }
+
             if (!IsDTPReady)
                 return false;
 
@@ -10940,7 +10986,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             catch (Exception ex)
             {
-                writelog($"Error while setting {interfaceType}.{property} on item \"{_itemID}\".\n{ex}");
+                var itemId = _itemID != null ? _itemID.ToString() : "null";
+                writelog($"Error while setting {interfaceType}.{property} on item \"{itemId}\".\n{ex} -- (byte[])");
                 return false;
             }
         }

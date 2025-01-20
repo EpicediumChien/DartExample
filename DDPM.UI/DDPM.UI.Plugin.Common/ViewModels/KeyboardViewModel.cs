@@ -121,7 +121,42 @@ namespace DDPM.UI.Plugin.ViewModels
                 return false;
 
             if (!IsCopilotEnabled)
+            {
+                DdpmCommonHelper.WriteUILog($"[KeyboardViewModel] RemoveCopilotAction() : {IsCopilotEnabled}");
                 RemoveCopilotAction();
+            }
+
+            try
+            {
+                if (CurrentDeviceInfo == null)
+                {
+                    DdpmCommonHelper.WriteUILog("[KeyboardViewModel] CurrentDeviceInfo is null.");
+                    return false;
+                }
+
+                DdpmCommonHelper.WriteUILog($"[KeyboardViewModel] CurrentDeviceInfo : {JsonConvert.SerializeObject(CurrentDeviceInfo)}");
+
+                if (DdpmCommonHelper.DeviceManagerSA == null)
+                {
+                    DdpmCommonHelper.WriteUILog("[KeyboardViewModel] DeviceManagerSA is null.");
+                    return false;
+                }
+
+                if (deviceID == null)
+                {
+                    DdpmCommonHelper.WriteUILog("[KeyboardViewModel] deviceID is null.");
+                    return false;
+                }
+
+                Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA.GetKbProgrammableKeys(deviceID.ToString());
+                var jArray = JArray.FromObject(task1.Result);
+                DdpmCommonHelper.WriteUILog($"[KeyboardViewModel] CurrentDeviceInfo : {JsonConvert.SerializeObject(jArray)}");
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[KeyboardViewModel] Exception : {ex}");
+            }
+
 
             InitializeKey();
             if (CurrentDeviceInfo!.IsCollabsKeysSupported)
@@ -232,10 +267,12 @@ namespace DDPM.UI.Plugin.ViewModels
                                 break;
 
                             case "BackLightingLevelChanged":
-                                BackLightingLevel = di.BackLightingLevel;
+                                _backLightingLevel = di.BackLightingLevel;
+                                OnPropertyChanged(nameof(BackLightingLevel));
                                 break;
                             case "CollaborationScreenShareEnable":
-                                IsCollaborationScreenShareEnable = di.IsCollaborationScreenShareEnable;
+                                _isCollaborationScreenShareEnable = di.IsCollaborationScreenShareEnable;
+                                OnPropertyChanged(nameof(IsCollaborationScreenShareEnable));
                                 break;
 
                             default:
@@ -261,8 +298,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     TabManualFocused = false;
                     IsSliderVisible = false;
                     value = 1;
-                    if (NeedSetting)
-                        BackLightingLevel = 0;
+                    // << 250107 updated by Hess to fix PIMS-340197
+                    //if (NeedSetting)
+                    //    BackLightingLevel = 0;
+                    // >>
                     break;
 
                 case 1:
@@ -1236,10 +1275,11 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private bool isBatteryUnavailable { get; set; } = false;
 
-        public bool IsBatteryUnavailable 
+        public bool IsBatteryUnavailable
         {
             get { return isBatteryUnavailable; }
-            set {
+            set
+            {
                 isBatteryUnavailable = value;
                 OnPropertyChanged(nameof(IsBatteryUnavailable));
             }

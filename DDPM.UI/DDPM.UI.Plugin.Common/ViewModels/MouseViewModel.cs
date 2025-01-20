@@ -128,53 +128,60 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         private void SwitchPollingRate(int index, int hz = 0, bool NeedSetting = false)
         {
-            switch (index)
+            try
             {
-                case 0:
-                    Hz125Focused = true;
-                    Hz250Focused = false;
-                    Hz333Focused = false;
-                    OnPropertyChanged(nameof(Hz125Focused));
-                    OnPropertyChanged(nameof(Hz250Focused));
-                    OnPropertyChanged(nameof(Hz333Focused));
-                    break;
+                switch (index)
+                {
+                    case 0:
+                        Hz125Focused = true;
+                        Hz250Focused = false;
+                        Hz333Focused = false;
+                        OnPropertyChanged(nameof(Hz125Focused));
+                        OnPropertyChanged(nameof(Hz250Focused));
+                        OnPropertyChanged(nameof(Hz333Focused));
+                        break;
 
-                case 1:
-                    Hz125Focused = false;
-                    Hz250Focused = true;
-                    Hz333Focused = false;
-                    OnPropertyChanged(nameof(Hz125Focused));
-                    OnPropertyChanged(nameof(Hz250Focused));
-                    OnPropertyChanged(nameof(Hz333Focused));
-                    break;
+                    case 1:
+                        Hz125Focused = false;
+                        Hz250Focused = true;
+                        Hz333Focused = false;
+                        OnPropertyChanged(nameof(Hz125Focused));
+                        OnPropertyChanged(nameof(Hz250Focused));
+                        OnPropertyChanged(nameof(Hz333Focused));
+                        break;
 
-                case 2:
-                    Hz125Focused = false;
-                    Hz250Focused = false;
-                    Hz333Focused = true;
-                    OnPropertyChanged(nameof(Hz125Focused));
-                    OnPropertyChanged(nameof(Hz250Focused));
-                    OnPropertyChanged(nameof(Hz333Focused));
-                    break;
+                    case 2:
+                        Hz125Focused = false;
+                        Hz250Focused = false;
+                        Hz333Focused = true;
+                        OnPropertyChanged(nameof(Hz125Focused));
+                        OnPropertyChanged(nameof(Hz250Focused));
+                        OnPropertyChanged(nameof(Hz333Focused));
+                        break;
 
-                case 3:
-                    Hz133Focused = true;
-                    Hz250Focused = false;
-                    OnPropertyChanged(nameof(Hz133Focused));
-                    OnPropertyChanged(nameof(Hz250Focused));
-                    OnPropertyChanged(nameof(Hz333Focused));
-                    break;
+                    case 3:
+                        Hz133Focused = true;
+                        Hz250Focused = false;
+                        OnPropertyChanged(nameof(Hz133Focused));
+                        OnPropertyChanged(nameof(Hz250Focused));
+                        OnPropertyChanged(nameof(Hz333Focused));
+                        break;
 
-                case 4:
-                    Hz133Focused = false;
-                    Hz250Focused = true;
-                    OnPropertyChanged(nameof(Hz133Focused));
-                    OnPropertyChanged(nameof(Hz250Focused));
-                    break;
+                    case 4:
+                        Hz133Focused = false;
+                        Hz250Focused = true;
+                        OnPropertyChanged(nameof(Hz133Focused));
+                        OnPropertyChanged(nameof(Hz250Focused));
+                        break;
+                }
+                if (NeedSetting)
+                {
+                    DdpmCommonHelper.DeviceManagerSA!.SetReportRate(CurrentDeviceInfo!.ID.ToString(), hz);
+                }
             }
-            if (NeedSetting)
+            catch (Exception ex)
             {
-                DdpmCommonHelper.DeviceManagerSA!.SetReportRate(CurrentDeviceInfo!.ID.ToString(), hz);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs MouseSettingsRightView ex:" + ex.Message);
             }
         }
 
@@ -184,29 +191,43 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void PrepareDeviceInfo(List<DeviceInfo> deviceInfos)
         {
-            DeviceInfos.Clear();
-            foreach (DeviceInfo deviceInfo in deviceInfos)
+            try
             {
-                if ((deviceInfo.LogicalDeviceType.Contains("Mouse") || EOLMouseList.Contains(deviceInfo.ModelNumber)) && !DeviceInfos.ContainsKey(deviceInfo.ID))
+                DeviceInfos.Clear();
+                foreach (DeviceInfo deviceInfo in deviceInfos)
                 {
-                    DeviceInfos.Add(deviceInfo.ID, deviceInfo);
+                    if ((deviceInfo.LogicalDeviceType.Contains("Mouse") || EOLMouseList.Contains(deviceInfo.ModelNumber)) && !DeviceInfos.ContainsKey(deviceInfo.ID))
+                    {
+                        DeviceInfos.Add(deviceInfo.ID, deviceInfo);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs PrepareDeviceInfo ex:" + ex.Message);
             }
         }
 
         public void RemoveCopilotAction()
         {
-            var btn = SelectedButton;
-            foreach (var ba in MouseAction.ButtonActions)
+            try
             {
-                if (ba.Value.AssignedAction.ID == 1)
+                var btn = SelectedButton;
+                foreach (var ba in MouseAction.ButtonActions)
                 {
-                    SelectedButton = ba.Key.ToString();
-                    UpdateAction(ba.Value.DefaultActionID, "", false);
+                    if (ba.Value.AssignedAction.ID == 1)
+                    {
+                        SelectedButton = ba.Key.ToString();
+                        UpdateAction(ba.Value.DefaultActionID, "", false);
+                    }
                 }
+                SelectedButton = btn;
+                InitializeButton();
             }
-            SelectedButton = btn;
-            InitializeButton();
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs RemoveCopilotAction ex:" + ex.Message);
+            }
         }
 
 
@@ -313,48 +334,56 @@ namespace DDPM.UI.Plugin.ViewModels
         public MouseActions MouseAction = new();
         private void InitializeButton()
         {
-            //Model = "MS355";
-            //Model = "MS700";
-            //Model = "MS900";
-            //Model = "MS7421W";
-            //Model = "MS300";
-            //Model = "MS5120W";
-            //Model = "MS3220";
-            //Model = "MS5320W";
-            //Model = "MS3320W";
-            //Model = "WM126";
-            //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
 
-            //MouseAction = (MouseActions)ActionList.ImportActionList(eDeviceCategory.Mouse, Model, CurrentInstanceID);
-            MouseAction = (MouseActions)ActionList.ImportActionList(eDeviceCategory.Mouse, Model, CurrentDeviceID.ToString());
-
-            foreach (var kvp in MouseAction.ButtonActions)
+            try
             {
-                if (kvp.Value.AssignedAction.ID > 400)
-                {
-                    if (OutlookVisibility == Visibility.Collapsed)
-                    { kvp.Value.AssignedAction.ID = kvp.Value.DefaultActionID; }
-                }
-                else if (kvp.Value.AssignedAction.ID > 300)
-                {
-                    if (PowerPointVisibility == Visibility.Collapsed)
-                    { kvp.Value.AssignedAction.ID = kvp.Value.DefaultActionID; }
-                }
-                else if (kvp.Value.AssignedAction.ID > 200)
-                {
-                    if (ExcelVisibility == Visibility.Collapsed)
-                    { kvp.Value.AssignedAction.ID = kvp.Value.DefaultActionID; }
-                }
-                else if (kvp.Value.AssignedAction.ID > 100)
-                {
-                    if (WordVisibility == Visibility.Collapsed)
-                    { kvp.Value.AssignedAction.ID = kvp.Value.DefaultActionID; }
-                }
-                RefreshButtonImageFile(kvp.Key.ToString());
-            }
+                //Model = "MS355";
+                //Model = "MS700";
+                //Model = "MS900";
+                //Model = "MS7421W";
+                //Model = "MS300";
+                //Model = "MS5120W";
+                //Model = "MS3220";
+                //Model = "MS5320W";
+                //Model = "MS3320W";
+                //Model = "WM126";
+                //ImageFilePath = $"/DDPM.UI.Resources;component/Resources/Images/{Model}.png";
 
-            CheckRestoreStatus();
-            //OnPropertyChanged(nameof(IsRestoreEnable));
+                //MouseAction = (MouseActions)ActionList.ImportActionList(eDeviceCategory.Mouse, Model, CurrentInstanceID);
+                MouseAction = (MouseActions)ActionList.ImportActionList(eDeviceCategory.Mouse, Model, CurrentDeviceID.ToString());
+
+                foreach (var kvp in MouseAction.ButtonActions)
+                {
+                    if (kvp.Value.AssignedAction.ID > 400)
+                    {
+                        if (OutlookVisibility == Visibility.Collapsed)
+                        { kvp.Value.AssignedAction.ID = kvp.Value.DefaultActionID; }
+                    }
+                    else if (kvp.Value.AssignedAction.ID > 300)
+                    {
+                        if (PowerPointVisibility == Visibility.Collapsed)
+                        { kvp.Value.AssignedAction.ID = kvp.Value.DefaultActionID; }
+                    }
+                    else if (kvp.Value.AssignedAction.ID > 200)
+                    {
+                        if (ExcelVisibility == Visibility.Collapsed)
+                        { kvp.Value.AssignedAction.ID = kvp.Value.DefaultActionID; }
+                    }
+                    else if (kvp.Value.AssignedAction.ID > 100)
+                    {
+                        if (WordVisibility == Visibility.Collapsed)
+                        { kvp.Value.AssignedAction.ID = kvp.Value.DefaultActionID; }
+                    }
+                    RefreshButtonImageFile(kvp.Key.ToString());
+                }
+
+                CheckRestoreStatus();
+                //OnPropertyChanged(nameof(IsRestoreEnable));
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs InitializeButton ex:" + ex.Message);
+            }
         }
 
         public Visibility WordVisibility { get; set; } = Visibility.Collapsed;
@@ -364,145 +393,167 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool IsRestoreEnable { get; set; } = true;
         public void CheckRestoreStatus()
         {
-            IsRestoreEnable = false;
-            foreach (var btnAction in MouseAction.ButtonActions.Values)
+            try
             {
-                if (SelectedApp == "AllApp")
+                IsRestoreEnable = false;
+                foreach (var btnAction in MouseAction.ButtonActions.Values)
                 {
-                    if (btnAction.DefaultActionID != btnAction.AssignedAction.ID)
+                    if (SelectedApp == "AllApp")
                     {
-                        IsRestoreEnable = true;
-                        break;
+                        if (btnAction.DefaultActionID != btnAction.AssignedAction.ID)
+                        {
+                            IsRestoreEnable = true;
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (btnAction.OfficeActions[SelectedApp] != -1)
+                        {
+                            IsRestoreEnable = true;
+                            break;
+                        }
                     }
                 }
-                else
-                {
-                    if (btnAction.OfficeActions[SelectedApp] != -1)
-                    {
-                        IsRestoreEnable = true;
-                        break;
-                    }
-                }
+                OnPropertyChanged(nameof(IsRestoreEnable));
+                OnPropertyChanged(nameof(RestoreToDefaultText));
             }
-            OnPropertyChanged(nameof(IsRestoreEnable));
-            OnPropertyChanged(nameof(RestoreToDefaultText));
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs CheckRestoreStatus() ex:" + ex.Message);
+            }
         }
         public void RefreshButtonImageFile(string btnName, bool IsHover = false, bool IsSelected = false)
         {
-            MouseButtonName _btnName = (MouseButtonName)Enum.Parse(typeof(MouseButtonName), btnName, true);
-            var property = typeof(MouseViewModel).GetProperty($"{btnName}ImageFile");
-            var btnType = _btnName switch
+            try
             {
-                MouseButtonName.ScrollTiltLeft => 2,
-                MouseButtonName.ScrollTiltRight => 3,
-                MouseButtonName.SideButtonForward => 4,
-                MouseButtonName.SideButtonBack => 4,
-                _ => 1
-            };
+                MouseButtonName _btnName = (MouseButtonName)Enum.Parse(typeof(MouseButtonName), btnName, true);
+                var property = typeof(MouseViewModel).GetProperty($"{btnName}ImageFile");
+                var btnType = _btnName switch
+                {
+                    MouseButtonName.ScrollTiltLeft => 2,
+                    MouseButtonName.ScrollTiltRight => 3,
+                    MouseButtonName.SideButtonForward => 4,
+                    MouseButtonName.SideButtonBack => 4,
+                    _ => 1
+                };
 
-            var action = MouseAction.ButtonActions[_btnName];
-            if ((SelectedApp == "AllApp" && action.AssignedAction.ID == action.DefaultActionID)
-              || (SelectedApp != "AllApp" && action.OfficeActions[SelectedApp] == -1))
-            {
-                if (IsSelected)
+                var action = MouseAction.ButtonActions[_btnName];
+                if ((SelectedApp == "AllApp" && action.AssignedAction.ID == action.DefaultActionID)
+                  || (SelectedApp != "AllApp" && action.OfficeActions[SelectedApp] == -1))
                 {
-                    property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}5.png");
-                }
-                else
-                {
-                    if (IsHover)
+                    if (IsSelected)
                     {
-                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}2.png");
+                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}5.png");
                     }
                     else
                     {
-                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}1.png");
+                        if (IsHover)
+                        {
+                            property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}2.png");
+                        }
+                        else
+                        {
+                            property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}1.png");
+                        }
                     }
-                }
-            }
-            else
-            {
-                if (IsSelected)
-                {
-                    property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}6.png");
                 }
                 else
                 {
-                    if (IsHover)
+                    if (IsSelected)
                     {
-                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}4.png");
+                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}6.png");
                     }
                     else
                     {
-                        property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}3.png");
+                        if (IsHover)
+                        {
+                            property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}4.png");
+                        }
+                        else
+                        {
+                            property!.SetValue(this, $"/DDPM.UI.Resources;component/Resources/Images/MButton{btnType}3.png");
+                        }
                     }
                 }
+                var a = property.GetValue(this);
+                OnPropertyChanged(property!.Name);
             }
-            var a = property.GetValue(this);
-            OnPropertyChanged(property!.Name);
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs RefreshButtonImageFile ex:" + ex.Message);
+            }
         }
 
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
-            base.HandleNotification(changeType, di, property);
-
-            switch (changeType)
+            try
             {
-                case DeviceChangedType.Peripherals_SettingsChange:
-                    if (di.ModelNumber == Model && property == "RestoreToDefault")
-                        ResetAction();
+                base.HandleNotification(changeType, di, property);
 
-                    if (di.ID == CurrentDeviceID)
-                    {
-                        CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
-                        switch (property)
+                switch (changeType)
+                {
+                    case DeviceChangedType.Peripherals_SettingsChange:
+                        if (di.ModelNumber == Model && property == "RestoreToDefault")
+                            ResetAction();
+
+                        if (di.ID == CurrentDeviceID)
                         {
-                            case "MousePrimaryButtonChanged":
-                                PrimaryButtonIndex = di.MousePrimaryButton == MouseButton.Left ? 0 : 1;
-                                break;
+                            CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
+                            switch (property)
+                            {
+                                case "MousePrimaryButtonChanged":
+                                    _primaryButtonIndex = di.MousePrimaryButton == MouseButton.Left ? 0 : 1;
+                                    OnPropertyChanged(nameof(PrimaryButtonIndex));
+                                    break;
 
-                            case "TouchScrollSensitivityLevelChanged":
-                                TouchScrollSensitivityLevel = di.TouchScrollSensitivityLevel;
-                                break;
+                                case "TouchScrollSensitivityLevelChanged":
+                                    TouchScrollSensitivityLevel = di.TouchScrollSensitivityLevel;
+                                    break;
 
-                            case "DpiValueChanged":
-                                if (!di.IsDPIValueChangePending)
-                                {
-                                    if (int.TryParse(di.DpiValue, out int v) && !IsSliderDragging)
-                                        DPIValue = v;
+                                case "DpiValueChanged":
+                                    if (!di.IsDPIValueChangePending)
+                                    {
+                                        if (int.TryParse(di.DpiValue, out int v) && !IsSliderDragging)
+                                            DPIValue = v;
 
-                                    CurrentDeviceInfo.DpiValue = di.DpiValue;
-                                }
-                                break;
-                            case "DpiLevelChanged":
-                                if (!di.IsDPILevelChangePending && !IsSliderDragging)
-                                {
-                                    DPIValue = di.DpiLevel;
-                                    CurrentDeviceInfo.DpiLevel = di.DpiLevel;
-                                }
-                                break;
+                                        CurrentDeviceInfo.DpiValue = di.DpiValue;
+                                    }
+                                    break;
+                                case "DpiLevelChanged":
+                                    if (!di.IsDPILevelChangePending && !IsSliderDragging)
+                                    {
+                                        DPIValue = di.DpiLevel;
+                                        CurrentDeviceInfo.DpiLevel = di.DpiLevel;
+                                    }
+                                    break;
 
-                            case "BatteryLevelChanged":
-                                OnPropertyChanged(nameof(IsDPIEnalble));
-                                break;
-                            case "DPILevelChangePendingChanged":
-                            case "DPIValueChangePendingChanged":
-                                isDpiChangePanding = di.IsDPILevelChangePending || di.IsDPIValueChangePending;
-                                if (!isDpiChangePanding)
-                                    SetDPIValue();
+                                case "BatteryLevelChanged":
+                                    OnPropertyChanged(nameof(IsDPIEnalble));
+                                    break;
+                                case "DPILevelChangePendingChanged":
+                                case "DPIValueChangePendingChanged":
+                                    isDpiChangePanding = di.IsDPILevelChangePending || di.IsDPIValueChangePending;
+                                    if (!isDpiChangePanding)
+                                        SetDPIValue();
 
-                                OnPropertyChanged(nameof(DpiChangePandingVisibility));
-                                break;
+                                    OnPropertyChanged(nameof(DpiChangePandingVisibility));
+                                    break;
 
-                            default:
-                                break;
+                                default:
+                                    break;
+                            }
+                            GenerateInfo();
                         }
-                        GenerateInfo();
-                    }
-                    break;
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs HandleNotification ex:" + ex.Message);
             }
         }
 
@@ -522,18 +573,25 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _touchScrollSensitivityLevel;
             set
             {
-                if (_touchScrollSensitivityLevel != value)
+                try
                 {
-                    _touchScrollSensitivityLevel = value;
-                    if (value == 1)
-                        IsMediumVisible = 1;
-                    else
-                        IsMediumVisible = 0;
+                    if (_touchScrollSensitivityLevel != value)
+                    {
+                        _touchScrollSensitivityLevel = value;
+                        if (value == 1)
+                            IsMediumVisible = 1;
+                        else
+                            IsMediumVisible = 0;
 
-                    if (!IsSliderDragging)
-                        SetTouchScrollSensitivityLevel();
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(IsMediumVisible));
+                        if (!IsSliderDragging)
+                            SetTouchScrollSensitivityLevel();
+                        OnPropertyChanged();
+                        OnPropertyChanged(nameof(IsMediumVisible));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs ButtonCollection set ex:" + ex.Message);
                 }
             }
         }
@@ -626,34 +684,48 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _DPIValue;
             set
             {
-                var digit = (int)Math.Log10(value);
-                DPITextMargin = new double[] { (double)(value - DPIMin) / (double)(DPIMax - DPIMin) * 365.0 + 62 - (double)digit * 5, 0, 0, 1 };//SDL, change to use new
-                DPIValueText = CurrentDeviceInfo!.IsDPIValueSupported ? value.ToString() : value < CurrentDeviceInfo.DpiLevelValues.Length ? CurrentDeviceInfo.DpiLevelValues[value - 1] : "";
-                if (value == DPIMax || value == DPIMin || value == -1)
+                try
                 {
-                    DPIValueText = "";
+                    var digit = (int)Math.Log10(value);
+                    DPITextMargin = new double[] { (double)(value - DPIMin) / (double)(DPIMax - DPIMin) * 365.0 + 62 - (double)digit * 5, 0, 0, 1 };//SDL, change to use new
+                    DPIValueText = CurrentDeviceInfo!.IsDPIValueSupported ? value.ToString() : value < CurrentDeviceInfo.DpiLevelValues.Length ? CurrentDeviceInfo.DpiLevelValues[value - 1] : "";
+                    if (value == DPIMax || value == DPIMin || value == -1)
+                    {
+                        DPIValueText = "";
+                    }
+                    if (_DPIValue != value)
+                    {
+                        _DPIValue = value;
+                        if (!IsSliderDragging)
+                            SetDPIValue();
+                        OnPropertyChanged();
+                    }
+                    OnPropertyChanged(nameof(DPITextMargin));
+                    OnPropertyChanged(nameof(DPIValueText));
                 }
-                if (_DPIValue != value)
+                catch (Exception ex)
                 {
-                    _DPIValue = value;
-                    if (!IsSliderDragging)
-                        SetDPIValue();
-                    OnPropertyChanged();
+                    DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs DPIValue set ex:" + ex.Message);
                 }
-                OnPropertyChanged(nameof(DPITextMargin));
-                OnPropertyChanged(nameof(DPIValueText));
             }
         }
         public string DPIValueText { get; set; } = "";
         public double[] DPITextMargin { get; set; } = { 0 };//SDL, change to use array
         public void SetDPIValue()
         {
-            if (_DPIValue != int.Parse(CurrentDeviceInfo!.DpiValue) && !isDpiChangePanding)
+            try
             {
-                if (CurrentDeviceInfo.IsDPIValueSupported)
-                    DdpmCommonHelper.DeviceManagerSA!.SetDPIValue(_DPIValue, CurrentDeviceInfo.ID);
-                if (CurrentDeviceInfo.IsDPILevelSupported)
-                    DdpmCommonHelper.DeviceManagerSA!.SetDPILevel(_DPIValue, CurrentDeviceInfo.ID);
+                if (_DPIValue != int.Parse(CurrentDeviceInfo!.DpiValue) && !isDpiChangePanding)
+                {
+                    if (CurrentDeviceInfo.IsDPIValueSupported)
+                        DdpmCommonHelper.DeviceManagerSA!.SetDPIValue(_DPIValue, CurrentDeviceInfo.ID);
+                    if (CurrentDeviceInfo.IsDPILevelSupported)
+                        DdpmCommonHelper.DeviceManagerSA!.SetDPILevel(_DPIValue, CurrentDeviceInfo.ID);
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs SetDPIValue set ex:" + ex.Message);
             }
         }
         public bool IsReportRateSupported { get; set; }
@@ -671,26 +743,33 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public bool RestoreToDefault()
         {
-            if (DdpmCommonHelper.DeviceManagerSA == null || !DdpmCommonHelper.DeviceManagerSA.RestoreToDefaultMouse(CurrentDeviceID.ToString(), false).Result)
-                return false;
-            DdpmCommonHelper.DeviceManagerSA!.DeleteMouseAllAssignedActions(CurrentDeviceID.ToString());
-            foreach (var btn in MouseAction.ButtonActions)
+            try
             {
-                if (SelectedApp == "AllApp")
+                if (DdpmCommonHelper.DeviceManagerSA == null || !DdpmCommonHelper.DeviceManagerSA.RestoreToDefaultMouse(CurrentDeviceID.ToString(), false).Result)
+                    return false;
+                DdpmCommonHelper.DeviceManagerSA!.DeleteMouseAllAssignedActions(CurrentDeviceID.ToString());
+                foreach (var btn in MouseAction.ButtonActions)
                 {
-                    btn.Value.AssignedAction.ID = btn.Value.DefaultActionID;
-                    btn.Value.AssignedAction.Parameter = string.Empty;
+                    if (SelectedApp == "AllApp")
+                    {
+                        btn.Value.AssignedAction.ID = btn.Value.DefaultActionID;
+                        btn.Value.AssignedAction.Parameter = string.Empty;
+                    }
+                    else
+                    {
+                        //btn.Value.OfficeActions[SelectedApp] = btn.Value.DefaultActionID;
+                        btn.Value.OfficeActions[SelectedApp] = -1;
+                    }
                 }
-                else
-                {
-                    //btn.Value.OfficeActions[SelectedApp] = btn.Value.DefaultActionID;
-                    btn.Value.OfficeActions[SelectedApp] = -1;
-                }
+                ActionList.ExportActionList(MouseAction, Model);
+                RefreshButtonInfo();
+                IsRestoreEnable = false;
+                OnPropertyChanged(nameof(IsRestoreEnable));
             }
-            ActionList.ExportActionList(MouseAction, Model);
-            RefreshButtonInfo();
-            IsRestoreEnable = false;
-            OnPropertyChanged(nameof(IsRestoreEnable));
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs RestoreToDefault  ex:" + ex.Message);
+            }
             return true;
         }
         private void ResetAction()
@@ -711,15 +790,22 @@ namespace DDPM.UI.Plugin.ViewModels
             get => _isAllButtonsVisible;
             set
             {
-                if (_isAllButtonsVisible != value)
+                try
                 {
-                    _isAllButtonsVisible = value;
-                    OnPropertyChanged(nameof(IsScrollWheelClickVisible));
-                    OnPropertyChanged(nameof(IsScrollTiltLeftVisible));
-                    OnPropertyChanged(nameof(IsScrollTiltRightVisible));
-                    OnPropertyChanged(nameof(IsSideButtonForwardVisible));
-                    OnPropertyChanged(nameof(IsSideButtonBackVisible));
-                    OnPropertyChanged();
+                    if (_isAllButtonsVisible != value)
+                    {
+                        _isAllButtonsVisible = value;
+                        OnPropertyChanged(nameof(IsScrollWheelClickVisible));
+                        OnPropertyChanged(nameof(IsScrollTiltLeftVisible));
+                        OnPropertyChanged(nameof(IsScrollTiltRightVisible));
+                        OnPropertyChanged(nameof(IsSideButtonForwardVisible));
+                        OnPropertyChanged(nameof(IsSideButtonBackVisible));
+                        OnPropertyChanged();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs IsAllButtonsVisible set  ex:" + ex.Message);
                 }
             }
         }
@@ -833,35 +919,42 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void RefreshButtonInfo()
         {
-            if (MouseAction.ButtonActions.ContainsKey(MouseButtonName.ScrollWheelClick))
+            try
             {
-                RefreshButtonImageFile(MouseButtonName.ScrollWheelClick.ToString(), false, MouseButtonName.ScrollWheelClick.ToString() == SelectedButton);
-                OnPropertyChanged(nameof(ScrollWheelClickTooltip));
-                OnPropertyChanged(nameof(ScrollWheelClickImageFile));
+                if (MouseAction.ButtonActions.ContainsKey(MouseButtonName.ScrollWheelClick))
+                {
+                    RefreshButtonImageFile(MouseButtonName.ScrollWheelClick.ToString(), false, MouseButtonName.ScrollWheelClick.ToString() == SelectedButton);
+                    OnPropertyChanged(nameof(ScrollWheelClickTooltip));
+                    OnPropertyChanged(nameof(ScrollWheelClickImageFile));
+                }
+                if (MouseAction.ButtonActions.ContainsKey(MouseButtonName.ScrollTiltLeft))
+                {
+                    RefreshButtonImageFile(MouseButtonName.ScrollTiltLeft.ToString(), false, MouseButtonName.ScrollTiltLeft.ToString() == SelectedButton);
+                    OnPropertyChanged(nameof(ScrollTiltLeftTooltip));
+                    OnPropertyChanged(nameof(ScrollTiltLeftImageFile));
+                }
+                if (MouseAction.ButtonActions.ContainsKey(MouseButtonName.ScrollTiltRight))
+                {
+                    RefreshButtonImageFile(MouseButtonName.ScrollTiltRight.ToString(), false, MouseButtonName.ScrollTiltRight.ToString() == SelectedButton);
+                    OnPropertyChanged(nameof(ScrollTiltRightTooltip));
+                    OnPropertyChanged(nameof(ScrollTiltRightImageFile));
+                }
+                if (MouseAction.ButtonActions.ContainsKey(MouseButtonName.SideButtonForward))
+                {
+                    RefreshButtonImageFile(MouseButtonName.SideButtonForward.ToString(), false, MouseButtonName.SideButtonForward.ToString() == SelectedButton);
+                    OnPropertyChanged(nameof(SideButtonForwardTooltip));
+                    OnPropertyChanged(nameof(SideButtonForwardImageFile));
+                }
+                if (MouseAction.ButtonActions.ContainsKey(MouseButtonName.SideButtonBack))
+                {
+                    RefreshButtonImageFile(MouseButtonName.SideButtonBack.ToString(), false, MouseButtonName.SideButtonBack.ToString() == SelectedButton);
+                    OnPropertyChanged(nameof(SideButtonBackTooltip));
+                    OnPropertyChanged(nameof(SideButtonBackImageFile));
+                }
             }
-            if (MouseAction.ButtonActions.ContainsKey(MouseButtonName.ScrollTiltLeft))
+            catch (Exception ex)
             {
-                RefreshButtonImageFile(MouseButtonName.ScrollTiltLeft.ToString(), false, MouseButtonName.ScrollTiltLeft.ToString() == SelectedButton);
-                OnPropertyChanged(nameof(ScrollTiltLeftTooltip));
-                OnPropertyChanged(nameof(ScrollTiltLeftImageFile));
-            }
-            if (MouseAction.ButtonActions.ContainsKey(MouseButtonName.ScrollTiltRight))
-            {
-                RefreshButtonImageFile(MouseButtonName.ScrollTiltRight.ToString(), false, MouseButtonName.ScrollTiltRight.ToString() == SelectedButton);
-                OnPropertyChanged(nameof(ScrollTiltRightTooltip));
-                OnPropertyChanged(nameof(ScrollTiltRightImageFile));
-            }
-            if (MouseAction.ButtonActions.ContainsKey(MouseButtonName.SideButtonForward))
-            {
-                RefreshButtonImageFile(MouseButtonName.SideButtonForward.ToString(), false, MouseButtonName.SideButtonForward.ToString() == SelectedButton);
-                OnPropertyChanged(nameof(SideButtonForwardTooltip));
-                OnPropertyChanged(nameof(SideButtonForwardImageFile));
-            }
-            if (MouseAction.ButtonActions.ContainsKey(MouseButtonName.SideButtonBack))
-            {
-                RefreshButtonImageFile(MouseButtonName.SideButtonBack.ToString(), false, MouseButtonName.SideButtonBack.ToString() == SelectedButton);
-                OnPropertyChanged(nameof(SideButtonBackTooltip));
-                OnPropertyChanged(nameof(SideButtonBackImageFile));
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs RefreshButtonInfo()  ex:" + ex.Message);
             }
         }
         private string GetButtonTooltip(MouseButtonName btnName)
@@ -922,51 +1015,59 @@ namespace DDPM.UI.Plugin.ViewModels
         public ObservableCollection<int> OutlookActions { get; set; } = new(Actions.OutlookActions);
         public void UpdateAction(int actionID, string parameter = "", bool RefreshImage = true)
         {
-            if (SelectedButton != "")
+            try
             {
-                if (SelectedApp == "AllApp")
+                if (SelectedButton != "")
                 {
-                    SelectedMouseAction!.AssignedAction.ID = actionID;
-                    SelectedMouseAction.AssignedAction.Parameter = parameter;
-                }
-                else
-                {
-                    SelectedMouseAction!.OfficeActions[SelectedApp] = actionID;
-                }
+                    if (SelectedApp == "AllApp")
+                    {
+                        SelectedMouseAction!.AssignedAction.ID = actionID;
+                        SelectedMouseAction.AssignedAction.Parameter = parameter;
+                    }
+                    else
+                    {
+                        SelectedMouseAction!.OfficeActions[SelectedApp] = actionID;
+                    }
 
-                int pkId = (int)(MouseButtonName)Enum.Parse(typeof(MouseButtonName), SelectedButton, true);
-                if (actionID == -1)
-                {
-                    DdpmCommonHelper.DeviceManagerSA!.DeleteMouseAssignedAction(CurrentDeviceID.ToString(), pkId);
-                }
-                else
-                {
-                    JObject jobj = new()
+                    int pkId = (int)(MouseButtonName)Enum.Parse(typeof(MouseButtonName), SelectedButton, true);
+                    if (actionID == -1)
+                    {
+                        DdpmCommonHelper.DeviceManagerSA!.DeleteMouseAssignedAction(CurrentDeviceID.ToString(), pkId);
+                    }
+                    else
+                    {
+                        JObject jobj = new()
                     {
                         { "PkId", pkId },
                         { "ActionId", Actions.ActionIdToGuid[actionID] }
                     };
 
-                    if (parameter == "")
-                    {
-                        byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
-                        DdpmCommonHelper.DeviceManagerSA!.SetMouseAction(CurrentDeviceID.ToString(), newValue);
-                    }
-                    else
-                    {
-                        jobj.Add("Command", parameter);
-                        byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
-                        if (actionID == 14)
-                            DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignKeystrokeAction(CurrentDeviceID.ToString(), newValue);
+                        if (parameter == "")
+                        {
+                            byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
+                            DdpmCommonHelper.DeviceManagerSA!.SetMouseAction(CurrentDeviceID.ToString(), newValue);
+                        }
                         else
-                            DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignDialogAction(CurrentDeviceID.ToString(), newValue);
+                        {
+                            jobj.Add("Command", parameter);
+                            byte[] newValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(jobj));
+                            if (actionID == 14)
+                                DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignKeystrokeAction(CurrentDeviceID.ToString(), newValue);
+                            else
+                                DdpmCommonHelper.DeviceManagerSA!.SetMouseAssignDialogAction(CurrentDeviceID.ToString(), newValue);
+                        }
                     }
+                    if (RefreshImage)
+                        RefreshButtonInfo();
+                    CheckRestoreStatus();
+                    ActionList.ExportActionList(MouseAction, Model);
                 }
-                if (RefreshImage)
-                    RefreshButtonInfo();
-                CheckRestoreStatus();
-                ActionList.ExportActionList(MouseAction, Model);
             }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\MouseViewModel.cs UpdateAction  ex:" + ex.Message);
+            }
+
         }
         public void ClearSelectedButton()
         {
