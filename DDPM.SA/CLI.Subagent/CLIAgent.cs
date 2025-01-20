@@ -308,10 +308,10 @@ namespace CLI.Subagent
                 }
 
                 if (hasFwUpdate) {
-                    if (_CliManagerPlugin.checkDeviceConn(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds.Trim(), cmds).Result)
+                    if (!_CliManagerPlugin.checkDeviceConn(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds.Trim(), cmds).Result)
                     {
                         // true: device not found
-                        Console.WriteLine("hasFwUpdate = true, checkDeviceConn = device not found ");
+                        Console.WriteLine("hasFwUpdate = true, checkDeviceConn = false, device not found ");
                         return;
                     }
 
