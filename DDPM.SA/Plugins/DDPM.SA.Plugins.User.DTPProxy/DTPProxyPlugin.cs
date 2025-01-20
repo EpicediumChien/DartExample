@@ -8212,7 +8212,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             try
             {
-                if (_comdityWebcam is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
+                if (_comdityHeadset is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
                 {
                     _Headsetcom.FirmwareVersionChanged += Headset_FirmwareVersionChanged;
                     _Headsetcom.BatteryLevelChanged += Headset_BatteryLevelChanged;
