@@ -220,23 +220,36 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     status_thread = new Thread(() =>
                     {
                         DateTime dt = DateTime.Now;
+                        Console.WriteLine("[CAM THREAD START] " + status_thread.Name + " " + dt.ToString("yyyyMMddHHmmssfff"));
+                        status_thread.Name = "t-" + dt.ToString("yyyyMMddHHmmssfff");
                         while (_vm.mre.WaitOne())
                         {
 
                             if (exit_status_thread)
+                            {
+                                Console.WriteLine("[CAM THREAD END] " + status_thread.Name + " " + dt.ToString("yyyyMMddHHmmssfff"));
                                 return;
+                            }
 
                             if (!_vm.IsRecording)
                             {
-                                Dispatcher.Invoke(new Action(() =>
+                                try
                                 {
-                                    status_change();
-                                }));
+                                    Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        status_change();
+                                    }));
+                                }
+                                catch (Exception ex)
+                                {
+                                    return;
+                                }
                             }
 
                             _vm.mre.Reset();
                         }
                     });
+                    _vm.thread_list.Add(status_thread);
                     _vm.mre.Reset();
                     status_thread.Start();
                 }
@@ -1570,6 +1583,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             Console.WriteLine("LaunchView_Unloaded start");
 
             FreeWebcamResource();
+
+            Console.WriteLine("LaunchView_Unloaded end");
         }
 
         private bool _resourcesReleased = false;
@@ -1661,6 +1676,15 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog($"FreeWebcamResource got exception 4:{ex.ToString()}");
+            }
+
+            try
+            {
+                await CleanupMediaCaptureAsync();
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  FreeWebcamResource()  CleanupMediaCaptureAsync() ex 2: " + ex.Message);
             }
 
             //try
@@ -2268,31 +2292,39 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         // 20240626 jim add
         private async Task CleanupMediaCaptureAsync()
         {
-            if (_vm!.MediaFrameReader != null)
+
+            try
             {
                 _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
-                try
-                {
-                    await _vm.MediaFrameReader.StopAsync();
-
-                }
-                catch (Exception ex)
-                {
-                    DdpmCommonHelper.WriteUILog($"Error stopping MediaFrameReader: {ex.Message}");
-                }
-
-                try
-                {
-                    if (_vm.MediaFrameReader != null)
-                        _vm.MediaFrameReader.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    DdpmCommonHelper.WriteUILog($"Error Dispose MediaFrameReader: {ex.Message}");
-                }
-
-                _vm.MediaFrameReader = null;
             }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"Error del MediaFrameReader FrameArrived: {ex.Message}");
+            }
+
+            try
+            {
+                await _vm.MediaFrameReader.StopAsync();
+
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"Error stopping MediaFrameReader: {ex.Message}");
+            }
+
+            try
+            {
+                if (_vm.MediaFrameReader != null)
+                {
+                    _vm.MediaFrameReader.Dispose();
+                    _vm.MediaFrameReader = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"Error Dispose MediaFrameReader: {ex.Message}");
+            }
+
             if (_vm!.MediaCapture != null)
             {
                 _vm!.MediaCapture.Dispose();

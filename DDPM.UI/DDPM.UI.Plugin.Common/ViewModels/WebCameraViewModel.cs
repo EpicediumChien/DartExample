@@ -97,6 +97,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public bool close_app = false;
 
+        public List<Thread> thread_list = new List<Thread>();
         public bool ShowLockMask
         {
             get { return showLockMask; }
