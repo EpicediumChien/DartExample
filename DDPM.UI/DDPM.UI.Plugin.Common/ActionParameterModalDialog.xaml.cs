@@ -3,18 +3,22 @@ using DDPM.SA.Common.Security;
 using DDPM.UI.Common;
 using DDPM.UI.Resources.Helper;
 using DPeMPublic.Common.Enums;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Windows.Media.Animation;
 
 namespace DDPM.UI.Plugin.Common
 {
     /// <summary>
     /// ActionParameterModalDialog.xaml 的互動邏輯
     /// </summary>
-    public partial class ActionParameterModalDialog : Window
+    public partial class ActionParameterModalDialog : System.Windows.Window
     {
         private readonly string Caption = "";
 
@@ -22,6 +26,16 @@ namespace DDPM.UI.Plugin.Common
         private readonly System.Windows.Forms.FolderBrowserDialog? folderBrowserDialog;
         private AdvancedAction _deviceCat;
         private bool IsForPen = false;
+
+        private const int WM_HOTKEY = 0x0312;
+        private const int MOD_ALT = 0x0001;
+        private const int VK_ESC = 0x1B;
+
+        [DllImport("user32.dll")]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
+
+        [DllImport("user32.dll")]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
         public string Parameter { get; private set; } = "";
 
@@ -50,7 +64,11 @@ namespace DDPM.UI.Plugin.Common
                         _ = task.Result;
                     }
                     else
+                    {
                         this.PreviewKeyDown += Keystroke_PreviewKeyDown;
+                        Loaded += MainWindow_Loaded;
+                        Closed += MainWindow_Closed;
+                    }
                     break;
 
                 case AdvancedAction.OpenFile:
@@ -91,6 +109,28 @@ namespace DDPM.UI.Plugin.Common
             btnSave.Caption = Strings.Save;
             btnBrowse.Caption = Strings.Browse;
         }
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            IntPtr windowHandle = new WindowInteropHelper(this).Handle;
+            RegisterHotKey(windowHandle, 1, MOD_ALT, VK_ESC);
+            ComponentDispatcher.ThreadPreprocessMessage += ComponentDispatcher_ThreadPreprocessMessage;
+        }
+
+        private void MainWindow_Closed(object? sender, EventArgs e)
+        {
+            IntPtr windowHandle = new WindowInteropHelper(this).Handle;
+            UnregisterHotKey(windowHandle, 1);
+            ComponentDispatcher.ThreadPreprocessMessage -= ComponentDispatcher_ThreadPreprocessMessage;
+        }
+
+        private void ComponentDispatcher_ThreadPreprocessMessage(ref MSG msg, ref bool handled)
+        {
+            if (msg.message == WM_HOTKEY && (int)msg.wParam == 1)
+            {
+                txtKeystroke.Text = "Alt + Esc";
+                handled = true;
+            }
+        }
 
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
         {
@@ -105,9 +145,10 @@ namespace DDPM.UI.Plugin.Common
                     Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.KeyCaptureData();
                     var keystroke = task2.Result;
                 }
-                Application.Current.Dispatcher.Invoke(() => {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
                     txtKeystroke.Text = e.changedProperty.Substring(33);
-                });                
+                });
             }
         }
 
@@ -166,7 +207,7 @@ namespace DDPM.UI.Plugin.Common
             if (txtKeystroke.Text.ToUpper() == "ALT + Z")
             {
                 MessageModalDialog messageModalDialog;
-                Window mainWindow = System.Windows.Application.Current.MainWindow;
+                System.Windows.Window mainWindow = System.Windows.Application.Current.MainWindow;
                 messageModalDialog = new(LangHelper.Instance["hotkey.7"], LangHelper.Instance["Hotkey.10"], "", "");
                 if (mainWindow != null)
                 {
@@ -204,6 +245,10 @@ namespace DDPM.UI.Plugin.Common
 
         private void Keystroke_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            e.Handled = true;
+            if (e.SystemKey == Key.Escape && (Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt)
+            {
+            }
             var key = (e.Key == Key.System ? e.SystemKey : e.Key);
             if (key == Key.LWin)
             { e.Handled = true; return; }
@@ -228,12 +273,12 @@ namespace DDPM.UI.Plugin.Common
             var keyName = (int)key switch
             {
                 2 => "",         //Backspace
-                3 => "",         //Tab
+                3 => "Tab",         //Tab
                 6 => "",         //Enter
                 7 => "",         //Pause
                 8 => "",         //Caps Lock
-                13 => "",        //Escape
-                18 => "",        //Space
+                13 => "Esc",        //Escape
+                18 => "Space",        //Space
                 20 => "Page Down",
                 > 33 and < 44 => key.ToString().Replace("D", " "),
                 > 73 and < 84 => key.ToString().Replace("Pad", " "),
@@ -242,6 +287,8 @@ namespace DDPM.UI.Plugin.Common
                 87 => "Num -",
                 88 => "Num .",
                 89 => "Num /",
+                93 => "F4",
+                97 => "F8",
                 140 => ";",
                 141 => "=",
                 142 => ",",

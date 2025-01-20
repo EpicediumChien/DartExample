@@ -249,7 +249,8 @@ namespace DDPM.UI.Module.KeyCustomization
                         _ = task1.Result;
                         Task<string> task2 = DdpmCommonHelper.DeviceManagerSA.GetKeyboardKeystrokeDisplayData(_vm.CurrentDeviceID.ToString());
                         var keystroke = task2.Result;
-                        parameter = keystroke;
+                        //parameter = keystroke;
+                        parameter = modalDialog.Parameter;
                     }
                     else
                     {

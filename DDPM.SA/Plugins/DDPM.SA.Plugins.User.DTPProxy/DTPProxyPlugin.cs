@@ -11008,6 +11008,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
+                    Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {JsonConvert.SerializeObject(value)}");
                     writelog($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {JsonConvert.SerializeObject(value)}");
                 }
                 catch (Exception ex)
