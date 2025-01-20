@@ -192,10 +192,10 @@ namespace DDPM.SA.Common
         Task<bool> SetIsHDROn(string Guid, bool newValue);
         Task<bool> SetIsAutoWhiteBalanceOn(string Guid, bool newValue);
         Task<bool> SetAutoWhiteBalance(string Guid, int newValue);
-        Task SetBrightness(string Guid, int newValue);
-        Task SetSharpness(string Guid, int newValue);
-        Task SetContrast(string Guid, int newValue);
-        Task SetSaturation(string Guid, int newValue);
+        Task<bool> SetBrightness(string Guid, int newValue);
+        Task<bool> SetSharpness(string Guid, int newValue);
+        Task<bool> SetContrast(string Guid, int newValue);
+        Task<bool> SetSaturation(string Guid, int newValue);
         Task SetAntiFlicker(string Guid, int newValue);
         Task SetTilt(string Guid, int newValue);
         Task SetPan(string Guid, int newValue);
