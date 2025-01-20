@@ -354,7 +354,7 @@ namespace CLI.Subagent
 
             var deferItem = new DeferItem(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds);
             _CliManagerPlugin.showNotification(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), deferItem);
-            Thread.Sleep(5000);
+            //Thread.Sleep(5000);
         }
 
         private void InitializeCliManagerPlugin()
