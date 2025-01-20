@@ -40,7 +40,7 @@ namespace DDPM.SA.Resources.Helper
 
 #if FALSE
                 //resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
-                CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("ja-JP");
+                CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("fr-FR");
                 string str = _resourceManager.GetString(name, cultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
                 //string str = _resourceManager.GetString(name, CultureInfo.InstalledUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
                 return System.Text.RegularExpressions.Regex.Unescape(str);

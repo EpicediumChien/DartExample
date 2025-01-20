@@ -10,7 +10,7 @@
              xmlns:PluginCommon="clr-namespace:DDPM.UI.Plugin.Common;assembly=DDPM.UI.Plugin.Common"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
-             d:DesignHeight="671" d:DesignWidth="1378"
+             d:DesignHeight="671" d:DesignWidth="1279"
              Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -85,7 +85,7 @@
                         <!-- Elsa 20250108 For PIMS [PIMS-334058] change FontSize="48" LineHeight="76" to FontSize="40" LineHeight="40" and add TextWrapping="WrapWithOverflow" -->
                         <Grid Grid.Row="2" Margin="0, 8, 0, 0" HorizontalAlignment="Left">
                             <UXControls:UXTextBlock Text="{Binding [Kvm.17], Source={x:Static lang:LangHelper.Instance}}"
-                                                    FontSize="64" LineHeight="40" TextWrapping="WrapWithOverflow" />
+                                                    FontSize="64" LineHeight="40" TextWrapping="Wrap" />
                         </Grid>
                         <!-- Elsa 20250108 For PIMS [PIMS-334058] change FontSize="16" to FontSize="15" and add TextWrapping="WrapWithOverflow" -->
                         <!--<Grid Grid.Row="3" Margin="0, 16, 0, 0"  Width="476" Height="120" HorizontalAlignment="Left">-->
