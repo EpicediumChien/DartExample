@@ -59,10 +59,11 @@ namespace DDPM.SA.Common.Settings
         public string CurrentResolution { get => Resolutions[SelectedResolution]; }
         public string CurrentFPS { get => SelectedFPSs[SelectedResolution]; }
         public bool IsFirstTime = true;
+        public WebcamProfile NONE = new();
 
         public WebcamSettings(DeviceInfo di = null, IDeviceManagerSA devMgr = null, ILog log = null)
         {
-            if(di != null && devMgr != null)
+            if (di != null && devMgr != null)
             {
                 UpdateSupportedResolutions(di, devMgr, log);
             }
@@ -320,7 +321,7 @@ namespace DDPM.SA.Common.Settings
         //Target folder should be: Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\WebcamSettings");
         public static bool ExportWebcamSettings(WebcamSettings WebcamSettings, string model, IDeviceManagerSA devMgr = null, ILog log = null)
         {
-            if(devMgr == null)
+            if (devMgr == null)
             {
                 log?.Error("[ExportWebcamSettings] The input devMgr is null");
                 return false;
@@ -339,7 +340,7 @@ namespace DDPM.SA.Common.Settings
                     string strPath = Path.Combine(fileFolder, $"{model}.json");
                     bool result = devMgr.WriteSerializedContentToFile(strPath, json).Result;//1007 apply signature
 
-                    if(!result)
+                    if (!result)
                         log?.Error($"[ExportWebcamSettings] DeviceManagerSA is null(model:{model})");
                     return result;
                 }
