@@ -213,23 +213,36 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     status_thread = new Thread(() =>
                     {
                         DateTime dt = DateTime.Now;
+                        Console.WriteLine("[CAM THREAD START] " + status_thread.Name + " " + dt.ToString("yyyyMMddHHmmssfff"));
+                        status_thread.Name = "t-" + dt.ToString("yyyyMMddHHmmssfff");
                         while (_vm.mre.WaitOne())
                         {
 
                             if (exit_status_thread)
+                            {
+                                Console.WriteLine("[CAM THREAD END] " + status_thread.Name + " " + dt.ToString("yyyyMMddHHmmssfff"));
                                 return;
+                            }
 
                             if (!_vm.IsRecording)
                             {
-                                Dispatcher.Invoke(new Action(() =>
+                                try
                                 {
-                                    status_change();
-                                }));
+                                    Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        status_change();
+                                    }));
+                                }
+                                catch (Exception ex)
+                                {
+                                    return;
+                                }
                             }
 
                             _vm.mre.Reset();
                         }
                     });
+                    _vm.thread_list.Add(status_thread);
                     _vm.mre.Reset();
                     status_thread.Start();
                 }
@@ -919,11 +932,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //攝影機控制區域內windows hello隱藏
                         //_vm.brdHello_show = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
                         //_vm.brdHello_show = Visibility.Visible;   // Jim 20250115 modify for PIMS-297931
-                        _vm.brdHello_show = Visibility.Collapsed;   // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        //_vm.brdHello_show = Visibility.Collapsed;   // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        _vm.brdHello_show = Visibility.Visible; // Jim 20250117 modify for PIMS-297931 by dell PO decdie comment
                         //PRESENCE DETECTION區域內windows hello隱藏
                         //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
                         //_vm.brdHello_show_control = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
-                        _vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        _vm.brdHello_show_control = Visibility.Visible; // Jim 20250117 modify for PIMS-297931 by dell PO decdie comment
 
                         //連接usb 3.0提示訊息 Camera.14
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
@@ -1006,11 +1021,13 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //攝影機控制區域內windows hello隱藏
                         //_vm.brdHello_show = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
                         //_vm.brdHello_show = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
-                        _vm.brdHello_show = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        //_vm.brdHello_show = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        _vm.brdHello_show = Visibility.Visible; // Jim 20250117 modify for PIMS-297931 by dell PO decdie comment
                         //PRESENCE DETECTION區域內windows hello隱藏
                         //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250115 modify for PIMS-297931
                         //_vm.brdHello_show_control = Visibility.Visible; // Jim 20250115 modify for PIMS-297931
-                        _vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        //_vm.brdHello_show_control = Visibility.Collapsed; // Jim 20250116 modify for PIMS-297931 by alex and kidd comment
+                        _vm.brdHello_show_control = Visibility.Visible; // Jim 20250117 modify for PIMS-297931 by dell PO decdie comment
 
                         //連接usb 3.0提示訊息 Camera.15
                         //Connect your monitor via USB 3.0 and select 'High Data Speed' under USB-C Prioritization to enable 4K UHD resolution.
@@ -1559,6 +1576,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             Console.WriteLine("LaunchView_Unloaded start");
 
             FreeWebcamResource();
+
+            Console.WriteLine("LaunchView_Unloaded end");
         }
 
         private bool _resourcesReleased = false;
@@ -1585,6 +1604,25 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private async void FreeWebcamResource()
         {
             DdpmCommonHelper.WriteUILog("FreeWebcamResource");
+
+            try
+            {
+                DdpmCommonHelper.WriteUILog($"FreeWebcamResource Free PowerEventControl");
+
+                if (_pwr_Mon != null)
+                {
+                    _pwr_Mon.UnRegisterAllHotKey();
+
+                    _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
+                    _pwr_Mon.Close_Event();
+                    //_pwr_Mon = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("PowerEvent Control got exception: " + ex.Message);
+            }
+
 
             try
             {
@@ -1620,7 +1658,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 3: " + ex.Message);
+                DdpmCommonHelper.WriteUILog("Free MediaFrameReader got exception: " + ex.Message);
             }
 
             try
@@ -1636,18 +1674,27 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             try
             {
                 await CleanupMediaCaptureAsync();
-
-                if (_pwr_Mon != null)
-                {
-                    _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
-                    _pwr_Mon.Close_Event();
-                    _pwr_Mon = null;
-                }
             }
             catch (Exception ex)
             {
-                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 2: " + ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  FreeWebcamResource()  CleanupMediaCaptureAsync() ex 2: " + ex.Message);
             }
+
+            //try
+            //{
+            //    await CleanupMediaCaptureAsync();
+
+            //    if (_pwr_Mon != null)
+            //    {
+            //        _pwr_Mon.MonitorTurnedOn -= MonitorEvent_On;
+            //        _pwr_Mon.Close_Event();
+            //        _pwr_Mon = null;
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    DdpmCommonHelper.WriteUILog("DDPM.UI.WebCameraPlugin\\Views\\LaunchView.xaml.cs  LaunchView_Unloaded() ex 2: " + ex.Message);
+            //}
             DdpmCommonHelper.WriteUILog("Webcam LaunchView_Unloaded end");
             /*if ( _vm?.close_app == true )
             {
@@ -2238,31 +2285,39 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         // 20240626 jim add
         private async Task CleanupMediaCaptureAsync()
         {
-            if (_vm!.MediaFrameReader != null)
+
+            try
             {
                 _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
-                try
-                {
-                    await _vm.MediaFrameReader.StopAsync();
-
-                }
-                catch (Exception ex)
-                {
-                    DdpmCommonHelper.WriteUILog($"Error stopping MediaFrameReader: {ex.Message}");
-                }
-
-                try
-                {
-                    if (_vm.MediaFrameReader != null)
-                        _vm.MediaFrameReader.Dispose();
-                }
-                catch (Exception ex)
-                {
-                    DdpmCommonHelper.WriteUILog($"Error Dispose MediaFrameReader: {ex.Message}");
-                }
-
-                _vm.MediaFrameReader = null;
             }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"Error del MediaFrameReader FrameArrived: {ex.Message}");
+            }
+
+            try
+            {
+                await _vm.MediaFrameReader.StopAsync();
+
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"Error stopping MediaFrameReader: {ex.Message}");
+            }
+
+            try
+            {
+                if (_vm.MediaFrameReader != null)
+                {
+                    _vm.MediaFrameReader.Dispose();
+                    _vm.MediaFrameReader = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"Error Dispose MediaFrameReader: {ex.Message}");
+            }
+
             if (_vm!.MediaCapture != null)
             {
                 _vm!.MediaCapture.Dispose();

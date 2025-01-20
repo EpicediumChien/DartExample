@@ -173,8 +173,8 @@ namespace DDPM.UI.Plugin.ViewModels
                                 {
                                     _isQuickPauseStatus = false;
                                     DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = 0;
-                                    _isNormalChecked = true;
-                                    _isSensitiveChecked = false;
+                                    //_isNormalChecked = true;
+                                    //_isSensitiveChecked = false;
                                 }
                                 if (event_param[eventtype].ToString().ToLower() == "sensitive")
                                 {
@@ -3066,7 +3066,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (value == false)
                     DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = 0;
                 else
-                    DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = 1;
+                    DeviceInfoDTP.WearDetectionQuickPauseAsyncFromDTP = 2;
 
                 //_debouncerHeadsetQuickPause.Debounce("QuickPauseCheck");
                 _debouncerHeadset.Debounce("QuickPauseCheck");

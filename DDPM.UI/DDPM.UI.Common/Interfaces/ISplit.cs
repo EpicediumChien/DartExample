@@ -86,7 +86,7 @@ namespace DDPM.UI.Common.Interfaces
         public UInt16 PbpCapabilityCode { get; set; }
         public string Description { get; set; }
 
-        public static List<ISplit> PipClasses = new List<ISplit>()
+        public readonly static List<ISplit> PipClasses = new List<ISplit>()
         {
             //23h: PBP 2 windows h-split
             new SplitCtrl2A(new List<double>() {1,1}) { PbpCapabilityCode = (UInt16)0x0023, Description="50% - 50%" },

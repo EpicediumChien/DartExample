@@ -38,7 +38,43 @@ namespace DdpmSwUpdater
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             LogMessage($"DdpmSwUpdater Ver:{version}");
         }
+        public static SWUpdateHelper GetSWUMetadata(bool isSkipCA)
+        {
+            SWUpdateHelper swUpdateHelper = new SWUpdateHelper();
+            try
+            {
+                List<string> InfoPkey = new List<string>(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                //InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                swUpdateHelper = SWUpdateSetting.GetSWMetadata(isSkipCA, out string getMetadataInfo, null, InfoPkey, LogManage.logs);
+                LogMessage($"GetMetadata {getMetadataInfo}");
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"GetMetadata error : {ex.Message}");
+            }
 
+            return swUpdateHelper;
+        }
+        public static bool GetCheckCAStatus()
+        {
+            bool isSkipCA = false;
+            object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Dell\\DDPM Subagent", "SkipCA");
+            if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+            {
+                isSkipCA = o.ToString().Equals("1") ? true : false;
+            }
+            return isSkipCA;
+        }
+        public static bool GetCheckSHAStatus()
+        {
+            bool isSkipSHA = false;
+            object o = DDPMRegistryHelper.ReadRegistryKey(RegistryHive.LocalMachine, "SOFTWARE\\Dell\\DDPM Subagent", "SkipSHA");
+            if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
+            {
+                isSkipSHA = o.ToString().Equals("1") ? true : false;
+            }
+            return isSkipSHA;
+        }
         public static Logs RetrieveLogObject()
         {
             return logs;
