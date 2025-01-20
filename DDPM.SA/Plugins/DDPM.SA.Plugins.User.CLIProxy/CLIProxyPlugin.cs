@@ -882,19 +882,25 @@ namespace DDPM.SA.Plugin.User.CLIManager
         {
 
             new ToastContentBuilder()
+                .SetToastScenario(ToastScenario.Alarm)
                 .AddArgument("deferid", id)
                 .AddText(NOTIFICATION_MSG_HEADER)
                 .AddText(NOTIFICATION_MSG_BODY)
                 .AddButton(new ToastButton()
                     .SetContent("Ok")
-                //.AddArgument("action", "OK")
+                //.AddArgument("action", "ok")
                 )
-                .Show();
+                .Show(toast =>
+                {
+                    toast.ExpirationTime = DateTime.Now.AddSeconds(300);
+                }               
+                );
         }
         public void showToast(string id, string msg)
         {
 
             new ToastContentBuilder()
+                .SetToastScenario(ToastScenario.Alarm)
                 .AddArgument("deferid", id)
                 .AddText(DEFER_MSG_HEADER)
                 .AddText(DEFER_MSG_BODY)
@@ -907,7 +913,11 @@ namespace DDPM.SA.Plugin.User.CLIManager
                     .AddArgument("action", "defer")
                 )
 
-                .Show();
+                .Show(toast =>
+                {
+                    toast.ExpirationTime = DateTime.Now.AddSeconds(300);
+                }
+                );
 
         }
 
