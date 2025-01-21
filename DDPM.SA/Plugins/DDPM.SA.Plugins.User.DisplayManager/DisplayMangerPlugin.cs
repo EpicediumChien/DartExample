@@ -1415,8 +1415,11 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             Trace.WriteLine($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Primary = {monitorInfoMain.edid.ModelName} | {monitorInfoMain.edid.ServiceTag}, vcpcode = {vcpcode.ToString()}, need set val = {eValue}, isSupportALS = 2 ... in ");
             _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Primary = {monitorInfoMain.edid.ModelName} | {monitorInfoMain.edid.ServiceTag}, vcpcode = {vcpcode.ToString()}, need set val = {eValue}, isSupportALS = 2 ... in ");
 
-            Trace.WriteLine($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Other Monitor = {monitorvalue.edid.ModelName} | {monitorInfoMain.edid.ServiceTag} ");
-            _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Other Monitor = {monitorvalue.edid.ModelName} | {monitorInfoMain.edid.ServiceTag} ");
+            //Trace.WriteLine($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Other Monitor = {monitorvalue.edid.ModelName} | {monitorInfoMain.edid.ServiceTag} "); // Jim 20250120 modify for PIMS-314608
+            // _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Other Monitor = {monitorvalue.edid.ModelName} | {monitorInfoMain.edid.ServiceTag} "); // Jim 20250120 modify for PIMS-314608
+            Trace.WriteLine($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Other Monitor = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag} ");  // Jim 20250120 modify for PIMS-314608
+            _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Other Monitor = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag} ");   // Jim 20250120 modify for PIMS-314608
+
 
             var aconfig = AllALSConfig.Find(x => x.Edid.Equals(monitorvalue.edid));
             if (aconfig == null)
@@ -1435,18 +1438,29 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 //uint contrastValue = temp & 0xFF;
                 if (aconfig.ContrastValue == temp) // same as last time 
                     return true;
-                uint contrastValue = temp & 0xFF;
+
+                // Jim 20250120 modify for PIMS-314608 - U2725QEt Wistron- P3:DDPM(Windows)-Shine a torch or cover the sensor of DUT1,DUT2 screen has not changed
+                //ALS_CT control values
+                //LL: 0~255.Nx100K
+                //HH: Reserved
+                uint contrastValue = temp & 0xFF;                
+                uint ColorTempValue = contrastValue * (uint) 100;  // Jim 20250120 add for PIMS-314608
 
                 aconfig.ContrastValue = (int)contrastValue;
                 Trace.WriteLine($" [DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, temp = {temp.ToString()}, contrastValue = {contrastValue.ToString()}");
+                Trace.WriteLine($" [DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, temp = {temp.ToString()}, ColorTempValue = {ColorTempValue.ToString()}"); // Jim 20250120 add for PIMS-314608
                 _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, {temp.ToString()} ");
-                if (await _VcpCorePlugin.SetVCPCapability(monitorvalue, 0x68, contrastValue))
+                _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, temp = {temp.ToString()}, ColorTempValue = {ColorTempValue.ToString()} ");  // Jim 20250120 add for PIMS-314608
+                //if (await _VcpCorePlugin.SetVCPCapability(monitorvalue, 0x68, contrastValue))
+                if (await _VcpCorePlugin.SetVCPCapability(monitorvalue, 0x68, ColorTempValue)) // Jim 20250120 modify for PIMS-314608
                 {
-                    _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Success Set 0x68 = {contrastValue.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber} | {monitorInfoMain.edid.ServiceTag}, Set ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag},");
+                    //_logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Success Set 0x68 = {contrastValue.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber} | {monitorInfoMain.edid.ServiceTag}, Set ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag},");
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Success Set 0x68 = {ColorTempValue.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber} | {monitorInfoMain.edid.ServiceTag}, Set ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag},"); // Jim 20250120 modify for PIMS-314608
                 }
                 else
                 {
-                    _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Fail Set 0x68 = {contrastValue.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber} | {monitorInfoMain.edid.ServiceTag}, Set ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag},");
+                    //_logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Fail Set 0x68 = {contrastValue.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber} | {monitorInfoMain.edid.ServiceTag}, Set ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag},");
+                    _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Fail Set 0x68 = {ColorTempValue.ToString()}, e.monitor = {monitorInfoMain.edid.SerialNumber} | {monitorInfoMain.edid.ServiceTag}, Set ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag},"); // Jim 20250120 modify for PIMS-314608
                 }
             }
             else if (vcpcode == "67")

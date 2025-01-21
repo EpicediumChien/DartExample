@@ -134,6 +134,7 @@ namespace DDPM.SA.Common
         Task<bool> StartKeyCapturePen();
         Task<bool> FinishKeyCapturePen();
         Task<string> KeyCaptureData();
+        Task<string> GetIsdDriverVersion();
 
         #endregion
 

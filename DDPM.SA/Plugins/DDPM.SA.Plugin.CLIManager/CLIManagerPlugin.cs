@@ -21,7 +21,10 @@ using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading;
+using System.Windows.Forms;
+using System.Windows.Input;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Plugin.CLIManager
@@ -1007,7 +1010,8 @@ namespace DDPM.SA.Plugin.CLIManager
         // add @ 20241210 stephen: check defer with toast notification
 
         private List<DeferItem> DeferItems = new List<DeferItem>();
-        private const int MAX_DEFER_WAIT_TIME_SEC = 300;
+        private const int MAX_DEFER_WAIT_TIME_SEC = 305;
+        int Max_Count = 0;
         private Dictionary<string, bool> deferResponse = new Dictionary<string, bool>();
 
         public void sendToastResult(string defer_id, bool isDefer)
@@ -1055,7 +1059,8 @@ namespace DDPM.SA.Plugin.CLIManager
 
         private bool checkToastResult(string key, DeferItem item)
         {
-            for (int i = 0; i <= MAX_DEFER_WAIT_TIME_SEC; i++)
+            Max_Count = 0;
+            for (Max_Count = 0; Max_Count <= MAX_DEFER_WAIT_TIME_SEC; Max_Count++)
             {
                 Thread.Sleep(1000);
                 // check defer response
@@ -1064,6 +1069,7 @@ namespace DDPM.SA.Plugin.CLIManager
 
                 if (deferResponse.ContainsKey(key))
                 {
+                    //if end user select defer within 5 min
                     WriteLog("@@ CLIManagerPlugin::checkToastResult deferResponse.ContainsKey " + key);
                     if (deferResponse[key])
                     {
@@ -1077,6 +1083,15 @@ namespace DDPM.SA.Plugin.CLIManager
                     deferResponse.Remove(key);
                     break;
                 }
+            }
+            if (Max_Count >= MAX_DEFER_WAIT_TIME_SEC)
+            {
+                //if end user doesn't select witnin 5 min, set defer as default
+                WriteLog($"@@ CLIManagerPlugin::Timeout and then set defer as default");
+                deferResponse.Remove(key);
+                // add deferitem to deferControlPanel
+                DeferControlPanel.addToSchedule(item);
+                return true;
             }
 
             return false;
@@ -1093,7 +1108,19 @@ namespace DDPM.SA.Plugin.CLIManager
                 is_defer = false
             });
 
-            return Task.CompletedTask;
+            Max_Count = 0;
+            for (Max_Count = 0; Max_Count <= MAX_DEFER_WAIT_TIME_SEC; Max_Count++)
+            {
+                Thread.Sleep(1000);
+                if (deferResponse.ContainsKey(did))
+                {
+                    if (deferResponse[did])
+                    {
+                        return Task.CompletedTask;
+                    }
+                }
+            }
+                        return Task.CompletedTask;
         }
         /*
                 public void showNotification(int from, string guid, string args)
