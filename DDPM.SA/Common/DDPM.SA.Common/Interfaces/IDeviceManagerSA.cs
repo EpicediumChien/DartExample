@@ -1241,6 +1241,7 @@ namespace DDPM.SA.Common
 
         Task<bool> SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
 
+        Task<bool> SetFactoryResetAsyncValueForHeadsetForCLI(string Guid, bool newValue);
         Task<bool> SetBoomMicAsync(string Guid, bool newValue);
 
         #endregion Headset Set

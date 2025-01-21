@@ -3364,6 +3364,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
         }
 
+        public async Task<bool> SetFactoryResetAsyncValueForHeadsetForCLI(string Guid, bool newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetFactoryResetAsyncValueForHeadsetForCLI(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsyncValueForHeadsetForCLI Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsyncValueForHeadsetForCLI Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsyncValueForHeadsetForCLI failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
         public async Task<bool> SetBoomMicAsync(string Guid, bool newValue)
         {
             try
