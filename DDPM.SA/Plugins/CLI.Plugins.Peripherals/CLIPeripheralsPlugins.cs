@@ -1369,7 +1369,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 writelog($"HeadSet {x.Model} not support MICNOISECANCELLATION");
                                 x.Value = "Not supported";
                                 x.Result = "FAIL";
-                                x.Message = "HeadSet not support MICNOISECANCELLATION";
+                                x.Message = "Audio not support MICNOISECANCELLATION";
                                 retcode = false;
                             }
                         }
