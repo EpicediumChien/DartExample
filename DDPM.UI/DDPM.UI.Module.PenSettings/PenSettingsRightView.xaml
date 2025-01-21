@@ -39,8 +39,13 @@
                                 <UXControls:UXTextBlock Name="txtTipSensitivity" Style="{StaticResource ModuleItemStyle}" />
                                 <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                                     <Image.ToolTip>
-                                        <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                            <TextBlock Name="txtTipTooltip" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                        <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <Border.Resources>
+                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                </Border.Resources>
+                                                <TextBlock Name="txtTipTooltip" />
+                                            </Border>
                                         </ToolTip>
                                     </Image.ToolTip>
                                 </Image>
@@ -55,8 +60,13 @@
                                 <UXControls:UXTextBlock Name="txtTiltSensitivity" Style="{StaticResource ModuleItemStyle}" />
                                 <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                                     <Image.ToolTip>
-                                        <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                            <TextBlock Name="txtTiltTooltip" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                        <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <Border.Resources>
+                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                </Border.Resources>
+                                                <TextBlock Name="txtTiltTooltip"/>
+                                            </Border>
                                         </ToolTip>
                                     </Image.ToolTip>
                                 </Image>
@@ -77,8 +87,13 @@
                                 <UXControls:UXTextBlock Name="txtPairWithTile" Style="{StaticResource ModuleItemStyle}" />
                                 <Image Margin="9,0,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform" Cursor="Hand" Width="16" Height="16">
                                     <Image.ToolTip>
-                                        <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="8" HorizontalOffset="6">
-                                            <TextBlock x:Name="txtPairTooltip" Style="{StaticResource TabInfoToolTipTextStyle}" />
+                                        <ToolTip Placement="Top" VerticalOffset="8" HorizontalOffset="6">
+                                            <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                <Border.Resources>
+                                                    <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                </Border.Resources>
+                                                <TextBlock x:Name="txtPairTooltip" />
+                                            </Border>
                                         </ToolTip>
                                     </Image.ToolTip>
                                 </Image>
