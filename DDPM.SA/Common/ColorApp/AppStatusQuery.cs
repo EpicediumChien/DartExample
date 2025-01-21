@@ -231,7 +231,7 @@ namespace DDPM.ColorApp
                 ///////logger.WriteLog($"[Watcher-callback] {strProcessName}:>Title({forgroundTitle}):PID({pid}):hWnd({hWnd}):Path({strFilePath})");
 
                 //string strlog;
-                strlog = String.Format($"[Watcher-callback] {strProcessName}:>Title({forgroundTitle}):PID({pid}):hWnd({hWnd})");
+                strlog = String.Format($"[Watcher-callback] {strProcessName}:>Title({forgroundTitle}):PID({pid})");
                 writelog(strlog);
 
                 if (SendValue != null)
