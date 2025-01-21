@@ -137,9 +137,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         private int _timeOutCount;
 
         /// <summary>
-        /// 用於設定逾時時間預設60次/秒
+        /// 用於設定逾時時間預設120次/秒
         /// </summary>
-        private int _fwTimeOutCount = 60;
+        private int _fwTimeOutCount = 120;
         private bool _IsDownloadAndInsytall = false;
         private KeyGenerator? _KeyGenerator;
 
@@ -1686,7 +1686,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 string _namedPipeName = Guid.NewGuid().ToString("D");
                 if (!fwUpdateInfo.IsDisplay)
                 {
-                    _fwTimeOutCount = 60;
+                    _fwTimeOutCount = 120;
                     _timeOutCount = _fwTimeOutCount;
                     _timerTimeOut = new Timer();
                     _timerTimeOut.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
@@ -2041,7 +2041,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             messageWithRoot += "</Root>";
 
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(messageWithRoot);
+            try
+            {
+                xmlDoc.LoadXml(messageWithRoot);
+            }
+            catch (Exception ex)
+            {
+                _logs.DebugMsg_1($"xmlDoc.LoadXml Error : {ex.Message}");
+                _logs.DebugMsg_1($"xmlDoc.LoadXml message : {message}");
+            }
             XmlNode? msg1Node;//鍵盤滑鼠才會觸發
             XmlNode? progressNode;
             XmlNode? buttonCaptionNode;
@@ -2329,9 +2337,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     int.TryParse(timeOut.InnerText, out _fwTimeOutCount);
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get timeOut value : {_fwTimeOutCount}");
-                    if (_fwTimeOutCount < 60)
+                    if (_fwTimeOutCount < 120)
                     {
-                        _fwTimeOutCount = 60;
+                        _fwTimeOutCount = 120;
                     }
                     UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                     {
