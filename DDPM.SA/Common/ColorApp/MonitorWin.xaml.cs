@@ -526,14 +526,14 @@ namespace DDPM.ColorApp
                                 else
                                     reqKey = (config.AppInfo[reqAppName]).Color;
 
-                                //writelog("reqAppName = " + reqAppName + "," + "reqKey [ColorPresetName] = " + reqKey.ToString());
+                                writelog("reqAppName = " + reqAppName + "," + "reqKey [ColorPresetName] = " + reqKey.ToString());
                             }
 
                             //if (string.IsNullOrEmpty(reqKey))
                             if (reqKey == -1)
                             {
-                                //writelog("reqAppName = " + reqAppName + "," + "reqKey [ColorPresetName] is string.IsNullOrEmpty");
-                                //Trace.WriteLine("reqKey is string.IsNullOrEmpty");
+                                writelog("reqAppName = " + reqAppName + "," + "reqKey [ColorPresetName] is string.IsNullOrEmpty");
+                                Trace.WriteLine("reqKey is string.IsNullOrEmpty");
                                 return;
                             }
 
@@ -543,8 +543,8 @@ namespace DDPM.ColorApp
                                 //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey);
                                 //writelog("reqAppName = " + reqAppName + "," + "reqKey  [ColorPresetName] is " + reqKey);
 
-                                //writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey.ToString());
-                                //writelog("reqAppName = " + reqAppName + "," + "reqKey  [ColorPresetName] is " + reqKey.ToString());
+                                writelog("reqAppName = " + reqAppName + "," + "Pre_reqKey  [ColorPresetName] is " + Pre_reqKey.ToString());
+                                writelog("reqAppName = " + reqAppName + "," + "reqKey  [ColorPresetName] is " + reqKey.ToString());
 
                                 Pre_reqKey = reqKey;
                                 //

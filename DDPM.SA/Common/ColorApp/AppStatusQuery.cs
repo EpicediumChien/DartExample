@@ -160,9 +160,8 @@ namespace DDPM.ColorApp
                 //return false;
             }
 
-            //string strlog;
-            //strlog = String.Format($"[Watcher-callback] process: ProcessName[{process.ProcessName}]ModuleName[{process.MainModule.ModuleName}]Title[{process.MainWindowTitle}]");
-            //writelog(strlog);
+            strlog = String.Format($"[Watcher-callback] process: ModuleName[{process.MainModule.ModuleName}]Title[{process.MainWindowTitle}]");
+            writelog(strlog);
 
             return true;
         }
@@ -211,8 +210,8 @@ namespace DDPM.ColorApp
                     //forgroundProcess = _realProcess;
                 }
 
-                //strlog = String.Format($"[Watcher-callback] foregroundProcess.ProcessName = {forgroundProcess.ProcessName} process id({pid}) Title({forgroundTitle}) ");
-                //writelog(strlog);
+                strlog = String.Format($"[Watcher-callback] foregroundProcess.ProcessName = {forgroundProcess.ProcessName} process id({pid}) Title({forgroundTitle}) ");
+                writelog(strlog);
 
                 //check process content
                 if (forgroundProcess == null || forgroundProcess.MainModule == null ||
@@ -221,8 +220,7 @@ namespace DDPM.ColorApp
                     ///////logger.WriteLog($"[Watcher-callback] process id({pid}) Title({forgroundTitle}) to Process object got null content, drop it");
 
                     //string strlog;
-                    //strlog = String.Format($"[Watcher-callback] process id({pid}) Title({forgroundTitle}) to Process object got null content, drop it");
-                    strlog = String.Format($"[Watcher-callback] Process object got null content, drop it");
+                    strlog = String.Format($"[Watcher-callback] process id({pid}) Title({forgroundTitle}) to Process object got null content, drop it");
                     writelog(strlog);
 
                     return;
@@ -233,8 +231,8 @@ namespace DDPM.ColorApp
                 ///////logger.WriteLog($"[Watcher-callback] {strProcessName}:>Title({forgroundTitle}):PID({pid}):hWnd({hWnd}):Path({strFilePath})");
 
                 //string strlog;
-                //strlog = String.Format($"[Watcher-callback] {strProcessName}:>Title({forgroundTitle}):PID({pid}):hWnd({hWnd}):Path({strFilePath})");
-                //writelog(strlog);
+                strlog = String.Format($"[Watcher-callback] {strProcessName}:>Title({forgroundTitle}):PID({pid}):hWnd({hWnd})");
+                writelog(strlog);
 
                 if (SendValue != null)
                 {
