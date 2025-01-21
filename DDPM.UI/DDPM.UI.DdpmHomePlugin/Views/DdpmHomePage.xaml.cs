@@ -61,7 +61,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 UIDebugPanel.Visibility = Visibility.Visible;
             }
-            this.MinWidth = System.Windows.Application.Current.MainWindow.MinWidth;
         }
 
         private void ImportNotifyEventHandler(object sender, MonitorInfo mo)
