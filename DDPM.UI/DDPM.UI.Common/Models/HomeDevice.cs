@@ -198,6 +198,8 @@ namespace DDPM.UI.Common.Models
             {
                 if (MonitorInfo != null)
                 {
+                    //Robert_lin 2025-1-21 Debug info
+                    //string debugInfo = $"({MonitorInfo.DisplayName})";
                     return MonitorInfo.edid.ServiceTag;
                 }
                 else
@@ -357,6 +359,8 @@ namespace DDPM.UI.Common.Models
                 }
                 else if (MonitorInfo != null)
                 {
+                    //Robert_lin 2025-1-21 Debug info
+                    //string debugInfo = $"({MonitorInfo.DisplayName})";
                     //Robert_Lin, 2024-8-29 comment out for DDPMW-2094
                     //Robert_Lin, 2024-6-20, change to DisplayName (with (instanceNo)
                     //return MonitorInfo.AliasDeviceName;
