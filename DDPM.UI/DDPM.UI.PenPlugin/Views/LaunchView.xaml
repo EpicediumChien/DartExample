@@ -95,8 +95,13 @@
                                     <Image x:Name="TopButton" Source="{Binding TopButtonImageFile}" Style="{StaticResource B1Style}"
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsTopButtonVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                                         <Image.ToolTip>
-                                            <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding TopButtonTooltip}" />
+                                            <ToolTip>
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                    <Border.Resources>
+                                                        <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                    </Border.Resources>
+                                                    <TextBlock Text="{Binding TopButtonTooltip}" />
+                                                </Border>
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>
@@ -107,8 +112,13 @@
                                     <Image x:Name="TopBarrelButton" Source="{Binding TopBarrelButtonImageFile}" Style="{StaticResource B2Style}"
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsTopBarrelButtonVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                                         <Image.ToolTip>
-                                            <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding TopBarrelButtonTooltip}" />
+                                            <ToolTip>
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                    <Border.Resources>
+                                                        <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                    </Border.Resources>
+                                                    <TextBlock Text="{Binding TopBarrelButtonTooltip}" />
+                                                </Border>
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>
@@ -119,8 +129,13 @@
                                     <Image x:Name="BottomBarrelButton" Source="{Binding BottomBarrelButtonImageFile}" Style="{StaticResource B2Style}"
                                            MouseLeftButtonDown="ButtonClicked" Visibility="{Binding IsBottomBarrelButtonVisible, Converter={StaticResource BoolToHiddenConverter}}" MouseEnter="ButtonHoverIn" MouseLeave="ButtonHoverOut">
                                         <Image.ToolTip>
-                                            <ToolTip Style="{StaticResource ButtonToolTipStyle}">
-                                                <TextBlock Style="{StaticResource KeyToolTipTextStyle}" Text="{Binding BottomBarrelButtonTooltip}" />
+                                            <ToolTip>
+                                                <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                                    <Border.Resources>
+                                                        <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                                    </Border.Resources>
+                                                    <TextBlock Text="{Binding BottomBarrelButtonTooltip}" />
+                                                </Border>
                                             </ToolTip>
                                         </Image.ToolTip>
                                     </Image>
@@ -153,16 +168,26 @@
                                 <MouseBinding Gesture="RightDoubleClick" Command="{Binding ShowInfoClickedCommand}" />
                             </Image.InputBindings>
                             <Image.ToolTip>
-                                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                                    <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding FirmwareVersion2}" />
+                                <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <Border.Resources>
+                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                        </Border.Resources>
+                                        <TextBlock Text="{Binding FirmwareVersion2}" />
+                                    </Border>
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>
                         <Image Margin="9,22.5,0,0" Source="/DDPM.UI.Resources;component/Resources/Images/MultiDevice.png" Stretch="Fill"
                                VerticalAlignment="Top" Width="16" Height="16" Visibility="{Binding MultiDevicesInfoVisibility}">
                             <Image.ToolTip>
-                                <ToolTip Style="{StaticResource InfoToolTipStyle}" Placement="Top" VerticalOffset="6" HorizontalOffset="8">
-                                    <TextBlock Style="{StaticResource InfoToolTipTextStyle}" Text="{Binding MultiDeviceTooltip}" TextWrapping="Wrap" Width="350" />
+                                <ToolTip Placement="Top" VerticalOffset="6" HorizontalOffset="8">
+                                    <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
+                                        <Border.Resources>
+                                            <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
+                                        </Border.Resources>
+                                        <TextBlock Text="{Binding MultiDeviceTooltip}" TextWrapping="Wrap" Width="350" />
+                                    </Border>
                                 </ToolTip>
                             </Image.ToolTip>
                         </Image>
