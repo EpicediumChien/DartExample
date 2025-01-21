@@ -801,20 +801,41 @@ namespace DDPM.SA.Plugin.User.CLIManager
         private void _CliManagerPlugin_CLIToastEvent(object? sender, CLIEventToastArgs e)
         {
             var header = string.Empty;
-            if (e.toast_message.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase) || e.toast_message.Contains("dock=fwupdate", StringComparison.OrdinalIgnoreCase))
+            if (e.defer_item.commanddata.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase) || e.defer_item.commanddata.Contains("dock=fwupdate", StringComparison.OrdinalIgnoreCase))
             {
                 header = e.is_defer ? "Update available​" : "Update will be applied​";
-                e.toast_message = e.is_defer ? $"[Device Marketing Name with Model in parenthesis] has a pending firmware update. During update, device may be intermittently available. Do not disconnect the device during the update. This update can be deferred {e.count + 1} times before it is required.​" : "There is a required firmware update for [Device Marketing Name with Model in parenthesis]. During update, device may be intermittently available. Do not disconnect the device during the update.​";
+
+                var deviceType = e.defer_item.commanddata.ToLower()
+                                                         .Split()
+                                                         .FirstOrDefault(_ => _.Contains("value"));
+
+                var deviceName = "[Device Marketing Name with Model in parenthesis]";
+
+                if (!string.IsNullOrWhiteSpace(deviceType))
+                {
+                    deviceType = deviceType.Split('=')[1].Split(',')[0];
+
+                    if (deviceType.Equals("display"))
+                    {
+                        deviceName = _DevManagerPlugin.GetMonitors().Result.FirstOrDefault()?.modelName ?? deviceType;
+                    }
+                    else
+                    {
+                        deviceName = _DevManagerPlugin.GetDevices().Result?.deviceInfo.FirstOrDefault(_ => _.LogicalDeviceType.Contains(deviceType, StringComparison.OrdinalIgnoreCase))?.ModelNumber ?? deviceType;
+                    }
+                }
+
+                e.toast_message = e.is_defer ? $"{deviceName} has a pending firmware update. During update, device may be intermittently available. Do not disconnect the device during the update. This update can be deferred {e.defer_item.count + 1} times before it is required.​" : $"There is a required firmware update for {deviceName}. During update, device may be intermittently available. Do not disconnect the device during the update.​";
             }
             else if (e.toast_message.Contains("app=update", StringComparison.OrdinalIgnoreCase))
             {
                 header = e.is_defer ? "Update available​" : "Update will be applied​";
-                e.toast_message = e.is_defer ? $"Dell Display and Peripheral Manager has a pending update. This update can be deferred {e.count + 1} times before it is required.​" : "There is a required software update for Dell Display and Peripheral Manager.​";
+                e.toast_message = e.is_defer ? $"Dell Display and Peripheral Manager has a pending update. This update can be deferred {e.defer_item.count + 1} times before it is required.​" : "There is a required software update for Dell Display and Peripheral Manager.​";
             }
             else
             {
                 header = e.is_defer ? "Pending Changes to settings​" : "Changes to settings will be applied​";
-                e.toast_message = e.is_defer ? $"Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator.​\nThe configuration can be deferred {e.count + 1} times before it is required.​" : "Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator​.";
+                e.toast_message = e.is_defer ? $"Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator.​\nThe configuration can be deferred {e.defer_item.count + 1} times before it is required.​" : "Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator​.";
             }
             //throw new NotImplementedException();
             //Console.WriteLine($"value = {CLIEventToastArgs.toast_message}");

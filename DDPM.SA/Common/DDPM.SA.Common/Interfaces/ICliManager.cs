@@ -133,7 +133,7 @@ namespace DDPM.SA.Common
         public string defer_id { get; set; }
         public string toast_message { get; set; }
         public bool is_defer { get; set; }
-        public int count { get; set; }
+        public DeferItem defer_item { get; set; }
     }
 
     // add @ 20250116 stephen
