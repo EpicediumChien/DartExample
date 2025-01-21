@@ -8136,7 +8136,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             try
             {
                 // find _comdity object for this device
-                writelog($"Search {devcieID} from webcamList for Unregister Events");
+                writelog($"Search {devcieID} from headsetList for Unregister Events");
 
                 bool result = false;
                 foreach (var item in headsetList)
