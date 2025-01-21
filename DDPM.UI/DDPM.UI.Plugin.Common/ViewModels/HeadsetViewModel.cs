@@ -262,7 +262,11 @@ namespace DDPM.UI.Plugin.ViewModels
                             if (CheckIfCurrentSettingsMatchDefault(DeviceInfoDTP, Model))
                                 return;
                             if (guid != CurrentDeviceInfo!.ID.ToString())
-                                RestoreToDefault();
+                                RestoreToDefault(false);
+                            _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_SetFactoryResetAsyncValueForHeadset {Model.ToString() + " : " + event_param[eventtype].ToString()}");
+                            break;
+                        case "Headset_SetFactoryResetAsyncValueForHeadsetForCLI":
+                            RestoreToDefault(false);// For CLI Update
                             _log.Info($"[HeadsetViewModel] Headset_DTPNotify Headset_SetFactoryResetAsyncValueForHeadset {Model.ToString() + " : " + event_param[eventtype].ToString()}");
                             break;
                         default:
@@ -1211,7 +1215,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
             }
         }
-        public async void RestoreToDefault()
+        public async void RestoreToDefault(bool set = true)
         {
             try
             {
@@ -1235,8 +1239,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     _log.Info($"[HeadsetViewModel] DeviceInfoDTP.VoiceGuidance .......= {DeviceInfoDTP.VoiceGuidance.ToString()}");
                     _log.Info($"[HeadsetViewModel] DeviceInfoDTP.WearDetection .......= {DeviceInfoDTP.WearDetectionFromDTP.ToString()}");
                     _log.Info($"[HeadsetViewModel] DeviceInfoDTP.AnswerCall ..........= {DeviceInfoDTP.AnswerCall.ToString()}");
-                    bool SetFactoryResult = _deviceManager.SetFactoryResetAsyncValueForHeadset(CurrentDeviceInfo!.ID.ToString(), true).Result;
-                    _log.Info($"[HeadsetViewModel] SetFactoryResetAsyncValueForHeadset = {SetFactoryResult.ToString()}");
+                    if (set)
+                    {
+                        bool SetFactoryResult = _deviceManager.SetFactoryResetAsyncValueForHeadset(CurrentDeviceInfo!.ID.ToString(), true).Result;
+                        _log.Info($"[HeadsetViewModel] SetFactoryResetAsyncValueForHeadset = {SetFactoryResult.ToString()}");
+                    }
+                    else
+                        _log.Info($"[HeadsetViewModel] SetFactoryResetAsyncValueForHeadset only Update UI");
                     UpdateDTPValue();
                     //_showPluginManager = HeadsetPlugin.PluginIoc.GetService<IShowPluginManager>();
                     //_showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.HeadsetPluginId, CurrentDeviceInfo!.ID.ToString());

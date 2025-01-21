@@ -5488,6 +5488,37 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
         }
 
+        public async Task<bool> SetFactoryResetAsyncValueForHeadsetForCLI(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "FactoryReset", newValue);
+                    SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_SetFactoryResetAsyncValueForHeadsetForCLI",
+                        Guid, $"Headset_SetFactoryResetAsyncValueForHeadsetForCLI:{newValue.ToString()}"));
+                    writelog("[DTPProxyPlugin] [Headset] Headset_SetFactoryResetAsyncValueForHeadsetForCLI Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] SetFactoryResetAsyncValueForHeadset failed: {ex.Message}");
+                return false;
+            }
+        }
+
         public async Task<bool> SetBoomMicAsync(string Guid, bool newValue)
         {
             string guidString = Guid;
@@ -10077,7 +10108,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             writelog($"Register Headset Commodity event by DellPeripheral.Headset...");
             _comdityHeadset = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId("DellPeripheral.Headset"), CancellationToken.None);
-            if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _headsetcom)
+            if (_comdityHeadset is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _headsetcom)
             {
                 try
                 {
@@ -10107,6 +10138,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
                 }
             }
+            await RegisterEventsForAllHeadsetAsync();
 
             writelog($"Register Commodity event...");
             _comdity = await _commSdk.GetCommodityAsync<ISpeakerCommodity>(new ItemId("DellPeripheral.Speaker"), CancellationToken.None);
@@ -10211,8 +10243,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 writelog($"IWebcamCommodity not find");
 
             await RegisterEventsForAllConnectedWebcamsAsync();
-
-            await RegisterEventsForAllHeadsetAsync();
 
             //for test
             //await UnsubscribeDTPGlobalEventsAsync();

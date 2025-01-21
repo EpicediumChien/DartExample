@@ -491,7 +491,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             switch (x.LogicalDeviceType.ToUpper())
                             {
                                 case "LOGICALHEADSET":
-                                    result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(x.ID.ToString(), true)).Result;
+                                    result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadsetForCLI(x.ID.ToString(), true)).Result;
                                     break;
                                 case "LOGICALWIREDAUDIO":
                                     result = RunAsyncTimeout(_devMgr.SetResetToDefaultAsyncForSoundbar(x.ID.ToString(), true)).Result;
