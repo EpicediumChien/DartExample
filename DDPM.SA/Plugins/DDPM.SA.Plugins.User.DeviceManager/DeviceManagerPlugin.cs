@@ -2205,7 +2205,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Dictionary<string, InputInfo> readinputlist = new Dictionary<string, InputInfo>();
             //get monitor settings
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
-            bool b = false;
             if (settings != null)
             {
                 //get monitor setting
@@ -2228,6 +2227,44 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (inputSourcelist != null &&
                                     inputSourcelist.Count != 0)
                                 {
+                                    //copyinputlist = inputSourcelist;
+                                    //foreach (var input in inputSourcelist)
+                                    //{
+                                    //    string usbUpstream = GetUSBUpstream(monitorInfo, input.Key).Result;
+                                    //    if (string.IsNullOrEmpty(usbUpstream))
+                                    //    {
+                                    //        writelog("[DeviceMangerPlugin] usbUpstream is null or empty ...");
+                                    //    }
+                                    //    else
+                                    //    {
+                                    //        input.Value.USBUpstream = usbUpstream;
+                                    //    }
+                                    //    //Maybe Migration...
+                                    //    //if (input.Value.USBUpstream == string.Empty && monitorInfo.CapabilityDic.ContainsKey("EE") && monitorInfo.CapabilityDic.ContainsKey("E7"))
+                                    //    //{
+                                    //    //readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
+                                    //    //if (readinputlist != null)
+                                    //    //{
+                                    //    //    if (readinputlist.Count != 0)
+                                    //    //    {
+                                    //    //        foreach (var readinput in readinputlist)
+                                    //    //        {
+                                    //    //            foreach (var copyinput in copyinputlist)
+                                    //    //            {
+                                    //    //                if (readinput.Value.Code == copyinput.Value.Code)
+                                    //    //                {
+                                    //    //                    readinput.Value.InputName = copyinput.Value.InputName;
+                                    //    //                    break;
+                                    //    //                }
+                                    //    //            }
+                                    //    //        }
+                                    //    //        bool b1 = SetInputSourcelist(monitorInfo, readinputlist).Result;
+                                    //    //        return Task.FromResult(readinputlist);
+                                    //    //    }
+                                    //    //}
+                                    //    //break;
+                                    //    //}
+                                    //}
                                     return Task.FromResult(inputSourcelist);
                                 }
                             }
@@ -2237,12 +2274,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             writelog("[DeviceMangerPlugin] monitorSetting.Input is null ...");
                         }
                         inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
-                        b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
+                        bool b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
                     }
                     catch (Exception e)
                     {
                         inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
-                        b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
+                        bool b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
                     }
                 }
             }
