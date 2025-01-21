@@ -352,7 +352,6 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "CustomCheck":
                         _log.Info($"[HeadsetViewModel] ExecuteDebouncedAction SetSelectedPresetAsync ... {mode} ... {DeviceInfoDTP.SelectedPreset.ToString()}");
                         _deviceManager.SetSelectedPresetAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.SelectedPreset).Wait();
-                        UpdateCollaborationAndultimediaUI(false, true);
                         break;
                     //------------------------------------------------------------------------------------------
                     case "WearDetectionCheck":
@@ -418,7 +417,6 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "SidetoneSlider":
                         _log.Info($"[HeadsetViewModel] ExecuteDebouncedAction SidetoneLevel ... SidetoneLevel .... {DeviceInfoDTP.SidetoneLevel.ToString()}");
                         _deviceManager.SetSidetoneLevelAsync(CurrentDeviceInfo!.ID.ToString(), DeviceInfoDTP.SidetoneLevel).Wait();
-                        UpdateCollaborationAndultimediaUI(true, false);
                         break;
                     //------------------------------------------------------------------------------------------
                     default:
@@ -628,7 +626,6 @@ namespace DDPM.UI.Plugin.ViewModels
             CheckANCUI(true);
             CheckAnswerCallUI(true);
             HeadsetSettingChanged?.Invoke(this, EventArgs.Empty);
-            UpdateCollaborationAndultimediaUI(_isCollaborationChecked, _isMultimediaChecked);
         }
 
         private void CheckSidetoneUI(bool PropertyChange)
@@ -642,7 +639,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged(nameof(SidetoneStatus));
                     OnPropertyChanged(nameof(Sidetone_String));
                     OnPropertyChanged(nameof(SidetoneSliderStatus));
-                    //UpdateCollaborationAndultimediaUI(true, false);
+                    UpdateCollaborationAndultimediaUI(true, false);
                 }
             }
         }
@@ -700,7 +697,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     OnPropertyChanged(nameof(OutgoingAudioStatus));
                     OnPropertyChanged(nameof(OutgoingAudio_String));
-                    //UpdateCollaborationAndultimediaUI(true, false);
+                    UpdateCollaborationAndultimediaUI(true, false);
                 }                
             }
         }
@@ -716,7 +713,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     OnPropertyChanged(nameof(IncomingAudioStatus));
                     OnPropertyChanged(nameof(IncomingAudio_String));
-                    //UpdateCollaborationAndultimediaUI(true, false);
+                    UpdateCollaborationAndultimediaUI(true, false);
                 }                
             }
         }
@@ -730,7 +727,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 OnPropertyChanged(nameof(MicNoiseCancellationStatus));
                 OnPropertyChanged(nameof(MicNoiseCancellation_String));
-                //UpdateCollaborationAndultimediaUI(true, false);
+                UpdateCollaborationAndultimediaUI(true, false);
             }
         }
 
@@ -951,7 +948,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 if (PropertyChange)
                 {
-                    //UpdateCollaborationAndultimediaUI(false, true);
+                    UpdateCollaborationAndultimediaUI(false, true);
                     OnPropertyChanged(nameof(IsCollaborationChecked));
                     OnPropertyChanged(nameof(IsMultimediaChecked));
                     OnPropertyChanged(nameof(IsDefaultChecked));
@@ -1085,21 +1082,18 @@ namespace DDPM.UI.Plugin.ViewModels
                     DeviceInfoDTP.MicNoiseCancellation = di.MicNoiseCancellation;//_deviceManager.GetMicNoiseCancellationAsync(CurrentDeviceID.ToString()).Result;
                     CheckMicNoiseCancellationUI(true);
                     CheckOutgoingAudioUI(true);
-                    UpdateCollaborationAndultimediaUI(true, false);
                     _log.Info($"[HeadsetViewModel] HandleNotification DTH Event MicNoiseCancellationChanged {Model.ToString() + " : " + di.MicNoiseCancellation.ToString()}");
                     break;
 
                 case "MicNCIncomingChanged":
                     DeviceInfoDTP.MicNCIncoming = di.MicNCIncoming;//_deviceManager.GetMicNCIncomingAsync(CurrentDeviceID.ToString()).Result;
                     CheckMicNCIncomingUI(true);
-                    UpdateCollaborationAndultimediaUI(true, false);
                     _log.Info($"[HeadsetViewModel] HandleNotification DTH Event MicNCIncomingChanged {Model.ToString() + " : " + di.MicNCIncoming.ToString()}");
                     break;
 
                 case "SidetoneChanged":
                     DeviceInfoDTP.Sidetone = di.Sidetone;//_deviceManager.GetSidetoneAsync(CurrentDeviceID.ToString()).Result;
                     CheckSidetoneUI(true);
-                    UpdateCollaborationAndultimediaUI(true, false);
                     _log.Info($"[HeadsetViewModel] HandleNotification DTH Event SidetoneChanged {Model.ToString() + " : " + di.Sidetone.ToString()}");
                     break;
 
@@ -1118,14 +1112,12 @@ namespace DDPM.UI.Plugin.ViewModels
                 case "SelectedPresetChanged":
                     DeviceInfoDTP.SelectedPreset = di.SelectedPreset;//_deviceManager.GetSelectedPresetAsync(CurrentDeviceID.ToString()).Result;
                     CheckPresetsUI(true);
-                    UpdateCollaborationAndultimediaUI(false, true);
                     _log.Info($"[HeadsetViewModel] HandleNotification DTH Event SelectedPresetChanged {Model.ToString() + " : " + di.SelectedPreset.ToString()}");
                     break;
 
                 case "SidetoneLevelChanged":
                     DeviceInfoDTP.SidetoneLevel = di.SidetoneLevel;//_deviceManager.GetSidetoneLevelAsync(CurrentDeviceID.ToString()).Result;
                     CheckSidetoneLevelUI(true);
-                    UpdateCollaborationAndultimediaUI(true, false);
                     _log.Info($"[HeadsetViewModel] HandleNotification DTH Event SidetoneLevelChanged {Model.ToString() + " : " + di.SidetoneLevel.ToString()}");
                     break;
                 //case "MuteStatusChanged":
@@ -1142,7 +1134,6 @@ namespace DDPM.UI.Plugin.ViewModels
                                                                                                                            + ", Band4Gain = " + di.Band4Gain.ToString()
                                                                                                                            + ", Band5Gain = " + di.Band5Gain.ToString());
                     HeadsetSettingChanged?.Invoke(this, EventArgs.Empty);
-                    UpdateCollaborationAndultimediaUI(false, true);
                     break;
 
                 case "AncModeChanged":
@@ -2625,8 +2616,8 @@ namespace DDPM.UI.Plugin.ViewModels
 
         #region Group 2
 
-        private static bool _isCollaborationChecked = true;
-        private static bool _isMultimediaChecked = false;
+        private bool _isCollaborationChecked = true;
+        private bool _isMultimediaChecked = false;
 
         public bool IsCollaborationChecked
         {
