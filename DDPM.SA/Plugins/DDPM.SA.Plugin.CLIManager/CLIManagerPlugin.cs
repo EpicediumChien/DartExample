@@ -799,9 +799,16 @@ namespace DDPM.SA.Plugin.CLIManager
                 else
                 {
                     var cmds = new List<string> { $"{command} {_commandLineInput.Options[0].Option_Value}", "exit" };
-                    if (command == "NETWORKKVM" && _commandLineInput.Options[0].Option_Value == "ON")
+                    if (command.Equals("NETWORKKVM"))
                     {
-                        cmds[1] = "connect";
+                        if (_commandLineInput.Options[0].Option_Value.Equals("ON"))
+                        {
+                            cmds[1] = "connect";
+                        }
+                        else if (_commandLineInput.Options[0].Option_Value.Equals("ENABLE"))
+                        {
+                            cmds.RemoveAt(1);
+                        }
                     }
                     retcode = true;
                     response.Result = "PASS";
