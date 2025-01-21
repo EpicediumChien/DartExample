@@ -8126,7 +8126,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private async Task<bool> UnregisterEventsForHeadsetAsync(string devcieID)
         {
-            if (devcieID == null || devcieID == string.Empty || webcamList.Count == 0)
+            if (devcieID == null || devcieID == string.Empty || headsetList.Count == 0)
             {
                 writelog($"devcieID == string.Empty || devcieID == null || headsetList.Count == 0");
 
