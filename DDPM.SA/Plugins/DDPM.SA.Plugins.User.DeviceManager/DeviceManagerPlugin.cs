@@ -2228,11 +2228,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (inputSourcelist != null &&
                                     inputSourcelist.Count != 0)
                                 {
-                                    foreach(var item in inputSourcelist) 
-                                    {
-                                        item.Value.USBUpstream = GetUSBUpstream(monitorInfo, item.Key).Result;
-                                    }
-                                    b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
                                     return Task.FromResult(inputSourcelist);
                                 }
                             }
