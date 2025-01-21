@@ -210,7 +210,10 @@ namespace DDPM.ColorApp
         private void writelog(string? text, log_type log_type = log_type.info)
         {
             text = "[ColorApp] " + text;
-            //Console.WriteLine(text);
+#if DEBUG
+
+            Console.WriteLine(text);
+#endif
 
             if (Log != null) // Elie, the instance of Log is from DTH. So we just check if it's null or not.
             {

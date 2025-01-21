@@ -376,8 +376,9 @@ namespace DDPM.ColorApp
         private static void writelog(string? text, log_type log_type = log_type.info)
         {
             text = "[AppStatusQuery] " + text;
-            //System.Console.WriteLine(text);
-
+#if DEBUG
+            System.Console.WriteLine(text);
+#endif
             if (Log != null) // Elie, the instance of Log is from DTH. So we just check if it's null or not.
             {
                 if (log_type == log_type.info)
