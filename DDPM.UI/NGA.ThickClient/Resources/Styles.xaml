@@ -98,7 +98,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:UXFrame}">
                     <Border Background="Transparent">
-                        <ContentPresenter />
+                        <ContentPresenter Width="{TemplateBinding ActualWidth}"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

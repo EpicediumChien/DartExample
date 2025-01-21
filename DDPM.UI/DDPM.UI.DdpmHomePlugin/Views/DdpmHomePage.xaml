@@ -84,8 +84,8 @@
                     <ControlTemplate TargetType="{x:Type ListView}">
                         <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                                 Padding="0" Margin="0" SnapsToDevicePixels="true">
-                            <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" HorizontalAlignment="Stretch" MinWidth="1050"
-                                          MaxWidth="{Binding ScrollViewMaxWidth}">
+                            <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" HorizontalAlignment="Stretch" MaxWidth="{Binding ScrollViewMaxWidth}"
+                                          Width="{TemplateBinding Width}">
                                 <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                             </ScrollViewer>
                         </Border>
