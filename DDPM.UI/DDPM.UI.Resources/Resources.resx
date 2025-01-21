@@ -3504,6 +3504,9 @@
   <data name="Camera.26" xml:space="preserve">
     <value>Connect your monitor via USB 3.0 to enable 4K UHD resolution.</value>
   </data>
+	<data name="Camera.27" xml:space="preserve">
+    <value>Connect your webcam via USB 3.0 to enable 4K UHD resolution.</value>
+  </data>
   <data name="WebCameraPresenceDetection.12" xml:space="preserve">
     <value>seconds</value>
   </data>

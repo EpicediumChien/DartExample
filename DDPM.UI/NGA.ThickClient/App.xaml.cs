@@ -16,6 +16,7 @@ using Dell.Client.Framework.UX.WPF.ResourceManager.Enums;
 using Dell.UnifiedAgent.RemotePlugin.Client.Console;
 using NGA.ThickClient.Interfaces;
 using NGA.ThickClientCore;
+using System.Data.OleDb;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -117,7 +118,17 @@ namespace NGA.ThickClient
             DdpmCommonHelper.updateMergedDictionaries(resourceManager);
             try
             {
-                var resourceDictionaries = new[] { new ResourceDictionary { Source = new Uri(AppStylesUriString, UriKind.RelativeOrAbsolute) } };
+                //Robert_Lin 2025-1-20 add Custom Controls resoure file (for Narrator mode)
+                //Based on DUCA team, Sharap Viswanathan, Karthik, suggestion.
+                const string DdpmCustomControls = "pack://application:,,,/DDPM.UI.Common;component/UserControls/Generic.xaml";
+                var resourceDictionaries = new[] {
+                    new ResourceDictionary { Source = new Uri(AppStylesUriString, UriKind.RelativeOrAbsolute) }
+                    , new ResourceDictionary { Source = new Uri(DdpmCustomControls, UriKind.RelativeOrAbsolute) }
+                };
+                //OLD:
+                //var resourceDictionaries = new[] { 
+                //    new ResourceDictionary { Source = new Uri(AppStylesUriString, UriKind.RelativeOrAbsolute) }
+                //};
                 resourceManager.AddCustomStyles(resourceDictionaries).StageAndCommitResources();
             }
             catch (Exception ex)

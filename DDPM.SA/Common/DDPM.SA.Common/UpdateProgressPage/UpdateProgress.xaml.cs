@@ -212,8 +212,14 @@ namespace DDPM.SA.Common.UpdateProgressPage
             }
             else
             {
-
-                UpdateTitle = $"{LangHelper.Instance["Firmware_Update"]} - {e.DeviceName} {e.Model}";
+                if (!e.DeviceName.Equals(e.Model))//Added by Bruce Dongle name and model are repeated. Added a new check to prevent duplication if they are the same
+                {
+                    UpdateTitle = $"{LangHelper.Instance["Firmware_Update"]} - {e.DeviceName} {e.Model}";
+                }
+                else
+                {
+                    UpdateTitle = $"{LangHelper.Instance["Firmware_Update"]} - {e.DeviceName}";
+                }
                 UpdateSubTitle = LangHelper.Instance["Updating_firmware_Do_not_remove_or_power_off_the_device_Leave_the_device_undisturbed"];
             }
             UpdateVersion = $"{LangHelper.Instance["Version"]} {e.TheLatestVersion}";
