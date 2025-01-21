@@ -23,8 +23,6 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using Screen = System.Windows.Forms.Screen;
 using ResourceManager = Dell.Client.Framework.UX.WPF.ResourceManager.ResourceManager;
-using System.Reflection.Metadata;
-using System.Windows.Forms;
 
 namespace NGA.ThickClient
 {
@@ -658,9 +656,22 @@ namespace NGA.ThickClient
             return 1.0;
         }
 
+        private void AdjustWindowPosition(Window window, Screen screen, double factor = 1.0)
+        {
+            // Get screen working area
+            var screenWorkingArea = screen.WorkingArea;
+
+            // Adjust window position if it goes out of the working area
+            double adjustedLeft = Math.Max(screenWorkingArea.Left, Math.Min(screenWorkingArea.Right - window.Width * factor, window.Left));
+            double adjustedTop = Math.Max(screenWorkingArea.Top, Math.Min(screenWorkingArea.Bottom - window.Height * factor, window.Top));
+
+            // Apply the adjusted position
+            window.Left = adjustedLeft / factor;
+            window.Top = adjustedTop / factor;
+        }
+
         private void EnsureWindowIsVisible(Window window)
         {
-            bool screenPositionAdjustFlag = false;
             //Derek 10/26
             Int16 width = (Int16?)System.Windows.Application.Current?.TryFindResource("breakPoint") ?? 0;
             Int16 height = (Int16?)System.Windows.Application.Current?.TryFindResource("minHeight") ?? 0;
@@ -681,13 +692,24 @@ namespace NGA.ThickClient
                                         $"Working Area: {workingWidth}x{workingHeight}");
             workingWidth = workingWidth / factor;
             workingHeight = workingHeight / factor;
+
+            // Get the window's position and size
+            var windowRect = new System.Drawing.Rectangle(
+                (int)window.Left,
+                (int)window.Top,
+                (int)window.Width,
+                (int)window.Height);
             // Find the screen containing the window
             var screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle); // Default to primary screen
+
+            var workingArea = screen.WorkingArea;
+            bool isOutOfBounds = window.Left < workingArea.Left || window.Top < workingArea.Top || window.Left + window.Width > workingArea.Right || window.Top + window.Height > workingArea.Bottom;
+
             if (width > workingWidth)
             {
                 this.MinWidth = workingWidth;
                 this.Width = workingWidth;
-                screenPositionAdjustFlag = true;
+                isOutOfBounds = true;
             }
             else
                 this.MinWidth = width;
@@ -695,23 +717,14 @@ namespace NGA.ThickClient
             {
                 this.MinHeight = workingHeight;
                 this.Height = workingHeight;
-                screenPositionAdjustFlag = true;
+                isOutOfBounds = true;
             }
             else
                 this.MinHeight = height;
 
-            if (screenPositionAdjustFlag)
+            if (isOutOfBounds)
             {
-                // Get screen working area
-                var screenWorkingArea = screen.WorkingArea;
-
-                // Adjust window position if it goes out of the working area
-                double adjustedLeft = Math.Max(screenWorkingArea.Left, Math.Min(screenWorkingArea.Right - window.Width * factor, window.Left));
-                double adjustedTop = Math.Max(screenWorkingArea.Top, Math.Min(screenWorkingArea.Bottom - window.Height * factor, window.Top));
-
-                // Apply the adjusted position
-                window.Left = adjustedLeft / factor;
-                window.Top = adjustedTop / factor;
+                AdjustWindowPosition(window, screen, factor);
             }
         }
 
