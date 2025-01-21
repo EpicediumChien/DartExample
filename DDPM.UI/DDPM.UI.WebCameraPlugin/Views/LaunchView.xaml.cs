@@ -279,7 +279,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             DdpmCommonHelper.WriteUILog($"[WebcamPlugin][OnWebcamCloseEvent] event MainWindow_Force_Camera_Unlock received");
 
-            //FreeWebcamResource();
+            FreeWebcamResource();
             //if (writeableBitmap != null)
             //{
             //    try
