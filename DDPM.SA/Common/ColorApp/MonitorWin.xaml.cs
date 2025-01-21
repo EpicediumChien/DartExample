@@ -311,7 +311,7 @@ namespace DDPM.ColorApp
                     string strFilePath = data.ActiveWindowFilePath;
                     //writelog("EventAppStatus_SendValue ActiveWindowTitle = " + data.ActiveWindowTitle);
                     //writelog("EventAppStatus_SendValue ActiveWindowProcessId = " + data.ActiveWindowProcessId.ToString());
-                    //writelog("EventAppStatus_SendValue ActiveWindowProcessModuleName = " + data.ActiveWindowProcessModuleName);
+                    writelog("EventAppStatus_SendValue ActiveWindowProcessModuleName = " + data.ActiveWindowProcessModuleName);
                     //writelog("EventAppStatus_SendValue ActiveWindowFilePath = " + data.ActiveWindowFilePath);
 
                     MonitorInfo actived_mi = null;

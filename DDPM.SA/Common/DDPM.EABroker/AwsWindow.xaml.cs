@@ -199,8 +199,7 @@ namespace DDPM.EABroker
                         }
                         else
                         {
-                            //_vm.WriteLog($"  * ReadSettings of Monitor(Model:{attachedMonitors[0].modelName}, ServiceTag:{attachedMonitors[0].edid.ServiceTag}) RecentList is null");
-                            _vm.WriteLog("  * ReadSettings of Monitor RecentList is null");
+                            _vm.WriteLog($"  * ReadSettings of Monitor(Model:{attachedMonitors[0].modelName}, ServiceTag:{attachedMonitors[0].edid.ServiceTag}) RecentList is null");
                         }
                     }
                     else
