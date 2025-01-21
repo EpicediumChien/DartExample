@@ -193,7 +193,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             //Open this to get the message format of Webcam event
             //System.Windows.MessageBox.Show(e.UI_Field_Name);
-            Console.WriteLine("Get event : " + e.UI_Field_Name + "#" + DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") + "\r\n");
+            Console.WriteLine("WebCameraplugin_UIUpdateNotify Get event : " + e.UI_Field_Name + "#" + DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") + "\r\n");
+            _log.Debug("WebCameraplugin_UIUpdateNotify Get event : " + e.UI_Field_Name + "#" + DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") + "\r\n");
 
             //cmd format sample
             //5;Device:Webcam;EventType:Webcam_IsHDROnChanged;DeviceId:28d64fee-3544-45c7-a1b0-10db20a4cf8e;NewValue:True
@@ -279,7 +280,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                     _viewModel!.IsSettingProfile = false;
                                 });
                                 //HDR SIWTCH時候,需要重置CAMERA,中間需要一段初始化時間約1秒
-                                _viewModel!.mre.Set();
+                                //_viewModel!.mre.Set();
                                 Thread.Sleep(1000);
                                 _viewModel!.mre.Set();
                                 _viewModel!.hdr_change = false;
