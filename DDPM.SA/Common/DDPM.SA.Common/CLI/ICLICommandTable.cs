@@ -987,6 +987,20 @@ namespace DDPM.SA.Common
             };
         }
 
+        public static int ResponseFWUpdateDeviceNotConnected(CommandLineInput commandLineInput)
+        {
+            APP_RESPONSE result = new APP_RESPONSE()
+            {
+                Command = commandLineInput.Command,
+                TargetFeature = commandLineInput.TargetFeature,
+                Result = "PASS",
+                Value = commandLineInput.Options.Count > 0 ? commandLineInput.Options[0].Option_Value : "N/A",
+                Message = "Device not connected, add to schedule."
+            };
+            Console.WriteLine(result.ToJson());
+            return (int)CLI_ExitCode.success;
+        }
+
         public static int ResponseDefer(CommandLineInput commandLineInput)
         {
             APP_RESPONSE result = new APP_RESPONSE()

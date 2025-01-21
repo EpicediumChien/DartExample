@@ -2207,6 +2207,10 @@ namespace DDPM.CLI.Plugins.Peripherals
                     {
                         commandLineInput.Options[0].Option_Value += ",FORCEWITHNOTICE";
                     }
+                    else
+                    {
+                        commandLineInput.Options[0].Option_Value = commandLineInput.Options[0].Option_Value.Split(",")[0] + ",FORCEWITHNOTICE";
+                    }
                     string[] ss_1 = commandLineInput.Options[0].Option_Value.Split(",");
 
                     if (ss_1.Length == 2)

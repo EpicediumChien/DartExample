@@ -1077,6 +1077,12 @@ namespace DDPM.SA.Plugin.CLIManager
                     deferResponse.Remove(key);
                     break;
                 }
+
+                if (i == MAX_DEFER_WAIT_TIME_SEC && item.commandfrom == DeferControlPanel.SRC_FROM_CLI && item.commanddata.ToLower().Contains("firmwareupdate"))
+                {
+                    DeferControlPanel.addToSchedule(item);
+                    return true;
+                }
             }
 
             return false;
