@@ -372,7 +372,7 @@ namespace DDPM.EABroker
             cellBorderCount = ispLayout.CellList.Count;
             int appCount = sortApps.Count;
             int arrangeCount = Math.Min(cellBorderCount, appCount);
-            WriteLog($"LaunchAndArrangeAppsWithEzArrange: Layout={ispLayout.CtrlClass} CellBorderCount={cellBorderCount}, AppCount={appCount} => ArrangeCount={arrangeCount}");
+            //WriteLog($"LaunchAndArrangeAppsWithEzArrange: Layout={ispLayout.CtrlClass} CellBorderCount={cellBorderCount}, AppCount={appCount} => ArrangeCount={arrangeCount}");
 
             //Robert_Lin, 2025-1-6 Added
             // Before LaunchAppAndArrange starting, minimize all top-level Windows which is inside

@@ -256,8 +256,8 @@ namespace DDPM.EABroker
                     IntPtr handle = IntPtr.Zero;
                     int idxCell = idx;
 
-                    Trace.WriteLine($"[LaunchAndArrange] 1 => {winUWP} APP, No. = {idx.ToString()}, AppName = {app.AppName}, AppPath = {app.AppPath}, AppPath = {app.AppUserModelID}");
-                    _vm.WriteLog($"[LaunchAndArrange] 1 => {winUWP} APP, No. = {idx.ToString()}, AppName = {app.AppName}, AppPath = {app.AppPath}, AppPath = {app.AppUserModelID}");
+                    //Trace.WriteLine($"[LaunchAndArrange] 1 => {winUWP} APP, No. = {idx.ToString()}, AppName = {app.AppName}, AppPath = {app.AppPath}, AppPath = {app.AppUserModelID}");
+                    //_vm.WriteLog($"[LaunchAndArrange] 1 => {winUWP} APP, No. = {idx.ToString()}, AppName = {app.AppName}, AppPath = {app.AppPath}, AppPath = {app.AppUserModelID}");
 
                     // 檢查應用程式是否已經存在
                     //handle = SpecialGetHandle(app, processName);
@@ -265,7 +265,7 @@ namespace DDPM.EABroker
                     if (handle != IntPtr.Zero)
                     {
                         //Trace.WriteLine($"[LaunchAndArrange] 2 => ArrangeWindow = {idx},{winUWP} APP already exit, SpecialGetHandle Find Handle = {handle}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, EzMemorySetForegroundWindow");
-                        _vm.WriteLog($"[LaunchAndArrange] 2 => App is already running, hWnd={handle}=0x{handle:X}, Title= {GetWindowTitle(handle)}");
+                        _vm.WriteLog($"[LaunchAndArrange] 2 => App is already running.");
                         //if (app.AppType != "True")// 已經在而且為UWP
                         //{
                         //    //Process process = LaunchApp(app, _vm.Log);
@@ -290,7 +290,8 @@ namespace DDPM.EABroker
                         Process process = LaunchApp(app);
                         if (process == null)
                         {
-                            _vm.WriteLog($"[LaunchAndArrange] Fail to launchApp: {app.AppName}");
+                            //_vm.WriteLog($"[LaunchAndArrange] Fail to launchApp: {app.AppName}");
+                            _vm.WriteLog($"[LaunchAndArrange] Fail to launchApp.");
                             continue;
                         }
 
@@ -300,26 +301,29 @@ namespace DDPM.EABroker
                         {
                             handle = app.AppType == "True" ? process.MainWindowHandle : GetWindowHandle(app);
 
-                            Trace.WriteLine($"[LaunchAndArrange] 2 => {winUWP} APP, No. = {idx.ToString()}, handle = {handle.ToString()}");
-                            _vm.WriteLog($"[LaunchAndArrange] 2 => {winUWP} APP, No. = {idx.ToString()}, handle = {handle.ToString()}");
+                            //Trace.WriteLine($"[LaunchAndArrange] 2 => {winUWP} APP, No. = {idx.ToString()}, handle = {handle.ToString()}");
+                            //_vm.WriteLog($"[LaunchAndArrange] 2 => {winUWP} APP, No. = {idx.ToString()}, handle = {handle.ToString()}");
                             await Task.Delay(1500);
                         }
-                        _vm.WriteLog($"[LaunchAndArrange] App is launched, hWnd={handle}=0x{handle:X}, pid={process.Id}, hProcess={process.Handle}");
+                        //_vm.WriteLog($"[LaunchAndArrange] App is launched, hWnd={handle}=0x{handle:X}, pid={process.Id}, hProcess={process.Handle}");
+                        _vm.WriteLog($"[LaunchAndArrange] App is launched.");
 
 
                         EzMemoryShowWindow(handle, SW_SHOWNORMAL);
                         Win32._SetForegroundWindow(handle);
                     }
-                    Trace.WriteLine($"[LaunchAndArrange] 3 => {winUWP} APP, handle = {handle.ToString()}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, app.AppName = {app.AppName}");
-                    _vm.WriteLog($"[LaunchAndArrange] 3 => {winUWP} APP,  handle = {handle.ToString()}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, app.AppName = {app.AppName}");
+                    //Trace.WriteLine($"[LaunchAndArrange] 3 => {winUWP} APP, handle = {handle.ToString()}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, app.AppName = {app.AppName}");
+                    //_vm.WriteLog($"[LaunchAndArrange] 3 => {winUWP} APP,  handle = {handle.ToString()}, GetWindowTitle(handle) = {GetWindowTitle(handle)}, app.AppName = {app.AppName}");
 
                     if (!appHandles.Any(item => item.handle == handle))
                     {
                         // 取得 Handle 且 Title Match
                         if (handle != IntPtr.Zero && GetWindowTitle(handle).Contains(app.AppName))
                         {
-                            Trace.WriteLine($"[LaunchAndArrange] 3 => ArrangeWindow = {idx}, True");
-                            _vm.WriteLog($"[LaunchAndArrange] 3 => ArrangeWindow = {idx}, True");
+                            //Trace.WriteLine($"[LaunchAndArrange] 3 => ArrangeWindow = {idx}, True");
+                            //_vm.WriteLog($"[LaunchAndArrange] 3 => ArrangeWindow = {idx}, True"); 
+                            Trace.WriteLine($"[LaunchAndArrange] 3 => Get Handle and Title Match");
+                            _vm.WriteLog($"[LaunchAndArrange] 3 => Get Handle and Title Match");
                             appHandles.Add((handle, idx));
                             //ArrangeWindow(handle, idx, VM);
                             //idx++;
@@ -335,24 +339,30 @@ namespace DDPM.EABroker
 
                                 handle = SpecialGetHandle(app, processName);
 
-                                Trace.WriteLine($"[LaunchAndArrange] 3 - 2 => SpecialGetHandle Done ... handle = {handle.ToString()}");
-                                _vm.WriteLog($"[LaunchAndArrange] 3 - 2 => SpecialGetHandle Done ... handle = {handle.ToString()}");
+                                //Trace.WriteLine($"[LaunchAndArrange] 3 - 2 => SpecialGetHandle Done ... handle = {handle.ToString()}");
+                                //_vm.WriteLog($"[LaunchAndArrange] 3 - 2 => SpecialGetHandle Done ... handle = {handle.ToString()}");
                                 if (handle != IntPtr.Zero)
                                     break;
                                 await Task.Delay(1500);
                             }
                             if (handle != IntPtr.Zero)
                             {
-                                Trace.WriteLine($"[LaunchAndArrange] 3 => ArrangeWindow = {idx}, True SpecialGetHandle handle != IntPtr.Zero => {handle.ToString()}, GetFilePathFromHandle = {GetFilePathFromHandle(handle)}, GetWindowTitle = {GetWindowTitle(handle)}");
-                                _vm.WriteLog($"[LaunchAndArrange] 3 => ArrangeWindow = {idx}, True SpecialGetHandle handle != IntPtr.Zero => {handle.ToString()}, GetFilePathFromHandle = {GetFilePathFromHandle(handle)}, GetWindowTitle = {GetWindowTitle(handle)}");
+                                //Trace.WriteLine($"[LaunchAndArrange] 3 => ArrangeWindow = {idx}, True SpecialGetHandle handle != IntPtr.Zero => {handle.ToString()}, GetFilePathFromHandle = {GetFilePathFromHandle(handle)}, GetWindowTitle = {GetWindowTitle(handle)}");
+                                //_vm.WriteLog($"[LaunchAndArrange] 3 => ArrangeWindow = {idx}, True SpecialGetHandle handle != IntPtr.Zero => {handle.ToString()}, GetFilePathFromHandle = {GetFilePathFromHandle(handle)}, GetWindowTitle = {GetWindowTitle(handle)}");
+
+                                Trace.WriteLine($"[LaunchAndArrange] 3 => SpecialGetHandle handle != IntPtr.Zero");
+                                _vm.WriteLog($"[LaunchAndArrange] 3 => SpecialGetHandle handle != IntPtr.Zero");
                                 appHandles.Add((handle, idx));
                                 //ArrangeWindow(handle, idx, VM);
                                 //idx++;
                             }
                             else // Handle 還是 = 0
                             {
-                                Trace.WriteLine($"[LaunchAndArrange] Failed to get handle for app.AppName: {app.AppName}, app.AppPath: {app.AppPath}, app.AppUserModelID: {app.AppUserModelID}");
-                                _vm.WriteLog($"[LaunchAndArrange] Failed to get handle for app.AppName: {app.AppName}, app.AppPath: {app.AppPath}, app.AppUserModelID: {app.AppUserModelID}");
+                                //Trace.WriteLine($"[LaunchAndArrange] Failed to get handle for app.AppName: {app.AppName}, app.AppPath: {app.AppPath}, app.AppUserModelID: {app.AppUserModelID}");
+                                //_vm.WriteLog($"[LaunchAndArrange] Failed to get handle for app.AppName: {app.AppName}, app.AppPath: {app.AppPath}, app.AppUserModelID: {app.AppUserModelID}");
+
+                                Trace.WriteLine($"[LaunchAndArrange] Failed to get handle for app");
+                                _vm.WriteLog($"[LaunchAndArrange] Failed to get handle for app");
                             }
                         }
                     }
@@ -383,7 +393,7 @@ namespace DDPM.EABroker
         private IntPtr FindRunningWindowHandle(Bind_AddFullPage_AppCollectionData app)
         {
             bool isTargetAppUwp = app.AppType.Equals("False", StringComparison.OrdinalIgnoreCase);
-            _vm.WriteLog($"@FindRunningProcess(Name={app.AppName}, Type={app.AppType}, UserModelId={app.AppUserModelID}, Path={app.AppPath})");
+            //_vm.WriteLog($"@FindRunningProcess(Name={app.AppName}, Type={app.AppType}, UserModelId={app.AppUserModelID}, Path={app.AppPath})");
 
             IntPtr hWndApp = IntPtr.Zero;
             //Robert_Lin, 2024-12-26 changed, to use the same method of EA capture overlap windows
@@ -402,12 +412,12 @@ namespace DDPM.EABroker
                 string msg;
                 if (!Win32.GetProcessFromWindowHandle(hWnd, out process, out msg))
                 {
-                    _vm.WriteLog($"@FindRunningProcess, hWnd={hWnd}=0x{hWnd:X}, Text={wndText}: GetProcess error: {msg}");
+                    _vm.WriteLog($"@FindRunningProcess, GetProcess error: {msg}");
                     continue;
                 }
                 if (process == null)
                 {
-                    _vm.WriteLog($"@FindRunningProcess, hWnd={hWnd}=0x{hWnd:X}}}, Text={{wndText}}: , GetProcess return null.");
+                    _vm.WriteLog($"@FindRunningProcess, GetProcess return null.");
                     continue;
                 }
 
@@ -432,19 +442,19 @@ namespace DDPM.EABroker
                         string appUserModelId = "";
                         if (!Win32.GetUwpAppUserModelId(hWnd, out appUserModelId))
                         {
-                            _vm.WriteLog($"@FindRunningProcess, GetUwpAppUserModelId hWnd={hWnd}=0x{hWnd:X}) error: {appUserModelId}");
+                            _vm.WriteLog($"@FindRunningProcess, GetUwpAppUserModelId error: {appUserModelId}");
                             continue;
                         }
                         if (string.IsNullOrEmpty(appUserModelId))
                         {
-                            _vm.WriteLog($"@FindRunningProcess, GetUwpAppUserModelId hWnd={hWnd}=0x{hWnd:X}), output empty.");
+                            _vm.WriteLog($"@FindRunningProcess, GetUwpAppUserModelId output empty.");
                             continue;
                         }
                         //Compare AppUserModelId
                         if (appUserModelId.Equals(app.AppUserModelID))
                         {
                             //Found it
-                            _vm.WriteLog($"@FindRunningProcess, Found UWP App, hWnd=0x{hWnd:X}, AppUserModelId={appUserModelId}.");
+                            _vm.WriteLog($"@FindRunningProcess, Found UWP App.");
                             return hWnd;
                         }
                         else
@@ -487,14 +497,14 @@ namespace DDPM.EABroker
                 }
                 catch (Exception ex1)
                 {
-                    _vm.WriteLog($"@FindRunningProcess, hWnd={hWnd}=0x{hWnd:X}, GetPathName from Process error: {ex1.Message}");
+                    _vm.WriteLog($"@FindRunningProcess, GetPathName from Process error: {ex1.Message}");
                     continue;
                 }
 
 
                 if (string.IsNullOrEmpty(pathName))
                 {
-                    _vm.WriteLog($"@FindRunningProcess, hWnd={hWnd}=0x{hWnd:X}, GetPathName from Process error: pathName is empty");
+                    _vm.WriteLog($"@FindRunningProcess, GetPathName from Process error: pathName is empty");
                     continue;
                 }
 
@@ -532,7 +542,7 @@ namespace DDPM.EABroker
                     //Win32
                     if (app.AppPath.Equals(pathName, StringComparison.OrdinalIgnoreCase))
                     {
-                        _vm.WriteLog($"@FindRunningProcess, Found the running Win32App, hWnd={hWnd}=0x{hWnd:X}");
+                        _vm.WriteLog($"@FindRunningProcess, Found the running Win32App.");
                         hWndApp = hWnd;
                         break;
                     }
@@ -595,8 +605,8 @@ namespace DDPM.EABroker
                             // UWP比對路徑
                             if (handlePath.Contains(app.AppPath))
                             {
-                                Trace.WriteLine($"[LaunchAndArrange] SpecialGetHandle HandlePath Contains UWPPath {app.AppPath}");
-                                _vm.WriteLog($"[LaunchAndArrange] SpecialGetHandle HandlePath Contains UWPPath {app.AppPath}");
+                                Trace.WriteLine($"[LaunchAndArrange] SpecialGetHandle HandlePath Contains UWPPath.");
+                                _vm.WriteLog($"[LaunchAndArrange] SpecialGetHandle HandlePath Contains UWPPath.");
                                 appHandle = vapp;
                                 break;
                             }
@@ -606,8 +616,8 @@ namespace DDPM.EABroker
                             // Win32比對包含
                             if (app.AppPath.ToUpper() == handlePath.ToUpper())
                             {
-                                Trace.WriteLine($"[LaunchAndArrange] SpecialGetHandle HandlePath == Win32Path {app.AppPath}");
-                                _vm.WriteLog($"[LaunchAndArrange] SpecialGetHandle HandlePath == Win32Path {app.AppPath}");
+                                Trace.WriteLine($"[LaunchAndArrange] SpecialGetHandle HandlePath == Win32Path.");
+                                _vm.WriteLog($"[LaunchAndArrange] SpecialGetHandle HandlePath == Win32Path.");
                                 appHandle = vapp;
                                 break;
                             }
@@ -618,12 +628,12 @@ namespace DDPM.EABroker
 
                     if (processName != string.Empty && appHandle == IntPtr.Zero)
                     {
-                        Trace.WriteLine($"[LaunchAndArrange] 3 - 3 => Process Name : {processName}");
-                        _vm.WriteLog($"[LaunchAndArrange] 3 - 3 => Process Name : {processName}");
+                        //Trace.WriteLine($"[LaunchAndArrange] 3 - 3 => Process Name : {processName}");
+                        //_vm.WriteLog($"[LaunchAndArrange] 3 - 3 => Process Name : {processName}");
                         if (handlePath.Contains(processName))// 比對 process 啟動的程式名稱
                         {
-                            Trace.WriteLine($"[LaunchAndArrange] 3 - 4 => True Compare ProcessName => GetFilePathFromHandle = {GetFilePathFromHandle(vapp)}, GetWindowTitle = {GetWindowTitle(vapp)}");
-                            _vm.WriteLog($"[LaunchAndArrange] 3 - 4 => True Compare ProcessName => GetFilePathFromHandle = {GetFilePathFromHandle(vapp)}, GetWindowTitle = {GetWindowTitle(vapp)}");
+                            //Trace.WriteLine($"[LaunchAndArrange] 3 - 4 => True Compare ProcessName => GetFilePathFromHandle = {GetFilePathFromHandle(vapp)}, GetWindowTitle = {GetWindowTitle(vapp)}");
+                            //_vm.WriteLog($"[LaunchAndArrange] 3 - 4 => True Compare ProcessName => GetFilePathFromHandle = {GetFilePathFromHandle(vapp)}, GetWindowTitle = {GetWindowTitle(vapp)}");
                             appHandle = vapp;
                             break;
                         }
@@ -758,7 +768,7 @@ namespace DDPM.EABroker
             }
             catch (Exception ex)
             {
-                _vm?.WriteLog($"@LaunchApp({appData.AppName}) exception.", ex);
+                _vm?.WriteLog($"@LaunchApp exception.", ex);
             }
 
             return process;
@@ -892,7 +902,7 @@ namespace DDPM.EABroker
                         return;
                     }
                 }
-                _vm.WriteLog($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Rect(({rcArrange.Left},{rcArrange.Top}){rcArrange.Width}x{rcArrange.Height})");
+                //_vm.WriteLog($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Rect(({rcArrange.Left},{rcArrange.Top}){rcArrange.Width}x{rcArrange.Height})");
 
                 //Inflate the rect, because the rcArrange not include the border thickness(=6) of CellBorder
                 //if (VM.IsWithoutGap)
@@ -907,7 +917,7 @@ namespace DDPM.EABroker
                 if (AreAllAppsArranged && 
                     ArrangeDone != null)
                 {
-                    _vm.WriteLog($"[{myName}] hWnd={hWnd}, Cell[{idxCell}], Send ArrangeDone event.");
+                    _vm.WriteLog($"Send ArrangeDone event.");
                     ArrangeDone(this, EventArgs.Empty);
                 }
             }));

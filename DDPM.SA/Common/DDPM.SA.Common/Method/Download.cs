@@ -50,7 +50,9 @@ namespace DDPM.SA.Common.Method
             catch (Exception ex)
             {
                 // Log or handle the exception as needed
+#if DEBUG
                 Console.WriteLine($"Error accessing registry: {ex.Message}");
+#endif
             }
             return ret;
         }
