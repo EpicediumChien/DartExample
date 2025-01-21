@@ -280,7 +280,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                     _viewModel!.IsSettingProfile = false;
                                 });
                                 //HDR SIWTCH時候,需要重置CAMERA,中間需要一段初始化時間約1秒
-                                _viewModel!.mre.Set();
+                                //_viewModel!.mre.Set();
                                 Thread.Sleep(1000);
                                 _viewModel!.mre.Set();
                                 _viewModel!.hdr_change = false;

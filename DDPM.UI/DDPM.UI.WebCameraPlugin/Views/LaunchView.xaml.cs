@@ -279,7 +279,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         {
             DdpmCommonHelper.WriteUILog($"[WebcamPlugin][OnWebcamCloseEvent] event MainWindow_Force_Camera_Unlock received");
 
-            FreeWebcamResource();
+            //FreeWebcamResource();
             //if (writeableBitmap != null)
             //{
             //    try
@@ -1403,7 +1403,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 catch (Exception ex)
                 {
                     print_debug("ex1:" + ex.Message);
-                    Thread.Sleep(100);//for wait device init
+                    Thread.Sleep(200);//for wait device init
                     DdpmCommonHelper.WriteUILog("MediaCapture initiate fail (retry): " + ex.Message);
                     _vm.mre.Set();
                     return;
