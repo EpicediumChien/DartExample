@@ -1874,6 +1874,7 @@
   </data>
   <data name="WalkThroughMouseMS355_Main.1" xml:space="preserve">
     <value>Настроить нажатие колеса прокрутки</value>
+    <comment>PIMS-334908　Ｒｏｂｅｒｔ２０２５０１２１</comment>
   </data>
   <data name="WalkThroughMouseMS355_Main.2" xml:space="preserve">
     <value>Действия для конкретных приложений</value>

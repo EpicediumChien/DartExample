@@ -1469,6 +1469,7 @@
   </data>
   <data name="BarrelButton" xml:space="preserve">
     <value>Dijital Kalem Düğmesi</value>
+    <comment>PIMS-334908 Robert20250121</comment>
   </data>
   <data name="DefineBySystem" xml:space="preserve">
     <value>Sisteme göre tanımla</value>
@@ -1496,9 +1497,11 @@
   </data>
   <data name="WindowsSearch" xml:space="preserve">
     <value>Windows Arama</value>
+    <comment>PIMS-334908 Robert20250121</comment>
   </data>
   <data name="SwitchApplication" xml:space="preserve">
     <value>Uygulama Değiştir</value>
+    <comment>PIMS-334908 Robert20250121</comment>
   </data>
   <data name="AssignKeystroke" xml:space="preserve">
     <value>Tuş Vuruşu Ata</value>
@@ -1589,6 +1592,7 @@
   </data>
   <data name="RadialMenu" xml:space="preserve">
     <value>Dairesel Menü</value>
+    <comment>PIMS-334908 Robert20250121</comment>
   </data>
   <data name="Redo" xml:space="preserve">
     <value>Yinele</value>
@@ -1874,6 +1878,7 @@
   </data>
   <data name="WalkThroughMouseMS355_Main.1" xml:space="preserve">
     <value>Kaydırma Tekerleği Tıklamasını Özelleştirme</value>
+    <comment>PIMS-334908 Robert20250121</comment>
   </data>
   <data name="WalkThroughMouseMS355_Main.2" xml:space="preserve">
     <value>Uygulamaya özel eylemler</value>
@@ -2296,7 +2301,7 @@
     <value>Geliştirmemize yardımcı olun</value>
   </data>
   <data name="Consent.2" xml:space="preserve">
-    <value>Tanılama ve kullanım verilerini otomatik olarak göndererek Dell&apos;in ürün ve hizmetlerini geliştirmesine yardımcı olun. Daha fazla bilgi edinin </value>
+    <value>Tanılama ve kullanım verilerini otomatik olarak göndererek Dell'in ürün ve hizmetlerini geliştirmesine yardımcı olun. Daha fazla bilgi edinin </value>
   </data>
   <data name="ImpExp_CheckBox.0" xml:space="preserve">
     <value>Aynı model için tekrar sorma</value>
@@ -2312,7 +2317,7 @@
     <comment>Robert_1218 Changed</comment>
   </data>
   <data name="Wait_DTH" xml:space="preserve">
-    <value>Dell.TechHub&apos;a bağlanılıyor...</value>
+    <value>Dell.TechHub'a bağlanılıyor...</value>
     <comment>Robert_1218 Changed</comment>
   </data>
   <data name="Wait_NoDevice" xml:space="preserve">
@@ -2449,7 +2454,7 @@
     <value>Bir klasör seçmek için "Gözat" düğmesine tıklayın</value>
   </data>
   <data name="Action.4" xml:space="preserve">
-    <value>Aşağıdaki kutuya web sayfasının URL&apos;sini yazın</value>
+    <value>Aşağıdaki kutuya web sayfasının URL'sini yazın</value>
   </data>
   <data name="Action.5" xml:space="preserve">
     <value>Dosya Adı</value>
@@ -2485,13 +2490,13 @@
     <value>İş Birliği</value>
   </data>
   <data name="Collab.10" xml:space="preserve">
-    <value>İsteği engellediğiniz için Collaboration Klavye Microsoft Teams&apos;e bağlanamıyor. Microsoft Teams&apos;i Collaboration Klavye ile kullanmak üzere yeniden bağlanma talimatları için "Daha fazla bilgi" öğesine tıklayın.</value>
+    <value>İsteği engellediğiniz için Collaboration Klavye Microsoft Teams'e bağlanamıyor. Microsoft Teams'i Collaboration Klavye ile kullanmak üzere yeniden bağlanma talimatları için "Daha fazla bilgi" öğesine tıklayın.</value>
   </data>
   <data name="Collab.11" xml:space="preserve">
-    <value>Collaboration Klavyeyi Zoom ile kullanmak için Zoom&apos;un en son masaüstü sürümünü yükleyin</value>
+    <value>Collaboration Klavyeyi Zoom ile kullanmak için Zoom'un en son masaüstü sürümünü yükleyin</value>
   </data>
   <data name="Collab.12" xml:space="preserve">
-    <value>Collaboration Klavyeyi Microsoft Teams ile kullanmak için Microsoft Teams&apos;de en son sürümü kullanarak oturum açtığınızdan ve Üçüncü taraf uygulama API&apos;sinin etkinleştirildiğinden emin olun</value>
+    <value>Collaboration Klavyeyi Microsoft Teams ile kullanmak için Microsoft Teams'de en son sürümü kullanarak oturum açtığınızdan ve Üçüncü taraf uygulama API'sinin etkinleştirildiğinden emin olun</value>
   </data>
   <data name="Collab.13" xml:space="preserve">
     <value>Video</value>
@@ -2521,16 +2526,16 @@
     <value>Daha Fazla Bilgi Edinin</value>
   </data>
   <data name="Collab.6" xml:space="preserve">
-    <value>Collaboration Klavyeyi Microsoft Teams ile kullanmak için:\r\n1. Teams&apos;i açın ve gizlilik ayarlarına gidin.\n\n2. Üçüncü taraf uygulama API&apos;sini seçin ve Dell Display and Peripheral Manager&apos;ın engellenenler listesinde olmadığından emin olun.\n\n3. Bir Microsoft Teams konferans araması başlatarak Microsoft Teams&apos;i Dell Display and Peripheral Manager ile eşleştirin.</value>
+    <value>Collaboration Klavyeyi Microsoft Teams ile kullanmak için:\r\n1. Teams'i açın ve gizlilik ayarlarına gidin.\n\n2. Üçüncü taraf uygulama API'sini seçin ve Dell Display and Peripheral Manager'ın engellenenler listesinde olmadığından emin olun.\n\n3. Bir Microsoft Teams konferans araması başlatarak Microsoft Teams'i Dell Display and Peripheral Manager ile eşleştirin.</value>
   </data>
   <data name="Collab.7" xml:space="preserve">
-    <value>Hala sorun yaşıyorsanız BT departmanınızla (varsa) iletişime geçin. Bu departman tarafından, Collaboration Klavyenin Microsoft Teams&apos;e bağlanmasını yasaklayan politikalar uygulanıyor olabilir.</value>
+    <value>Hala sorun yaşıyorsanız BT departmanınızla (varsa) iletişime geçin. Bu departman tarafından, Collaboration Klavyenin Microsoft Teams'e bağlanmasını yasaklayan politikalar uygulanıyor olabilir.</value>
   </data>
   <data name="Collab.8" xml:space="preserve">
-    <value>Collaboration Klavyeyi kullanmak için Zoom veya Microsoft Teams&apos;in en son sürümüne ihtiyacınız vardır</value>
+    <value>Collaboration Klavyeyi kullanmak için Zoom veya Microsoft Teams'in en son sürümüne ihtiyacınız vardır</value>
   </data>
   <data name="Collab.9" xml:space="preserve">
-    <value>Bir konferans araması başlatarak ve bağlantı isteğini kabul ederek Collaboration Klavyeyi Microsoft Teams&apos;e bağlayın</value>
+    <value>Bir konferans araması başlatarak ve bağlantı isteğini kabul ederek Collaboration Klavyeyi Microsoft Teams'e bağlayın</value>
   </data>
   <data name="Common.0" xml:space="preserve">
     <value>Gözat</value>
@@ -2581,7 +2586,7 @@
     <value>Önceki Sayfa</value>
   </data>
   <data name="Excel.14" xml:space="preserve">
-    <value>A&apos;dan Z&apos;ye Sırala</value>
+    <value>A'dan Z'ye Sırala</value>
   </data>
   <data name="Excel.2" xml:space="preserve">
     <value>Sola Hizala</value>
@@ -2686,7 +2691,7 @@
     <value>Tile indir</value>
   </data>
   <data name="PenSettings.8" xml:space="preserve">
-    <value>Aygıtınızda Bluetooth&apos;u etkinleştirin.</value>
+    <value>Aygıtınızda Bluetooth'u etkinleştirin.</value>
   </data>
   <data name="PenSettings.9" xml:space="preserve">
     <value>Tile uygulamasını mobil aygıtınıza indirmek için QR Kodunu tarayın.</value>
@@ -2845,7 +2850,7 @@
     <value>Sisteminize yalnızca bir bağlantı istasyonunun bağlı olduğundan emin olun. Bağlantı istasyonuna bağlı aygıtlar, güncelleştirme sırasında kullanılamayabilir.</value>
   </data>
   <data name="Update_PCBatteryLow_Alert" xml:space="preserve">
-    <value>Bilgisayarı güç kaynağına bağlayın ve güncelleştirmeye devam etmek için bilgisayar pil şarjının %10&apos;un üzerinde olduğundan emin olun</value>
+    <value>Bilgisayarı güç kaynağına bağlayın ve güncelleştirmeye devam etmek için bilgisayar pil şarjının %10'un üzerinde olduğundan emin olun</value>
   </data>
   <data name="Update_Mouse_Alert" xml:space="preserve">
     <value>Bu güncelleştirmeyi etkinleştirmek için aygıttaki bir düğmeye veya tuşa basın</value>
