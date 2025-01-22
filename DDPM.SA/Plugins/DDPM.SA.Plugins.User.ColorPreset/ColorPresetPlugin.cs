@@ -798,6 +798,7 @@ namespace ColorPreset.Plugins
 
                     if (strICC_ColorPresets.Length > 0)
                     {
+                        /*
                         if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
                             WriteColorPreset(Active_monitorInfo, "Standard");
                         else if (string.Equals(strICC_ColorPresets[0], "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Game1", StringComparison.OrdinalIgnoreCase))
@@ -806,6 +807,7 @@ namespace ColorPreset.Plugins
                             WriteColorPreset(Active_monitorInfo, "Rec.709 / BT.709");
                         else
                             WriteColorPreset(Active_monitorInfo, strICC_ColorPresets[0]);
+                        */
 
                         Trace.WriteLine($" strICC_ColorPresets = {strICC_ColorPresets[0]}");
 
