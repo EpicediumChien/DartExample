@@ -344,22 +344,25 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //Call once
                             Task t1 = Task.Run(() =>
                             {
+                                //Use this flag to Debug/Test Gear icon GlowEffect, it will force to trigger the GlowEffect startup
+                                bool forceGlowEffect = DevSettings.ForceGearIconGlowEffectAtStartup();
+
                                 _log.Info("Calling to CheckIfSwFwUpdateAvailable()");
-                                if (CheckIfSwFwUpdateAvailable(_deviceManager))
+                                if (CheckIfSwFwUpdateAvailable(_deviceManager) || forceGlowEffect)
                                 {
                                     _log.Info("Return from CheckIfSwFwUpdateAvailable(), return true");
+                                    //Robert_Lin 2025-1-21 Change GearIcon (InfoPath to GeatButton)
                                     //Robert_Lin, 2024-12-9, Change GlowEffect_Start() to GlowEffect_Trigger()
-                                    if (_iconGear != null)
+                                    if (_gearBtn != null)
+                                    {
+                                        _gearBtn.GlowEffect_Trigger();
+                                    }
+                                    else if (_iconGear != null)
                                     {
                                         //Elapsed= 1, 1 msec
                                         _log.Info("Calling to GlowEffect_Trigger()");
-                                        if (_gearBtn != null)
-                                            _gearBtn.SetOrangeDotVisible(true);
-                                        else if (_iconGear != null)
-                                        {
-                                            _iconGear.GlowEffect_Trigger();
-                                            //_iconGear.GlowEffect_Start();
-                                        }
+                                        _iconGear.GlowEffect_Trigger();
+                                        //_iconGear.GlowEffect_Start();
                                     }
                                     else
                                     {
