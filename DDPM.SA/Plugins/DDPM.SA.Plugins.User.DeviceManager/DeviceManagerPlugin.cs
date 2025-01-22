@@ -686,6 +686,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _pwr_Mon.Enable_Event();
                     _pwr_Mon.HotkeyPressed += HotkeyPressed;
                     _pwr_Mon.Enable_HotkeyHook();
+                    _pwr_Mon.CurrentSessionActived += OnCurrentSessionActived;
+                    _pwr_Mon.CurrentSessionInactived += OnCurrentSessionInactived;
                     _pwr_Mon.Enable_SessionEvent();
                 }
                 System.Windows.Threading.Dispatcher.Run();
@@ -695,6 +697,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.Start();
 
             _disDevHelper = new DisplayDeviceHelper(Log);
+        }
+
+        private void OnCurrentSessionInactived(object sender, EventArgs e)
+        {
+            if(_DisplayManagerPlugin != null)
+            {
+                _DisplayManagerPlugin.SetIsUserActive(false);
+                WriteLog($"[OnCurrentSessionInactived] set in-active to this user subagent in session({WTSFunction.GetCurrentUserSessionId()})");
+            }
+        }
+
+        private void OnCurrentSessionActived(object sender, EventArgs e)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                _DisplayManagerPlugin.SetIsUserActive(true);
+                WriteLog($"[OnCurrentSessionActived] set active to this user subagent in session({WTSFunction.GetCurrentUserSessionId()})");
+            }
         }
 
         private void HotkeyPressed(object sender, KeyPressedEventArgs e)
