@@ -226,10 +226,10 @@ namespace DDPM.UI.Plugin.ViewModels
             //vm.ShowPleaseWait();
             try
             {
-                using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
-                {
-                    await Task.Run(() => DoWork_PleaseWait(model, vm), cts.Token);
-                }
+                //using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+                //{
+                //    await Task.Run(() => DoWork_PleaseWait(model, vm), cts.Token);
+                //}
             }
             catch (OperationCanceledException)
             {
@@ -505,6 +505,12 @@ namespace DDPM.UI.Plugin.ViewModels
                     IsDTPReady = true;
                     _log.Info($"[SoundBarViewModel] SetCurrentDevice ... GetProfileAsync ... DTP success ...");
                 }
+                if (!Model.Contains("SB725"))
+                {
+                    UpdateDTPValue();
+                    // Call DetectPageShow
+                    DetectPageShow(Model);
+                }
             }
             return true;
         }
@@ -722,6 +728,10 @@ namespace DDPM.UI.Plugin.ViewModels
                         OnPropertyChanged(nameof(IsSpeechChecked));
                         OnPropertyChanged(nameof(IsBassBoostChecked));
                         OnPropertyChanged(nameof(IsTrebleBoostChecked));
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            SoundbarSettingChanged?.Invoke(this, EventArgs.Empty);
+                        });
                     }
                 }
             }
