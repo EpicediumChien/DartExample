@@ -1282,6 +1282,7 @@ namespace DDPM.CLI.Plugins.Display
                         case "HEADSET":
                         case "PEN":
                         case "DOCK":
+                        case "AIRAUDIO":
                             foreach (var g in _deviceinfo)
                             {
                                 if (g.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))

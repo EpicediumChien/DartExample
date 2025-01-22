@@ -310,7 +310,7 @@ namespace DDPM.SA.Common
                     case "LogicalWiredAudio":
                         DeviceName = "Wired Audio Settings";
                         break;
-
+                    case "LogicalAirAudio":
                     case "LogicalHeadset":
                         DeviceName = "Headset Settings";
                         break;
