@@ -934,7 +934,7 @@
     <value>CONFIGURACIÓN DE KVM USB</value>
   </data>
   <data name="Kvm.3" xml:space="preserve">
-    <value>Conectar ratón\n y teclado</value>
+    <value>Conectar ratón y teclado</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
     <value>Para el ratón y el teclado, conéctelos a la parte trasera del monitor (USB-A)\nNota: También puede conectar otros periféricos USB como una\n cámara web.</value>
@@ -955,7 +955,7 @@
     <value>USB</value>
   </data>
   <data name="Kvm.6" xml:space="preserve">
-    <value>Conexión a\n sus dispositivos</value>
+    <value>Conexión a sus dispositivos</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
     <value>Conecte un cable de vídeo y un cable USB entre cada PC y\n el monitor. Puede conectar hasta 4 PC (ordenadores, consolas\nde juegos, etc.). \r\n\r\nSeleccione el tipo de cable y asigne un nombre a cada fuente.</value>
@@ -991,7 +991,7 @@
     <value>CONFIGURACIÓN DE PIP/PBP</value>
   </data>
   <data name="Kvm.17" xml:space="preserve">
-    <value>Configurar PIP/PBP\npara su monitor</value>
+    <value>Configurar PIP/PBP para su monitor</value>
   </data>
   <data name="Kvm.18" xml:space="preserve">
     <value>El monitor puede mostrar un PC o una fuente a la vez (pantalla completa), o dividirse entre las fuentes (Picture-in-Picture/Picture-by-Picture).</value>

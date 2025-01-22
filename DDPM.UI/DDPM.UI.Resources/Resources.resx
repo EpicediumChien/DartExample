@@ -940,7 +940,7 @@
     <value>USB KVM SETUP</value>
   </data>
   <data name="Kvm.3" xml:space="preserve">
-    <value>Connect Mouse\n and Keyboard</value>
+    <value>Connect Mouse and Keyboard</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
     <value>For Mouse and Keyboard, connect to rear of monitor (USB-A).\n Note: You can also connect other USB Peripherals such as\n Webcam.</value>
@@ -961,7 +961,7 @@
     <value>USB</value>
   </data>
   <data name="Kvm.6" xml:space="preserve">
-    <value>Connecting to\n your devices</value>
+    <value>Connecting to your devices</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
     <value>Please connect a video cable and USB cable between each PC to\n the monitor. You can connect up to 4 PCs (computers, gaming\n consoles, etc). \r\n\r\nPlease select the cable type and assign a name to each source.</value>
@@ -997,7 +997,7 @@
     <value>PIP/PBP SETUP</value>
   </data>
   <data name="Kvm.17" xml:space="preserve">
-    <value>Setup PIP/PBP\nfor your monitor</value>
+    <value>Setup PIP/PBP for your monitor</value>
   </data>
   <data name="Kvm.18" xml:space="preserve">
     <value>Your monitor can display one PC or source at a time (fullscreen),\nor be partitioned between sources (picture-in/by-picture).</value>

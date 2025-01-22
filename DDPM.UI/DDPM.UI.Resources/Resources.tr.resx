@@ -934,7 +934,7 @@
     <value>USB KVM KURULUMU</value>
   </data>
   <data name="Kvm.3" xml:space="preserve">
-    <value>Fareyi\n ve Klavyeyi Bağlama</value>
+    <value>Fareyi ve Klavyeyi Bağlama</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
     <value>Fare ve Klavye için monitörün arkasına (USB-A) bağlayın.\n Not: Web\n Kamerası gibi diğer USB Çevre Birimlerini de bağlayabilirsiniz.</value>
@@ -955,7 +955,7 @@
     <value>USB</value>
   </data>
   <data name="Kvm.6" xml:space="preserve">
-    <value>Aygıtlarınıza\n bağlanma</value>
+    <value>Aygıtlarınıza bağlanma</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
     <value>Lütfen her bir PC'den\n monitöre bir video kablosu ve USB kablosu bağlayın. En fazla 4 cihaz (bilgisayarlar, oyun\n konsolları vb.) bağlayabilirsiniz.\r\n\r\nLütfen her bağlantı için kablo türünü seçin ve her kaynağa bir ad atayın.</value>
@@ -991,7 +991,7 @@
     <value>PIP/PBP KURULUMU</value>
   </data>
   <data name="Kvm.17" xml:space="preserve">
-    <value>Monitörünüz için PIP/PBP\nkurulumunu yapın</value>
+    <value>Monitörünüz için PIP/PBP kurulumunu yapın</value>
   </data>
   <data name="Kvm.18" xml:space="preserve">
     <value>Monitörünüz aynı anda bir PC veya kaynak görüntüleyebilir (tam ekran)\nveya kaynaklar arasında bölümlenebilir (iç resim/yan resim).</value>
