@@ -508,7 +508,8 @@ namespace DDPM.UI.Plugin.ViewModels
                                     break;
 
                                 case "TouchScrollSensitivityLevelChanged":
-                                    TouchScrollSensitivityLevel = di.TouchScrollSensitivityLevel;
+                                    _touchScrollSensitivityLevel = di.TouchScrollSensitivityLevel;
+                                    OnPropertyChanged(nameof(TouchScrollSensitivityLevel));
                                     break;
 
                                 case "DpiValueChanged":
@@ -578,7 +579,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     if (_touchScrollSensitivityLevel != value)
                     {
                         _touchScrollSensitivityLevel = value;
-                        if (value == 1)
+                        if (value == 2)
                             IsMediumVisible = 1;
                         else
                             IsMediumVisible = 0;

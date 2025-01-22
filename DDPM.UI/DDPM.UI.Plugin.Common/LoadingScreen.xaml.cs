@@ -39,12 +39,12 @@ namespace DDPM.UI.Plugin.Common
             //_closeTimer = new DispatcherTimer();
             //_closeTimer.Interval = TimeSpan.FromSeconds(3);
             //_closeTimer.Tick += CloseTimer_Tick;
-            //_closeTimer.Start();
+            //_closeTimer.StartkeyHook();
         }
 
         //private void CloseTimer_Tick(object sender, EventArgs e)
         //{
-        //    _closeTimer.Stop();
+        //    _closeTimer.StopKeyHook();
         //    this.Close();
         //}
 

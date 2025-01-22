@@ -225,7 +225,7 @@ namespace DDPM.UI.Module.KeyCustomization
                 Window parentWindow = Window.GetWindow(this);
                 double windowLeft = 0;
                 double windowTop = 0;
-                ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight);
+                ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, "", "KB", _vm.CurrentDeviceID.ToString());
                 if (parentWindow != null)
                 {
                     modalDialog.Owner = parentWindow;
@@ -236,34 +236,12 @@ namespace DDPM.UI.Module.KeyCustomization
                 modalDialog.Left = windowLeft;
                 modalDialog.Top = windowTop;
 
-                if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
-                {
-                    Task<bool> task = DdpmCommonHelper.DeviceManagerSA.StartKeyboardKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                    _ = task.Result;
-                }
                 if (modalDialog.ShowDialog()!.Value)
                 {
-                    if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
-                    {
-                        Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA.StopKeyboardKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                        _ = task1.Result;
-                        Task<string> task2 = DdpmCommonHelper.DeviceManagerSA.GetKeyboardKeystrokeDisplayData(_vm.CurrentDeviceID.ToString());
-                        var keystroke = task2.Result;
-                        //parameter = keystroke;
-                        parameter = modalDialog.Parameter;
-                    }
-                    else
-                    {
-                        parameter = modalDialog.Parameter;
-                    }
+                    parameter = modalDialog.Parameter;
                 }
                 else
                 {
-                    if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
-                    {
-                        Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA.StopKeyboardKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                        _ = task1.Result;
-                    }
                     Initialize();
                     return;
                 }
@@ -305,7 +283,7 @@ namespace DDPM.UI.Module.KeyCustomization
             Window parentWindow = Window.GetWindow(this);
             double windowLeft = 0;
             double windowTop = 0;
-            ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter);
+            ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter, "KB", _vm.CurrentDeviceID.ToString());
             if (parentWindow != null)
             {
                 modalDialog.Owner = parentWindow;
@@ -315,29 +293,12 @@ namespace DDPM.UI.Module.KeyCustomization
             modalDialog.WindowStartupLocation = WindowStartupLocation.Manual;
             modalDialog.Left = windowLeft;
             modalDialog.Top = windowTop;
-            if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
-            {
-                Task<bool> task = DdpmCommonHelper.DeviceManagerSA.StartKeyboardKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                _ = task.Result;
-            }
 
-            if (modalDialog.ShowDialog()!.Value && modalDialog.Parameter != parameter)
+            if (modalDialog.ShowDialog()!.Value)
             {
-                string para;
-                if (action == AdvancedAction.AssignKeystroke && DdpmCommonHelper.DeviceManagerSA != null)
-                {
-                    Task<bool> task1 = DdpmCommonHelper.DeviceManagerSA.StopKeyboardKeystrokeRecording(_vm.CurrentDeviceID.ToString());
-                    _ = task1.Result;
-                    Task<string> task2 = DdpmCommonHelper.DeviceManagerSA.GetKeyboardKeystrokeDisplayData(_vm.CurrentDeviceID.ToString());
-                    var keystroke = task2.Result;
-                    para = keystroke;
-                }
-                else
-                {
-                    para = modalDialog.Parameter;
-                }
+                var para = modalDialog.Parameter;
                 if (para != parameter)
-                    _vm.UpdateAction(_vm.SelectedActionID, modalDialog.Parameter);
+                    _vm.UpdateAction(_vm.SelectedActionID, para);
             }
         }
 
