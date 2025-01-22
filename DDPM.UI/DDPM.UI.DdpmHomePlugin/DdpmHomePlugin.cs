@@ -45,6 +45,7 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using System.Linq;
 using System.Windows.Automation;
 using DDPM.SA.Common.Settings;
+using System.Globalization;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -144,6 +145,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _log = console.CreateLog("DDPMHOME");
             _log.Info($"{nameof(DdpmHomePlugin)} - Constructed");
             _log.Info($"current process ID: {Process.GetCurrentProcess().Id}");
+
+            //Robert_Lin 2025-1-22 added to force the static contructor of DdpmCultureMap to be called.
+            _log.Info($"CurrentCultureInfo=[{CultureInfo.CurrentCulture.Name}], MappedCultureInfo=[{DDPM.UI.Resources.DdpmCultureMap.MappedCultureInfo.Name}]");
 
             //DdpmCommonHelper.MyConsole = console;
 

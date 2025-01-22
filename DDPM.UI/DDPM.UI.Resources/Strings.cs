@@ -8,6 +8,7 @@ using System.Windows.Navigation;
 using Windows.ApplicationModel.Resources.Core;
 using Windows.Devices.HumanInterfaceDevice;
 using ResourceManager = System.Resources.ResourceManager;
+using DDPM.UI.Resources;
 
 namespace DDPM.UI.Common
 {
@@ -24,7 +25,12 @@ namespace DDPM.UI.Common
             string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
 #else
             //And comment-out below line
-            string str = resManager.GetString(key, CultureInfo.CurrentUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+            //Robert_Lin 2025-1-22 PIMS-331191 With DDPM installed, observe language in DDPM UI not change for other langauges of Other countries
+            //Add a CultureInfoMap to convert (mapped) CultureInfo.CurrentUICulture to the supported cultureInfo of DDPM
+            //OLD:
+            //string str = resManager.GetString(key, CultureInfo.CurrentUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+            //NEW:
+            string str = resManager.GetString(key, DdpmCultureMap.MappedCultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
 #endif
 
             //This statement is required
