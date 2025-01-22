@@ -112,7 +112,8 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
 
         private void MainNextBtn_Click(object sender, RoutedEventArgs e)
         {
-            msgBox = new WalkThroughBox(ViewModel, Window.GetWindow(this));
+            double scalingFactor = DdpmCommonHelper.GetScalingFactor(Application.Current.MainWindow);
+            msgBox = new WalkThroughBox(ViewModel, Application.Current.MainWindow, scalingFactor);
             msgBox.WindowStartupLocation = WindowStartupLocation.Manual;
             //msgBox.ShowDialog();
             msgBox.Show();

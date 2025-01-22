@@ -12,6 +12,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -29,6 +30,8 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
     {
         private WalkThroughBoxViewModel _viewModel;
         private WalkThroughPageViewModel ViewModel;
+        private double screenScalingFactor = 1.0;
+        private Window mainWindow;
         internal class WalkThroughBoxViewModel : ObservableObject, INotifyPropertyChanged
         {
             public new event PropertyChangedEventHandler? PropertyChanged;
@@ -94,7 +97,7 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
         private int _currentPage = 1;
         private int _totalPages = 5;
 
-        public WalkThroughBox(WalkThroughPageViewModel viewModel, Window owner)
+        public WalkThroughBox(WalkThroughPageViewModel viewModel, Window owner, double factor = 1.0)
         {
             InitializeComponent();
             ViewModel = viewModel;
@@ -114,7 +117,9 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             ViewModel.Img3Source = DdpmCommonHelper.GetImageSourceFromCommonResource(devicePages["DDPM"][_currentPage].MainImageSource, "DDPM.UI.WalkThroughData");
             //_currentPage++;
             //UpdatePage(devicePages["DDPM"][1].MainImageSource);
+            mainWindow = owner;
             base.Owner = owner;
+            screenScalingFactor = factor;
             UpdatePosition("Top_Right");
         }
         private void NextBtn_Click(object sender, RoutedEventArgs e)
@@ -202,17 +207,48 @@ namespace DDPM.UI.Plugin.WalkThroughPlugin
             ViewModel.Img3Source = DdpmCommonHelper.GetImageSourceFromCommonResource(page, "DDPM.UI.WalkThroughData");
         }
 
-        private void UpdatePosition(string position)
+        private void UpdatePosition(string position, double factor = 1.0)
         {
             switch (position.ToLower())
             {
                 case "top_right":
-                    this.Left = base.Owner.Left + base.Owner.Width - this.Width - 122;
-                    this.Top = base.Owner.Top + 64;
+                    if (mainWindow != null) {
+                        if (mainWindow.WindowState == WindowState.Normal)
+                        {
+                            this.Left = this.Owner.Left + base.Owner.Width - this.Width - 122;
+                            this.Top = this.Owner.Top + 64;
+                        }
+                        else
+                        {
+                            var screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(mainWindow).Handle); // Default to primary screen
+                            this.Left = (screen.WorkingArea.Left + screen.WorkingArea.Width) / screenScalingFactor - this.Width - 122;
+                            this.Top = screen.WorkingArea.Top / screenScalingFactor + 64 ;
+                        }
+                    }
+                    else
+                    {
+                        DdpmCommonHelper.WriteUILog("[UpdatePosition] AppWalkThroughBox can not detect MainWindow!!");
+                    }
                     break;
                 case "left":
-                    this.Left = base.Owner.Left + 164; // Align with the left edge of the owner
-                    this.Top = base.Owner.Top + (base.Owner.Height - this.Height) / 2; // Center vertically
+                    if (mainWindow != null)
+                    {
+                        if (mainWindow.WindowState == WindowState.Normal)
+                        {
+                            this.Left = this.Owner.Left + 164; // Align with the left edge of the owner
+                            this.Top = this.Owner.Top + (base.Owner.Height - this.Height) / 2; // Center vertically
+                        }
+                        else
+                        {
+                            var screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(mainWindow).Handle); // Default to primary screen
+                            this.Left = screen.WorkingArea.Left / screenScalingFactor + 164; // Align with the left edge of the owner
+                            this.Top = screen.WorkingArea.Top / screenScalingFactor + (screen.WorkingArea.Height / screenScalingFactor - this.Height) / 2; // Center vertically
+                        }
+                    }
+                    else
+                    {
+                        DdpmCommonHelper.WriteUILog("[UpdatePosition] AppWalkThroughBox can not detect MainWindow!!");
+                    }
                     break;
             }
         }
