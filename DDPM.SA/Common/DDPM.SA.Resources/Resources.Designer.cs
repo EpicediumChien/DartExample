@@ -583,6 +583,24 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The default ICC profile is for Smart HDR.We are not able to change color preset in the.
+        /// </summary>
+        internal static string ICC_notification_NonSmartHDR {
+            get {
+                return ResourceManager.GetString("ICC_notification_NonSmartHDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The default ICC profile is not suitable for Smart HDR.We are not able to change color preset in the.
+        /// </summary>
+        internal static string ICC_notification_SmartHDR {
+            get {
+                return ResourceManager.GetString("ICC_notification_SmartHDR", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The same monitor is detected, do you want to import settings for %1?.
         /// </summary>
         internal static string ImpExp_Message_0 {

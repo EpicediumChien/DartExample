@@ -50,7 +50,12 @@ using DDPM.SA.Common.Security;
 using static VcpCore.Common.User32;
 using Microsoft.VisualBasic.Logging;
 using System.Xml.Linq;
+using DDPM.SA.Resources.Helper;
+using Microsoft.Toolkit.Uwp.Notifications;
 //using DDPM.SA.Common.Settings;
+
+using DDPM.SA.Resources.Helper;
+using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace ColorPreset.Plugins
 {
@@ -96,6 +101,10 @@ namespace ColorPreset.Plugins
         public RegistryMonitor_NightLight registryMonitor_NightLight = null;
         public RegistryMonitor_NightLightScheduler registryMonitor_NightLight_Scheduler = null;
         public RegistryMonitor_ICC registryMonitor_ICC = null;
+
+        //20250122 Jim add for PIMS-314617
+        bool Active_SmartHDR_ON = false;
+        private bool userClosedPopup = false;
 
         /// <summary>
         /// Colorpreset Manual change event，return Colorpreset name
@@ -805,7 +814,66 @@ namespace ColorPreset.Plugins
 
                         writelog($"ColorPresetPlugin OnRegChanged_ICC ColorPreset = {strICC_ColorPresets[0]}");
 
-                        Coloreset_manual_ChangeEvent?.AsyncFireAndForget(this, strICC_ColorPresets[0], System.Threading.CancellationToken.None);
+                        // Jim 20250122 modify for PIMS-314617 - U2725QEt Wistron- P3:DDPM(Windows)-Color Management behavior is out of spec
+                        string result = ColorPresetSupportList.FirstOrDefault(x => x == strICC_ColorPresets[0]);
+                        if (result != null)
+                        {
+                            //found
+                            Coloreset_manual_ChangeEvent?.AsyncFireAndForget(this, strICC_ColorPresets[0], System.Threading.CancellationToken.None);
+                        }
+                        else
+                        {
+                            if (Active_SmartHDR_ON)
+                            {
+                                if (string.Equals(strICC_ColorPresets[0], "DisplayHDR", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Display HDR", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    Coloreset_manual_ChangeEvent?.AsyncFireAndForget(this, strICC_ColorPresets[0], System.Threading.CancellationToken.None);
+                                }                              
+                                else
+                                {
+                                    PopupContentPackage popupContentPackage = new PopupContentPackage()
+                                    {
+                                        Title = Strings.Dell_Display_and_Peripheral_Manager0,
+                                        Info = Strings.ICC_notification_SmartHDR0 + Active_monitorInfo.modelName,
+                                        IsInfo = true,
+                                        IsOnlyUpdate = false,
+                                        StayOpen = false,
+                                        Timeout = 5,
+                                    };
+
+                                    CallPopup(this, popupContentPackage);
+                                }
+                            }
+                            else
+                            {
+                                if (string.Equals(strICC_ColorPresets[0], "Standard", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Native", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    Coloreset_manual_ChangeEvent?.AsyncFireAndForget(this, strICC_ColorPresets[0], System.Threading.CancellationToken.None);
+                                }
+                                else if (string.Equals(strICC_ColorPresets[0], "Game", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Game1", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    Coloreset_manual_ChangeEvent?.AsyncFireAndForget(this, strICC_ColorPresets[0], System.Threading.CancellationToken.None);
+                                }
+                                else if (strICC_ColorPresets[0].Contains("Rec", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("BT.", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("709", StringComparison.OrdinalIgnoreCase) || strICC_ColorPresets[0].Contains("2020", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    Coloreset_manual_ChangeEvent?.AsyncFireAndForget(this, strICC_ColorPresets[0], System.Threading.CancellationToken.None);
+                                }
+                                else
+                                {
+                                    PopupContentPackage popupContentPackage = new PopupContentPackage()
+                                    {
+                                        Title = Strings.Dell_Display_and_Peripheral_Manager0,
+                                        Info = Strings.ICC_notification_NonSmartHDR0 + Active_monitorInfo.modelName,
+                                        IsInfo = true,
+                                        IsOnlyUpdate = false,
+                                        StayOpen = false,
+                                        Timeout = 5,
+                                    };
+
+                                    CallPopup(this, popupContentPackage);
+                                }
+                            }                            
+                        }                        
                     }
 
                     break;
@@ -1294,6 +1362,8 @@ namespace ColorPreset.Plugins
 
         public Task<List<string>> ReadColorPreset(MonitorInfo m, string vcp_capbilities, bool SmartHDR_ON = false)
         {
+            //20250122 Jim add for PIMS-314617
+            Active_SmartHDR_ON = SmartHDR_ON;
 
             Trace.WriteLine($" [ReadColorPreset]  vcp_capbilities = {vcp_capbilities}");
 
@@ -1932,6 +2002,79 @@ namespace ColorPreset.Plugins
 
             return System.Threading.Tasks.Task.FromResult(strSync_ColorPreset_Name);
 
+        }
+
+        //20250122 Jim add for PIMS-314617
+        private void CallPopup(object o, PopupContentPackage popupContentPackage)
+        {
+            writelog("[CallPopup], Start.");
+            // 將 popupContentPackage.Object 轉換成 JSON 字串
+            string json = JsonConvert.SerializeObject(popupContentPackage.Object);
+            //// 將 JSON 字串轉換成 FWUpdateInfoPackage 對象
+            //FWUpdateInfoPackage fWUpdateInfoPackage = JsonConvert.DeserializeObject<FWUpdateInfoPackage>(json);
+            //// 將 JSON 字串轉換成 SWUpdateInfoPackage 對象
+            //SWUpdateInfoPackage sWUpdateInfoPackage = JsonConvert.DeserializeObject<SWUpdateInfoPackage>(json);
+            string title = popupContentPackage.Title;
+            string info = popupContentPackage.Info;
+            bool isInfo = popupContentPackage.IsInfo;
+            bool isOnlyUpdate = popupContentPackage.IsOnlyUpdate;
+            if (!string.IsNullOrEmpty(json))
+            {
+                userClosedPopup = false;
+                System.Threading.Tasks.Task.Run(async () =>
+                {
+                    ToastContentBuilder toastContentBuilder = new ToastContentBuilder();
+                    // 將物件序列化為 JSON 字串
+                    string jsonString = System.Text.Json.JsonSerializer.Serialize(json);
+                    Console.WriteLine(jsonString);
+                    if (!isInfo)
+                    {
+                        toastContentBuilder.AddArgument(title);
+                        toastContentBuilder.AddText(title);
+                        toastContentBuilder.AddText(info);
+                        if (!isOnlyUpdate)
+                        {
+                            toastContentBuilder.AddButton(LangHelper.Instance["UpdateNow"], ToastActivationType.Background, "Update " + popupContentPackage.PopupType.ToString());
+                            toastContentBuilder.AddButton(LangHelper.Instance["Defer"], ToastActivationType.Background, "Delay");
+                        }
+                        else
+                        {
+                            toastContentBuilder.AddButton(LangHelper.Instance["Ok"], ToastActivationType.Background, "Update");
+                        }
+                    }
+                    else
+                    {
+                        toastContentBuilder.AddArgument(title);
+                        toastContentBuilder.AddText(title);
+                        toastContentBuilder.AddText(info);
+                    }
+                    //if (_PopupBase != null && _PopupBase.Activate())
+                    //{
+                    //    _PopupBase.CloseWindow();
+                    //    _PopupBase = null;
+                    //}
+                    toastContentBuilder.Show(); // 顯示Toast通知
+                    writelog("[CallPopup], popup Show.");
+                    Thread.Sleep(5000);
+                    if (!userClosedPopup)
+                    {
+                        writelog("[CallPopup], is no user closed popup.");
+                        if (!isInfo)
+                        {
+                            if (!isOnlyUpdate)
+                            {
+                                writelog("[CallPopup], go to DelayEvent.");
+                                //DelayEvent(this, popupContentPackage.PopupType.ToString());
+                            }
+                            else
+                            {
+                                writelog("[CallPopup], go to UpdateEvent.");
+                                //UpdateEvent(this, popupContentPackage.PopupType.ToString());
+                            }
+                        }
+                    }
+                });
+            }
         }
 
         #endregion
