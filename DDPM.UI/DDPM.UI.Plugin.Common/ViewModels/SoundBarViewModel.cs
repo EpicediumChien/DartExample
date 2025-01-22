@@ -136,8 +136,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     SpeakerInfoValueDTP.IsBassEqualizerSupportedAsync = _deviceManager.GetIsBassEqualizerSupportedAsync(CurrentDeviceID.ToString()).Result;
                     SpeakerInfoValueDTP.IsMidRangeEqualizerSupportedAsync = _deviceManager.GetIsMidRangeEqualizerSupportedAsync(CurrentDeviceID.ToString()).Result;
                     SpeakerInfoValueDTP.IsTrebleEqualizerSupportedAsync = _deviceManager.GetIsTrebleEqualizerSupportedAsync(CurrentDeviceID.ToString()).Result;
-
                     ChangeImage(Model, "MuteStatusChanged");
+                    _log.Info($"[SoundBarViewModel] DTP success, this is DTP value ...");
                 }
                 else
                 {
@@ -165,7 +165,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     SpeakerInfoValueDTP.IsBassEqualizerSupportedAsync = false;
                     SpeakerInfoValueDTP.IsMidRangeEqualizerSupportedAsync = false;
                     SpeakerInfoValueDTP.IsTrebleEqualizerSupportedAsync = false;
-                    //ChangeImage(Model, "MuteStatusChanged");
+                    ChangeImage(Model, "MuteStatusChanged");
+                    _log.Info($"[SoundBarViewModel] DTP error, this is DTH value ...");
                 }
                 _log.Info($"[SoundBarViewModel] ***********************************************************************");
                 _log.Info($"[SoundBarViewModel] SpeakerInfoValueDTP.SpeakerProfileName .............= {SpeakerInfoValueDTP.SpeakerProfileName.ToString()}");
@@ -494,10 +495,24 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             else
             {
-                string fv = _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()).Result;
+                string fv =  _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()).Result;
                 if (fv == null || fv == string.Empty)
                 {
-                    IsDTPReady = false;
+                    int tick = 0;   
+                    while (tick < 5)
+                    {
+                        Thread.Sleep(1000);
+                        fv = _deviceManager.GetProfileAsync(CurrentDeviceID.ToString()).Result;
+                        if (fv != null && fv != string.Empty)
+                        {
+                            break;
+                        }
+                        tick++;
+                    }
+                    if (fv == null || fv == string.Empty)
+                        IsDTPReady = false;
+                    else
+                        IsDTPReady = true;
                     _log.Info($"[SoundBarViewModel] SetCurrentDevice ... GetProfileAsync ... Null or Empty ... DTP fail ...");
                 }
                 else
