@@ -125,16 +125,23 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //BuildModuleGroups();
 
 
-
-                var pName = _vm.ProfileCaptions[_vm.CurrentProfileName];
-                if (PresetNames.Contains(pName))
+                if (_vm.CurrentProfileName == "NONE")
                 {
-                    txtPreset.Text = $"{Strings.Preset}: {pName}";
+                    txtPreset.Text = $"{Strings.Preset}: {LangHelper.Instance["None"]}";
                 }
                 else
                 {
-                    txtPreset.Text = Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 140, 14);
+                    var pName = _vm.ProfileCaptions[_vm.CurrentProfileName];
+                    if (PresetNames.Contains(pName))
+                    {
+                        txtPreset.Text = $"{Strings.Preset}: {pName}";
+                    }
+                    else
+                    {
+                        txtPreset.Text = Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 140, 14);
+                    }
                 }
+
                 txtAddPreset.Text = LangHelper.Instance["Camera.5"];
 
                 //ProfileItems.ItemsSource = _vm.ProfileNames;
@@ -835,7 +842,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
                         _vm.MessageBoxVisibilityUsbType = Visibility.Visible;
                         //_vm.usbtype_info_v = LangHelper.Instance["Camera.25"]; // Jim 20250115 modify PIMS-294596
-                        _vm.usbtype_info_v = LangHelper.Instance["Camera.26"]; // Jim 20250115 modify PIMS-294596
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.27"]; // Jim 20250115 modify PIMS-294596 //20250120 WB7022 is External webcam not Monitor; 
 
                         //fps與解析度,排除4k
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
@@ -900,7 +907,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
                         _vm.MessageBoxVisibilityUsbType = Visibility.Collapsed;
                         //_vm.usbtype_info_v = LangHelper.Instance["Camera.25"]; // Jim 20250115 modify PIMS-294596
-                        _vm.usbtype_info_v = LangHelper.Instance["Camera.26"]; // Jim 20250115 modify PIMS-294596
+                        _vm.usbtype_info_v = LangHelper.Instance["Camera.27"]; // Jim 20250115 modify PIMS-294596
 
                         //fps與解析度,排除4k
                         //Connect your monitor via USB 3.0 to enable 4K UHD resolution.
@@ -1396,6 +1403,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 catch (Exception ex)
                 {
                     print_debug("ex1:" + ex.Message);
+                    Thread.Sleep(200);//for wait device init
                     DdpmCommonHelper.WriteUILog("MediaCapture initiate fail (retry): " + ex.Message);
                     _vm.mre.Set();
                     return;
@@ -2286,36 +2294,39 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private async Task CleanupMediaCaptureAsync()
         {
 
-            try
+            if (_vm.MediaFrameReader != null)
             {
-                _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"Error del MediaFrameReader FrameArrived: {ex.Message}");
-            }
-
-            try
-            {
-                await _vm.MediaFrameReader.StopAsync();
-
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"Error stopping MediaFrameReader: {ex.Message}");
-            }
-
-            try
-            {
-                if (_vm.MediaFrameReader != null)
+                try
                 {
-                    _vm.MediaFrameReader.Dispose();
-                    _vm.MediaFrameReader = null;
+                    _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
                 }
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"Error Dispose MediaFrameReader: {ex.Message}");
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog($"Error del MediaFrameReader FrameArrived: {ex.Message}");
+                }
+
+                try
+                {
+                    await _vm.MediaFrameReader.StopAsync();
+
+                }
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog($"Error stopping MediaFrameReader: {ex.Message}");
+                }
+
+                try
+                {
+                    if (_vm.MediaFrameReader != null)
+                    {
+                        _vm.MediaFrameReader.Dispose();
+                        _vm.MediaFrameReader = null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog($"Error Dispose MediaFrameReader: {ex.Message}");
+                }
             }
 
             if (_vm!.MediaCapture != null)
@@ -2403,7 +2414,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             try
             {
                 var profileName = ((UXTextBlock)sender).Tag.ToString()!;
-                if (profileName != _vm!.CurrentProfileName || isProfilePropertyChanged)
+                if (profileName != _vm!.CurrentProfileName)
                 {
                     //DdpmCommonHelper.DeviceManagerSA!.SetProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.ProfileIDs[profileName]);
                     _vm!.CurrentProfileName = profileName;
@@ -2434,13 +2445,30 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 var AnimatedPanel = (StackPanel)FindName("spPresets");
                 if (IsPresetOpen)
                 {
-                    var pName = _vm!.ProfileCaptions[_vm.CurrentProfileName];
-                    var txt = $"{Strings.Preset}: {pName}";
-                    if (!PresetNames.Contains(pName))
+                    if (_vm!.CurrentProfileName == "NONE")
                     {
-                        txt = Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 140, 14);
+                        txtPreset.Text = $"{Strings.Preset}: {LangHelper.Instance["None"]}";
                     }
-                    txtPreset.Text = txt;
+                    else
+                    {
+                        var pName = _vm.ProfileCaptions[_vm.CurrentProfileName];
+                        if (PresetNames.Contains(pName))
+                        {
+                            txtPreset.Text = $"{Strings.Preset}: {pName}";
+                        }
+                        else
+                        {
+                            txtPreset.Text = Utility.CheckTextLength($"{_vm.CurrentProfileName}", 140, 14);
+                        }
+                    }
+
+                    //var pName = _vm.CurrentProfileName == "NONE" ? "NONE" : _vm!.ProfileCaptions[_vm.CurrentProfileName];
+                    //var txt = $"{Strings.Preset}: {pName}";
+                    //if (!PresetNames.Contains(pName)|| pName != "NONE")
+                    //{
+                    //    txt = Utility.CheckTextLength($"{_vm!.CurrentProfileName}", 140, 14);
+                    //}
+                    //txtPreset.Text = txt;
                     rotateAnimation = new()
                     {
                         From = 180,
@@ -2999,6 +3027,11 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
 
             //DdpmCommonHelper.WriteUILog($"Webcam landing page UserControl_Loaded");
+        }
+
+        private void txbName_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            e.Handled = e.Key == Key.Enter;
         }
     }
 }

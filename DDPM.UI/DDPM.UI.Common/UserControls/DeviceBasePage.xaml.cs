@@ -222,12 +222,9 @@ namespace DDPM.UI.Common.UserControls
 
             //Get the IsDdcciOn flag from SelectedHomeDevice
             bool isDdciOn = true;
-            if (viewModel.SelectedHomeDevice != null)
+            if (viewModel.SelectedHomeDevice != null && viewModel.SelectedHomeDevice.MonitorInfo != null)
             {
-                if (viewModel.SelectedHomeDevice.MonitorInfo != null)
-                {
-                    isDdciOn = viewModel.SelectedHomeDevice.MonitorInfo.DDCisON;
-                }
+                isDdciOn = viewModel.SelectedHomeDevice.MonitorInfo.DDCisON;
             }
 
 

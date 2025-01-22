@@ -84,8 +84,8 @@
                     <ControlTemplate TargetType="{x:Type ListView}">
                         <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                                 Padding="0" Margin="0" SnapsToDevicePixels="true">
-                            <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" HorizontalAlignment="Stretch" MinWidth="1050"
-                                          MaxWidth="{Binding ScrollViewMaxWidth}">
+                            <ScrollViewer Focusable="false" Padding="{TemplateBinding Padding}" HorizontalAlignment="Stretch" MaxWidth="{Binding ScrollViewMaxWidth}"
+                                          Width="{TemplateBinding Width}">
                                 <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                             </ScrollViewer>
                         </Border>
@@ -262,40 +262,15 @@
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
 
-                <!-- Robert_Lin 2025-1-21 PIMS-341710] [DDPM WIN 2.0][R20_Peripheral] The position of connection menu in DDPM is different from the position of connection menu in Figma
-                    1 Item Width binding to HoverWidth at outer Grid.
-                    2 Move the Indicators outside Image rect: Use a 2 rows Grid (Height=*,Auto)
-                    3 Enlarge Image using ScaleTransform + Animatio ScaleX and ScaleY 
-                
-                -->
                 <ListView.ItemTemplate>
                     <DataTemplate x:Name="lvItemTemplate" DataType="{x:Type commonModel:HomeDevice}">
-                        <!-- 
-                        
                         <DockPanel>
-                        -->
-                        <Grid Width="{Binding HoverWidth}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <!-- 
-                            
-                                 <Grid Name="devListViewItemRoot"
-                                 Margin="0"
-                                 HorizontalAlignment="Stretch"
-                                 VerticalAlignment="Stretch"
-                                 MouseLeftButtonDown="devListViewItemRoot_MouseLeftButtonDown">
-                      -->
- 
                             <Grid Name="devListViewItemRoot"
                                   Margin="0"
-                                  HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Stretch"
+                                  VerticalAlignment="Stretch"
                                   MouseLeftButtonDown="devListViewItemRoot_MouseLeftButtonDown">
-                                
-                                
-                                <!--<Grid.Triggers>
+                                <Grid.Triggers>
                                     <EventTrigger RoutedEvent="MouseEnter">
                                         <EventTrigger.Actions>
                                             <BeginStoryboard>
@@ -322,23 +297,15 @@
                                             </BeginStoryboard>
                                         </EventTrigger.Actions>
                                     </EventTrigger>
-                                </Grid.Triggers>-->
+                                </Grid.Triggers>
 
-                                <!-- BorderBrush="{StaticResource FocusDotBrush}" 
-                                  <Border Name="bdItem" BorderBrush="{StaticResource FocusDotBrush}" Background="#02000000"
-                                       Margin="0" Padding="0"
-                                       Width="auto" Height="auto"
-                                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                       Focusable="True"
-                                       AutomationProperties.Name="Home device object"
-                                       >
-                             
-                                -->
+                                <!-- BorderBrush="{StaticResource FocusDotBrush}"  -->
                                 <Border Name="bdItem" BorderBrush="{StaticResource FocusDotBrush}" Background="#02000000"
                                         Margin="0" Padding="0"
                                         Width="auto" Height="auto"
-                                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                        Focusable="False"
+                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        Focusable="True"
+                                        AutomationProperties.Name="Home device object"
                                         >
                                     <Border.Style>
                                         <Style TargetType="Border">
@@ -362,59 +329,18 @@
                                         </Style>
                                     </Border.Style>
 
-                                    <!-- 
-                                    
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                    
-                                                              <Image.Style>
-                                           <Style TargetType="Image">
-                                               <Setter Property="Width" Value="{Binding NormalWidth}" />
-                                               <Style.Triggers>
-                                                   <Trigger Property="IsMouseOver" Value="True">
-                                                       <Setter Property="Width" Value="{Binding HoverWidth}" />
-                                                   </Trigger>
-             
-                                    -->
                                     <Image x:Name="devImg" Source="{Binding DeviceImage}" Stretch="Uniform"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"
                                            Focusable="True"
                                            AutomationProperties.Name="{Binding TooltipModelName}"
                                            Margin="0">
-                                        <Image.RenderTransform>
-                                            <ScaleTransform x:Name="ImageScaleTransform" ScaleX="1" ScaleY="1"/>
-                                        </Image.RenderTransform>
-                                        <Image.Triggers>
-                                            <EventTrigger RoutedEvent="Image.MouseEnter">
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform"
-                                                            Storyboard.TargetProperty="ScaleX"
-                                                            To="1.1" Duration="0:0:0.5" />
-                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform"
-                                                            Storyboard.TargetProperty="ScaleY"
-                                                            To="1.1" Duration="0:0:0.5" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </EventTrigger>
-                                            <EventTrigger RoutedEvent="Image.MouseLeave">
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform"
-                                            Storyboard.TargetProperty="ScaleX"
-                                            To="1" Duration="0:0:0.5" />
-                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform"
-                                            Storyboard.TargetProperty="ScaleY"
-                                            To="1" Duration="0:0:0.5" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </EventTrigger>
-                                        </Image.Triggers>
-                                        <!--<Image.Style>
+                                        <Image.Style>
                                             <Style TargetType="Image">
                                                 <Setter Property="Width" Value="{Binding NormalWidth}" />
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter Property="Width" Value="{Binding HoverWidth}" />
-                                                    </Trigger>-->
+                                                    </Trigger>
 
                                                     <!-- Cannot add EventTrigger here -->
                                                     <!--
@@ -429,9 +355,9 @@
                                                     </BeginStoryboard>
                                                     </EventTrigger>
                                                     -->
-                                                <!--</Style.Triggers>
+                                                </Style.Triggers>
                                             </Style>
-                                        </Image.Style>-->
+                                        </Image.Style>
                                         <!-- RobertLin, 2024-7-10, test, move to Border -->
                                         <!--
                                         <Image.ToolTip>
@@ -518,19 +444,19 @@
                                 4 ConnectionHoverView is Collapsed by default when mouse enter BatteryIndicator will be displayed,
                                 And return to Collaped when Mouse leave.
                                 Copy from KeyboardPlugin.LaunchView.xaml
-                                
-                                
-                                <Grid Name="Indicators" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40">
                                 -->
-                                <Grid Name="Indicators" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,0" Visibility="Collapsed">
-                                     <!--Use StackPanel, so (by default) ConnectionHoverView is collapsed. The Indicators Grid will show
-                                    the BatteryIndicator only.--> 
+                                <Grid Name="Indicators" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40">
+                                    <!-- Use StackPanel, so (by default) ConnectionHoverView is collapsed. The Indicators Grid will show
+                                    the BatteryIndicator only. -->
                                     <StackPanel>
 
-                                         
+                                        <!-- -->
                                         <local:ConnectionHoverView DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListViewItem}}" />
 
-                                        
+                                        <!--
+                                        <ContentControl Name="connHover" />
+                                        -->
+
                                         <DDPMUserControls:BatteryIndicator Name="batteryIndicator"
                                                                            Margin="0,8,0,4" HorizontalAlignment="Center"
                                                                            BatteryLevel="{Binding BatteryLevel}"
@@ -542,8 +468,6 @@
                                                                            MouseLeave="batteryIndicator_MouseLeave" />
                                     </StackPanel>
                                 </Grid>
-                                
-                                
                                 <!-- Robert_Lin, 2024-6-7 BatteryIndicator position improvement
                                 If it's need to move up a litter, you can use margin to archieve -->
                                 <!-- Robert_Lin, 2024-7-21 Move into Indicators Grid
@@ -564,25 +488,7 @@
                             BatteryLevel="{Binding BatteryLevel}" BatteryStatus="{Binding BatteryStatus}"
                             ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" Text1="{Binding Text1}"
                             NoBattery="{Binding NoBattery}" /> -->
-
-                            <Grid Name="Indicators2" VerticalAlignment="Bottom"  HorizontalAlignment="Center" Margin="0,0,0,0" Grid.Row="1">
-                                <StackPanel>
-
-                                    <local:ConnectionHoverView DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListViewItem}}" />
-
-                                     <DDPMUserControls:BatteryIndicator Name="batteryIndicator2"
-                                                                           Margin="0,8,0,4" HorizontalAlignment="Center"
-                                                                           BatteryLevel="{Binding BatteryLevel}"
-                                                                           BatteryStatus="{Binding BatteryStatus}"
-                                                                           ConnectionType="{Binding ConnectionType}"
-                                                                           VerticalAlignment="Bottom" Text1="{Binding Text1}"
-                                                                           NoBattery="{Binding NoBattery}"
-                                                                           MouseEnter="batteryIndicator_MouseEnter"
-                                                                           MouseLeave="batteryIndicator_MouseLeave" />
-                                </StackPanel>
-                            </Grid>
-
-                        </Grid>
+                        </DockPanel>
                         <!-- Add below code will cause all items are invisible
                         <DataTemplate.Triggers>
                         <EventTrigger RoutedEvent="MouseEnter">

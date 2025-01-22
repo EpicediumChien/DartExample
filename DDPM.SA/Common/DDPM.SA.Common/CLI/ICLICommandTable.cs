@@ -31,12 +31,12 @@ namespace DDPM.SA.Common
     {
         private readonly Dictionary<string, int> Command_Timeout_Value = new Dictionary<string, int>()
         {
-            { "DEVICEDATA", 300 },
-            { "DEVICECONFIGURATION", 300 },
-            { "EXPORTSETTINGS", 300 },
-            { "IMPORTSETTINGS", 300 },
-            { "USBCPRIORITIZATION", 300 },
-            { "PXP", 300 }
+            { "DEVICEDATA", 600 },
+            { "DEVICECONFIGURATION", 600 },
+            { "EXPORTSETTINGS", 600 },
+            { "IMPORTSETTINGS", 600 },
+            { "USBCPRIORITIZATION", 600 },
+            { "PXP", 600 }
         };
 
         //IT feature table
@@ -803,7 +803,10 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Command line format error"
             };
-            System.Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+#if DEBUG
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+#endif
+
             return (int)CLI_ExitCode.fail_FormantError;
         }
 
@@ -821,7 +824,9 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "DDPM CLI should be executed as elevated process"
             };
-            System.Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+#if DEBUG
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+#endif
             return (int)CLI_ExitCode.fail_notAdmin;
         }
 
@@ -839,7 +844,9 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Timeout for obtaining DDPM SA (CLI Manager)"
             };
-            System.Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+#if DEBUG
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+#endif
             return (int)CLI_ExitCode.target_subagent_timeout;
         }
 
@@ -857,7 +864,9 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Wrong ID value"
             };
-            System.Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+#if DEBUG
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+#endif
             return (int)CLI_ExitCode.fail_Value;
         }
 
@@ -997,7 +1006,9 @@ namespace DDPM.SA.Common
                 Value = commandLineInput.Options.Count > 0 ? commandLineInput.Options[0].Option_Value : "N/A",
                 Message = "Set defer operation completed"
             };
+#if DEBUG
             Console.WriteLine(result.ToJson());
+#endif
             return (int)CLI_ExitCode.success;
         }
 
@@ -1011,7 +1022,9 @@ namespace DDPM.SA.Common
                 Value = commandLineInput.Options.Count > 0 ? commandLineInput.Options[0].Option_Value : "N/A",
                 Message = "Option value not supported"
             };
+#if DEBUG
             Console.WriteLine(result.ToJson());
+#endif
             return (int)CLI_ExitCode.fail_option_value;
         }
 
@@ -1308,7 +1321,9 @@ namespace DDPM.SA.Common
                     { targetType, targetFeatures }
                 };
                 string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+#if DEBUG
                 Console.WriteLine(json);
+#endif
                 return json;
             }
             // [HELP]: Print all the data in the command set
@@ -1322,7 +1337,9 @@ namespace DDPM.SA.Common
                     );
 
                 string json = JsonConvert.SerializeObject(groupedFeatures, Formatting.Indented);
+#if DEBUG
                 Console.WriteLine(json);
+#endif
             }
 
             // [HELP]: Print the command according to the feature in list<pluginType> aka. targetFeature
@@ -1339,7 +1356,9 @@ namespace DDPM.SA.Common
                     { targetType, targetFeatures }
                 };
                 string json = JsonConvert.SerializeObject(result, Formatting.Indented);
+#if DEBUG
                 Console.WriteLine(json);
+#endif
             }
 
             public static bool IsTargetFeatureAndPluginsTypeExists(CommandLineInput commandLineInput)
@@ -1370,7 +1389,7 @@ namespace DDPM.SA.Common
             {
                 switch (commandLineInput.TargetFeature)
                 {
-                    //case "DISPLAY":
+                    case "DISPLAY":
                     case "ADVANCED":
                     case "APP":
                     case "AUDIO":
@@ -1416,8 +1435,9 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Command line format error"
             };
-
-            System.Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+#if DEBUG
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+#endif
             return (int)CLI_ExitCode.fail_FormantError;
         }
     }

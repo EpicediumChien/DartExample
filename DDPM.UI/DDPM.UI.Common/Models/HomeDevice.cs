@@ -198,6 +198,8 @@ namespace DDPM.UI.Common.Models
             {
                 if (MonitorInfo != null)
                 {
+                    //Robert_lin 2025-1-21 Debug info
+                    //string debugInfo = $"({MonitorInfo.DisplayName})";
                     return MonitorInfo.edid.ServiceTag;
                 }
                 else
@@ -357,6 +359,8 @@ namespace DDPM.UI.Common.Models
                 }
                 else if (MonitorInfo != null)
                 {
+                    //Robert_lin 2025-1-21 Debug info
+                    //string debugInfo = $"({MonitorInfo.DisplayName})";
                     //Robert_Lin, 2024-8-29 comment out for DDPMW-2094
                     //Robert_Lin, 2024-6-20, change to DisplayName (with (instanceNo)
                     //return MonitorInfo.AliasDeviceName;
@@ -927,40 +931,37 @@ namespace DDPM.UI.Common.Models
             get => _isConnectionHoverViewShow;
             set
             {
-                if (value == true)
+                if (value == true && DeviceInfo != null)
                 {
-                    if (DeviceInfo != null)
+                    /* 1101 Bruce The customer confirms that the Dock does not use the Hover icon.
+                    if (DeviceCategory == eDeviceCategory.Dock)
                     {
-                        /* 1101 Bruce The customer confirms that the Dock does not use the Hover icon.
-                        if (DeviceCategory == eDeviceCategory.Dock)
-                        {
-                            ConnectionHoverMode = "Dock";
-                            SetDockView();
-                        }
-                        else*/
-                        {
-                            if (ConnectionType == "Dongle")
-                            {
-                                ConnectionHoverMode = "IO_Dongle";
-                                RefreshDongleView();
-                            }
-                            else if (ConnectionType.Contains("Bluetooth")) //Audio will be "BluetoothAudio"
-                            {
-                                ConnectionHoverMode = "IO_BLE";
-                                if (DeviceCategory == eDeviceCategory.KB)
-                                    SetBLConnectionStatus_Keyboard();
-                                else if (DeviceCategory == eDeviceCategory.Mouse)
-                                    SetBLConnectionStatus_Mouse();
-                                else if (DeviceCategory == eDeviceCategory.Headset)
-                                {
-                                    ConnectionHoverMode = "Audio_BLE";
-                                    SetBLConnectionStatus_Audio();
-                                }
-                                else
-                                    SetBLConnectionStatus_IO();
-                            }
-                        }
+                        ConnectionHoverMode = "Dock";
+                        SetDockView();
                     }
+                    else*/
+                    //{
+                    if (ConnectionType == "Dongle")
+                    {
+                        ConnectionHoverMode = "IO_Dongle";
+                        RefreshDongleView();
+                    }
+                    else if (ConnectionType.Contains("Bluetooth")) //Audio will be "BluetoothAudio"
+                    {
+                        ConnectionHoverMode = "IO_BLE";
+                        if (DeviceCategory == eDeviceCategory.KB)
+                            SetBLConnectionStatus_Keyboard();
+                        else if (DeviceCategory == eDeviceCategory.Mouse)
+                            SetBLConnectionStatus_Mouse();
+                        else if (DeviceCategory == eDeviceCategory.Headset)
+                        {
+                            ConnectionHoverMode = "Audio_BLE";
+                            SetBLConnectionStatus_Audio();
+                        }
+                        else
+                            SetBLConnectionStatus_IO();
+                    }
+                    //}
                 }
                 SetProperty(ref _isConnectionHoverViewShow, value);
                 RefreshConnectoionHoverView();
@@ -1779,11 +1780,8 @@ namespace DDPM.UI.Common.Models
         {
             get
             {
-                if (MonitorInfo != null)
-                {
-                    if (MonitorInfo.CapabilityDic != null)
-                        return MonitorInfo.CapabilityDic.ContainsKey("F4");
-                }
+                if (MonitorInfo != null && MonitorInfo.CapabilityDic != null)
+                    return MonitorInfo.CapabilityDic.ContainsKey("F4");
                 return false;
             }
         }
@@ -1792,11 +1790,8 @@ namespace DDPM.UI.Common.Models
         {
             get
             {
-                if (MonitorInfo != null)
-                {
-                    if (MonitorInfo.CapabilityDic != null && MonitorInfo.modelName.ToUpper().StartsWith("G"))
-                        return MonitorInfo.CapabilityDic.ContainsKey("EC");
-                }
+                if (MonitorInfo != null && MonitorInfo.CapabilityDic != null && MonitorInfo.modelName.ToUpper().StartsWith("G"))
+                    return MonitorInfo.CapabilityDic.ContainsKey("EC");
                 return false;
             }
         }
@@ -1806,11 +1801,8 @@ namespace DDPM.UI.Common.Models
         {
             get
             {
-                if (MonitorInfo != null)
-                {
-                    if (MonitorInfo.CapabilityDic != null)
-                        return MonitorInfo.CapabilityDic.ContainsKey("12");
-                }
+                if (MonitorInfo != null && MonitorInfo.CapabilityDic != null)
+                    return MonitorInfo.CapabilityDic.ContainsKey("12");
                 return false;
             }
         }
@@ -1867,21 +1859,12 @@ namespace DDPM.UI.Common.Models
                 return false;
 
             //Part II. Maskable
-            if (!mask.Contains("DDCisON", StringComparison.OrdinalIgnoreCase))
-            {
-                if (mi1.DDCisON != mi2.DDCisON)
-                    return false;
-            }
-            if (!mask.Contains("inputSource", StringComparison.OrdinalIgnoreCase))
-            {
-                if (mi1.inputSource != mi2.inputSource)
-                    return false;
-            }
-            if (!mask.Contains("edid", StringComparison.OrdinalIgnoreCase))
-            {
-                if (!EqualityComparer<EDID>.Equals(mi1.edid, mi2.edid))
-                    return false;
-            }
+            if (!mask.Contains("DDCisON", StringComparison.OrdinalIgnoreCase) && mi1.DDCisON != mi2.DDCisON)
+                return false;
+            if (!mask.Contains("inputSource", StringComparison.OrdinalIgnoreCase) && mi1.inputSource != mi2.inputSource)
+                return false;
+            if (!mask.Contains("edid", StringComparison.OrdinalIgnoreCase) && !EqualityComparer<EDID>.Equals(mi1.edid, mi2.edid))
+                return false;
 
             return true;
         }

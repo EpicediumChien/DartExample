@@ -32,8 +32,9 @@
                                 <StackPanel VerticalAlignment="Center"
                                             HorizontalAlignment="Left"
                                             Orientation="Horizontal">
+                                    <!-- Elsa 20250121 For [PIMS-334008] add MaxWidth="345" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow" -->
                                     <UXControls:UXTextBlock Text="{Binding [DisplayProperties.2], Source={x:Static lang:LangHelper.Instance}}"
-                                                            FontSize="16"
+                                                            FontSize="16" MaxWidth="345" HorizontalAlignment="Left" TextWrapping="WrapWithOverflow"
                                                             Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                             TextBlockSemanticColorType="Light"
                                                             TextBlockType="Caption"
@@ -72,8 +73,9 @@
                                   Margin="0,8"
                                   Visibility="{Binding Orientation_IsVisibility}"
                                   IsEnabled="{Binding Orientation_IsEnabled}">
+                                <!-- Elsa 20250121 For [PIMS-334008] add MaxWidth="345" TextWrapping="WrapWithOverflow" -->
                                 <UXControls:UXTextBlock Text="{Binding [Orientation], Source={x:Static lang:LangHelper.Instance}}"
-                                                        FontSize="16"
+                                                        FontSize="16" MaxWidth="345" TextWrapping="WrapWithOverflow"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Caption"
@@ -108,8 +110,9 @@
                             </Grid>
                             <Grid Height="60"
                                   Margin="0,8">
+                                <!-- Elsa 20250121 For [PIMS-334008] add MaxWidth="345" HorizontalAlignment="Left" -->
                                 <UXControls:UXTextBlock Text="{Binding [DisplayProperties.3], Source={x:Static lang:LangHelper.Instance}}"
-                                                        FontSize="16"
+                                                        FontSize="16" MaxWidth="345" HorizontalAlignment="Left"
                                                         Foreground="{DynamicResource TextBlock_ForegroundColor}"
                                                         TextBlockSemanticColorType="Light"
                                                         TextBlockType="Caption"

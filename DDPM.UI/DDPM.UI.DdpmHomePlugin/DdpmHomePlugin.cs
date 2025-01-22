@@ -344,12 +344,20 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //Call once
                             Task t1 = Task.Run(() =>
                             {
+                                //Use this flag to Debug/Test Gear icon GlowEffect, it will force to trigger the GlowEffect startup
+                                bool forceGlowEffect = DevSettings.ForceGearIconGlowEffectAtStartup();
+
                                 _log.Info("Calling to CheckIfSwFwUpdateAvailable()");
-                                if (CheckIfSwFwUpdateAvailable(_deviceManager))
+                                if (CheckIfSwFwUpdateAvailable(_deviceManager) || forceGlowEffect)
                                 {
                                     _log.Info("Return from CheckIfSwFwUpdateAvailable(), return true");
+                                    //Robert_Lin 2025-1-21 Change GearIcon (InfoPath to GeatButton)
                                     //Robert_Lin, 2024-12-9, Change GlowEffect_Start() to GlowEffect_Trigger()
-                                    if (_iconGear != null)
+                                    if (_gearBtn != null)
+                                    {
+                                        _gearBtn.GlowEffect_Trigger();
+                                    }
+                                    else if (_iconGear != null)
                                     {
                                         //Elapsed= 1, 1 msec
                                         _log.Info("Calling to GlowEffect_Trigger()");
@@ -998,19 +1006,23 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         //  and show back when exiting from AddDevice plugin.
         //  It should have the same behavior for 'Gear' icon.
         private PathIcon? _iconGear = null;
+        private GearButton? _gearBtn = null;
 
         private PathIcon? _iconAddDevice = null;
 
         private void AddIconsToMasthead(UXMasthead masthead)
         {
+            if (_gearBtn == null)
+            {
+                _gearBtn = new GearButton();
+                _gearBtn.Command = new RelayCommand(OnGearIconClicked);
+                masthead.InsertCustomContent(_gearBtn);
+            }
+
             //Add Grear icon, click it will call to OnGreaeIconClicked()
             if (_iconGear == null)
             {
-                //GearButton gearBtn = new GearButton();
-                //gearBtn.Command = new RelayCommand(OnGearIconClicked);
-                //masthead.InsertCustomContent(gearBtn);
-
-                
+                /*
                 _iconGear = new PathIcon();
                 //iconGear.Width = 12; iconGear.Height = 12;
                 _iconGear.PathData = "M5.1525 12L6.99 12L7.5 10.4475L8.04 10.2375L9.54 10.9875L10.905 9.6675L10.155 8.1675L10.335 7.6275L12 7.02L12 5.145L10.35 4.6275L10.14 4.0875L10.965 2.43L9.6525 1.11L8.0625 1.965L7.5 1.6875L6.93 -2.21617e-07L5.085 -3.02264e-07L4.545 1.7175L4.0125 1.9575L2.3925 1.2075L1.0875 2.5275L1.9125 4.1175L1.665 4.6725L7.26157e-07 5.205L6.43214e-07 7.1025L1.68 7.62L1.92 8.1675L1.215 9.7125L2.5125 11.0175L4.0125 10.2675L4.545 10.4325L5.1525 12ZM2.6775 10.05L2.175 9.54L2.79 8.1825L2.25 6.9675L0.750001 6.51L0.750001 5.76L2.25 5.25L2.805 4.0275L2.055 2.61L2.55 2.1075L3.9825 2.805L5.205 2.3025L5.67 0.8025L6.3675 0.8025L6.87 2.25L8.0775 2.8575L9.51 2.1075L9.99 2.595L9.24 4.095L9.75 5.25L11.205 5.7075L11.205 6.4575L9.705 6.9825L9.2925 8.205L9.9375 9.51L9.435 10.0125L8.0925 9.375L6.885 9.8475L6.42 11.2125L5.715 11.2125L5.19 9.75L3.9675 9.3825L2.6775 10.0275L2.6775 10.05Z M8.1825 6C8.18102 5.56866 8.05176 5.14744 7.81104 4.78952C7.57033 4.4316 7.22895 4.15303 6.83002 3.98899C6.43109 3.82495 5.9925 3.7828 5.56964 3.86785C5.14677 3.95291 4.75859 4.16136 4.45411 4.46689C4.14963 4.77241 3.94251 5.16131 3.8589 5.58447C3.7753 6.00762 3.81896 6.44607 3.98436 6.84443C4.14977 7.24279 4.42951 7.58321 4.78825 7.8227C5.147 8.06218 5.56866 8.19 6 8.19C6.28724 8.19 6.57166 8.1333 6.83694 8.02315C7.10223 7.913 7.34316 7.75157 7.54592 7.54811C7.74868 7.34465 7.90929 7.10317 8.01852 6.83751C8.12776 6.57185 8.18349 6.28724 8.1825 6ZM4.6275 6C4.63047 5.7274 4.71411 5.46179 4.86787 5.23667C5.02163 5.01156 5.23862 4.83703 5.49146 4.7351C5.7443 4.63318 6.02167 4.60842 6.28857 4.66396C6.55547 4.7195 6.79993 4.85285 6.99113 5.04718C7.18232 5.24151 7.31167 5.48811 7.36287 5.75587C7.41406 6.02364 7.3848 6.30057 7.27878 6.55172C7.17275 6.80287 6.99472 7.017 6.76713 7.16708C6.53955 7.31716 6.27261 7.39647 6 7.395C5.63332 7.39104 5.28311 7.24208 5.02592 6.98068C4.76874 6.71928 4.6255 6.3667 4.6275 6Z";
@@ -1022,7 +1034,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 //_iconGear.IsHitTestVisible = true;
                 masthead.InsertCustomContent(_iconGear);
                 //masthead.IsTabStop = true;
-                
+                */
             }
 
             if (_iconAddDevice == null)
@@ -1043,8 +1055,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             {
                 _console.RegisterForEvent(ConsoleEventNames.Masthead_ShowAddDevicePlugin, ShowAddDevicePlugin);
                 _console.RegisterForEvent(ConsoleEventNames.Masthead_ShowSettingsPlugin, ShowSettingsPlugin);
-                _console.RegisterForEvent(ConsoleEventNames.Masthead_StartGlowEffectOnGearIcon, StartGlowEffectOnGearIcon);
-                _console.RegisterForEvent(ConsoleEventNames.Masthead_StopGlowEffectOnGearIcon, StopGlowEffectOnGearIcon);
+                //Robert_Lin, 2025-1-19 comment-out unused events
+                //_console.RegisterForEvent(ConsoleEventNames.Masthead_StartGlowEffectOnGearIcon, StartGlowEffectOnGearIcon);
+                //_console.RegisterForEvent(ConsoleEventNames.Masthead_StopGlowEffectOnGearIcon, StopGlowEffectOnGearIcon);
                 _console.RegisterForEvent(ConsoleEventNames.Masthead_ShowAddDeviceIcon, Handler_ShowAddDeviceIcon);
                 _console.RegisterForEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, Handler_ShowSettingsIcon);
             }
@@ -1088,22 +1101,24 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         //  IConsole.RaiseEvent("StartGlowEffectOnGearIcon", this, new EventManagerArgs());
         private void StartGlowEffectOnGearIcon(object sender, EventManagerArgs e)
         {
-            if (_iconGear != null)
-                _iconGear.GlowEffect_Start();
+            //if (_iconGear != null)
+            //    _iconGear.GlowEffect_Start();
         }
 
         //To trigger this event:
         //  IConsole.RaiseEvent("StopGlowEffectOnGearIcon", this, new EventManagerArgs());
         private void StopGlowEffectOnGearIcon(object sender, EventManagerArgs e)
         {
-            if (_iconGear != null)
-                _iconGear.GlowEffect_Stop();
+            //if (_iconGear != null)
+            //    _iconGear.GlowEffect_Stop();
         }
 
         //Robert_Lin 2024-8-23 added for PIMS-293574
         // When exit from AddDevicePlugin and GlobalSettingsPlugin, we should reshow the Masthead icons
         private void ShowAllMastheadIcons()
         {
+            if (_gearBtn != null)
+                _gearBtn.Visibility = Visibility.Visible;
             if (_iconGear != null)
                 _iconGear.Visibility = Visibility.Visible;
             if (_iconAddDevice != null)
@@ -1162,11 +1177,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 bool isShow = param[0];
                 if (isShow)
                 {
+                    if (_gearBtn != null)
+                        _gearBtn.Visibility = Visibility.Visible;
                     if (_iconGear != null)
                         _iconGear.Visibility = Visibility.Visible;
                 }
                 else
                 {
+                    if (_gearBtn != null)
+                        _gearBtn.Visibility = Visibility.Collapsed;
                     if (_iconGear != null)
                         _iconGear.Visibility = Visibility.Collapsed;
                 }
@@ -1174,11 +1193,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 bool isEnabled = param[1];
                 if (isEnabled)
                 {
+                    if (_gearBtn != null)
+                        _gearBtn.IsEnabled = isEnabled;
                     if (_iconGear != null)
                         _iconGear.IsEnabled = isEnabled;
                 }
                 else
                 {
+                    if (_gearBtn != null)
+                        _gearBtn.IsEnabled = isEnabled;
                     if (_iconGear != null)
                         _iconGear.IsEnabled = isEnabled;
                 }
@@ -1329,7 +1352,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                     _updateAvailableCount_FW = 0;
 
                     //Set to Off anyway
-                    if (_iconGear != null)
+                    if (_gearBtn != null)
+                    {
+                        _log.Info($"@ Peripherals_UpdateNotify, Turn off GearIcon indicator");
+                        _gearBtn.SetOrangeDotVisible(false);
+                    }
+                    else if (_iconGear != null)
                     {
                         _log.Info($"@ Peripherals_UpdateNotify, Turn off GearIcon indicator");
                         _iconGear.SetOrangeDotVisible(false);
@@ -1347,7 +1375,12 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 if (isSwCountIncreased || isFwCountIncreased)
                 {
                     //Trigger a Blinking effect
-                    if (_iconGear != null)
+                    if (_gearBtn != null)
+                    {
+                        _log.Info($"@ Peripherals_UpdateNotify, Trigger a glow effect.");
+                        _gearBtn.GlowEffect_Trigger();
+                    }
+                    else if (_iconGear != null)
                     {
                         _log.Info($"@ Peripherals_UpdateNotify, Trigger a glow effect.");
                         _iconGear.GlowEffect_Trigger();

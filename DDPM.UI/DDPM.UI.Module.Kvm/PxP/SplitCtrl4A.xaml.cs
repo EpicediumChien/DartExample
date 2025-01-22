@@ -62,7 +62,8 @@ namespace DDPM.UI.Module.Kvm
             if (vm != null)
             {
                 vm.PC1Click();
-                vm.ShowPxPView(PbpCapabilityCode);
+                vm.VideoSwapContent = new PBPSplitCtrl4A();
+                vm.VideoSwapContent_Left = new PBPSplitCtrl4A();
             }
         }
 
@@ -71,7 +72,8 @@ namespace DDPM.UI.Module.Kvm
             if (vm != null)
             {
                 vm.PC2Click();
-                vm.ShowPxPView(PbpCapabilityCode);
+                vm.VideoSwapContent = new PBPSplitCtrl4A();
+                vm.VideoSwapContent_Left = new PBPSplitCtrl4A();
             }
         }
 
@@ -80,7 +82,8 @@ namespace DDPM.UI.Module.Kvm
             if (vm != null)
             {
                 vm.PC3Click();
-                vm.ShowPxPView(PbpCapabilityCode);
+                vm.VideoSwapContent = new PBPSplitCtrl4A();
+                vm.VideoSwapContent_Left = new PBPSplitCtrl4A();
             }
         }
 
@@ -89,7 +92,8 @@ namespace DDPM.UI.Module.Kvm
             if (vm != null)
             {
                 vm.PC4Click();
-                vm.ShowPxPView(PbpCapabilityCode);
+                vm.VideoSwapContent = new PBPSplitCtrl4A();
+                vm.VideoSwapContent_Left = new PBPSplitCtrl4A();
             }
         }
 

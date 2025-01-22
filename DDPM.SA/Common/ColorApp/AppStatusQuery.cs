@@ -154,14 +154,13 @@ namespace DDPM.ColorApp
                 //logger.WriteLog($"[Watcher-callback] real process: ProcessName[{_realProcess.ProcessName}]ModuleName[{_realProcess.MainModule.ModuleName}]Title[{_realProcess.MainWindowTitle}]");
 
                 //string strlog;
-                strlog = String.Format($"[Watcher-callback] real process: ProcessName[{_realProcess.ProcessName}]ModuleName[{_realProcess.MainModule.ModuleName}]Title[{_realProcess.MainWindowTitle}]");
+                strlog = String.Format($"process.ProcessName != \"ApplicationFrameHost\"");
                 writelog(strlog);
 
                 //return false;
             }
 
-            //string strlog;
-            strlog = String.Format($"[Watcher-callback] process: ProcessName[{process.ProcessName}]ModuleName[{process.MainModule.ModuleName}]Title[{process.MainWindowTitle}]");
+            strlog = String.Format($"[Watcher-callback] process: ModuleName[{process.MainModule.ModuleName}]Title[{process.MainWindowTitle}]");
             writelog(strlog);
 
             return true;
@@ -232,7 +231,7 @@ namespace DDPM.ColorApp
                 ///////logger.WriteLog($"[Watcher-callback] {strProcessName}:>Title({forgroundTitle}):PID({pid}):hWnd({hWnd}):Path({strFilePath})");
 
                 //string strlog;
-                strlog = String.Format($"[Watcher-callback] {strProcessName}:>Title({forgroundTitle}):PID({pid}):hWnd({hWnd}):Path({strFilePath})");
+                strlog = String.Format($"[Watcher-callback] {strProcessName}:>Title({forgroundTitle}):PID({pid})");
                 writelog(strlog);
 
                 if (SendValue != null)
@@ -375,8 +374,9 @@ namespace DDPM.ColorApp
         private static void writelog(string? text, log_type log_type = log_type.info)
         {
             text = "[AppStatusQuery] " + text;
+#if DEBUG
             System.Console.WriteLine(text);
-
+#endif
             if (Log != null) // Elie, the instance of Log is from DTH. So we just check if it's null or not.
             {
                 if (log_type == log_type.info)

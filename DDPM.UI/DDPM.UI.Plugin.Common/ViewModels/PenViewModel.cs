@@ -78,9 +78,9 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        public override bool SetCurrentDevice(string deviceID)
+        public override bool SetCurrentDevice(string instanceIDs)
         {
-            if (!base.SetCurrentDevice(deviceID))
+            if (!base.SetCurrentDevice(instanceIDs))
                 return false;
 
             PenAction = (PenActions)ActionList.ImportActionList(eDeviceCategory.Pen, "PEN");

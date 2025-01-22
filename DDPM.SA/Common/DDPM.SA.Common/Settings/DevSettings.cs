@@ -158,6 +158,11 @@ namespace DDPM.SA.Common.Settings
         {
             return 1 == DevSettings.ReadInt("HomePage.ShowDeviceListViewToolbar");
         }
+
+        public static bool ForceGearIconGlowEffectAtStartup()
+        {
+            return 1 == DevSettings.ReadInt("forceGearIconGlowEffectAtStartup");
+        }
         #endregion DdpmHomePlgin
 
         #region PIP PBP
@@ -211,5 +216,6 @@ namespace DDPM.SA.Common.Settings
             return ReadString("LanguageCulture", "");
         }
         #endregion Multilingual
+
     }
 }
