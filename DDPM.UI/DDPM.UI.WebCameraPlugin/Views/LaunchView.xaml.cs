@@ -337,6 +337,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     //_vm.SetProfile();
                     _vm.IsSettingProfile = false;
                     isProfilePropertyChanged = false;
+                    _vm.isUIHasUpdateByQAM = true;
                 }
 
                 Dispatcher.Invoke(new Action(() =>
