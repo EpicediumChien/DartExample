@@ -90,7 +90,7 @@ namespace DDPM.UI.Plugin.ViewModels
         const int MaxOPs = 30;
         public List<string> MicList = new() { "WB5023", "WB3023" };
 
-        //Derek 2025/01/22
+        //Derek 2025/01/22 for PIMS-341594
         public bool isUIHasUpdateByQAM = false;
 
         // 20240926 jim add
@@ -1420,8 +1420,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             try
             {
-                if (!isUIHasUpdateByQAM)
-                    DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), _zoom);
+                DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), _zoom);
 
                 SetProfileProperty(nameof(Zoom), _zoom, OperationModule.CameraControl);
                 OnPropertyChanged(nameof(PanArrowVisibility));
@@ -1447,8 +1446,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     _isFocusOn = value;
 
-                    if (!isUIHasUpdateByQAM)
-                        DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), value);
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), value);
 
                     SetProfileProperty(nameof(IsFocusOn), value, OperationModule.CameraControl);
                     OnPropertyChanged();
@@ -1482,8 +1480,7 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void SetFocus()
         {
-            if (!isUIHasUpdateByQAM)
-                DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), _focus);
+            DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), _focus);
 
             SetProfileProperty(nameof(Focus), _focus, OperationModule.CameraControl);
         }
