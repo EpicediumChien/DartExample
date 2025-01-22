@@ -54,9 +54,6 @@ using DDPM.SA.Resources.Helper;
 using Microsoft.Toolkit.Uwp.Notifications;
 //using DDPM.SA.Common.Settings;
 
-using DDPM.SA.Resources.Helper;
-using Microsoft.Toolkit.Uwp.Notifications;
-
 namespace ColorPreset.Plugins
 {
     [Plugin(DDPM.SA.Common.IDs.DDPM_COLOR_PRESET_PLUGIN_ID, pluginName, PluginOrderGroupType.Core, Version = pluginVersion)]
