@@ -23,6 +23,8 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using Screen = System.Windows.Forms.Screen;
 using ResourceManager = Dell.Client.Framework.UX.WPF.ResourceManager.ResourceManager;
+using System.Reflection.Metadata;
+using System.Windows.Forms;
 
 namespace NGA.ThickClient
 {
