@@ -1403,6 +1403,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 catch (Exception ex)
                 {
                     print_debug("ex1:" + ex.Message);
+                    Thread.Sleep(200);//for wait device init
                     DdpmCommonHelper.WriteUILog("MediaCapture initiate fail (retry): " + ex.Message);
                     _vm.mre.Set();
                     return;

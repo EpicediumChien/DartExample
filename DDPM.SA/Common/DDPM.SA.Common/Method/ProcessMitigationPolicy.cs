@@ -48,7 +48,9 @@ namespace DDPM.SA.Common.Method
             if (!_SetProcessMitigationPolicy(ProcessRedirectionTrustPolicy, ref signature, (uint)size))
             {
                 int errorCode = Marshal.GetLastWin32Error();
+#if DEBUG
                 Console.WriteLine("Failed to set process mitigation policy :" + errorCode);
+#endif
                 return;
             }
         }

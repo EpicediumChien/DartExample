@@ -491,7 +491,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             switch (x.LogicalDeviceType.ToUpper())
                             {
                                 case "LOGICALHEADSET":
-                                    result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(x.ID.ToString(), true)).Result;
+                                    result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadsetForCLI(x.ID.ToString(), true)).Result;
                                     break;
                                 case "LOGICALWIREDAUDIO":
                                     result = RunAsyncTimeout(_devMgr.SetResetToDefaultAsyncForSoundbar(x.ID.ToString(), true)).Result;
@@ -834,11 +834,17 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         WriteLog($"[Defer selection] : Defer");
                         _CliManagerPlugin.sendToastResult(derferid, true);
                     }
-                    else
+                    else if (args["action"] == "runnow")
                     {
                         Console.WriteLine("@@ isDefer = false");
                         WriteLog($"[Defer selection] : Update Now");
                         _CliManagerPlugin.sendToastResult(derferid, false);
+                    }
+                    else
+                    {
+                        Console.WriteLine("@@ isDefer = false");
+                        WriteLog($"[ForceWithNotice selection] : ForceWithNotice");
+                        _CliManagerPlugin.sendToastResult(derferid, true);
                     }
                 }
             };
@@ -882,13 +888,13 @@ namespace DDPM.SA.Plugin.User.CLIManager
         {
 
             new ToastContentBuilder()
-                .SetToastScenario(ToastScenario.Alarm)
+                .SetToastScenario(ToastScenario.Reminder)
                 .AddArgument("deferid", id)
                 .AddText(NOTIFICATION_MSG_HEADER)
                 .AddText(NOTIFICATION_MSG_BODY)
                 .AddButton(new ToastButton()
                     .SetContent("Ok")
-                //.AddArgument("action", "ok")
+                .AddArgument("action", "ok")
                 )
                 .Show(toast =>
                 {
@@ -900,7 +906,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
         {
 
             new ToastContentBuilder()
-                .SetToastScenario(ToastScenario.Alarm)
+                .SetToastScenario(ToastScenario.Reminder)
                 .AddArgument("deferid", id)
                 .AddText(DEFER_MSG_HEADER)
                 .AddText(DEFER_MSG_BODY)

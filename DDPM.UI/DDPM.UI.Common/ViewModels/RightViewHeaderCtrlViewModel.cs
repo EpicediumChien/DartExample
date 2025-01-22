@@ -52,13 +52,13 @@ namespace DDPM.UI.Common
         public Visibility Locker2
         {
             get => _Locker2;
-            set => SetProperty(ref _Locker1, value);
+            set => SetProperty(ref _Locker2, value);
         }
 
         public Visibility Locker3
         {
             get => _Locker3;
-            set => SetProperty(ref _Locker1, value);
+            set => SetProperty(ref _Locker3, value);
         }
 
         public int ItemCount

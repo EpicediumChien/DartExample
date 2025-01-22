@@ -21,7 +21,9 @@ namespace DDPM.SA.Common
             StringBuilder sb = new StringBuilder();
             if (deviceInfo.Count(x => x.IsConnected) > 0)
             {
+#if DEBUG
                 Console.WriteLine("Select Device Serial Number");
+#endif
                 sb.AppendLine("*******  Connected Device List");
             }
             else
