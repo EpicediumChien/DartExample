@@ -22,7 +22,9 @@ namespace DDPM.SA.Common.CLI
         private static void WriteLog(ILog Log, string text, log_type log_type = log_type.info)
         {
             text = "[CLIHandlerDisplay] " + text;
+#if DEBUG
             Console.WriteLine(text);
+#endif
             if (log_type == log_type.info)
                 Log.Info(text);
             else

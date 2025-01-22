@@ -749,37 +749,61 @@ namespace DDPM.SA.Common.CLI
                         DDPMITConfig tmp;                        
                         if (data_user != null)
                         {
+#if DEBUG
                             Console.WriteLine($"{commandLineInput.TargetFeature}: is function enable? => {param.isTelemetryConsentOn}");
+#endif
+                            WriteLog(Log, $"{commandLineInput.TargetFeature}: is function enable? => {param.isTelemetryConsentOn}"); 
                             response.Value = (param.isTelemetryConsentOn ? "true," : "false,") + (data_user.LockSettings.Lock_Settings_TelemetryConsent ? "Lock" : "Unlock");
                         }
                         else//IT
                         {
+#if DEBUG
                             Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Settings_TelemetryConsent}");
+#endif
+                            WriteLog(Log, $"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Settings_TelemetryConsent}");
                             response.Value = (data_IT.Lock_Settings_TelemetryConsent ? "Lock" : "Unlock");
                         }
                         break;
                     case "POWERNAP": //assume only IT command enter here
+#if DEBUG
                         Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_PowerNap}");
+#endif
+                        WriteLog(Log, $"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_PowerNap}");
                         response.Value = (data_IT.Lock_Display_PowerNap ? "Lock" : "Unlock");
                         break;
                     case "RESOLUTIONREFRESHRATE": //assume only IT command enter here
+#if DEBUG
                         Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_ResolutionRefreshRate}");
+#endif
+                        WriteLog(Log, $"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_ResolutionRefreshRate}");
                         response.Value = (data_IT.Lock_Display_ResolutionRefreshRate ? "Lock" : "Unlock");
                         break;
                     case "USBCPRIORITIZATION": //assume only IT command enter here
+#if DEBUG
                         Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_USBCPrioritization}");
+#endif
+                        WriteLog(Log, $"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_USBCPrioritization}");
                         response.Value = (data_IT.Lock_Display_USBCPrioritization ? "Lock" : "Unlock"); 
                         break;
                     case "ACTIVEINPUTSOURCE": //assume only IT command enter here
+#if DEBUG
                         Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_ActiveInputSource}");
+#endif
+                        WriteLog(Log, $"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_ActiveInputSource}");
                         response.Value = (data_IT.Lock_Display_ActiveInputSource ? "Lock" : "Unlock");
                         break;
                     case "COLLABSCREENSHARE": //assume only IT command enter here
+#if DEBUG
                         Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Keyboard_CollabScreenShare}");
+#endif
+                        WriteLog(Log, $"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Keyboard_CollabScreenShare}");
                         response.Value = (data_IT.Lock_Keyboard_CollabScreenShare ? "Lock" : "Unlock");
                         break;
                     case "INAPPUSBKVM": //assume only IT command enter here
+#if DEBUG
                         Console.WriteLine($"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_USBKVM}");
+#endif
+                        WriteLog(Log, $"{commandLineInput.TargetFeature}: is Locked? => = {data_IT.Lock_Display_USBKVM}");
                         response.Value = (data_IT.Lock_Display_USBKVM ? "Lock" : "Unlock");
                         break;
                     default:
@@ -1057,8 +1081,10 @@ namespace DDPM.SA.Common.CLI
                         }
                         //No pre-definition be found, means fail
                         response.Message = $"{commandLineInput.TargetFeature}: value format error with [{value}]";
+#if DEBUG
                         Debug.WriteLine(response.Message);
                         Console.WriteLine(response.Message);
+#endif
                         WriteLog(Log, response.Message);
                         return CLI_Response_OptionValueNotSupport(commandLineInput, result, op);
                     }
@@ -1235,8 +1261,11 @@ namespace DDPM.SA.Common.CLI
             //Expected format:
             // IT > /configure -app=InAppUpdate -value=lock / unlock
             // IT > /get -app=InAppUpdate
-
+#if DEBUG
             Console.WriteLine($"@@Stephen CLI_FW_Update called ");
+#endif
+            WriteLog(Log, $"@@Stephen CLI_FW_Update called ");
+
             CLIEventResult result = new CLIEventResult();
             result.ticket = DateTime.Now;
             result.command_guid_string = action_guid;
@@ -1278,7 +1307,9 @@ namespace DDPM.SA.Common.CLI
         private static void WriteLog(ILog Log, string text, log_type log_type = log_type.info)
         {
             text = "[CLIHandlerApp] " + text;
+#if DEBUG
             Console.WriteLine(text);
+#endif
             if (log_type == log_type.info)
                 Log.Info(text);
             else

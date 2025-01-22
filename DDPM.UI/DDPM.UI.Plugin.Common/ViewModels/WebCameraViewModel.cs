@@ -97,6 +97,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public bool close_app = false;
 
+        public List<Thread> thread_list = new List<Thread>();
         public bool ShowLockMask
         {
             get { return showLockMask; }
@@ -640,14 +641,14 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
-        public override bool SetCurrentDevice(string deviceID)
+        public override bool SetCurrentDevice(string instanceIDs)
         {
             try
             {
                 _log.Info("WebCameraViewModel SetCurrentDevice");
-                deviceID ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
+                instanceIDs ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
 
-                if (!base.SetCurrentDevice(deviceID))
+                if (!base.SetCurrentDevice(instanceIDs))
                 { return false; }
 
 

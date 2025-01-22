@@ -11594,8 +11594,8 @@ namespace DDPM.CLI.Plugins.Display
                                             {
                                                 case "COLLABSCREENSHARE":
                                                     writelog("COLLABSCREENSHARE entry");
-                                                    writelog("device.IsMicEnumerationSupported entry");
-                                                    if (device.IsMicEnumerationSupported)
+                                                    writelog("device.IsCollaborationScreenShareEnable entry");
+                                                    if (device.IsCollaborationScreenShareEnable)
                                                     {
                                                         if (property.Value.ToString() == "ON")
                                                         {

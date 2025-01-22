@@ -86,7 +86,8 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <Grid HorizontalAlignment="Center" Margin="0,0,0,12">
+            <Grid HorizontalAlignment="Center" Margin="0,0,0,12"
+                  Visibility="{Binding IsSwitchPCsVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                 <StackPanel>
                     <Label  Content="{Binding [Kvm.8], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="{DynamicResource TextBlock_ForegroundColor}" />
                     <UXControls:UXTextBox

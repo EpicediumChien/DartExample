@@ -26,6 +26,7 @@ using Dell.Client.Framework.UX.WPF;
 using Microsoft.VisualBasic.Logging;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
+using Newtonsoft.Json.Linq;
 
 namespace DDPM.UI.Module.Kvm
 {
@@ -819,6 +820,22 @@ namespace DDPM.UI.Module.Kvm
         {
             Debug.WriteLine("load kvm hotkey setting done");
             //Handling the result and final process
+            OnPropertyChanged("IsSwitchPCsVisible");
+        }
+
+        //Robert_Lin 2025-1-20 for [PIMS-339501] [DDPM Win 2.0][R19] USB KVM Setup -It doesn't show "Switch between PCs" hotkey when set up to PIP mode finished
+        //Rquirements:
+        //                                    PIP mode               PBP mode              Fullscreen/Single display
+        //Switch between PCs                  Collapsed              Collapsed             Visible
+        //Switch keyboard and mouse           Visible                Visible               Collapsed
+        //Change PIP psition                  Visible                Visible               Collased
+        //[ ] Automatically ....              Visible & Disabled     Visible & Enabled     Visible & Disabled
+        public bool IsSwitchPCsVisible
+        {
+            get
+            {
+                return (_curPxpMode == PipMode_Off);
+            }
         }
 
         #endregion Hotkey
@@ -878,28 +895,23 @@ namespace DDPM.UI.Module.Kvm
             };
             SupportNKVM = Visibility.Collapsed;
             SupportUSBKVM = Visibility.Collapsed;
-            var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-
-            directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
-            string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
 
             if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
             {
                 MonitorInfo mi = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
 
                 USBKVMisON = /*KvmModule.isUSBKVM;*/ DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(mi).Result;
-                NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(mi).Result;
 
-                if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result && File.Exists(strFullPath))
-                {
-                    SupportNKVM = Visibility.Visible;
-                }
-                else
-                {
-                    NKVMisON = false;
-                }
-
+                bw.DoWork -= DoWork_RefreshData;
                 bw.DoWork += DoWork_RefreshData;
+                if (USBKVMisON)
+                {
+                    bw.DoWork -= DoWork_USBKVM;
+                    bw.DoWork += DoWork_USBKVM;
+                    bw.RunWorkerCompleted -= RunWorkerCompleted_USBKVMisON;
+                    bw.RunWorkerCompleted += RunWorkerCompleted_USBKVMisON;
+                }
+                bw.RunWorkerCompleted -= RunWorkerCompleted_RefreshData;
                 bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
                 bw.RunWorkerAsync(); //myArg is the optional argument
                 IsKVMBusy = true;
@@ -929,6 +941,11 @@ namespace DDPM.UI.Module.Kvm
                     e.Result = "MonitorInfo is null";
                     return;
                 }
+
+                var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+                directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
+                string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
 
                 if (mi.CapabilityDic.ContainsKey("E7"))
                 {
@@ -960,6 +977,96 @@ namespace DDPM.UI.Module.Kvm
                 else
                 {
                     USBKVMisON = false;
+                }
+
+                NKVMisON = DdpmCommonHelper.DeviceManagerSA.GetOnNKVM(mi).Result;
+
+                if (DdpmCommonHelper.DeviceManagerSA.isNKVMSupportMonitor(mi).Result && File.Exists(strFullPath))
+                {
+                    SupportNKVM = Visibility.Visible;
+                }
+                else
+                {
+                    NKVMisON = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "[DoWork_RefreshData] exception");
+            }
+        }
+
+        private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
+        {
+            _log.Debug("[KvmViewModel] RunWorkerCompleted_RefreshData start");
+            if (USBKVMisON)
+            {
+                isUSBKVM = true;
+                //EnableUSBKVM = Visibility.Visible;
+                //DisenableUSBKVM = Visibility.Collapsed;
+            }
+            else if (NKVMisON)
+            {
+                isNKVM = true;
+                //EnableUSBKVM = Visibility.Collapsed;
+                //DisenableUSBKVM = Visibility.Visible;
+            }
+            else
+            {
+                isNoKVM = true;
+                //EnableUSBKVM = Visibility.Collapsed;
+                //DisenableUSBKVM = Visibility.Visible;
+            }
+            OnPropertyChanged("SupportUSBKVM");
+            OnPropertyChanged("SupportNKVM");
+            IsKVMBusy = false;
+            _log.Debug("[KvmViewModel] RunWorkerCompleted_RefreshData End");
+            //Handling the result and final process
+        }
+
+        public void Invoke_USBKVM()
+        {
+            BackgroundWorker bw = new BackgroundWorker()
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+
+            if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
+            {
+                MonitorInfo mi = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
+
+                bw.DoWork -= DoWork_USBKVM;
+                bw.DoWork += DoWork_USBKVM;
+                bw.RunWorkerCompleted -= RunWorkerCompleted_USBKVM;
+                bw.RunWorkerCompleted += RunWorkerCompleted_USBKVM;
+                bw.RunWorkerAsync(); //myArg is the optional argument
+                IsKVMBusy = true;
+            }
+            else
+            {
+                _log?.Debug("MonitorInfo is null.");
+            }
+        }
+
+        private void DoWork_USBKVM(object sender, DoWorkEventArgs e)
+        {
+            try // 2024-06-19 Fix exception when close Main UI or device remove.
+            {
+                //sender is the ‘bw’ object
+                BackgroundWorker bwk = (BackgroundWorker)sender;
+
+                HomeDevice selHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+                if (selHomeDevice == null)
+                {
+                    e.Result = "SelectedHomeDevice is null";
+                    return;
+                }
+                MonitorInfo mi = selHomeDevice.MonitorInfo;
+                if (mi == null)
+                {
+                    e.Result = "MonitorInfo is null";
+                    return;
                 }
 
                 //if (DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
@@ -1266,9 +1373,22 @@ namespace DDPM.UI.Module.Kvm
             }
         }
 
-        private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
+        private void RunWorkerCompleted_USBKVM(object sender, RunWorkerCompletedEventArgs e)
         {
-            _log.Debug("[KvmViewModel] RunWorkerCompleted_RefreshData start");
+            _log.Debug("[KvmViewModel] RunWorkerCompleted_USBKVM start");
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC4_Input");
+            OnPropertyChanged("PC1Inputs_Selected");
+            OnPropertyChanged("PC2Inputs_Selected");
+            OnPropertyChanged("PC3Inputs_Selected");
+            OnPropertyChanged("PC4Inputs_Selected");
+            OnPropertyChanged("PC1USB_Selected");
+            OnPropertyChanged("PC2USB_Selected");
+            OnPropertyChanged("PC3USB_Selected");
+            OnPropertyChanged("PC4USB_Selected");
+            OnPropertyChanged("PCImage");
             if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E9"))
             {
                 PxPCode = _curPxpMode;
@@ -1300,7 +1420,7 @@ namespace DDPM.UI.Module.Kvm
                 }
                 else
                 {
-                    _log?.Debug("[RunWorkerCompleted_RefreshData] PxPcodeDictionary is null or PxPCode not found.");
+                    _log?.Debug("[RunWorkerCompleted_USBKVM] PxPcodeDictionary is null or PxPCode not found.");
                 }
             }
             else
@@ -1308,26 +1428,23 @@ namespace DDPM.UI.Module.Kvm
                 PxpModeaddDic(0x0);
                 VideoSwapContent_Left = PxPcodeDictionary[0x0];
             }
+            OnPipPbpCapsChanged();
+            SetInput = Visibility.Visible;
+            SetPXP = Visibility.Visible;
+            EditInput = Visibility.Collapsed;
+            EditPXP = Visibility.Collapsed;
+            IsKVMBusy = false;
+            InputSourceFullView _inputSourceFullView = new InputSourceFullView();
+            _inputSourceFullView.DataContext = this;
+            DdpmCommonHelper.ModuleOwner?.OpenFullView(_inputSourceFullView);
+            
+            _log.Debug("[KvmViewModel] RunWorkerCompleted_USBKVM End");
+            //Handling the result and final process
+        }
 
-            if (USBKVMisON)
-            {
-                isUSBKVM = true;
-                //EnableUSBKVM = Visibility.Visible;
-                //DisenableUSBKVM = Visibility.Collapsed;
-            }
-            else if (NKVMisON)
-            {
-                isNKVM = true;
-                //EnableUSBKVM = Visibility.Collapsed;
-                //DisenableUSBKVM = Visibility.Visible;
-            }
-            else
-            {
-                isNoKVM = true;
-                //EnableUSBKVM = Visibility.Collapsed;
-                //DisenableUSBKVM = Visibility.Visible;
-            }
-
+        private void RunWorkerCompleted_USBKVMisON(object sender, RunWorkerCompletedEventArgs e)
+        {
+            _log.Debug("[KvmViewModel] RunWorkerCompleted_USBKVM start");
             OnPropertyChanged("PC1_Input");
             OnPropertyChanged("PC2_Input");
             OnPropertyChanged("PC3_Input");
@@ -1341,9 +1458,51 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged("PC3USB_Selected");
             OnPropertyChanged("PC4USB_Selected");
             OnPropertyChanged("PCImage");
+            if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E9"))
+            {
+                PxPCode = _curPxpMode;
+                if (PxPcodeDictionary.ContainsKey(_curPxpMode))
+                {
+                    if (PxPcodeDictionary[_curPxpMode] != null)
+                    {
+                        VideoSwapContent = PxPcodeDictionary[_curPxpMode];
+                    }
+                    else
+                    {
+                        PxpModeaddDic(_curPxpMode);
+                        VideoSwapContent = PxPcodeDictionary[_curPxpMode];
+
+                    }
+                    if (USBKVMisON)
+                    {
+                        if (PxPcodeDictionary[_curPxpMode] != null)
+                        {
+                            VideoSwapContent_Left = PxPcodeDictionary[_curPxpMode];
+                        }
+                        else
+                        {
+                            PxpModeaddDic(_curPxpMode);
+                            VideoSwapContent_Left = PxPcodeDictionary[_curPxpMode];
+
+                        }
+                    }
+                }
+                else
+                {
+                    _log?.Debug("[RunWorkerCompleted_USBKVM] PxPcodeDictionary is null or PxPCode not found.");
+                }
+            }
+            else
+            {
+                PxpModeaddDic(0x0);
+                VideoSwapContent_Left = PxPcodeDictionary[0x0];
+            }
             OnPipPbpCapsChanged();
-            IsKVMBusy = false;
-            _log.Debug("[KvmViewModel] RunWorkerCompleted_RefreshData End");
+            SetInput = Visibility.Visible;
+            SetPXP = Visibility.Visible;
+            EditInput = Visibility.Collapsed;
+            EditPXP = Visibility.Collapsed;
+            _log.Debug("[KvmViewModel] RunWorkerCompleted_USBKVM End");
             //Handling the result and final process
         }
 

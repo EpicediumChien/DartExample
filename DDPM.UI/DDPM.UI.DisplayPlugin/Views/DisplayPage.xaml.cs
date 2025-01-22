@@ -940,17 +940,15 @@ namespace DDPM.UI.Plugin.DisplayPlugin.Views
                     //If the homeDev is current SelectedHomeDevice (is displaying)
                     //then notify ModuleOwner to update UI
                     HomeDevice? selDev = GetSelectedHomeDevice();
-                    if (selDev != null)
+                    if (selDev != null && 
+                        HomeDevice.IsSameMonitor(selDev.MonitorInfo, mi, "DDCisON"))
                     {
-                        if (HomeDevice.IsSameMonitor(selDev.MonitorInfo, mi, "DDCisON"))
+                        Dispatcher.Invoke(new Action(() =>
                         {
-                            Dispatcher.Invoke(new Action(() =>
-                            {
-                                DeviceBasePageViewModel vmBase = basePage.DataContext as DeviceBasePageViewModel;
-                                if (vmBase != null)
-                                    vmBase.HandleDdcCiOffEvent(isDdcCiOn);
-                            }));
-                        }
+                            DeviceBasePageViewModel vmBase = basePage.DataContext as DeviceBasePageViewModel;
+                            if (vmBase != null)
+                                vmBase.HandleDdcCiOffEvent(isDdcCiOn);
+                        }));
                     }
                 }
                 else

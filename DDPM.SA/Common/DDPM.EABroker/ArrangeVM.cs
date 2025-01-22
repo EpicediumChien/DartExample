@@ -1041,7 +1041,8 @@ namespace DDPM.EABroker
             //Default is not logged, can be enabled by DevSettings
             if (DevSettings.IsDumpWorkWindowsInfoOnRefreshEnabled())
             {
-                WriteLog(WorkWinsInfoText);
+                //WriteLog(WorkWinsInfoText);
+                WriteLog("[RefreshWorkWindows] DevSettings/IsDumpWorkWindowsInfoOnRefreshEnabled is TRUE");
             }
 
             //Robert_Lin, 2024-10-18 Workaround

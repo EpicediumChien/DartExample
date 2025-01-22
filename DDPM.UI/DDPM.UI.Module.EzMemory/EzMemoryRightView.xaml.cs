@@ -42,7 +42,20 @@ namespace DDPM.UI.Module.EzMemory
         public EzMemoryRightView(DisplayViewModel vmDisplay)
         {
             _vmDisplay = vmDisplay;
-            _homeDevice = vmDisplay.SelectedHomeDevice;
+            //Robert_lin 2025-1-21 PIMS-339909 Unable to set East Arrange layout after switch from PBP = OFF to PBP = ON or vice versa
+            //Root cause:
+            // The homeDevice is not update in vmDisplay when DeviceChanged
+            //Colution:
+            // Get the upated SelectedHomeDevivce from DdpmCommonHelper.ModuleOwner
+            //OLD:
+            //_homeDevice = vmDisplay.SelectedHomeDevice;
+            //NEW:
+            if (DdpmCommonHelper.ModuleOwner != null)
+            {
+                if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice != null)
+                    _homeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+            }
+
             _console = vmDisplay.Console;
             _deviceManagerSA = HomeDevice.DeviceManagerSA;
             _homeDeviceSelect = _homeDevice;

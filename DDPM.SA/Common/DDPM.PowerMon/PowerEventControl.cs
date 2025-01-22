@@ -71,7 +71,9 @@ namespace DDPM.PowerMon
                 text = "";
 
             text = "[PowerEventControl] " + text;
+#if DEBUG
             Console.WriteLine(DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff") + " " + text);
+#endif
 
             if (_log != null)
             {

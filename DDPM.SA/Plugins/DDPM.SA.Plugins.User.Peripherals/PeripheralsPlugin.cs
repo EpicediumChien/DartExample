@@ -2671,11 +2671,18 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     var IDs = _deviceHelper.deviceInfo.Select(x => x.ID.ToString()).ToList();
                     Trace.WriteLine($"[PeripheralsPlugin] IPhysicalDevice_DeviceRemovedEvent LowBatteryIDs.Count : {LowBatteryIDs.Count.ToString()}, IDs.Count : {IDs.Count.ToString()} ... ");
                     _logs.DebugMsg_1($"[PeripheralsPlugin] IPhysicalDevice_DeviceRemovedEvent LowBatteryIDs.Count : {LowBatteryIDs.Count.ToString()}, IDs.Count : {IDs.Count.ToString()} ... ");
-                    LowBatteryIDs.ForEach(id =>
+                    //LowBatteryIDs.ForEach(id =>
+                    //{
+                    //    if (!IDs.Contains(id))
+                    //        LowBatteryIDs.Remove(id);
+                    //});
+                    for (int i = LowBatteryIDs.Count - 1; i >= 0; i--)
                     {
-                        if (!IDs.Contains(id))
-                            LowBatteryIDs.Remove(id);
-                    });
+                        if (!IDs.Contains(LowBatteryIDs[i]))
+                        {
+                            LowBatteryIDs.RemoveAt(i);
+                        }
+                    }
                 }
             }
         }

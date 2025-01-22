@@ -2205,6 +2205,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Dictionary<string, InputInfo> readinputlist = new Dictionary<string, InputInfo>();
             //get monitor settings
             List<DDPMMonitorSettings> settings = _SettingsPlugin.ReloadMonitorSettings(monitorInfo.modelName).Result;
+            bool b = false;
             if (settings != null)
             {
                 //get monitor setting
@@ -2227,44 +2228,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (inputSourcelist != null &&
                                     inputSourcelist.Count != 0)
                                 {
-                                    //copyinputlist = inputSourcelist;
-                                    //foreach (var input in inputSourcelist)
-                                    //{
-                                    //    string usbUpstream = GetUSBUpstream(monitorInfo, input.Key).Result;
-                                    //    if (string.IsNullOrEmpty(usbUpstream))
-                                    //    {
-                                    //        writelog("[DeviceMangerPlugin] usbUpstream is null or empty ...");
-                                    //    }
-                                    //    else
-                                    //    {
-                                    //        input.Value.USBUpstream = usbUpstream;
-                                    //    }
-                                    //    //Maybe Migration...
-                                    //    //if (input.Value.USBUpstream == string.Empty && monitorInfo.CapabilityDic.ContainsKey("EE") && monitorInfo.CapabilityDic.ContainsKey("E7"))
-                                    //    //{
-                                    //    //readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
-                                    //    //if (readinputlist != null)
-                                    //    //{
-                                    //    //    if (readinputlist.Count != 0)
-                                    //    //    {
-                                    //    //        foreach (var readinput in readinputlist)
-                                    //    //        {
-                                    //    //            foreach (var copyinput in copyinputlist)
-                                    //    //            {
-                                    //    //                if (readinput.Value.Code == copyinput.Value.Code)
-                                    //    //                {
-                                    //    //                    readinput.Value.InputName = copyinput.Value.InputName;
-                                    //    //                    break;
-                                    //    //                }
-                                    //    //            }
-                                    //    //        }
-                                    //    //        bool b1 = SetInputSourcelist(monitorInfo, readinputlist).Result;
-                                    //    //        return Task.FromResult(readinputlist);
-                                    //    //    }
-                                    //    //}
-                                    //    //break;
-                                    //    //}
-                                    //}
                                     return Task.FromResult(inputSourcelist);
                                 }
                             }
@@ -2274,12 +2237,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             writelog("[DeviceMangerPlugin] monitorSetting.Input is null ...");
                         }
                         inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
-                        bool b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
+                        b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
                     }
                     catch (Exception e)
                     {
                         inputSourcelist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
-                        bool b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
+                        b = SetInputSourcelist(monitorInfo, inputSourcelist).Result;
                     }
                 }
             }
@@ -3360,6 +3323,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             catch (Exception ex)
             {
                 writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetFactoryResetAsyncValueForHeadsetForCLI(string Guid, bool newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetFactoryResetAsyncValueForHeadsetForCLI(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsyncValueForHeadsetForCLI Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsyncValueForHeadsetForCLI Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [Headset] SetFactoryResetAsyncValueForHeadsetForCLI failed for GUID: {Guid}, Error: {ex.Message}");
                 return false;
             }
         }
@@ -8178,7 +8159,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     MiniMizeDDPMUI().Wait();
                     writelog("[SW_DownloadAndInstall], WriteRegistryData go.");
-                    string registryKey = @"SOFTWARE\Dell Display and Peripheral Manager";
+                    string registryKey = @"SOFTWARE\Dell\Dell Display and Peripheral Manager";
                     string SW_Available_date = swUpdateInfos[0].Available_date;
                     bool b = WriteRegistryData(RegistryHive.LocalMachine, registryKey, nameof(SW_Available_date), SW_Available_date).Result;
                     writelog($"[SW_DownloadAndInstall], WriteRegistryData ret : {b}");
@@ -8382,7 +8363,6 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 try
                 {
                     string registryKey = @"SOFTWARE\Dell\Dell Display and Peripheral Manager";
-                    string registryKey_Test = @"SOFTWARE\Dell Display and Peripheral Manager";
                     string UpdateVersion = string.Empty;
                     string Results = string.Empty;
                     string FailureMessage = string.Empty;
@@ -8395,27 +8375,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         UpdateVersion = o.ToString();
                     }
-                    else//Bruce added only test
-                    {
-                        o = ReadRegistryData(RegistryHive.LocalMachine, registryKey_Test, nameof(UpdateVersion)).Result;
-                        if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
-                        {
-                            UpdateVersion = o.ToString();
-                        }
-                    }
                     o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, nameof(Results)).Result;
                     writelog($"[TelemetryDdpmSwUpdater],ReadRegistryData Results o = {o}.");
                     if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
                     {
                         Results = o.ToString();
-                    }
-                    else//Bruce added only test
-                    {
-                        o = ReadRegistryData(RegistryHive.LocalMachine, registryKey_Test, nameof(Results)).Result;
-                        if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
-                        {
-                            Results = o.ToString();
-                        }
                     }
                     o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, nameof(FailureMessage)).Result;
                     writelog($"[TelemetryDdpmSwUpdater],ReadRegistryData FailureMessage o = {o}.");
@@ -8423,27 +8387,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         FailureMessage = o.ToString();
                     }
-                    else//Bruce added only test
-                    {
-                        o = ReadRegistryData(RegistryHive.LocalMachine, registryKey_Test, nameof(FailureMessage)).Result;
-                        if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
-                        {
-                            FailureMessage = o.ToString();
-                        }
-                    }
                     o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, nameof(SW_Update_date)).Result;
                     writelog($"[TelemetryDdpmSwUpdater],ReadRegistryData SW_Update_date o = {o}.");
                     if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
                     {
                         SW_Update_date = o.ToString();
-                    }
-                    else//Bruce added only test
-                    {
-                        o = ReadRegistryData(RegistryHive.LocalMachine, registryKey_Test, nameof(SW_Update_date)).Result;
-                        if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
-                        {
-                            SW_Update_date = o.ToString();
-                        }
                     }
                     o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, nameof(SW_Available_date)).Result;
                     writelog($"[TelemetryDdpmSwUpdater],ReadRegistryData SW_Available_date o = {o}.");
@@ -8451,27 +8399,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         SW_Available_date = o.ToString();
                     }
-                    else//Bruce added only test
-                    {
-                        o = ReadRegistryData(RegistryHive.LocalMachine, registryKey_Test, nameof(SW_Available_date)).Result;
-                        if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
-                        {
-                            SW_Available_date = o.ToString();
-                        }
-                    }
                     o = ReadRegistryData(RegistryHive.LocalMachine, registryKey, nameof(ErrorCode)).Result;
                     writelog($"[TelemetryDdpmSwUpdater],ReadRegistryData ErrorCode o = {o}.");
                     if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
                     {
                         ErrorCode = o.ToString();
-                    }
-                    else//Bruce added only test
-                    {
-                        o = ReadRegistryData(RegistryHive.LocalMachine, registryKey_Test, nameof(ErrorCode)).Result;
-                        if (o != null && o is string && !string.IsNullOrEmpty(o.ToString()))
-                        {
-                            ErrorCode = o.ToString();
-                        }
                     }
                     if (!string.IsNullOrEmpty(UpdateVersion) &&
                         !string.IsNullOrEmpty(Results) &&
@@ -14101,12 +14033,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 int devCnt = GetWebcamDeviceCount();
 
-                writelog($"ALT+Z conditons: devcnt = {devCnt}, global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}");
+                writelog($"ALT+Z conditons: devcnt = {devCnt}, " +
+                    $"global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}" +
+                    $" IsZoomMeetingActive = {_IsZoomMeetingActive}");
 
                 //Derek PIMS-329759 Problem 1
                 //Derek 20250118 workable only zoom meeting is active //_IsZoomMeetingActive &&
-                if (1 == devCnt && _GlobalSettingParam != null &&
-                    _GlobalSettingParam.GlobalSetting_WidgetSettings != null &&
+                if (1 == devCnt && _GlobalSettingParam != null && 
+                    _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _IsZoomMeetingActive && 
                     _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
                 {
                     CallQAM_UI(this);
