@@ -1967,7 +1967,7 @@ namespace DDPM.UI.Plugin.ViewModels
             _log.Info($"[HeadsetViewModel] DoWork_PleaseWait .......");
 
             FirmwareVersion2 = _deviceManager.GetHeadsetFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
-            //Thread.Sleep(1000);
+            Thread.Sleep(1000);
             if ((FirmwareVersion2 == null || FirmwareVersion2 == "0.0.0.0"))
             {               
                 int tick = 0;

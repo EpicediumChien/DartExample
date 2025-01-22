@@ -8723,28 +8723,31 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         SetVCPSequence(monitorInfo, impVCPSequence, vcps);
                                         foreach (VCPCode code in vcps)
                                         {
-                                            writelog($"[DisplayImportSettings] VCP code : {code.Code.ToString()}, First Value: {code.Value[0]}");
-                                            if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
-                                                importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
+                                            if (code.Code != null && code.Value != null)
                                             {
-                                                bool b = false;
-                                                ObjGetVCP objGetVCP = new ObjGetVCP();
-                                                //SHR on/off need load settings
-                                                //if (code.Code == 0xF0)
-                                                //{
-                                                //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
-                                                //}
-                                                if (ImpExpSettings.MonitorSettings.Gaming.Current_DualResolutionType != 0 && code.Code == 0xEA)
+                                                writelog($"[DisplayImportSettings] VCP code : {code.Code.ToString()}, First Value: {code.Value[0]}");
+                                                if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
+                                                    importVCP.ImportVCPSequence.FindIndex(x => x == code.Code) == -1)
                                                 {
-                                                    continue;
-                                                }
-                                                //get vcp code
-                                                objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
-                                                if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
-                                                {
-                                                    //set vcp code
-                                                    writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
-                                                    b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                                    bool b = false;
+                                                    ObjGetVCP objGetVCP = new ObjGetVCP();
+                                                    //SHR on/off need load settings
+                                                    //if (code.Code == 0xF0)
+                                                    //{
+                                                    //    b = _DisplayManagerPlugin.SetHDRStatus(monitorInfo, )
+                                                    //}
+                                                    if (ImpExpSettings.MonitorSettings.Gaming.Current_DualResolutionType != 0 && code.Code == 0xEA)
+                                                    {
+                                                        continue;
+                                                    }
+                                                    //get vcp code
+                                                    objGetVCP = GetVCPCapability(monitorInfo, (byte)code.Code).Result;
+                                                    if (objGetVCP.result && (int)(uint)objGetVCP.value != (int)code.Value[0])
+                                                    {
+                                                        //set vcp code
+                                                        writelog("[DisplayImportSettings] Set VCP code : " + code.Code.ToString());
+                                                        b = SetVCPCapability(monitorInfo, (byte)code.Code, (uint)code.Value[0]).Result;
+                                                    }
                                                 }
                                             }
                                         }
@@ -14038,7 +14041,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 int devCnt = GetWebcamDeviceCount();
 
-                writelog($"ALT+Z conditons: devcnt = {devCnt}, " +
+                writelog($"ALT+Z conditions: devcnt = {devCnt}, " +
                     $"global setting is {_GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget}" +
                     $" IsZoomMeetingActive = {_IsZoomMeetingActive}");
 

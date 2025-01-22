@@ -1571,6 +1571,24 @@ namespace DDPM.UI.Common
 
             return uIElements;
         }
+
+        public static double GetScalingFactor(Window window)
+        {
+            // Get the PresentationSource for the window
+            var source = PresentationSource.FromVisual(window);
+
+            if (source != null && source.CompositionTarget != null)
+            {
+                // Get the matrix that represents the DPI scaling
+                var transform = source.CompositionTarget.TransformToDevice;
+
+                // Extract the scaling factors (X)
+                return transform.M11;
+            }
+
+            // Default scaling is 1.0 (100%)
+            return 1.0;
+        }
     }
 
     public class BindingProxy : Freezable

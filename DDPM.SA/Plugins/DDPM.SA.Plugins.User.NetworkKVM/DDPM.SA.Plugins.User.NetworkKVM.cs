@@ -2137,10 +2137,10 @@ namespace NetworkKVM.Plugins
                 if (get_MONITOR_INFO.IsChecksumValid())
                 {
                     DdpmJsonCommon.Monitor get_MonitorInfo = new DdpmJsonCommon.Monitor();
-                    if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
-                    {
+                    //if (_AllInfoMonitors == null || _AllInfoMonitors.Count == 0)
+                    //{
                         _AllInfoMonitors = GetMonitors().Result;//_DisplayPlugin.GetMonitors();
-                    }
+                    //}
                     get_MONITORINFO_R.cid = get_MONITOR_INFO.cid;
                     if (_AllInfoMonitors.Count != 0)
                     {
