@@ -259,7 +259,9 @@ namespace DDPM.SA.Common.Settings
                 }
                 catch (Exception ex)
                 {
+#if DEBUG
                     Console.WriteLine($"Error loading image: {ex.Message}");
+#endif
                 }
             }
             return bitmap;
@@ -277,7 +279,9 @@ namespace DDPM.SA.Common.Settings
             }
             catch (Exception ex)
             {
+#if DEBUG
                 Console.WriteLine($"[DownloadImageAsByteArray] exception: {ex.Message}");
+#endif
             }
             return imageBytes;
         }
