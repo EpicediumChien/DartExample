@@ -37,6 +37,7 @@ using DPeMPublic.Common.Enums;
 using IndiLogic.DPeM.Broker;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -45,6 +46,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -270,6 +272,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             //Reference: https://github.com/dotnet/wpf/issues/4571
             AppContext.SetSwitch("Switch.System.Windows.Controls.Text.UseAdornerForTextboxSelectionRendering", false);
 
+            //Robert_Lin 2025-1-22 added to force the static contructor of DdpmCultureMap to be called.
+            //PIMS-331191 With DDPM installed, observe language in DDPM UI not change for other langauges of Other countries
+            writelog($"CurrentCultureInfo=[{CultureInfo.CurrentCulture.Name}], MappedCultureInfo=[{DDPM.SA.Resources.DdpmCultureMap.MappedCultureInfo.Name}]");
 
             Microsoft.Win32.SystemEvents.PowerModeChanged += OnPowerModeChanged;//Added 01/07 by Bruce
         }

@@ -45,7 +45,12 @@ namespace DDPM.UI.Resources.Helper
                 string str = _resourceManager.GetString(name, cultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
 #else
                 //And comment out the following line
-                string str = _resourceManager.GetString(name, CultureInfo.CurrentUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+                //Robert_Lin 2025-1-22 PIMS-331191 With DDPM installed, observe language in DDPM UI not change for other langauges of Other countries
+                //Add a CultureInfoMap to convert (mapped) CultureInfo.CurrentUICulture to the supported cultureInfo of DDPM
+                //OLD:
+                //string str = _resourceManager.GetString(name, CultureInfo.CurrentUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+                //NEW:
+                string str = _resourceManager.GetString(name, DdpmCultureMap.MappedCultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
 #endif //MULTILINGUAL_TEST
 
                 //But below statement is requied
