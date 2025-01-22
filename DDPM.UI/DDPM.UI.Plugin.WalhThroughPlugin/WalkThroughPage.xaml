@@ -19,7 +19,7 @@
                Stretch="UniformToFill"
                HorizontalAlignment="Center" VerticalAlignment="Center" />
         <!--<Image x:Name="imgBkGlow" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png" Stretch="UniformToFill" HorizontalAlignment="Center"  VerticalAlignment="Center" />-->
-        <StackPanel>
+        <StackPanel VerticalAlignment="Center">
             <Grid Margin="0" Visibility="{Binding PeripheralVisibility}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
