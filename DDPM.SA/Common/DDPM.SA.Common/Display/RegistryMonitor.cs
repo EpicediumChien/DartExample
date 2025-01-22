@@ -721,7 +721,9 @@ namespace DDPM.SA.Common
             }
             catch (Exception ex)
             {
+#if DEBUG
                 Console.WriteLine("RegistryMonitor_NightLightScheduler: Dispose() " + ex.Message);
+#endif
             }
 
             _disposed = true;

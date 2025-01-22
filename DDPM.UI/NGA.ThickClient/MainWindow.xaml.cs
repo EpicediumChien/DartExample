@@ -153,12 +153,8 @@ namespace NGA.ThickClient
             DdpmCommonHelper.IsMainWindowAtPrimaryScreen = screen.Primary;
             ReAdjustWindowSize();
 
-            //Derek 10/26
-            if (System.Windows.Application.Current?.TryFindResource("breakPoint") is Int16 width)
-                this.MinWidth = width;
 
-            if (System.Windows.Application.Current?.TryFindResource("minHeight") is Int16 height)
-                this.MinHeight = height;
+            EnsureWindowIsVisible(this);
         }
 
         private void SystemEvents_DisplaySettingsChanged(object? sender, EventArgs e)
@@ -616,5 +612,147 @@ namespace NGA.ThickClient
              if (_Console != null)
                  _Console.RaiseEvent(ConsoleEventNames.MainWindow_ConsoleWindow_Closed, this, new EventManagerArgs());*/
         }
+
+        private void AdjustWindowMinSize(object sender, MouseButtonEventArgs e)
+        {
+            EnsureWindowIsVisible(this);
+        }
+
+        public (double Width, double Height, double WorkingWidth, double WorkingHeight) GetScreenResolution(Window window)
+        {
+            // Get the top-left position of the window
+            var windowPosition = new System.Drawing.Point(
+                (int)(window.Left + window.Width / 2),
+                (int)(window.Top + window.Height / 2));
+
+            // Find the screen containing the window
+            var screen = Screen.FromPoint(windowPosition);
+
+            // Get screen resolution and working area
+            var screenBounds = screen.Bounds;
+            var workingArea = screen.WorkingArea;
+
+            return (
+                Width: screenBounds.Width,
+                Height: screenBounds.Height,
+                WorkingWidth: workingArea.Width,
+                WorkingHeight: workingArea.Height
+            );
+        }
+
+        private double GetScalingFactor(Window window)
+        {
+            // Get the PresentationSource for the window
+            var source = PresentationSource.FromVisual(window);
+
+            if (source != null && source.CompositionTarget != null)
+            {
+                // Get the matrix that represents the DPI scaling
+                var transform = source.CompositionTarget.TransformToDevice;
+
+                // Extract the scaling factors (X)
+                return transform.M11;
+            }
+
+            // Default scaling is 1.0 (100%)
+            return 1.0;
+        }
+
+        private void AdjustWindowPosition(Window window, Screen screen, double factor = 1.0)
+        {
+            // Get screen working area
+            var screenWorkingArea = screen.WorkingArea;
+
+            double adjustedLeft = window.Left * factor;
+            // Adjust window position if it goes out of the working area
+            // Adjust X
+            if (screenWorkingArea.Right < (window.Left + window.Width) * factor)
+            {
+                adjustedLeft = screenWorkingArea.Right - window.Width * factor;
+            }
+            else if (screenWorkingArea.Left > window.Left * factor)
+            {
+                adjustedLeft = screenWorkingArea.Left;
+            }
+
+            // Adjust Y
+            double adjustedTop = window.Top * factor;
+            if (screenWorkingArea.Top > window.Top * factor)
+            {
+                adjustedTop = screenWorkingArea.Top;
+            }
+            else if (screenWorkingArea.Bottom < (window.Top + window.Height) * factor)
+            {
+                adjustedTop = screenWorkingArea.Bottom - window.Height * factor;
+            }
+
+            // Apply the adjusted position
+            window.Left = adjustedLeft / factor;
+            window.Top = adjustedTop / factor;
+        }
+
+        private void EnsureWindowIsVisible(Window window)
+        {
+            //Derek 10/26
+            Int16 width = (Int16?)System.Windows.Application.Current?.TryFindResource("breakPoint") ?? 0;
+            Int16 height = (Int16?)System.Windows.Application.Current?.TryFindResource("minHeight") ?? 0;
+
+            // Get the PresentationSource for the window
+            double factor = GetScalingFactor(window);
+
+            // Get the window's current position
+            var windowTopLeft = new System.Drawing.Point(
+                (int)window.Left,
+                (int)window.Top);
+
+            var (actualWidth, actualHeight, workingWidth, workingHeight) = GetScreenResolution(this);
+
+            Debug.WriteLine($"Screen Resolution: {actualWidth / factor}x{actualHeight / factor}\n" +
+                            $"Working Area: {workingWidth}x{workingHeight}");
+            DdpmCommonHelper.WriteUILog($"Screen Resolution: {actualWidth / factor}x{actualHeight / factor}\n" +
+                                        $"Working Area: {workingWidth}x{workingHeight}");
+            workingWidth = workingWidth / factor;
+            workingHeight = workingHeight / factor;
+
+            // Get the window's position and size
+            var windowRect = new System.Drawing.Rectangle(
+                (int)window.Left,
+                (int)window.Top,
+                (int)window.Width,
+                (int)window.Height);
+            // Find the screen containing the window
+            var screen = Screen.FromHandle(new System.Windows.Interop.WindowInteropHelper(this).Handle); // Default to primary screen
+
+            var workingArea = screen.WorkingArea;
+
+            bool isOutOfBounds = window.Left < workingArea.Left / factor
+                    || window.Top < workingArea.Top / factor
+                    || window.Left + window.Width > workingArea.Right / factor
+                    || window.Top + window.Height > workingArea.Bottom / factor;
+
+            this.MinWidth = width;
+            this.MinHeight = height;
+
+            // Resize the window
+            if (width > workingWidth)
+            {
+                this.MinWidth = workingWidth;
+                this.Width = workingWidth;
+                isOutOfBounds = true;
+            }
+
+            if (height > workingHeight)
+            {
+                this.MinHeight = workingHeight;
+                this.Height = workingHeight;
+                isOutOfBounds = true;
+            }
+
+            if (isOutOfBounds)
+            {
+                AdjustWindowPosition(window, screen, factor);
+            }
+        }
+
     }
 }

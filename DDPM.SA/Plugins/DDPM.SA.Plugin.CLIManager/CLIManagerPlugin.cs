@@ -799,6 +799,17 @@ namespace DDPM.SA.Plugin.CLIManager
                 else
                 {
                     var cmds = new List<string> { $"{command} {_commandLineInput.Options[0].Option_Value}", "exit" };
+                    if (command.Equals("NETWORKKVM"))
+                    {
+                        if (_commandLineInput.Options[0].Option_Value.Equals("ON"))
+                        {
+                            cmds[1] = "connect";
+                        }
+                        else if (_commandLineInput.Options[0].Option_Value.Equals("ENABLE"))
+                        {
+                            cmds.RemoveAt(1);
+                        }
+                    }
                     retcode = true;
                     response.Result = "PASS";
 
@@ -1074,6 +1085,7 @@ namespace DDPM.SA.Plugin.CLIManager
                     if (deferResponse[key])
                     {
                         WriteLog("@@ CLIManagerPlugin::checkToastResult deferResponse[did] =  " + deferResponse[key]);
+                        WriteLog($"@@ CLIManagerPlugin::set Defer within 5 min");
                         deferResponse.Remove(key);
                         // add deferitem to deferControlPanel
                         DeferControlPanel.addToSchedule(item);
@@ -1116,11 +1128,17 @@ namespace DDPM.SA.Plugin.CLIManager
                 {
                     if (deferResponse[did])
                     {
+                        WriteLog($"@@ CLIManagerPlugin::set ForceWithNotice within 5 min");
+                        deferResponse.Remove(did);
                         return Task.CompletedTask;
                     }
+                    deferResponse.Remove(did);
+                    break;
                 }
             }
-                        return Task.CompletedTask;
+            WriteLog($"@@ CLIManagerPlugin::Timeout and then set ForceWithNotice as default");
+            deferResponse.Remove(did);
+            return Task.CompletedTask;
         }
         /*
                 public void showNotification(int from, string guid, string args)

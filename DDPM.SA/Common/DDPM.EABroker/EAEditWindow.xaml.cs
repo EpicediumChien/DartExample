@@ -126,7 +126,8 @@ namespace DDPM.EABroker
                 if (ispCtrl == null)
                 {
                     //Invalidd CellCount+SplitKey, make the error messgae
-                    WriteLog($"EAEditWindow.SetInputArg(), Invalid argument: {args.CellCount}{args.SplitKey}, [{SplitCtrlVM.Double_To_String(args.Settings)}]");
+                    //WriteLog($"EAEditWindow.SetInputArg(), Invalid argument: {args.CellCount}{args.SplitKey}, [{SplitCtrlVM.Double_To_String(args.Settings)}]");
+                    WriteLog("EAEditWindow.SetInputArg(), Invalid argument; ispCtrl is null");
                     return;// false;
                 }
                 inputSplitCtrl = ispCtrl;
@@ -232,7 +233,8 @@ namespace DDPM.EABroker
             if (ispCtrl == null)
             {
                 //Invalid CellCount+SplitKey, make the error message
-                WriteLog($"EAEditWindow.SetInputArg(), Invalid argument: {args.CellCount}{args.SplitKey}, [{SplitCtrlVM.Double_To_String(args.Settings)}]");
+                //WriteLog($"EAEditWindow.SetInputArg(), Invalid argument: {args.CellCount}{args.SplitKey}, [{SplitCtrlVM.Double_To_String(args.Settings)}]");
+                WriteLog("EAEditWindow.SetInputArg(), Invalid argument; ispCtrl == null");
                 return;// false;
             }
             inputSplitCtrl = ispCtrl;
@@ -308,7 +310,8 @@ namespace DDPM.EABroker
             if (ispCtrl == null)
             {
                 //Invalid CellCount+SplitKey, make the error message
-                WriteLog($"EAEditWindow.SetInputArg(), Invalid argument: {args.CellCount}{args.SplitKey}, [{SplitCtrlVM.Double_To_String(args.Settings)}]");
+                //WriteLog($"EAEditWindow.SetInputArg(), Invalid argument: {args.CellCount}{args.SplitKey}, [{SplitCtrlVM.Double_To_String(args.Settings)}]");
+                WriteLog("EAEditWindow.SetInputArg(), Invalid argument; ispCtrl == null");
                 return;// false;
             }
             inputSplitCtrl = ispCtrl;

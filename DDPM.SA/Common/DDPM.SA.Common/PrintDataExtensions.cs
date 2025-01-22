@@ -353,7 +353,9 @@ namespace DDPM.SA.Common
                 }
                 catch (Exception ex) 
                 {
+#if DEBUG
                     Console.Write("[PrintRows] error, message: " + ex.Message);
+#endif
                 }
 
                 if (maxRowOrdinal > -1)
@@ -769,7 +771,9 @@ namespace DDPM.SA.Common
                 }
                 catch (Exception ex)
                 {
+#if DEBUG
                     Console.Write("[PrintListRows] error, message: " + ex.Message);
+#endif
                 }
 
                 if (maxRowOrdinal > -1)
@@ -892,7 +896,9 @@ namespace DDPM.SA.Common
                 }
                 catch (Exception ex) 
                 {
+#if DEBUG
                     Console.Write("[PrintListRow] error, message: " + ex.Message);
+#endif
                 }
 
                 objects[0] = "Ordinal";
@@ -982,21 +988,24 @@ namespace DDPM.SA.Common
         {
             if (string.IsNullOrEmpty(value))
                 return;
-
+#if DEBUG
             if (args == null)
                 Console.Write(value);
             else
                 Console.Write(value, args);
+#endif
         }
 
         private static void ConsoleWriteLine(string value = null, params object[] args)
         {
+#if DEBUG
             if (string.IsNullOrEmpty(value))
                 Console.WriteLine();
             else if (args == null)
                 Console.WriteLine(value);
             else
                 Console.WriteLine(value, args);
+#endif
         }
 
         #endregion Console
@@ -1052,7 +1061,9 @@ namespace DDPM.SA.Common
             }
             catch (Exception ex) 
             {
+#if DEBUG
                 Console.Write($"[StreamWrite] error, message: {ex.Message}");
+#endif
             }
         }
 
@@ -1073,7 +1084,9 @@ namespace DDPM.SA.Common
                 }
                 catch (Exception ex)
                 {
+#if DEBUG
                     Console.Write($"[StreamWriteLine] error_1, message: {ex.Message}");
+#endif
                 }
             }
 
@@ -1084,7 +1097,9 @@ namespace DDPM.SA.Common
             }
             catch (Exception ex)
             {
+#if DEBUG
                 Console.Write($"[StreamWriteLine] error_2, message: {ex.Message}");
+#endif
 
             }
         }

@@ -67,7 +67,9 @@ namespace DDPM.SA.Common.Method
             }
             catch (Exception ex)
             {
+#if DEBUG
                 Console.WriteLine($"GenerateRandomECCKeyPair error : {ex.Message}");
+#endif
                 local_log?.Error($"GenerateRandomECCKeyPair error : {ex.Message}");
             }
             return false;
@@ -154,8 +156,10 @@ namespace DDPM.SA.Common.Method
                         (sharedSecret, agreedSecret) = MultiplyEccPoint(privateKeyData, publicKeyData.Skip(1).Take(32).ToArray(), publicKeyData.Skip(33).Take(32).ToArray());
                         //sharedSecret = ecdh.DeriveKeyMaterial(peerECDH.PublicKey);
                         //agreedSecret = ecdh.DeriveRawSecretAgreement(peerECDH.PublicKey);
+#if DEBUG
                         Console.WriteLine($"Derived sharedSecret: {BitConverter.ToString(sharedSecret)}");
                         Console.WriteLine($"Derived agreedSecret: {BitConverter.ToString(agreedSecret)}");
+#endif
                         //agreedSecret = agreedSecret.Reverse().ToArray();
 
                         //Console.WriteLine($"Derived agreedSecret Reverse: {BitConverter.ToString(agreedSecret)}");
@@ -164,7 +168,9 @@ namespace DDPM.SA.Common.Method
                 }
 
                 _skT1 = agreedSecret;
+#if DEBUG
                 Console.WriteLine($"Length: {_skT1.Length}, _skT1: {BitConverter.ToString(_skT1)}");
+#endif
                 local_log?.Info($"Info of _skT1: {_skT1.Length}");
 
                 parameters.Q = new ECPoint { X = null, Y = null };
@@ -177,26 +183,34 @@ namespace DDPM.SA.Common.Method
                     _skT1 = new byte[ecparameters.Q.X.Length + ecparameters.Q.Y.Length];
                     Buffer.BlockCopy(ecparameters.Q.X, 0, _skT1, 0, ecparameters.Q.X.Length);
                     Buffer.BlockCopy(ecparameters.Q.Y, 0, _skT1, ecparameters.Q.X.Length, ecparameters.Q.Y.Length);
+#if DEBUG
                     Console.WriteLine($"Length: {_skT1.Length}, _skT1.x: {BitConverter.ToString(_skT1.Skip(0).Take(32).ToArray())}");
                     Console.WriteLine($"Length: {_skT1.Length}, _skT1.y: {BitConverter.ToString(_skT1.Skip(32).Take(32).ToArray())}");
-                    
+#endif
+
                     // generate _shrKey1
                     byte[] _shrKey1data = new byte[_skT1.Length + SettingsAccess.cp1.Length];
                     Array.Copy(_skT1, 0, _shrKey1data, 0, _skT1.Length / 2);
                     Array.Copy(SettingsAccess.cp1, 0, _shrKey1data, _skT1.Length / 2, SettingsAccess.cp1.Length);
                     Array.Copy(_skT1, _skT1.Length / 2, _shrKey1data, _shrKey1data.Length - (_skT1.Length / 2), _skT1.Length / 2);
-                    
+#if DEBUG
                     Console.WriteLine($"Length: {_shrKey1data.Length}, _shrKey1data: {BitConverter.ToString(_shrKey1data)}");
+#endif
                     local_log?.Info($"Info of _shrKey1data: {_shrKey1data.Length}");
 
                     _shrKey1 = HmacHash256(_skT1.Skip(0).Take(32).ToArray(), _shrKey1data.Skip(32).Take(_shrKey1data.Length - 32).ToArray());
+#if DEBUG
                     Console.WriteLine($"Length: {_shrKey1.Length}, _shrKey1: {BitConverter.ToString(_shrKey1)}");
+#endif
                     local_log?.Info($"Info of _shrKeyT1: {_shrKey1.Length}");
 
                     // generate ccmSeed
-                    Console.WriteLine($"Length: {(publicKeyData.Length)}, publicKeyData: {BitConverter.ToString(publicKeyData)}");
                     byte[] ccmSeed = HmacHash256(_skT1.Skip(32).Take(32).ToArray(), publicKeyData);
+
+#if DEBUG
+                    Console.WriteLine($"Length: {(publicKeyData.Length)}, publicKeyData: {BitConverter.ToString(publicKeyData)}");
                     Console.WriteLine($"Length: {ccmSeed.Length}, ccmSeed: {BitConverter.ToString(ccmSeed)}");
+#endif
                     local_log?.Info($"Info of ccmSeed: {ccmSeed.Length}");
 
                     // generate _nfw1,_ndpm1,_assd
@@ -206,15 +220,19 @@ namespace DDPM.SA.Common.Method
                     Array.Copy(ccmSeed, 12, _nddpm1, 0, _nddpm1.Length);
                     _assd = new byte[8];
                     Array.Copy(ccmSeed, 24, _assd, 0, _assd.Length);
+#if DEBUG
                     Console.WriteLine($"Length: {_nfw1.Length}, _nfw1: {BitConverter.ToString(_nfw1)}");
                     Console.WriteLine($"Length: {_nddpm1.Length}, _ndpm1: {BitConverter.ToString(_nddpm1)}");
                     Console.WriteLine($"Length: {_assd.Length}, _assd: {BitConverter.ToString(_assd)}");
+#endif
                     local_log?.Info($"Info of _nfw1: {_nfw1.Length}, _nddpm1: {_nddpm1.Length}, _assd:{_assd.Length}");
                 }
             }
             catch (CryptographicException ex)
             {
+#if DEBUG
                 Console.WriteLine($"Cryptographic Error: {ex.Message}");
+#endif
                 local_log?.Error($"Cryptographic Error: {ex.Message}");
                 throw;
             }
@@ -243,11 +261,14 @@ namespace DDPM.SA.Common.Method
             byte[] OOBKEY = new byte[16];
             byte[] KSD, stateM;
             (KSD, stateM) = calculateKSD(kCom, idx);
+#if DEBUG
+
             Console.WriteLine($"Length: {KSD.Length}, KSD: {BitConverter.ToString(KSD)}");
             Console.WriteLine($"Length: {stateM.Length}, stateM: {BitConverter.ToString(stateM)}");            
 
             //bxor(keySeed, KSD, Math.Min(KSD.Length, keySeed.Length));
             Console.WriteLine($"keySeed: {BitConverter.ToString(keySeed)}");
+#endif
             local_log?.Info($"Info of KSD: {KSD.Length}, stateM: {stateM.Length}, keySeed: {keySeed.Length}");
 
             // ----- HASHLOOP -----
@@ -261,25 +282,31 @@ namespace DDPM.SA.Common.Method
             byte[] OP = HmacHash256(kCom2, opData);
             byte[] OPL = OP.Take(16).ToArray();
             byte[] OPH = OP.Skip(16).Take(16).ToArray();
+#if DEBUG
             Console.WriteLine($"Length: {OP.Length}, OP: {BitConverter.ToString(OP)}");
             Console.WriteLine($"Length: {OPL.Length}, OPL: {BitConverter.ToString(OPL)}");
             Console.WriteLine($"Length: {OPH.Length}, OPH: {BitConverter.ToString(OPH)}");
+#endif
             local_log?.Info($"Info of OP: {OP.Length}, OPL: {OPL.Length}, OPH: {OPH.Length}");
 
             byte[] a1 = EncryptAES(stateM.Skip(16).Take(16).ToArray(), OPL);
             byte[] a2 = EncryptAES(a1, OPH);
+#if DEBUG
             Console.WriteLine($"Length: {a1.Length}, a1: {BitConverter.ToString(a1)}");
             Console.WriteLine($"Length: {a2.Length}, a2: {BitConverter.ToString(a2)}");
+#endif
             local_log?.Info($"Info of a1: {a1.Length}, a2: {a2.Length}");
 
             uint opB = BitConverter.ToUInt32(OP.Take(4).Reverse().ToArray(), 0);
             uint N0 = 31 + opB % 19;
             uint TkipN = (uint)(N0 - (OP[21] % 11));
             uint DevID_N = (uint)(N0 - (OP[22] % 3));
+#if DEBUG
             Console.WriteLine($"opB: {opB}");
             Console.WriteLine($"N0: {N0}");
             Console.WriteLine($"TkipN: {TkipN}");
             Console.WriteLine($"DevID_N: {DevID_N}");
+#endif
             local_log?.Info($"Info of opB: {opB}, N0: {N0}, TkipN: {TkipN}, DevID_N: {DevID_N}");
 
             if (TkipN == N0) TkipN -= 11;
@@ -292,7 +319,9 @@ namespace DDPM.SA.Common.Method
             bool DellOOBDevice = false;
             bool TKIPReady = false;
 
+#if DEBUG
             Console.WriteLine($"HashCnt: {HashCnt}");
+#endif
 
             while (i < N0 + 1)
             {
@@ -354,7 +383,9 @@ namespace DDPM.SA.Common.Method
                 .Concat(idxBytes)
                 .ToArray();
 
+#if DEBUG
             Console.WriteLine($"DEBUG: Length: {bstr.Length}, bstr: {BitConverter.ToString(bstr)}");
+#endif
             local_log?.Info($"Info of bstr: {bstr.Length}");
 
             // Step 2: SHA256 Hash
@@ -462,24 +493,30 @@ namespace DDPM.SA.Common.Method
             }
             catch (Exception ex)
             {
+#if DEBUG
                 Console.WriteLine($"AES256CCMDecrypt error : {ex.Message}");
+#endif
                 local_log?.Error($"AES256CCMDecrypt error : {ex.Message}");
             }
             return null;
         }
         public string ProcessX0State(string tPubKeyDev1_str)
         {
+            byte[] tPubKeyDev1 = Convert.FromHexString(tPubKeyDev1_str);
+#if DEBUG
             Console.WriteLine($"ProcessX0State start");
             Console.WriteLine($"Lenght : {tPubKeyDev1_str.Length} tPubKeyDev1_str: {tPubKeyDev1_str}");
-            byte[] tPubKeyDev1 = Convert.FromHexString(tPubKeyDev1_str);
             Console.WriteLine($"Lenght : {tPubKeyDev1.Length} tPubKeyDev1: {BitConverter.ToString(tPubKeyDev1)}");
+#endif
             local_log?.Info($"Info of tPubKeyDev1: {tPubKeyDev1.Length}");
 
             GenerateRandomECCKeyPair();
             if (_tKeyPair != null && _tPublicKey != null && _tPrivateKey != null)
             {
                 byte[] tKeyPairPC1 = _tPublicKey;
+#if DEBUG
                 Console.WriteLine($"Lenght : {tKeyPairPC1.Length} tKeyPairPC1: {BitConverter.ToString(tKeyPairPC1)}");
+#endif
                 // Extract ECC public/priavate key
                 byte[] tPubKeyPC1 = new byte[65];
                 tPubKeyPC1[0] = 0x04;
@@ -487,9 +524,11 @@ namespace DDPM.SA.Common.Method
                 byte[] tPriKeyPC1 = _tPrivateKey;
                 // process ProcessECDHKeyExchange
                 byte[] tderivedPublicKey = ProcessECDHKeyExchange(tPubKeyDev1, tPriKeyPC1);
+#if DEBUG
                 Console.WriteLine($"Lenght : {tPubKeyPC1.Length} tPubKeyPC1: {BitConverter.ToString(tPubKeyPC1)}");
                 Console.WriteLine($"Lenght : {tPriKeyPC1.Length} tPriKeyPC1: {BitConverter.ToString(tPriKeyPC1)}");
                 Console.WriteLine($"ProcessX0State done");
+#endif
                 local_log?.Info($"Info of tPubKeyPC1: {tPubKeyPC1.Length}, tPriKeyPC1: {tPriKeyPC1.Length}");
                 return BitConverter.ToString(tPubKeyPC1);
             }
@@ -497,14 +536,18 @@ namespace DDPM.SA.Common.Method
         }
         public string ProcessX2State(string fwEncBlock_str)
         {
+#if DEBUG
             Console.WriteLine($"ProcessX2State start");
+#endif
             byte[] fwEncBlock = Convert.FromHexString(fwEncBlock_str);
             byte[] fwEncBlock_WithOutTag = new byte[fwEncBlock.Length - 4];
             byte[] fwEncBlock_Tag = new byte[4];
             Array.Copy(fwEncBlock, 0, fwEncBlock_WithOutTag, 0, fwEncBlock_WithOutTag.Length);
             Array.Copy(fwEncBlock, fwEncBlock_WithOutTag.Length, fwEncBlock_Tag, 0, fwEncBlock_Tag.Length);
+#if DEBUG
             Console.WriteLine($"Length: {fwEncBlock_WithOutTag.Length}, fwEncBlock_WithOutTag(): {BitConverter.ToString(fwEncBlock_WithOutTag)}");
             Console.WriteLine($"Length: {fwEncBlock_Tag.Length}, fwEncBlock_Tag(): {BitConverter.ToString(fwEncBlock_Tag)}");
+#endif
             local_log?.Info($"Info of fwEncBlock_WithOutTag: {fwEncBlock_WithOutTag.Length}, fwEncBlock_Tag: {fwEncBlock_Tag.Length}");
 
             byte[]? fwEncBlockData = AES256CCMDecrypt(_shrKey1, fwEncBlock_WithOutTag, _nfw1, _assd, fwEncBlock_Tag);
@@ -513,43 +556,60 @@ namespace DDPM.SA.Common.Method
                 local_log?.Error("null fwEncBlockData");
                 return string.Empty;
             }
-            Console.WriteLine($"Length: {fwEncBlockData.Length}, fwEncBlockData: {BitConverter.ToString(fwEncBlockData)}");
+
             byte[] index = new byte[4];
             Array.Copy(fwEncBlockData, 0, index, 0, 4);
-            Console.WriteLine($"Length: {index.Length}, index: {BitConverter.ToString(index)}");
             uint idxNumber = BitConverter.ToUInt32(index, 0);
+#if DEBUG
+            Console.WriteLine($"Length: {fwEncBlockData.Length}, fwEncBlockData: {BitConverter.ToString(fwEncBlockData)}");
+            Console.WriteLine($"Length: {index.Length}, index: {BitConverter.ToString(index)}");
             Console.WriteLine($"idxNumber: {idxNumber}");
+#endif
             byte[] tkeyseed = new byte[8];
             Array.Copy(fwEncBlockData, 4, tkeyseed, 0, 8);
+#if DEBUG
             Console.WriteLine($"Length: {tkeyseed.Length}, tkeyseed: {BitConverter.ToString(tkeyseed)}");
+#endif
             byte[] authTag = new byte[16];
             Array.Copy(fwEncBlockData, 12, authTag, 0, 16);
+#if DEBUG
             Console.WriteLine($"Length: {authTag.Length}, authTag: {BitConverter.ToString(authTag)}");
+#endif
             local_log?.Info($"Info of index: {index.Length}, tkeyseed: {tkeyseed.Length}, authTag: {authTag.Length}");
 
             byte[] comkey = Convert.FromHexString(SettingsAccess.comKey);// "51f371b0181d7a9a7457e48ef639396d8cac1445a762cd012de42ab2a70aa9ab");
+#if DEBUG
             Console.WriteLine($"Length: {comkey.Length}, comkey: {BitConverter.ToString(comkey)}");
+#endif
             byte[] deviceID = new byte[16];
             byte[] OOBKEY = GenerateTKDeviceIDPair2(comkey, tkeyseed, idxNumber, out deviceID);
+#if DEBUG
             Console.WriteLine($"deviceID: {BitConverter.ToString(deviceID)}");
             Console.WriteLine($"OOBKEY: {BitConverter.ToString(OOBKEY)}");
+#endif
             local_log?.Info($"Info of deviceID: {deviceID.Length}, OOBKEY: {OOBKEY.Length}");
 
             if (deviceID.SequenceEqual(authTag))
             {
+#if DEBUG
                 Console.WriteLine($"ProcessX2State pass");
+#endif
                 byte[] ret = new byte[32];
                 Array.Copy(OOBKEY, 0, ret, 0, OOBKEY.Length);
                 (byte[] ciphertext, byte[] tag) = AES256CCMEncrypt(_shrKey1, ret, _nddpm1, _assd);
+#if DEBUG
                 Console.WriteLine($"Length: {ciphertext.Length}, ciphertext: {BitConverter.ToString(ciphertext)}");
                 Console.WriteLine($"Length: {tag.Length}, tag: {BitConverter.ToString(tag)}");
+#endif
                 local_log?.Info($"Info of ciphertext: {ciphertext.Length}, tag: {tag.Length}, deviceID equal to authTag");
 
                 return BitConverter.ToString(ciphertext) + BitConverter.ToString(tag);
             }
             else
             {
+#if DEBUG
                 Console.WriteLine($"ProcessX2State fail");
+#endif
                 local_log?.Error("deviceID not equal to authTag");
                 return string.Empty;
             }

@@ -42,8 +42,9 @@ namespace DDPM.PowerMon
         {
             if (string.IsNullOrEmpty(text))
                 text = "";
-
+#if DEBUG
             Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff")} [PowerMonitor] {text}");
+#endif
             if (log != null)
             {
                 if (log_type == log_type.info)
@@ -451,7 +452,7 @@ namespace DDPM.PowerMon
                             handled = true;
                             break;
                         default:
-                            WriteLog($"Power event {msg.ToString()} Unknown {wParam} handled");
+                            WriteLog($"Power event {msg.ToString()} Unknown handled");
                             handled = true;
                             break;
                     }

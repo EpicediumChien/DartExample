@@ -1104,14 +1104,11 @@ namespace DDPM.UI.Common.ViewModels
 
             //Get the current selected monitor's DeviceName
             string selScreenName = "";
-            if (SelectedHomeDevice != null)
+            if (SelectedHomeDevice != null && SelectedHomeDevice.MonitorInfo != null)
             {
-                if (SelectedHomeDevice.MonitorInfo != null)
-                {
-                    selScreenName = SelectedHomeDevice.MonitorInfo.DisplayName;
-                }
+                selScreenName = SelectedHomeDevice.MonitorInfo.DisplayName;
             }
- 
+
             //Check if screen is different with last show
             //if (!screenDeviceName.Equals(DdpmCommonHelper.LastShowOsdScreenDeviceName))
 

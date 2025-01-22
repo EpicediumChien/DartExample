@@ -266,6 +266,8 @@ namespace DDPM.SA.Common
         Task<bool> SetMicNCIncomingAsync(string Guid, bool newValue);
         Task<bool> SetUnPairAsync(string Guid, bool newValue);
         Task<bool> SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
+
+        Task<bool> SetFactoryResetAsyncValueForHeadsetForCLI(string Guid, bool newValue);
         Task<bool> SetBoomMicAsync(string Guid, bool newValue);
 
         //Peripheral Common Properties Get
