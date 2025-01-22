@@ -26,15 +26,6 @@ namespace DDPM.UI.Plugin.Common
 
         private readonly Microsoft.Win32.OpenFileDialog? openFileDialog;
         private readonly System.Windows.Forms.FolderBrowserDialog? folderBrowserDialog;
-        private AdvancedAction _deviceCat;
-
-        private const int WH_KEYBOARD_LL = 13;
-        private const int WM_KEYDOWN = 0x0100;
-        private const int WM_SYSKEYDOWN = 0x0104;
-        private const int VK_TAB = 0x09;
-        private const int VK_ESC = 0x1B;
-        private const int VK_LWIN = 0x5B;
-        private const int VK_SNAPSHOT = 0x2C;
 
         private readonly string guid;
         private readonly string pType;
@@ -48,7 +39,6 @@ namespace DDPM.UI.Plugin.Common
             this.Height = height;
 
             txtCaption.Text = Caption;
-            _deviceCat = deviceCat;
             guid = Guid;
             pType = type;
 
@@ -216,27 +206,9 @@ namespace DDPM.UI.Plugin.Common
             }
 
             btnClear.IsEnabled = true;
-            //if (_deviceCat == AdvancedAction.OpenWebPage)
-            //{
-            //    if (txt.Length < 7)
-            //        return;
-
-            //    var url = txt.Substring(0, 7).ToLower();
-            //    if (url != "http://" && url != "https:/")
-            //        return;
-
-            //    if (url != "http://" && txt.Substring(0, 8).ToLower() != "https://")
-            //        return;
-            //}
-
             btnSave.IsEnabled = true;
             Parameter = txt;
         }
-
-        //private void Keystroke_PreviewKeyUp(object sender, KeyEventArgs e)
-        //{
-        //    e.Handled = true;
-        //}
 
         private void Keystroke_PreviewKeyDown(object sender, KeyEventArgs e)
         {
