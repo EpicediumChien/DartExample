@@ -142,6 +142,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         private int _fwTimeOutCount = 120;
         private bool _IsDownloadAndInsytall = false;
         private KeyGenerator? _KeyGenerator;
+        private double _CurrentProcess = 0;
 
         #region Events
 
@@ -1686,6 +1687,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 string _namedPipeName = Guid.NewGuid().ToString("D");
                 if (!fwUpdateInfo.IsDisplay)
                 {
+                    _CurrentProcess = 0;
                     _fwTimeOutCount = 120;
                     _timeOutCount = _fwTimeOutCount;
                     _timerTimeOut = new Timer();
@@ -2001,6 +2003,26 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     ProcessProgress = _timeOutCount,
                 };
                 sendMessageToEvent(fWUpdateInfo);
+            }
+            if (_timeOutCount <= 60)
+            {
+                if (_fWUpdateInfo.DeviceType == DeviceType.LogicalHeadset &&
+                    _fWUpdateInfo.Model.Contains("7024") && 
+                    _CurrentProcess >= 100)
+                {
+                    _updateErrorCode = FWUErrorCode.NoError;
+                    _notificationStr = LangHelper.Instance["A2_Firmware_update_successful"];
+                    _logs.DebugMsg_1("_timeOutCount <= 60 and is WL7024FWU and _CurrentProcess is 100% so successful");
+                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                    {
+                        DeviceName = _fWUpdateInfo.DeviceName,
+                        Model = _fWUpdateInfo.Model,
+                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                        ProcessName = "A2 Firmware update successful",
+                    };
+                    sendMessageToEvent(updateProgressInfo);
+                    resetState();
+                }
             }
             _timeOutCount--;
             if (_namedPipeServer != null && _namedPipeServer.IsNamedPipeServerIsNoSafe &&
@@ -2331,6 +2353,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         ProcessName = "Installing",
                         ProcessProgress = int.Parse(progressNode.InnerText),
                     };
+                    if (_fWUpdateInfo.DeviceType == DeviceType.LogicalHeadset &&
+                       _fWUpdateInfo.Model.Contains("7024"))
+                    {
+                        _CurrentProcess = updateProgressInfo.ProcessProgress;
+                    }
                     sendMessageToEvent(updateProgressInfo);
                 }
                 if (timeOut != null)
@@ -2772,23 +2799,26 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     { DeviceType.PhysicalDongle, 1 },
                     { DeviceType.PhysicalAudioDongle, 2 },
 
-                    { DeviceType.LogicalWebcam, 3 },
-                    { DeviceType.PhysicalWebcam, 4 },
+                    { DeviceType.LogicalMouse, 3 },
+                    { DeviceType.LogicalKeyboard, 4 },
 
-                    { DeviceType.LogicalPen, 5 },
-                    { DeviceType.PhysicalPen, 6 },
+                    { DeviceType.LogicalWebcam, 5 },
+                    { DeviceType.PhysicalWebcam, 6 },
 
-                    { DeviceType.LogicalMouse, 7 },
-                    { DeviceType.LogicalKeyboard, 8 },
+                    { DeviceType.LogicalPen, 7 },
+                    { DeviceType.PhysicalPen, 8 },
 
                     { DeviceType.LogicalWiredAudio, 9 },
                     { DeviceType.PhysicalWiredAudio, 10 },
                     { DeviceType.PhysicalBluetoothAudio, 11 },
                     { DeviceType.LogicalHeadset, 12 },
 
-                    { DeviceType.Unknown, 13 }, // Display
-                    { DeviceType.PhysicalWiredDock, 14 },
-                    { DeviceType.LogicalDock, 15 }
+                    { DeviceType.PhysicalBootloader, 13 },
+                    { DeviceType.LogicalBootloader, 14 },
+
+                    { DeviceType.Unknown, 15 }, // Display
+                    { DeviceType.PhysicalWiredDock, 16 },
+                    { DeviceType.LogicalDock, 17 }
                 };
 
                 fWUpdateInfos.Sort((x, y) =>
