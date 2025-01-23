@@ -279,6 +279,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Microsoft.Win32.SystemEvents.PowerModeChanged += OnPowerModeChanged;//Added 01/07 by Bruce
         }
 
+
         private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
         {
             if (e.UI_Field_Name.StartsWith("Keyboard") || e.UI_Field_Name.StartsWith("Mouse") || e.UI_Field_Name.StartsWith("Pen"))
@@ -19839,5 +19840,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return false;
             }
         }
+
+        public async Task<bool> GetDTPProxyPluginReady()
+        {
+            return _DTPProxyPlugin.GetDTPProxyPluginReady().Result;
+        }
     }
 }
+GetIsANCSupportedAsync

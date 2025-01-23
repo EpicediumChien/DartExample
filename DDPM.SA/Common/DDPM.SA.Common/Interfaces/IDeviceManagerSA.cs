@@ -1582,6 +1582,7 @@ namespace DDPM.SA.Common
         #endregion globalperipheral
 
         #region  IAirAudioCommodity
+        Task<bool> GetDTPProxyPluginReady();
 
         #region Get
         Task<HeadsetConnectionType> GetAirAudioConnectionTypeAsync(string Guid);
