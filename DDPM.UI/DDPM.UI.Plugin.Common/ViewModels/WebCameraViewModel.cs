@@ -1518,8 +1518,8 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 try
                 {
-                    OnPropertyChanged(nameof(hdr_enable));
-                    OnPropertyChanged(nameof(IsHDROnText));
+                    //OnPropertyChanged(nameof(hdr_enable));
+                    //OnPropertyChanged(nameof(IsHDROnText));
 
                     if (value == CurrentProfile.IsHDROn)
                         return;
@@ -1533,6 +1533,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), value);
                     SetProfileProperty(nameof(IsHDROn), value, OperationModule.ColorAndImage);
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsHDROn));
                     OnPropertyChanged(nameof(IsHDROnText));
 
                     new Thread(() =>
