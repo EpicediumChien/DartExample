@@ -147,6 +147,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _log.Info($"current process ID: {Process.GetCurrentProcess().Id}");
 
             //Robert_Lin 2025-1-22 added to force the static contructor of DdpmCultureMap to be called.
+            //PIMS-331191 With DDPM installed, observe language in DDPM UI not change for other langauges of Other countries
             _log.Info($"CurrentCultureInfo=[{CultureInfo.CurrentCulture.Name}], MappedCultureInfo=[{DDPM.UI.Resources.DdpmCultureMap.MappedCultureInfo.Name}]");
 
             //DdpmCommonHelper.MyConsole = console;
