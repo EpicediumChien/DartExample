@@ -289,17 +289,19 @@ namespace DDPM.UI.Common.ViewModels
             _log = console.CreateLog(logName);
         }
 
-        public void LogInfo(string message, Exception ex = null)
+        public void LogInfo(string message, Exception ex = null,
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
             if (_log != null)
             {
                 if (ex != null)
                 {
-                    _log.Error(ex, message);
+                    _log.Error(ex,  $"{message} : Caller=[{memberName}], Line#=[{sourceLineNumber}]");
                 }
                 else
                 {
-                    _log.Info(message);
+                    _log.Info($"{message} : Caller=[{memberName}], Line#=[{sourceLineNumber}]");
                 }
             }
         }
