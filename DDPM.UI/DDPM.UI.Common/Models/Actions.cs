@@ -8,6 +8,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 using Newtonsoft.Json.Linq;
 using static DDPM.UI.Common.PenActions;
 using DDPM.SA.Common;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.UI.Common
 {
