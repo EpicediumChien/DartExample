@@ -4820,7 +4820,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                                     Thumbprint = data[model].Thumbprint,
                                     SupportedPlatform = data[model].SupportedPlatform,
                                     fileName = data[model].fileName,
-                                    date = data[model].date,
+                                    //date = data[model].date, //1/23 Remove by Bruce
                                 };
                                 if (firmwares_item != null)
                                 {
