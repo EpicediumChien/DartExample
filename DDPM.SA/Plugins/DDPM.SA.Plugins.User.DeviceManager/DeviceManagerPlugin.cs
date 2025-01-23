@@ -279,6 +279,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             Microsoft.Win32.SystemEvents.PowerModeChanged += OnPowerModeChanged;//Added 01/07 by Bruce
         }
 
+
         private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
         {
             if (e.UI_Field_Name.StartsWith("Keyboard") || e.UI_Field_Name.StartsWith("Mouse") || e.UI_Field_Name.StartsWith("Pen"))
@@ -2464,7 +2465,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<DeviceHelper> GetDevices(bool Rescan = false)
         {
             DeviceHelper deviceHelper = await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
-            ChangeSB725(deviceHelper);
+            //ChangeSB725(deviceHelper);
             ChangeHeadset(deviceHelper);
             ChangeDock(deviceHelper);
             return await Task.Run(() => _PeripheralsPlugin.GetDevices(Rescan));
@@ -2472,13 +2473,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private static void ChangeSB725(DeviceHelper deviceHelper)
         {
-            if (deviceHelper.deviceInfo.Any(x => x.Name.Contains("SB725")))
+            if (deviceHelper.deviceInfo.Any(x => x.Name.Contains("SP725")))
             {
-                var GetDeviceInfos = deviceHelper.deviceInfo.Where(x => x.Name.Contains("SB725")).ToList();
+                var GetDeviceInfos = deviceHelper.deviceInfo.Where(x => x.Name.Contains("SP725")).ToList();
                 foreach (var deviceInfo in GetDeviceInfos)
                 {
                     deviceInfo.Type = DeviceType.LogicalWiredAudio;
-                    deviceInfo.ModelNumber = "SB725";
+                    deviceInfo.ModelNumber = "SP725";
                     deviceInfo.LogicalDeviceType = "LogicalWiredAudio";
                 }
             }
@@ -18244,5 +18245,1606 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     break;
             }
         }
+
+        public async Task<HeadsetConnectionType> GetAirAudioConnectionTypeAsync(string Guid)
+        {
+            try
+            {
+                //It's enum HeadsetConnectionType
+                var result = await _DTPProxyPlugin.GetAirAudioConnectionTypeAsync(Guid);
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioConnectionTypeAsync succeeded, value is {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioConnectionTypeAsync failed for {Guid} - Exception: {ex.Message}");
+                return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
+            }
+        }
+
+        public async Task<JArray> GetAirAudioDeviceItemsAsync()
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioDeviceItemsAsync();
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioDeviceItemsAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioDeviceItemsAsync value is null");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioDeviceItemsAsync failed - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioSerialNumberAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioSerialNumberAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioSerialNumberAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioSerialNumberAsync value is null");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioSerialNumberAsync failed for {Guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioDeviceBatteryStatusAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioDeviceBatteryStatusAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioDeviceBatteryStatusAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioSerialNumberAsync value is null");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioSerialNumberAsync failed for {Guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioPairingHostName1Async(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioPairingHostName1Async(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPairingHostName1Async Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPairingHostName1Async value is null");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPairingHostName1Async failed for {Guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioPairingHostName2Async(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioPairingHostName2Async(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPairingHostName2Async Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPairingHostName2Async value is null");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPairingHostName2Async failed for {Guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioPairingHostName3Async(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioPairingHostName3Async(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPairingHostName3Async Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPairingHostName3Async value is null");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPairingHostName3Async failed for {Guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioPairingStatusNameAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioPairingStatusNameAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPairingStatusNameAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPairingStatusNameAsync value is null");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPairingStatusNameAsync failed for {Guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioParentDeviceTypeAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioParentDeviceTypeAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioParentDeviceTypeAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioParentDeviceTypeAsync value is null");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioParentDeviceTypeAsync failed for {Guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioModelNumberAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioModelNumberAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioModelNumberAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioModelNumberAsync value is null");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioModelNumberAsync failed for {Guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioDeviceTypeAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioDeviceTypeAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioDeviceTypeAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioDeviceTypeAsync value is null");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioDeviceTypeAsync failed for {Guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioFirmwareVersionAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioFirmwareVersionAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioFirmwareVersionAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioFirmwareVersionAsync value is null");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioFirmwareVersionAsync failed for {Guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioPluginIdAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioPluginIdAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPluginIdAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPluginIdAsync value is null");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPluginIdAsync failed for {Guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioDeviceIdAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioDeviceIdAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioDeviceIdAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioDeviceIdAsync value is null");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioDeviceIdAsync failed for {Guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioDeviceNameAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioDeviceNameAsync(Guid);
+                if (result != null)
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioDeviceNameAsync Success");
+                    return result;
+                }
+                else
+                {
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioDeviceNameAsync value is null");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioDeviceNameAsync failed for {Guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<DeviceInterfaceType> GetAirAudioDeviceInterfaceTypeAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioDeviceInterfaceTypeAsync(Guid);
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioDeviceInterfaceTypeAsync succeeded, value is {result.ToString()}");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioDeviceInterfaceTypeAsync failed for {Guid} - Exception: {ex.Message}");
+                return default(DeviceInterfaceType);
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsWearDetectionAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioMuteStatusAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioMuteStatusAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioMuteStatusAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioMuteStatusAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioMuteStatusAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioBoomMicAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioBoomMicAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBoomMicAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBoomMicAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBoomMicAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsBoomMicSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsBoomMicSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsBoomMicSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsBoomMicSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsBoomMicSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioWearDetectionAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioWearDetectionAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioWearDetectionAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioWearDetectionAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioWearDetectionAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioVoiceGuidanceAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioVoiceGuidanceAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioVoiceGuidanceAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioVoiceGuidanceAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioVoiceGuidanceAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioBusyLightAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioBusyLightAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBusyLightAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBusyLightAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBusyLightAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+        public async Task<bool> GetAirAudioSidetoneAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioSidetoneAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioSidetoneAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioSidetoneAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioSidetoneAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioMicNCIncomingAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioMicNCIncomingAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioMicNCIncomingAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioMicNCIncomingAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioMicNCIncomingAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsMicNCIncomingSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsMicNCIncomingSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsMicNCIncomingSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsMicNCIncomingSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsMicNCIncomingSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsMicNoiseCancellationAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsMicNoiseCancellationAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionQuickPauseSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsMicNoiseCancellationAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionMuteMicSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsWearDetectionMuteMicSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionPauseMusicSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsWearDetectionPauseMusicSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionSensitivitySupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsWearDetectionSensitivitySupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionSensitivitySupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionSensitivitySupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionSensitivitySupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsWearDetectionSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsANCSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsANCSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsANCSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsANCSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsANCSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsEqualizerSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsEqualizerSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsEqualizerSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsEqualizerSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsEqualizerSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsPresetsSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsPresetsSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsPresetsSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsPresetsSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsPresetsSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsVoiceGuidanceSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsVoiceGuidanceSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsVoiceGuidanceSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsVoiceGuidanceSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsVoiceGuidanceSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsBusyLightSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsBusyLightSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsBusyLightSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsBusyLightSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsBusyLightSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsSidetoneSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsSidetoneSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsSidetoneSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsSidetoneSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsSidetoneSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsMicNoiseCancellationSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsMicNoiseCancellationSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsDirtyAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsDirtyAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsDirtyAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsDirtyAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsDirtyAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+    
+
+        public async Task<bool> GetAirAudioIsReadyAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsDirtyAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsReadyAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsReadyAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsReadyAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionPauseMusicEnabledAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsWearDetectionPauseMusicEnabledAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicEnabledAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicEnabledAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicEnabledAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionMuteMicEnabledAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsWearDetectionMuteMicEnabledAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicEnabledAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicEnabledAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicEnabledAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsBatteryLevelSupportedAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsBatteryLevelSupportedAsync(Guid);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsBatteryLevelSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsBatteryLevelSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsBatteryLevelSupportedAsync failed for {Guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<int> GetAirAudioWearDetectionSensitivityAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioWearDetectionSensitivityAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioWearDetectionSensitivityAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioWearDetectionSensitivityAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioWearDetectionSensitivityAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioIsWearDetectionQuickPauseAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioIsWearDetectionQuickPauseAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioAncGainAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioAncGainAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioAncGainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioAncGainAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioAncGainAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioAncModeAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioAncModeAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioAncModeAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioAncModeAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioAncModeAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioBand1GainAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioBand1GainAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBand1GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBand1GainAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBand1GainAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioBand2GainAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioBand2GainAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBand2GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBand2GainAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBand2GainAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioBand3GainAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioBand3GainAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBand3GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBand3GainAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBand3GainAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioBand4GainAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioBand4GainAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBand4GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBand4GainAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBand4GainAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioBand5GainAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioBand5GainAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBand5GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBand5GainAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBand5GainAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioSidetoneLevelAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioSidetoneLevelAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioSidetoneLevelAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioSidetoneLevelAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioSidetoneLevelAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioSelectedPresetAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioSelectedPresetAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioSelectedPresetAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioSelectedPresetAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioSelectedPresetAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioBatteryLevelAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioBatteryLevelAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBatteryLevelAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBatteryLevelAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioBatteryLevelAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioPairedDeviceCountAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioPairedDeviceCountAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPairedDeviceCountAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPairedDeviceCountAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioPairedDeviceCountAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioMaxPairingSlotsAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioMaxPairingSlotsAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioMaxPairingSlotsAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioMaxPairingSlotsAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioMaxPairingSlotsAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioTotalNumberOfPairedHostNameAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioTotalNumberOfPairedHostNameAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioTotalNumberOfPairedHostNameAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioTotalNumberOfPairedHostNameAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioTotalNumberOfPairedHostNameAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioInstanceIdAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioInstanceIdAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioInstanceIdAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioInstanceIdAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioInstanceIdAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioInstanceNumberAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioInstanceNumberAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioInstanceNumberAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioInstanceNumberAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioInstanceNumberAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<int> GetAirAudioODMIdAsync(string Guid)
+        {
+            try
+            {
+                var result = await _DTPProxyPlugin.GetAirAudioODMIdAsync(Guid);
+                if (result != -1)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioODMIdAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioODMIdAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] GetAirAudioODMIdAsync failed for {Guid} - Exception: {ex.Message}");
+                return -1;
+            }
+        }
+
+        public async Task<bool> SetAirAudioMicNoiseCancellationAsync(string Guid, bool newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioMicNoiseCancellationAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioMicNoiseCancellationAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioMicNoiseCancellationAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioMicNoiseCancellationAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioSidetoneAsync(string Guid, bool newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioSidetoneAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioSidetoneAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioSidetoneAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioSidetoneAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioBusyLightAsync(string Guid, bool newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioBusyLightAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBusyLightAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBusyLightAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBusyLightAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioVoiceGuidanceAsync(string Guid, bool newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioVoiceGuidanceAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioVoiceGuidanceAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioVoiceGuidanceAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioVoiceGuidanceAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioSelectedPresetAsync(string Guid, int newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioSelectedPresetAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioSelectedPresetAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioSelectedPresetAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioSelectedPresetAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioSidetoneLevelAsync(string Guid, int newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioSidetoneLevelAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioSidetoneLevelAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioSidetoneLevelAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioSidetoneLevelAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioBandsGainAsync(string Guid, byte[] newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioBandsGainAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBandsGainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBandsGainAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBandsGainAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioBand1GainAsync(string Guid, int newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioBand1GainAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBand1GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBand1GainAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBand1GainAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioBand2GainAsync(string Guid, int newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioBand2GainAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBand2GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBand2GainAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBand2GainAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioBand3GainAsync(string Guid, int newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioBand3GainAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBand3GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBand3GainAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBand3GainAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioBand4GainAsync(string Guid, int newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioBand4GainAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBand4GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBand4GainAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBand5GainAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioBand5GainAsync(string Guid, int newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioBand5GainAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBand5GainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBand5GainAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioBand5GainAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioAncModeAsync(string Guid, int newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioAncModeAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioAncModeAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioAncGainAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioAncGainAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioAncGainAsync(string Guid, int newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioAncGainAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioAncGainAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioAncGainAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioAncGainAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioWearDetectionAsync(string Guid, bool newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioWearDetectionAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioFactoryResetAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioFactoryResetAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioFactoryResetAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioFactoryResetAsync(string Guid, bool newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioFactoryResetAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioFactoryResetAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioFactoryResetAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioFactoryResetAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioIsBoomMicSupportedAsync(string Guid, bool newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioIsBoomMicSupportedAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioIsBoomMicSupportedAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioIsBoomMicSupportedAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioIsBoomMicSupportedAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioWearDetectionQuickPauseAsync(string Guid, int newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioWearDetectionQuickPauseAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioWearDetectionQuickPauseAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioWearDetectionQuickPauseAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioWearDetectionQuickPauseAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioWearDetectionSensitivityAsync(string Guid, int newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioWearDetectionSensitivityAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioWearDetectionSensitivityAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioWearDetectionSensitivityAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioWearDetectionSensitivityAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioMicNCIncomingAsync(string Guid, bool newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioMicNCIncomingAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioMicNCIncomingAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioMicNCIncomingAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioMicNCIncomingAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioUnPairAsync(string Guid, bool newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioUnPairAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioUnPairAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioUnPairAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioUnPairAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioIsWearDetectionPauseMusicEnabledAsync(string Guid, bool newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioIsWearDetectionPauseMusicEnabledAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioIsWearDetectionPauseMusicEnabledAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioIsWearDetectionPauseMusicEnabledAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioIsWearDetectionPauseMusicEnabledAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioIsWearDetectionMuteMicEnabledAsync(string Guid, bool newValue)
+        {
+            try
+            {
+                bool result = await _DTPProxyPlugin.SetAirAudioIsWearDetectionMuteMicEnabledAsync(Guid, newValue);
+                if (result)
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioIsWearDetectionMuteMicEnabledAsync Success");
+                else
+                    writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioIsWearDetectionMuteMicEnabledAsync Fail");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DeviceManagerPlugin] [AirAudio] SetAirAudioIsWearDetectionMuteMicEnabledAsync failed for GUID: {Guid}, Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetDTPProxyPluginReady()
+        {
+            return _DTPProxyPlugin.GetDTPProxyPluginReady().Result;
+        }
     }
 }
+GetIsANCSupportedAsync

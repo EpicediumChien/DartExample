@@ -258,39 +258,41 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Module.AddWebcam.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Module.GamingVisionEngine.Tests", "UnitTest\DDPM.UI.Module.GamingVisionEngine.Tests\DDPM.UI.Module.GamingVisionEngine.Tests.csproj", "{539C0C0F-2A9F-4FA5-83AE-87CF6C8F3F8B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Plugin.WebCameraPlugin.Tests", "UnitTest\DDPM.UI.Plugin.WebCameraPlugin.Tests\DDPM.UI.Plugin.WebCameraPlugin.Tests.csproj", "{9DDC8A47-B9C6-4D2F-9348-6B1CE97322C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Plugin.WebCameraPlugin.Tests", "UnitTest\DDPM.UI.Plugin.WebCameraPlugin.Tests\DDPM.UI.Plugin.WebCameraPlugin.Tests.csproj", "{9DDC8A47-B9C6-4D2F-9348-6B1CE97322C9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Plugin.AddDevicePlugin.Tests", "UnitTest\DDPM.UI.Plugin.AddDevicePlugin.Tests\DDPM.UI.Plugin.AddDevicePlugin.Tests.csproj", "{13F0D346-B9E6-4E06-BC5E-1B92903732EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Plugin.AddDevicePlugin.Tests", "UnitTest\DDPM.UI.Plugin.AddDevicePlugin.Tests\DDPM.UI.Plugin.AddDevicePlugin.Tests.csproj", "{13F0D346-B9E6-4E06-BC5E-1B92903732EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Plugin.DockPlugin.Tests", "UnitTest\DDPM.UI.Plugin.DockPlugin.Tests\DDPM.UI.Plugin.DockPlugin.Tests.csproj", "{594A307E-0E6F-43B6-A85C-AFE76A77909B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Plugin.DockPlugin.Tests", "UnitTest\DDPM.UI.Plugin.DockPlugin.Tests\DDPM.UI.Plugin.DockPlugin.Tests.csproj", "{594A307E-0E6F-43B6-A85C-AFE76A77909B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Plugin.HeadsetPlugin.Tests", "UnitTest\DDPM.UI.Plugin.HeadsetPlugin.Tests\DDPM.UI.Plugin.HeadsetPlugin.Tests.csproj", "{A2DDBBA3-7055-4AD0-A9E3-D9E2E9851CA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Plugin.HeadsetPlugin.Tests", "UnitTest\DDPM.UI.Plugin.HeadsetPlugin.Tests\DDPM.UI.Plugin.HeadsetPlugin.Tests.csproj", "{A2DDBBA3-7055-4AD0-A9E3-D9E2E9851CA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Plugin.KeyboardPlugin.Tests", "UnitTest\DDPM.UI.Plugin.KeyboardPlugin.Tests\DDPM.UI.Plugin.KeyboardPlugin.Tests.csproj", "{05CABD92-1E44-4FD9-A5E4-FB479E500E66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Plugin.KeyboardPlugin.Tests", "UnitTest\DDPM.UI.Plugin.KeyboardPlugin.Tests\DDPM.UI.Plugin.KeyboardPlugin.Tests.csproj", "{05CABD92-1E44-4FD9-A5E4-FB479E500E66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Plugin.PenPlugin.Tests", "UnitTest\DDPM.UI.Plugin.PenPlugin.Tests\DDPM.UI.Plugin.PenPlugin.Tests.csproj", "{5B6DB097-547E-44B0-9FC1-683892AD6DB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Plugin.PenPlugin.Tests", "UnitTest\DDPM.UI.Plugin.PenPlugin.Tests\DDPM.UI.Plugin.PenPlugin.Tests.csproj", "{5B6DB097-547E-44B0-9FC1-683892AD6DB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Plugin.SoundBarPlugin.Tests", "UnitTest\DDPM.UI.Plugin.SoundBarPlugin.Tests\DDPM.UI.Plugin.SoundBarPlugin.Tests.csproj", "{4E52F111-AD8B-4067-9906-A15E0916329E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Plugin.SoundBarPlugin.Tests", "UnitTest\DDPM.UI.Plugin.SoundBarPlugin.Tests\DDPM.UI.Plugin.SoundBarPlugin.Tests.csproj", "{4E52F111-AD8B-4067-9906-A15E0916329E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Plugin.WalkThroughPlugin.Tests", "UnitTest\DDPM.UI.Plugin.WalkThroughPlugin.Tests\DDPM.UI.Plugin.WalkThroughPlugin.Tests.csproj", "{DC39E931-F4AE-4817-88FD-C6B7AD04059F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Plugin.WalkThroughPlugin.Tests", "UnitTest\DDPM.UI.Plugin.WalkThroughPlugin.Tests\DDPM.UI.Plugin.WalkThroughPlugin.Tests.csproj", "{DC39E931-F4AE-4817-88FD-C6B7AD04059F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Module.WebCameraMicrophone.Tests", "UnitTest\DDPM.UI.Module.WebCameraMicrophone.Tests\DDPM.UI.Module.WebCameraMicrophone.Tests.csproj", "{D9073650-D2D0-4EBA-BB97-165A77793786}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Module.WebCameraMicrophone.Tests", "UnitTest\DDPM.UI.Module.WebCameraMicrophone.Tests\DDPM.UI.Module.WebCameraMicrophone.Tests.csproj", "{D9073650-D2D0-4EBA-BB97-165A77793786}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Module.PenSettings.Tests", "UnitTest\DDPM.UI.Module.PenSettings.Tests\DDPM.UI.Module.PenSettings.Tests.csproj", "{7C7094C1-416F-4468-B0BC-A7310C87FD19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Module.PenSettings.Tests", "UnitTest\DDPM.UI.Module.PenSettings.Tests\DDPM.UI.Module.PenSettings.Tests.csproj", "{7C7094C1-416F-4468-B0BC-A7310C87FD19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Module.PenButtonSettings.Tests", "UnitTest\DDPM.UI.Module.PenButtonSettings.Tests\DDPM.UI.Module.PenButtonSettings.Tests.csproj", "{40B9D509-3640-494F-AAEC-4F322608FCDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Module.PenButtonSettings.Tests", "UnitTest\DDPM.UI.Module.PenButtonSettings.Tests\DDPM.UI.Module.PenButtonSettings.Tests.csproj", "{40B9D509-3640-494F-AAEC-4F322608FCDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Module.MouseSettings.Tests", "UnitTest\DDPM.UI.Module.MouseSettings.Tests\DDPM.UI.Module.MouseSettings.Tests.csproj", "{C5A987D9-FF30-47D0-949C-F54026BA7BF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Module.MouseSettings.Tests", "UnitTest\DDPM.UI.Module.MouseSettings.Tests\DDPM.UI.Module.MouseSettings.Tests.csproj", "{C5A987D9-FF30-47D0-949C-F54026BA7BF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Module.KeyCustomization.Tests", "UnitTest\DDPM.UI.Module.KeyCustomization.Tests\DDPM.UI.Module.KeyCustomization.Tests.csproj", "{6BA9BE3A-FE8E-4EA7-BB96-8CB998C63B5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Module.KeyCustomization.Tests", "UnitTest\DDPM.UI.Module.KeyCustomization.Tests\DDPM.UI.Module.KeyCustomization.Tests.csproj", "{6BA9BE3A-FE8E-4EA7-BB96-8CB998C63B5C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Module.Illumination.Tests", "UnitTest\DDPM.UI.Module.Illumination.Tests\DDPM.UI.Module.Illumination.Tests.csproj", "{27AD7845-763A-498C-B913-D2DA2EC9F33C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Module.Illumination.Tests", "UnitTest\DDPM.UI.Module.Illumination.Tests\DDPM.UI.Module.Illumination.Tests.csproj", "{27AD7845-763A-498C-B913-D2DA2EC9F33C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Module.EzSettings.Tests", "UnitTest\DDPM.UI.Module.EzSettings.Tests\DDPM.UI.Module.EzSettings.Tests.csproj", "{8F96C16A-FC5B-42E5-92D7-2BBA15FB728C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Module.EzSettings.Tests", "UnitTest\DDPM.UI.Module.EzSettings.Tests\DDPM.UI.Module.EzSettings.Tests.csproj", "{8F96C16A-FC5B-42E5-92D7-2BBA15FB728C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDPM.UI.Module.EzMemory.Tests", "UnitTest\DDPM.UI.Module.EzMemory.Tests\DDPM.UI.Module.EzMemory.Tests.csproj", "{79B63302-50A3-4B94-850A-79674D303C9B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Module.EzMemory.Tests", "UnitTest\DDPM.UI.Module.EzMemory.Tests\DDPM.UI.Module.EzMemory.Tests.csproj", "{79B63302-50A3-4B94-850A-79674D303C9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dell.UCA.ThickClientCore.Tests", "UnitTest\Dell.UCA.ThickClientCore.Tests\Dell.UCA.ThickClientCore.Tests.csproj", "{6AC6756F-902C-4EA0-97D5-DF462AEFD2FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dell.UCA.ThickClientCore.Tests", "UnitTest\Dell.UCA.ThickClientCore.Tests\Dell.UCA.ThickClientCore.Tests.csproj", "{6AC6756F-902C-4EA0-97D5-DF462AEFD2FE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Module.HeadsetAudioForSB725Settings", "DDPM.UI.Module.HeadsetAudioForSB725Settings\DDPM.UI.Module.HeadsetAudioForSB725Settings.csproj", "{BF650B9E-DC4D-45DD-8C2D-EA0769AE5246}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1348,6 +1350,14 @@ Global
 		{6AC6756F-902C-4EA0-97D5-DF462AEFD2FE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6AC6756F-902C-4EA0-97D5-DF462AEFD2FE}.Release|ARM64.ActiveCfg = Release|Any CPU
 		{6AC6756F-902C-4EA0-97D5-DF462AEFD2FE}.Release|ARM64.Build.0 = Release|Any CPU
+		{BF650B9E-DC4D-45DD-8C2D-EA0769AE5246}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF650B9E-DC4D-45DD-8C2D-EA0769AE5246}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF650B9E-DC4D-45DD-8C2D-EA0769AE5246}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{BF650B9E-DC4D-45DD-8C2D-EA0769AE5246}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{BF650B9E-DC4D-45DD-8C2D-EA0769AE5246}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF650B9E-DC4D-45DD-8C2D-EA0769AE5246}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF650B9E-DC4D-45DD-8C2D-EA0769AE5246}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{BF650B9E-DC4D-45DD-8C2D-EA0769AE5246}.Release|ARM64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1486,6 +1496,7 @@ Global
 		{8F96C16A-FC5B-42E5-92D7-2BBA15FB728C} = {64BC2ED5-3CDA-45F3-B222-50D92B461D20}
 		{79B63302-50A3-4B94-850A-79674D303C9B} = {64BC2ED5-3CDA-45F3-B222-50D92B461D20}
 		{6AC6756F-902C-4EA0-97D5-DF462AEFD2FE} = {64BC2ED5-3CDA-45F3-B222-50D92B461D20}
+		{BF650B9E-DC4D-45DD-8C2D-EA0769AE5246} = {297C8328-47BE-4CC7-9DA6-DF3784FB5B96}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E4D0A361-3819-4ADD-90DA-B3B50444B3DD}
