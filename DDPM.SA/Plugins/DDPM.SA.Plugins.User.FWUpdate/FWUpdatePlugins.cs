@@ -1011,15 +1011,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             string outputUrlForLog = "others";
 
-                            if (url.Contains("clientperipherals.dell.com "))
+                            if (url.Contains("clientperipherals.dell.com"))
                             {
                                 outputUrlForLog = "production_server";
                             }
-                            else if (url.Contains("clientperipherals-uat.dell.com "))
+                            else if (url.Contains("clientperipherals-uat.dell.com"))
                             {
                                 outputUrlForLog = "staging_server";
                             }
-                            else if (url.Contains("download.dell.com "))
+                            else if (url.Contains("download.dell.com"))
                             {
                                 outputUrlForLog = "dell_download";
                             }
