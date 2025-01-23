@@ -833,7 +833,7 @@ namespace ColorPreset.Plugins
                                     PopupContentPackage popupContentPackage = new PopupContentPackage()
                                     {
                                         Title = Strings.Dell_Display_and_Peripheral_Manager0,
-                                        Info = Strings.ICC_notification_SmartHDR0 + Active_monitorInfo.modelName,
+                                        Info = Strings.ICC_notification_SmartHDR0 + " " + Active_monitorInfo.modelName,
                                         IsInfo = true,
                                         IsOnlyUpdate = false,
                                         StayOpen = false,
@@ -862,7 +862,7 @@ namespace ColorPreset.Plugins
                                     PopupContentPackage popupContentPackage = new PopupContentPackage()
                                     {
                                         Title = Strings.Dell_Display_and_Peripheral_Manager0,
-                                        Info = Strings.ICC_notification_NonSmartHDR0 + Active_monitorInfo.modelName,
+                                        Info = Strings.ICC_notification_NonSmartHDR0 + " " + Active_monitorInfo.modelName,
                                         IsInfo = true,
                                         IsOnlyUpdate = false,
                                         StayOpen = false,
