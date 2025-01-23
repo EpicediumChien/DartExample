@@ -113,7 +113,9 @@ namespace CLI.Subagent
             if(!DDPMFileSecurity.SetFolderPermissions_UserReadAndExecute(LogLocation, out string info))
             {
                 _Log.Error($"[CLI][StartAsync] error: {info}");
+#if DEBUG
                 Console.WriteLine("[CLI][StartAsync] " + info);
+#endif
             }
 
             RunManagement(args, _IsAdministrator);
@@ -297,7 +299,9 @@ namespace CLI.Subagent
                     CLIEventResult result = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
                     //_exitcode = result.ExitCode;
                     returnCode.Add(result.ExitCode);
-                    System.Console.WriteLine(result.serialize_Json_response);
+#if DEBUG
+                    Console.WriteLine(result.serialize_Json_response);
+#endif
                 }
                 int n = returnCode.FindIndex(x => (x != (int)CLI_ExitCode.success));
                 if (n >= 0)

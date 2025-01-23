@@ -63,8 +63,8 @@ namespace DDPM.SA.Common.Security
                 {
                     string fileSHA256 = DDPMFileSecurity.GetFileSHA_256(CertificateFilePath, out Info);
                     ret = fileSHA256.ToLower().Equals(Stande_SHA256.ToLower());
-                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] Stande_SHA256 : " + Stande_SHA256.ToLower());
-                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] fileSHA256 : " + fileSHA256.ToLower());
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] Stande_SHA256 : ***" + Stande_SHA256.ToLower().Substring(Stande_SHA256.Length/2));
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] fileSHA256 : ***" + fileSHA256.ToLower().Substring(fileSHA256.Length / 2));
                     if (Info.Equals("Complete"))
                     {
                         Info = ret ? "Check ok" : "Check fail";
@@ -96,7 +96,7 @@ namespace DDPM.SA.Common.Security
                     //X509Certificate2 certificate = DDPMFileSecurity.LoadFileCertificate(CertificateFilePath);//new X509Certificate2(CertificateFilePath);
                     //ret = certificate.Thumbprint.ToLower().Equals(Stande_Thumbprint.ToLower());
                     ret = DDPMFileSecurity.VerifyFileCertWithThumbprint(CertificateFilePath, Stande_Thumbprint, out Info);
-                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] Stande_Thumbprint : " + Stande_Thumbprint.ToLower());
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] Stande_Thumbprint : ***" + Stande_Thumbprint.ToLower().Substring(Stande_Thumbprint.Length/2));
                     _logs?.DebugMsg_1($"[CheckFile_Thumbprint] Using WinTrustVerify result is [{ret}]" + (ret ? "." : $" Fail with {Info}"));
                     if (!ret)
                         Info = "Load file cert to check thumbprint and the result is not matched";
