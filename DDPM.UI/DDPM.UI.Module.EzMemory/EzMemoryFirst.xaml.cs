@@ -53,6 +53,9 @@ namespace DDPM.UI.Module.EzMemory
         //Robert_Lin 2025-1-11 added. The ProfileName when entering this page
         //If the name (InputText) is the same as this (no changed), then we can skip check if duplicate
         private readonly string _orgProfileName = string.Empty;
+        private double titleText_DefaultFontSize = 20;
+        private double mainText_DefaultFontSize = 60;
+        private double subText_DefaultFontSize = 15;
         #endregion Private Members
 
         public EzMemoryFirst(DisplayViewModel vmDisplay, EzArrangeViewModel vm, HomeDevice _homeDeviceSelect)
@@ -153,7 +156,16 @@ namespace DDPM.UI.Module.EzMemory
             ////Always Visible Recent split List View
             //splitListView_Recent_Grid.Visibility = Visibility.Collapsed;
             //splitListView_Recent.Visibility = Visibility.Collapsed;
+            titleText_DefaultFontSize = TitleText.FontSize;
+            mainText_DefaultFontSize = MainText.FontSize;
+            subText_DefaultFontSize = SubText.FontSize;
+            LeftGrid.SizeChanged -= AdjustFontSizeForWWO;
+            LeftGrid.SizeChanged += AdjustFontSizeForWWO;
+        }
 
+        ~EzMemoryFirst()
+        {
+            LeftGrid.SizeChanged -= AdjustFontSizeForWWO;
         }
 
         /// <summary>
@@ -1093,6 +1105,97 @@ namespace DDPM.UI.Module.EzMemory
                 }
             }   
             return string.Empty;
+        }
+        #endregion
+
+        #region Adjust Text for RWD
+        private void AdjustFontSizeForWWO(object sender, RoutedEventArgs e)
+        {
+            if (TitleText != null && MainText != null && SubText != null)
+            {
+                // Smaller
+                Typeface typeface = new Typeface(new FontFamily("Arial"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+                double txtRowMinWidth = GetLongestWordPixelLength(TitleText.Text, typeface, TitleText.FontSize);
+                if (txtRowMinWidth > LeftGrid.ActualWidth)
+                {
+                    TitleText.FontSize -= 2;
+                    txtRowMinWidth = GetLongestWordPixelLength(TitleText.Text, typeface, TitleText.FontSize);
+                }
+                else if (TitleText.FontSize < titleText_DefaultFontSize)
+                {
+                    // Bigger
+                    txtRowMinWidth = GetLongestWordPixelLength(TitleText.Text, typeface, TitleText.FontSize + 2);
+                    if (txtRowMinWidth <= LeftGrid.ActualWidth)
+                    {
+                        TitleText.FontSize += 2;
+                    }
+                }
+
+                txtRowMinWidth = GetLongestWordPixelLength(MainText.Text, typeface, MainText.FontSize);
+                if (txtRowMinWidth > LeftGrid.ActualWidth)
+                {
+                    MainText.FontSize -= 2;
+                    txtRowMinWidth = GetLongestWordPixelLength(MainText.Text, typeface, MainText.FontSize);
+                }
+                else if (MainText.FontSize < mainText_DefaultFontSize)
+                {
+                    // Bigger
+                    txtRowMinWidth = GetLongestWordPixelLength(MainText.Text, typeface, MainText.FontSize + 2);
+                    if (txtRowMinWidth <= LeftGrid.ActualWidth)
+                    {
+                        MainText.FontSize += 2;
+                    }
+                }
+
+                txtRowMinWidth = GetLongestWordPixelLength(SubText.Text, typeface, SubText.FontSize);
+                if (txtRowMinWidth > LeftGrid.ActualWidth)
+                {
+                    SubText.FontSize -= 2;
+                    txtRowMinWidth = GetLongestWordPixelLength(SubText.Text, typeface, SubText.FontSize);
+                }
+                else if (SubText.FontSize < subText_DefaultFontSize)
+                {
+                    // Bigger
+                    txtRowMinWidth = GetLongestWordPixelLength(SubText.Text, typeface, SubText.FontSize + 2);
+                    if (txtRowMinWidth <= LeftGrid.ActualWidth)
+                    {
+                        SubText.FontSize += 2;
+                    }
+                }
+            }
+        }
+
+        private double GetLongestWordPixelLength(string text, Typeface typeface, double fontSize)
+        {
+            if (string.IsNullOrEmpty(text))
+                return 0;
+
+            // Split the text into words
+            string[] words = text.Split(new[] { ' ', '\t', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            double maxPixelWidth = 0;
+
+            foreach (string word in words)
+            {
+                double wordWidth = 0;
+
+                if (typeface.TryGetGlyphTypeface(out GlyphTypeface glyphTypeface))
+                {
+                    foreach (char c in word)
+                    {
+                        if (glyphTypeface.CharacterToGlyphMap.TryGetValue(c, out ushort glyphIndex))
+                        {
+                            // Calculate width based on advance widths
+                            double advanceWidth = glyphTypeface.AdvanceWidths[glyphIndex];
+                            wordWidth += advanceWidth * fontSize;
+                        }
+                    }
+                }
+
+                maxPixelWidth = Math.Max(maxPixelWidth, wordWidth);
+            }
+
+            return maxPixelWidth;
         }
         #endregion
     }
