@@ -934,7 +934,7 @@
     <value>НАСТРОЙКА USB-KVM</value>
   </data>
   <data name="Kvm.3" xml:space="preserve">
-    <value>Подключите мышь\n и клавиатуру</value>
+    <value>Подключите мышь и клавиатуру</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
     <value>Подключите мышь и клавиатуру к разъему на задней панели монитора (USB-A).\n Примечание. Можно подключить и другие периферийные USB-устройства, такие как\n веб-камера.</value>
@@ -955,7 +955,7 @@
     <value>USB</value>
   </data>
   <data name="Kvm.6" xml:space="preserve">
-    <value>Подключение к\n устройствам</value>
+    <value>Подключение к устройствам</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
     <value>Подключите видеокабель и USB-кабель между каждым ПК к\n монитору. Можно подключить до 4 ПК (компьютеры, игровые\n консоли и т.п.). \r\n\r\nВыберите тип кабеля и назначьте имя каждому источнику.</value>
@@ -991,7 +991,7 @@
     <value>НАСТРОЙКА PIP/PBP</value>
   </data>
   <data name="Kvm.17" xml:space="preserve">
-    <value>Настройка PIP/PBP\nдля монитора</value>
+    <value>Настройка PIP/PBP для монитора</value>
   </data>
   <data name="Kvm.18" xml:space="preserve">
     <value>Монитор может отображать один компьютер или источник одновременно (в полноэкранном режиме),\nили быть разделенным между источниками (картинка в картинке (PIP) / картинка рядом (PBP)).</value>

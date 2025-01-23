@@ -386,24 +386,20 @@
                                             <EventTrigger RoutedEvent="Image.MouseEnter">
                                                 <BeginStoryboard>
                                                     <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform"
-                                                            Storyboard.TargetProperty="ScaleX"
-                                                            To="1.1" Duration="0:0:0.5" />
-                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform"
-                                                            Storyboard.TargetProperty="ScaleY"
-                                                            To="1.1" Duration="0:0:0.5" />
+                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform" Storyboard.TargetProperty="ScaleX"
+                                                                         To="1.1" Duration="0:0:0.5" />
+                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform" Storyboard.TargetProperty="ScaleY"
+                                                                         To="1.1" Duration="0:0:0.5" />
                                                     </Storyboard>
                                                 </BeginStoryboard>
                                             </EventTrigger>
                                             <EventTrigger RoutedEvent="Image.MouseLeave">
                                                 <BeginStoryboard>
                                                     <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform"
-                                            Storyboard.TargetProperty="ScaleX"
-                                            To="1" Duration="0:0:0.5" />
-                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform"
-                                            Storyboard.TargetProperty="ScaleY"
-                                            To="1" Duration="0:0:0.5" />
+                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform" Storyboard.TargetProperty="ScaleX"
+                                                                         To="1" Duration="0:0:0.5" />
+                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform" Storyboard.TargetProperty="ScaleY"
+                                                                         To="1" Duration="0:0:0.5" />
                                                     </Storyboard>
                                                 </BeginStoryboard>
                                             </EventTrigger>
@@ -522,10 +518,9 @@
                                 
                                 <Grid Name="Indicators" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,40">
                                 -->
+                                <!-- 
                                 <Grid Name="Indicators" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,0" Visibility="Collapsed">
-                                     <!--Use StackPanel, so (by default) ConnectionHoverView is collapsed. The Indicators Grid will show
-                                    the BatteryIndicator only.--> 
-                                    <StackPanel>
+                                   <StackPanel>
 
                                          
                                         <local:ConnectionHoverView DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListViewItem}}" />
@@ -542,6 +537,7 @@
                                                                            MouseLeave="batteryIndicator_MouseLeave" />
                                     </StackPanel>
                                 </Grid>
+                                -->
                                 
                                 
                                 <!-- Robert_Lin, 2024-6-7 BatteryIndicator position improvement
@@ -565,12 +561,12 @@
                             ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" Text1="{Binding Text1}"
                             NoBattery="{Binding NoBattery}" /> -->
 
-                            <Grid Name="Indicators2" VerticalAlignment="Bottom"  HorizontalAlignment="Center" Margin="0,0,0,0" Grid.Row="1">
+                            <Grid Name="Indicators" VerticalAlignment="Bottom"  HorizontalAlignment="Center" Margin="0,0,0,0" Grid.Row="1">
                                 <StackPanel>
 
                                     <local:ConnectionHoverView DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListViewItem}}" />
 
-                                     <DDPMUserControls:BatteryIndicator Name="batteryIndicator2"
+                                     <DDPMUserControls:BatteryIndicator Name="batteryIndicator"
                                                                            Margin="0,8,0,4" HorizontalAlignment="Center"
                                                                            BatteryLevel="{Binding BatteryLevel}"
                                                                            BatteryStatus="{Binding BatteryStatus}"

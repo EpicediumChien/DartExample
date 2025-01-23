@@ -75,7 +75,7 @@
                 <Grid VerticalAlignment="top" Grid.Row="2">
                   <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,7,0,0">
                     <UXControls:UXTextBlock Text="{Binding [Slow], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="#A4B8CD" Margin="0,0,10,0" />
-                    <UXControls:UXSlider TickFrequency="1" TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TouchScrollSensitivityLevel}" Minimum="0" Maximum="2" Width="360"
+                    <UXControls:UXSlider TickFrequency="1" TickPlacement="Both" IsSnapToTickEnabled="True" Value="{Binding TouchScrollSensitivityLevel}" Minimum="1" Maximum="3" Width="360"
                                                              Thumb.DragStarted="TouchScrollSlider_DragStarted" Thumb.DragCompleted="TouchScrollSlider_DragCompleted" IsMoveToPointEnabled="True" />
                     <UXControls:UXTextBlock Text="{Binding [High], Source={x:Static lang:LangHelper.Instance}}" FontSize="14" Foreground="#A4B8CD" Margin="10,0,0,0" />
                   </StackPanel>

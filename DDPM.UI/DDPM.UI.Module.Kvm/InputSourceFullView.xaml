@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
-             d:DesignHeight="671" d:DesignWidth="1278">
+             d:DesignHeight="671" d:DesignWidth="1278" Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <ResourceDictionary>
             <Storyboard x:Key="StoryGotoTwoView">
@@ -109,8 +109,9 @@
                                                  ContentStringFormat="{}{0}"
                                                  Click="OpenMKFullView" Visibility="{Binding SetInput}">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Path x:Name="LeftArrow" Visibility="Visible" Data="M2.6204 8.3256L2.3415 8.0002L2.6204 7.67481L8.6204 0.674805L9.3796 1.3256L4.0871 7.5002H20V8.5002H4.0871L9.3796 14.6748L8.6204 15.3256L2.6204 8.3256Z" Fill="white"/>
                                     <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White" FontSize="14"/>
-                                    <Path Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white"/>
+                                    <Path x:Name="RightArrow" Visibility="Visible" Data="M17.3796 8.3256L17.6585 8.0002L17.3796 7.67481L11.3796 0.674805L10.6204 1.3256L15.9129 7.5002H0V8.5002H15.9129L10.6204 14.6748L11.3796 15.3256L17.3796 8.3256Z" Fill="white"/>
                                 </StackPanel>
                             </UXControls:UXButton>
                             <UXControls:UXButton IconPosition="IconRight" HorizontalContentAlignment="Center"
