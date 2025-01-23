@@ -596,7 +596,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     this.Resources["PrtScHeight"] = 32.5;
                     this.Resources["PrtScMargin"] = new Thickness(5.8, 0, 0, 0);
                     this.Resources["SectionBMargin"] = new Thickness(-3, 0, 0, 0);
-                    this.Resources["CalculatorWidth"] = 43.0;
+                    this.Resources["CalculatorWidth"] = 40.0;
                     this.Resources["CalculatorHeight"] = 32.5;
                     this.Resources["CalculatorMargin"] = new Thickness(7, 0, 0, 0);
                     break;

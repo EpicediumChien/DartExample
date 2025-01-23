@@ -726,6 +726,21 @@ namespace DDPM.SA.Plugins.CMAManager
                 Console.WriteLine("[CMA] runCommandTask args.notification = " + cliResult?.command_guid_string + "\n args.notification = " + args.notification);
                 //Console.WriteLine("[CMA] );
 
+                // add @ 20250121 stephen : for fw update response format
+                WriteLog("[CMA] runCommandTask args.notification = " + args.notification);
+
+                if (taskInfo.eventtype == Params.EventType.FW)
+                {
+                    CmdResponse response = new CmdResponse(args.notification);
+                    args.notification = response.genResponseFw();
+
+                    WriteLog("[CMA] runCommandTask response.genResponseFw() = " + args.notification);
+
+
+                    response.writeToFile(gid, args.notification);
+                }
+                // add end @ 20250121
+
                 OnEventNotify(args);
 
                 return args;
@@ -879,7 +894,7 @@ namespace DDPM.SA.Plugins.CMAManager
             Guid uniqueAgentGuid = Guid.NewGuid();
 
 
-            // add @ 20241210 stephen: check is defer
+/*            // add @ 20241210 stephen: check is defer
             //_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request);
             if (request.remote_request.ToLower().Contains("defer") && 
                 _CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request).Result)
@@ -888,10 +903,13 @@ namespace DDPM.SA.Plugins.CMAManager
                 RemoteManagementResult resultDefer = new RemoteManagementResult();
                 resultDefer.cma_request_id = uniqueAgentGuid;
 
-                sendDeferNotify(uniqueAgentGuid.ToString(), request.remote_request);
+                taskInfoQueue.Dequeue();
+
+                sendFwJobNotify(uniqueAgentGuid.ToString(), request.remote_request);
+
 
                 return Task.FromResult(resultDefer);
-            }
+            }*/
 
             //Assign request ID per call
             RemoteManagementResult result = new RemoteManagementResult();
@@ -914,6 +932,50 @@ namespace DDPM.SA.Plugins.CMAManager
 
                 TaskInfo taskInfo = taskInfoQueue.Peek();
                 WriteLog($"[CMA] before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
+
+                /*if (taskInfo.command.ToLower().Contains("firmwareupdate"))
+                {
+                    // !check firmware device is exist
+                    if (!_CliManagerPlugin.checkDeviceConn(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request, taskInfo.command).Result)
+                    {
+
+                        WriteLog($"[CMA] _CliManagerPlugin.checkDeviceConn = false, do not run command");
+
+                        taskInfoQueue.Dequeue();
+
+                        sendFwJobNotify(uniqueAgentGuid.ToString(), request.remote_request);
+
+                        result.message = "Device not found";
+                        result.output_result = "FAIL";
+                        return Task.FromResult(result);
+
+                    }
+                }*/
+
+                // moved and modify @ 20250114 stephen
+                // add @ 20241210 stephen: check is defer
+                //_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request);
+                if (request.remote_request.ToLower().Contains("defer"))
+                {
+
+
+                    if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request).Result)
+                    {
+                        WriteLog($"[CMA] _CliManagerPlugin.checkDefer = true, do not run command");
+
+                        taskInfoQueue.Dequeue();
+
+                        // feedback event to show in defer status
+                        sendDeferNotify(uniqueAgentGuid.ToString(), request.remote_request);
+
+                        result.message = "tasks defer";
+                        result.output_result = "DeferSchedule";
+
+                        return Task.FromResult(result);
+                    }
+                }
+
+
                 _ = Task.Run(async () => await runCommandTaskAsync(taskInfo.sid, taskInfo.gid));
             }
             catch (Exception e)
@@ -1039,6 +1101,14 @@ namespace DDPM.SA.Plugins.CMAManager
                 NotifyArgs args = new NotifyArgs();
                 args.eventType = Params.EventType.FW.ToString();
                 args.notification = "{\"sid\": \"" + "sid" + "\",\"gid\": \"" + data.Guid + "\",\"response\": [" + data.FWUErrorCode + "<" + (int)data.FWUErrorCode + ">" + "(" + data.DeviceName + ", " + data.Model + ")" + "]}";
+
+                // add @ 20250121 stephen
+                CmdResponse cmdResponse = new CmdResponse(data.Guid, true, data);
+                args.notification = cmdResponse.genResponseFwUpdate();
+
+                cmdResponse.writeToFile(data.Guid, args.notification);
+
+
                 OnEventNotify(args);
 
             }
@@ -1146,7 +1216,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
         // test
         private const long DAY_IN_SECONDS = 24 * 60 * 60;    // 24 hours
-        private const int INTERVAL_CHECK_SECONDS = 10 * 60; // 10 mins
+        private const int INTERVAL_CHECK_SECONDS = 10 * 60 * 1000; // 10 mins
         private System.Timers.Timer timerDefer;
 
         private void initDeferControlPanel()
@@ -1169,6 +1239,17 @@ namespace DDPM.SA.Plugins.CMAManager
             timerDefer.Elapsed += Timer_Elapsed;
 
             timerDefer.Start();
+        }
+
+        // add @ 20250122 stephen
+        private void sendFwJobNotify(string guid, string command)
+        {
+            CmaCommand cmd = new CmaCommand(guid, command);
+
+            NotifyArgs args = new NotifyArgs();
+            args.eventType = Params.EventType.FW_JOB.ToString();
+            args.notification = "{\"sid\": \"" + cmd.sid + "\",\"gid\": \"" + guid + "\",\"response\": [" + command + "]}";
+            OnEventNotify(args);
         }
 
         private void sendDeferNotify(string guid, string command)

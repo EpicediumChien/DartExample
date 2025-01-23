@@ -1038,15 +1038,18 @@ namespace DDPM.SA.Plugin.CLIManager
         {
 
             DeferItem item = new DeferItem(from, guid, commanddata);
+
             string did = item.deferid;
-
-            onCLIToastEventNotify(new CLIEventToastArgs()
+            if (!string.IsNullOrEmpty(did))
             {
-                defer_id = did,
-                toast_message = commanddata,
-                is_defer = true
-            });
-
+                onCLIToastEventNotify(new CLIEventToastArgs()
+                {
+                    defer_id = did,
+                    toast_message = commanddata,
+                    is_defer = true
+                });
+            }
+            
             bool result = checkToastResult(did, item);
 
             return Task.FromResult(result);
@@ -1056,12 +1059,15 @@ namespace DDPM.SA.Plugin.CLIManager
         {
             string did = item.deferid;
 
-            onCLIToastEventNotify(new CLIEventToastArgs()
+            if (!string.IsNullOrEmpty(did))
             {
-                defer_id = did,
-                toast_message = item.commanddata,
-                is_defer = true
-            });
+                onCLIToastEventNotify(new CLIEventToastArgs()
+                {
+                    defer_id = did,
+                    toast_message = item.ToString(),
+                    is_defer = true
+                });
+            }
 
             bool result = checkToastResult(did, item);
 
@@ -1113,12 +1119,15 @@ namespace DDPM.SA.Plugin.CLIManager
         {
             string did = item.deferid == string.Empty ? "NULL" : item.deferid;
 
-            onCLIToastEventNotify(new CLIEventToastArgs()
+            if (!string.IsNullOrEmpty(did))
             {
-                defer_id = did,
-                toast_message = item.commanddata,
-                is_defer = false
-            });
+                onCLIToastEventNotify(new CLIEventToastArgs()
+                {
+                    defer_id = did,
+                    toast_message = item.ToString(),
+                    is_defer = false
+                });
+            }
 
             Max_Count = 0;
             for (Max_Count = 0; Max_Count <= MAX_DEFER_WAIT_TIME_SEC; Max_Count++)

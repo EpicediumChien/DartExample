@@ -111,16 +111,13 @@ namespace DDPM.SA.Common.Defer
             }
             catch (Exception e)
             {
-#if DEBUG
                 Console.WriteLine("CreateDirectory Exception: " + e.Message);
-#endif
             }
 
             string info = string.Empty;
             bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listDefer).ToString(), (FILE_PATH + FILE_NAME), out info);
-#if DEBUG
+
             Console.WriteLine(write);
-#endif
 
             //File.WriteAllLines(FILE_PATH + FILE_NAME, listDefer.ToArray());
         }

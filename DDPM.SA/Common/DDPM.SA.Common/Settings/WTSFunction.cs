@@ -140,7 +140,9 @@ namespace DDPM.SA.Common.Settings
         private static void WriteLog(ILog Log, string text, log_type log_type = log_type.info)
         {
             text = "[WTSFunction] " + text;
+#if DEBUG
             Console.WriteLine(text);
+#endif
             if (Log != null)
             {
                 if (log_type == log_type.info)
@@ -555,12 +557,16 @@ namespace DDPM.SA.Common.Settings
                 // Get the process by ID
                 Process process = Process.GetProcessById(processId);
                 int sessionId = process.SessionId;
+#if DEBUG
                 Console.WriteLine($"Process with ID {processId} has session ID: {sessionId}");
+#endif
                 return sessionId;
             }
             catch (Exception ex)
             {
+#if DEBUG
                 Console.WriteLine($"Error: {ex.Message}. Process ID {processId} might not exist.");
+#endif
                 return -1;
             }
         }
@@ -576,7 +582,9 @@ namespace DDPM.SA.Common.Settings
             Process[] processes = Process.GetProcessesByName(processName);
             foreach (Process process in processes)
             {
+#if DEBUG
                 Console.WriteLine($"Process {process.ProcessName} with ID {process.Id} has session ID: {process.SessionId}");
+#endif
                 result.Add(process.SessionId);
             }
             return result;
