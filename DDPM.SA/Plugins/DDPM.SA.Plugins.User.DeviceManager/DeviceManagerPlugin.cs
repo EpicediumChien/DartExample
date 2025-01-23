@@ -10133,6 +10133,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", true).Result;
                         }
                     }
+                    else
+                    {
+                        writelog($"[DeviceMangerPlugin] FirstGetDPeMSettings, isDisplayConsentPage == {settings.UserSettings.isDisplayConsentPage}");
+                    }
                 }
             }
             catch (Exception ex)
@@ -10148,14 +10152,41 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<bool> CheckInstallFirstOpen()
         {
             writelog($"[DeviceMangerPlugin] CheckInstallFirstOpen");
+            bool getRegValue = false;
             var ReadReg = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen").Result;
             if (ReadReg == null)
             {
-                return false;
+                getRegValue = true;
             }
-            writelog($"[DeviceMangerPlugin] ReadReg Status {ReadReg} And {ReadReg.GetType()}");
-            Boolean.TryParse(ReadReg.ToString(), out var getRegValue);
-            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady().Result && CheckHasInstallDPeM().Result)
+            else
+            {
+                writelog($"[DeviceMangerPlugin] ReadReg InstallFirstOpen Status {ReadReg} And type is {ReadReg.GetType()}");
+
+                try
+                {
+                    if (bool.TryParse(ReadReg.ToString(), out getRegValue))
+                    {
+                        writelog($"[DeviceMangerPlugin] ReadReg Status {getRegValue} TryParse Pass");
+                    }
+                    else
+                    {
+                        writelog($"[DeviceMangerPlugin] ReadReg Status {getRegValue} TryParse Fail");
+                        getRegValue = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[DeviceMangerPlugin] Exception occurred while parsing ReadReg: {ex.Message}");
+                    getRegValue = true;
+                }
+            }
+
+            bool blDTPProxyPluginReady = _DTPProxyPlugin.GetDTPProxyPluginReady().Result;
+            bool blCheckHassInstallDPeM = CheckHasInstallDPeM().Result;
+
+            writelog($"[DeviceMangerPlugin] Check Status, getRegValue:{getRegValue}, DTPProxyPluginReady:{blDTPProxyPluginReady}, CheckHasInstallDPeM:{blCheckHassInstallDPeM}");
+
+            if (getRegValue && blDTPProxyPluginReady && blCheckHassInstallDPeM)
             {
                 count++;
                 writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Count:{count}...");
@@ -10164,6 +10195,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 obj = new Object();
                 return true;
             }
+            else
+            {
+                writelog($"[DeviceMangerPlugin] No GlobalSetting migratoin...");
+            }
+
             return false;
         }
 
@@ -12482,6 +12518,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void DTPProxyPlugin_DTPProxyPluginSDKeventHandler(object sender, UpdateDTPProxyNotify e)
         {
+            if (e != null)
+            {
+                writelog($"[DeviceMangerPlugin] DTPProxyPlugin_DTPProxyPluginSDKeventHandler: {e.State}");
+            }
+
             if (e.State == "IsDTPReady OK")
             {
                 FirstGetDPeMSettings();
