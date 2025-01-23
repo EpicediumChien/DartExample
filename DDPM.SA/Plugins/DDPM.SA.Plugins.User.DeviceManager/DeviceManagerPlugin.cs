@@ -14077,7 +14077,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 //Derek PIMS-329759 Problem 1
                 //Derek 20250118 workable only zoom meeting is active //_IsZoomMeetingActive &&
                 if (1 == devCnt && _GlobalSettingParam != null && 
-                    _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _IsZoomMeetingActive && 
+                    _GlobalSettingParam.GlobalSetting_WidgetSettings != null && !_IsZoomMeetingActive && 
                     _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
                 {
                     CallQAM_UI(this);

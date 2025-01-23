@@ -301,11 +301,20 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                                         //Derek 1211 to sync data with QAM
                                         if (90 == _t)
+                                        {
                                             _viewModel!.SetFOV_Selected(2);
+                                            _viewModel.SelectedFovIndex = 2;
+                                        }
                                         else if (78 == _t)
+                                        {
                                             _viewModel!.SetFOV_Selected(1);
+                                            _viewModel.SelectedFovIndex = 1;
+                                        }
                                         else if (65 == _t)
+                                        {
                                             _viewModel!.SetFOV_Selected(0);
+                                            _viewModel.SelectedFovIndex = 0;
+                                        }
                                     }
                                     else
                                     {

@@ -1518,6 +1518,9 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 try
                 {
+                    OnPropertyChanged(nameof(hdr_enable));
+                    OnPropertyChanged(nameof(IsHDROnText));
+
                     if (value == CurrentProfile.IsHDROn)
                         return;
 
