@@ -25,5 +25,7 @@ namespace DDPM.SA.Common
         Task<bool> SetUSBUpstream(MonitorInfo monitorInfo, string inputsource, string upstream);
 
         Task<bool> USBSwitch(MonitorInfo monitorInfo, string inputsource1, string upstream1, string inputsource2, string upstream2);
+
+        Task<string> GetCurrentInput(MonitorInfo monitorInfo);
     }
 }
