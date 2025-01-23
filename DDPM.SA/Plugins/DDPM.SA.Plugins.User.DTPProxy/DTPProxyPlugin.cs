@@ -80,6 +80,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private Type _headsetInterfaceType;
         private Type _webcamInterfaceType;
         private Type _dongleInterfaceType;
+        private Type _airaudioInterfaceType;
 
         private MethodInfo _globalperipheralMethodInfo;
         private MethodInfo _mouseMethodInfo;
@@ -90,6 +91,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private MethodInfo _headsetMethodInfo;
         private MethodInfo _webcamMethodInfo;
         private MethodInfo _dongleMethodInfo;
+        private MethodInfo _airaudioMethodInfo;
 
         private ItemId _itemID = null;
         private ICommodity _comdity;
@@ -100,6 +102,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
         private const string KeyboardItemID0 = "DellPeripheral.Keyboard.0";
         private const string WebcamItemID = "DellPeripheral.Webcam";
         private const string HeadsetItemID = "DellPeripheral.Headset";
+        private const string AirAudioItemID = "DellPeripheral.AirAudio";
         private bool IsDTPReady = false;
 
         public const string PluginLogId = "DTPProxy";
@@ -127,6 +130,17 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             public string ModelNumber { get; set; } = string.Empty;
         };
 
+
+        private ICommodity _comdityAirAudio = null;
+        private List<AirAudioEventHandleObject> airaudioList = new List<AirAudioEventHandleObject>();
+        internal class AirAudioEventHandleObject
+        {
+            public ICommodity airaudioCommodity = null;
+            public string airaudioIndex = string.Empty;
+            public string DeviceName { get; set; } = string.Empty;
+            public string DeviceId { get; set; } = string.Empty;
+            public string ModelNumber { get; set; } = string.Empty;
+        };
         /// <summary>
         /// Webcam change event
         /// </summary>
@@ -2878,7 +2892,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                
+
                 return false;
             }
 
@@ -2920,7 +2934,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!await GetItemIDAsync("Webcam", Guid))
             {
                 writelog($"GetItemIDAsync fail for webcam:{Guid}");
-                
+
                 return false;
             }
 
@@ -3716,6 +3730,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 "Speaker" => _speakerMethodInfo,
                 "Dongle" => _dongleMethodInfo,
                 "Dock" => _dockMethodInfo,
+                "AirAudio"=> _airaudioMethodInfo,
                 _ => null
             };
             Type interfaceType = type switch
@@ -3729,6 +3744,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 "Speaker" => _speakerInterfaceType,
                 "Dongle" => _dongleInterfaceType,
                 "Dock" => _dockInterfaceType,
+                "AirAudio" => _airaudioInterfaceType,
                 _ => null
             };
 
@@ -4437,8 +4453,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
-                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                Debug.WriteLine($"[StartKeyCapturePen]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[StartKeyCapturePen]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 return false;
             }
 
@@ -4475,8 +4491,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
-                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                Debug.WriteLine($"[FinishKeyCapturePen]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[FinishKeyCapturePen]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 return false;
             }
 
@@ -4519,8 +4535,52 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             }
             else
             {
-                Debug.WriteLine($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
-                writelog($"[GetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                Debug.WriteLine($"[KeyCaptureData]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[KeyCaptureData]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                return string.Empty;
+            }
+
+        }
+        public async Task<string> GetIsdDriverVersion()
+        {
+            _itemID = new ItemId(PenItemID);
+
+            if (_penMethodInfo != null)
+            {
+                if (await GetCommodityInterfaceInstanceAsync(_penMethodInfo) is ICommodity commodity)
+                {
+                    var value = GetPropertyValue(_penInterfaceType, commodity, "IsdDriverVersion");
+
+                    if (value == null)
+                    {
+                        Debug.WriteLine("IsdDriverVersion is null.");
+                        writelog("IsdDriverVersion is null.");
+                        return "";
+                    }
+                    else if (value is string stringValue)
+                    {
+                        Debug.WriteLine($"IsdDriverVersion: {stringValue}");
+                        writelog($"IsdDriverVersion: {stringValue}");
+                        return stringValue;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("IsdDriverVersion is not a string.");
+                        writelog("IsdDriverVersion is not a string.");
+                        return "";
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    return string.Empty;
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"[GetIsdDriverVersion]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
+                writelog($"[GetIsdDriverVersion]Could not retrieve the Commodity Interface for the {_itemID} item. _penMethodInfo is null");
                 return string.Empty;
             }
 
@@ -4538,14 +4598,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetEraserDoublePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetEraserDoublePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetEraserDoublePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetEraserDoublePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4561,14 +4621,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetEraserLongPressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetEraserLongPressSettingCould not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetEraserLongPressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetEraserLongPressSettingCould not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4584,14 +4644,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetEraserSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetEraserSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetEraserSinglePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetEraserSinglePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4607,14 +4667,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetIsSideBottomButtonHoverClick]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetIsSideBottomButtonHoverClick]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetIsSideBottomButtonHoverClick]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4630,14 +4690,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetIsSideTopButtonHoverClick]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetIsSideTopButtonHoverClick]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetIsSideTopButtonHoverClick]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetIsSideTopButtonHoverClick]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4653,14 +4713,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetMenuSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetMenuSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetMenuSinglePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetMenuSinglePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4676,14 +4736,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetMenuCenterRightClickSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetMenuCenterRightClickSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetMenuCenterRightClickSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetMenuCenterRightClickSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4699,14 +4759,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetSideBottomSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetSideBottomSwitchSinglePressSetting]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetSideBottomSwitchSinglePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetSideBottomSwitchSinglePressSetting]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4722,8 +4782,8 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
@@ -4745,14 +4805,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetTiltSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetTiltSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetTiltSensitivity]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetTiltSensitivity]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
 
@@ -4768,14 +4828,14 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
                 else
                 {
-                    Debug.WriteLine($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
-                    writelog($"Could not retrieve the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    Debug.WriteLine($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
+                    writelog($"Could not set the Commodity Interface {_penInterfaceType} for the {_itemID} item.");
                 }
             }
             else
             {
-                Debug.WriteLine($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
-                writelog($"[SetTipSensitivity]Could not retrieve the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                Debug.WriteLine($"[SetTipSensitivity]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
+                writelog($"[SetTipSensitivity]Could not set the Commodity Interface for the  {_itemID}  item. _penMethodInfo is null");
             }
         }
         public async Task<bool> RestoreToDefaultPen()
@@ -5472,6 +5532,37 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_SetFactoryResetAsyncValueForHeadset",
                         Guid, $"Headset_SetFactoryResetAsyncValueForHeadset:{newValue.ToString()}"));
                     writelog("[DTPProxyPlugin] [Headset] SetFactoryResetAsyncValueForHeadset Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [Headset] Could not retrieve the Commodity Interface {_headsetInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Headset] SetFactoryResetAsyncValueForHeadset failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetFactoryResetAsyncValueForHeadsetForCLI(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("Headset", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_headsetMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_headsetInterfaceType, commodity, "FactoryReset", newValue);
+                    SendHeadsetEventToUI(CreateHeadsetEventMsg("Headset", "Headset_SetFactoryResetAsyncValueForHeadsetForCLI",
+                        Guid, $"Headset_SetFactoryResetAsyncValueForHeadsetForCLI:{newValue.ToString()}"));
+                    writelog("[DTPProxyPlugin] [Headset] Headset_SetFactoryResetAsyncValueForHeadsetForCLI Success !");
                     return true;
                 }
                 else
@@ -8095,7 +8186,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private async Task<bool> UnregisterEventsForHeadsetAsync(string devcieID)
         {
-            if (devcieID == null || devcieID == string.Empty || webcamList.Count == 0)
+            if (devcieID == null || devcieID == string.Empty || headsetList.Count == 0)
             {
                 writelog($"devcieID == string.Empty || devcieID == null || headsetList.Count == 0");
 
@@ -8105,7 +8196,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             try
             {
                 // find _comdity object for this device
-                writelog($"Search {devcieID} from webcamList for Unregister Events");
+                writelog($"Search {devcieID} from headsetList for Unregister Events");
 
                 bool result = false;
                 foreach (var item in headsetList)
@@ -8212,7 +8303,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             try
             {
-                if (_comdityWebcam is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
+                if (_comdityHeadset is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _Headsetcom)
                 {
                     _Headsetcom.FirmwareVersionChanged += Headset_FirmwareVersionChanged;
                     _Headsetcom.BatteryLevelChanged += Headset_BatteryLevelChanged;
@@ -10001,6 +10092,21 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                         {
                             writelog($"Find IDockCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
                         }
+
+                        writelog($"Find IAiraudioCommodity Init time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        _airaudioInterfaceType = FindCommodityInterfaceType("IAiraudioCommodity");
+                        if (_airaudioInterfaceType != null)
+                        {
+                            _airaudioMethodInfo = typeof(ICommodityClientSdk).GetMethod("GetCommodityAsync", new[] { typeof(ItemId), typeof(CancellationToken) })
+                                                                        .MakeGenericMethod(_airaudioInterfaceType);
+
+                            writelog($"Find IAiraudioCommodity found time : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+                        else
+                        {
+                            writelog($"Find IAiraudioCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+                        }
+
                         DTPProxyPluginReady = true;
                         DTPProxyPluginSDKNotify(new UpdateDTPProxyNotify() { State = "DTPProxyPluginSDK Ready OK" });
                         _ = RegisterEventAsync();
@@ -10075,9 +10181,9 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 }
             }
 
-            writelog($"Register Commodity event...");
-            _comdity = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId("DellPeripheral.Headset"), CancellationToken.None);
-            if (_comdity is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _headsetcom)
+            writelog($"Register Headset Commodity event by DellPeripheral.Headset...");
+            _comdityHeadset = await _commSdk.GetCommodityAsync<IHeadsetCommodity>(new ItemId("DellPeripheral.Headset"), CancellationToken.None);
+            if (_comdityHeadset is Dell.TechHub.Commodity.Peripheral.IHeadsetCommodity _headsetcom)
             {
                 try
                 {
@@ -10107,6 +10213,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
                 }
             }
+            await RegisterEventsForAllHeadsetAsync();
 
             writelog($"Register Commodity event...");
             _comdity = await _commSdk.GetCommodityAsync<ISpeakerCommodity>(new ItemId("DellPeripheral.Speaker"), CancellationToken.None);
@@ -10210,10 +10317,43 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             else
                 writelog($"IWebcamCommodity not find");
 
+            writelog($"Register AirAudio Commodity event by DellPeripheral.AirAudio...");
+            _comdityAirAudio = await _commSdk.GetCommodityAsync<IAirAudioCommodity>(new ItemId("DellPeripheral.AirAudio"), CancellationToken.None);
+            if (_comdityAirAudio is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _airaudiocom)
+            {
+                try
+                {
+                    _airaudiocom.Connected += AirAudio_Connected;
+                    _airaudiocom.Disconnected += AirAudio_Disconnected;
+                    writelog($"AirAudio Commodity event registered, connected _airaudiocom.DeviceItems = {_airaudiocom.DeviceItems.Length}");
+                    int i = 0;
+                    foreach (var item in _airaudiocom.DeviceItems)
+                    {
+                        writelog($"connected _airaudiocom.DeviceItems[{i}] = {item}");
+                        string jsonStr = _airaudiocom.DeviceItemsEx[i++].ToString();
+                        writelog($"connected _headsetcom.DeviceItems, jsonStr = {jsonStr}");
+
+                        if (jsonStr != null && jsonStr != string.Empty)
+                        {
+                            AirAudioEventHandleObject jsonObject = JsonSerializer.Deserialize<AirAudioEventHandleObject>(jsonStr)!;
+                            jsonObject.airaudioCommodity = null;
+                            jsonObject.airaudioIndex = item;
+                            writelog($"jsonObject values: {jsonObject.airaudioIndex}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+                            airaudioList.Add(jsonObject);
+                        }
+                    }
+                    writelog($"connected _airaudiocom.DeviceItemsEx.Count = {_airaudiocom.DeviceItemsEx.Count}");
+                }
+                catch (Exception e)
+                {
+                    writelog($"Find IHeadsetCommodity not find  time: {DateTime.Now.ToString("hh.mm.ss.ffffff") + " Message: " + e.Message}");
+                }
+            }
             await RegisterEventsForAllConnectedWebcamsAsync();
 
             await RegisterEventsForAllHeadsetAsync();
 
+            await RegisterEventsForAllAirAudioAsync();
             //for test
             //await UnsubscribeDTPGlobalEventsAsync();
         }
@@ -10964,6 +11104,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             {
                 try
                 {
+                    Debug.WriteLine($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {JsonConvert.SerializeObject(value)}");
                     writelog($"ItemID: {_itemID}; Type: {interfaceType.Name}; property: {property}; value: {JsonConvert.SerializeObject(value)}");
                 }
                 catch (Exception ex)
@@ -11359,6 +11500,3679 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
             OnUIUpdateNotify(webcamEventNotify);
         }
+
+
         #endregion
+
+        #region AirAudio Get
+        public async Task<HeadsetConnectionType> GetAirAudioConnectionTypeAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "ConnectionType");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioConnectionTypeAsync: ConnectionType is null for {guid}");
+                        return default(HeadsetConnectionType);
+                    }
+
+                    if (value is HeadsetConnectionType connectionType)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioConnectionTypeAsync succeeded for {guid}");
+                        return connectionType;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioConnectionTypeAsync: ConnectionType is not of type HeadsetConnectionType for {guid}");
+                        return default(HeadsetConnectionType);
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioConnectionTypeAsync failed: Could not retrieve commodity interface for {guid}");
+                return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioConnectionTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return HeadsetConnectionType.HeadsetConnectionTypeUnknown;
+            }
+        }
+
+        public async Task<JArray> GetAirAudioDeviceItemsAsync()
+        {
+            try
+            {
+                _itemID = new ItemId(AirAudioItemID);
+
+                if (_headsetMethodInfo != null)
+                {
+                    var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                    if (commodity is ICommodity)
+                    {
+                        var value = GetPropertyValue(_airaudioInterfaceType, commodity, "DeviceItems");
+                        writelog($"[DTPProxyPlugin] [Airaudio] GetAirAudioDeviceItemsAsync succeeded");
+                        return value == null ? new JArray() : (JArray)value;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [Airaudio] GetAirAudioDeviceItemsAsync failed: Could not retrieve commodity interface");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [Airaudio] GetAirAudioDeviceItemsAsync failed - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioSerialNumberAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "SerialNumber");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetSerialNumberAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetSerialNumberAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetSerialNumberAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioDeviceBatteryStatusAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "DeviceBatteryStatus");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceBatteryStatusAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceBatteryStatusAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceBatteryStatusAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioPairingHostName1Async(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "PairingHostName1");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairingHostName1Async succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairingHostName1Async failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairingHostName1Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioPairingHostName2Async(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "PairingHostName2");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairingHostName2Async succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairingHostName2Async failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairingHostName2Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioPairingHostName3Async(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "PairingHostName3");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairingHostName3Async succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairingHostName3Async failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairingHostName3Async failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioPairingStatusNameAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "PairingStatusName");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairingStatusNameAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairingStatusNameAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairingStatusNameAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioParentDeviceTypeAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "ParentDeviceType");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioParentDeviceTypeAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioParentDeviceTypeAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioParentDeviceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioModelNumberAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "ModelNumber");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioModelNumberAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioModelNumberAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioModelNumberAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioDeviceTypeAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "DeviceType");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceTypeAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceTypeAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioFirmwareVersionAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "FirmwareVersion");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioFirmwareVersionAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioFirmwareVersionAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioFirmwareVersionAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioPluginIdAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "PluginId");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPluginIdAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPluginIdAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPluginIdAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioDeviceIdAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "DeviceId");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceIdAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceIdAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceIdAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<string> GetAirAudioDeviceNameAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return null;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "DeviceName");
+                    writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceNameAsync succeeded for {guid}");
+                    return value == null ? "" : (string)value;
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceNameAsync failed: Could not retrieve commodity interface for {guid}");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceNameAsync failed for {guid} - Exception: {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<DeviceInterfaceType> GetAirAudioDeviceInterfaceTypeAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return default;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "DeviceInterfaceType");
+
+                    if (value is DeviceInterfaceType deviceInterfaceType)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceInterfaceTypeAsync succeeded for {guid} with value: {deviceInterfaceType}");
+                        return deviceInterfaceType;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceInterfaceTypeAsync failed for {guid}. Value is not of type DeviceInterfaceType.");
+                        return default(DeviceInterfaceType); // or handle the error as needed
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceInterfaceTypeAsync failed: Could not retrieve commodity interface for {guid}");
+                return default;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioDeviceInterfaceTypeAsync failed for {guid} - Exception: {ex.Message}");
+                return default;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BoomMic");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioMuteStatusAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "MuteStatus");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMuteStatusAsync: MuteStatus is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMuteStatusAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMuteStatusAsync: MuteStatus is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMuteStatusAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMuteStatusAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioBoomMicAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BoomMic");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync: BoomMic is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBoomMicAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsBoomMicSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsBoomMicSupported");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsBoomMicSupportedAsync: IsBoomMicSupported is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsBoomMicSupportedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsBoomMicSupportedAsync: IsBoomMicSupported is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsBoomMicSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsBoomMicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioWearDetectionAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "WearDetection");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioWearDetectionAsync: WearDetection is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioWearDetectionAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioWearDetectionAsync: WearDetection is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioWearDetectionAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioWearDetectionAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioVoiceGuidanceAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "VoiceGuidance");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioVoiceGuidanceAsync: VoiceGuidance is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioVoiceGuidanceAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioVoiceGuidanceAsync: VoiceGuidance is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioVoiceGuidanceAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioVoiceGuidanceAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioBusyLightAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BusyLight");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBusyLightAsync: BusyLight is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBusyLightAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBusyLightAsync: BusyLight is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBusyLightAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBusyLightAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioSidetoneAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "Sidetone");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSidetoneAsync: Sidetone is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSidetoneAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSidetoneAsync: Sidetone is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSidetoneAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSidetoneAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioMicNCIncomingAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "MicNCIncoming");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMicNCIncomingAsync: MicNCIncoming is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMicNCIncomingAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMicNCIncomingAsync: MicNCIncoming is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMicNCIncomingAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMicNCIncomingAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsMicNCIncomingSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsMicNCIncomingSupported");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNCIncomingSupportedAsync: IsMicNCIncomingSupported is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNCIncomingSupportedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNCIncomingSupportedAsync: IsMicNCIncomingSupported is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNCIncomingSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNCIncomingSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsMicNoiseCancellationAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsMicNoiseCancellation");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync: IsMicNoiseCancellation is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync: IsMicNoiseCancellation is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionQuickPauseSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsWearDetectionQuickPauseSupported");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync: IsWearDetectionQuickPauseSupported is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync: IsWearDetectionQuickPauseSupported is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionMuteMicSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsWearDetectionMuteMicSupported");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicSupportedAsync: IsWearDetectionMuteMicSupported is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicSupportedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicSupportedAsync: IsWearDetectionMuteMicSupported is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionPauseMusicSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsWearDetectionPauseMusicSupported");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicSupportedAsync: IsWearDetectionPauseMusicSupported is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicSupportedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicSupportedAsync: IsWearDetectionPauseMusicSupported is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionSensitivitySupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsWearDetectionSensitivitySupported");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionSensitivitySupportedAsync: IsWearDetectionSensitivitySupported is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionSensitivitySupportedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionSensitivitySupportedAsync: IsWearDetectionSensitivitySupported is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionSensitivitySupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionSensitivitySupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsWearDetectionSupported");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionSupportedAsync: IsWearDetectionSupported is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionSupportedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionSupportedAsync: IsWearDetectionSupported is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsANCSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsANCSupported");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsANCSupportedAsync: IsANCSupported is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsANCSupportedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsANCSupportedAsync: IsANCSupported is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsANCSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsANCSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsEqualizerSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsEqualizerSupported");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsEqualizerSupportedAsync: IsEqualizerSupported is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsEqualizerSupportedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsEqualizerSupportedAsync: IsEqualizerSupported is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsEqualizerSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsEqualizerSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsPresetsSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsPresetsSupported");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsPresetsSupportedAsync: IsPresetsSupported is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsPresetsSupportedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsPresetsSupportedAsync: IsPresetsSupported is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsPresetsSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsPresetsSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsVoiceGuidanceSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsVoiceGuidanceSupported");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsVoiceGuidanceSupportedAsync: IsVoiceGuidanceSupported is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsVoiceGuidanceSupportedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsVoiceGuidanceSupportedAsync: IsVoiceGuidanceSupported is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsVoiceGuidanceSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsVoiceGuidanceSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsBusyLightSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsBusyLightSupported");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsBusyLightSupportedAsync: IsBusyLightSupported is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsBusyLightSupportedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsBusyLightSupportedAsync: IsBusyLightSupported is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsBusyLightSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsBusyLightSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsSidetoneSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsSidetoneSupported");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsSidetoneSupportedAsync: IsSidetoneSupported is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsSidetoneSupportedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsSidetoneSupportedAsync: IsSidetoneSupported is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsSidetoneSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsSidetoneSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsMicNoiseCancellationSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsMicNoiseCancellationSupported");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationSupportedAsync: IsMicNoiseCancellationSupported is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationSupportedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationSupportedAsync: IsMicNoiseCancellationSupported is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsMicNoiseCancellationSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsDirtyAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsDirty");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsDirtyAsync: IsDirty is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsDirtyAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsDirtyAsync: IsDirty is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsDirtyAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsDirtyAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsReadyAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsReady");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsReadyAsync: IsReady is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsReadyAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsReadyAsync: IsReady is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsReadyAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsReadyAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionPauseMusicEnabledAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsWearDetectionPauseMusicEnabled");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicEnabledAsync: IsWearDetectionPauseMusicEnabled is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicEnabledAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicEnabledAsync: IsWearDetectionPauseMusicEnabled is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicEnabledAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionPauseMusicEnabledAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsWearDetectionMuteMicEnabledAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsWearDetectionMuteMicEnabled");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicEnabledAsync: IsWearDetectionMuteMicEnabled is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicEnabledAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicEnabledAsync: IsWearDetectionMuteMicEnabled is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicEnabledAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionMuteMicEnabledAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> GetAirAudioIsBatteryLevelSupportedAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return false;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "IsBatteryLevelSupported");
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsBatteryLevelSupportedAsync: IsBatteryLevelSupported is null for {guid}");
+                        return false;
+                    }
+
+                    if (value is bool boolValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsBatteryLevelSupportedAsync succeeded for {guid}");
+                        return boolValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsBatteryLevelSupportedAsync: IsBatteryLevelSupported is not a boolean for {guid}");
+                        return false;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsBatteryLevelSupportedAsync failed: Could not retrieve commodity interface for {guid}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsBatteryLevelSupportedAsync failed for {guid} - Exception: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<int> GetAirAudioWearDetectionSensitivityAsync(string Guid)
+        {
+            string guid = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "WearDetectionSensitivity");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioWearDetectionSensitivityAsync failed for {guid}. WearDetectionSensitivity is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioWearDetectionSensitivityAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioWearDetectionSensitivityAsync failed for {guid}. WearDetectionSensitivity is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioWearDetectionSensitivityAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioWearDetectionSensitivityAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioIsWearDetectionQuickPauseAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "WearDetectionQuickPause");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseAsync failed for {guid}. WearDetectionQuickPause is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseAsync failed for {guid}. WearDetectionQuickPause is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioIsWearDetectionQuickPauseAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioAncGainAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "AncGain");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioAncGainAsync failed for {guid}. AncGain is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioAncGainAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioAncGainAsync failed for {guid}. AncGain is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioAncGainAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioAncGainAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioAncModeAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "AncMode");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioAncModeAsync failed for {guid}. AncMode is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioAncModeAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioAncModeAsync failed for {guid}. AncMode is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioAncModeAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioAncModeAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioBand1GainAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "Band1Gain");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand1GainAsync failed for {guid}. Band1Gain is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand1GainAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand1GainAsync failed for {guid}. Band1Gain is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand1GainAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand1GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioBand2GainAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "Band2Gain");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand2GainAsync failed for {guid}. Band2Gain is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand2GainAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand2GainAsync failed for {guid}. Band2Gain is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand2GainAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand2GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioBand3GainAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "Band3Gain");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand3GainAsync failed for {guid}. Band3Gain is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand3GainAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand3GainAsync failed for {guid}. Band3Gain is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand3GainAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand3GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioBand4GainAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "Band4Gain");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand4GainAsync failed for {guid}. Band4Gain is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand4GainAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand4GainAsync failed for {guid}. Band4Gain is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand4GainAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand4GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioBand5GainAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "Band5Gain");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand5GainAsync failed for {guid}. Band5Gain is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand5GainAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand5GainAsync failed for {guid}. Band5Gain is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand5GainAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBand5GainAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioSidetoneLevelAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "SidetoneLevel");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSidetoneLevelAsync failed for {guid}. SidetoneLevel is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSidetoneLevelAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSidetoneLevelAsync failed for {guid}. SidetoneLevel is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSidetoneLevelAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSidetoneLevelAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioSelectedPresetAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "SelectedPreset");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSelectedPresetAsync failed for {guid}. SelectedPreset is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSelectedPresetAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSelectedPresetAsync failed for {guid}. SelectedPreset is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSelectedPresetAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioSelectedPresetAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioBatteryLevelAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "BatteryLevel");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelAsync failed for {guid}. BatteryLevel is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelAsync failed for {guid}. BatteryLevel is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioBatteryLevelAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioPairedDeviceCountAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "PairedDevice");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairedDeviceCountAsync failed for {guid}. PairedDevice is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairedDeviceCountAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairedDeviceCountAsync failed for {guid}. PairedDevice is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairedDeviceCountAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioPairedDeviceCountAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioMaxPairingSlotsAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "MaxPairingSlots");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMaxPairingSlotsAsync failed for {guid}. MaxPairingSlots is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMaxPairingSlotsAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMaxPairingSlotsAsync failed for {guid}. MaxPairingSlots is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMaxPairingSlotsAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioMaxPairingSlotsAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioTotalNumberOfPairedHostNameAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "TotalNumberOfPairedHostName");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioTotalNumberOfPairedHostNameAsync failed for {guid}. TotalNumberOfPairedHostName is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioTotalNumberOfPairedHostNameAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioTotalNumberOfPairedHostNameAsync failed for {guid}. TotalNumberOfPairedHostName is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioTotalNumberOfPairedHostNameAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioTotalNumberOfPairedHostNameAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioInstanceIdAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "InstanceId");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioInstanceIdAsync failed for {guid}. InstanceId is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioInstanceIdAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioInstanceIdAsync failed for {guid}. InstanceId is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioInstanceIdAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioInstanceIdAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioInstanceNumberAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "InstanceNumber");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioInstanceNumberAsync failed for {guid}. InstanceNumber is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioInstanceNumberAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioInstanceNumberAsync failed for {guid}. InstanceNumber is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioInstanceNumberAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioInstanceNumberAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+
+        public async Task<int> GetAirAudioODMIdAsync(string Guid)
+        {
+            string guid = Guid;
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guid))
+                    return -1;
+
+                var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                if (commodity is ICommodity)
+                {
+                    var value = GetPropertyValue(_airaudioInterfaceType, commodity, "ODMId");
+
+                    if (value == null)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioODMIdAsync failed for {guid}. ODMId is null.");
+                        return -99;
+                    }
+                    else if (value is int intValue)
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioODMIdAsync succeeded for {guid} with value: {intValue}");
+                        return intValue;
+                    }
+                    else
+                    {
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioODMIdAsync failed for {guid}. ODMId is not an integer.");
+                        return -99;
+                    }
+
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioODMIdAsync failed: Could not retrieve commodity interface for {guid}");
+                return -99;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetAirAudioODMIdAsync failed for {guid} - Exception: {ex.Message}");
+                return -99;
+            }
+        }
+        #endregion
+
+        #region AirAudio Set
+        public async Task<bool> SetAirAudioMicNoiseCancellationAsync(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "MicNoiseCancellation", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetMicNoiseCancellationAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetMicNoiseCancellationAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioSidetoneAsync(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "Sidetone", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioSidetoneAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioSidetoneAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioBusyLightAsync(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "BusyLight", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioBusyLightAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioBusyLightAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioVoiceGuidanceAsync(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "VoiceGuidance", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioVoiceGuidanceAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioVoiceGuidanceAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioSelectedPresetAsync(string Guid, int newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "SelectedPreset", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioSelectedPresetAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioSelectedPresetAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioSidetoneLevelAsync(string Guid, int newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "SidetoneLevel", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioSidetoneLevelAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioSidetoneLevelAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioBandsGainAsync(string Guid, byte[] newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "BandsGain", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioBandsGainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioBandsGainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioBand1GainAsync(string Guid, int newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "Band1Gain", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioBand1GainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioBand1GainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioBand2GainAsync(string Guid, int newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "Band2Gain", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioBand2GainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioBand2GainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioBand3GainAsync(string Guid, int newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "Band3Gain", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioBand3GainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioBand3GainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioBand4GainAsync(string Guid, int newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "Band4Gain", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioBand4GainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioBand4GainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioBand5GainAsync(string Guid, int newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "Band5Gain", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioBand5GainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioBand5GainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioAncModeAsync(string Guid, int newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "AncMode", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioAncModeAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioAncModeAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioAncGainAsync(string Guid, int newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "AncGain", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioAncGainAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioAncGainAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioWearDetectionAsync(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "WearDetection", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioWearDetectionAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioWearDetectionAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioFactoryResetAsync(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "FactoryReset", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioFactoryResetAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioFactoryResetAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioIsBoomMicSupportedAsync(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "IsBoomMicSupported", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioIsBoomMicSupportedAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioIsBoomMicSupportedAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioWearDetectionQuickPauseAsync(string Guid, int newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "WearDetectionQuickPause", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioWearDetectionQuickPauseAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioWearDetectionQuickPauseAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioWearDetectionSensitivityAsync(string Guid, int newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "WearDetectionSensitivity", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioWearDetectionSensitivityAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioWearDetectionSensitivityAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioMicNCIncomingAsync(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "MicNCIncoming", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioMicNCIncomingAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioMicNCIncomingAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioUnPairAsync(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "UnPair", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioUnPairAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioUnPairAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioIsWearDetectionPauseMusicEnabledAsync(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "IsWearDetectionPauseMusicEnabled", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioIsWearDetectionPauseMusicEnabledAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioIsWearDetectionPauseMusicEnabledAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> SetAirAudioIsWearDetectionMuteMicEnabledAsync(string Guid, bool newValue)
+        {
+            string guidString = Guid;
+
+            try
+            {
+                if (!await GetItemIDAsync("AirAudio", guidString))
+                    return false;
+
+                if (await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo) is ICommodity commodity)
+                {
+                    SetPropertyValue(_airaudioInterfaceType, commodity, "IsWearDetectionMuteMicEnabled", newValue);
+                    writelog("[DTPProxyPlugin] [AirAudio] SetAirAudioIsWearDetectionMuteMicEnabledAsync Success !");
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    writelog($"[DTPProxyPlugin] [AirAudio] Could not retrieve the Commodity Interface {_airaudioInterfaceType} for the {_itemID} item.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] SetAirAudioIsWearDetectionMuteMicEnabledAsync failed: {ex.Message}");
+                return false;
+            }
+        }
+        #endregion
+
+        #region AirAudio Event
+
+        #region AirAudio Already connected do this
+        /// <summary>
+        /// Already connected do this
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> RegisterEventsForAllAirAudioAsync()
+        {
+            bool result = false;
+            var airaudios = await GetAirAudioDevsCountAsync();
+            if (airaudios > 0)
+            {
+                writelog($"AirAudio instance count: {airaudios} to register");
+
+                for (int i = 0; i < airaudios; i++)
+                {
+                    result = await RegisterEventsForAirAudioAsync(i);
+
+                    if (!result)
+                    {
+                        writelog($"[AirAudio] Register Events For AirAudio{i} fail, try un-register and register again");
+
+                        result = await UnregisterEventsForAirAudioAsync(i);
+                        result = await RegisterEventsForAirAudioAsync(i);
+                        writelog($"[AirAudio] Retry register result is {result}");
+                    }
+                }
+            }
+            else
+            {
+                writelog($"[AirAudio] No any headset instance to register.");
+                return false;
+                //try to force release current --> will catch exception  1123
+                //await UnregisterEventsForWebcamAsync(0);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Already connected do this
+        /// </summary>
+        /// <returns></returns>
+        private async Task UnregisterEventsForAllAirAudioAsync()
+        {
+            bool result = false;
+            var headsets = await GetAirAudioDevsCountAsync();
+            if (headsets > 0)
+            {
+                writelog($"[Headset] instance count: {headsets} to unregister.");
+
+                for (int i = headsets - 1; i >= 0; i--)
+                {
+                    result = await UnregisterEventsForAirAudioAsync(i);
+                }
+            }
+            else
+                writelog($"[Headset] No any headset instance to unregister.");
+        }
+
+        private async Task<bool> RegisterEventsForAirAudioAsync(int index)
+        {
+            if (null == _commSdk || null == _comdity || index < 0)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IAirAudioCommodity>(new ItemId($"DellPeripheral.AirAudio.{index}"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _AirAudiocom)
+                {
+                    _AirAudiocom.FirmwareVersionChanged += AirAudio_FirmwareVersionChanged;
+                    _AirAudiocom.BatteryLevelChanged += AirAudio_BatteryLevelChanged;
+                    _AirAudiocom.BatteryStatusChanged += AirAudio_BatteryStatusChanged;
+                    _AirAudiocom.PairedHostNameChanged += AirAudio_PairedHostNameChanged;
+                    _AirAudiocom.InstanceNumberChanged += AirAudio_InstanceNumberChanged;
+                    _AirAudiocom.IsReadyChanged += AirAudio_IsReadyChanged;
+                    _AirAudiocom.IsDirtyChanged += AirAudio_IsDirtyChanged;
+                    _AirAudiocom.MicNoiseCancellationChanged += AirAudio_MicNoiseCancellationChanged;
+                    _AirAudiocom.MicNCIncomingChanged += AirAudio_MicNCIncomingChanged;
+                    _AirAudiocom.SidetoneChanged += AirAudio_SidetoneChanged;
+                    _AirAudiocom.BusyLightChanged += AirAudio_BusyLightChanged;
+                    _AirAudiocom.VoiceGuidanceChanged += AirAudio_VoiceGuidanceChanged;
+                    _AirAudiocom.SelectedPresetChanged += AirAudio_SelectedPresetChanged;
+                    _AirAudiocom.SidetoneLevelChanged += AirAudio_SidetoneLevelChanged;
+                    _AirAudiocom.MuteStatusChanged += AirAudio_MuteStatusChanged;
+                    _AirAudiocom.BandsGainChanged += AirAudio_BandsGainChanged;
+                    _AirAudiocom.AncModeChanged += AirAudio_AncModeChanged;
+                    _AirAudiocom.AncGainChanged += AirAudio_AncGainChanged;
+                    _AirAudiocom.BoomMicChanged += AirAudio_BoomMicChanged;
+                    _AirAudiocom.IsBoomMicSupportedChanged += AirAudio_BoomMicSupportedChanged;
+                    _AirAudiocom.SerialNumberChanged += AirAudio_SerialNumberChanged;
+                    //_AirAudiocom.WearDetectionChanged += AirAudio_WearDetectionChanged;
+                    //_AirAudiocom.IsWearDetectionPauseMusicEnabledChanged += AirAudio_IsWearDetectionPauseMusicEnabledChanged;
+                    //_AirAudiocom.IsWearDetectionMuteMicEnabledChanged += AirAudio_IsWearDetectionMuteMicEnabledChanged;
+                    //_AirAudiocom.WearDetectionSensitivityChanged += AirAudio_WearDetectionSensitivityChanged;
+                    //_AirAudiocom.WearDetectionQuickPauseChanged += AirAudio_WearDetectionQuickPauseChanged;
+
+                    writelog($"AirAudio{index} Commodity events registered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"[AirAudio] {index} RegisterEventsForHeadset Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> UnregisterEventsForAirAudioAsync(int index)
+        {
+            if (null == _commSdk || null == _comdity || index < 0)
+                return false;
+
+            try
+            {
+                _comdity = await _commSdk.GetCommodityAsync<IAirAudioCommodity>(new ItemId($"DellPeripheral.AirAudio.{index}"), CancellationToken.None);
+
+                if (_comdity is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _AirAudiocom)
+                {
+                    _AirAudiocom.FirmwareVersionChanged -= AirAudio_FirmwareVersionChanged;
+                    _AirAudiocom.BatteryLevelChanged -= AirAudio_BatteryLevelChanged;
+                    _AirAudiocom.BatteryStatusChanged -= AirAudio_BatteryStatusChanged;
+                    _AirAudiocom.PairedHostNameChanged -= AirAudio_PairedHostNameChanged;
+                    _AirAudiocom.InstanceNumberChanged -= AirAudio_InstanceNumberChanged;
+                    _AirAudiocom.IsReadyChanged -= AirAudio_IsReadyChanged;
+                    _AirAudiocom.IsDirtyChanged -= AirAudio_IsDirtyChanged;
+                    _AirAudiocom.MicNoiseCancellationChanged -= AirAudio_MicNoiseCancellationChanged;
+                    _AirAudiocom.MicNCIncomingChanged -= AirAudio_MicNCIncomingChanged;
+                    _AirAudiocom.SidetoneChanged -= AirAudio_SidetoneChanged;
+                    _AirAudiocom.BusyLightChanged -= AirAudio_BusyLightChanged;
+                    _AirAudiocom.VoiceGuidanceChanged -= AirAudio_VoiceGuidanceChanged;
+                    _AirAudiocom.SelectedPresetChanged -= AirAudio_SelectedPresetChanged;
+                    _AirAudiocom.SidetoneLevelChanged -= AirAudio_SidetoneLevelChanged;
+                    _AirAudiocom.MuteStatusChanged -= AirAudio_MuteStatusChanged;
+                    _AirAudiocom.BandsGainChanged -= AirAudio_BandsGainChanged;
+                    _AirAudiocom.AncModeChanged -= AirAudio_AncModeChanged;
+                    _AirAudiocom.AncGainChanged -= AirAudio_AncGainChanged;
+                    _AirAudiocom.BoomMicChanged -= AirAudio_BoomMicChanged;
+                    _AirAudiocom.IsBoomMicSupportedChanged -= AirAudio_BoomMicSupportedChanged;
+                    _AirAudiocom.SerialNumberChanged -= AirAudio_SerialNumberChanged;
+                    //_AirAudiocom.WearDetectionChanged -= AirAudio_WearDetectionChanged;
+                    //_AirAudiocom.IsWearDetectionPauseMusicEnabledChanged -= AirAudio_IsWearDetectionPauseMusicEnabledChanged;
+                    //_AirAudiocom.IsWearDetectionMuteMicEnabledChanged -= AirAudio_IsWearDetectionMuteMicEnabledChanged;
+                    //_AirAudiocom.WearDetectionSensitivityChanged -= AirAudio_WearDetectionSensitivityChanged;
+                    //_AirAudiocom.WearDetectionQuickPauseChanged -= AirAudio_WearDetectionQuickPauseChanged;
+
+                    writelog($"[AirAudio] AirAudio{index} Commodity events unregistered successfully");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"[AirAudio] AirAudio{index} UnregisterEventsForAirAudio Exception {e.Message}");
+
+                return false;
+            }
+            return false;
+        }
+
+        #endregion  AirAudio Already connected do this
+
+        private bool UnregisterEventsForAirAudio(AirAudioEventHandleObject obj)
+        {
+            if (obj.airaudioCommodity is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _AirAudiocom)
+            {
+                _AirAudiocom.FirmwareVersionChanged -= AirAudio_FirmwareVersionChanged;
+                _AirAudiocom.BatteryLevelChanged -= AirAudio_BatteryLevelChanged;
+                _AirAudiocom.BatteryStatusChanged -= AirAudio_BatteryStatusChanged;
+                _AirAudiocom.PairedHostNameChanged -= AirAudio_PairedHostNameChanged;
+                _AirAudiocom.InstanceNumberChanged -= AirAudio_InstanceNumberChanged;
+                _AirAudiocom.IsReadyChanged -= AirAudio_IsReadyChanged;
+                _AirAudiocom.IsDirtyChanged -= AirAudio_IsDirtyChanged;
+                _AirAudiocom.MicNoiseCancellationChanged -= AirAudio_MicNoiseCancellationChanged;
+                _AirAudiocom.MicNCIncomingChanged -= AirAudio_MicNCIncomingChanged;
+                _AirAudiocom.SidetoneChanged -= AirAudio_SidetoneChanged;
+                _AirAudiocom.BusyLightChanged -= AirAudio_BusyLightChanged;
+                _AirAudiocom.VoiceGuidanceChanged -= AirAudio_VoiceGuidanceChanged;
+                _AirAudiocom.SelectedPresetChanged -= AirAudio_SelectedPresetChanged;
+                _AirAudiocom.SidetoneLevelChanged -= AirAudio_SidetoneLevelChanged;
+                _AirAudiocom.MuteStatusChanged -= AirAudio_MuteStatusChanged;
+                _AirAudiocom.BandsGainChanged -= AirAudio_BandsGainChanged;
+                _AirAudiocom.AncModeChanged -= AirAudio_AncModeChanged;
+                _AirAudiocom.AncGainChanged -= AirAudio_AncGainChanged;
+                _AirAudiocom.BoomMicChanged -= AirAudio_BoomMicChanged;
+                _AirAudiocom.IsBoomMicSupportedChanged -= AirAudio_BoomMicSupportedChanged;
+                _AirAudiocom.SerialNumberChanged -= AirAudio_SerialNumberChanged;
+                //_AirAudiocom.WearDetectionChanged -= AirAudio_WearDetectionChanged;
+                //_AirAudiocom.IsWearDetectionPauseMusicEnabledChanged -= AirAudio_IsWearDetectionPauseMusicEnabledChanged;
+                //_AirAudiocom.IsWearDetectionMuteMicEnabledChanged -= AirAudio_IsWearDetectionMuteMicEnabledChanged;
+                //_AirAudiocom.WearDetectionSensitivityChanged -= AirAudio_WearDetectionSensitivityChanged;
+                //_AirAudiocom.WearDetectionQuickPauseChanged -= AirAudio_WearDetectionQuickPauseChanged;
+
+                writelog($"AirAudio {obj.airaudioIndex}/{obj.ModelNumber} Commodity events unregistered successfully");
+
+                return true;
+            }
+            else
+                writelog($"obj.AirAudioCommodity is not Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity for {obj.ModelNumber}");
+
+            return false;
+        }
+
+        private async Task<bool> UnregisterEventsForAirAudioAsync(string devcieID)
+        {
+            if (devcieID == null || devcieID == string.Empty || airaudioList.Count == 0)
+            {
+                writelog($"devcieID == string.Empty || devcieID == null || headsetList.Count == 0");
+
+                return false;
+            }
+
+            try
+            {
+                // find _comdity object for this device
+                writelog($"Search {devcieID} from AirAudioList for Unregister Events");
+
+                bool result = false;
+                foreach (var item in airaudioList)
+                {
+                    if (item.DeviceId == devcieID)
+                    {
+                        result = true;
+                        writelog($"Found object {item.DeviceName} from AirAudioList for Unregister Events");
+                        result = UnregisterEventsForAirAudio(item);
+                        writelog($"UnregisterEventsForAirAudio result is {result}");
+                        result = airaudioList.Remove(item);
+                        writelog($"AirAudioList.Remove(item) result is {result}");
+                        break;
+                    }
+                }
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                writelog($"AirAudio {devcieID} UnregisterEventsForAirAudio Exception {e.Message}");
+
+                return false;
+            }
+        }
+
+        private void AirAudio_Disconnected(object sender, DisconnectedArgs e)
+        {
+            Task<bool> result = UnregisterEventsForAirAudioAsync(e.DeviceId);
+
+            SendDTPEventToUI(CreateEventMsg("AirAudio", "AirAudio_Disconnected", e.DeviceId));
+
+            writelog($"Catch event _AirAudio_Disconnected, unregister events result is {result.Result}, current devCount is {airaudioList.Count} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private async Task<bool> RegisterEventsForAirAudioAsync(string deviceID)
+        {
+            if (null == _comdityAirAudio || deviceID == null || deviceID == string.Empty)
+            {
+                writelog($"null == _comdityAirAudio || deviceID == null || deviceID == string.Empty");
+
+                return false;
+            }
+
+            try
+            {
+                if (_comdityAirAudio is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _AirAudioComObj)
+                {
+                    writelog($"connected _AirAudioComObj.DeviceItems = {_AirAudioComObj.DeviceItems.Length}");
+
+                    int i = 0;
+                    foreach (var item in _AirAudioComObj.DeviceItems)
+                    {
+                        writelog($"connected _AirAudioComObj.DeviceItems[{i}] = {item}");
+                        string jsonStr = _AirAudioComObj.DeviceItemsEx[i++].ToString();
+                        writelog($"connected _AirAudioComObj.DeviceItems = {jsonStr}");
+
+                        AirAudioEventHandleObject jsonObject = JsonSerializer.Deserialize<AirAudioEventHandleObject>(jsonStr)!;
+
+                        if (jsonObject != null && jsonObject.DeviceId == deviceID)
+                        {
+                            writelog($"jsonObject values: {item}, {jsonObject.DeviceName}, {jsonObject.DeviceId}, {jsonObject.ModelNumber}");
+
+                            ICommodity _comdityAirAudioTmp = await _commSdk.GetCommodityAsync<IAirAudioCommodity>(new ItemId(item), CancellationToken.None);
+
+                            if (RegisterEventsForAirAudio(_comdityAirAudioTmp))
+                            {
+                                jsonObject.airaudioIndex = item;
+                                jsonObject.airaudioCommodity = _comdityAirAudioTmp;
+                                airaudioList.Add(jsonObject);
+
+                                writelog($"AirAudio {deviceID} Commodity events registered successfully");
+
+                                return true;
+                            }
+                            else
+                            {
+                                writelog($"AirAudio {deviceID} Commodity events registered fail");
+
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"AirAudio{deviceID} RegisterEventsForAirAudioAsync Exception {e.Message}");
+
+                return false;
+            }
+
+            return false;
+        }
+
+        private bool RegisterEventsForAirAudio(ICommodity _comdityAirAudio)
+        {
+            if (null == _comdityAirAudio)
+            {
+                writelog($"_comdityAirAudio == null");
+
+                return false;
+            }
+
+            try
+            {
+                if (_comdityAirAudio is Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity _AirAudiocom)
+                {
+                    _AirAudiocom.FirmwareVersionChanged += AirAudio_FirmwareVersionChanged;
+                    _AirAudiocom.BatteryLevelChanged += AirAudio_BatteryLevelChanged;
+                    _AirAudiocom.BatteryStatusChanged += AirAudio_BatteryStatusChanged;
+                    _AirAudiocom.PairedHostNameChanged += AirAudio_PairedHostNameChanged;
+                    _AirAudiocom.InstanceNumberChanged += AirAudio_InstanceNumberChanged;
+                    _AirAudiocom.IsReadyChanged += AirAudio_IsReadyChanged;
+                    _AirAudiocom.IsDirtyChanged += AirAudio_IsDirtyChanged;
+                    _AirAudiocom.MicNoiseCancellationChanged += AirAudio_MicNoiseCancellationChanged;
+                    _AirAudiocom.MicNCIncomingChanged += AirAudio_MicNCIncomingChanged;
+                    _AirAudiocom.SidetoneChanged += AirAudio_SidetoneChanged;
+                    _AirAudiocom.BusyLightChanged += AirAudio_BusyLightChanged;
+                    _AirAudiocom.VoiceGuidanceChanged += AirAudio_VoiceGuidanceChanged;
+                    _AirAudiocom.SelectedPresetChanged += AirAudio_SelectedPresetChanged;
+                    _AirAudiocom.SidetoneLevelChanged += AirAudio_SidetoneLevelChanged;
+                    _AirAudiocom.MuteStatusChanged += AirAudio_MuteStatusChanged;
+                    _AirAudiocom.BandsGainChanged += AirAudio_BandsGainChanged;
+                    _AirAudiocom.AncModeChanged += AirAudio_AncModeChanged;
+                    _AirAudiocom.AncGainChanged += AirAudio_AncGainChanged;
+                    _AirAudiocom.BoomMicChanged += AirAudio_BoomMicChanged;
+                    _AirAudiocom.IsBoomMicSupportedChanged += AirAudio_BoomMicSupportedChanged;
+                    _AirAudiocom.SerialNumberChanged += AirAudio_SerialNumberChanged;
+                    //_AirAudiocom.WearDetectionChanged += AirAudio_WearDetectionChanged;
+                    //_AirAudiocom.IsWearDetectionPauseMusicEnabledChanged += AirAudio_IsWearDetectionPauseMusicEnabledChanged;
+                    //_AirAudiocom.IsWearDetectionMuteMicEnabledChanged += AirAudio_IsWearDetectionMuteMicEnabledChanged;
+                    //_AirAudiocom.WearDetectionSensitivityChanged += AirAudio_WearDetectionSensitivityChanged;
+                    //_AirAudiocom.WearDetectionQuickPauseChanged += AirAudio_WearDetectionQuickPauseChanged;
+
+                    writelog($"AirAudiocom Commodity {_AirAudiocom.DeviceName}/{_AirAudiocom.DeviceId}/{_AirAudiocom.ModelNumber} events registered successfully");
+
+                    return true;
+                }
+                else
+                {
+                    writelog($"_comdityAirAudio is not Dell.TechHub.Commodity.Peripheral.IAirAudioCommodity");
+
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                writelog($"Catch exception {e.Message} when run RegisterEventsForHeadset");
+
+                return false;
+            }
+        }
+
+        private void AirAudio_Connected(object sender, ConnectedArgs e)
+        {
+            Task<bool> result = RegisterEventsForAirAudioAsync(e.DeviceId);
+
+            SendDTPEventToUI(CreateEventMsg("AirAudio", "AirAudio_Connected", e.DeviceId));
+
+            writelog($"Catch event _AirAudio_Connected, register events result is {result.Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        //private void Headset_Disconnected(object sender, DisconnectedArgs e)
+        //{
+        //    _ = UnregisterEventsForAllHeadsetAsync();
+
+        //    //_ = RegisterEventsForAllHeadsetAsync();
+
+        //    //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Disconnected", e.DeviceId));
+
+        //    writelog($"[Headset] Catch event _Headset_Disconnected, current devCount is {GetHeadsetDevsCountAsync().Result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        //}
+
+        //private void Headset_Connected(object sender, ConnectedArgs e)
+        //{
+        //    Task<int> headsets = GetHeadsetDevsCountAsync();
+        //    bool result = RegisterEventsForHeadsetAsync(headsets.Result - 1).Result;
+
+        //    //SendHeadsetEventToUI(CreateEventMsg("Headset", "Headset_Connected", e.DeviceId));
+
+        //    writelog($"[Headset] Catch event _Headset_Connected, register evnet result is {result} : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        //}
+
+        private void AirAudio_MuteStatusChanged(object sender, MuteStatusChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_MuteStatusChanged",
+                                    e.DeviceId, $"AirAudio_MuteStatusChanged:{e.MuteStatus.ToString()}"));
+
+            writelog($"[Headset] Catch event AirAudio_MuteStatusChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_IsReadyChanged(object sender, IsReadyChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_IsReadyChanged",
+                                    e.DeviceId, $"AirAudio_IsReadyChanged:{e.IsReady.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_IsReadyChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_IsDirtyChanged(object sender, IsDirtyChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_IsDirtyChanged",
+                                    e.DeviceId, $"AirAudio_IsDirtyChanged:{e.IsDirty.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_IsDirtyChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_FirmwareVersionChanged(object sender, FirmwareVersionChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_FirmwareVersionChanged",
+                                    e.DeviceId, $"AirAudio_FirmwareVersionChanged:{e.FirmwareVersion}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_FirmwareVersionChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+        private void AirAudio_BatteryLevelChanged(object sender, BatteryLevelChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_BatteryLevelChanged",
+                                    e.DeviceId, $"AirAudio_BatteryLevelChanged:{e.BatteryLevel.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_BatteryLevelChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_BatteryStatusChanged(object sender, BatteryStatusChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_BatteryStatusChanged",
+                                    e.DeviceId, $"Headset_BatteryStatusChanged:{e.BatteryStatus.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_BatteryStatusChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_PairedHostNameChanged(object sender, PairedHostNameChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_PairedHostNameChanged", e.DeviceId,
+                                      "AirAudio_PairedHostNameIndex:" + e.Index.ToString() + ";" +
+                                      "AirAudio_PairedHostNameNewhostName:" + e.NewhostName.ToString()));
+
+            writelog($"[AirAudio] Catch event AirAudio_PairedHostNameChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_InstanceNumberChanged(object sender, InstanceNumberChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_InstanceNumberChanged",
+                                    e.DeviceId, $"AirAudio_InstanceNumberChanged:{e.InstanceNumber.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_InstanceNumberChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_MicNoiseCancellationChanged(object sender, MicNoiseCancellationChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateHeadsetEventMsg("AirAudio", "AirAudio_MicNoiseCancellationChanged",
+                                    e.DeviceId, $"AirAudio_MicNoiseCancellationChanged:{e.MicNoiseCancellation.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_MicNoiseCancellationChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_MicNCIncomingChanged(object sender, MicNCIncomingChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_MicNCIncomingChanged",
+                                    e.DeviceId, $"AirAudio_MicNCIncomingChanged:{e.MicNCIncoming.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_MicNCIncomingChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_SidetoneChanged(object sender, SidetoneChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_SidetoneChanged",
+                                    e.DeviceId, $"AirAudio_SidetoneChanged:{e.Sidetone.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_SidetoneChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_BusyLightChanged(object sender, BusyLightChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_BusyLightChanged",
+                                    e.DeviceId, $"AirAudio_BusyLightChanged:{e.BusyLight.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_BusyLightChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_VoiceGuidanceChanged(object sender, VoiceGuidanceChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_VoiceGuidanceChanged",
+                                    e.DeviceId, $"AirAudio_VoiceGuidanceChanged:{e.VoiceGuidance.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_VoiceGuidanceChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_SelectedPresetChanged(object sender, SelectedPresetChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_SelectedPresetChanged",
+                                    e.DeviceId, $"AirAudio_SelectedPresetChanged:{e.SelectedPreset.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_SelectedPresetChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_SidetoneLevelChanged(object sender, SidetoneLevelChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_SidetoneLevelChanged",
+                                    e.DeviceId, $"AirAudio_SidetoneLevelChanged:{e.SidetoneLevel.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_SidetoneLevelChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_AncModeChanged(object sender, AncModeChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_AncModeChanged",
+                                    e.DeviceId, $"AirAudio_AncModeChanged:{e.AncMode.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_AncModeChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_AncGainChanged(object sender, AncGainChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_AncGainChanged",
+                                    e.DeviceId, $"AirAudio_AncGainChanged:{e.AncGain.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_AncGainChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_BoomMicSupportedChanged(object sender, IsBoomMicSupportedChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_BoomMicSupportedChanged",
+                                    e.DeviceId, $"AirAudio_BoomMicSupportedChanged:{e.IsBoomMicSupported.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_BoomMicSupportedChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_SerialNumberChanged(object sender, SerialNumberChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_BoomMicSupportedChangedArgs",
+                                    e.DeviceId, $"AirAudio_BoomMicSupportedChangedArgs:{e.SerialNumber}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_BoomMicSupportedChangedArgs : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_BandsGainChanged(object sender, BandsGainChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_BandsGainChanged", e.DeviceId,
+                                      "AirAudio_Band1Gain:" + e.Band1Gain.ToString() + ";" +
+                                      "AirAudio_Band2Gain:" + e.Band2Gain.ToString() + ";" +
+                                      "AirAudio_Band3Gain:" + e.Band3Gain.ToString() + ";" +
+                                      "AirAudio_Band4Gain:" + e.Band4Gain.ToString() + ";" +
+                                      "AirAudio_Band5Gain:" + e.Band5Gain.ToString()));
+            writelog($"[AirAudio] Catch event AirAudio_BandsGainChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_WearDetectionChanged(object sender, WearDetectionChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_WearDetectionChanged", e.DeviceId,
+                                                 $"AirAudio_WearDetectionChanged:{e.IsGlobalEnabled.ToString() + ";" +
+                            "AirAudio_IsWearDetectionPauseMusicEnabledChanged:" + e.IsPauseMusicEnabled.ToString() + ";" +
+                               "AirAudio_IsWearDetectionMuteMicEnabledChanged:" + e.IsMuteMicEnabled.ToString() + ";" +
+                                    "AirAudio_WearDetectionSensitivityChanged:" + e.Sensitivity.ToString() + ";" +
+                                     "AirAudio_WearDetectionQuickPauseChanged:" + e.QuickPause.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_WearDetectionChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_WearDetectionSensitivityChanged(object sender, WearDetectionSensitivityChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_WearDetectionSensitivityChanged",
+                                    e.DeviceId, $"AirAudio_WearDetectionSensitivityChanged:{e.WearDetectionSensitivity.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_WearDetectionSensitivityChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_IsWearDetectionPauseMusicEnabledChanged(object sender, IsWearDetectionPauseMusicEnabledChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_IsWearDetectionPauseMusicEnabledChanged",
+                                    e.DeviceId, $"AirAudio_IsWearDetectionPauseMusicEnabledChanged:{e.IsPauseMusicEnabled.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_IsWearDetectionPauseMusicEnabledChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_IsWearDetectionMuteMicEnabledChanged(object sender, IsWearDetectionMuteMicEnabledChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateHeadsetEventMsg("AirAudio", "AirAudio_IsWearDetectionMuteMicEnabledChanged",
+                                    e.DeviceId, $"AirAudio_IsWearDetectionMuteMicEnabledChanged:{e.IsWearDetectionMuteMicEnabled.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_IsWearDetectionMuteMicEnabledChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private void AirAudio_WearDetectionQuickPauseChanged(object sender, WearDetectionQuickPauseChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateHeadsetEventMsg("AirAudio", "AirAudio_WearDetectionQuickPauseChanged",
+                                    e.DeviceId, $"AirAudio_WearDetectionQuickPauseChanged:{e.WearDetectionQuickPause.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_WearDetectionQuickPauseChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+        private void AirAudio_BoomMicChanged(object sender, BoomMicChangedArgs e)
+        {
+            SendAirAudioEventToUI(CreateAirAudioEventMsg("AirAudio", "AirAudio_BoomMicChanged",
+                                    e.DeviceId, $"AirAudio_BoomMicChanged:{e.BoomMic.ToString()}"));
+
+            writelog($"[AirAudio] Catch event AirAudio_BoomMicChanged : {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
+        }
+
+        private string CreateAirAudioEventMsg(string devType, string eventType, string devID, string eventContent = "NewValue:NoContent")
+        {
+            writelog($"[AirAudio] Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}");
+            return $"AirAudioEvent_5;Device:{devType};EventType:{eventType};DeviceId:{devID};{eventContent}";
+        }
+
+        public void SendAirAudioEventToUI(string sendMsg)
+        {
+            UpdateUINotify airaudioEventNotify = new UpdateUINotify();
+            airaudioEventNotify.UI_Field_Name = $"{sendMsg}";
+            OnUIUpdateNotify(airaudioEventNotify);
+        }
+        private async Task<int> GetAirAudioDevsCountAsync()
+        {
+            var airaudios = await GetAirAudioDeviceItemsExAsync();
+            if (airaudios != null)
+            {
+                Trace.WriteLine("RegisterEventsForAllAirAudioAsync ********** " + airaudios.ToString() + " ********** ");
+                return airaudios.Count;
+            }
+            else
+                return 0;
+        }
+
+        public async Task<JArray> GetAirAudioDeviceItemsExAsync()
+        {
+            try
+            {
+                _itemID = new ItemId(AirAudioItemID);
+
+                if (_airaudioMethodInfo != null)
+                {
+                    var commodity = await GetCommodityInterfaceInstanceAsync(_airaudioMethodInfo);
+                    if (commodity is ICommodity)
+                    {
+                        var value = GetPropertyValue(_airaudioInterfaceType, commodity, "DeviceItems");
+                        writelog($"[DTPProxyPlugin] [AirAudio] GetDeviceItemsExAsync succeeded");
+                        return value == null ? new JArray() : (JArray)value;
+                    }
+                }
+
+                writelog($"[DTPProxyPlugin] [AirAudio] GetDeviceItemsExAsync failed: Could not retrieve commodity interface");
+                return null;
+            }
+            catch (Exception ex)
+            {
+                writelog($"[DTPProxyPlugin] [AirAudio] GetDeviceItemsExAsync failed - Exception: {ex.Message}");
+                return null;
+            }
+        }
+        #endregion AirAudio Event
     }
 }

@@ -179,7 +179,7 @@ namespace DDPM.EABroker
                 Win32.RECT rcWnd = new Win32.RECT();
                 Win32._GetWindowRect(hWnd, out rcWnd);
 
-                WriteLog($"[{idx}] hWnd=0x{hWnd:X08}, hWndParent=0x{hWndParent:X08}, Text=[{windowText}], rcWnd=({rcWnd.Left},{rcWnd.Top}){rcWnd.Width}x{rcWnd.Height}");
+                //WriteLog($"[{idx}] hWnd=0x{hWnd:X08}, hWndParent=0x{hWndParent:X08}, Text=[{windowText}], rcWnd=({rcWnd.Left},{rcWnd.Top}){rcWnd.Width}x{rcWnd.Height}");
 
                 //Check if the Window is in current screen
                 Screen screenOfhWnd = Screen.FromHandle(hWnd);
@@ -384,7 +384,7 @@ namespace DDPM.EABroker
                 Win32.RECT rcWnd = new Win32.RECT();
                 Win32._GetWindowRect(hWnd, out rcWnd);
 
-                WriteLog($"[{idx}] hWnd=0x{hWnd:X08}, hWndParent=0x{hWndParent:X08}, Text=[{windowText}], rcWnd=({rcWnd.Left},{rcWnd.Top}){rcWnd.Width}x{rcWnd.Height}");
+                //WriteLog($"[{idx}] hWnd=0x{hWnd:X08}, hWndParent=0x{hWndParent:X08}, Text=[{windowText}], rcWnd=({rcWnd.Left},{rcWnd.Top}){rcWnd.Width}x{rcWnd.Height}");
 
                 //Check if the Window is in current screen
                 //Screen screenOfhWnd = Screen.FromHandle(hWnd);
@@ -423,7 +423,7 @@ namespace DDPM.EABroker
                     if (process.MainModule != null && !String.IsNullOrEmpty(process.MainModule.FileName))
                     {
                         pathName = process.MainModule.FileName;
-                        WriteLog($"    [{idx}] PathName=[{pathName}]");                        
+                        //WriteLog($"    [{idx}] PathName=[{pathName}]");                        
                     }
                 }
                 catch (Exception e1)

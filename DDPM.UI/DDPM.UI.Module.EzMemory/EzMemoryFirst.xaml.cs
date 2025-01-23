@@ -1077,8 +1077,9 @@ namespace DDPM.UI.Module.EzMemory
 
             //Load all EM Profiles from DeviceManager
             List<EAProfileDDPM> emProfiles = DdpmCommonHelper.DeviceManagerSA.ReadUserEAProfileDDPM().Result;
+            //Robert_Lin 2025-1-21, if there is no UserSettings in this PC, then will output "Profile 1"
             if (emProfiles == null)
-                return string.Empty;
+                return "Profile 1";
 
             //Generate a new Profile Name and check if exists
             const int maxProfileId = 9; //Profille No: 1~9

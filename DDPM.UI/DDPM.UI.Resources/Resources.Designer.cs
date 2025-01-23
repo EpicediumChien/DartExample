@@ -205,7 +205,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect your display via HDMI/USB-C port on your system.
+        ///   Looks up a localized string similar to Connect your display via HDMI/USB-C port on your system..
         /// </summary>
         internal static string AddDevice_Display_1 {
             get {
@@ -223,7 +223,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect your Dock via USB port on your system.
+        ///   Looks up a localized string similar to Connect your Dock via USB port on your system..
         /// </summary>
         internal static string AddDevice_Dock_0 {
             get {
@@ -250,7 +250,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Power ON headset.
+        ///   Looks up a localized string similar to Power ON headset..
         /// </summary>
         internal static string AddDevice_Headset_1 {
             get {
@@ -259,7 +259,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Press and hold power button for 3 seconds to make the headset discoverable by Bluetooth.
+        ///   Looks up a localized string similar to Press and hold power button for 3 seconds to make the headset discoverable by Bluetooth..
         /// </summary>
         internal static string AddDevice_Headset_2 {
             get {
@@ -286,7 +286,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pairing will automatically begin after a few seconds.
+        ///   Looks up a localized string similar to Pairing will automatically begin after a few seconds..
         /// </summary>
         internal static string AddDevice_Headset_5 {
             get {
@@ -358,7 +358,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect your keyboard and mouse via USB port on your system.
+        ///   Looks up a localized string similar to Connect your keyboard and mouse via USB port on your system..
         /// </summary>
         internal static string AddDevice_KnM_13 {
             get {
@@ -376,7 +376,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Slide power switch slider to ON.
+        ///   Looks up a localized string similar to Slide power switch slider to ON..
         /// </summary>
         internal static string AddDevice_KnM_2 {
             get {
@@ -385,7 +385,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select a Bluetooth channel, then press and hold for 3 seconds to make the device discoverable.
+        ///   Looks up a localized string similar to Select a Bluetooth channel, then press and hold for 3 seconds to make the device discoverable..
         /// </summary>
         internal static string AddDevice_KnM_3 {
             get {
@@ -394,7 +394,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered.
+        ///   Looks up a localized string similar to Allow the device to be paired or launch Windows settings and select the respective device once it has been discovered..
         /// </summary>
         internal static string AddDevice_KnM_4 {
             get {
@@ -403,7 +403,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect your USB wireless receiver to your system.
+        ///   Looks up a localized string similar to Connect your USB wireless receiver to your system..
         /// </summary>
         internal static string AddDevice_KnM_6 {
             get {
@@ -421,7 +421,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Press and hold any key/button and slide power to ON.
+        ///   Looks up a localized string similar to Press and hold any key/button and slide power to ON..
         /// </summary>
         internal static string AddDevice_KnM_8 {
             get {
@@ -592,7 +592,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect your webcam via USB port on your system.
+        ///   Looks up a localized string similar to Connect your webcam via USB port on your system..
         /// </summary>
         internal static string AddDevice_Webcam_0 {
             get {
@@ -1303,6 +1303,15 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connect your webcam via USB 3.0 to enable 4K UHD resolution..
+        /// </summary>
+        internal static string Camera_27 {
+            get {
+                return ResourceManager.GetString("Camera.27", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Capture.
         /// </summary>
         internal static string Camera_3 {
@@ -1407,6 +1416,24 @@ namespace DDPM.UI.Resources {
         internal static string Cancel {
             get {
                 return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AI Mic Noise Cancellation.
+        /// </summary>
+        internal static string Cardi_1 {
+            get {
+                return ResourceManager.GetString("Cardi.1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Multimedia Presets.
+        /// </summary>
+        internal static string Cardi_2 {
+            get {
+                return ResourceManager.GetString("Cardi.2", resourceCulture);
             }
         }
         
@@ -5389,7 +5416,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setup PIP/PBP\nfor your monitor.
+        ///   Looks up a localized string similar to Setup PIP/PBP for your monitor.
         /// </summary>
         internal static string Kvm_17 {
             get {
@@ -5515,7 +5542,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect Mouse\n and Keyboard.
+        ///   Looks up a localized string similar to Connect Mouse and Keyboard.
         /// </summary>
         internal static string Kvm_3 {
             get {
@@ -5569,7 +5596,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connecting to\n your devices.
+        ///   Looks up a localized string similar to Connecting to your devices.
         /// </summary>
         internal static string Kvm_6 {
             get {

@@ -97,6 +97,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public bool close_app = false;
 
+        public List<Thread> thread_list = new List<Thread>();
         public bool ShowLockMask
         {
             get { return showLockMask; }
@@ -392,7 +393,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged("SnoozeStatus_String");
                     OnPropertyChanged("IsEnable_SnoozeLength"); // jim add for PIMS-328195
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs IsChecked_Snooze set ex:" + ex.Message);
                 }
@@ -472,7 +473,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     //DdpmCommonHelper.DeviceManagerSA!.SetSnoozeLength(_SelectedSnoozeLength.SnoozeLength, CurrentDeviceInfo!.ID);
                     OnPropertyChanged("SelectedSnoozeLength");
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs SelectedSnoozeLength set ex:" + ex.Message);
                 }
@@ -571,7 +572,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
                 OnPropertyChanged(nameof(Resolution_IsSelected));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs SetResolution_Selected ex:" + ex.Message);
             }
@@ -618,7 +619,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
                 OnPropertyChanged(nameof(FOV_IsSelected));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs SetFOV_Selected ex:" + ex.Message);
             }
@@ -640,14 +641,14 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
             }
         }
-        public override bool SetCurrentDevice(string deviceID)
+        public override bool SetCurrentDevice(string instanceIDs)
         {
             try
             {
                 _log.Info("WebCameraViewModel SetCurrentDevice");
-                deviceID ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
+                instanceIDs ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
 
-                if (!base.SetCurrentDevice(deviceID))
+                if (!base.SetCurrentDevice(instanceIDs))
                 { return false; }
 
 
@@ -676,7 +677,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 IsMicEnumerationOnEnabled = true;
                 AlertVisibility = Visibility.Collapsed;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs  SetCurrentDevice ex:" + ex.Message);
             }
@@ -841,7 +842,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs  InitializeWebcam ex:" + ex.Message);
             }
@@ -850,13 +851,17 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool IsSettingProfile = false;
         public void SetProfile()
         {
-
             try
             {
-                if (WebcamSettings.CustomProfiles.TryGetValue(CurrentProfileName, out WebcamProfile? value))
-                    CurrentProfile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(value))!;
+                if (CurrentProfileName.ToUpper() == "NONE")
+                    CurrentProfile = WebcamSettings.NONE;
                 else
-                    CurrentProfile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(WebcamSettings.PresetProfiles[CurrentProfileName]))!;
+                {
+                    if (WebcamSettings.CustomProfiles.TryGetValue(CurrentProfileName, out WebcamProfile? value))
+                        CurrentProfile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(value))!;
+                    else
+                        CurrentProfile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(WebcamSettings.PresetProfiles[CurrentProfileName]))!;
+                }
 
                 CurrentProfile.Zoom = _zoom;
                 CurrentProfile.IsFocusOn = _isFocusOn;
@@ -949,10 +954,12 @@ namespace DDPM.UI.Plugin.ViewModels
                     DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Saturation);
                     Saturation = CurrentProfile.Saturation;
                 }
+                WebcamSettings.NONE = CurrentProfile;
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
 
                 ClearUndo();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs  SetProfile ex:" + ex.Message);
             }
@@ -1305,7 +1312,7 @@ namespace DDPM.UI.Plugin.ViewModels
                             IsFocusOn = false;
                     }
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs  IsAutoFramingOn set ex:" + ex.Message);
                 }
@@ -1410,7 +1417,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 SetProfileProperty(nameof(Zoom), _zoom, OperationModule.CameraControl);
                 OnPropertyChanged(nameof(PanArrowVisibility));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs SetZoom() ex:" + ex.Message);
             }
@@ -1524,7 +1531,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                     }).Start();
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
                     DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs IsHDROn set ex:" + ex.Message);
                 }
@@ -1607,7 +1614,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         OnPropertyChanged(nameof(BrightnessMargin));
                     }
                 }
-                catch(Exception ex) 
+                catch (Exception ex)
                 {
                     DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs Brightness set ex:" + ex.Message);
                 }
@@ -1911,7 +1918,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     ButtonVisibility = Visibility.Collapsed
                 });
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs PrepareProfileItems() ex:" + ex.Message);
             }
@@ -1972,45 +1979,48 @@ namespace DDPM.UI.Plugin.ViewModels
                         WCOperations.RemoveAt(0);
                         OPIndex -= 1;
                     }
-                    //CurrentProfileName = string.Empty;
-                    if (CurrentProfileName == "Smooth" || CurrentProfileName == "Warm" || CurrentProfileName == "Vibrant")
-                        switch (propertyName)
-                        {
-                            case nameof(IsAutoFramingOn):
-                            case nameof(FieldOfView):
-                            case nameof(IsHDROn):
-                            case nameof(IsAutoWhiteBalanceOn):
-                            case nameof(Brightness):
-                            case nameof(Contrast):
-                            case nameof(Saturation):
-                            case nameof(Sharpness):
-                                if (!IsSettingProfile)
-                                {
-                                    ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                    else
+                    // << 250119 updated by Hess to meet Alex's new requirement
+                    //if (CurrentProfileName == "Smooth" || CurrentProfileName == "Warm" || CurrentProfileName == "Vibrant")
+                    switch (propertyName)
                     {
-                        if (!IsSettingProfile)
-                        {
-                            ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
-                        }
+                        case nameof(IsAutoFramingOn):
+                        case nameof(FieldOfView):
+                        case nameof(IsHDROn):
+                        case nameof(IsAutoWhiteBalanceOn):
+                        case nameof(Brightness):
+                        case nameof(Contrast):
+                        case nameof(Saturation):
+                        case nameof(Sharpness):
+                            if (!IsSettingProfile)
+                            {
+                                ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
+                                propertyInfo.SetValue(CurrentProfile, convertedValue);
+                                WebcamSettings.NONE = CurrentProfile;
+                                CurrentProfileName = "NONE";
+                            }
+                            break;
+                        default:
+                            break;
                     }
+                    //else
+                    //{
+                    //    if (!IsSettingProfile)
+                    //    {
+                    //        ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
+                    //    }
+                    //}
+                    // >>
                 }
-                propertyInfo.SetValue(CurrentProfile, convertedValue);
-                //WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
                 OnPropertyChanged(nameof(UndoVisibility));
                 OnPropertyChanged(nameof(Undo2Visibility));
                 OnPropertyChanged(nameof(RedoVisibility));
                 OnPropertyChanged(nameof(Redo2Visibility));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs SetProfileProperty() ex:" + ex.Message);
-            } 
+            }
         }
 
         public void ClearUndo()
@@ -2024,7 +2034,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 OnPropertyChanged(nameof(RedoVisibility));
                 OnPropertyChanged(nameof(Redo2Visibility));
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs ClearUndo() ex:" + ex.Message);
             }
@@ -2064,7 +2074,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 propertyInfo.SetValue(CurrentProfile, convertedValue);
                 UpdateProperty(op.Property, convertedValue);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs Redo() ex:" + ex.Message);
             }
@@ -2263,7 +2273,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (_properties is VideoEncodingProperties &&
                     (_properties as VideoEncodingProperties).FrameRate.Denominator != 0)
                 {
-                    return (_properties as VideoEncodingProperties).FrameRate.Numerator / (_properties as VideoEncodingProperties).FrameRate.Denominator;                    
+                    return (_properties as VideoEncodingProperties).FrameRate.Numerator / (_properties as VideoEncodingProperties).FrameRate.Denominator;
                 }
 
                 return 0;

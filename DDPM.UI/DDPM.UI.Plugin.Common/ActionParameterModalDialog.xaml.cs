@@ -3,36 +3,44 @@ using DDPM.SA.Common.Security;
 using DDPM.UI.Common;
 using DDPM.UI.Resources.Helper;
 using DPeMPublic.Common.Enums;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Windows.Media.Animation;
+using System.Diagnostics;
+using System.Reflection.Metadata;
 
 namespace DDPM.UI.Plugin.Common
 {
     /// <summary>
     /// ActionParameterModalDialog.xaml 的互動邏輯
     /// </summary>
-    public partial class ActionParameterModalDialog : Window
+    public partial class ActionParameterModalDialog : System.Windows.Window
     {
         private readonly string Caption = "";
 
         private readonly Microsoft.Win32.OpenFileDialog? openFileDialog;
         private readonly System.Windows.Forms.FolderBrowserDialog? folderBrowserDialog;
-        private AdvancedAction _deviceCat;
-        private bool IsForPen = false;
+
+        private readonly string guid;
+        private readonly string pType;
 
         public string Parameter { get; private set; } = "";
 
-        public ActionParameterModalDialog(AdvancedAction deviceCat, double width, double height, string parameter = "", bool isForPen = false)
+        public ActionParameterModalDialog(AdvancedAction deviceCat, double width, double height, string parameter = "", string type = "", string Guid = "")
         {
             InitializeComponent();
             this.Width = width;
             this.Height = height;
 
             txtCaption.Text = Caption;
-            _deviceCat = deviceCat;
+            guid = Guid;
+            pType = type;
 
             switch (deviceCat)
             {
@@ -42,15 +50,35 @@ namespace DDPM.UI.Plugin.Common
                     txtKeystroke.Text = parameter;
                     btnClear.IsEnabled = parameter != "";
                     spKeystroke.Visibility = Visibility.Visible;
-                    if (isForPen)
+                    if (DdpmCommonHelper.DeviceManagerSA == null)
+                    {
+                        DdpmCommonHelper.WriteUILog($"Assign KeyStroke Error: DeviceManagerSA is null!");
+                        return;
+                    }
+                    if (pType == "PEN")
                     {
                         DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManagerSA_DeviceChanged;
-                        IsForPen = true;
-                        Task<bool> task = DdpmCommonHelper.DeviceManagerSA!.StartKeyCapturePen();
+                        Task<bool> task = DdpmCommonHelper.DeviceManagerSA.StartKeyCapturePen();
                         _ = task.Result;
                     }
-                    else
+                    else if (pType == "KB")
+                    {
+                        if (!DdpmCommonHelper.DeviceManagerSA.StartKeyboardKeystrokeRecording(guid).Result)
+                        {
+                            DdpmCommonHelper.WriteUILog($"Assign KeyStroke Error: Can't StartKeyboardKeystrokeRecording!");
+                            return;
+                        }
                         this.PreviewKeyDown += Keystroke_PreviewKeyDown;
+                    }
+                    else
+                    {
+                        if (!DdpmCommonHelper.DeviceManagerSA.StartMouseKeystrokeRecording(guid).Result)
+                        {
+                            DdpmCommonHelper.WriteUILog($"Assign KeyStroke Error: Can't StartMouseKeystrokeRecording!");
+                            return;
+                        }
+                        this.PreviewKeyDown += Keystroke_PreviewKeyDown;
+                    }
                     break;
 
                 case AdvancedAction.OpenFile:
@@ -105,9 +133,10 @@ namespace DDPM.UI.Plugin.Common
                     Task<string> task2 = DdpmCommonHelper.DeviceManagerSA!.KeyCaptureData();
                     var keystroke = task2.Result;
                 }
-                Application.Current.Dispatcher.Invoke(() => {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
                     txtKeystroke.Text = e.changedProperty.Substring(33);
-                });                
+                });
             }
         }
 
@@ -119,8 +148,18 @@ namespace DDPM.UI.Plugin.Common
 
         private void CancelClick(object sender, MouseButtonEventArgs e)
         {
-            if (IsForPen)
+            if (pType == "PEN")
                 StopPenCapture();
+            else
+            {
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    if (pType == "KB")
+                        _ = DdpmCommonHelper.DeviceManagerSA!.StopKeyboardKeystrokeRecording(guid).Result;
+                    else
+                        _ = DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(guid).Result;
+                }
+            }
 
             DialogResult = false;
             Close();
@@ -131,26 +170,13 @@ namespace DDPM.UI.Plugin.Common
             txtKeystroke.Text = "";
 
             btnClear.IsEnabled = false;
-            if (IsForPen)
+            if (pType == "PEN")
                 RestartPenCapture();
         }
 
         private void SaveClick(object sender, MouseButtonEventArgs e)
         {
-            //if (_deviceCat == AdvancedAction.OpenWebPage)
-            //{
-            //    if (!InputHelper.InputValidation_WebURL(txtKeystroke.Text, out string info))
-            //    {
-            //        MessageBox.Show(LangHelper.Instance["InvalidURL"]);
-            //        return;
-            //    }
-            //}
-
-            if (IsForPen)
-            {
-                StopPenCapture();
-            }
-
+            StopCapture();
             DialogResult = true;
             Close();
         }
@@ -163,10 +189,10 @@ namespace DDPM.UI.Plugin.Common
             if (txt == "")
                 return;
 
-            if (txtKeystroke.Text.ToUpper() == "ALT + Z")
+            if (txtKeystroke.Text.Equals("ALT + Z", StringComparison.InvariantCultureIgnoreCase))
             {
                 MessageModalDialog messageModalDialog;
-                Window mainWindow = System.Windows.Application.Current.MainWindow;
+                System.Windows.Window mainWindow = System.Windows.Application.Current.MainWindow;
                 messageModalDialog = new(LangHelper.Instance["hotkey.7"], LangHelper.Instance["Hotkey.10"], "", "");
                 if (mainWindow != null)
                 {
@@ -180,86 +206,87 @@ namespace DDPM.UI.Plugin.Common
             }
 
             btnClear.IsEnabled = true;
-            //if (_deviceCat == AdvancedAction.OpenWebPage)
-            //{
-            //    if (txt.Length < 7)
-            //        return;
-
-            //    var url = txt.Substring(0, 7).ToLower();
-            //    if (url != "http://" && url != "https:/")
-            //        return;
-
-            //    if (url != "http://" && txt.Substring(0, 8).ToLower() != "https://")
-            //        return;
-            //}
-
             btnSave.IsEnabled = true;
             Parameter = txt;
         }
 
-        private void Keystroke_PreviewKeyUp(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-        }
-
         private void Keystroke_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            var key = (e.Key == Key.System ? e.SystemKey : e.Key);
-            if (key == Key.LWin)
-            { e.Handled = true; return; }
-            string status = "";
+            string ketStroke;
+            if (pType == "KB")
+                ketStroke = DdpmCommonHelper.DeviceManagerSA!.GetKeyboardKeystrokeDisplayData(guid).Result;
+            else
+                ketStroke = DdpmCommonHelper.DeviceManagerSA!.GetMouseKeystrokeDisplayData(guid).Result;
+            txtKeystroke.Text = ketStroke;
+            e.Handled = true;
+            return;
+            //if (e.SystemKey == Key.Escape && (Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt)
+            //{
+            //}
+            //var key = (e.Key == Key.System ? e.SystemKey : e.Key);
+            //if (key == Key.LWin)
+            //{ e.Handled = true; return; }
+            //string status = "";
 
-            if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
-            {
-                status += status == "" ? "Ctrl" : " + Ctrl";
-            }
-            if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt)
-            {
-                status += status == "" ? "Alt" : " + Alt";
-            }
-            if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
-            {
-                status += status == "" ? "Shift" : " + Shift";
-            }
-            //if((Keyboard.Modifiers & ModifierKeys.Windows) == ModifierKeys.Windows) {
-            //  status += status == "" ? "Windows" : " + Windows";
+            //if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            //{
+            //    status += status == "" ? "Ctrl" : " + Ctrl";
+            //}
+            //if ((Keyboard.Modifiers & ModifierKeys.Alt) == ModifierKeys.Alt)
+            //{
+            //    status += status == "" ? "Alt" : " + Alt";
+            //}
+            //if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
+            //{
+            //    status += status == "" ? "Shift" : " + Shift";
+            //}
+            //if ((Keyboard.Modifiers & ModifierKeys.Windows) == ModifierKeys.Windows)
+            //{
+            //    status += status == "" ? "Windows" : " + Windows";
             //}
 
-            var keyName = (int)key switch
-            {
-                2 => "",         //Backspace
-                3 => "",         //Tab
-                6 => "",         //Enter
-                7 => "",         //Pause
-                8 => "",         //Caps Lock
-                13 => "",        //Escape
-                18 => "",        //Space
-                20 => "Page Down",
-                > 33 and < 44 => key.ToString().Replace("D", " "),
-                > 73 and < 84 => key.ToString().Replace("Pad", " "),
-                84 => "Num *",
-                85 => "Num +",
-                87 => "Num -",
-                88 => "Num .",
-                89 => "Num /",
-                140 => ";",
-                141 => "=",
-                142 => ",",
-                143 => "-",
-                144 => ".",
-                145 => "/",
-                146 => "`",
-                149 => "[",
-                150 => "\\",
-                151 => "]",
-                152 => "'",
-                >= 90 => "",
-                _ => key.ToString()
-            };
+            //var keyName = (int)key switch
+            //{
+            //    2 => "",         //Backspace
+            //    3 => "Tab",         //Tab
+            //    6 => "",         //Enter
+            //    7 => "",         //Pause
+            //    8 => "",         //Caps Lock
+            //    13 => "Esc",        //Escape
+            //    18 => "Space",        //Space
+            //    20 => "Page Down",
+            //    > 33 and < 44 => key.ToString().Replace("D", " "),
+            //    > 73 and < 84 => key.ToString().Replace("Pad", " "),
+            //    84 => "Num *",
+            //    85 => "Num +",
+            //    87 => "Num -",
+            //    88 => "Num .",
+            //    89 => "Num /",
+            //    91 => "F2",
+            //    92 => "F3",
+            //    93 => "F4",
+            //    94 => "F5",
+            //    95 => "F6",
+            //    97 => "F8",
+            //    99 => "F10",
+            //    140 => ";",
+            //    141 => "=",
+            //    142 => ",",
+            //    143 => "-",
+            //    144 => ".",
+            //    145 => "/",
+            //    146 => "`",
+            //    149 => "[",
+            //    150 => "\\",
+            //    151 => "]",
+            //    152 => "'",
+            //    >= 90 => "",
+            //    _ => key.ToString()
+            //};
 
-            txtKeystroke.Text = status == "" ? keyName : status + $" + {keyName}";
-            //txtKeystroke.Text = key.ToString();
-            e.Handled = true;
+            //txtKeystroke.Text = status == "" ? keyName : status + (keyName == "" ? "" : $" + {keyName}");
+            ////txtKeystroke.Text = key.ToString();
+            //e.Handled = true;
         }
 
         private void Clear_txtOpen(object sender, MouseButtonEventArgs e)
@@ -322,8 +349,22 @@ namespace DDPM.UI.Plugin.Common
 
         private void Window_Unloaded(object sender, RoutedEventArgs e)
         {
-            if (IsForPen)
+            StopCapture();
+        }
+        private void StopCapture()
+        {
+            if (pType == "PEN")
                 StopPenCapture();
+            else
+            {
+                if (DdpmCommonHelper.DeviceManagerSA != null)
+                {
+                    if (pType == "KB")
+                        _ = DdpmCommonHelper.DeviceManagerSA!.StopKeyboardKeystrokeRecording(guid).Result;
+                    else if (pType == "MOUSE")
+                        _ = DdpmCommonHelper.DeviceManagerSA!.StopMouseKeystrokeRecording(guid).Result;
+                }
+            }
         }
     }
 }

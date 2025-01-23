@@ -119,7 +119,9 @@ namespace DDPM.SA.Common
 
         private void WriteLog(string message)
         {
+#if DEBUG
             Console.WriteLine($"[AppListDictionary] {message}");
+#endif
             _log?.Info($"[AppListDictionary] {message}");
         }
 
@@ -228,7 +230,9 @@ namespace DDPM.SA.Common
 
         private void WriteLog(string message)
         {
+#if DEBUG
             Console.WriteLine($"[AppsCollectShell] {message}");
+#endif
             _log?.Info($"[AppsCollectShell] {message}");
         }
 

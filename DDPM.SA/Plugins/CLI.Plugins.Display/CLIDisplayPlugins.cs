@@ -1282,6 +1282,7 @@ namespace DDPM.CLI.Plugins.Display
                         case "HEADSET":
                         case "PEN":
                         case "DOCK":
+                        case "AIRAUDIO":
                             foreach (var g in _deviceinfo)
                             {
                                 if (g.LogicalDeviceType.Equals($"Logical{commandLineInput.Options[0].Option_Value}", StringComparison.OrdinalIgnoreCase))
@@ -7909,26 +7910,15 @@ namespace DDPM.CLI.Plugins.Display
 
                         read_list.RemoveAll(x => x.SerialNumber == null);
                         int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
-                        if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
+                        /*if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                         {
                             await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
-                            //PowerNapSetting setting = new PowerNapSetting
-                            //{
-                            //    Status = false,
-                            //    ModelName = monitor.edid.ModelName,
-                            //    SerialNumber = monitor.edid.SerialNumber,
-                            //    RunType = PowerNapType.Off
-                            //};
-                            //await devMgr.SavePowerNapSetting(setting);
-                            //UpdateUINotify off = new UpdateUINotify();
-                            //off.UI_Field_Name = "POWERNAP;OFF";
-                            //devMgr.OnUIUpdateNotify(off);
                             S_PowerNap_RESPONSE.Result = "PASS";
                             S_PowerNap_RESPONSE.Value = "Off";
-                        }
-                        else
+                        }*/
+                        if (read_list.Count >= 0 || idx >= 0)
                         {
-                            //value.Replace(".", ",");
+
                             List<string> values = value.Replace(".", ",").Split(",").ToList();
                             PowerNapSetting temp = read_list[idx];
                             foreach (string v in values)
@@ -7944,49 +7934,16 @@ namespace DDPM.CLI.Plugins.Display
                                     case "OFF":
                                         {
                                             await SetPowerNapAsync(PowerNapType.Off, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
-                                            //PowerNapSetting setting = new PowerNapSetting
-                                            //{
-                                            //    Status = false,//temp.Status,
-                                            //    ModelName = temp.ModelName,
-                                            //    SerialNumber = temp.SerialNumber,
-                                            //    RunType = PowerNapType.Off
-                                            //};
-                                            //await devMgr.SavePowerNapSetting(setting);
-                                            //UpdateUINotify off = new UpdateUINotify();
-                                            //off.UI_Field_Name = "POWERNAP;OFF";
-                                            //devMgr.OnUIUpdateNotify(off);
                                             break;
                                         }
                                     case "SLEEP":
                                         {
                                             await SetPowerNapAsync(PowerNapType.SleepIfRunning, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
-                                            //PowerNapSetting setting = new PowerNapSetting
-                                            //{
-                                            //    Status = true,//temp.Status,
-                                            //    ModelName = temp.ModelName,
-                                            //    SerialNumber = temp.SerialNumber,
-                                            //    RunType = PowerNapType.SleepIfRunning
-                                            //};
-                                            //await devMgr.SavePowerNapSetting(setting);
-                                            //UpdateUINotify sleep = new UpdateUINotify();
-                                            //sleep.UI_Field_Name = "POWERNAP;SLEEP";
-                                            //devMgr.OnUIUpdateNotify(sleep);
                                             break;
                                         }
                                     case "REDUCEBRIGHTNESS":
                                         {
                                             await SetPowerNapAsync(PowerNapType.ReduceBrightness, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
-                                            //PowerNapSetting setting = new PowerNapSetting
-                                            //{
-                                            //    Status = true,//temp.Status,
-                                            //    ModelName = temp.ModelName,
-                                            //    SerialNumber = temp.SerialNumber,
-                                            //    RunType = PowerNapType.ReduceBrightness
-                                            //};
-                                            //await devMgr.SavePowerNapSetting(setting);
-                                            //UpdateUINotify reduce = new UpdateUINotify();
-                                            //reduce.UI_Field_Name = "POWERNAP;REDUCE";
-                                            //devMgr.OnUIUpdateNotify(reduce);
                                             break;
                                         }
                                     default:
@@ -8009,7 +7966,6 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Value = tmp.RunType.ToString();
 
                         //S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
-
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
                 }
@@ -8024,30 +7980,17 @@ namespace DDPM.CLI.Plugins.Display
                         S_PowerNap_RESPONSE.Command = "SET";
                         S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
 
-                        //List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
                         read_list.RemoveAll(x => x.SerialNumber == null);
                         int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
-                        if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
+                        /*if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                         {
                             await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
-                            //PowerNapSetting setting = new PowerNapSetting
-                            //{
-                            //    Status = false,
-                            //    ModelName = monitor.edid.ModelName,
-                            //    SerialNumber = monitor.edid.SerialNumber,
-                            //    RunType = PowerNapType.Off
-                            //};
-                            //await devMgr.SavePowerNapSetting(setting);
-                            //UpdateUINotify off = new UpdateUINotify();
-                            //off.UI_Field_Name = "POWERNAP;OFF";
-                            //devMgr.OnUIUpdateNotify(off);
                             S_PowerNap_RESPONSE.Result = "PASS";
                             S_PowerNap_RESPONSE.Value = "Off";
-                        }
-                        else
+                        }*/
+                        if (read_list.Count >= 0 || idx >= 0)
                         {
                             PowerNapSetting temp = read_list[idx];
-                            //value.Replace(".", ",");
                             List<string> values = value.Replace(".", ",").Split(",").ToList();
                             foreach (string v in values)
                             {
@@ -8062,49 +8005,16 @@ namespace DDPM.CLI.Plugins.Display
                                     case "OFF":
                                         {
                                             await SetPowerNapAsync(PowerNapType.Off, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
-                                            //PowerNapSetting setting = new PowerNapSetting
-                                            //{
-                                            //    Status = false,//temp.Status,
-                                            //    ModelName = temp.ModelName,
-                                            //    SerialNumber = temp.SerialNumber,
-                                            //    RunType = PowerNapType.Off
-                                            //};
-                                            //await devMgr.SavePowerNapSetting(setting);
-                                            //UpdateUINotify off = new UpdateUINotify();
-                                            //off.UI_Field_Name = "POWERNAP;OFF";
-                                            //devMgr.OnUIUpdateNotify(off);
                                             break;
                                         }
                                     case "SLEEP":
                                         {
                                             await SetPowerNapAsync(PowerNapType.SleepIfRunning, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
-                                            //PowerNapSetting setting = new PowerNapSetting
-                                            //{
-                                            //    Status = true,
-                                            //    ModelName = temp.ModelName,
-                                            //    SerialNumber = temp.SerialNumber,
-                                            //    RunType = PowerNapType.SleepIfRunning
-                                            //};
-                                            //await devMgr.SavePowerNapSetting(setting);
-                                            //UpdateUINotify sleep = new UpdateUINotify();
-                                            //sleep.UI_Field_Name = "POWERNAP;SLEEP";
-                                            //devMgr.OnUIUpdateNotify(sleep);
                                             break;
                                         }
                                     case "REDUCEBRIGHTNESS":
                                         {
                                             await SetPowerNapAsync(PowerNapType.ReduceBrightness, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
-                                            //PowerNapSetting setting = new PowerNapSetting
-                                            //{
-                                            //    Status = true,//temp.Status,
-                                            //    ModelName = temp.ModelName,
-                                            //    SerialNumber = temp.SerialNumber,
-                                            //    RunType = PowerNapType.ReduceBrightness
-                                            //};
-                                            //await devMgr.SavePowerNapSetting(setting);
-                                            //UpdateUINotify reduce = new UpdateUINotify();
-                                            //reduce.UI_Field_Name = "POWERNAP;REDUCE";
-                                            //devMgr.OnUIUpdateNotify(reduce);
                                             break;
                                         }
                                     default:
@@ -8127,7 +8037,6 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Value = tmp.RunType.ToString();
 
                         //S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
-
                         output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                     }
                 }
@@ -8144,30 +8053,18 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Command = "SET";
                             S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
 
-                            //List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
                             read_list.RemoveAll(x => x.SerialNumber == null);
                             int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
-                            if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
+                            /*if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                             {
                                 await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
-                                //PowerNapSetting setting = new PowerNapSetting
-                                //{
-                                //    Status = false,
-                                //    ModelName = monitor.edid.ModelName,
-                                //    SerialNumber = monitor.edid.SerialNumber,
-                                //    RunType = PowerNapType.Off
-                                //};
-                                //await devMgr.SavePowerNapSetting(setting);
-                                //UpdateUINotify off = new UpdateUINotify();
-                                //off.UI_Field_Name = "POWERNAP;OFF";
-                                //devMgr.OnUIUpdateNotify(off);
                                 S_PowerNap_RESPONSE.Result = "PASS";
                                 S_PowerNap_RESPONSE.Value = "Off";
-                            }
-                            else
+                            }*/
+                            if (read_list.Count >= 0 || idx >= 0)
                             {
                                 PowerNapSetting temp = read_list[idx];
-                                //value.Replace(".", ",");
+
                                 List<string> values = value.Replace(".", ",").Split(",").ToList();
                                 foreach (string v in values)
                                 {
@@ -8182,49 +8079,16 @@ namespace DDPM.CLI.Plugins.Display
                                         case "OFF":
                                             {
                                                 await SetPowerNapAsync(PowerNapType.Off, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
-                                                //PowerNapSetting setting = new PowerNapSetting
-                                                //{
-                                                //    Status = false,
-                                                //    ModelName = temp.ModelName,
-                                                //    SerialNumber = temp.SerialNumber,
-                                                //    RunType = PowerNapType.Off
-                                                //};
-                                                //await devMgr.SavePowerNapSetting(setting);
-                                                //UpdateUINotify off = new UpdateUINotify();
-                                                //off.UI_Field_Name = "POWERNAP;OFF";
-                                                //devMgr.OnUIUpdateNotify(off);
                                                 break;
                                             }
                                         case "SLEEP":
                                             {
                                                 await SetPowerNapAsync(PowerNapType.SleepIfRunning, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
-                                                //PowerNapSetting setting = new PowerNapSetting
-                                                //{
-                                                //    Status = true,
-                                                //    ModelName = temp.ModelName,
-                                                //    SerialNumber = temp.SerialNumber,
-                                                //    RunType = PowerNapType.SleepIfRunning
-                                                //};
-                                                //await devMgr.SavePowerNapSetting(setting);
-                                                //UpdateUINotify sleep = new UpdateUINotify();
-                                                //sleep.UI_Field_Name = "POWERNAP;SLEEP";
-                                                //devMgr.OnUIUpdateNotify(sleep);
                                                 break;
                                             }
                                         case "REDUCEBRIGHTNESS":
                                             {
                                                 await SetPowerNapAsync(PowerNapType.ReduceBrightness, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
-                                                //PowerNapSetting setting = new PowerNapSetting
-                                                //{
-                                                //    Status = true,
-                                                //    ModelName = temp.ModelName,
-                                                //    SerialNumber = temp.SerialNumber,
-                                                //    RunType = PowerNapType.ReduceBrightness
-                                                //};
-                                                //await devMgr.SavePowerNapSetting(setting);
-                                                //UpdateUINotify reduce = new UpdateUINotify();
-                                                //reduce.UI_Field_Name = "POWERNAP;REDUCE";
-                                                //devMgr.OnUIUpdateNotify(reduce);
                                                 break;
                                             }
                                         default:
@@ -8247,7 +8111,6 @@ namespace DDPM.CLI.Plugins.Display
                                 S_PowerNap_RESPONSE.Value = tmp_rst.RunType.ToString();
 
                             //S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
-
                             output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                         }
                     }
@@ -8265,30 +8128,18 @@ namespace DDPM.CLI.Plugins.Display
                             S_PowerNap_RESPONSE.Command = "SET";
                             S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
 
-                            //List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
                             read_list.RemoveAll(x => x.SerialNumber == null);
                             int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
-                            if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
+                            /*if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                             {
                                 await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
-                                //PowerNapSetting setting = new PowerNapSetting
-                                //{
-                                //    Status = false,
-                                //    ModelName = monitor.edid.ModelName,
-                                //    SerialNumber = monitor.edid.SerialNumber,
-                                //    RunType = PowerNapType.Off
-                                //};
-                                //await devMgr.SavePowerNapSetting(setting);
-                                //UpdateUINotify off = new UpdateUINotify();
-                                //off.UI_Field_Name = "POWERNAP;OFF";
-                                //devMgr.OnUIUpdateNotify(off);
                                 S_PowerNap_RESPONSE.Result = "PASS";
                                 S_PowerNap_RESPONSE.Value = "Off";
-                            }
-                            else
+                            }*/
+                            if (read_list.Count >= 0 || idx >= 0)
                             {
                                 PowerNapSetting temp = read_list[idx];
-                                //value.Replace(".", ",");
+
                                 List<string> values = value.Replace(".", ",").Split(",").ToList();
                                 foreach (string v in values)
                                 {
@@ -8303,49 +8154,16 @@ namespace DDPM.CLI.Plugins.Display
                                         case "OFF":
                                             {
                                                 await SetPowerNapAsync(PowerNapType.Off, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
-                                                //PowerNapSetting setting = new PowerNapSetting
-                                                //{
-                                                //    Status = false,
-                                                //    ModelName = temp.ModelName,
-                                                //    SerialNumber = temp.SerialNumber,
-                                                //    RunType = PowerNapType.Off
-                                                //};
-                                                //await devMgr.SavePowerNapSetting(setting);
-                                                //UpdateUINotify off = new UpdateUINotify();
-                                                //off.UI_Field_Name = "POWERNAP;OFF";
-                                                //devMgr.OnUIUpdateNotify(off);
                                                 break;
                                             }
                                         case "SLEEP":
                                             {
                                                 await SetPowerNapAsync(PowerNapType.SleepIfRunning, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
-                                                //PowerNapSetting setting = new PowerNapSetting
-                                                //{
-                                                //    Status = true,
-                                                //    ModelName = temp.ModelName,
-                                                //    SerialNumber = temp.SerialNumber,
-                                                //    RunType = PowerNapType.SleepIfRunning
-                                                //};
-                                                //await devMgr.SavePowerNapSetting(setting);
-                                                //UpdateUINotify sleep = new UpdateUINotify();
-                                                //sleep.UI_Field_Name = "POWERNAP;SLEEP";
-                                                //devMgr.OnUIUpdateNotify(sleep);
                                                 break;
                                             }
                                         case "REDUCEBRIGHTNESS":
                                             {
                                                 await SetPowerNapAsync(PowerNapType.ReduceBrightness, devMgr, temp.ModelName, temp.SerialNumber, temp.ServiceTag);
-                                                //PowerNapSetting setting = new PowerNapSetting
-                                                //{
-                                                //    Status = true,
-                                                //    ModelName = temp.ModelName,
-                                                //    SerialNumber = temp.SerialNumber,
-                                                //    RunType = PowerNapType.ReduceBrightness
-                                                //};
-                                                //await devMgr.SavePowerNapSetting(setting);
-                                                //UpdateUINotify reduce = new UpdateUINotify();
-                                                //reduce.UI_Field_Name = "POWERNAP;REDUCE";
-                                                //devMgr.OnUIUpdateNotify(reduce);
                                                 break;
                                             }
                                         default:
@@ -8368,7 +8186,6 @@ namespace DDPM.CLI.Plugins.Display
                                 S_PowerNap_RESPONSE.Value = tmp_rst.RunType.ToString();
 
                             //S_PowerNap_RESPONSE.Value += "," + (ddpmSettings.LockSettings.Lock_Display_PowerNap ? "LOCK" : "UNLOCK");
-
                             output += "\n" + JsonConvert.SerializeObject(S_PowerNap_RESPONSE, Formatting.Indented);
                         }
                     }
@@ -8388,24 +8205,12 @@ namespace DDPM.CLI.Plugins.Display
 
                         S_PowerNap_RESPONSE.Command = "GET";
                         S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
-                        //read current PowerNap setting back
-                        //List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
+
                         read_list.RemoveAll(x => x.SerialNumber == null);
                         int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                         if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                         {
                             await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
-                            //PowerNapSetting setting = new PowerNapSetting
-                            //{
-                            //    Status = false,
-                            //    ModelName = monitor.edid.ModelName,
-                            //    SerialNumber = monitor.edid.SerialNumber,
-                            //    RunType = PowerNapType.Off
-                            //};
-                            //await devMgr.SavePowerNapSetting(setting);
-                            //UpdateUINotify off = new UpdateUINotify();
-                            //off.UI_Field_Name = "POWERNAP;OFF";
-                            //devMgr.OnUIUpdateNotify(off);
                             S_PowerNap_RESPONSE.Result = "PASS";
                             S_PowerNap_RESPONSE.Value = "Off";
                         }
@@ -8432,24 +8237,12 @@ namespace DDPM.CLI.Plugins.Display
 
                         S_PowerNap_RESPONSE.Command = "GET";
                         S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
-                        //read current PowerNap setting back
-                        //List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
+
                         read_list.RemoveAll(x => x.SerialNumber == null);
                         int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                         if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                         {
                             await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
-                            //PowerNapSetting setting = new PowerNapSetting
-                            //{
-                            //    Status = false,
-                            //    ModelName = monitor.edid.ModelName,
-                            //    SerialNumber = monitor.edid.SerialNumber,
-                            //    RunType = PowerNapType.Off
-                            //};
-                            //await devMgr.SavePowerNapSetting(setting);
-                            //UpdateUINotify off = new UpdateUINotify();
-                            //off.UI_Field_Name = "POWERNAP;OFF";
-                            //devMgr.OnUIUpdateNotify(off);
                             S_PowerNap_RESPONSE.Result = "PASS";
                             S_PowerNap_RESPONSE.Value = "Off";
                         }
@@ -8478,24 +8271,13 @@ namespace DDPM.CLI.Plugins.Display
 
                             S_PowerNap_RESPONSE.Command = "GET";
                             S_PowerNap_RESPONSE.TargetFeature = "PowerNap";
-                            //read current PowerNap setting back
-                            //List<PowerNapSetting> read_list = devMgr.ReadPowerNapSettings().Result;
+
                             read_list.RemoveAll(x => x.SerialNumber == null);
                             int idx = read_list.FindIndex(x => x.SerialNumber.Equals(monitor.edid.SerialNumber));
                             if (read_list.Count == 0 || idx < 0)  //if no PowerNap setting exist, create a new setting
                             {
                                 await SetPowerNapAsync(PowerNapType.Off, devMgr, monitor.edid.ModelName, monitor.edid.SerialNumber, monitor.edid.ServiceTag);
-                                //PowerNapSetting setting = new PowerNapSetting
-                                //{
-                                //    Status = false,
-                                //    ModelName = monitor.edid.ModelName,
-                                //    SerialNumber = monitor.edid.SerialNumber,
-                                //    RunType = PowerNapType.Off
-                                //};
-                                //await devMgr.SavePowerNapSetting(setting);
-                                //UpdateUINotify off = new UpdateUINotify();
-                                //off.UI_Field_Name = "POWERNAP;OFF";
-                                //devMgr.OnUIUpdateNotify(off);
+
                                 S_PowerNap_RESPONSE.Result = "PASS";
                                 S_PowerNap_RESPONSE.Value = "Off";
                             }
@@ -11594,8 +11376,8 @@ namespace DDPM.CLI.Plugins.Display
                                             {
                                                 case "COLLABSCREENSHARE":
                                                     writelog("COLLABSCREENSHARE entry");
-                                                    writelog("device.IsMicEnumerationSupported entry");
-                                                    if (device.IsMicEnumerationSupported)
+                                                    writelog("device.IsCollaborationScreenShareEnable entry");
+                                                    if (device.IsCollaborationScreenShareEnable)
                                                     {
                                                         if (property.Value.ToString() == "ON")
                                                         {

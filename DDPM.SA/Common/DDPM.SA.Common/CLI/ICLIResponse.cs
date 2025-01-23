@@ -45,7 +45,9 @@ namespace DDPM.SA.Common
             }
             catch (Exception ex)
             {
+#if DEBUG
                 Console.WriteLine($"[CLI_RESPONSE] ToJson exception, message: {ex.Message}");
+#endif
                 return string.Empty;
             }
         }
@@ -68,12 +70,16 @@ namespace DDPM.SA.Common
                     }
                 }
                 catch (Exception ex) 
-                { 
+                {
+#if DEBUG
                     Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+#endif
                 }
                 
             }
-            System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#if DEBUG //Dean 0122 should keep response to console window for CLI
+            Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#endif
             return JsonConvert.SerializeObject(o, Formatting.Indented);
         }
     }
@@ -168,11 +174,15 @@ namespace DDPM.SA.Common
                 }
                 catch (Exception ex)
                 {
+#if DEBUG
                     Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+#endif
                 }
-                
+
             }
-            System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#if DEBUG //Dean 0122 should keep response to console window for CLI
+            Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#endif
             return JsonConvert.SerializeObject(o, Formatting.Indented);
         }
 
@@ -531,11 +541,15 @@ namespace DDPM.SA.Common
                 }
                 catch (Exception ex)
                 {
+#if DEBUG
                     Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+#endif
                 }
                 
             }
-            System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#if DEBUG //Dean 0122 should keep response to console window for CLI
+            Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#endif
             return JsonConvert.SerializeObject(o, Formatting.Indented);
         }
     }
@@ -582,7 +596,9 @@ namespace DDPM.SA.Common
             }
             catch (Exception ex)
             {
+#if DEBUG
                 Console.WriteLine($"[PeripheralResponse] ToJson exception, message: {ex.Message}");
+#endif
                 return string.Empty;
             }
         }
@@ -722,10 +738,14 @@ namespace DDPM.SA.Common
                 }
                 catch (Exception ex)
                 {
+#if DEBUG
                     Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+#endif
                 }                
             }
-            System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#if DEBUG //Dean 0122 should keep response to console window for CLI
+            Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#endif
             return JsonConvert.SerializeObject(o, Formatting.Indented);
         }
     }
@@ -753,7 +773,9 @@ namespace DDPM.SA.Common
             }
             catch (Exception ex)
             {
+#if DEBUG
                 Console.WriteLine($"[CLI_RESPONSE3] ToJson exception, message: {ex.Message}");
+#endif
                 return string.Empty;
             }
         }
@@ -777,10 +799,14 @@ namespace DDPM.SA.Common
                 }
                 catch (Exception ex)
                 {
+#if DEBUG
                     Console.WriteLine($"[CLI_RESPONSE] OutputLog exception, message: {ex.Message}");
+#endif
                 }
             }
-            System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#if DEBUG //Dean 0122 should keep response to console window for CLI
+            Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#endif
             return JsonConvert.SerializeObject(o, Formatting.Indented);
         }
     }
@@ -877,7 +903,9 @@ namespace DDPM.SA.Common
                     sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
                 }
             }
-            System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#if DEBUG //Dean 0122 should keep response to console window for CLI
+            Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#endif
             return JsonConvert.SerializeObject(o, Formatting.Indented);
         }
     }
@@ -928,7 +956,9 @@ namespace DDPM.SA.Common
                     sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
                 }
             }
-            System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#if DEBUG //Dean 0122 should keep response to console window for CLI
+            Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#endif
             return JsonConvert.SerializeObject(o, Formatting.Indented);
         }
     }
@@ -979,7 +1009,9 @@ namespace DDPM.SA.Common
                     sw.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
                 }
             }
-            System.Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#if DEBUG //Dean 0122 should keep response to console window for CLI
+            Console.WriteLine(JsonConvert.SerializeObject(o, Formatting.Indented));
+//#endif
             return JsonConvert.SerializeObject(o, Formatting.Indented);
         }
     }

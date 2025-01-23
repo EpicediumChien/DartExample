@@ -116,6 +116,7 @@ namespace DDPM.SA.Common.Defer
 
             string info = string.Empty;
             bool write = DDPMFileSecurity.SetJsonContentFromSerializedString(JToken.FromObject(listDefer).ToString(), (FILE_PATH + FILE_NAME), out info);
+
             Console.WriteLine(write);
 
             //File.WriteAllLines(FILE_PATH + FILE_NAME, listDefer.ToArray());

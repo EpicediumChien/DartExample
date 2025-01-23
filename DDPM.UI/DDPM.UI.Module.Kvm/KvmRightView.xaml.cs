@@ -147,18 +147,25 @@ namespace DDPM.UI.Module.Kvm
         {
             if (vm != null)
             {
-                vm.SetInput = Visibility.Visible;
-                vm.SetPXP = Visibility.Visible;
-                vm.EditInput = Visibility.Collapsed;
-                vm.EditPXP = Visibility.Collapsed;
-                //Test Edit Input page
-                //vm.SetInput = Visibility.Collapsed;
-                //vm.SetPXP = Visibility.Collapsed;
-                //vm.EditInput = Visibility.Visible;
-                //vm.EditPXP = Visibility.Visible;
-                InputSourceFullView _inputSourceFullView = new InputSourceFullView();
-                _inputSourceFullView.DataContext = vm;
-                DdpmCommonHelper.ModuleOwner?.OpenFullView(_inputSourceFullView);
+                if (vm.USBKVMisON)
+                {
+                    vm.SetInput = Visibility.Visible;
+                    vm.SetPXP = Visibility.Visible;
+                    vm.EditInput = Visibility.Collapsed;
+                    vm.EditPXP = Visibility.Collapsed;
+                    //Test Edit Input page
+                    //vm.SetInput = Visibility.Collapsed;
+                    //vm.SetPXP = Visibility.Collapsed;
+                    //vm.EditInput = Visibility.Visible;
+                    //vm.EditPXP = Visibility.Visible;
+                    InputSourceFullView _inputSourceFullView = new InputSourceFullView();
+                    _inputSourceFullView.DataContext = vm;
+                    DdpmCommonHelper.ModuleOwner?.OpenFullView(_inputSourceFullView);
+                }
+                else
+                {
+                    vm.Invoke_USBKVM();
+                }
             }
         }
 

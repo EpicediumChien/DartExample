@@ -46,7 +46,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 txtSearchResult.Text = Strings.SearchResultsCaption;
                 ParentBorder.SizeChanged += ParentBorder_SizeChanged;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs  PenButtonSettingsRightView() ex:" + ex.Message);
             }
@@ -104,7 +104,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs  Initialize() ex:" + ex.Message);
             }
@@ -119,7 +119,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 imgBack.Visibility = Visibility.Visible;
                 Section2.Visibility = Visibility.Visible;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs  LoadButtonInfo() ex:" + ex.Message);
             }
@@ -152,7 +152,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                     MultimediaPanel.Height = ParentBorder.ActualHeight == 0 ? 0 : ParentBorder.ActualHeight - 472;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs  SetDockPanel() ex:" + ex.Message);
             }
@@ -200,7 +200,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                     SearchItems.ItemsSource = FilterdActions;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs  SearchBox_TextChanged() ex:" + ex.Message);
             }
@@ -255,7 +255,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                     ShowAction();
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs  Behavior_MouseLeftButtonDown ex:" + ex.Message);
             }
@@ -301,7 +301,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs  ShowAction ex:" + ex.Message);
             }
@@ -341,7 +341,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                         break;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs ArrangeActionSection ex:" + ex.Message);
             }
@@ -400,7 +400,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs ActionButtonLoaded ex:" + ex.Message);
             }
@@ -425,7 +425,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                     Window parentWindow = Window.GetWindow(this);
                     double windowLeft = 0;
                     double windowTop = 0;
-                    ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, "", true);
+                    ActionParameterModalDialog modalDialog = new(action, parentWindow.ActualWidth, parentWindow.ActualHeight, "", "PEN");
                     if (parentWindow != null)
                     {
                         modalDialog.Owner = parentWindow;
@@ -479,7 +479,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 txtSearchText.Clear();
                 ShowAction();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs ActionRadioButton_Click ex:" + ex.Message);
             }
@@ -493,7 +493,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 _vm.SelectedButton = "";
                 Initialize();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs GoBackClicked ex:" + ex.Message);
             }
@@ -536,7 +536,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                     border.Cursor = border.ActualHeight < 60 ? System.Windows.Input.Cursors.Hand : System.Windows.Input.Cursors.Arrow;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs SectionBorderMouseEnter ex:" + ex.Message);
             }
@@ -565,7 +565,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs SectionBorderClick ex:" + ex.Message);
             }
@@ -584,7 +584,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 double windowTop = 0;
                 if (id == 8)
                 {
-                    ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter, true);
+                    ActionParameterModalDialog modalDialog = new(AdvancedAction.AssignKeystroke, parentWindow.ActualWidth, parentWindow.ActualHeight, parameter, "PEN");
                     if (parentWindow != null)
                     {
                         modalDialog.Owner = parentWindow;
@@ -637,7 +637,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                     modalDialog.ShowDialog();
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs EditActionClick ex:" + ex.Message);
             }
@@ -653,7 +653,7 @@ namespace DDPM.UI.Module.PenButtonSettings
 
                 ShowAction();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs RemoveActionClick ex:" + ex.Message);
             }
@@ -695,7 +695,7 @@ namespace DDPM.UI.Module.PenButtonSettings
 
                 ActiveActionSection = section;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs OpenSectionPanel ex:" + ex.Message);
             }
@@ -719,7 +719,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 img.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
                 SectionAction.Visibility = Visibility.Visible;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs OpenBehaviorSection ex:" + ex.Message);
             }
@@ -745,7 +745,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 };
                 img.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs CloseSectionPanel ex:" + ex.Message);
             }
@@ -769,7 +769,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 img.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
                 SectionAction.Visibility = Visibility.Collapsed;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs CloseBehaviorSection ex:" + ex.Message);
             }
@@ -814,7 +814,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                     sv.ScrollToVerticalOffset(offset);
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs ScrollAction ex:" + ex.Message);
             }
@@ -852,7 +852,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                 {
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs SectionButtonClick ex:" + ex.Message);
             }
@@ -901,7 +901,7 @@ namespace DDPM.UI.Module.PenButtonSettings
                         break;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs SectionButtonClick ex:" + ex.Message);
             }
@@ -922,7 +922,7 @@ namespace DDPM.UI.Module.PenButtonSettings
             {
                 e.Handled = !_vm.CheckChar(e.Text);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.PenSettings\\PenSettingsRightView.xaml.cs txtSearchText_PreviewTextInput ex:" + ex.Message);
             }

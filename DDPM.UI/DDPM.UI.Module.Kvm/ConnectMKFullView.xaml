@@ -7,7 +7,7 @@
              xmlns:local="clr-namespace:DDPM.UI.Module.Kvm"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d" Background="{DynamicResource mainWindowBkColor}"
-             d:DesignHeight="671" d:DesignWidth="1378"
+             d:DesignHeight="671" d:DesignWidth="1078"
              SizeChanged="UserControl_SizeChanged">
 
     <UserControl.Resources>

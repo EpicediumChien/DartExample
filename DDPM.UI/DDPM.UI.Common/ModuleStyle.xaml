@@ -784,7 +784,6 @@
     <!--<Grid x:Name="toggleBtnRoot" Background="#19000000">-->
 
     <Grid x:Name="toggleBtnRoot" Background="#01000000">
-
       <!--  [1]  -->
       <Viewbox
                 Grid.Column="1"

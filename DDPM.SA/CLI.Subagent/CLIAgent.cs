@@ -162,7 +162,8 @@ namespace CLI.Subagent
             }
 
             // 2024-08-24 Casper: Add Help command
-            idx = commandLineInputs.FindIndex(x => x.Command.Equals("HELP") && x.TargetFeature != "DISPLAY");
+            //idx = commandLineInputs.FindIndex(x => x.Command.Equals("HELP") && x.TargetFeature != "DISPLAY");
+            idx = commandLineInputs.FindIndex(x => x.Command.Equals("HELP"));
             if (idx >= 0)
             {
                 _exitcode = ICLICommandTable.Response_HelpCommand(commandLineInputs[idx]);
@@ -458,7 +459,7 @@ namespace CLI.Subagent
 
             var deferItem = new DeferItem(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds);
             _CliManagerPlugin.showNotification(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), deferItem);
-            Thread.Sleep(5000);
+            //Thread.Sleep(5000);
         }
         #endregion
 

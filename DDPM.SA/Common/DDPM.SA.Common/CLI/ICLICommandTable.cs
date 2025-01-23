@@ -31,12 +31,12 @@ namespace DDPM.SA.Common
     {
         private readonly Dictionary<string, int> Command_Timeout_Value = new Dictionary<string, int>()
         {
-            { "DEVICEDATA", 300 },
-            { "DEVICECONFIGURATION", 300 },
-            { "EXPORTSETTINGS", 300 },
-            { "IMPORTSETTINGS", 300 },
-            { "USBCPRIORITIZATION", 300 },
-            { "PXP", 300 }
+            { "DEVICEDATA", 600 },
+            { "DEVICECONFIGURATION", 600 },
+            { "EXPORTSETTINGS", 600 },
+            { "IMPORTSETTINGS", 600 },
+            { "USBCPRIORITIZATION", 600 },
+            { "PXP", 600 }
         };
 
         //IT feature table
@@ -803,7 +803,8 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Command line format error"
             };
-            System.Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+
             return (int)CLI_ExitCode.fail_FormantError;
         }
 
@@ -821,7 +822,7 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "DDPM CLI should be executed as elevated process"
             };
-            System.Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             return (int)CLI_ExitCode.fail_notAdmin;
         }
 
@@ -839,7 +840,7 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Timeout for obtaining DDPM SA (CLI Manager)"
             };
-            System.Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             return (int)CLI_ExitCode.target_subagent_timeout;
         }
 
@@ -857,7 +858,7 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Wrong ID value"
             };
-            System.Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             return (int)CLI_ExitCode.fail_Value;
         }
 
@@ -1203,6 +1204,16 @@ namespace DDPM.SA.Common
                 new Dictionary<string, object> {{ "TargetType", "AUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "AUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 1 }},
 
+                 // - AIRAUDIO
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "FWVersion" },                   { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "RestoreFactoryDefaults" },      { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "ancMode" },                     { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "ancMode" },                     { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "micNoiseCancellation" },        { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "micNoiseCancellation" },        { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 1 }},
+
                 // - KEYBOARD
                 new Dictionary<string, object> {{ "TargetType", "KEYBOARD" }, { "TargetFeature", "FWVersion" },                { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "KEYBOARD" }, { "TargetFeature", "RestoreFactoryDefaults" },   { "Value", "N/A" }, { "Type", 1 }},
@@ -1384,7 +1395,7 @@ namespace DDPM.SA.Common
             {
                 switch (commandLineInput.TargetFeature)
                 {
-                    //case "DISPLAY":
+                    case "DISPLAY":
                     case "ADVANCED":
                     case "APP":
                     case "AUDIO":
@@ -1430,8 +1441,7 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Command line format error"
             };
-
-            System.Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
+            Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
             return (int)CLI_ExitCode.fail_FormantError;
         }
     }

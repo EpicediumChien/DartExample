@@ -398,7 +398,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         idxDock++;
                     }
                     //0618 Wayn 新增HeadSet
-                    else if (devType.ToString().ToUpper().Contains("HEADSET"))
+                    else if (devType.ToString().ToUpper().Contains("HEADSET") || devType.ToString().ToUpper().Contains("LOGICALAIRAUDIO"))
                     {
                         string imagepath = "";
                         switch (di.ModelNumber)
@@ -422,7 +422,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             case "WH3024":
                                 imagepath = "Resources/HeadsetModel_WH3024-Airmax.png";
                                 break;
-
+                            case "SB725":
+                                imagepath = "Resources/Speaker_SB725.png";
+                                break;
                             default:
                                 imagepath = "Resources/HeadsetModel_WL7024-Mito.png";
                                 break;
@@ -445,9 +447,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                             case "SB522A":
                                 imagepath = "Resources/Speaker_SB522A.png";
-                                break;
-                            case "SB725":
-                                imagepath = "Resources/Speaker_SB725.png";
                                 break;
                             default:
                                 imagepath = "Resources/Speaker_SP3022.png";
@@ -701,7 +700,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 if (DeviceManagerPlugin != null) //Should be always true
                 {
                     List<MonitorInfo> monitors = DeviceManagerPlugin.GetMonitors().Result;
-                    if (monitors.Count > 0) 
+                    //Robert_Lin 2025-1-20 to prevent monitors is null
+                    if ((monitors != null) && (monitors.Count > 0))
                     {
                         _log.Info($"PleaseWait-Monitor count={monitors.Count}");
                         PrepareMonitorInfos(monitors);

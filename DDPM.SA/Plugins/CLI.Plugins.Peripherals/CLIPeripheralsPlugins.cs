@@ -584,7 +584,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         if (x.Result == "")
                         {
                             writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS HEADSET Entry");
-                            var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(x.Guid, true)).Result;
+                            var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadsetForCLI(x.Guid, true)).Result;
                             writelog("SetPeripheralProperty: RESTOREFACTORYDEFAULTS HEADSET DONE");
                             if (result == "0")
                             {
@@ -678,7 +678,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         x.Value = "";
                         if (x.Result == "")
                         {
-                            var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadset(x.Guid, true)).Result;
+                            var result = RunAsyncTimeout(_devMgr.SetFactoryResetAsyncValueForHeadsetForCLI(x.Guid, true)).Result;
                             if (result == "0")
                             {
                                 x.Result = "PASS";
@@ -1369,7 +1369,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                 writelog($"HeadSet {x.Model} not support MICNOISECANCELLATION");
                                 x.Value = "Not supported";
                                 x.Result = "FAIL";
-                                x.Message = "HeadSet not support MICNOISECANCELLATION";
+                                x.Message = "Audio not support MICNOISECANCELLATION";
                                 retcode = false;
                             }
                         }

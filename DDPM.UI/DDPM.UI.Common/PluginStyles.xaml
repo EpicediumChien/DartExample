@@ -242,15 +242,9 @@
   <SolidColorBrush x:Key="DdpmCB_SelTextColor" Color="#FF31A2E3" />
 
   <!--  ToogleButton PART of DdpmComboBox  -->
-  <!--
-    [1] Draw the arrow down by default.
-    [2] When the toggle is Checked, change the arrow to 'up'.
-    [3] When mouse over on the toggle button, hi light the button background color.
-    -->
-  <ControlTemplate x:Key="DdpmComboBoxToggleButtonTemplate" TargetType="ToggleButton">
+  <!-- Duplicated in ModuleStyle -->
+  <!--<ControlTemplate x:Key="DdpmComboBoxToggleButtonTemplate" TargetType="ToggleButton">
     <Grid x:Name="toggleBtnRoot" Background="#19000000">
-
-      <!--  [1]  -->
       <Viewbox
                 Grid.Column="1"
                 Width="16"
@@ -268,16 +262,14 @@
       </Viewbox>
     </Grid>
     <ControlTemplate.Triggers>
-      <!--  [2]  -->
       <Trigger Property="IsChecked" Value="True">
         <Setter TargetName="Arrow" Property="Data" Value="M1,11 L0,10 L10,0 L20,10 L19,11 L10,2 z" />
       </Trigger>
-      <!--  [3]  -->
       <Trigger Property="IsMouseOver" Value="True">
         <Setter TargetName="toggleBtnRoot" Property="Background" Value="#4CB1B0B0" />
       </Trigger>
     </ControlTemplate.Triggers>
-  </ControlTemplate>
+  </ControlTemplate>-->
 
   <!--  EditBox (TextBox) of DdpmComboBox  -->
   <!--
@@ -330,22 +322,13 @@
   </Style>
 
   <!--  DdpmComboBox Control Template  -->
-  <!--
-    [1] The margin between ComboBox and Popup is 12
-    [2] Popup color and border style
-    [3] The scrollbar is hidden in Popup => it's based on the design in Figma.
-    [4] Color and border style of ComboBox itself.
-    [5] ToggleButton is arranged to entire ComboBox area, templateRoot.Row[0]
-    -->
-  <ControlTemplate x:Key="DdpmComboBoxControlTemplate" TargetType="ComboBox">
+  <!-- Duplicated in StyleModule -->
+  <!--<ControlTemplate x:Key="DdpmComboBoxControlTemplate" TargetType="ComboBox">
     <Grid x:Name="templateRoot">
       <Grid.RowDefinitions>
         <RowDefinition Height="*" />
         <RowDefinition Height="7" />
-        <!--  [1]  -->
       </Grid.RowDefinitions>
-
-      <!--  [2] PART_Popup  -->
       <Popup
                 Name="PART_Popup"
                 Grid.Row="1"
@@ -364,7 +347,6 @@
                     BorderBrush="{StaticResource DdpmCB_BdColor}"
                     BorderThickness="1"
                     CornerRadius="4">
-          <!--  [3] ScrollViewer of Popup  -->
           <ScrollViewer
                         x:Name="DropDownScrollViewer"
                         Margin="4"
@@ -393,20 +375,16 @@
           </ScrollViewer>
         </Border>
       </Popup>
-
-      <!--  [4]  -->
       <Border
                 Background="{DynamicResource DdpmCB_BkColor}"
                 BorderBrush="{DynamicResource DdpmCB_BdColor}"
                 BorderThickness="1"
                 CornerRadius="4">
         <Grid>
-          <!--  Reserved Column 1 space for the up/down arrow  -->
           <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="32" />
           </Grid.ColumnDefinitions>
-          <!--  [5] toggleButton  -->
           <ToggleButton
                         Name="toggleButton"
                         Grid.ColumnSpan="2"
@@ -430,26 +408,7 @@
         </Grid>
       </Border>
     </Grid>
-
-    <!-- Currently no need
-        <ControlTemplate.Triggers>
-        <Trigger Property="HasItems" Value="false">
-        <Setter TargetName="dropDownBorder" Property="MinHeight" Value="95" />
-        </Trigger>
-        <Trigger Property="IsEnabled" Value="false">
-        <Setter Property="Foreground" Value="#888888" />
-        </Trigger>
-        <Trigger Property="IsGrouping" Value="true">
-        <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
-        </Trigger>
-
-        <Trigger SourceName="PART_Popup" Property="Popup.AllowsTransparency" Value="true">
-        <Setter TargetName="dropDownBorder" Property="CornerRadius" Value="4" />
-        <Setter TargetName="dropDownBorder" Property="Margin" Value="0,32,0,0" />
-        </Trigger>
-        </ControlTemplate.Triggers>
-        -->
-  </ControlTemplate>
+  </ControlTemplate>-->
 
   <!--  DdpmCombox Style usage from here  -->
   <Style x:Key="DdpmComboBoxStyle" TargetType="ComboBox">

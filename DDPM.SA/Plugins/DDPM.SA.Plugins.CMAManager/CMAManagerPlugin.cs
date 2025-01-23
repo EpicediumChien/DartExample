@@ -730,6 +730,21 @@ namespace DDPM.SA.Plugins.CMAManager
                 Console.WriteLine("[CMA] runCommandTask args.notification = " + cliResult?.command_guid_string + "\n args.notification = " + args.notification);
                 //Console.WriteLine("[CMA] );
 
+                // add @ 20250121 stephen : for fw update response format
+                WriteLog("[CMA] runCommandTask args.notification = " + args.notification);
+
+                if (taskInfo.eventtype == Params.EventType.FW)
+                {
+                    CmdResponse response = new CmdResponse(args.notification);
+                    args.notification = response.genResponseFw();
+
+                    WriteLog("[CMA] runCommandTask response.genResponseFw() = " + args.notification);
+
+
+                    response.writeToFile(gid, args.notification);
+                }
+                // add end @ 20250121
+
                 OnEventNotify(args);
 
                 return args;
@@ -1066,6 +1081,14 @@ namespace DDPM.SA.Plugins.CMAManager
                 NotifyArgs args = new NotifyArgs();
                 args.eventType = Params.EventType.FW.ToString();
                 args.notification = "{\"sid\": \"" + "sid" + "\",\"gid\": \"" + data.Guid + "\",\"response\": [" + data.FWUErrorCode + "<" + (int)data.FWUErrorCode + ">" + "(" + data.DeviceName + ", " + data.Model + ")" + "]}";
+
+                // add @ 20250121 stephen
+                CmdResponse cmdResponse = new CmdResponse(data.Guid, true, data);
+                args.notification = cmdResponse.genResponseFwUpdate();
+
+                cmdResponse.writeToFile(data.Guid, args.notification);
+
+
                 OnEventNotify(args);
 
             }
@@ -1180,7 +1203,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
         // test
         private const long DAY_IN_SECONDS = 24 * 60 * 60;    // 24 hours
-        private const int INTERVAL_CHECK_SECONDS = 10 * 60; // 10 mins
+        private const int INTERVAL_CHECK_SECONDS = 10 * 60 * 1000; // 10 mins
         private System.Timers.Timer timerDefer;
 
         private void initDeferControlPanel()
@@ -1203,6 +1226,17 @@ namespace DDPM.SA.Plugins.CMAManager
             timerDefer.Elapsed += Timer_Elapsed;
 
             timerDefer.Start();
+        }
+
+        // add @ 20250122 stephen
+        private void sendFwJobNotify(string guid, string command)
+        {
+            CmaCommand cmd = new CmaCommand(guid, command);
+
+            NotifyArgs args = new NotifyArgs();
+            args.eventType = Params.EventType.FW_JOB.ToString();
+            args.notification = "{\"sid\": \"" + cmd.sid + "\",\"gid\": \"" + guid + "\",\"response\": [" + command + "]}";
+            OnEventNotify(args);
         }
 
         private void sendDeferNotify(string guid, string command)

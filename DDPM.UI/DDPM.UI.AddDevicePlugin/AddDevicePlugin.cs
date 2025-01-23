@@ -58,8 +58,10 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
         private void GetRFDongleAsync()
         {
             _log.Debug($"GetPeripherals is invoked");
-            Task<DeviceHelper> tsk = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
-            _viewModel!.WacomVersion = tsk.Result.IsdDriverVersion;
+            //Task<DeviceHelper> tsk = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
+            //_viewModel!.WacomVersion = tsk.Result.IsdDriverVersion;
+            Task<string> tsk = DdpmCommonHelper.DeviceManagerSA!.GetIsdDriverVersion();
+            _viewModel!.WacomVersion = tsk.Result;
 
             Task<RFDeviceHelper> task = DdpmCommonHelper.DeviceManagerSA.GetRFDongleDevices();
             _deviceHelper = task.Result;

@@ -115,9 +115,9 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        public override bool SetCurrentDevice(string deviceID)
+        public override bool SetCurrentDevice(string instanceIDs)
         {
-            if (!base.SetCurrentDevice(deviceID))
+            if (!base.SetCurrentDevice(instanceIDs))
                 return false;
 
             if (!IsCopilotEnabled)
@@ -142,13 +142,13 @@ namespace DDPM.UI.Plugin.ViewModels
                     return false;
                 }
 
-                if (deviceID == null)
+                if (instanceIDs == null)
                 {
                     DdpmCommonHelper.WriteUILog("[KeyboardViewModel] deviceID is null.");
                     return false;
                 }
 
-                Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA.GetKbProgrammableKeys(deviceID.ToString());
+                Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA.GetKbProgrammableKeys(instanceIDs.ToString());
                 var jArray = JArray.FromObject(task1.Result);
                 DdpmCommonHelper.WriteUILog($"[KeyboardViewModel] CurrentDeviceInfo : {JsonConvert.SerializeObject(jArray)}");
             }
@@ -213,7 +213,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 CopilotInfoVisibility = Visibility.Visible;
             else
                 CopilotInfoVisibility = Visibility.Collapsed;
-
+            //Elsa 20250122 add for PIMS-332048 All langs tooltip EN in UI issue found in stringID：FirmwareVersion
+            FirmwareVersion2 = FirmwareVersion2.Replace("Firmware Version", Strings.FirmwareVersion);
             return true;
         }
 

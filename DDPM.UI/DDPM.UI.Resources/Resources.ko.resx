@@ -934,7 +934,7 @@
     <value>USB KVM 설정</value>
   </data>
   <data name="Kvm.3" xml:space="preserve">
-    <value>마우스\n 및 키보드 연결</value>
+    <value>마우스 및 키보드 연결</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
     <value>마우스 및 키보드의 경우 모니터 후면(USB-A)에 연결합니다.\n 참고: 웹캠 등 다른 USB 주변 디바이스를 연결할 수도 있습니다.</value>
@@ -955,7 +955,7 @@
     <value>USB</value>
   </data>
   <data name="Kvm.6" xml:space="preserve">
-    <value>디바이스에\n 연결하는 중</value>
+    <value>디바이스에 연결하는 중</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
     <value>비디오 케이블과 USB 케이블을 각 PC와\n 모니터 사이에 연결하십시오. 최대 4대의 PC(컴퓨터, 게이밍\n 콘솔 등)를 연결할 수 있습니다. \r\n\r\n케이블 유형을 선택하고 각 소스에 이름을 지정하십시오.</value>

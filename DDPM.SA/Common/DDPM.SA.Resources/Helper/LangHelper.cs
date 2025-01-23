@@ -40,7 +40,7 @@ namespace DDPM.SA.Resources.Helper
 
 #if FALSE
                 //resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
-                CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("ja-JP");
+                CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("fr-FR");
                 string str = _resourceManager.GetString(name, cultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
                 //string str = _resourceManager.GetString(name, CultureInfo.InstalledUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
                 return System.Text.RegularExpressions.Regex.Unescape(str);
@@ -48,7 +48,13 @@ namespace DDPM.SA.Resources.Helper
                 //resManager.GetString(key, CultureInfo.InstalledUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
                 //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("ru");
                 //string str = _resourceManager.GetString(name, cultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
-                string str = _resourceManager.GetString(name, CultureInfo.CurrentUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+
+                //Robert_Lin 2025-1-22 PIMS-331191 With DDPM installed, observe language in DDPM UI not change for other langauges of Other countries
+                //Add a CultureInfoMap to convert (mapped) CultureInfo.CurrentUICulture to the supported cultureInfo of DDPM
+                //OLD:
+                //string str = _resourceManager.GetString(name, CultureInfo.CurrentUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+                //NEW:
+                string str = _resourceManager.GetString(name, DdpmCultureMap.MappedCultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
                 return System.Text.RegularExpressions.Regex.Unescape(str);
 #endif
             }
