@@ -541,9 +541,9 @@
     <value>Please do not power down system until updates are complete.</value>
   </data>
   <data name="ICC_notification_NonSmartHDR" xml:space="preserve">
-    <value>The default ICC profile is for Smart HDR.We are not able to change color preset in the</value>
+    <value>The default ICC profile is for Smart HDR. We are not able to change color preset in the</value>
   </data>
   <data name="ICC_notification_SmartHDR" xml:space="preserve">
-    <value>The default ICC profile is not suitable for Smart HDR.We are not able to change color preset in the</value>
+    <value>The default ICC profile is not suitable for Smart HDR. We are not able to change color preset in the</value>
   </data>
 </root>

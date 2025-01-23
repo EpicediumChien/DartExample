@@ -583,7 +583,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The default ICC profile is for Smart HDR.We are not able to change color preset in the.
+        ///   Looks up a localized string similar to The default ICC profile is for Smart HDR. We are not able to change color preset in the.
         /// </summary>
         internal static string ICC_notification_NonSmartHDR {
             get {
@@ -592,7 +592,7 @@ namespace DDPM.SA.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The default ICC profile is not suitable for Smart HDR.We are not able to change color preset in the.
+        ///   Looks up a localized string similar to The default ICC profile is not suitable for Smart HDR. We are not able to change color preset in the.
         /// </summary>
         internal static string ICC_notification_SmartHDR {
             get {
