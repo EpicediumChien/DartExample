@@ -209,7 +209,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
+#if DEBUG
             Console.WriteLine($"Dispose: {disposing}");
+#endif
             if (!IsDisposed)
             {
                 if (disposing)
@@ -238,7 +240,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
             if (e.ChangedPlugins.OfType<IFWUpdateService>().Any())
             {
+#if DEBUG
                 Console.WriteLine("IFWUpdateService plugin started.");
+#endif
             }
         }
 
@@ -248,7 +252,9 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
             PluginCondition = new PluginStartedCondition();
+#if DEBUG
             Console.WriteLine("FWUpdate plugin report started");
+#endif
         }
 
         #endregion Overriding methods
@@ -1003,7 +1009,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         // 將儲存路徑與從 URL 中提取的檔案名稱組合
                         if (_IsSkipSHA)
                         {
-                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {url}");
+                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {GlobalDefinitions.GetLogPrintServerName(url)}");
                         }
                         _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
                         _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile go");
@@ -1173,7 +1179,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
         public Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay, DeviceType deviceType)
         {
             _logs.DebugMsg_1($"{nameof(Install)} start");
-            _logs.DebugMsg_1($"{nameof(Install)} installPath : {installPath}");
+            _logs.DebugMsg_1($"{nameof(Install)} installPath : ***");
             _logs.DebugMsg_1($"{nameof(Install)} deviceType : {deviceType}");
             FWUErrorCode ret = FWUErrorCode.Unknow;
             if (!string.IsNullOrEmpty(installPath))
@@ -1713,7 +1719,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                 }
                 arguments = BuildArgs(fwUpdateInfo, _namedPipeName, logPath);
-                _logs.DebugMsg_1($"arguments : {arguments}");
+                _logs.DebugMsg_1($"arguments : ***");
                 if (_timerTimeOut != null)
                 {
                     _timerTimeOut.Enabled = true;

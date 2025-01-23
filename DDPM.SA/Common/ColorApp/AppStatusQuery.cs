@@ -375,7 +375,7 @@ namespace DDPM.ColorApp
         {
             text = "[AppStatusQuery] " + text;
 #if DEBUG
-            System.Console.WriteLine(text);
+            Console.WriteLine(text);
 #endif
             if (Log != null) // Elie, the instance of Log is from DTH. So we just check if it's null or not.
             {

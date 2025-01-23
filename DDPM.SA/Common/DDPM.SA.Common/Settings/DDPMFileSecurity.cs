@@ -918,7 +918,7 @@ namespace DDPM.SA.Common.Settings
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
-                info = $"Invalid file path string - {filePath}";
+                info = $"Invalid file path string";
                 //_log.Info(info);
                 return null;
             }
@@ -926,7 +926,7 @@ namespace DDPM.SA.Common.Settings
             //Check for path redirection (symlink, mountpoint, hardlink, etc.) at the path AND along the path
             if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
             {
-                info = $"Redirection detected along file path - {filePath}";
+                info = $"Redirection detected along file path";
                 //_log.Info(info);
                 return null;
             }
@@ -939,13 +939,13 @@ namespace DDPM.SA.Common.Settings
             }
             catch(Exception e)
             {
-                info = $"Read data from file path - {filePath}, exception: {e.Message}";
+                info = $"Read data from file path";
                 return null;
             }
 
             if (data == null)
             {
-                info = $"Read data from file path - {filePath}, failed";
+                info = $"Read data from file path, failed";
                 return null;
             }
             //Bruce 0909 modify
@@ -1756,7 +1756,7 @@ namespace DDPM.SA.Common.Settings
             info = "success";
             if (path.Contains("..\\") || path.Contains("../") || path.Contains("..;\\") || path.Contains("..\\/") || path.Contains("..././") || path.Contains("....\\") || path.Contains(@"\\\") || path.Contains(@"\\\\"))
             {
-                info = ("The path contains invalid characters. Program will not continue {path}");
+                info = ("The path contains invalid characters. Program will not continue");
                 return string.Empty;
             }
 
