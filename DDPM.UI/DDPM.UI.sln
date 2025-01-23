@@ -20,6 +20,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DDPM.UI.Plugin", "DDPM.UI.Plugin", "{10F786D5-3271-451F-9ED4-5E3D44400B97}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DDPM.UI.Common", "DDPM.UI.Common", "{D44A3CC0-86E7-44FB-9AB1-65A91D7AA863}"
+	ProjectSection(SolutionItems) = preProject
+		KeyboardInterceptor.cs = KeyboardInterceptor.cs
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDPM.UI.Plugin.DdpmHomePlugin", "DDPM.UI.DdpmHomePlugin\DDPM.UI.Plugin.DdpmHomePlugin.csproj", "{632D410C-63E6-4984-B1EE-04B7DDBA0F93}"
 EndProject

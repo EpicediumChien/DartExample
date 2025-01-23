@@ -1486,7 +1486,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                                 info.PairingStatusName = UpdateParingStausText(_physicalAudioDeviceDongle.PairingStatus);
                                 info.MaxPairingSlots = _physicalAudioDeviceDongle.MaxPairingSlots;
                                 info.PairedDeviceCount = _physicalAudioDeviceDongle.PairedDeviceCount;
-                                info.IsPhysicalDeviceDongle = false;                                
+                                info.IsPhysicalDeviceDongle = false;
                             }
 
                             if (item.ParentPhysicalDevice.Type == DeviceType.PhysicalPen)
