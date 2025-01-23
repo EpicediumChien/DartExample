@@ -341,7 +341,7 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
         {
             //Derek 1116 for Webcam PIMS 319078
             //string url = "https://www.dell.com/";
-            string url = "https://www.dell.com/support/wb7022/downloads"; // Jim 20250113 modify for PIMS-319078
+            string url = "https://www.dell.com/support/wb7022/downloads"; // Jim 20250123 modify for PIMS-319078
             // Open the browser and navigate to specified url
             //Process.Start(new ProcessStartInfo
             //{
