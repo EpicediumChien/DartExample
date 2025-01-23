@@ -1009,7 +1009,22 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         // 將儲存路徑與從 URL 中提取的檔案名稱組合
                         if (_IsSkipSHA)
                         {
-                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : ***");
+                            string outputUrlForLog = "others";
+
+                            if (url.Contains("clientperipherals.dell.com "))
+                            {
+                                outputUrlForLog = "production_server";
+                            }
+                            else if (url.Contains("clientperipherals-uat.dell.com "))
+                            {
+                                outputUrlForLog = "staging_server";
+                            }
+                            else if (url.Contains("download.dell.com "))
+                            {
+                                outputUrlForLog = "dell_download";
+                            }
+
+                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {outputUrlForLog}");
                         }
                         _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
                         _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} download.DownloadFile go");
