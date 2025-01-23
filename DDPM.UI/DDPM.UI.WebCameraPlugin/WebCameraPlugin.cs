@@ -141,7 +141,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
         private void GetPeripheralsAsync()
         {
-            _log.Debug($"GetPeripherals is invoked");
+            DdpmCommonHelper.WriteUILog($"GetPeripherals is invoked");
             Task<DeviceHelper> task = DdpmCommonHelper.DeviceManagerSA!.GetDevices(true);
             _deviceHelper = task.Result;
 
@@ -194,7 +194,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //Open this to get the message format of Webcam event
             //System.Windows.MessageBox.Show(e.UI_Field_Name);
             Console.WriteLine("WebCameraplugin_UIUpdateNotify Get event : " + e.UI_Field_Name + "#" + DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") + "\r\n");
-            _log.Debug("WebCameraplugin_UIUpdateNotify Get event : " + e.UI_Field_Name + "#" + DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") + "\r\n");
+            DdpmCommonHelper.WriteUILog("WebCameraplugin_UIUpdateNotify Get event : " + e.UI_Field_Name + "#" + DateTime.Now.ToString("yyyy-MM-dd h:mm:tt") + "\r\n");
 
             //cmd format sample
             //5;Device:Webcam;EventType:Webcam_IsHDROnChanged;DeviceId:28d64fee-3544-45c7-a1b0-10db20a4cf8e;NewValue:True
@@ -203,14 +203,14 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 if (!event_param.TryGetValue("Device", out var device))
                 {
-                    _log.Debug("Device cannot be found in event_param");
+                    DdpmCommonHelper.WriteUILog("Device cannot be found in event_param");
                     return;
                 }
                 if (device == "Webcam")
                 {
                     if (!event_param.TryGetValue("EventType", out var eventtype))
                     {
-                        _log.Debug("EventType cannot be found in event_param");
+                        DdpmCommonHelper.WriteUILog("EventType cannot be found in event_param");
                         return;
                     }
 
@@ -227,7 +227,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -236,7 +236,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                         _viewModel!.Sharpness = _t;
                                     else
                                     {
-                                        _log.Debug("Webcam_SharpnessChanged NewValue not int");
+                                        DdpmCommonHelper.WriteUILog("Webcam_SharpnessChanged NewValue not int");
                                         return;
                                     }
                                 });
@@ -267,7 +267,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -290,7 +290,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -301,15 +301,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                                         //Derek 1211 to sync data with QAM
                                         if (90 == _t)
+                                        {
                                             _viewModel!.SetFOV_Selected(2);
+                                            _viewModel.SelectedFovIndex = 2;
+                                        }
                                         else if (78 == _t)
+                                        {
                                             _viewModel!.SetFOV_Selected(1);
+                                            _viewModel.SelectedFovIndex = 1;
+                                        }
                                         else if (65 == _t)
+                                        {
                                             _viewModel!.SetFOV_Selected(0);
+                                            _viewModel.SelectedFovIndex = 0;
+                                        }
                                     }
                                     else
                                     {
-                                        _log.Debug("Webcam_FieldOfViewChanged NewValue not int");
+                                        DdpmCommonHelper.WriteUILog("Webcam_FieldOfViewChanged NewValue not int");
                                         return;
                                     }
                                 });
@@ -320,7 +329,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 //if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 //{
-                                //    _log.Debug("NewValue cannot be found in event_param");
+                                //    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                 //    return;
                                 //}
                                 //System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -329,7 +338,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                 //        _viewModel!.AutoFramingFrameSize = _t;
                                 //    else
                                 //    {
-                                //        _log.Debug("Webcam_AutoFramingFrameSizeChanged NewValue not int");
+                                //        DdpmCommonHelper.WriteUILog("Webcam_AutoFramingFrameSizeChanged NewValue not int");
                                 //        return;
                                 //    }
                                 //});
@@ -339,7 +348,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 //if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 //{
-                                //    _log.Debug("NewValue cannot be found in event_param");
+                                //    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                 //    return;
                                 //}
                                 //System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -348,7 +357,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                 //        _viewModel!.AutoFramingFrameSize = _t;
                                 //    else
                                 //    {
-                                //        _log.Debug("Webcam_AutoFramingSensitivityChanged NewValue not int");
+                                //        DdpmCommonHelper.WriteUILog("Webcam_AutoFramingSensitivityChanged NewValue not int");
                                 //        return;
                                 //    }
                                 //});
@@ -358,7 +367,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -374,7 +383,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -390,7 +399,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -399,7 +408,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                         _viewModel!.AutoWhiteBalance = _t;
                                     else
                                     {
-                                        _log.Debug("Webcam_AutoWhiteBalanceChanged NewValue not int");
+                                        DdpmCommonHelper.WriteUILog("Webcam_AutoWhiteBalanceChanged NewValue not int");
                                         return;
                                     }
                                 });
@@ -409,7 +418,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -425,7 +434,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -434,7 +443,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                         _viewModel!.Saturation = _t;
                                     else
                                     {
-                                        _log.Debug("Webcam_SaturationChanged NewValue not int");
+                                        DdpmCommonHelper.WriteUILog("Webcam_SaturationChanged NewValue not int");
                                         return;
                                     }
                                 });
@@ -445,7 +454,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                 //1:50 2:60
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -454,7 +463,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                         _viewModel!.AntiFlicker = _t;
                                     else
                                     {
-                                        _log.Debug("Webcam_AntiFlickerChanged NewValue not int");
+                                        DdpmCommonHelper.WriteUILog("Webcam_AntiFlickerChanged NewValue not int");
                                         return;
                                     }
                                 });
@@ -464,7 +473,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -473,7 +482,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                         _viewModel!.Contrast = _t;
                                     else
                                     {
-                                        _log.Debug("Webcam_ContrastChanged NewValue not int");
+                                        DdpmCommonHelper.WriteUILog("Webcam_ContrastChanged NewValue not int");
                                         return;
                                     }
                                 });
@@ -483,7 +492,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -492,7 +501,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                         _viewModel!.Brightness = _t;
                                     else
                                     {
-                                        _log.Debug("Webcam_BrightnessChanged NewValue not int");
+                                        DdpmCommonHelper.WriteUILog("Webcam_BrightnessChanged NewValue not int");
                                         return;
                                     }
                                 });
@@ -502,7 +511,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -511,7 +520,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                         _viewModel!.Zoom = _t;
                                     else
                                     {
-                                        _log.Debug("Webcam_ZoomChanged NewValue not int");
+                                        DdpmCommonHelper.WriteUILog("Webcam_ZoomChanged NewValue not int");
                                         return;
                                     }
                                 });
@@ -533,7 +542,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -542,7 +551,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                         _viewModel!.Focus = _t;
                                     else
                                     {
-                                        _log.Debug("Webcam_FocusChanged NewValue not int");
+                                        DdpmCommonHelper.WriteUILog("Webcam_FocusChanged NewValue not int");
                                         return;
                                     }
                                 });
@@ -553,7 +562,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -570,7 +579,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 System.Windows.Application.Current.Dispatcher.Invoke(() =>
@@ -579,7 +588,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                         _viewModel!.Priority = _t;
                                     else
                                     {
-                                        _log.Debug("Webcam_PriorityChanged NewValue not int");
+                                        DdpmCommonHelper.WriteUILog("Webcam_PriorityChanged NewValue not int");
                                         return;
                                     }
                                 });
@@ -609,7 +618,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
                                 _viewModel!.isIsMicEnumerationOnChanged_event = true;
@@ -644,7 +653,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
 
@@ -668,7 +677,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         {
                             if (!event_param.TryGetValue("NewValue", out var NewValue))
                             {
-                                _log.Debug("NewValue cannot be found in event_param");
+                                DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                 return;
                             }
 
@@ -682,7 +691,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             {
                                 if (!event_param.TryGetValue("NewValue", out var NewValue))
                                 {
-                                    _log.Debug("NewValue cannot be found in event_param");
+                                    DdpmCommonHelper.WriteUILog("NewValue cannot be found in event_param");
                                     return;
                                 }
 
@@ -701,7 +710,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex)
             {
-                _log.Debug(ex, "WebCameraplugin_UIUpdateNotify");
+                DdpmCommonHelper.WriteUILog( "WebCameraplugin_UIUpdateNotify:"+ex.Message);
             }
         }
 
@@ -723,7 +732,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             }
             catch (Exception ex) // Jim 20250108 add exception handling for PIMS-335905 on ARM has crash
             {
-                _log.Debug(ex, $"deal_param {ex.Message}");
+                DdpmCommonHelper.WriteUILog( $"deal_param {ex.Message}");
                 tmp.Clear();
             }
             return tmp;
