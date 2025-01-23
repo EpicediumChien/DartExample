@@ -1,5 +1,6 @@
 ﻿using DDPM.UI.Common.UserControls;
 using Dell.Client.Framework.UX.WPF.Controls;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -88,12 +89,22 @@ namespace DDPM.UI.Common
 
         private static void OnBatteryChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
+
+            try
+            {
+                DdpmCommonHelper.WriteUILog($"[BatteryIndicator] [OnConnectionTypeChanged] e:{JsonConvert.SerializeObject(e)}");
+            }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[BatteryIndicator] [OnConnectionTypeChanged] Exception ex:{ex.Message}");
+            }
             var control = (BatteryIndicator)d;
             control.UpdateBatteryLevelIndicator();
         }
 
         private void UpdateBatteryLevelIndicator()
         {
+            DdpmCommonHelper.WriteUILog($"[BatteryIndicator] [OnConnectionTypeChanged] BatteryStatus:{BatteryStatus}");
             var charging = BatteryStatus == "Charging" ? "1" : "0";
             var level = "";
             if (BatteryLevel >= 70)

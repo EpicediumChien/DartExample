@@ -16,6 +16,8 @@
             public const int DISPLAY_CONNECT = 11;
             public const int DISPLAY_DISCONNECT = 12;
 
+            public const int FW_JOB = 41; // add @ 20250122 stephen
+
             public const int DEFER = 51; // add @ 20241219 stephen
 
             public const int UNKNOWN_ERROR = 99;
@@ -59,13 +61,20 @@
 
 
             // 101 - 129 : fw update Fail or Error
-            public const int STATUS_FW_UPDATE_DEVICE_NOT_FOUND = 101;
-            public const int STATUS_FW_UPDATE_PENDING = 102;
+            //public const int STATUS_FW_UPDATE_DEVICE_NOT_FOUND = 101;
+            //public const int STATUS_FW_UPDATE_PENDING = 102;
 
-            public const int STATUS_FW_UPDATE_ABORTED = 104;
-            public const int STATUS_FW_UPDATE_TIMEOUT_ERROR = 105;
-            public const int STATUS_FW_UPDATE_CORRUPTION = 106;
-            public const int STATUS_FW_UPDATE_FAILED = 107;
+            //public const int STATUS_FW_UPDATE_ABORTED = 104;
+            //public const int STATUS_FW_UPDATE_TIMEOUT_ERROR = 105;
+            //public const int STATUS_FW_UPDATE_CORRUPTION = 106;
+            //public const int STATUS_FW_UPDATE_FAILED = 107;
+
+            // add @ 20250120 stephen: for fw
+            public const int STATUS_FW_UPDATE_SUCCESS = 0;
+            public const int STATUS_FW_UPDATE_STARTED = 50;
+
+            public const int STATUS_FW_UPDATE_ERROR = 101;
+            public const int STATUS_FW_UPDATE_DEVICE_NOT_CONNECTED = 102;
 
             // 500+ : Command Fail or Error
             public const int STATUS_COMMAND_TIMEOUT = 500;

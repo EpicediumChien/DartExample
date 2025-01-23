@@ -96,8 +96,8 @@ namespace DDPM.UI.Common.UserControls
                 {
                     if (_indication != null)
                     {
-                        _storyboardGlow.Begin(_indication);
                         _indication.Visibility = Visibility.Visible;
+                        _storyboardGlow.Begin(_indication);
                     }
                 }
             });

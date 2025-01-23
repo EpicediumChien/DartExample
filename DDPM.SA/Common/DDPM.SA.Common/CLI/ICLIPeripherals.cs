@@ -548,6 +548,19 @@ namespace DDPM.SA.Common
             "ISANCSUPPORTED",
         };
 
+        internal static readonly List<string> AirAudio = new()//Kidd 20250122 add
+        {
+            "FIRMWAREVERSION",
+            //"INSTANCEID",
+            //"MUTESTATUS",
+            "ANCMODE",
+            "MICNOISECANCELLATION",
+            "WEARDETECTION",
+            "ISWEARDETECTIONCHECKED",
+            "ISWEARDETECTIONSUPPORTED",
+            "ISANCSUPPORTED",
+        };
+
         internal static readonly List<string> Audio = new()//Dean 0626 SAST issue
         {
             "FIRMWAREVERSION",
@@ -577,7 +590,8 @@ namespace DDPM.SA.Common
             { "HEADSET", Headset },
             { "AUDIO", Audio },
             { "DOCK", Dock },
-            { "LOGICALWIREDAUDIO", Audio }
+            { "LOGICALWIREDAUDIO", Audio },
+            { "AIRAUDIO", AirAudio }
         };
     }
 }

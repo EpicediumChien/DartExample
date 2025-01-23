@@ -42,6 +42,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DDPM.UI.Common\DDPM.UI.Common.csproj" />
+    <ProjectReference Include="..\DDPM.UI.Module.HeadsetAudioForSB725Settings\DDPM.UI.Module.HeadsetAudioForSB725Settings.csproj" />
     <ProjectReference Include="..\DDPM.UI.Module.HeadsetAudioSettings\DDPM.UI.Module.HeadsetAudioSettings.csproj" />
     <ProjectReference Include="..\DDPM.UI.Module.HeadsetAutomatedActions\DDPM.UI.Module.HeadsetAutomatedActions.csproj" />
     <ProjectReference Include="..\DDPM.UI.Module.HeadsetDeviceSettings\DDPM.UI.Module.HeadsetDeviceSettings.csproj" />

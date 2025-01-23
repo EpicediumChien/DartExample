@@ -176,8 +176,9 @@
 
                                 <!-- Next Button -->
                                 <!-- Robert_Lin 2025-1-10 Bind IsEanble to viewmodel -->
+                                <!-- Chewlin, 2025-1-22 for Fix Easy Memory Next button arrows clipping issue Change Width="164" to MinWidth="164"-->
                                 <UXControls:UXButton x:Name="NextBtn" IconPosition="IconRight" HorizontalContentAlignment="Center" ButtonType="Primary" Padding="40, 8" 
-                                                     ButtonSize="Medium" VerticalContentAlignment="Center" Margin="10, 0, 0, 0" IconAnimation="Move" Width="164" Height="40"
+                                                     ButtonSize="Medium" VerticalContentAlignment="Center" Margin="10, 0, 0, 0" IconAnimation="Move" MinWidth="164" Height="40"
                                                      Click="NextBtn_Click" IsEnabled="{Binding IsAssignNextButtonEnabled}">
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                         <UXControls:UXTextBlock Margin="8,0" Text="{Binding [Kvm.1], Source={x:Static lang:LangHelper.Instance}}" Foreground="White"/>

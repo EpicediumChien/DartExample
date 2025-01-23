@@ -803,9 +803,7 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Command line format error"
             };
-#if DEBUG
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-#endif
 
             return (int)CLI_ExitCode.fail_FormantError;
         }
@@ -824,9 +822,7 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "DDPM CLI should be executed as elevated process"
             };
-#if DEBUG
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-#endif
             return (int)CLI_ExitCode.fail_notAdmin;
         }
 
@@ -844,9 +840,7 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Timeout for obtaining DDPM SA (CLI Manager)"
             };
-#if DEBUG
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-#endif
             return (int)CLI_ExitCode.target_subagent_timeout;
         }
 
@@ -864,9 +858,7 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Wrong ID value"
             };
-#if DEBUG
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-#endif
             return (int)CLI_ExitCode.fail_Value;
         }
 
@@ -1006,9 +998,7 @@ namespace DDPM.SA.Common
                 Value = commandLineInput.Options.Count > 0 ? commandLineInput.Options[0].Option_Value : "N/A",
                 Message = "Set defer operation completed"
             };
-#if DEBUG
             Console.WriteLine(result.ToJson());
-#endif
             return (int)CLI_ExitCode.success;
         }
 
@@ -1022,9 +1012,7 @@ namespace DDPM.SA.Common
                 Value = commandLineInput.Options.Count > 0 ? commandLineInput.Options[0].Option_Value : "N/A",
                 Message = "Option value not supported"
             };
-#if DEBUG
             Console.WriteLine(result.ToJson());
-#endif
             return (int)CLI_ExitCode.fail_option_value;
         }
 
@@ -1202,6 +1190,16 @@ namespace DDPM.SA.Common
                 new Dictionary<string, object> {{ "TargetType", "AUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "AUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 1 }},
 
+                 // - AIRAUDIO
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "FWVersion" },                   { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "RestoreFactoryDefaults" },      { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "ancMode" },                     { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "ancMode" },                     { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "micNoiseCancellation" },        { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "micNoiseCancellation" },        { "Value", "N/A" }, { "Type", 1 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 0 }},
+                new Dictionary<string, object> {{ "TargetType", "AIRAUDIO" }, { "TargetFeature", "wearDetection" },               { "Value", "N/A" }, { "Type", 1 }},
+
                 // - KEYBOARD
                 new Dictionary<string, object> {{ "TargetType", "KEYBOARD" }, { "TargetFeature", "FWVersion" },                { "Value", "N/A" }, { "Type", 0 }},
                 new Dictionary<string, object> {{ "TargetType", "KEYBOARD" }, { "TargetFeature", "RestoreFactoryDefaults" },   { "Value", "N/A" }, { "Type", 1 }},
@@ -1321,9 +1319,7 @@ namespace DDPM.SA.Common
                     { targetType, targetFeatures }
                 };
                 string json = JsonConvert.SerializeObject(result, Formatting.Indented);
-#if DEBUG
                 Console.WriteLine(json);
-#endif
                 return json;
             }
             // [HELP]: Print all the data in the command set
@@ -1337,9 +1333,7 @@ namespace DDPM.SA.Common
                     );
 
                 string json = JsonConvert.SerializeObject(groupedFeatures, Formatting.Indented);
-#if DEBUG
                 Console.WriteLine(json);
-#endif
             }
 
             // [HELP]: Print the command according to the feature in list<pluginType> aka. targetFeature
@@ -1356,9 +1350,7 @@ namespace DDPM.SA.Common
                     { targetType, targetFeatures }
                 };
                 string json = JsonConvert.SerializeObject(result, Formatting.Indented);
-#if DEBUG
                 Console.WriteLine(json);
-#endif
             }
 
             public static bool IsTargetFeatureAndPluginsTypeExists(CommandLineInput commandLineInput)
@@ -1435,9 +1427,7 @@ namespace DDPM.SA.Common
                 Value = "N/A",
                 Message = "Command line format error"
             };
-#if DEBUG
             Console.WriteLine(JsonConvert.SerializeObject(result, Formatting.Indented));
-#endif
             return (int)CLI_ExitCode.fail_FormantError;
         }
     }

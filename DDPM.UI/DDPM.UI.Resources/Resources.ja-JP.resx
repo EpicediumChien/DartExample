@@ -934,7 +934,7 @@
     <value>USB KVMのセットアップ</value>
   </data>
   <data name="Kvm.3" xml:space="preserve">
-    <value>マウスと\nキーボードの接続</value>
+    <value>マウスと キーボードの接続</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
     <value>マウスとキーボードは、モニターの背面(USB-A)に接続します。\nメモ：Webカメラなど他のUSB周辺機器を\n接続することもできます。</value>
@@ -955,7 +955,7 @@
     <value>USB</value>
   </data>
   <data name="Kvm.6" xml:space="preserve">
-    <value>デバイスに\n接続しています</value>
+    <value>デバイスに 接続しています</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
     <value>各パソコンとモニター間のビデオ ケーブルやUSBケーブルを\n接続してください。最大4台のパソコン（コンピューター、ゲーミング \nコンソールなど）を接続できます。\r\n\r\nケーブル タイプを選択し、各ソースに名前を割り当ててください。</value>
@@ -991,7 +991,7 @@
     <value>PIP/PBPのセットアップ</value>
   </data>
   <data name="Kvm.17" xml:space="preserve">
-    <value>モニターでPIP/PBPを\nセットアップします</value>
+    <value>モニターでPIP/PBPを セットアップします</value>
   </data>
   <data name="Kvm.18" xml:space="preserve">
     <value>モニターには、一度に1台のパソコンまたはソースを表示（全画面表示）することも、ソース間で分割（ピクチャー イン ピクチャー/ピクチャー バイ ピクチャー）することもできます。</value>

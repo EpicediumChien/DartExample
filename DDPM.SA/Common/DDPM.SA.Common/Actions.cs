@@ -81,7 +81,8 @@ namespace DDPM.SA.Common
         Pen = 1300,
         Headset = 1400,
         Soundbar = 1500,
-        Dock = 1600
+        Dock = 1600,
+        AirAudio=1700,
     }
 
     public enum PenButtonNameSA
