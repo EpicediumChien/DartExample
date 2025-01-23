@@ -538,204 +538,200 @@ namespace DDPM.UI.Common
             {
                 DdpmCommonHelper.WriteUILog("[MouseActions] DdpmCommonHelper.DeviceManagerSA == null");
             }
-
-
-
         }
     }
-}
 
-public class SelectedAction
-{
-    public int DefaultActionID = -1;
-    public AssignedAction AssignedAction = new();
-
-    public SelectedAction()
-    { }
-
-    public SelectedAction(int defaultActionID, AssignedAction assignedAction)
+    public class SelectedAction
     {
-        DefaultActionID = defaultActionID;
-        AssignedAction = assignedAction;
-    }
-}
+        public int DefaultActionID = -1;
+        public AssignedAction AssignedAction = new();
 
-public class SelectedMouseAction
-{
-    public int DefaultActionID = -1;
-    public AssignedAction AssignedAction = new();
-    public Dictionary<string, int> OfficeActions = new() { { "Word", -1 }, { "Excel", -1 }, { "PowerPoint", -1 }, { "Outlook", -1 } };
+        public SelectedAction()
+        { }
 
-    public SelectedMouseAction()
-    { }
-
-    public SelectedMouseAction(int defaultActionID, AssignedAction assignedAction)
-    {
-        DefaultActionID = defaultActionID;
-        AssignedAction = assignedAction;
-    }
-}
-
-public class AssignedAction
-{
-    public int ID = -1;
-    public string Parameter = "";
-
-    public AssignedAction()
-    { }
-
-    public AssignedAction(int id, string parameter = "")
-    {
-        ID = id;
-        Parameter = parameter;
-    }
-}
-
-public static class ActionList
-{
-    public static bool ExportActionList(object actions, string model, int instanceID = 0)
-    {
-        try
+        public SelectedAction(int defaultActionID, AssignedAction assignedAction)
         {
-            string json = JsonConvert.SerializeObject(actions, Formatting.Indented);
-            var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions");
+            DefaultActionID = defaultActionID;
+            AssignedAction = assignedAction;
+        }
+    }
 
-            string info = string.Empty;
-            if (!Directory.Exists(fileFolder))
-                Directory.CreateDirectory(fileFolder);
-            //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
-            if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(fileFolder, out info))
+    public class SelectedMouseAction
+    {
+        public int DefaultActionID = -1;
+        public AssignedAction AssignedAction = new();
+        public Dictionary<string, int> OfficeActions = new() { { "Word", -1 }, { "Excel", -1 }, { "PowerPoint", -1 }, { "Outlook", -1 } };
+
+        public SelectedMouseAction()
+        { }
+
+        public SelectedMouseAction(int defaultActionID, AssignedAction assignedAction)
+        {
+            DefaultActionID = defaultActionID;
+            AssignedAction = assignedAction;
+        }
+    }
+
+    public class AssignedAction
+    {
+        public int ID = -1;
+        public string Parameter = "";
+
+        public AssignedAction()
+        { }
+
+        public AssignedAction(int id, string parameter = "")
+        {
+            ID = id;
+            Parameter = parameter;
+        }
+    }
+
+    public static class ActionList
+    {
+        public static bool ExportActionList(object actions, string model, int instanceID = 0)
+        {
+            try
             {
-                string strPath = Path.Combine(fileFolder, $"{model}.json");
-                //File.WriteAllText(strPath, json);
-                if (DdpmCommonHelper.DeviceManagerSA != null)
+                string json = JsonConvert.SerializeObject(actions, Formatting.Indented);
+                var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions");
+
+                string info = string.Empty;
+                if (!Directory.Exists(fileFolder))
+                    Directory.CreateDirectory(fileFolder);
+                //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
+                if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(fileFolder, out info))
                 {
-                    return DdpmCommonHelper.DeviceManagerSA.WriteSerializedContentToFile(strPath, json).Result;//1007 apply signature
+                    string strPath = Path.Combine(fileFolder, $"{model}.json");
+                    //File.WriteAllText(strPath, json);
+                    if (DdpmCommonHelper.DeviceManagerSA != null)
+                    {
+                        return DdpmCommonHelper.DeviceManagerSA.WriteSerializedContentToFile(strPath, json).Result;//1007 apply signature
+                    }
                 }
+                else
+                    DdpmCommonHelper.WriteUILog($"[ExportActionList] ValidateFilePath failed: {info}");
             }
-            else
-                DdpmCommonHelper.WriteUILog($"[ExportActionList] ValidateFilePath failed: {info}");
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[ExportActionList] exception: {ex.Message}");
+            }
+            return false;
         }
-        catch (Exception ex)
+
+        public static object ImportActionList(eDeviceCategory type, string model, string guid = "")
         {
-            DdpmCommonHelper.WriteUILog($"[ExportActionList] exception: {ex.Message}");
+            //var filePath = Path.Combine(Application.StartupPath, @$"ActionList\{model}_{instanceID}.json");
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
+            var hasFile = File.Exists(filePath);
+            string info = string.Empty;
+            string jsonString = string.Empty;
+            switch (type)
+            {
+                case eDeviceCategory.KB:
+                    if (hasFile)
+                    {
+                        //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
+                        if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
+                        {
+                            if (DdpmCommonHelper.DeviceManagerSA != null)
+                            {
+                                jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
+                            }
+                            if (!string.IsNullOrEmpty(jsonString))
+                                return JsonConvert.DeserializeObject<KeyboardActions>(jsonString)!;// File.ReadAllText(filePath))!;
+                        }
+                        else
+                        {
+                            DdpmCommonHelper.WriteUILog($"[ImportActionList] ValidateFilePath failed(model:{model}): {info}");
+                        }
+                    }
+                    var ka = new KeyboardActions(model, guid);
+                    ExportActionList(ka, model);
+                    return ka;
+
+                case eDeviceCategory.Mouse:
+                    if (hasFile)
+                    {
+                        //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
+                        if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
+                        {
+                            if (DdpmCommonHelper.DeviceManagerSA != null)
+                            {
+                                jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
+                            }
+                            if (!string.IsNullOrEmpty(jsonString))
+                                return JsonConvert.DeserializeObject<MouseActions>(jsonString)!; //File.ReadAllText(filePath))!;
+                        }
+                        else
+                        {
+                            DdpmCommonHelper.WriteUILog($"[ImportActionList] ValidateFilePath failed(model:{model}): {info}");
+                        }
+                    }
+                    var ma = new MouseActions(model, guid);
+                    ExportActionList(ma, model);
+                    return ma;
+
+                case eDeviceCategory.Pen:
+                    if (hasFile)
+                    {
+                        //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
+                        if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
+                        {
+                            if (DdpmCommonHelper.DeviceManagerSA != null)
+                            {
+                                jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
+                            }
+                            if (!string.IsNullOrEmpty(jsonString))
+                                return JsonConvert.DeserializeObject<PenActions>(jsonString)!; //File.ReadAllText(filePath))!;
+                        }
+                        else
+                        {
+                            DdpmCommonHelper.WriteUILog($"[ImportActionList] ValidateFilePath failed(model:{model}): {info}");
+                        }
+                    }
+                    var pen = new PenActions();
+                    return pen;
+
+                default:
+                    break;
+            }
+            return new object();
         }
-        return false;
     }
 
-    public static object ImportActionList(eDeviceCategory type, string model, string guid = "")
+    public class ProgrambleKey
     {
-        //var filePath = Path.Combine(Application.StartupPath, @$"ActionList\{model}_{instanceID}.json");
-        var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
-        var hasFile = File.Exists(filePath);
-        string info = string.Empty;
-        string jsonString = string.Empty;
-        switch (type)
-        {
-            case eDeviceCategory.KB:
-                if (hasFile)
-                {
-                    //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
-                    if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
-                    {
-                        if (DdpmCommonHelper.DeviceManagerSA != null)
-                        {
-                            jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
-                        }
-                        if (!string.IsNullOrEmpty(jsonString))
-                            return JsonConvert.DeserializeObject<KeyboardActions>(jsonString)!;// File.ReadAllText(filePath))!;
-                    }
-                    else
-                    {
-                        DdpmCommonHelper.WriteUILog($"[ImportActionList] ValidateFilePath failed(model:{model}): {info}");
-                    }
-                }
-                var ka = new KeyboardActions(model, guid);
-                ExportActionList(ka, model);
-                return ka;
-
-            case eDeviceCategory.Mouse:
-                if (hasFile)
-                {
-                    //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
-                    if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
-                    {
-                        if (DdpmCommonHelper.DeviceManagerSA != null)
-                        {
-                            jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
-                        }
-                        if (!string.IsNullOrEmpty(jsonString))
-                            return JsonConvert.DeserializeObject<MouseActions>(jsonString)!; //File.ReadAllText(filePath))!;
-                    }
-                    else
-                    {
-                        DdpmCommonHelper.WriteUILog($"[ImportActionList] ValidateFilePath failed(model:{model}): {info}");
-                    }
-                }
-                var ma = new MouseActions(model, guid);
-                ExportActionList(ma, model);
-                return ma;
-
-            case eDeviceCategory.Pen:
-                if (hasFile)
-                {
-                    //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
-                    if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
-                    {
-                        if (DdpmCommonHelper.DeviceManagerSA != null)
-                        {
-                            jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
-                        }
-                        if (!string.IsNullOrEmpty(jsonString))
-                            return JsonConvert.DeserializeObject<PenActions>(jsonString)!; //File.ReadAllText(filePath))!;
-                    }
-                    else
-                    {
-                        DdpmCommonHelper.WriteUILog($"[ImportActionList] ValidateFilePath failed(model:{model}): {info}");
-                    }
-                }
-                var pen = new PenActions();
-                return pen;
-
-            default:
-                break;
-        }
-        return new object();
+        public int Id;
+        public string Name = "";
+        public string ActionName = "";
+        public ProgrambleAction AssignedAction = new();
+        public List<ProgrambleAction> SuggestedActions = new();
     }
-}
 
-public class ProgrambleKey
-{
-    public int Id;
-    public string Name = "";
-    public string ActionName = "";
-    public ProgrambleAction AssignedAction = new();
-    public List<ProgrambleAction> SuggestedActions = new();
-}
+    public class ActionDetail
+    {
+        public string BaseGuid = "";
+        public int ProgrammableKeyId;
+        public string DisplayData = "";
+        public int ButtonOrKeyId;
+        public string DataOnPress = "";
+        public string DataOnRelease = "";
+    }
+    public class ProgrambleAction
+    {
+        public string BaseGuid = "";
+        public string Id = "";
+        public string Name = "";
+        public string Category = "";
+        public List<int> ProgrammableKeys = new();
 
-public class ActionDetail
-{
-    public string BaseGuid = "";
-    public int ProgrammableKeyId;
-    public string DisplayData = "";
-    public int ButtonOrKeyId;
-    public string DataOnPress = "";
-    public string DataOnRelease = "";
-}
-public class ProgrambleAction
-{
-    public string BaseGuid = "";
-    public string Id = "";
-    public string Name = "";
-    public string Category = "";
-    public List<int> ProgrammableKeys = new();
+    }
 
-}
-
-public class RadialMenuItem
-{
-    public int actionId;
-    public string actionName = "";
-    public int menuIndex;
-}
+    public class RadialMenuItem
+    {
+        public int actionId;
+        public string actionName = "";
+        public int menuIndex;
+    }
 }
