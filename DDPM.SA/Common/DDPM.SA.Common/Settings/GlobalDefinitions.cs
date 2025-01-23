@@ -40,3 +40,4 @@ namespace DDPM.SA.Common.Settings
             }
         }
     }
+}
