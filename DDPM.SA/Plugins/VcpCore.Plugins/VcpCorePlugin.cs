@@ -2631,13 +2631,13 @@ namespace VcpCore.Plugins
                     {
                         if (Key.Equals(MonitorInfo.edid) &&
                             _CacheTable[Key].ContainsKey(key))
-                        {                           
+                        {
                             bool rc = false;
                             var result = new object();
                             rc = _CacheTable[Key].TryGetValue(key, out result);
 
                             _logs.DebugMsg("[VcpCorePlugin] Is GetFromCacheTable success?? : result => " + rc.ToString());
-                            return (rc ? result : null);                            
+                            return (rc ? result : null);
                         }
                     }
                 }
@@ -3622,10 +3622,10 @@ namespace VcpCore.Plugins
                     bool TF_Boolean = ColorPresetHash.TryGetValue("14", out myresources);
                     if (TF_Boolean &&
                         myresources.ContainsKey(presetName))
-                    {                        
+                    {
                         GetPresetValue = myresources[presetName].ToString();
                         GetResult = true;
-                        outColorPreset.codeValue = Convert.ToUInt32(GetPresetValue, 16);                        
+                        outColorPreset.codeValue = Convert.ToUInt32(GetPresetValue, 16);
                     }
                 }
                 return GetResult;
@@ -4128,7 +4128,7 @@ namespace VcpCore.Plugins
             VCPE2.Add("DisplayHDR", "3A");
             VCPE2.Add("HDR10", "3B");
             VCPE2.Add("HLG", "3C");
-            VCPE2.Add("Presets Disabled", "7F"); // Jim  20250111 add back , due to accidental deletion on 20250106 
+            VCPE2.Add("Presets Disabled", "7F"); // Jim  20250111 add back , due to accidental deletion on 20250106
             VCPE2.Add("Custom Color HDR", "30"); // Jim add 2025 for [S3225QC] HDR list
             VCPE2.Add("HDR Peak 1000", "31"); // Jim add 2025 for [S3225QC] HDR list
 
@@ -4756,7 +4756,8 @@ namespace VcpCore.Plugins
                     _logs.DebugMsg("[VcpCorePlugin] FwVersion 0XC9 : 0X" + Convert.ToUInt32(OFWstring).ToString("X"));
                     _logs.DebugMsg("[VcpCorePlugin] FwVersion 0XFD : 0X" + Convert.ToUInt32(OEMID).ToString("X"));
 
-                    Version = FormatFwVersion(Convert.ToUInt32(OFWstring), Convert.ToUInt32(ScalarICID), Convert.ToUInt32(OEMID), modelName.ToUpper());
+                    //Version = FormatFwVersion(Convert.ToUInt32(OFWstring), Convert.ToUInt32(ScalarICID), Convert.ToUInt32(OEMID), modelName.ToUpper());
+                    Version = getFW2(modelName.ToUpper(), Convert.ToInt32(Convert.ToUInt32(OFWstring)), Convert.ToInt32(Convert.ToUInt32(ScalarICID)), Convert.ToInt32(Convert.ToUInt32(OEMID)));
 
                     if (!string.IsNullOrWhiteSpace(Version.Item1))
                     {
@@ -4773,6 +4774,246 @@ namespace VcpCore.Plugins
             _logs.DebugMsg("[VcpCorePlugin] FwVersion return string.empty");
             return Version;
         }
+
+        //================================================================================
+
+        private string HEX2BCD(string sBinCode)
+        {
+            try
+            {
+                return int.Parse(sBinCode, NumberStyles.HexNumber).ToString().PadLeft(2, '0');
+            }
+            catch
+            {
+                _logs.DebugMsg("[HEX2BCD] Fail convert :" + sBinCode);
+                return sBinCode;
+            }
+        }
+
+        private (string, string, string) getFW2(string name = "", int C9 = -1, int C8 = -1, int FD = -1)
+        {
+            try
+            {
+                _logs.DebugMsg($"[getFW2] modelName:{name}, C9:{C9}, C8:{C8}, FD:{FD}");
+
+                string SupplierID = string.Empty;
+                string D_Ctrl = string.Empty;
+
+                string text = checkSpecialCase(ref SupplierID, ref D_Ctrl, name, C9, C8, FD);
+                if (text.Length > 0)
+                    return (text, D_Ctrl, SupplierID);
+
+                string sIcode = GetSIcode(FD, ref SupplierID);
+                string scalar = GetScalar(C8, ref D_Ctrl);
+                int num = 0;
+                num = C9;
+                string[] array = BitConverter.ToString(BitConverter.GetBytes(num)).Split("-", StringSplitOptions.None);
+                if (FWVersionTable.Case2_HEXHEX.Contains(name))
+                {
+                    array[0] = HEX2BCD(array[0]);
+                    array[1] = HEX2BCD(array[1]);
+
+                    _logs.DebugMsg($"{name} C9 is Case2_HEXHEX");
+                }
+                else if (FWVersionTable.Case4_BCDHEX.Contains(name))
+                {
+                    array[0] = HEX2BCD(array[0]);
+
+                    _logs.DebugMsg($"{name} C9 is Case4_BCDHEX");
+                }
+                else
+                    _logs.DebugMsg($"{name} C9 is Case1_BCDBCD");
+
+                if (array[1].Length > 1 && array[1][1] >= 'A' && array[1][1] <= 'F')
+                    array[1] = int.Parse(array[1], NumberStyles.HexNumber).ToString();
+
+                string fWStage = GetFWStage(array[1], name);
+                string c9High = GetC9High(array[1], name);
+                string text2 = array[0];
+                return ((fWStage + scalar + sIcode + c9High + text2), D_Ctrl, SupplierID);
+            }
+            catch
+            {
+                return (string.Empty, string.Empty, string.Empty);
+            }
+        }
+
+        private string GetFWStage(string HH, string modelName)
+        {
+            string text = HH[0].ToString();
+            int num = int.Parse(text);
+            int modelYear = GetModelYear(modelName);
+            switch (num)
+            {
+                case 0:
+                case 4:
+                    text = "M";
+                    break;
+
+                case 2:
+                    if (modelYear < 25)
+                        text = "M";
+                    break;
+
+                case 12:
+                    text = "TM";
+                    break;
+
+                case 11:
+                    text = "T3";
+                    break;
+
+                case 9:
+                    text = "T1";
+                    break;
+
+                case 5:
+                    text = "T";
+                    break;
+
+                case 6:
+                    text = "S";
+                    break;
+            }
+
+            return text;
+        }
+
+        private static int GetModelYear(string ModelName)
+        {
+            try
+            {
+                if (ModelName.Length > 0)
+                {
+                    string text = new string(ModelName.Where(char.IsDigit).ToArray());
+                    string text2 = text.Substring(2, 2);
+                    return Convert.ToInt32(text2);
+                }
+            }
+            catch
+            {
+            }
+
+            return -1;
+        }
+
+        private string GetScalar(int C8, ref string D_Ctrl)
+        {
+            int num = C8 & 0xFF;
+            string result = string.Empty;
+            switch (num)
+            {
+                case 13:
+                    result = "1";
+                    D_Ctrl = "STM";
+                    break;
+
+                case 5:
+                    result = "2";
+                    D_Ctrl = "Mediatek";
+                    break;
+
+                case 9:
+                    result = "3";
+                    D_Ctrl = "Realtek";
+                    break;
+
+                case 18:
+                    result = "4";
+                    D_Ctrl = "Novatek";
+                    break;
+            }
+
+            return result;
+        }
+
+        private string GetSIcode(int FD, ref string SupplierID)
+        {
+            string text = string.Empty;
+            string @string = Encoding.ASCII.GetString(BitConverter.GetBytes(FD));
+            string text2 = @string;
+            for (int i = 0; i < text2.Length; i++)
+            {
+                char c = text2[i];
+                if (Convert.ToInt32(c) >= 48)
+                    text += c;
+            }
+
+            switch (text.ToUpper())
+            {
+                case "C":
+                    SupplierID = "TPV";
+                    break;
+
+                case "B":
+                    SupplierID = "Qisda";
+                    break;
+
+                case "T":
+                    SupplierID = "Wistron";
+                    break;
+
+                case "F":
+                    SupplierID = "Foxconn";
+                    break;
+
+                case "O":
+                    SupplierID = "BOE";
+                    break;
+
+                default:
+                    break;
+            }
+
+            return text.ToUpper();
+        }
+
+        private string GetC9High(string HH, string name)
+        {
+            string text = HH[1].ToString();
+            if (GetModelYear(name) < 24)
+            {
+                string text2 = text;
+                string text3 = text2;
+                if (text3 == "9")
+                {
+                    text = "1";
+                }
+            }
+
+            return text;
+        }
+
+        private string checkSpecialCase(ref string SupplierID, ref string D_Ctrl, string name = "", int C9 = -1, int C8 = -1, int FD = -1)
+        {
+            string result = string.Empty;
+            if (name == "P2423")
+            {
+                int num = C8;
+                string scalar = GetScalar(C8, ref D_Ctrl);
+                if (scalar == "3")
+                {
+                    num = C9;
+                    string[] array = BitConverter.ToString(BitConverter.GetBytes(num)).Split("-", StringSplitOptions.None);
+                    int num2 = int.Parse(array[1], NumberStyles.HexNumber);
+                    int num3 = int.Parse(array[0], NumberStyles.HexNumber);
+                    num2 |= 0x100;
+                    int num4 = num2 * 100 + num3;
+                    array = BitConverter.ToString(BitConverter.GetBytes(num4)).Split("-", StringSplitOptions.None);
+                    string hH = int.Parse(array[1]).ToString("X2");
+                    string text = int.Parse(array[0]).ToString("X2");
+                    string sIcode = GetSIcode(FD, ref SupplierID);
+                    string fWStage = GetFWStage(hH, name);
+                    string c9High = GetC9High(hH, name);
+                    string text2 = text;
+                    result = fWStage + scalar + sIcode + c9High + text2;
+                }
+            }
+
+            return result;
+        }
+
+        //================================================================================
 
         private (string, string, string) FormatFwVersion(uint fwVersion, uint ScalarICID, uint OEMID, string modelName)
         {
@@ -5252,6 +5493,8 @@ namespace VcpCore.Plugins
                 default: return 1;
             }
         }
+
+        //================================================================================
 
         private void Get_SupportListFile()
         {

@@ -155,6 +155,8 @@ namespace DDPM.SA.Common
         public static readonly string will_be_updated_to0 = GetString("will_be_updated_to");
         public static readonly string Yes0 = GetString("Yes");
         public static readonly string Zoom0 = GetString("Zoom");
+        public static readonly string ICC_notification_SmartHDR0 = GetString("ICC_notification_SmartHDR");
+        public static readonly string ICC_notification_NonSmartHDR0 = GetString("ICC_notification_NonSmartHDR");
 
     }
 }

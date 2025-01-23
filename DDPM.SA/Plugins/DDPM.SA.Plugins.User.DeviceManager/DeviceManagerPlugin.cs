@@ -1004,7 +1004,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     PopupContentPackage popupContentPackage = new PopupContentPackage()
                     {
                         Title = Strings.Dell_Display_and_Peripheral_Manager0,
-                        Info = Strings.Unable_to_synchronize_the_corresponding_ICC_profile0 + m.modelName,
+                        Info = Strings.Unable_to_synchronize_the_corresponding_ICC_profile0 + " " + m.modelName,
                         IsInfo = true,
                         IsOnlyUpdate = false,
                         StayOpen = false,
@@ -10133,6 +10133,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             bool regOK = WriteRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen", true).Result;
                         }
                     }
+                    else
+                    {
+                        writelog($"[DeviceMangerPlugin] FirstGetDPeMSettings, isDisplayConsentPage == {settings.UserSettings.isDisplayConsentPage}");
+                    }
                 }
             }
             catch (Exception ex)
@@ -10148,14 +10152,41 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public async Task<bool> CheckInstallFirstOpen()
         {
             writelog($"[DeviceMangerPlugin] CheckInstallFirstOpen");
+            bool getRegValue = false;
             var ReadReg = ReadRegistryData(RegistryHive.LocalMachine, @"SOFTWARE\Dell\DDPM Subagent", "InstallFirstOpen").Result;
             if (ReadReg == null)
             {
-                return false;
+                getRegValue = true;
             }
-            writelog($"[DeviceMangerPlugin] ReadReg Status {ReadReg} And {ReadReg.GetType()}");
-            Boolean.TryParse(ReadReg.ToString(), out var getRegValue);
-            if (getRegValue && _DTPProxyPlugin.GetDTPProxyPluginReady().Result && CheckHasInstallDPeM().Result)
+            else
+            {
+                writelog($"[DeviceMangerPlugin] ReadReg InstallFirstOpen Status {ReadReg} And type is {ReadReg.GetType()}");
+
+                try
+                {
+                    if (bool.TryParse(ReadReg.ToString(), out getRegValue))
+                    {
+                        writelog($"[DeviceMangerPlugin] ReadReg Status {getRegValue} TryParse Pass");
+                    }
+                    else
+                    {
+                        writelog($"[DeviceMangerPlugin] ReadReg Status {getRegValue} TryParse Fail");
+                        getRegValue = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    writelog($"[DeviceMangerPlugin] Exception occurred while parsing ReadReg: {ex.Message}");
+                    getRegValue = true;
+                }
+            }
+
+            bool blDTPProxyPluginReady = _DTPProxyPlugin.GetDTPProxyPluginReady().Result;
+            bool blCheckHassInstallDPeM = CheckHasInstallDPeM().Result;
+
+            writelog($"[DeviceMangerPlugin] Check Status, getRegValue:{getRegValue}, DTPProxyPluginReady:{blDTPProxyPluginReady}, CheckHasInstallDPeM:{blCheckHassInstallDPeM}");
+
+            if (getRegValue && blDTPProxyPluginReady && blCheckHassInstallDPeM)
             {
                 count++;
                 writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Count:{count}...");
@@ -10164,6 +10195,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 obj = new Object();
                 return true;
             }
+            else
+            {
+                writelog($"[DeviceMangerPlugin] No GlobalSetting migratoin...");
+            }
+
             return false;
         }
 
@@ -12482,6 +12518,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void DTPProxyPlugin_DTPProxyPluginSDKeventHandler(object sender, UpdateDTPProxyNotify e)
         {
+            if (e != null)
+            {
+                writelog($"[DeviceMangerPlugin] DTPProxyPlugin_DTPProxyPluginSDKeventHandler: {e.State}");
+            }
+
             if (e.State == "IsDTPReady OK")
             {
                 FirstGetDPeMSettings();
@@ -17077,12 +17118,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     case OSDType.BatteryLow:
                         {
+                            writelog($"[ShowOSD] OSDType.BatteryLow.");
                             if (Device is OSDType_Device.Headset)
                             {
                                 if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
                                     _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
                                 else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                    writelog("[_showosd*******] Headset Content error can't be NullOrWhiteSpace");
+
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Keyboard)
@@ -17090,7 +17133,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
                                     _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
                                 else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                    writelog("[_showosd*******] Keyboard Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Mouse)
@@ -17098,7 +17141,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
                                     _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
                                 else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                    writelog("[_showosd*******] Mouse Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Pen)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Pen, Content);
+                                else
+                                    writelog("[_showosd*******] Pen Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else
@@ -17106,12 +17157,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     case OSDType.CollaborationNotAvailable:
                         {
+                            writelog($"[ShowOSD] OSDType.CollaborationNotAvailable.");
                             if (Device is OSDType_Device.Headset)
                             {
                                 if (!string.IsNullOrWhiteSpace(Content))
                                     _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Headset, Content);
                                 else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                    writelog("[_showosd*******] Headset Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Keyboard)
@@ -17119,7 +17171,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (!string.IsNullOrWhiteSpace(Content))
                                     _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, Content);
                                 else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                    writelog("[_showosd*******] Keyboard Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Mouse)
@@ -17127,7 +17179,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (!string.IsNullOrWhiteSpace(Content))
                                     _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Mouse, Content);
                                 else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                    writelog("[_showosd*******] Mouse Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else
@@ -17137,8 +17189,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         return Task.CompletedTask;
                 }
             }
-            else
-                return Task.CompletedTask;
+
+            return Task.CompletedTask;
         }
 
         public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State)
