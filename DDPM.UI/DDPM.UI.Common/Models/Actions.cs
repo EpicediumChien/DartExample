@@ -176,7 +176,17 @@ namespace DDPM.UI.Common
 
         public KeyboardActions(string _model, string guid = "")
         {
+            if (string.IsNullOrEmpty(_model))
+            {
+                DdpmCommonHelper.WriteUILog("[KeyboardActions] _model is null");
+                return;
+            }
+
             var model = _model.ToUpper();
+
+            DdpmCommonHelper.WriteUILog($"[KeyboardActions] _model is {model}, guid: {guid}");
+
+
             KeyActions.Add(KeyName.F1, new SelectedAction(39, new AssignedAction(39)));
             KeyActions.Add(KeyName.F2, new SelectedAction(38, new AssignedAction(38)));
             KeyActions.Add(KeyName.F3, new SelectedAction(40, new AssignedAction(40)));
@@ -265,35 +275,58 @@ namespace DDPM.UI.Common
 
             if (guid != "")
             {
-                //Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA!.GetKbProgrammableKeys(guid);
-                Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA!.GetKbAssignedActions(guid);
-                var jArray = JArray.FromObject(task1.Result);
-                DdpmCommonHelper.WriteUILog($"[GetKbAssignedActions] :{jArray}");
-                List<ActionDetail> assignedActions = jArray.ToObject<List<ActionDetail>>()!;
-                foreach (var actionDetail in assignedActions)
+                if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    var btn = (KeyName)actionDetail.ProgrammableKeyId;
-                    if (KeyActions.TryGetValue(btn, out SelectedAction? keyAction))
+                    try
                     {
-                        if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                        Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA.GetKbAssignedActions(guid);
+                        var jArray = JArray.FromObject(task1.Result);
+
+                        DdpmCommonHelper.WriteUILog($"[GetKbAssignedActions] :{jArray}");
+
+                        try
                         {
-                            keyAction.AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
-                            if (keyAction.AssignedAction.ID == 14) //AssignKeystroke
+                            List<ActionDetail> assignedActions = jArray.ToObject<List<ActionDetail>>();
+
+                            foreach (var actionDetail in assignedActions)
                             {
-                                keyAction.AssignedAction.Parameter = actionDetail.DisplayData;
+                                var btn = (KeyName)actionDetail.ProgrammableKeyId;
+                                if (KeyActions.TryGetValue(btn, out SelectedAction? keyAction))
+                                {
+                                    if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                                    {
+                                        keyAction.AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                                        if (keyAction.AssignedAction.ID == 14) //AssignKeystroke
+                                        {
+                                            keyAction.AssignedAction.Parameter = actionDetail.DisplayData;
+                                        }
+                                    }
+                                }
                             }
+                            List<ProgrambleKey> ProgrambleKeys = jArray.ToObject<List<ProgrambleKey>>()!;
+                            //foreach (var programbleKey in ProgrambleKeys)
+                            //{
+                            //    var btn = (KeyName)programbleKey.Id;
+                            //    if (KeyActions.ContainsKey(btn) && programbleKey.AssignedAction != null)
+                            //    {
+                            //        KeyActions[btn].AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == programbleKey.AssignedAction.BaseGuid).Key;
+                            //    }
+                            //}
+                        }
+                        catch (Exception ex)
+                        {
+                            DdpmCommonHelper.WriteUILog($"  Exception: {ex.Message}");
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        DdpmCommonHelper.WriteUILog($"  Exception: {ex.Message}");
+                    }
                 }
-                List<ProgrambleKey> ProgrambleKeys = jArray.ToObject<List<ProgrambleKey>>()!;
-                //foreach (var programbleKey in ProgrambleKeys)
-                //{
-                //    var btn = (KeyName)programbleKey.Id;
-                //    if (KeyActions.ContainsKey(btn) && programbleKey.AssignedAction != null)
-                //    {
-                //        KeyActions[btn].AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == programbleKey.AssignedAction.BaseGuid).Key;
-                //    }
-                //}
+                else
+                {
+                    DdpmCommonHelper.WriteUILog("[KeyboardActions] DdpmCommonHelper.DeviceManagerSA == null");
+                }
             }
         }
     }
