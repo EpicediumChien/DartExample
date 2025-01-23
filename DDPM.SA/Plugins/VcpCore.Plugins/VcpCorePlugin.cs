@@ -1213,9 +1213,32 @@ namespace VcpCore.Plugins
                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] VcpCode is " + func);
                         _logs.DebugMsg("[VcpCorePlugin] [QueueTrigger] opt is " + opt.ToString());
 
-                        switch (func)
+                        switch (func.ToUpper())
                         {
-                            case "inputsourcelist":
+                            case "INPUT SELECT":
+                                {
+                                    if (IsVcpFunctionSupport(monitorInfoX, 0x60))
+                                    {
+                                        var tmp = GetInputSource(monitorInfoX);
+                                        var monitor = _AllInfoMonitors_Mix.FirstOrDefault(t => t.Item1.edid.Equals(monitorInfoX.edid));
+                                        if (monitor.Item1 != null && monitor.Item2 != null)
+                                        {
+                                            monitor.Item1.inputSource = tmp.Item2;
+                                            monitor.Item1.inputCable = tmp.Item1;
+                                            monitor.Item2.inputSource = tmp.Item2;
+                                            monitor.Item2.inputCable = tmp.Item1;
+
+                                            Initialize2TypesMonitorInfo(false, CancellationToken.None);
+
+                                            ro = tmp.Item2;
+                                        }
+                                    }
+                                    else
+                                        _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability inputsourcelist Fail => IsVcpFunctionSupport is false");
+                                }
+                                break;
+
+                            case "INPUTSOURCELIST":
                                 {
                                     if (IsVcpFunctionSupport(monitorInfoX, 0x60))
                                     {
@@ -1256,7 +1279,7 @@ namespace VcpCore.Plugins
                                 }
                                 break;
 
-                            case @"USB-C Prioritization":
+                            case @"USB-C PRIORITIZATION":
                                 {
                                     if (IsVcpFunctionSupport(monitorInfoX, 0xEA))
                                     {
@@ -1268,7 +1291,7 @@ namespace VcpCore.Plugins
                                 }
                                 break;
 
-                            case "colorpreset":
+                            case "COLORPRESET":
                                 {
                                     if (IsVcpFunctionSupport(monitorInfoX, 0xE2))
                                         ro = GetCurrentColorPreset(monitorInfoX);
@@ -1277,7 +1300,7 @@ namespace VcpCore.Plugins
                                 }
                                 break;
 
-                            case nameof(Gaming_GameEnhancementMode):
+                            case "GAMING_GAMEENHANCEMENTMODE":
                                 {
                                     if (IsVcpFunctionSupport(monitorInfoX, 0xF4))
                                     {
@@ -1290,7 +1313,7 @@ namespace VcpCore.Plugins
                                 }
                                 break;
 
-                            case nameof(Gaming_ResponseTime):
+                            case "GAMING_RESPONSETIME":
                                 {
                                     if (IsVcpFunctionSupport(monitorInfoX, 0xF4))
                                     {
@@ -1303,7 +1326,7 @@ namespace VcpCore.Plugins
                                 }
                                 break;
 
-                            case nameof(Gaming_DarkStabilizer):
+                            case "GAMING_DARKSTABILIZER":
                                 {
                                     if (IsVcpFunctionSupport(monitorInfoX, 0xF4))
                                     {
@@ -1316,7 +1339,7 @@ namespace VcpCore.Plugins
                                 }
                                 break;
 
-                            case nameof(Gaming_HDRType):
+                            case "GAMING_HDRTYPE":
                                 {
                                     if (IsVcpFunctionSupport(monitorInfoX, 0xF4))
                                     {
