@@ -1065,18 +1065,18 @@ namespace DDPM.SA.Plugins.CMAManager
         // add @ 20241129 stephen
         public Task UpdateFwStatus(List<FWUpdateInfo> datas)
         {
-            WriteLog("@@@stephen UpdateFwStatus() executed");
+            WriteLog("UpdateFwStatus() executed");
 
             foreach (FWUpdateInfo data in datas)
             {
-                WriteLog("@@@stephen UpdateFwStatus() data.Guid = " + data.Guid);
-                WriteLog("@@@stephen UpdateFwStatus() data.Update_date = " + data.Update_date);
-                WriteLog("@@@stephen UpdateFwStatus() data.DeviceName = " + data.DeviceName);
-                WriteLog("@@@stephen UpdateFwStatus() data.DeviceId = " + data.DeviceId);
-                WriteLog("@@@stephen UpdateFwStatus() data.FWUErrorCode = " + data.FWUErrorCode);
-                WriteLog("@@@stephen UpdateFwStatus() data.Model = " + data.Model);
-                WriteLog("@@@stephen UpdateFwStatus() data.IsUOD = " + data.IsUOD);
-                WriteLog("@@@stephen UpdateFwStatus() data.TheLatestVersion = " + data.TheLatestVersion);
+                WriteLog("UpdateFwStatus() data.Guid = " + data.Guid);
+                WriteLog("UpdateFwStatus() data.Update_date = " + data.Update_date);
+                WriteLog("UpdateFwStatus() data.DeviceName = " + data.DeviceName);
+                WriteLog("UpdateFwStatus() data.DeviceId = " + data.DeviceId);
+                WriteLog("UpdateFwStatus() data.FWUErrorCode = " + data.FWUErrorCode);
+                WriteLog("UpdateFwStatus() data.Model = " + data.Model);
+                WriteLog("UpdateFwStatus() data.IsUOD = " + data.IsUOD);
+                WriteLog("UpdateFwStatus() data.TheLatestVersion = " + data.TheLatestVersion);
 
                 NotifyArgs args = new NotifyArgs();
                 args.eventType = Params.EventType.FW.ToString();

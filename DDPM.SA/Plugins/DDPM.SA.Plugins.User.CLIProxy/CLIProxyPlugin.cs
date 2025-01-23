@@ -21,6 +21,7 @@ using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Plugin.User.CLIManager
@@ -1018,6 +1019,11 @@ namespace DDPM.SA.Plugin.User.CLIManager
                         if (subAge.Contains("defer") || subAge.Contains("force"))
                         {
                             rule.devicetype = subAge.Split(',')[0];
+                            continue;
+                        }
+                        else if(!subAge.Contains("defer") || !subAge.Contains("force"))
+                        {
+                            rule.devicetype = rootArg[0];
                             continue;
                         }
 
