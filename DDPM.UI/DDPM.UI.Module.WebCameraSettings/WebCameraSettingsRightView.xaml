@@ -596,7 +596,7 @@
                                             <Border.ToolTip>
                                                 <ToolTip Placement="Center" VerticalOffset="-35" HorizontalOffset="-30">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
-                                                        <TextBlock Text="{Binding [WebCameraSettings.11], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="WrapWithOverflow" Padding="5,0,5,0" />
+                                                        <TextBlock Text="{Binding [WebCameraPresenceDetection.11], Source={x:Static lang:LangHelper.Instance}}" Style="{StaticResource Tooltip_TextBlockStyle}" MaxWidth="350" TextWrapping="WrapWithOverflow" Padding="5,0,5,0" />
                                                     </Border>
                                                 </ToolTip>
                                             </Border.ToolTip>

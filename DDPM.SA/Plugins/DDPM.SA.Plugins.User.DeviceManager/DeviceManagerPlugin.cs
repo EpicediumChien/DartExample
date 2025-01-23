@@ -1004,7 +1004,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     PopupContentPackage popupContentPackage = new PopupContentPackage()
                     {
                         Title = Strings.Dell_Display_and_Peripheral_Manager0,
-                        Info = Strings.Unable_to_synchronize_the_corresponding_ICC_profile0 + m.modelName,
+                        Info = Strings.Unable_to_synchronize_the_corresponding_ICC_profile0 + " " + m.modelName,
                         IsInfo = true,
                         IsOnlyUpdate = false,
                         StayOpen = false,
