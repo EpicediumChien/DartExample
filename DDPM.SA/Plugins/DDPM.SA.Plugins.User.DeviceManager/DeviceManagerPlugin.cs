@@ -14039,8 +14039,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 //Derek PIMS-329759 Problem 1
                 //Derek 20250118 workable only zoom meeting is active //_IsZoomMeetingActive &&
-                if (1 == devCnt && _GlobalSettingParam != null && 
-                    _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _IsZoomMeetingActive && 
+                if (1 == devCnt && _GlobalSettingParam != null &&
+                    _GlobalSettingParam.GlobalSetting_WidgetSettings != null && _IsZoomMeetingActive &&
                     _GlobalSettingParam.GlobalSetting_WidgetSettings.EnableQuickAccessWidget)
                 {
                     CallQAM_UI(this);
@@ -17088,6 +17088,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         {
                             if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
                                 _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
+                            else
+                                writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                            return Task.CompletedTask;
+                        }
+                        else if (Device is OSDType_Device.Pen)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
+                                _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Pen, Content);
                             else
                                 writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
                             return Task.CompletedTask;
