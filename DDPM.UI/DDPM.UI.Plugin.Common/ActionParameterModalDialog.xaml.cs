@@ -189,7 +189,7 @@ namespace DDPM.UI.Plugin.Common
             if (txt == "")
                 return;
 
-            if (txtKeystroke.Text.Equals("ALT + Z", StringComparison.CurrentCultureIgnoreCase))
+            if (txtKeystroke.Text.Equals("ALT + Z", StringComparison.InvariantCultureIgnoreCase))
             {
                 MessageModalDialog messageModalDialog;
                 System.Windows.Window mainWindow = System.Windows.Application.Current.MainWindow;
