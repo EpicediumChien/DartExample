@@ -1658,17 +1658,18 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     }
                 }
                 string arguments;
-                string AppDataPath = WTSFunction.GetActiveUserLocalAppDataPath(Log);
+                //string AppDataPath = WTSFunction.GetActiveUserLocalAppDataPath(Log);
+                string programData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                 string logPath = "";
                 _ProgressLogPath = string.Empty;
                 _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " create log path start");
-                if (!string.IsNullOrEmpty(AppDataPath))
+                if (!string.IsNullOrEmpty(programData))
                 {
                     string path;
                     try
                     {
                         _logs.DebugMsg_1($"fwUpdateInfo.ServiceTag is : {fwUpdateInfo.ServiceTag}");
-                        path = @$"{AppDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog\{fwUpdateInfo.DeviceName}_{fwUpdateInfo.ServiceTag}_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
+                        path = @$"{programData}\Dell\FWUpdateLog\{fwUpdateInfo.DeviceName}_{fwUpdateInfo.ServiceTag}_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
                         if (!Directory.Exists(path))
                         {
                             Directory.CreateDirectory(path);
@@ -1677,7 +1678,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     catch (Exception ex)
                     {
                         _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName} create log Error : {ex.Message}");
-                        path = @$"{AppDataPath}\Dell\Dell Display and Peripheral Manager\Log\FWUpdataLog\ex_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
+                        path = @$"{programData}\Dell\FWUpdateLog\ex_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
                         if (!Directory.Exists(path))
                         {
                             Directory.CreateDirectory(path);
