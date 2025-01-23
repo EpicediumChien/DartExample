@@ -398,7 +398,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         idxDock++;
                     }
                     //0618 Wayn 新增HeadSet
-                    else if (devType.ToString().ToUpper().Contains("HEADSET"))
+                    else if (devType.ToString().ToUpper().Contains("HEADSET") || devType.ToString().ToUpper().Contains("LOGICALAIRAUDIO"))
                     {
                         string imagepath = "";
                         switch (di.ModelNumber)
@@ -422,7 +422,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                             case "WH3024":
                                 imagepath = "Resources/HeadsetModel_WH3024-Airmax.png";
                                 break;
-
+                            case "SB725":
+                                imagepath = "Resources/Speaker_SB725.png";
+                                break;
                             default:
                                 imagepath = "Resources/HeadsetModel_WL7024-Mito.png";
                                 break;
@@ -445,9 +447,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
 
                             case "SB522A":
                                 imagepath = "Resources/Speaker_SB522A.png";
-                                break;
-                            case "SB725":
-                                imagepath = "Resources/Speaker_SB725.png";
                                 break;
                             default:
                                 imagepath = "Resources/Speaker_SP3022.png";

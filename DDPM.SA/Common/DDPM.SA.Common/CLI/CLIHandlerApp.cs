@@ -1083,8 +1083,8 @@ namespace DDPM.SA.Common.CLI
                         response.Message = $"{commandLineInput.TargetFeature}: value format error with [{value}]";
 #if DEBUG
                         Debug.WriteLine(response.Message);
-                        Console.WriteLine(response.Message);
 #endif
+                        Console.WriteLine(response.Message);
                         WriteLog(Log, response.Message);
                         return CLI_Response_OptionValueNotSupport(commandLineInput, result, op);
                     }

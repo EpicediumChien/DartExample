@@ -91,7 +91,8 @@ namespace DDPM.SA.Common.UI
                 case "MS300":
                 case "MS3121W":
                     return "MS300";
-
+                case "SB725":
+                    return "SB725";
                 default:
                     break;
             }
@@ -166,6 +167,8 @@ namespace DDPM.SA.Common.UI
                         return "Dell Digital Hi-End 32 6K Monitor";
                     return name;
                 default:
+                    if (model == "U3224KB")                   
+                        return "Dell UltraSharp 32 6K Monitor U3224KB";
                     return name;
             }
         }

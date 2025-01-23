@@ -4,6 +4,7 @@ using DDPM.UI.Common.Method;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.DdpmHomePlugin;
 using Dell.Client.Framework.UX.WPF;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -197,6 +198,22 @@ namespace DDPM.UI.Module.Kvm
         {
             TextString textString = new TextString();
             e.Handled = !textString.CheckChar(e.Text);
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+
+            if (CultureInfo.CurrentUICulture.Name == "ar-SA")
+            {
+                LeftArrow.Visibility = System.Windows.Visibility.Visible;
+                RightArrow.Visibility = System.Windows.Visibility.Hidden;
+            }
+            else
+            {
+                LeftArrow.Visibility = System.Windows.Visibility.Hidden;
+                RightArrow.Visibility = System.Windows.Visibility.Visible;
+            }
+
         }
     }
 }

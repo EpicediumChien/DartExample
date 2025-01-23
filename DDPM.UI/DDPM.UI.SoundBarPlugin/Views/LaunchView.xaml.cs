@@ -99,7 +99,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
 
             try
             {
-                await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
+                //await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
                 DdpmCommonHelper.WriteUILog($"[SoundBar] LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
                 if (!_vm.IsRestoreEnable)
                 {

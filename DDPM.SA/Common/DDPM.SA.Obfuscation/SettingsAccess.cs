@@ -342,15 +342,18 @@ namespace DDPM.SA.Obfuscation
 
                 // Convert the XOR result to a hexadecimal string
                 string xorHex = BitConverter.ToString(xorResult).Replace("-", "");
-
+#if DEBUG
                 Console.WriteLine($"GUID: {guid}");
                 Console.WriteLine($"Random Bytes");//: {BitConverter.ToString(randomBytes).Replace("-", "")}");
                 Console.WriteLine($"XOR Result");//: {xorHex}");
+#endif
                 return xorResult;
             }
             catch (Exception e)
             {
+#if DEBUG
                 Console.WriteLine($"Unable to generate HMAC: {e.Message}");
+#endif
                 return [];
             }
         }
@@ -422,15 +425,16 @@ namespace DDPM.SA.Obfuscation
             string hexRandomNumber = referenceInfo;
             // Combine the timestamp and random number
             string combined = hexTimestamp + hexRandomNumber;
-
+#if DEBUG
             Console.WriteLine("*** Timestamp (Hex)");//: " + hexTimestamp + "," + hexTimestamp.Length);
             Console.WriteLine("*** Random Number (Hex)");//: " + hexRandomNumber + "," + hexRandomNumber.Length);
             Console.WriteLine("*** Combined");//: " + combined + "," + combined.Length);
-
+#endif
             string token = content;
             byte[] secToken = Encoding.UTF8.GetBytes(token);
+#if DEBUG
             Console.WriteLine($"*** GenerateRandomNumber");// {secToken.Length} {hexRandomNumber.Length}");
-
+#endif
             byte[] random = VerifyTimestamp(referenceTicket, combined);
             //    byte[] byteArray = Encoding.UTF8.GetBytes(token);
             byte[] byteArray = ComputeBytes(Encoding.UTF8.GetBytes(salt), random);
@@ -443,7 +447,9 @@ namespace DDPM.SA.Obfuscation
                 512 / 8);//output 64 bytes
 
             string hMAC2 = ComputeHMACSHA512(secToken, hash, HashAlgorithmName.SHA512);
-            Console.WriteLine($"*** Message 2");//: {hMAC2}");
+#if DEBUG
+            Console.WriteLine($"*** Message 2");
+#endif
 
             return hMAC2.ToUpper().Equals(signature.ToUpper());
         }
@@ -493,7 +499,9 @@ namespace DDPM.SA.Obfuscation
             }
             catch (Exception e)
             {
+#if DEBUG
                 Console.WriteLine($"*** Unable to generate HMAC: {e.Message}");
+#endif
                 return "";
             }
         }

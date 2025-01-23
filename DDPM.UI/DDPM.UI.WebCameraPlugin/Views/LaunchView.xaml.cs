@@ -2294,36 +2294,39 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         private async Task CleanupMediaCaptureAsync()
         {
 
-            try
+            if (_vm.MediaFrameReader != null)
             {
-                _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"Error del MediaFrameReader FrameArrived: {ex.Message}");
-            }
-
-            try
-            {
-                await _vm.MediaFrameReader.StopAsync();
-
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"Error stopping MediaFrameReader: {ex.Message}");
-            }
-
-            try
-            {
-                if (_vm.MediaFrameReader != null)
+                try
                 {
-                    _vm.MediaFrameReader.Dispose();
-                    _vm.MediaFrameReader = null;
+                    _vm.MediaFrameReader.FrameArrived -= MediaFrameReader_FrameArrived;
                 }
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"Error Dispose MediaFrameReader: {ex.Message}");
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog($"Error del MediaFrameReader FrameArrived: {ex.Message}");
+                }
+
+                try
+                {
+                    await _vm.MediaFrameReader.StopAsync();
+
+                }
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog($"Error stopping MediaFrameReader: {ex.Message}");
+                }
+
+                try
+                {
+                    if (_vm.MediaFrameReader != null)
+                    {
+                        _vm.MediaFrameReader.Dispose();
+                        _vm.MediaFrameReader = null;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    DdpmCommonHelper.WriteUILog($"Error Dispose MediaFrameReader: {ex.Message}");
+                }
             }
 
             if (_vm!.MediaCapture != null)
