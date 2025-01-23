@@ -273,21 +273,27 @@ namespace DDPM.UI.Common
                 foreach (var actionDetail in assignedActions)
                 {
                     var btn = (KeyName)actionDetail.ProgrammableKeyId;
-                    if (KeyActions.TryGetValue(btn, out SelectedAction? buttonAction))
+                    if (KeyActions.TryGetValue(btn, out SelectedAction? keyAction))
                     {
                         if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
-                            buttonAction.AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                        {
+                            keyAction.AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                            if (keyAction.AssignedAction.ID == 14) //AssignKeystroke
+                            {
+                                keyAction.AssignedAction.Parameter = actionDetail.DisplayData;
+                            }
+                        }
                     }
                 }
                 List<ProgrambleKey> ProgrambleKeys = jArray.ToObject<List<ProgrambleKey>>()!;
-                foreach (var programbleKey in ProgrambleKeys)
-                {
-                    var btn = (KeyName)programbleKey.Id;
-                    if (KeyActions.ContainsKey(btn) && programbleKey.AssignedAction != null)
-                    {
-                        KeyActions[btn].AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == programbleKey.AssignedAction.BaseGuid).Key;
-                    }
-                }
+                //foreach (var programbleKey in ProgrambleKeys)
+                //{
+                //    var btn = (KeyName)programbleKey.Id;
+                //    if (KeyActions.ContainsKey(btn) && programbleKey.AssignedAction != null)
+                //    {
+                //        KeyActions[btn].AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == programbleKey.AssignedAction.BaseGuid).Key;
+                //    }
+                //}
             }
         }
     }
@@ -347,7 +353,13 @@ namespace DDPM.UI.Common
                     if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
                     {
                         if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                        {
                             buttonAction.AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                            if (buttonAction.AssignedAction.ID == 14) //AssignKeystroke
+                            {
+                                buttonAction.AssignedAction.Parameter = actionDetail.DisplayData;
+                            }
+                        }
                     }
                 }
                 //Word
