@@ -1159,7 +1159,9 @@
                                             </StackPanel>
                                         </Grid>
 
-                                        --><!--Outgoing Audio--><!--
+                                        -->
+                                <!--Outgoing Audio-->
+                                <!--
                                         <Grid Grid.Row="1" Height="50">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
@@ -1186,7 +1188,9 @@
                                             <UXControls:UXToggleSwitch Name="OutgoingAudioToggleSwitch" FontSize="16" Content="{Binding Path=OutgoingAudio_String, FallbackValue='OFF'}" IsChecked="{Binding Path=OutgoingAudioStatus}" IsEnabled="{Binding Path=SupportedOutgoingAudio}" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Center" VerticalContentAlignment="Center" AutomationProperties.Name="OutgoingAudioToggleSwitch" ContentPlacement="Left" ContentTextVisibility="True" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="0,0,20,0" IsTabStop="{Binding isMicTabStopped}"/>
                                         </Grid>
 
-                                        --><!--Incoming Audio--><!--
+                                        -->
+                                <!--Incoming Audio-->
+                                <!--
                                         <Grid Grid.Row="2" Height="50">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
