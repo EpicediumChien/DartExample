@@ -218,6 +218,8 @@ namespace DDPM.SA.Common
 
         Task<bool> USBSwitch(MonitorInfo monitorInfo, string inputsource1, string upstream1, string inputsource2, string upstream2);
 
+        Task<string> GetCurrentInput(MonitorInfo monitorInfo);
+
         #endregion public for InputSource
 
         #region PIP/PBP

@@ -931,6 +931,18 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             return Task.CompletedTask;
         }
 
+        public Task<string> GetCurrentInput(MonitorInfo monitorInfo)
+        {
+            ObjGetVCP objGetVCP = GetVCPCapability(monitorInfo, "input select").Result;
+            if (objGetVCP != null && objGetVCP.result) 
+            {
+                Trace.WriteLine("CurrentInput:" + objGetVCP.value.ToString());
+                string currentInpt = objGetVCP.value.ToString();
+                return Task.FromResult(currentInpt);
+            }
+            return Task.FromResult("");
+        }
+
         public Task<bool> USBSwitch(MonitorInfo monitorInfo, string inputsource1, string upstream1, string inputsource2, string upstream2)
         {
             int input_num = 0;

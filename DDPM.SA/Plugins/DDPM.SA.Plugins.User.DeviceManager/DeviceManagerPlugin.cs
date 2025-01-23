@@ -2424,6 +2424,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(usbUpstream);
         }
 
+        public Task<string> GetCurrentInput(MonitorInfo monitorInfo)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.GetCurrentInput(monitorInfo);
+            }
+            else
+            {
+                writelog("[GetCurrentInput] _DisplayManagerPlugin is null.");
+            }
+
+            return Task.FromResult("");
+        }
+
         public Task<bool> USBSwitch(MonitorInfo monitorInfo, string inputsource1, string upstream1, string inputsource2, string upstream2)
         {
             Dictionary<string, InputInfo> inputSourceList = GetInputSourcelist(monitorInfo).Result;
@@ -8718,7 +8732,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         SetVCPSequence(monitorInfo, impVCPSequence, vcps);
                                         foreach (VCPCode code in vcps)
                                         {
-                                            if (code.Code != null && code.Value != null)
+                                            if (code.Code != null && (code.Value != null && code.Value.Count > 0))
                                             {
                                                 writelog($"[DisplayImportSettings] VCP code : {code.Code.ToString()}, First Value: {code.Value[0]}");
                                                 if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
