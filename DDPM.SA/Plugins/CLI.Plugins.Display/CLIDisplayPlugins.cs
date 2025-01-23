@@ -15122,7 +15122,7 @@ namespace DDPM.CLI.Plugins.Display
 
             string output = string.Empty;
 
-            Console.WriteLine($"@@Stephen FWUpdate(IDeviceManagerSA devMgr...)");
+            Console.WriteLine($"FWUpdate(IDeviceManagerSA devMgr...)");
 
             if (type == "SET")
             {
@@ -15152,11 +15152,11 @@ namespace DDPM.CLI.Plugins.Display
 
                 foreach (FWUpdateInfo info in result)
                 {
-                    Console.WriteLine($"@@Stephen result info.DeviceName = " + info.DeviceName);
-                    Console.WriteLine($"@@Stephen result info.DevicePath = " + info.DevicePath);
-                    Console.WriteLine($"@@Stephen result info.DeviceVersion = " + info.DeviceVersion);
-                    Console.WriteLine($"@@Stephen result info.FileSavepath = " + info.FileSavepath);
-                    Console.WriteLine($"@@Stephen result info.DeviceType = " + info.DeviceType);
+                    Console.WriteLine($"result info.DeviceName = " + info.DeviceName);
+                    Console.WriteLine($"result info.DevicePath = " + info.DevicePath);
+                    Console.WriteLine($"result info.DeviceVersion = " + info.DeviceVersion);
+                    Console.WriteLine($"result info.FileSavepath = " + info.FileSavepath);
+                    Console.WriteLine($"result info.DeviceType = " + info.DeviceType);
                 }
 
                 return ((int)CLI_ExitCode.success, output);
