@@ -374,289 +374,368 @@ namespace DDPM.UI.Common
             if (guid != "")
             {
                 //AllApp
-                DdpmCommonHelper.DeviceManagerSA!.SetCurrentSelectedAppSpecificProfile(guid, "{76824745-CE06-4358-835D-7BB991CB71A0}");
-                DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] AllApp Guid:{76824745-CE06-4358-835D-7BB991CB71A0}");
-                Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
-                var jArray = JArray.FromObject(task1.Result);
-                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] AllApp:{jArray}");
-                List<ActionDetail> assignedActions = jArray.ToObject<List<ActionDetail>>()!;
-                foreach (var actionDetail in assignedActions)
+                if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
-                    if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
+                    DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{76824745-CE06-4358-835D-7BB991CB71A0}");
+                    DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] AllApp Guid:{76824745-CE06-4358-835D-7BB991CB71A0}");
+                    Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA.GetMouseAssignedActions(guid);
+
+                    try
                     {
-                        if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                        var jArray = JArray.FromObject(task1.Result);
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] AllApp:{jArray}");
+                        List<ActionDetail> assignedActions = jArray.ToObject<List<ActionDetail>>()!;
+                        foreach (var actionDetail in assignedActions)
                         {
-                            buttonAction.AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
-                            if (buttonAction.AssignedAction.ID == 14) //AssignKeystroke
+                            var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
+                            if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
                             {
-                                buttonAction.AssignedAction.Parameter = actionDetail.DisplayData;
+                                if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                                {
+                                    buttonAction.AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                                    if (buttonAction.AssignedAction.ID == 14) //AssignKeystroke
+                                    {
+                                        buttonAction.AssignedAction.Parameter = actionDetail.DisplayData;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Unknown ButtonAction. {btn.ToString()}");
                             }
                         }
                     }
-                }
-                //Word
-                DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{E0C9145B-BE8B-4423-B520-8CA71BE88E11}");
-                DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] Word Guid:{E0C9145B-BE8B-4423-B520-8CA71BE88E11}");
-                task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
-                jArray = JArray.FromObject(task1.Result);
-                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Word:{jArray}");
-                assignedActions = jArray.ToObject<List<ActionDetail>>()!;
-                foreach (var actionDetail in assignedActions)
-                {
-                    var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
-                    if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
+                    catch (Exception ex)
                     {
-                        if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
-                            buttonAction.OfficeActions["Word"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] got exceptoin: {ex.ToString()}");
+                    }
+                    /////////////////////////////////////////////////////////////////////////////////////////
+
+                    //Word
+                    DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{E0C9145B-BE8B-4423-B520-8CA71BE88E11}");
+                    DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] Word Guid:{E0C9145B-BE8B-4423-B520-8CA71BE88E11}");
+                    task1 = DdpmCommonHelper.DeviceManagerSA.GetMouseAssignedActions(guid);
+
+                    try
+                    {
+                        var jArray = JArray.FromObject(task1.Result);
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Word:{jArray}");
+                        List<ActionDetail> assignedActions = jArray.ToObject<List<ActionDetail>>()!;
+                        foreach (var actionDetail in assignedActions)
+                        {
+                            var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
+                            if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
+                            {
+                                if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                                    buttonAction.OfficeActions["Word"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                            }
+                            else
+                            {
+                                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Word Unknown ButtonAction. {btn.ToString()}");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Word got exceptoin: {ex.ToString()}");
+                    }
+                    /////////////////////////////////////////////////////////////////////////////////////////
+
+                    //Excel
+                    DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{37743697-4B39-45CD-B7F8-30027D1521ED}");
+                    DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] Excel Guid:{37743697-4B39-45CD-B7F8-30027D1521ED}");
+                    task1 = DdpmCommonHelper.DeviceManagerSA.GetMouseAssignedActions(guid);
+                    try
+                    {
+                        var jArray = JArray.FromObject(task1.Result);
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Excel:{jArray}");
+                        List<ActionDetail> assignedActions = jArray.ToObject<List<ActionDetail>>()!;
+                        foreach (var actionDetail in assignedActions)
+                        {
+                            var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
+                            if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
+                            {
+                                if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                                    buttonAction.OfficeActions["Excel"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                            }
+                            else
+                            {
+                                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Excel Unknown ButtonAction. {btn.ToString()}");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Excel got exceptoin: {ex.ToString()}");
+                    }
+                    /////////////////////////////////////////////////////////////////////////////////////////
+
+                    //PowerPoint
+                    DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{7BBECD91-F12A-4CC4-B005-526BA66BA657}");
+                    DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] PowerPoint Guid:{7BBECD91-F12A-4CC4-B005-526BA66BA657}");
+                    task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
+                    try
+                    {
+                        var jArray = JArray.FromObject(task1.Result);
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] PowerPoint:{jArray}");
+                        List<ActionDetail> assignedActions = jArray.ToObject<List<ActionDetail>>()!;
+                        foreach (var actionDetail in assignedActions)
+                        {
+                            var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
+                            if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
+                            {
+                                if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                                    buttonAction.OfficeActions["PowerPoint"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                            }
+                            else
+                            {
+                                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] PowerPoint Unknown ButtonAction. {btn.ToString()}");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] PowerPoint got exceptoin: {ex.ToString()}");
+                    }
+                    /////////////////////////////////////////////////////////////////////////////////////////
+
+
+                    //Outlook
+                    DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{CCCE4E6F-C690-4EF5-BA19-F270C26C21B6}");
+                    DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] Outlook Guid:{CCCE4E6F-C690-4EF5-BA19-F270C26C21B6}");
+                    task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
+                    try
+                    {
+                        var jArray = JArray.FromObject(task1.Result);
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Outlook:{jArray}");
+                        List<ActionDetail> assignedActions = jArray.ToObject<List<ActionDetail>>()!;
+                        foreach (var actionDetail in assignedActions)
+                        {
+                            var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
+                            if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
+                            {
+                                if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                                    buttonAction.OfficeActions["Outlook"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                            }
+                            else
+                            {
+                                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Outlook Unknown ButtonAction. {btn.ToString()}");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Outlook got exceptoin: {ex.ToString()}");
                     }
                 }
-                //Excel
-                DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{37743697-4B39-45CD-B7F8-30027D1521ED}");
-                DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] Excel Guid:{37743697-4B39-45CD-B7F8-30027D1521ED}");
-                task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
-                jArray = JArray.FromObject(task1.Result);
-                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Excel:{jArray}");
-                assignedActions = jArray.ToObject<List<ActionDetail>>()!;
-                foreach (var actionDetail in assignedActions)
-                {
-                    var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
-                    if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
-                    {
-                        if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
-                            buttonAction.OfficeActions["Excel"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
-                    }
-                }
-                //PowerPoint
-                DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{7BBECD91-F12A-4CC4-B005-526BA66BA657}");
-                DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] PowerPoint Guid:{7BBECD91-F12A-4CC4-B005-526BA66BA657}");
-                task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
-                jArray = JArray.FromObject(task1.Result);
-                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] PowerPoint:{jArray}");
-                assignedActions = jArray.ToObject<List<ActionDetail>>()!;
-                foreach (var actionDetail in assignedActions)
-                {
-                    var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
-                    if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
-                    {
-                        if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
-                            buttonAction.OfficeActions["PowerPoint"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
-                    }
-                }
-                //Outlook
-                DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{CCCE4E6F-C690-4EF5-BA19-F270C26C21B6}");
-                DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] Outlook Guid:{CCCE4E6F-C690-4EF5-BA19-F270C26C21B6}");
-                task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
-                jArray = JArray.FromObject(task1.Result);
-                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Outlook:{jArray}");
-                assignedActions = jArray.ToObject<List<ActionDetail>>()!;
-                foreach (var actionDetail in assignedActions)
-                {
-                    var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
-                    if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
-                    {
-                        if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
-                            buttonAction.OfficeActions["Outlook"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
-                    }
-                }
+                /////////////////////////////////////////////////////////////////////////////////////////
+
                 //AllApp
                 DdpmCommonHelper.DeviceManagerSA!.SetCurrentSelectedAppSpecificProfile(guid, "{76824745-CE06-4358-835D-7BB991CB71A0}");
                 DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] AllApp Guid:{76824745-CE06-4358-835D-7BB991CB71A0}");
             }
-        }
-    }
-
-    public class SelectedAction
-    {
-        public int DefaultActionID = -1;
-        public AssignedAction AssignedAction = new();
-
-        public SelectedAction()
-        { }
-
-        public SelectedAction(int defaultActionID, AssignedAction assignedAction)
-        {
-            DefaultActionID = defaultActionID;
-            AssignedAction = assignedAction;
-        }
-    }
-
-    public class SelectedMouseAction
-    {
-        public int DefaultActionID = -1;
-        public AssignedAction AssignedAction = new();
-        public Dictionary<string, int> OfficeActions = new() { { "Word", -1 }, { "Excel", -1 }, { "PowerPoint", -1 }, { "Outlook", -1 } };
-
-        public SelectedMouseAction()
-        { }
-
-        public SelectedMouseAction(int defaultActionID, AssignedAction assignedAction)
-        {
-            DefaultActionID = defaultActionID;
-            AssignedAction = assignedAction;
-        }
-    }
-
-    public class AssignedAction
-    {
-        public int ID = -1;
-        public string Parameter = "";
-
-        public AssignedAction()
-        { }
-
-        public AssignedAction(int id, string parameter = "")
-        {
-            ID = id;
-            Parameter = parameter;
-        }
-    }
-
-    public static class ActionList
-    {
-        public static bool ExportActionList(object actions, string model, int instanceID = 0)
-        {
-            try
+            else
             {
-                string json = JsonConvert.SerializeObject(actions, Formatting.Indented);
-                var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions");
+                DdpmCommonHelper.WriteUILog("[MouseActions] DdpmCommonHelper.DeviceManagerSA == null");
+            }
 
-                string info = string.Empty;
-                if (!Directory.Exists(fileFolder))
-                    Directory.CreateDirectory(fileFolder);
-                //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
-                if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(fileFolder, out info))
+
+
+        }
+    }
+}
+
+public class SelectedAction
+{
+    public int DefaultActionID = -1;
+    public AssignedAction AssignedAction = new();
+
+    public SelectedAction()
+    { }
+
+    public SelectedAction(int defaultActionID, AssignedAction assignedAction)
+    {
+        DefaultActionID = defaultActionID;
+        AssignedAction = assignedAction;
+    }
+}
+
+public class SelectedMouseAction
+{
+    public int DefaultActionID = -1;
+    public AssignedAction AssignedAction = new();
+    public Dictionary<string, int> OfficeActions = new() { { "Word", -1 }, { "Excel", -1 }, { "PowerPoint", -1 }, { "Outlook", -1 } };
+
+    public SelectedMouseAction()
+    { }
+
+    public SelectedMouseAction(int defaultActionID, AssignedAction assignedAction)
+    {
+        DefaultActionID = defaultActionID;
+        AssignedAction = assignedAction;
+    }
+}
+
+public class AssignedAction
+{
+    public int ID = -1;
+    public string Parameter = "";
+
+    public AssignedAction()
+    { }
+
+    public AssignedAction(int id, string parameter = "")
+    {
+        ID = id;
+        Parameter = parameter;
+    }
+}
+
+public static class ActionList
+{
+    public static bool ExportActionList(object actions, string model, int instanceID = 0)
+    {
+        try
+        {
+            string json = JsonConvert.SerializeObject(actions, Formatting.Indented);
+            var fileFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions");
+
+            string info = string.Empty;
+            if (!Directory.Exists(fileFolder))
+                Directory.CreateDirectory(fileFolder);
+            //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(fileFolder, out info);   // 20241004 Add for Security
+            if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(fileFolder, out info))
+            {
+                string strPath = Path.Combine(fileFolder, $"{model}.json");
+                //File.WriteAllText(strPath, json);
+                if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    string strPath = Path.Combine(fileFolder, $"{model}.json");
-                    //File.WriteAllText(strPath, json);
-                    if (DdpmCommonHelper.DeviceManagerSA != null)
+                    return DdpmCommonHelper.DeviceManagerSA.WriteSerializedContentToFile(strPath, json).Result;//1007 apply signature
+                }
+            }
+            else
+                DdpmCommonHelper.WriteUILog($"[ExportActionList] ValidateFilePath failed: {info}");
+        }
+        catch (Exception ex)
+        {
+            DdpmCommonHelper.WriteUILog($"[ExportActionList] exception: {ex.Message}");
+        }
+        return false;
+    }
+
+    public static object ImportActionList(eDeviceCategory type, string model, string guid = "")
+    {
+        //var filePath = Path.Combine(Application.StartupPath, @$"ActionList\{model}_{instanceID}.json");
+        var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
+        var hasFile = File.Exists(filePath);
+        string info = string.Empty;
+        string jsonString = string.Empty;
+        switch (type)
+        {
+            case eDeviceCategory.KB:
+                if (hasFile)
+                {
+                    //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
+                    if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
                     {
-                        return DdpmCommonHelper.DeviceManagerSA.WriteSerializedContentToFile(strPath, json).Result;//1007 apply signature
+                        if (DdpmCommonHelper.DeviceManagerSA != null)
+                        {
+                            jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
+                        }
+                        if (!string.IsNullOrEmpty(jsonString))
+                            return JsonConvert.DeserializeObject<KeyboardActions>(jsonString)!;// File.ReadAllText(filePath))!;
+                    }
+                    else
+                    {
+                        DdpmCommonHelper.WriteUILog($"[ImportActionList] ValidateFilePath failed(model:{model}): {info}");
                     }
                 }
-                else
-                    DdpmCommonHelper.WriteUILog($"[ExportActionList] ValidateFilePath failed: {info}");
-            }
-            catch (Exception ex)
-            {
-                DdpmCommonHelper.WriteUILog($"[ExportActionList] exception: {ex.Message}");
-            }
-            return false;
+                var ka = new KeyboardActions(model, guid);
+                ExportActionList(ka, model);
+                return ka;
+
+            case eDeviceCategory.Mouse:
+                if (hasFile)
+                {
+                    //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
+                    if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
+                    {
+                        if (DdpmCommonHelper.DeviceManagerSA != null)
+                        {
+                            jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
+                        }
+                        if (!string.IsNullOrEmpty(jsonString))
+                            return JsonConvert.DeserializeObject<MouseActions>(jsonString)!; //File.ReadAllText(filePath))!;
+                    }
+                    else
+                    {
+                        DdpmCommonHelper.WriteUILog($"[ImportActionList] ValidateFilePath failed(model:{model}): {info}");
+                    }
+                }
+                var ma = new MouseActions(model, guid);
+                ExportActionList(ma, model);
+                return ma;
+
+            case eDeviceCategory.Pen:
+                if (hasFile)
+                {
+                    //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
+                    if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
+                    {
+                        if (DdpmCommonHelper.DeviceManagerSA != null)
+                        {
+                            jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
+                        }
+                        if (!string.IsNullOrEmpty(jsonString))
+                            return JsonConvert.DeserializeObject<PenActions>(jsonString)!; //File.ReadAllText(filePath))!;
+                    }
+                    else
+                    {
+                        DdpmCommonHelper.WriteUILog($"[ImportActionList] ValidateFilePath failed(model:{model}): {info}");
+                    }
+                }
+                var pen = new PenActions();
+                return pen;
+
+            default:
+                break;
         }
-
-        public static object ImportActionList(eDeviceCategory type, string model, string guid = "")
-        {
-            //var filePath = Path.Combine(Application.StartupPath, @$"ActionList\{model}_{instanceID}.json");
-            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
-            var hasFile = File.Exists(filePath);
-            string info = string.Empty;
-            string jsonString = string.Empty;
-            switch (type)
-            {
-                case eDeviceCategory.KB:
-                    if (hasFile)
-                    {
-                        //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
-                        if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
-                        {
-                            if (DdpmCommonHelper.DeviceManagerSA != null)
-                            {
-                                jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
-                            }
-                            if (!string.IsNullOrEmpty(jsonString))
-                                return JsonConvert.DeserializeObject<KeyboardActions>(jsonString)!;// File.ReadAllText(filePath))!;
-                        }
-                        else
-                        {
-                            DdpmCommonHelper.WriteUILog($"[ImportActionList] ValidateFilePath failed(model:{model}): {info}");
-                        }
-                    }
-                    var ka = new KeyboardActions(model, guid);
-                    ExportActionList(ka, model);
-                    return ka;
-
-                case eDeviceCategory.Mouse:
-                    if (hasFile)
-                    {
-                        //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
-                        if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
-                        {
-                            if (DdpmCommonHelper.DeviceManagerSA != null)
-                            {
-                                jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
-                            }
-                            if (!string.IsNullOrEmpty(jsonString))
-                                return JsonConvert.DeserializeObject<MouseActions>(jsonString)!; //File.ReadAllText(filePath))!;
-                        }
-                        else
-                        {
-                            DdpmCommonHelper.WriteUILog($"[ImportActionList] ValidateFilePath failed(model:{model}): {info}");
-                        }
-                    }
-                    var ma = new MouseActions(model, guid);
-                    ExportActionList(ma, model);
-                    return ma;
-
-                case eDeviceCategory.Pen:
-                    if (hasFile)
-                    {
-                        //DDPM.SA.Common.Settings.DDPMFileSecurity.SRemoveSymbolicFolder(Path.GetDirectoryName(filePath), out info);   // 20241004 Add for Security
-                        if (DDPM.SA.Common.Settings.DDPMFileSecurity.ValidateFilePath(filePath, out info))
-                        {
-                            if (DdpmCommonHelper.DeviceManagerSA != null)
-                            {
-                                jsonString = DdpmCommonHelper.DeviceManagerSA.ReadSerializedContentFromFile(filePath).Result;
-                            }
-                            if (!string.IsNullOrEmpty(jsonString))
-                                return JsonConvert.DeserializeObject<PenActions>(jsonString)!; //File.ReadAllText(filePath))!;
-                        }
-                        else
-                        {
-                            DdpmCommonHelper.WriteUILog($"[ImportActionList] ValidateFilePath failed(model:{model}): {info}");
-                        }
-                    }
-                    var pen = new PenActions();
-                    return pen;
-
-                default:
-                    break;
-            }
-            return new object();
-        }
+        return new object();
     }
+}
 
-    public class ProgrambleKey
-    {
-        public int Id;
-        public string Name = "";
-        public string ActionName = "";
-        public ProgrambleAction AssignedAction = new();
-        public List<ProgrambleAction> SuggestedActions = new();
-    }
+public class ProgrambleKey
+{
+    public int Id;
+    public string Name = "";
+    public string ActionName = "";
+    public ProgrambleAction AssignedAction = new();
+    public List<ProgrambleAction> SuggestedActions = new();
+}
 
-    public class ActionDetail
-    {
-        public string BaseGuid = "";
-        public int ProgrammableKeyId;
-        public string DisplayData = "";
-        public int ButtonOrKeyId;
-        public string DataOnPress = "";
-        public string DataOnRelease = "";
-    }
-    public class ProgrambleAction
-    {
-        public string BaseGuid = "";
-        public string Id = "";
-        public string Name = "";
-        public string Category = "";
-        public List<int> ProgrammableKeys = new();
+public class ActionDetail
+{
+    public string BaseGuid = "";
+    public int ProgrammableKeyId;
+    public string DisplayData = "";
+    public int ButtonOrKeyId;
+    public string DataOnPress = "";
+    public string DataOnRelease = "";
+}
+public class ProgrambleAction
+{
+    public string BaseGuid = "";
+    public string Id = "";
+    public string Name = "";
+    public string Category = "";
+    public List<int> ProgrammableKeys = new();
 
-    }
+}
 
-    public class RadialMenuItem
-    {
-        public int actionId;
-        public string actionName = "";
-        public int menuIndex;
-    }
+public class RadialMenuItem
+{
+    public int actionId;
+    public string actionName = "";
+    public int menuIndex;
+}
 }
