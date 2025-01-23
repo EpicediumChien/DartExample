@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using System.Xml.Linq;
 using System.Windows.Forms;
 using System.Linq.Expressions;
+using static System.Net.WebRequestMethods;
 
 namespace DDPM.UI.Module.WebCameraPresenceDetection
 {
@@ -339,7 +340,8 @@ namespace DDPM.UI.Module.WebCameraPresenceDetection
         private void CallUpdateMPSFW_Click(object sender, RoutedEventArgs e)
         {
             //Derek 1116 for Webcam PIMS 319078
-            string url = "https://www.dell.com/";
+            //string url = "https://www.dell.com/";
+            string url = "https://www.dell.com/support/wb7022/downloads"; // Jim 20250113 modify for PIMS-319078
             // Open the browser and navigate to specified url
             //Process.Start(new ProcessStartInfo
             //{
