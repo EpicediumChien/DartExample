@@ -75,7 +75,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                         if (!string.IsNullOrEmpty(appDataPath))
                         {
                             log.Info($"folderPath - appDataPath Line 77: appDataPath  : {appDataPath}");
-                            string LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
+                            string LogFolder = @$"{appDataPath}{GlobalDefinitions.LogDDPMUSERSA}";//\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
                             log.Info("folderPath - LogFolder Line 79: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
@@ -86,7 +86,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                 if (!method.CopyLogFolder(LogFolder, savePath))
                                     fail_info += "[DDPM.Subagent.User]";
                             }
-                            LogFolder = @$"{appDataPath}\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
+                            LogFolder = @$"{appDataPath}{GlobalDefinitions.LogDDPMGUI}";//\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
                             log.Info("folderPath - LogFolder Line 90: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
@@ -105,7 +105,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                         if (!string.IsNullOrEmpty(programdataPath))
                         {
                             log.Info($"folderPath - appDataPath Line 107: programdataPath  : {programdataPath}");
-                            string LogFolder = @$"{programdataPath}\Dell\DDPM.Subagent";
+                            string LogFolder = @$"{programdataPath}{GlobalDefinitions.LogDDPMSYSSA}";//\Dell\DDPM.Subagent";
                             log.Info("folderPath - LogFolder Line 109: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
@@ -116,7 +116,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                 if (!method.CopyLogFolder(LogFolder, savePath))
                                     fail_info += "[DDPM.Subagent]";
                             }
-                            LogFolder = @$"{programdataPath}\Dell\Dell TechHub";
+                            LogFolder = @$"{programdataPath}{GlobalDefinitions.LogDTH}";//\Dell\Dell TechHub";
                             log.Info("folderPath - LogFolder Line 120: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
@@ -127,7 +127,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                 if (!method.CopyLogFolder(LogFolder, savePath))
                                     fail_info += "[Dell TechHub]";
                             }
-                            LogFolder = @$"{programdataPath}\Dell\DTP\Logs";
+                            LogFolder = @$"{programdataPath}{GlobalDefinitions.LogDTP}";//\Dell\DTP\Logs";
                             log.Info("folderPath - LogFolder Line 131: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
@@ -154,7 +154,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                         fail_info += "[DDPMW-NKVM]";
                                 }
                             }
-                            LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPMService\Log";
+                            LogFolder = @$"{programdataPath}{GlobalDefinitions.LogDPMService}";//\Dell\Dell Peripheral Manager\DPMService\Log";
                             log.Info("folderPath - LogFolder Line 158: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
@@ -165,7 +165,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                 if (!method.CopyLogFolder(LogFolder, savePath))
                                     fail_info += "[DPMService_Log]";
                             }
-                            LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPM\Log";
+                            LogFolder = @$"{programdataPath}{GlobalDefinitions.LogDPM}";//\Dell\Dell Peripheral Manager\DPM\Log";
                             log.Info("folderPath - LogFolder Line 169: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
@@ -176,7 +176,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                 if (!method.CopyLogFolder(LogFolder, savePath))
                                     fail_info += "[DPM_Log]";
                             }
-                            LogFolder = @$"{programdataPath}\Dell\Dell Peripheral Manager\DPeMSDK\Log";
+                            LogFolder = @$"{programdataPath}{GlobalDefinitions.LogDPeM}";//\Dell\Dell Peripheral Manager\DPeMSDK\Log";
                             log.Info("folderPath - LogFolder Line 180: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
@@ -187,7 +187,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                 if (!method.CopyLogFolder(LogFolder, savePath))
                                     fail_info += "[DPeMSDK_Log]";
                             }
-                            LogFolder = @$"{programdataPath}\Dell\DdpmSwUpdater";
+                            LogFolder = @$"{programdataPath}{GlobalDefinitions.LogSwUpdater}";//\Dell\DdpmSwUpdater";
                             log.Info("folderPath - LogFolder Line 191: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
@@ -198,7 +198,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                                 if (!method.CopyLogFolder(LogFolder, savePath))
                                     fail_info += "[DDPM.SwUpdater]";
                             }
-                            LogFolder = @$"{programdataPath}\Dell\FWUpdateLog";
+                            LogFolder = @$"{programdataPath}{GlobalDefinitions.LogFwUpdater}";//\Dell\FWUpdateLog";
                             log.Info("folderPath - LogFolder Line 201: " + LogFolder);
                             if (method.DirectoryContainsFiles(LogFolder))
                             {
