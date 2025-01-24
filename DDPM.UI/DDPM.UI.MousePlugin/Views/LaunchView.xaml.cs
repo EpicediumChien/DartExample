@@ -147,10 +147,8 @@ namespace DDPM.UI.Plugin.MousePlugin
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  LaunchView() ex:" + ex.Message);
             }
-            this.Loaded += (s, e) => {
-                leftBorderDefaultWidth = 1045;//LeftBorder.ActualWidth;
-                capAreaDefaultWidth = AppCaptionArea.Width;
-                };
+            leftBorderDefaultWidth = 1045;
+            capAreaDefaultWidth = AppCaptionArea.Width;
             LeftBorder.SizeChanged -= CapAreaSizeChange;
             LeftBorder.SizeChanged += CapAreaSizeChange;
         }
