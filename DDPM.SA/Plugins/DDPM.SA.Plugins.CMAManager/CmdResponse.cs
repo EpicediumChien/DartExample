@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DDPM.SA.Plugins.CMAManager
 {
@@ -269,9 +270,9 @@ namespace DDPM.SA.Plugins.CMAManager
                 catch (Exception e)
                 {
                     tid = 0;
-                    result = 999;
+                    result = Params.Response.UNKNOWN_ERROR;
                     msg = "InfoTask Exception: " + e.ToString();
-                    data = null;
+                    data = string.Empty.ToArray();
                 }
 
             }
@@ -296,9 +297,9 @@ namespace DDPM.SA.Plugins.CMAManager
                 catch (Exception e)
                 {
                     tid = 0;
-                    result = 999;
+                    result = Params.Response.UNKNOWN_ERROR;
                     msg = "InfoTask Exception: " + e.ToString();
-                    data = null;
+                    data = string.Empty.ToArray();
                 }
 
             }
@@ -467,35 +468,107 @@ namespace DDPM.SA.Plugins.CMAManager
                         seqnum = seqnum + 1;
                     }
 
-                    index = (string)jObject["Index"];
-
-                    model = (string)jObject["Model"];
-                    servicetag = (string)jObject["ServiceTag"];
-                    marketingname = (string)jObject["MarketingName"];
-                    serialnumber = (string)jObject["SerialNumber"];
-                    fwversion = (string)jObject["FWVersion"];
-
-
-                    result = (string)jObject["Result"];
-                    message = (string)jObject["Message"];
-
-                    Array fwarray = jObject["FWUpdateRESPONSE"].ToArray();
-
-                    fwupdateresponse = "N/A";
-
-                    if (fwarray.Length > 0)
+                    try
                     {
-                        int counter = 0;
-                        foreach (var fw in fwarray)
+                        index = (string)jObject["Index"];
+                    }
+                    catch
+                    {
+                        index = "N/A";
+                    }
+
+                    try
+                    {
+                        model = (string)jObject["Model"];
+                    }
+                    catch
+                    {
+                        model = "N/A";
+                    }
+
+                    try
+                    {
+                        servicetag = (string)jObject["ServiceTag"];
+                    }
+                    catch
+                    {
+                        servicetag = "N/A";
+                    }
+
+                    try
+                    {
+                        marketingname = (string)jObject["MarketingName"];
+                    }
+                    catch
+                    {
+                        marketingname = "N/A";
+                    }
+
+                    try
+                    {
+                        serialnumber = (string)jObject["SerialNumber"];
+                    }
+                    catch
+                    {
+                        serialnumber = "N/A";
+                    }
+
+                    try
+                    {
+                        fwversion = (string)jObject["FWVersion"];
+                    }
+                    catch
+                    {
+                        fwversion = "N/A";
+                    }
+
+
+
+                    // result and Error message
+                    try
+                    {
+                        result = (string)jObject["Result"];
+                    }
+                    catch
+                    {
+                        result = "N/A";
+                    }
+
+                    try
+                    {
+                        message = (string)jObject["Message"];
+                    }
+                    catch
+                    {
+                        message = "N/A";
+                    }
+
+
+                    try
+                    {
+                        Array fwarray = jObject["FWUpdateRESPONSE"].ToArray();
+
+                        fwupdateresponse = "N/A";
+
+                        if (fwarray.Length > 0)
                         {
-                            if (counter > 0)
+                            int counter = 0;
+                            foreach (var fw in fwarray)
                             {
-                                fwupdateresponse = fwupdateresponse + ",\n";
+                                if (counter > 0)
+                                {
+                                    fwupdateresponse = fwupdateresponse + ",\n";
+                                }
+                                fwupdateresponse = fwupdateresponse + fw.ToString();
+                                counter++;
                             }
-                            fwupdateresponse = fwupdateresponse + fw.ToString();
-                            counter++;
                         }
                     }
+                    catch
+                    {
+                        fwupdateresponse = "N/A";
+                    }
+                    
                 }
                 catch (Exception e)
                 {
