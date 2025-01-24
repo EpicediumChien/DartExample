@@ -28,15 +28,21 @@ namespace DdpmSwUpdater
         {
             //DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
             //[Dean] 20250120 change log location to be C:\ProgramData\Dell\DdpmSwUpdater
-            string AppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);// WTSFunction.GetActiveUserLocalAppDataPath(null);
-            if (!string.IsNullOrEmpty(AppDataPath))
+            string ProgramDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);// WTSFunction.GetActiveUserLocalAppDataPath(null);
+            if (!string.IsNullOrEmpty(ProgramDataPath))
             {
-                path = AppDataPath + @"\Dell\DdpmSwUpdater";// "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-DdpmSwUpdater";
+                path = ProgramDataPath + @"\Dell\Dell Display and Peripheral Manager\DdpmSwUpdater";// "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-DdpmSwUpdater";
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
                 }
-#if RELEASE
+                logFilePath = path + "\\" + logFilePath;
+                logs = new Logs(logFilePath, "DdpmSwUpdater");
+                var version = Assembly.GetExecutingAssembly().GetName().Version;
+                LogMessage($"DdpmSwUpdater Ver:{version}");
+
+                //Dean 0124 According to log move into %programdata%\Dell\Dell Display and Peripheral Manager, using oridignal ACL as well 
+/*#if RELEASE
                 try
                 {
                     bool acl = DDPMFileSecurity.CheckFolderACL(path, out string info);
@@ -51,12 +57,10 @@ namespace DdpmSwUpdater
                     LogMessage($"SetPath error : {ex.Message}");
                     return;
                 }
-#endif
-                logFilePath = path + "\\" + logFilePath;
+#endif*/
+                
             }
-            Logs = new Logs(logFilePath, "DdpmSwUpdater");
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-            LogMessage($"DdpmSwUpdater Ver:{version}");
+            
         }
         public static SWUpdateHelper GetSWUMetadata(bool isSkipCA)
         {

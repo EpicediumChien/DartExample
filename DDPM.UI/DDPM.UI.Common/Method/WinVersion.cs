@@ -137,6 +137,34 @@ namespace DDPM.UI.Common.Method
                 return null;
             }
         }
+
+        public static string GetComputerModel()
+        {            
+            using (ManagementClass mc = new ManagementClass("Win32_ComputerSystem"))
+            {
+                using (ManagementObjectCollection moc = mc.GetInstances())
+                {
+                    foreach (ManagementObject mo in moc.Cast<ManagementObject>())
+                    {
+                        try
+                        {
+                            return mo["Model"]?.ToString();
+                        }
+                        catch (Exception ex)
+                        {
+
+                            Console.WriteLine($"Exception: {ex.Message}");
+                            return null;
+                        }
+                        finally
+                        {
+                            mo.Dispose();
+                        }
+                    }
+                }
+                return null;
+            }
+        }
     }
 
 }

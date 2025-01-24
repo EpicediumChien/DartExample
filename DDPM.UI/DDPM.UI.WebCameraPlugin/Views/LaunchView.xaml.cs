@@ -332,11 +332,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (profileName != _vm!.CurrentProfileName || isProfilePropertyChanged)
                 {
                     _vm!.CurrentProfileName = profileName;
-                    _vm.IsSettingProfile = true;
                     //Derek 2025/01/18 cancel this action due to it has done by QAM
                     //_vm.SetProfile();
-                    _vm.IsSettingProfile = false;
                     isProfilePropertyChanged = false;
+                    _vm.isUIHasUpdateByQAM = true;
                 }
 
                 Dispatcher.Invoke(new Action(() =>
@@ -442,6 +441,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             //檢查是否為dell電腦
             bool is_DellPc = check_DellPc();
 
+            bool is_SUT_internal_presence_sensor = check_SUT_internal_presence_sensor();
+
             //現在規格已經不需要判斷韌體奇偶數直接從 is_EsiSupport 判斷就好
 
             //硬體與條件狀態模擬測試 rd測試用
@@ -462,6 +463,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             print_debug("is_camera_dell7:" + is_camera_dell7);
             print_debug("is_WindowsVer_OK:" + is_WindowsVer_OK);
             print_debug("is_DellPc:" + is_DellPc);
+            print_debug("is_SUT_internal_presence_sensor:" + is_SUT_internal_presence_sensor);
             print_debug("AllSupportedResolutions:" + AllSupportedResolutions);
 
             print_debug("check_PresenceFunction() s0 model-" + model);
@@ -554,6 +556,15 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             if (!is_DellPc)
                             {
                                 print_debug("check_PresenceFunction() s11");
+
+                                //顯示韌體升級
+                                _vm.brdHello_show = Visibility.Collapsed;
+                                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                            }
+                            else if (is_DellPc && is_SUT_internal_presence_sensor) // Jim modify 20250124 PIMS-319078
+                            {
+                                print_debug("check_PresenceFunction() s11-1");
 
                                 //顯示韌體升級
                                 _vm.brdHello_show = Visibility.Collapsed;
@@ -714,6 +725,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
             if (manufacturer == null)
                 DdpmCommonHelper.WriteUILog("check_DellPc() manufacturer == null");
+
+            return false;
+
+        }
+
+        public bool check_SUT_internal_presence_sensor()
+        {
+            if (File.Exists(@"C:\ui_cond\dellpc.txt"))
+                return true;
+
+            string model = WinVersion.GetComputerModel();
+            if (model != null && model.Contains("Latitude 7350", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (model == null)
+                DdpmCommonHelper.WriteUILog("check_SUT_internal_presence_sensor() model == null");
 
             return false;
 
@@ -2418,9 +2447,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     //DdpmCommonHelper.DeviceManagerSA!.SetProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.ProfileIDs[profileName]);
                     _vm!.CurrentProfileName = profileName;
-                    _vm.IsSettingProfile = true;
                     _vm.SetProfile();
-                    _vm.IsSettingProfile = false;
                     isProfilePropertyChanged = false;
                 }
                 btnPreset_Click(this, null);
@@ -2517,9 +2544,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (profileName != _vm!.CurrentProfileName)
                 {
                     _vm.CurrentProfileName = profileName;
-                    _vm.IsSettingProfile = true;
                     _vm.SetProfile();
-                    _vm.IsSettingProfile = false;
                 }
                 txbName.Text = profileName;
                 _vm!.DisableVBar();
@@ -2554,9 +2579,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (profileName == _vm!.CurrentProfileName)
                 {
                     _vm!.CurrentProfileName = "Default";
-                    _vm.IsSettingProfile = true;
                     _vm.SetProfile();
-                    _vm.IsSettingProfile = false;
                 }
                 btnPreset_Click(this, null);
 
@@ -2768,9 +2791,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (EditMode == "EDIT")
                 {
                     _vm!.CurrentProfileName = EditingProfileName;
-                    _vm.IsSettingProfile = true;
                     _vm.SetProfile();
-                    _vm.IsSettingProfile = false;
                 }
                 txtCaption.Text = _vm!.Name;
                 _vm.EnableVBar();
