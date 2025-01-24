@@ -33,7 +33,11 @@ namespace DdpmSwUpdater
                 {
                     Directory.CreateDirectory(path);
                 }
-/*#if RELEASE
+                logFilePath = path + "\\" + logFilePath;
+                logs = new Logs(logFilePath, "DdpmSwUpdater");
+                var version = Assembly.GetExecutingAssembly().GetName().Version;
+                LogMessage($"DdpmSwUpdater Ver:{version}");
+#if RELEASE
                 try
                 {
                     bool acl = DDPMFileSecurity.CheckFolderACL(path, out string info);
@@ -48,12 +52,10 @@ namespace DdpmSwUpdater
                     LogMessage($"SetPath error : {ex.Message}");
                     return;
                 }
-#endif*/
-                logFilePath = path + "\\" + logFilePath;
+#endif
+                
             }
-            logs = new Logs(logFilePath, "DdpmSwUpdater");
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-            LogMessage($"DdpmSwUpdater Ver:{version}");
+            
         }
         public static SWUpdateHelper GetSWUMetadata(bool isSkipCA)
         {

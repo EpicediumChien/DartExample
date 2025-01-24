@@ -80,7 +80,8 @@ namespace DdpmSwUpdater
         private Mutex? _instanceMutex;
         private string? _applicationName;
         bool _SkipSHA = false;
-        int _Process = 0;
+        int _CurrentProcess = 0;
+        int _CurrentProcessLimit = 10;
         Timer _processTimer = new Timer();
         #region Events
         public event EventHandler<UpdateProgressInfo>? ProgressUpdate_Notify;
@@ -922,35 +923,45 @@ namespace DdpmSwUpdater
                 RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\Dell Display and Peripheral Manager\\", false);
                 if (registryKey != null)
                 {
-                    string curProcess = (registryKey.GetValue("Process")?.ToString());
-                    string nextProcess = (registryKey.GetValue("NextProcess")?.ToString());
-                    if (!string.IsNullOrEmpty(nextProcess) && int.TryParse(nextProcess, out int process))
+                    string curProcess_str = (registryKey.GetValue("Process")?.ToString());
+                    string nextProcess_str = (registryKey.GetValue("NextProcess")?.ToString());
+                    if (!string.IsNullOrEmpty(curProcess_str) && int.TryParse(curProcess_str, out int curProcess))
                     {
-                        _Process = process;
-                        ResetTimer();
+                        _CurrentProcess = curProcess;
                         UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                         {
                             DeviceName = _SWUpdateInfo.SoftwareName,
                             TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
                             ProcessName = "Installing",
-                            ProcessProgress = _Process,
+                            ProcessProgress = _CurrentProcess,
                         };
                         sendMessageToEvent(updateProgressInfo);
                     }
+                    if (!string.IsNullOrEmpty(nextProcess_str) && int.TryParse(nextProcess_str, out int nextProcess))
+                    {
+                        _CurrentProcessLimit = nextProcess;
+                    }
+                    LogManage.LogMessage($"OnRegistryValueChanged curProcess :{curProcess_str}");
+                    LogManage.LogMessage($"OnRegistryValueChanged nextProcess :{nextProcess_str}");
+                    ResetTimer();
                 }
             }
         }
         private void InstallingProcessTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
-            LogManage.LogMessage($"InstallingProcessTimer_Elapsed _Process :{_Process}");
-            UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+            LogManage.LogMessage($"InstallingProcessTimer_Elapsed _CurrentProcess :{_CurrentProcess}");
+            LogManage.LogMessage($"InstallingProcessTimer_Elapsed _CurrentProcessLimit :{_CurrentProcessLimit}");
+            if (_CurrentProcess < _CurrentProcessLimit)
             {
-                DeviceName = _SWUpdateInfo.SoftwareName,
-                TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                ProcessName = "Installing",
-                ProcessProgress = _Process++,
-            };
-            sendMessageToEvent(updateProgressInfo);
+                UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                {
+                    DeviceName = _SWUpdateInfo.SoftwareName,
+                    TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
+                    ProcessName = "Installing",
+                    ProcessProgress = _CurrentProcess++,
+                };
+                sendMessageToEvent(updateProgressInfo);
+            }
         }
         private void ResetTimer()
         {
@@ -959,7 +970,7 @@ namespace DdpmSwUpdater
             {
                 LogManage.LogMessage($"ResetTimer go");
                 _processTimer.Stop();
-                _processTimer.Interval = TimeSpan.FromSeconds(15).TotalMilliseconds;
+                _processTimer.Interval = TimeSpan.FromSeconds(12).TotalMilliseconds;
                 _processTimer.Start();
             }
             LogManage.LogMessage($"ResetTimer done");
