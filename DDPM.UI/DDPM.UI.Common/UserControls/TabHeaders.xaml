@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              xmlns:local="clr-namespace:DDPM.UI.Common.UserControls"
              mc:Ignorable="d"
              d:DesignHeight="100" d:DesignWidth="660">
@@ -33,7 +34,8 @@
 
             <!-- Header[0] -->
             <Border Grid.Column="0" CornerRadius="4,0,0,4" MouseLeftButtonDown="header0_MouselLeftButtonDown">
-                <TextBlock Text="{Binding Text1, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}">
+                <!-- Elsa 20250124 For PIMS [PIMS-334913] change "Binding Text1" to  Binding [Fullscreen], add Source={x:Static lang:LangHelper.Instance} change Mode=TwoWay=OneWay-->
+                <TextBlock Text="{Binding [Fullscreen], Source={x:Static lang:LangHelper.Instance}, Mode=OneWay}">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlock_HeaderTextStyle}">
                             <Style.Triggers>
