@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using DDPM.UI.Resources.Helper;
+using System.Windows.Controls;
 using System.Windows.Media.Animation;
 
 namespace DDPM.Easy.Common
@@ -130,7 +131,7 @@ namespace DDPM.Easy.Common
 
         #region FriendlyName
 
-        public string FriendlyName { get; set; } = "Empty Layout";
+        public string FriendlyName { get; set; } = LangHelper.Instance[$"EATooltip_00"]; //"Empty Layout";
 
         #endregion FriendlyName
 

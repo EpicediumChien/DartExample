@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DDPM.UI.Resources.Helper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -172,8 +173,10 @@ namespace DDPM.Easy.Common
 
         #region FriendlyName
         private string _friendlyName = string.Empty;
-        private string _defaultHorzName = "Option 3.1: 3 rows, split equally.";
-        private string _defaultVertName = "Option 3.1: 3 columns, split equally.";
+        private string _defaultHorzName = LangHelper.Instance[$"EATooltip_31H"];
+        //"Option 3.1: 3 rows, split equally.";
+        private string _defaultVertName = LangHelper.Instance[$"EATooltip_31V"];
+        //"Option 3.1: 3 columns, split equally.";
         public string FriendlyName
         {
             get
