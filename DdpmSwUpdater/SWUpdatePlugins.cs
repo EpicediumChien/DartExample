@@ -80,7 +80,8 @@ namespace DdpmSwUpdater
         private Mutex? _instanceMutex;
         private string? _applicationName;
         bool _SkipSHA = false;
-        int _Process = 0;
+        int _CurrentProcess = 0;
+        int _CurrentProcessLimit = 10;
         Timer _processTimer = new Timer();
         #region Events
         public event EventHandler<UpdateProgressInfo>? ProgressUpdate_Notify;
@@ -924,33 +925,32 @@ namespace DdpmSwUpdater
                 {
                     string curProcess = (registryKey.GetValue("Process")?.ToString());
                     string nextProcess = (registryKey.GetValue("NextProcess")?.ToString());
-                    if (!string.IsNullOrEmpty(nextProcess) && int.TryParse(nextProcess, out int process))
+                    if (!string.IsNullOrEmpty(curProcess) && int.TryParse(curProcess, out int curprocess))
                     {
-                        _Process = process;
-                        ResetTimer();
-                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
-                        {
-                            DeviceName = _SWUpdateInfo.SoftwareName,
-                            TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                            ProcessName = "Installing",
-                            ProcessProgress = _Process,
-                        };
-                        sendMessageToEvent(updateProgressInfo);
+                        _CurrentProcess = curprocess;
                     }
+                    if (!string.IsNullOrEmpty(nextProcess) && int.TryParse(nextProcess, out int nextprocess))
+                    {
+                        _CurrentProcessLimit = nextprocess;
+                    }
+                    ResetTimer();
                 }
             }
         }
         private void InstallingProcessTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
-            LogManage.LogMessage($"InstallingProcessTimer_Elapsed _Process :{_Process}");
-            UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+            LogManage.LogMessage($"InstallingProcessTimer_Elapsed _Process :{_CurrentProcess}");
+            if (_CurrentProcess < _CurrentProcessLimit)
             {
-                DeviceName = _SWUpdateInfo.SoftwareName,
-                TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                ProcessName = "Installing",
-                ProcessProgress = _Process++,
-            };
-            sendMessageToEvent(updateProgressInfo);
+                UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                {
+                    DeviceName = _SWUpdateInfo.SoftwareName,
+                    TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
+                    ProcessName = "Installing",
+                    ProcessProgress = _CurrentProcess++,
+                };
+                sendMessageToEvent(updateProgressInfo);
+            }
         }
         private void ResetTimer()
         {
