@@ -300,6 +300,8 @@ namespace DDPM.UI.Module.WebCameraSettings
             {
                 if (sender is Border bdr)
                 {
+                    _vm.isUIHasUpdateByQAM = false; //Derek 2025/01/22
+
                     var index = int.Parse(bdr.Tag.ToString()!);
                     //var val = _vm.FOVs[index];
                     if (index == _vm.SelectedFovIndex)
@@ -325,7 +327,6 @@ namespace DDPM.UI.Module.WebCameraSettings
             {
                 //Derek 2025/01/17
                 DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile("DDPMSetProfileToNoneByFOV", false);
-
             }
             catch (Exception ex)
             {
@@ -562,7 +563,7 @@ namespace DDPM.UI.Module.WebCameraSettings
             {
                 //Derek 2025/01/17
                 DdpmCommonHelper.DeviceManagerSA?.SyncWebcamProfile("DDPMSetProfileToNoneByAutoFrame", false);
-
+                _vm.isUIHasUpdateByQAM = false; //Derek 2025/01/22
             }
             catch (Exception ex)
             {
