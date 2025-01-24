@@ -33,6 +33,10 @@ namespace DdpmSwUpdater
                 {
                     Directory.CreateDirectory(path);
                 }
+                logFilePath = path + "\\" + logFilePath;
+                logs = new Logs(logFilePath, "DdpmSwUpdater");
+                var version = Assembly.GetExecutingAssembly().GetName().Version;
+                LogMessage($"DdpmSwUpdater Ver:{version}");
 #if RELEASE
                 try
                 {
@@ -49,11 +53,9 @@ namespace DdpmSwUpdater
                     return;
                 }
 #endif
-                logFilePath = path + "\\" + logFilePath;
+                
             }
-            logs = new Logs(logFilePath, "DdpmSwUpdater");
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-            LogMessage($"DdpmSwUpdater Ver:{version}");
+            
         }
         public static SWUpdateHelper GetSWUMetadata(bool isSkipCA)
         {

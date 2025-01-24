@@ -928,18 +928,29 @@ namespace DdpmSwUpdater
                     if (!string.IsNullOrEmpty(curProcess) && int.TryParse(curProcess, out int curprocess))
                     {
                         _CurrentProcess = curprocess;
+                        UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                        {
+                            DeviceName = _SWUpdateInfo.SoftwareName,
+                            TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
+                            ProcessName = "Installing",
+                            ProcessProgress = _CurrentProcess,
+                        };
+                        sendMessageToEvent(updateProgressInfo);
                     }
                     if (!string.IsNullOrEmpty(nextProcess) && int.TryParse(nextProcess, out int nextprocess))
                     {
                         _CurrentProcessLimit = nextprocess;
                     }
+                    LogManage.LogMessage($"OnRegistryValueChanged curProcess :{curProcess}");
+                    LogManage.LogMessage($"OnRegistryValueChanged nextProcess :{nextProcess}");
                     ResetTimer();
                 }
             }
         }
         private void InstallingProcessTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
-            LogManage.LogMessage($"InstallingProcessTimer_Elapsed _Process :{_CurrentProcess}");
+            LogManage.LogMessage($"InstallingProcessTimer_Elapsed _CurrentProcess :{_CurrentProcess}");
+            LogManage.LogMessage($"InstallingProcessTimer_Elapsed _CurrentProcessLimit :{_CurrentProcessLimit}");
             if (_CurrentProcess < _CurrentProcessLimit)
             {
                 UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
@@ -959,7 +970,7 @@ namespace DdpmSwUpdater
             {
                 LogManage.LogMessage($"ResetTimer go");
                 _processTimer.Stop();
-                _processTimer.Interval = TimeSpan.FromSeconds(15).TotalMilliseconds;
+                _processTimer.Interval = TimeSpan.FromSeconds(12).TotalMilliseconds;
                 _processTimer.Start();
             }
             LogManage.LogMessage($"ResetTimer done");
