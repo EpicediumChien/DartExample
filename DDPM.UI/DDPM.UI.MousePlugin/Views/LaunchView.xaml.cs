@@ -855,7 +855,6 @@ namespace DDPM.UI.Plugin.MousePlugin
         {
             if (LeftBorder != null && leftBorderDefaultWidth != 0 && capAreaDefaultWidth != 0) {
                 double scalingFactor = LeftBorder.ActualWidth / leftBorderDefaultWidth;
-                //AppCaptionArea.Width = capAreaDefaultWidth * scalingFactor;
                 AppCaptionArea.LayoutTransform = new ScaleTransform(scalingFactor, scalingFactor);
             }
         }
