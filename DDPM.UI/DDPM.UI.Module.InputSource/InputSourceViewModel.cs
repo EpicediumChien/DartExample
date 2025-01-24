@@ -174,7 +174,9 @@ namespace DDPM.UI.Module.InputSource
                         });
                     }
                     InputsList = _inputsList;
-                    _selectInput = _inputsList.Find(x => (x.inputSource == InputSourceModule.SelectedHomeDevice.MonitorInfo.inputSource));
+                    string currentInput = DdpmCommonHelper.DeviceManagerSA.GetCurrentInput(InputSourceModule.SelectedHomeDevice.MonitorInfo).Result;
+                    Debug.WriteLine($"[InputSourceViewModel]currentInput : " + currentInput);
+                    _selectInput = _inputsList.Find(x => (x.inputSource == currentInput)); //_inputsList.Find(x => (x.inputSource == InputSourceModule.SelectedHomeDevice.MonitorInfo.inputSource));
                 }
                 else
                     return;//temp solution 0708

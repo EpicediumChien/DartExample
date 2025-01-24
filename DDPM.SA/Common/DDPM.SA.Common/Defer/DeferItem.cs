@@ -3,6 +3,14 @@ using System;
 
 namespace DDPM.SA.Common.Defer
 {
+    public struct FwRule
+    {
+        public string devicetype;
+        public string servicetag;
+        public string model;
+        //public string jsonconfig;
+    }
+
     public class DeferItem
     {
         public string deferid { get; set; }

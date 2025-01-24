@@ -123,7 +123,7 @@ namespace DDPM.SA.Common.Settings
                 // Check our path string for invalid characters, null value, empty value, etc.
                 if (PathHelper.ValidateFilePath(path, option) != PathCheckErrorCodes.SUCCESS)
                 {
-                    info = $"Invalid file path string - {path}";
+                    info = $"Invalid file path string";
                     Debug.WriteLine(info);
                     return true;
                 }
@@ -131,11 +131,11 @@ namespace DDPM.SA.Common.Settings
                 //Check for path redirection (symlink, mountpoint, hardlink, etc.) at the path AND along the path
                 if (PathHelper.CheckPathRedirection(path) != PathRedirectionReturn.PathIsNormal)
                 {
-                    info = $"Redirection detected along file path - {path}";
+                    info = $"Redirection detected along file path";
                     return true;
                 }
 
-                info = $"File {path} has no symlink";
+                info = $"File has no symlink";
             }
             catch (Exception ex)
             {
@@ -154,18 +154,18 @@ namespace DDPM.SA.Common.Settings
                 // Check our path string for invalid characters, null value, empty value, etc.
                 if (PathHelper.ValidateDirectoryPath(path, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
                 {
-                    info = $"Invalid folder path string - {path}";
+                    info = "Invalid folder path string";
                     return true;
                 }
 
                 //Check for path redirection (symlink, mountpoint, hardlink, etc.) at the path AND along the path
                 if (PathHelper.CheckPathRedirection(path) != PathRedirectionReturn.PathIsNormal)
                 {
-                    info = $"Redirection detected along folder path - {path}";
+                    info = "Redirection detected along folder path";
                     return true;
                 }
 
-                info = $"Folder {path} has no symlink";
+                info = $"Folder has no symlink";
             }
             catch (Exception ex)
             {

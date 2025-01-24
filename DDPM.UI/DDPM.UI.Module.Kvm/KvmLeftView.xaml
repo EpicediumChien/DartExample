@@ -100,7 +100,7 @@
 
                                                    ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" Text1="{Binding Text1}" />
 
-                <Button Margin="8, 0" MaxWidth="240" MinHeight="40" VerticalAlignment="Top"
+                <Button Margin="8, 0" MaxWidth="230" MinHeight="40" VerticalAlignment="Top"
                         Style="{StaticResource SecondaryButtonStyle}"
                         Click="EditInput_Click">
                     <TextBlock Text="{Binding [Kvm.13], Source={x:Static lang:LangHelper.Instance}}" 

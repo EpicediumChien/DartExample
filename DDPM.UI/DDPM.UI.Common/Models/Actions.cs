@@ -374,94 +374,169 @@ namespace DDPM.UI.Common
             if (guid != "")
             {
                 //AllApp
-                DdpmCommonHelper.DeviceManagerSA!.SetCurrentSelectedAppSpecificProfile(guid, "{76824745-CE06-4358-835D-7BB991CB71A0}");
-                DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] AllApp Guid:{76824745-CE06-4358-835D-7BB991CB71A0}");
-                Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
-                var jArray = JArray.FromObject(task1.Result);
-                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] AllApp:{jArray}");
-                List<ActionDetail> assignedActions = jArray.ToObject<List<ActionDetail>>()!;
-                foreach (var actionDetail in assignedActions)
+                if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
-                    var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
-                    if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
+                    DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{76824745-CE06-4358-835D-7BB991CB71A0}");
+                    DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] AllApp Guid:{76824745-CE06-4358-835D-7BB991CB71A0}");
+                    Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA.GetMouseAssignedActions(guid);
+
+                    try
                     {
-                        if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                        var jArray = JArray.FromObject(task1.Result);
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] AllApp:{jArray}");
+                        List<ActionDetail> assignedActions = jArray.ToObject<List<ActionDetail>>()!;
+                        foreach (var actionDetail in assignedActions)
                         {
-                            buttonAction.AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
-                            if (buttonAction.AssignedAction.ID == 14) //AssignKeystroke
+                            var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
+                            if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
                             {
-                                buttonAction.AssignedAction.Parameter = actionDetail.DisplayData;
+                                if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                                {
+                                    buttonAction.AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                                    if (buttonAction.AssignedAction.ID == 14) //AssignKeystroke
+                                    {
+                                        buttonAction.AssignedAction.Parameter = actionDetail.DisplayData;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Unknown ButtonAction. {btn.ToString()}");
                             }
                         }
                     }
-                }
-                //Word
-                DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{E0C9145B-BE8B-4423-B520-8CA71BE88E11}");
-                DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] Word Guid:{E0C9145B-BE8B-4423-B520-8CA71BE88E11}");
-                task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
-                jArray = JArray.FromObject(task1.Result);
-                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Word:{jArray}");
-                assignedActions = jArray.ToObject<List<ActionDetail>>()!;
-                foreach (var actionDetail in assignedActions)
-                {
-                    var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
-                    if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
+                    catch (Exception ex)
                     {
-                        if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
-                            buttonAction.OfficeActions["Word"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] got exceptoin: {ex.ToString()}");
+                    }
+                    /////////////////////////////////////////////////////////////////////////////////////////
+
+                    //Word
+                    DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{E0C9145B-BE8B-4423-B520-8CA71BE88E11}");
+                    DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] Word Guid:{E0C9145B-BE8B-4423-B520-8CA71BE88E11}");
+                    task1 = DdpmCommonHelper.DeviceManagerSA.GetMouseAssignedActions(guid);
+
+                    try
+                    {
+                        var jArray = JArray.FromObject(task1.Result);
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Word:{jArray}");
+                        List<ActionDetail> assignedActions = jArray.ToObject<List<ActionDetail>>()!;
+                        foreach (var actionDetail in assignedActions)
+                        {
+                            var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
+                            if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
+                            {
+                                if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                                    buttonAction.OfficeActions["Word"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                            }
+                            else
+                            {
+                                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Word Unknown ButtonAction. {btn.ToString()}");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Word got exceptoin: {ex.ToString()}");
+                    }
+                    /////////////////////////////////////////////////////////////////////////////////////////
+
+                    //Excel
+                    DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{37743697-4B39-45CD-B7F8-30027D1521ED}");
+                    DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] Excel Guid:{37743697-4B39-45CD-B7F8-30027D1521ED}");
+                    task1 = DdpmCommonHelper.DeviceManagerSA.GetMouseAssignedActions(guid);
+                    try
+                    {
+                        var jArray = JArray.FromObject(task1.Result);
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Excel:{jArray}");
+                        List<ActionDetail> assignedActions = jArray.ToObject<List<ActionDetail>>()!;
+                        foreach (var actionDetail in assignedActions)
+                        {
+                            var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
+                            if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
+                            {
+                                if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                                    buttonAction.OfficeActions["Excel"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                            }
+                            else
+                            {
+                                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Excel Unknown ButtonAction. {btn.ToString()}");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Excel got exceptoin: {ex.ToString()}");
+                    }
+                    /////////////////////////////////////////////////////////////////////////////////////////
+
+                    //PowerPoint
+                    DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{7BBECD91-F12A-4CC4-B005-526BA66BA657}");
+                    DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] PowerPoint Guid:{7BBECD91-F12A-4CC4-B005-526BA66BA657}");
+                    task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
+                    try
+                    {
+                        var jArray = JArray.FromObject(task1.Result);
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] PowerPoint:{jArray}");
+                        List<ActionDetail> assignedActions = jArray.ToObject<List<ActionDetail>>()!;
+                        foreach (var actionDetail in assignedActions)
+                        {
+                            var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
+                            if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
+                            {
+                                if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                                    buttonAction.OfficeActions["PowerPoint"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                            }
+                            else
+                            {
+                                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] PowerPoint Unknown ButtonAction. {btn.ToString()}");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] PowerPoint got exceptoin: {ex.ToString()}");
+                    }
+                    /////////////////////////////////////////////////////////////////////////////////////////
+
+
+                    //Outlook
+                    DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{CCCE4E6F-C690-4EF5-BA19-F270C26C21B6}");
+                    DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] Outlook Guid:{CCCE4E6F-C690-4EF5-BA19-F270C26C21B6}");
+                    task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
+                    try
+                    {
+                        var jArray = JArray.FromObject(task1.Result);
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Outlook:{jArray}");
+                        List<ActionDetail> assignedActions = jArray.ToObject<List<ActionDetail>>()!;
+                        foreach (var actionDetail in assignedActions)
+                        {
+                            var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
+                            if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
+                            {
+                                if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                                    buttonAction.OfficeActions["Outlook"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                            }
+                            else
+                            {
+                                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Outlook Unknown ButtonAction. {btn.ToString()}");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Outlook got exceptoin: {ex.ToString()}");
                     }
                 }
-                //Excel
-                DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{37743697-4B39-45CD-B7F8-30027D1521ED}");
-                DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] Excel Guid:{37743697-4B39-45CD-B7F8-30027D1521ED}");
-                task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
-                jArray = JArray.FromObject(task1.Result);
-                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Excel:{jArray}");
-                assignedActions = jArray.ToObject<List<ActionDetail>>()!;
-                foreach (var actionDetail in assignedActions)
-                {
-                    var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
-                    if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
-                    {
-                        if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
-                            buttonAction.OfficeActions["Excel"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
-                    }
-                }
-                //PowerPoint
-                DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{7BBECD91-F12A-4CC4-B005-526BA66BA657}");
-                DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] PowerPoint Guid:{7BBECD91-F12A-4CC4-B005-526BA66BA657}");
-                task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
-                jArray = JArray.FromObject(task1.Result);
-                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] PowerPoint:{jArray}");
-                assignedActions = jArray.ToObject<List<ActionDetail>>()!;
-                foreach (var actionDetail in assignedActions)
-                {
-                    var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
-                    if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
-                    {
-                        if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
-                            buttonAction.OfficeActions["PowerPoint"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
-                    }
-                }
-                //Outlook
-                DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{CCCE4E6F-C690-4EF5-BA19-F270C26C21B6}");
-                DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] Outlook Guid:{CCCE4E6F-C690-4EF5-BA19-F270C26C21B6}");
-                task1 = DdpmCommonHelper.DeviceManagerSA!.GetMouseAssignedActions(guid);
-                jArray = JArray.FromObject(task1.Result);
-                DdpmCommonHelper.WriteUILog($"[GetMouseAssignedActions] Outlook:{jArray}");
-                assignedActions = jArray.ToObject<List<ActionDetail>>()!;
-                foreach (var actionDetail in assignedActions)
-                {
-                    var btn = (MouseButtonName)actionDetail.ProgrammableKeyId;
-                    if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
-                    {
-                        if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
-                            buttonAction.OfficeActions["Outlook"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
-                    }
-                }
+                /////////////////////////////////////////////////////////////////////////////////////////
+
                 //AllApp
                 DdpmCommonHelper.DeviceManagerSA!.SetCurrentSelectedAppSpecificProfile(guid, "{76824745-CE06-4358-835D-7BB991CB71A0}");
                 DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] AllApp Guid:{76824745-CE06-4358-835D-7BB991CB71A0}");
+            }
+            else
+            {
+                DdpmCommonHelper.WriteUILog("[MouseActions] DdpmCommonHelper.DeviceManagerSA == null");
             }
         }
     }
