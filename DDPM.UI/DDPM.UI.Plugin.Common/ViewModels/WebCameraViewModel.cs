@@ -851,6 +851,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool IsSettingProfile = false;
         public void SetProfile()
         {
+            IsSettingProfile = true;
             try
             {
                 if (CurrentProfileName.ToUpper() == "NONE")
@@ -963,6 +964,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs  SetProfile ex:" + ex.Message);
             }
+            IsSettingProfile = false;
         }
 
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")

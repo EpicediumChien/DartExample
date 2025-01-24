@@ -332,10 +332,8 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (profileName != _vm!.CurrentProfileName || isProfilePropertyChanged)
                 {
                     _vm!.CurrentProfileName = profileName;
-                    _vm.IsSettingProfile = true;
                     //Derek 2025/01/18 cancel this action due to it has done by QAM
                     //_vm.SetProfile();
-                    _vm.IsSettingProfile = false;
                     isProfilePropertyChanged = false;
                 }
 
@@ -2418,9 +2416,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     //DdpmCommonHelper.DeviceManagerSA!.SetProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.ProfileIDs[profileName]);
                     _vm!.CurrentProfileName = profileName;
-                    _vm.IsSettingProfile = true;
                     _vm.SetProfile();
-                    _vm.IsSettingProfile = false;
                     isProfilePropertyChanged = false;
                 }
                 btnPreset_Click(this, null);
@@ -2517,9 +2513,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (profileName != _vm!.CurrentProfileName)
                 {
                     _vm.CurrentProfileName = profileName;
-                    _vm.IsSettingProfile = true;
                     _vm.SetProfile();
-                    _vm.IsSettingProfile = false;
                 }
                 txbName.Text = profileName;
                 _vm!.DisableVBar();
@@ -2554,9 +2548,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (profileName == _vm!.CurrentProfileName)
                 {
                     _vm!.CurrentProfileName = "Default";
-                    _vm.IsSettingProfile = true;
                     _vm.SetProfile();
-                    _vm.IsSettingProfile = false;
                 }
                 btnPreset_Click(this, null);
 
@@ -2768,9 +2760,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 if (EditMode == "EDIT")
                 {
                     _vm!.CurrentProfileName = EditingProfileName;
-                    _vm.IsSettingProfile = true;
                     _vm.SetProfile();
-                    _vm.IsSettingProfile = false;
                 }
                 txtCaption.Text = _vm!.Name;
                 _vm.EnableVBar();
