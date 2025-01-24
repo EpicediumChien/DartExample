@@ -1013,7 +1013,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 if (arg.Contains("value"))
                 {
                     string[] rootArg = arg.Split('=');
-
+                    
                     foreach (string subAge in rootArg)
                     {
                         if (subAge.Contains("defer") || subAge.Contains("force"))
@@ -1021,9 +1021,10 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             rule.devicetype = subAge.Split(',')[0];
                             continue;
                         }
-                        else if(!subAge.Contains("defer") || !subAge.Contains("force"))
+
+                        if(!subAge.Contains("defer") && !subAge.Contains("force") && !subAge.Contains("model") && !subAge.Contains("servicetag") && !subAge.Contains("value"))
                         {
-                            rule.devicetype = rootArg[0];
+                            rule.devicetype = rootArg[1];
                             continue;
                         }
 
@@ -1039,7 +1040,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             continue;
                         }
                     }
-
+                    
 
                 }
             }
