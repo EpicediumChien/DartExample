@@ -1864,7 +1864,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         if (!_IsSkipSHA)
                         {
-                            _notificationStr = $"Firmware update unsuccessful.";
+                            _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                             _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " Named Pipe Server Is No Safe.");
                             return FWUErrorCode.NamedPipeServerIsNoSafe;
                         }
@@ -2270,10 +2270,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     else if (stateFlowNode.InnerText == "0xF001")
                     {
                         //
-                        // Abort success
+                        // Abort success 
                         //
                         _updateErrorCode = FWUErrorCode.UserAborted;
-                        _notificationStr = $"User aborted firmware update";
+                        _notificationStr = LangHelper.Instance["User_aborted_firmware_update"];
                         _logs.DebugMsg_1("Get 0xF001:User aborted firmware update");
                         resetState();
                     }
