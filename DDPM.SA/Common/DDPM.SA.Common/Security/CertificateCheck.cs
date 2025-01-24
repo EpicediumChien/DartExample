@@ -39,8 +39,8 @@ namespace DDPM.SA.Common.Security
                 {
                     string fileSHA512 = DDPMFileSecurity.GetFileSHA_512(CertificateFilePath, out Info);
                     ret = fileSHA512.ToLower().Equals(Stande_SHA512.ToLower());
-                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] Stande_SHA512 : " + Stande_SHA512.ToLower());
-                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] fileSHA512 : " + fileSHA512.ToLower());
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] Stande_SHA512 : ***" + Stande_SHA512.ToLower().Substring(Stande_SHA512.Length/2));
+                    _logs?.DebugMsg_1("[CheckFile_Thumbprint] fileSHA512 : ***" + fileSHA512.ToLower().Substring(fileSHA512.Length/2));
                     if (Info.Equals("Complete"))
                     {
                         Info = ret ? "Check ok" : "Check fail";

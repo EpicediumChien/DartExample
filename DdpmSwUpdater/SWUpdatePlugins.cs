@@ -154,13 +154,13 @@ namespace DdpmSwUpdater
             LogManage.LogMessage($"_instanceMutex?.Dispose() go");
             _instanceMutex?.Dispose();
             LogManage.LogMessage($"_instanceMutex?.Dispose() done");
-            Method method = new Method(LogManage.logs);
+            Method method = new Method(LogManage.Logs);
             try
             {
                 string saveFolderName = Guid.NewGuid().ToString();
                 string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                 string savePath;
-                CertificateCheck caCheck = new CertificateCheck(LogManage.logs);
+                CertificateCheck caCheck = new CertificateCheck(LogManage.Logs);
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 LogManage.LogMessage($"Initialize download path start");
                 if (string.IsNullOrEmpty(installPath))
@@ -245,7 +245,7 @@ namespace DdpmSwUpdater
                             swUpdateInfos[i].SWUErrorCode = SWUErrorCode.Unknow;
                             LogManage.LogMessage($"Download start try count : {count++}");
                             _downloadTimer.Start();
-                            download = new Download(LogManage.logs);
+                            download = new Download(LogManage.Logs);
                             string downloadInfo = "";
                             // 將儲存路徑與從 URL 中提取的檔案名稱組合
                             _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
@@ -421,13 +421,13 @@ namespace DdpmSwUpdater
             LogManage.LogMessage($"_instanceMutex?.Dispose() go");
             _instanceMutex?.Dispose();
             LogManage.LogMessage($"_instanceMutex?.Dispose() done");
-            Method method = new Method(LogManage.logs);
+            Method method = new Method(LogManage.Logs);
             try
             {
                 string saveFolderName = Guid.NewGuid().ToString();
                 string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                 string savePath;
-                CertificateCheck caCheck = new CertificateCheck(LogManage.logs);
+                CertificateCheck caCheck = new CertificateCheck(LogManage.Logs);
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 LogManage.LogMessage($"Initialize download path start");
                 if (!string.IsNullOrEmpty(path_programdata))
@@ -494,7 +494,7 @@ namespace DdpmSwUpdater
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.Unknow;
                         LogManage.LogMessage($"Download start try count : {count++}");
                         _downloadTimer.Start();
-                        download = new Download(LogManage.logs);
+                        download = new Download(LogManage.Logs);
                         string downloadInfo = "";
                         // 將儲存路徑與從 URL 中提取的檔案名稱組合
                         _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
@@ -763,7 +763,7 @@ namespace DdpmSwUpdater
         }
         private bool CheckSHA(string filePath, out string fileCAInfo)
         {
-            CertificateCheck certificateCheck = new CertificateCheck(LogManage.logs);
+            CertificateCheck certificateCheck = new CertificateCheck(LogManage.Logs);
             bool isCheckSHA = false;
             fileCAInfo = "Error";
             if (!string.IsNullOrEmpty(_SWUpdateInfo.SHA512))
@@ -795,7 +795,7 @@ namespace DdpmSwUpdater
         }
         private bool CheckThumbprint(string filePath, string standThumbprint, out string fileThumbprintInfo)
         {
-            CertificateCheck certificateCheck = new CertificateCheck(LogManage.logs);
+            CertificateCheck certificateCheck = new CertificateCheck(LogManage.Logs);
             bool ishumbprint = false;
             fileThumbprintInfo = "Error";
             ishumbprint = certificateCheck.CheckFile_Thumbprint(filePath, standThumbprint, out string FileCAInfo);
@@ -824,7 +824,7 @@ namespace DdpmSwUpdater
             LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} {nameof(Unzip)} Start");
             _SWUpdateInfo.SWUErrorCode = SWUErrorCode.Unknow;
             bool ret = false;
-            Unzip unzip = new Unzip(LogManage.logs);
+            Unzip unzip = new Unzip(LogManage.Logs);
             exeFilePath = "";
             string FileCAInfo = "Pass";
             LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} check SHA go.");
