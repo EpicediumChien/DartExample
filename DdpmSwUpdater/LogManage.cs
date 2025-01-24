@@ -17,10 +17,13 @@ namespace DdpmSwUpdater
     public class LogManage
     {
         static string logFilePath = "DdpmSwUpdater.log";
-        public static Logs logs;
-        public static string Version = string.Empty;
+        private static Logs logs;
+        //public static string Version = string.Empty;
         static string path = string.Empty;
-        public static bool fromDDPM = true;
+
+        public static Logs Logs { get => logs; set => logs = value; }
+
+        //public static bool fromDDPM = true;
         public static void SetPath()
         {
             //DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
@@ -51,7 +54,7 @@ namespace DdpmSwUpdater
 #endif
                 logFilePath = path + "\\" + logFilePath;
             }
-            logs = new Logs(logFilePath, "DdpmSwUpdater");
+            Logs = new Logs(logFilePath, "DdpmSwUpdater");
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             LogMessage($"DdpmSwUpdater Ver:{version}");
         }
@@ -62,7 +65,7 @@ namespace DdpmSwUpdater
             {
                 List<string> InfoPkey = new List<string>(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
                 //InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
-                swUpdateHelper = SWUpdateSetting.GetSWMetadata(isSkipCA, out string getMetadataInfo, null, InfoPkey, LogManage.logs);
+                swUpdateHelper = SWUpdateSetting.GetSWMetadata(isSkipCA, out string getMetadataInfo, null, InfoPkey, LogManage.Logs);
                 LogMessage($"GetMetadata {getMetadataInfo}");
             }
             catch (Exception ex)
@@ -94,7 +97,7 @@ namespace DdpmSwUpdater
         }
         public static Logs RetrieveLogObject()
         {
-            return logs;
+            return Logs;
         }
 
         public static void LogMessage(string message)
@@ -109,9 +112,9 @@ namespace DdpmSwUpdater
                 //{
                 //    Directory.CreateDirectory(path);
                 //}
-                if (logs != null)
+                if (Logs != null)
                 {
-                    logs.DebugMsg_1(message);
+                    Logs.DebugMsg_1(message);
                 }
 #if DEBUG
                 Console.WriteLine($"{DateTime.Now}: {message}");

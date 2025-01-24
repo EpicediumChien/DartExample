@@ -871,7 +871,6 @@ namespace DDPM.SA.Plugins.SWUpdate
         {
             CertificateCheck certificateCheck = new CertificateCheck(_logs);
             bool isCheckSHA = false;
-            fileCAInfo = "Error";
             if (!string.IsNullOrEmpty(_SWUpdateInfo.SHA512))
             {
                 isCheckSHA = certificateCheck.CheckFile_SHA512(filePath, _SWUpdateInfo.SHA512, out fileCAInfo);

@@ -68,7 +68,7 @@ internal class Program
                         }
                         if (ret.Equals(SWUErrorCode.NoError))
                         {
-                            Method method = new Method(LogManage.logs);
+                            Method method = new Method(LogManage.Logs);
                             LogManage.LogMessage($"DdpmSwUpdater DeleteFolder go");
                             method.DeleteFolder(@"C:\Program Files\Dell\Dell Display Manager 2");
                             method.Dispose();
@@ -130,7 +130,7 @@ internal class Program
                 string? currentDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 if (!string.IsNullOrEmpty(currentDirectory))
                 {
-                    Method method = new Method(LogManage.logs);
+                    Method method = new Method(LogManage.Logs);
                     method.CopyLogFolder(currentDirectory, savePath);
                     method.Dispose();
                     string? exePath = Process.GetCurrentProcess().MainModule?.FileName;
