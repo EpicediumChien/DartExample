@@ -37,7 +37,9 @@ namespace DdpmSwUpdater
                 logs = new Logs(logFilePath, "DdpmSwUpdater");
                 var version = Assembly.GetExecutingAssembly().GetName().Version;
                 LogMessage($"DdpmSwUpdater Ver:{version}");
-#if RELEASE
+
+                //Dean 0124 According to log move into %programdata%\Dell\Dell Display and Peripheral Manager, using oridignal ACL as well 
+/*#if RELEASE
                 try
                 {
                     bool acl = DDPMFileSecurity.CheckFolderACL(path, out string info);
@@ -52,7 +54,7 @@ namespace DdpmSwUpdater
                     LogMessage($"SetPath error : {ex.Message}");
                     return;
                 }
-#endif
+#endif*/
                 
             }
             
