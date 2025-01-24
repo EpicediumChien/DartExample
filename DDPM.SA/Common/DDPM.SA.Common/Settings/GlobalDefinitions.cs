@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Media.AppBroadcasting;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -39,5 +40,17 @@ namespace DDPM.SA.Common.Settings
                 return "Unknown address";
             }
         }
+
+        //Log location global variables, prefix could be "%programdata%" or "%localappdata%" by the design
+        public const string LogSwUpdater = @"\Dell\Dell Display and Peripheral Manager\DdpmSwUpdater";
+        public const string LogFwUpdater = @"\Dell\Dell Display and Peripheral Manager\FWUpdateLog";
+        public const string LogDPeM = @"\Dell\Dell Peripheral Manager\DPeMSDK\Log";
+        public const string LogDPM = @"\Dell\Dell Peripheral Manager\DPM\Log";
+        public const string LogDPMService = @"\Dell\Dell Peripheral Manager\DPMService\Log";
+        public const string LogDTP = @"\Dell\DTP\Logs";
+        public const string LogDTH = @"\Dell\Dell TechHub";
+        public const string LogDDPMSYSSA = @"\Dell\DDPM.Subagent";
+        public const string LogDDPMGUI = @"\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
+        public const string LogDDPMUSERSA = @"\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
     }
 }
