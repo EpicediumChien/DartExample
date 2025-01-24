@@ -923,11 +923,11 @@ namespace DdpmSwUpdater
                 RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\Dell Display and Peripheral Manager\\", false);
                 if (registryKey != null)
                 {
-                    string curProcess = (registryKey.GetValue("Process")?.ToString());
-                    string nextProcess = (registryKey.GetValue("NextProcess")?.ToString());
-                    if (!string.IsNullOrEmpty(curProcess) && int.TryParse(curProcess, out int curprocess))
+                    string curProcess_str = (registryKey.GetValue("Process")?.ToString());
+                    string nextProcess_str = (registryKey.GetValue("NextProcess")?.ToString());
+                    if (!string.IsNullOrEmpty(curProcess_str) && int.TryParse(curProcess_str, out int curProcess))
                     {
-                        _CurrentProcess = curprocess;
+                        _CurrentProcess = curProcess;
                         UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                         {
                             DeviceName = _SWUpdateInfo.SoftwareName,
@@ -937,12 +937,12 @@ namespace DdpmSwUpdater
                         };
                         sendMessageToEvent(updateProgressInfo);
                     }
-                    if (!string.IsNullOrEmpty(nextProcess) && int.TryParse(nextProcess, out int nextprocess))
+                    if (!string.IsNullOrEmpty(nextProcess_str) && int.TryParse(nextProcess_str, out int nextProcess))
                     {
-                        _CurrentProcessLimit = nextprocess;
+                        _CurrentProcessLimit = nextProcess;
                     }
-                    LogManage.LogMessage($"OnRegistryValueChanged curProcess :{curProcess}");
-                    LogManage.LogMessage($"OnRegistryValueChanged nextProcess :{nextProcess}");
+                    LogManage.LogMessage($"OnRegistryValueChanged curProcess :{curProcess_str}");
+                    LogManage.LogMessage($"OnRegistryValueChanged nextProcess :{nextProcess_str}");
                     ResetTimer();
                 }
             }
