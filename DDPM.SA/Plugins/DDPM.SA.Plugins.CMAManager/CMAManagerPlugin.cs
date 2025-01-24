@@ -927,6 +927,8 @@ namespace DDPM.SA.Plugins.CMAManager
 
                         WriteLog($"[CMA] _CliManagerPlugin.checkDeviceConn = false, do not run command");
 
+                        taskInfoQueue.Dequeue();    // add @ 20250124 stephen: bug fix
+
                         sendDeferNotify(uniqueAgentGuid.ToString(), request.remote_request);
 
                         result.message = "Device not found";
@@ -944,6 +946,8 @@ namespace DDPM.SA.Plugins.CMAManager
                     if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, uniqueAgentGuid.ToString(), request.remote_request).Result)
                     {
                         WriteLog($"[CMA] _CliManagerPlugin.checkDefer = true, do not run command");
+
+                        taskInfoQueue.Dequeue();    // add @ 20250124 stephen: bug fix
 
                         // feedback event to show in defer status
                         sendDeferNotify(uniqueAgentGuid.ToString(), request.remote_request);
