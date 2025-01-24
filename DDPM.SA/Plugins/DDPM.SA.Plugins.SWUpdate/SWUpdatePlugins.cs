@@ -139,7 +139,9 @@ namespace DDPM.SA.Plugins.SWUpdate
         /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
+#if DEBUG
             Console.WriteLine($"Dispose: {disposing}");
+#endif
             if (!IsDisposed)
             {
                 if (disposing)
@@ -176,7 +178,9 @@ namespace DDPM.SA.Plugins.SWUpdate
         {
             _agent.PluginManager.PluginsStarted += PluginManagerOnPluginsStarted;
             PluginCondition = new PluginStartedCondition();
+#if DEBUG
             Console.WriteLine("SWUpdate plugin report started");
+#endif
         }
 
         #endregion Overriding methods
@@ -449,7 +453,21 @@ namespace DDPM.SA.Plugins.SWUpdate
                         // 將儲存路徑與從 URL 中提取的檔案名稱組合
                         if (_IsSkipSHA)
                         {
-                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {url}");
+                            string outputUrlForLog = "others";
+                            if (url.Contains("clientperipherals.dell.com"))
+                            {
+                                outputUrlForLog = "production_server";
+                            }
+                            else if (url.Contains("clientperipherals-uat.dell.com"))
+                            {
+                                outputUrlForLog = "staging_server";
+                            }
+                            else if (url.Contains("download.dell.com"))
+                            {
+                                outputUrlForLog = "dell_download";
+                            }
+
+                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {outputUrlForLog}");
                         }
                         _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
                         bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA);
@@ -774,7 +792,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                 {
                     _logs.DebugMsg_1($"{nameof(Install)} workingDirectory is not null");
                     string arguments_Final = miniInstallPath + " /fromddpm";
-                    _logs.DebugMsg_1($"arguments_Final : {arguments_Final}");
+                    //_logs.DebugMsg_1($"arguments_Final : {arguments_Final}");
                     WTSFunction.StartProcessAndBypassUACWithAdmin(arguments_Final, workingDirectory, out procInfo);
                 }
                 else
