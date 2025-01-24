@@ -77,6 +77,25 @@ namespace DDPM.UI.Module.EzMemory
             InitializePage();
 
             _vm.ProgressValue = 3;
+            Application.Current.MainWindow.SizeChanged -= MainWindow_SizeChanged;
+            Application.Current.MainWindow.SizeChanged += MainWindow_SizeChanged;
+        }
+
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (Application.Current.MainWindow.ActualHeight > 765)
+            {
+                MainPanel.VerticalAlignment = VerticalAlignment.Center;
+            }
+            else
+            {
+                MainPanel.VerticalAlignment = VerticalAlignment.Top;
+            }
+        }
+
+        ~EzMemoryLaunchOption()
+        {
+            Application.Current.MainWindow.SizeChanged -= MainWindow_SizeChanged;
         }
 
         /// <summary>
