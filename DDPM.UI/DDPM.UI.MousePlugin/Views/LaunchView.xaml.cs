@@ -220,6 +220,7 @@ namespace DDPM.UI.Plugin.MousePlugin
             {
                 DdpmCommonHelper.DeviceManagerSA.ITSettingsActionEvent -= DeviceManagerSA_ITSettingsActionEvent;
             }
+            LeftBorder.SizeChanged -= CapAreaSizeChange;
         }
 
         private void DeviceManagerSA_ITSettingsActionEvent(object? sender, SA.Common.ITSettingEventArgs e)
