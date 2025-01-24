@@ -36,6 +36,9 @@ namespace DDPM.UI.Plugin.MousePlugin
         private SolidColorBrush buttonColorFocusedT = new(System.Windows.Media.Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF));
         private SolidColorBrush buttonColorFocusedF = new(System.Windows.Media.Color.FromArgb(0x80, 0xFF, 0xFF, 0xFF));
 
+        private double leftBorderDefaultWidth = 0.0;
+        private double capAreaDefaultWidth = 0.0;
+
         public LaunchView()
         {
             try
@@ -144,6 +147,12 @@ namespace DDPM.UI.Plugin.MousePlugin
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs  LaunchView() ex:" + ex.Message);
             }
+            this.Loaded += (s, e) => {
+                leftBorderDefaultWidth = 1045;//LeftBorder.ActualWidth;
+                capAreaDefaultWidth = AppCaptionArea.Width;
+                };
+            LeftBorder.SizeChanged -= CapAreaSizeChange;
+            LeftBorder.SizeChanged += CapAreaSizeChange;
         }
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
         {
@@ -839,6 +848,15 @@ namespace DDPM.UI.Plugin.MousePlugin
             catch (Exception ex) 
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.MousePlugin\\Views\\LaunchView.xaml.cs PushBack ex:" + ex.Message);
+            }
+        }
+
+        private void CapAreaSizeChange(object sender, SizeChangedEventArgs e)
+        {
+            if (LeftBorder != null && leftBorderDefaultWidth != 0 && capAreaDefaultWidth != 0) {
+                double scalingFactor = LeftBorder.ActualWidth / leftBorderDefaultWidth;
+                //AppCaptionArea.Width = capAreaDefaultWidth * scalingFactor;
+                AppCaptionArea.LayoutTransform = new ScaleTransform(scalingFactor, scalingFactor);
             }
         }
     }
