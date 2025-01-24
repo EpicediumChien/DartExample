@@ -453,21 +453,7 @@ namespace DDPM.SA.Plugins.SWUpdate
                         // 將儲存路徑與從 URL 中提取的檔案名稱組合
                         if (_IsSkipSHA)
                         {
-                            string outputUrlForLog = "others";
-                            if (url.Contains("clientperipherals.dell.com"))
-                            {
-                                outputUrlForLog = "production_server";
-                            }
-                            else if (url.Contains("clientperipherals-uat.dell.com"))
-                            {
-                                outputUrlForLog = "staging_server";
-                            }
-                            else if (url.Contains("download.dell.com"))
-                            {
-                                outputUrlForLog = "dell_download";
-                            }
-
-                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {outputUrlForLog}");
+                            _logs.DebugMsg_1($"{nameof(DownloadAndInstall)} ServerPath : {GlobalDefinitions.GetLogPrintServerName(url)}");
                         }
                         _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
                         bool downloadRet = download.DownloadFile(url, _installationFileStoragePath, out downloadInfo, _IsSkipCA);
