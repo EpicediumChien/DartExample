@@ -584,12 +584,12 @@ namespace DDPM.UI.Plugin.MousePlugin
                         _vm.ImgBL2 = true;
                         break;
                 }
-                if (txtBLHost1.Text.Length > 20)
-                    txtBLHost1.Text = txtBLHost1.Text.Substring(0, 20);
-                if (txtBLHost2.Text.Length > 20)
-                    txtBLHost2.Text = txtBLHost2.Text.Substring(0, 20);
-                if (txtBLHost3.Text.Length > 20)
-                    txtBLHost3.Text = txtBLHost3.Text.Substring(0, 20);
+                if (txtBLHost1.Text.Length > 15 && txtBLHost1.Text != Strings.ReadyToBePaired)
+                    txtBLHost1.Text = txtBLHost1.Text.Substring(0, 15);
+                if (txtBLHost2.Text.Length > 15 && txtBLHost1.Text != Strings.ReadyToBePaired)
+                    txtBLHost2.Text = txtBLHost2.Text.Substring(0, 15);
+                if (txtBLHost3.Text.Length > 15 && txtBLHost1.Text != Strings.ReadyToBePaired)
+                    txtBLHost3.Text = txtBLHost3.Text.Substring(0, 15);
             }
             catch (Exception ex)
             {
