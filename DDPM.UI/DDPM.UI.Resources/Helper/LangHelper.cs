@@ -1,5 +1,6 @@
 ﻿//Robert_Lin 2025-1-14, to simple swich betwwen Teesting and Release mode, please comment out the following line in Release mode
 //#define MULTILINGUAL_TEST
+//Robert_Lin, "MULTILINGUAL_TEST" will be removed, to test multilingual, please use registery keys method, read "DdpmCultureMap.cs" for detail.
 
 using System.ComponentModel;
 using System.Globalization;

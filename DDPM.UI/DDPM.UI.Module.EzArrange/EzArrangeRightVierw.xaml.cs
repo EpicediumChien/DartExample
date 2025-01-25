@@ -42,7 +42,7 @@ namespace DDPM.UI.Module.EzArrange
         private DDPM.UI.Common.ViewModels.EzArrangeViewModel _vm;
         private readonly DisplayViewModel _vmDisplay;
         private readonly IConsole _console;
-        private readonly ILog _log;
+        //private readonly ILog _log;
         #endregion Private Members
 
         #region Strings
@@ -132,7 +132,7 @@ namespace DDPM.UI.Module.EzArrange
             splitListView_Custom.AddButtonClickCommand = new RelayCommand<SplitListView>(HandleAddButtonClickCommand);
 
             //InitRecentListView();
-            InitListViewItems();
+            //InitListViewItems();
 
             customListTooltipText.Text = CustomListTooltipText;
         }
@@ -142,7 +142,7 @@ namespace DDPM.UI.Module.EzArrange
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //InitRecentListView();
-            //InitListViewItems();
+            InitListViewItems();
 
             //Robert_Lin, 2025-1-7, the DDPMDebug.txt solution will be removed, use DevSettings instaed.
             //NEW:
@@ -160,12 +160,17 @@ namespace DDPM.UI.Module.EzArrange
         private void InitListViewItems()
         {
             Stopwatch sw = Stopwatch.StartNew();
+            _vm.LogInfo("EzArrangeRightVierw.InitListViewItems() Start.");
 
             //0. Prepare
             //
-            if (_deviceManagerSA == null) return;
+            if (_deviceManagerSA == null)
+            {
+                _vm.LogInfo("EzArrangeRightVierw.InitListViewItems() exit, DeviceManagerSA is null.");
+                return;
+            }
 
-            EAMonitorSettings eaSettings = _deviceManagerSA.ReadEAMonitorSettings(_homeDevice.MonitorInfo).Result;
+
 
             Screen? currentScreen = GetAttachedScreen(_homeDevice.MonitorInfo.DisplayName);
             _vm.IsVertical = (currentScreen != null) ? (currentScreen.Bounds.Width < currentScreen.Bounds.Height) : false;
@@ -197,295 +202,372 @@ namespace DDPM.UI.Module.EzArrange
             _vm.LogInfo($"DDPMW-866(MDDM-3039): Easy arrange window arrangement preset limited to 4 windows for all displays   below 19 inches in size. EDID.MonitorSize={monitorSize}");
 
 
-            foreach (ISplitCtrl spCtrl in ISplitCtrl.Splits_EA)
+            try
             {
-                SplitItem? spItem = null;
-                //Reused
-                ISplitCtrl newSplit = spCtrl;
-                //ISplitCtrl newSplit = spCtrl.New();
-                if (newSplit == null)
-                    continue;
-                newSplit.SplitMode = eSplitModes.Icon;
-                newSplit.IsVertical = _vm.IsVertical;
-
-                //Robert_Lin, 2024-12-11 adde all SplitItems, but hide the SplitItems more than 4 later
-                //
-                //if (isSmallSizeMonitor)
-                //{
-                //    if (newSplit.CellCount > 4)
-                //        continue;
-                //}
-                switch (newSplit.CellCount)
+                _vm.LogInfo("Building preset layout ListViews - Start");
+                sw.Restart();
+                foreach (ISplitCtrl spCtrl in ISplitCtrl.Splits_EA)
                 {
-                    case 2:
-                        spItem = splitListView_2w.AddItemToList(newSplit.UC);
-                        break;
+                    SplitItem? spItem = null;
+                    //Reused
+                    ISplitCtrl newSplit = spCtrl;
+                    //ISplitCtrl newSplit = spCtrl.New();
+                    if (newSplit == null)
+                        continue;
+                    newSplit.SplitMode = eSplitModes.Icon;
+                    newSplit.IsVertical = _vm.IsVertical;
 
-                    case 3:
-                        spItem = splitListView_3w.AddItemToList(newSplit.UC);
-                        break;
-                    case 4:
-                        spItem = splitListView_4w.AddItemToList(newSplit.UC);
-                        break;
+                    //Robert_Lin, 2024-12-11 adde all SplitItems, but hide the SplitItems more than 4 later
+                    //
+                    //if (isSmallSizeMonitor)
+                    //{
+                    //    if (newSplit.CellCount > 4)
+                    //        continue;
+                    //}
+                    switch (newSplit.CellCount)
+                    {
+                        case 2:
+                            spItem = splitListView_2w.AddItemToList(newSplit.UC);
+                            break;
 
-                    case 5:
-                        spItem = splitListView_5w.AddItemToList(newSplit.UC);
-                        break;
+                        case 3:
+                            spItem = splitListView_3w.AddItemToList(newSplit.UC);
+                            break;
+                        case 4:
+                            spItem = splitListView_4w.AddItemToList(newSplit.UC);
+                            break;
 
-                    case 6:
-                        spItem = splitListView_6w.AddItemToList(newSplit.UC);
-                        break;
+                        case 5:
+                            spItem = splitListView_5w.AddItemToList(newSplit.UC);
+                            break;
 
-                    case 7:
-                        spItem = splitListView_7w.AddItemToList(newSplit.UC);
-                        break;
+                        case 6:
+                            spItem = splitListView_6w.AddItemToList(newSplit.UC);
+                            break;
 
-                    default:
-                        break;
-                }
-                if (spItem != null)
-                {
-                    spItem.IsEditEnabled = true;
-                    spItem.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
-                }
-            } //foreach(ISplitCtrl spCtrl in ISplitCtrl.Splits_EA)
+                        case 7:
+                            spItem = splitListView_7w.AddItemToList(newSplit.UC);
+                            break;
+
+                        default:
+                            break;
+                    }
+                    if (spItem != null)
+                    {
+                        spItem.IsEditEnabled = true;
+                        spItem.SplitOwner = Common.EAEM.eSplitOwner.EaWin;
+                    }
+                } //foreach(ISplitCtrl spCtrl in ISplitCtrl.Splits_EA)
+                sw.Stop();
+                _vm.LogInfo($"Building preset layout ListViews - done, elapsed={sw.ElapsedMilliseconds} msec.");
+            }
+            catch (Exception exA1)
+            {
+                _vm.LogInfo("Building preset layout ListViews - Exception", exA1);
+            }
+
 
             //B Load CustomList from settings file
             //
-            //Robert_Lin, 2024-12-7, CustomId is not used anymore (use EAID instead)
-            //So the check for CustomId will be comment-out
-            //
-            SplitJson[] customList = _deviceManagerSA.ReadEACustomList().Result;
-            if (customList != null)
+
+            try
             {
-                //Add saved custom list to custom list view
-                foreach (SplitJson spj in customList)
+                _vm.LogInfo("Building custom layout ListView - Start");
+                sw.Restart();
+                //Robert_Lin, 2024-12-7, CustomId is not used anymore (use EAID instead)
+                //So the check for CustomId will be comment-out
+                //
+                SplitJson[] customList = _deviceManagerSA.ReadEACustomList().Result;
+                sw.Stop();
+                _vm.LogInfo($"Read custom layouts from per-user settings, elapsed={sw.ElapsedMilliseconds} msec. IsCustomLayoutExist={(customList != null)}");
+                if (customList != null)
                 {
-                    //Validate settings
-                    //1 CustomId must > 0
-                    //if (spj.CustomId == 0)
-                    //{
-                    //    _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomId is zero]");
-                    //    continue;
-                    //}
-                    //2 CustomName cannot be empty
-                    //Robert_Lin, 2024-12-7,
-                    //  DDM allow empty CustomName to be loaded. so comment-out below checking
-                    //if (String.IsNullOrWhiteSpace(spj.CustomName))
-                    //{
-                    //    _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName is empty]");
-                    //    continue;
-                    //}
-                    //3 CustomName length
-                    // Robert_Lin, 2024-12-7, maximum length checking is required by SDL.
-                    if (spj.CustomName.Length > EAEMConstants.MaxCustomNameLenth)
+                    _vm.LogInfo($"Adding custom layouts into ListView, item count={customList.Length} - Start");
+                    int idxAddedCustom = 0;
+                    sw.Restart();
+                    //Add saved custom list to custom list view
+                    foreach (SplitJson spj in customList)
                     {
-                        _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName length is invalid]");
-                        continue;
-                    }
+                        idxAddedCustom++;
+                        //Validate settings
+                        //1 CustomId must > 0
+                        //if (spj.CustomId == 0)
+                        //{
+                        //    _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomId is zero]");
+                        //    continue;
+                        //}
+                        //2 CustomName cannot be empty
+                        //Robert_Lin, 2024-12-7,
+                        //  DDM allow empty CustomName to be loaded. so comment-out below checking
+                        //if (String.IsNullOrWhiteSpace(spj.CustomName))
+                        //{
+                        //    _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName is empty]");
+                        //    continue;
+                        //}
+                        //3 CustomName length
+                        // Robert_Lin, 2024-12-7, maximum length checking is required by SDL.
+                        if (spj.CustomName.Length > EAEMConstants.MaxCustomNameLenth)
+                        {
+                            _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomName length is invalid]");
+                            continue;
+                        }
 
-                    ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
-                    if (spCtrl == null)
-                    {
-                        _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], EAID=[{spj.EAID}], CustomName=[{spj.CustomName}], Msg=[Invalid CellName + SplitKey]");
-                        continue;
-                    }
-                    spCtrl.Settings = new List<double>(spj.Settings);
-                    spCtrl.SplitMode = eSplitModes.Icon;
-                    spCtrl.FriendlyName = spj.CustomName;
-                    spCtrl.EAID = spj.EAID;
+                        _vm.LogInfo($"CustomLayout[{idxAddedCustom}]: Class={spj.CellCount}{spj.SplitKey}, EAID={spj.EAID}, CustomName=[{spj.CustomName}]");
 
-                    if (spCtrl.IsAddedCustomLayout)
-                    {
-                        CreateCellBorderListToSplitCtrlFromCellJsons(spj.Cells, ref spCtrl);
-                    }
+                        ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
+                        if (spCtrl == null)
+                        {
+                            _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.CustomList[{spj.CellCount}{spj.SplitKey}], EAID=[{spj.EAID}], CustomName=[{spj.CustomName}], Msg=[Invalid CellName + SplitKey]");
+                            continue;
+                        }
+                        spCtrl.Settings = new List<double>(spj.Settings);
+                        spCtrl.SplitMode = eSplitModes.Icon;
+                        spCtrl.FriendlyName = spj.CustomName;
+                        spCtrl.EAID = spj.EAID;
 
-                    SplitItem itemCustom = splitListView_Custom.AddItemToList(spCtrl.UC);
-                    itemCustom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
-                    itemCustom.CustomId = (int)spj.CustomId;
+                        if (spCtrl.IsAddedCustomLayout)
+                        {
+                            Rect unitRect = new Rect(0,0, 1, 1);
+                            SplitCtrl0B spc0B = (SplitCtrl0B)spCtrl;
+                            spc0B.ApplySettingsToCellList(unitRect);
+                            //CreateCellBorderListToSplitCtrlFromCellJsons(spj.Cells, ref spCtrl);
+                        }
 
-                    //Robert_Lin, 2024-10-4 add max items check
-                    if (splitListView_Custom.ItemCount >= EAEMConstants.MaxCustomItems)
-                        break;
+                        SplitItem itemCustom = splitListView_Custom.AddItemToList(spCtrl.UC);
+                        itemCustom.SplitOwner = Common.EAEM.eSplitOwner.EaCustom;
+                        itemCustom.CustomId = (int)spj.CustomId;
 
-                } //foreach (SplitJson spj in customList)
-            } //if (customList != null)
+                        //Robert_Lin, 2024-10-4 add max items check
+                        if (splitListView_Custom.ItemCount >= EAEMConstants.MaxCustomItems)
+                            break;
+
+                    } //foreach (SplitJson spj in customList)
+                    sw.Stop();
+                    _vm.LogInfo($"Adding custom layouts into ListView - done, elapsed={sw.ElapsedMilliseconds} msec.");
+                } //if (customList != null)
+            }
+            catch (Exception exB1)
+            {
+                _vm.LogInfo("Building custom layout ListView - Exception", exB1);
+            }
 
             //C Load & Build Recent List
             //
 
-            //Use to trace count of slected item
-            int selectedCount = 0;
+            EAMonitorSettings? eaSettings = null;
             //Used to set flag if the Resecnt items are different with Custom items
             // Case: DUT1 Edit/Change a Custom layout "A", switch to DUT2,
             // DUT2's Custom list are reloaded from the saved custom list
             // But DUT2's custom layout "A" in recent list settings file not been refreshed
             bool isRecentListChangedByCustomSettingsFile = false;
+            _vm.LogInfo("Building recent layout ListView - Start");
 
-            //C01. Add "Off" SplitCtrl0A as the first item of RecentList
-            ISplitCtrl? sp0A = ISplitCtrl.Create(0, 'A');
-            SplitItem item0A;
-
-            if (sp0A != null)
+            try
             {
-                //sp0A.FriendlyName = "Off"; //Need Multilogual support
-                sp0A.SplitMode = eSplitModes.Icon;
-                item0A = splitListView_Recent.AddItemToList(sp0A.UC);
-                item0A.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
 
-                //if (eaSettings.SelectedSplit.CellCount == 0)
-                //{
-                //    item0A.IsSelected = true;
-                //    _vm.SelectedSplitItem = item0A;
-                //    selectedCount++;
-                //}
-            }
-            //C02. If saved recent list is not empty, then add them into Recent listview
-            if (eaSettings?.RecentList != null)
-            {
-                int idxRecentList = 0;
-                foreach (DDPM.SA.Common.Display.SplitJson spj in eaSettings.RecentList)
+                _vm.LogInfo("Add EmptyLayout item into recent layout ListView - Start");
+                sw.Restart();
+                //Use to trace count of slected item
+                int selectedCount = 0;
+
+                //C01. Add "Off" SplitCtrl0A as the first item of RecentList
+                ISplitCtrl? sp0A = ISplitCtrl.Create(0, 'A');
+                SplitItem item0A;
+
+                if (sp0A != null)
                 {
-                    //Robert_Lin, 2024-10-4 Check maximun items
-                    //since sp0A is not null,the splitListView_Recent.ItemCount init with 1.
-                    if (splitListView_Recent.ItemCount > EAEMConstants.MaxRecentItems)
-                        break;
+                    //sp0A.FriendlyName = "Off"; //Need Multilogual support
+                    sp0A.SplitMode = eSplitModes.Icon;
+                    item0A = splitListView_Recent.AddItemToList(sp0A.UC);
+                    item0A.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
 
-                    //Validate RectentList items, skip the invalid items
-                    //1 CustomId=0 and CustomName is empty is invalid
-                    //if ((spj.CustomId == 0) && (!String.IsNullOrWhiteSpace(spj.CustomName)))
+                    //if (eaSettings.SelectedSplit.CellCount == 0)
                     //{
-                    //    _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.RecentList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomId is zero]");
-                    //    idxRecentList++;
-                    //    continue;
+                    //    item0A.IsSelected = true;
+                    //    _vm.SelectedSplitItem = item0A;
+                    //    selectedCount++;
                     //}
+                    sw.Stop();
+                    _vm.LogInfo($"Add EmptyLayout item into recent layout ListView - done, elapsed={sw.ElapsedMilliseconds} msec.");
+                }
+                else
+                {
+                    sw.Stop();
+                    _vm.LogInfo("Add EmptyLayout item into recent layout ListView - ERROR, fail to create the EmptyLayouy.");
+                }
 
-                    //Add CustomName for the default RecentList item which is created by EAPlugin
-                    //Robert_Lin, 2024-12-7, DDM v2 allow save/load a custom layout which CustomName is empty
-                    //if (String.IsNullOrWhiteSpace(spj.CustomName))
-                    //{
-                    //    ISplitCtrl? ispGetName = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
-                    //    spj.CustomName = ispGetName.FriendlyName;
-                    //}
+                //C02. If saved recent list is not empty, then add them into Recent listview
+                _vm.LogInfo("Calling to ReadEAMonitorSettings() - Start");
+                sw.Restart();
+                eaSettings = _deviceManagerSA.ReadEAMonitorSettings(_homeDevice.MonitorInfo).Result;
+                sw.Stop();
+                _vm.LogInfo($"ReadEAMonitorSettings() done. Elapsed={sw.ElapsedMilliseconds} msec. Result={(eaSettings != null)}");
 
-                    //2 All Recent item must has Buddy
-                    SplitItem? itemBuddy = null;
-                    //If the recent item is a preset layout
-                    //Robert_Lin, 2024-12-7, CustomId will be unused, change to EAID instead
-                    //  EAID [1~49]=> Preset layout; [1000~1004]=> Custom layout
-                    if (spj.EAID < EAEMConstants.EAID_FirstCustom)
-                    //if (spj.CustomId == 0)
+                if ((eaSettings != null) && (eaSettings?.RecentList != null))
+                {
+                    _vm.LogInfo($"Add saved Recent layouts to ListView, itemCount={eaSettings.RecentList.Length}");
+                    int idxRecentList = 0;
+                    foreach (SplitJson spj in eaSettings?.RecentList)
                     {
-                        //Find Buddy from WinLists
-                        itemBuddy = FindSplitItemFromWindowLists(spj.CellCount, spj.SplitKey);
-                    }
-                    else
-                    {
-                        //Find Buddy from CustomList
-                        //itemBuddy = splitListView_Custom.FindItemByCustomId(spj.CustomId);
-                        itemBuddy = splitListView_Custom.FindItemByEAID(spj.EAID);
+                        idxRecentList++;
+                        //Robert_Lin, 2024-10-4 Check maximun items
+                        //since sp0A is not null,the splitListView_Recent.ItemCount init with 1.
+                        if (splitListView_Recent.ItemCount > EAEMConstants.MaxRecentItems)
+                            break;
 
-                        //Check if Buddy (custom item) has the same settings with recent
-                        if (itemBuddy != null)
+                        if (spj.EAID >= EAEMConstants.EAID_FirstCustom)
+                            _vm.LogInfo($"RecentLayout[{idxRecentList}]: Class={spj.CellCount}{spj.SplitKey}, EAID={spj.EAID}");
+                        else
+                            _vm.LogInfo($"RecentLayout[{idxRecentList}]: Class={spj.CellCount}{spj.SplitKey}, CustomId={spj.CustomId}, CustomName=[{spj.CustomName}]");
+
+                        //Validate RectentList items, skip the invalid items
+                        //1 CustomId=0 and CustomName is empty is invalid
+                        //if ((spj.CustomId == 0) && (!String.IsNullOrWhiteSpace(spj.CustomName)))
+                        //{
+                        //    _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.RecentList[{spj.CellCount}{spj.SplitKey}], CustomId=[{spj.CustomId}], CustomName=[{spj.CustomName}], Msg=[Invalid setting, CustomId is zero]");
+                        //    idxRecentList++;
+                        //    continue;
+                        //}
+
+                        //Add CustomName for the default RecentList item which is created by EAPlugin
+                        //Robert_Lin, 2024-12-7, DDM v2 allow save/load a custom layout which CustomName is empty
+                        //if (String.IsNullOrWhiteSpace(spj.CustomName))
+                        //{
+                        //    ISplitCtrl? ispGetName = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
+                        //    spj.CustomName = ispGetName.FriendlyName;
+                        //}
+
+                        //2 All Recent item must has Buddy
+                        SplitItem? itemBuddy = null;
+                        //If the recent item is a preset layout
+                        //Robert_Lin, 2024-12-7, CustomId will be unused, change to EAID instead
+                        //  EAID [1~49]=> Preset layout; [1000~1004]=> Custom layout
+                        if (spj.EAID < EAEMConstants.EAID_FirstCustom)
+                        //if (spj.CustomId == 0)
                         {
-                            //If any different between Recent item and its Buddy in Custom list
+                            //Find Buddy from WinLists
+                            itemBuddy = FindSplitItemFromWindowLists(spj.CellCount, spj.SplitKey);
+                        }
+                        else
+                        {
+                            //Find Buddy from CustomList
+                            //itemBuddy = splitListView_Custom.FindItemByCustomId(spj.CustomId);
+                            itemBuddy = splitListView_Custom.FindItemByEAID(spj.EAID);
 
-                            if ((itemBuddy.CellCount != spj.CellCount) || (itemBuddy.SplitKey != spj.SplitKey) ||
-                                (!itemBuddy.CustomName.Equals(spj.CustomName)) ||
-                                (!DDPM.SA.Common.Display.SplitJson.AreSettingsEqual(itemBuddy.Settings, spj.Settings)))
+                            //Check if Buddy (custom item) has the same settings with recent
+                            if (itemBuddy != null)
                             {
-                                //Copy properties from Custom to Recent
-                                spj.CellCount = itemBuddy.CellCount;
-                                spj.SplitKey = itemBuddy.SplitKey;
-                                spj.CustomName = itemBuddy.CustomName;
+                                //If any different between Recent item and its Buddy in Custom list
 
-                                if (itemBuddy.Settings != null)
+                                if ((itemBuddy.CellCount != spj.CellCount) || (itemBuddy.SplitKey != spj.SplitKey) ||
+                                    (!itemBuddy.CustomName.Equals(spj.CustomName)) ||
+                                    (!DDPM.SA.Common.Display.SplitJson.AreSettingsEqual(itemBuddy.Settings, spj.Settings)))
                                 {
-                                    spj.Settings = new List<double>(itemBuddy.Settings);
-                                }
+                                    //Copy properties from Custom to Recent
+                                    spj.CellCount = itemBuddy.CellCount;
+                                    spj.SplitKey = itemBuddy.SplitKey;
+                                    spj.CustomName = itemBuddy.CustomName;
 
-                                isRecentListChangedByCustomSettingsFile = true;
+                                    if (itemBuddy.Settings != null)
+                                    {
+                                        spj.Settings = new List<double>(itemBuddy.Settings);
+                                    }
+
+                                    isRecentListChangedByCustomSettingsFile = true;
+                                }
                             }
                         }
-                    }
-                    //If cannot find a Buddy, then will be discard
-                    if (itemBuddy == null)
-                    {
-                        _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.RecentList[{spj.CellCount}{spj.SplitKey}], EAID=[{spj.EAID}], CustomName=[{spj.CustomName}], Msg=[Cannot find Buddy]");
-                        idxRecentList++;
-                        continue;
-                    }
-
-                    //Create a Recent item, and add to RecentList
-                    //
-                    ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
-                    if (spCtrl == null)
-                    {
-                        _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.RecentList[{spj.CellCount}{spj.SplitKey}], EAID=[{spj.EAID}], CustomName=[{spj.CustomName}], Msg=[Fail to create ISplitCtrl]");
-                        idxRecentList++;
-                        continue;
-                    }
-                    if (spj.Settings == null)
-                        spCtrl.Settings = new List<double>();
-                    else
-                        spCtrl.Settings = new List<double>(spj.Settings);
-                    spCtrl.SplitMode = eSplitModes.Icon;
-                    spCtrl.FriendlyName = spj.CustomName;
-                    spCtrl.EAID = spj.EAID;
-
-                    if (spCtrl.IsOverlapCustomLayout)
-                    {
-                        CreateCellBorderListToSplitCtrlFromCellJsons(spj.Cells, ref spCtrl);
-                    }
-                    SplitItem itemRecent = splitListView_Recent.AddItemToList(spCtrl.UC);
-                    itemRecent.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
-                    itemRecent.CustomId = spj.CustomId;
-
-                    //bool isSelected = (eaSettings.SelectedSplit.CellCount == spj.CellCount) &&
-                    //    (eaSettings.SelectedSplit.SplitKey == spj.SplitKey);
-
-                    //Setup Buddy
-                    //
-
-                    //If it's a Window item
-                    if (spj.CustomId == 0)
-                    {
-                        itemRecent.Buddy = itemBuddy;
-                        itemBuddy.Buddy = itemRecent;
-                    }
-                    else //It's a Custom item
-                    {
-                        itemRecent.Buddy = itemBuddy;
-                        itemBuddy.Buddy = itemRecent;
-                    }
-
-                    //Setup IsSelected flag
-                    bool isSelected = spj.IsEquals(eaSettings.SelectedSplit);
-                    //Validate Selected Count
-                    if (isSelected)
-                    {
-                        selectedCount++;
-                        if (selectedCount > 1)
+                        //If cannot find a Buddy, then will be discard
+                        if (itemBuddy == null)
                         {
-                            _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.RecentList[{spj.CellCount}{spj.SplitKey}], EAID=[{spj.EAID}], CustomName=[{spj.CustomName}], Msg=[SelectedCount>1]");
-
-                            //Add to list but do not set it as Selected
-                            isSelected = false;
+                            _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.RecentList[{spj.CellCount}{spj.SplitKey}], EAID=[{spj.EAID}], CustomName=[{spj.CustomName}], Msg=[Cannot find Buddy]");
+                            //idxRecentList++;
+                            continue;
                         }
-                    }
-                    //itemRecent.IsSelected = isSelected;
-                    //itemBuddy.IsSelected = isSelected;
-                    //_vm.SelectedSplitItem = itemBuddy;
 
-                    idxRecentList++;
-                } //foreach
-            } //if (eaSettings?.CustomList != null)
+                        //Create a Recent item, and add to RecentList
+                        //
+                        ISplitCtrl? spCtrl = ISplitCtrl.Create(spj.CellCount, spj.SplitKey);
+                        if (spCtrl == null)
+                        {
+                            _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.RecentList[{spj.CellCount}{spj.SplitKey}], EAID=[{spj.EAID}], CustomName=[{spj.CustomName}], Msg=[Fail to create ISplitCtrl]");
+                            //idxRecentList++;
+                            continue;
+                        }
+                        if (spj.Settings == null)
+                            spCtrl.Settings = new List<double>();
+                        else
+                            spCtrl.Settings = new List<double>(spj.Settings);
+                        spCtrl.SplitMode = eSplitModes.Icon;
+                        spCtrl.FriendlyName = spj.CustomName;
+                        spCtrl.EAID = spj.EAID;
+
+                        if (spCtrl.IsOverlapCustomLayout)
+                        {
+                            Rect unitRect = new Rect(0, 0, 1, 1);
+                            SplitCtrl0B spc0B = (SplitCtrl0B)spCtrl;
+                            spc0B.ApplySettingsToCellList(unitRect);
+                            //CreateCellBorderListToSplitCtrlFromCellJsons(spj.Cells, ref spCtrl);
+                        }
+                        SplitItem itemRecent = splitListView_Recent.AddItemToList(spCtrl.UC);
+                        itemRecent.SplitOwner = Common.EAEM.eSplitOwner.EaRecent;
+                        itemRecent.CustomId = spj.CustomId;
+
+                        //bool isSelected = (eaSettings.SelectedSplit.CellCount == spj.CellCount) &&
+                        //    (eaSettings.SelectedSplit.SplitKey == spj.SplitKey);
+
+                        //Setup Buddy
+                        //
+
+                        //If it's a Window item
+                        if (spj.CustomId == 0)
+                        {
+                            itemRecent.Buddy = itemBuddy;
+                            itemBuddy.Buddy = itemRecent;
+                        }
+                        else //It's a Custom item
+                        {
+                            itemRecent.Buddy = itemBuddy;
+                            itemBuddy.Buddy = itemRecent;
+                        }
+
+                        //Setup IsSelected flag
+                        bool isSelected = spj.IsEquals(eaSettings.SelectedSplit);
+                        //Validate Selected Count
+                        if (isSelected)
+                        {
+                            selectedCount++;
+                            if (selectedCount > 1)
+                            {
+                                _vm.LogInfo($"  * InitListViewItems({_homeDevice.MonitorInfo?.modelName},{_homeDevice.MonitorInfo?.edid.ServiceTag}) Settings.RecentList[{spj.CellCount}{spj.SplitKey}], EAID=[{spj.EAID}], CustomName=[{spj.CustomName}], Msg=[SelectedCount>1]");
+
+                                //Add to list but do not set it as Selected
+                                isSelected = false;
+                            }
+                        }
+                        //itemRecent.IsSelected = isSelected;
+                        //itemBuddy.IsSelected = isSelected;
+                        //_vm.SelectedSplitItem = itemBuddy;
+
+                        idxRecentList++;
+                    } //foreach
+                } //if (eaSettings?.RecentList != null)
+                else
+                {
+                    _vm.LogInfo($"RecentList is empty, will add app default list later.");
+                }
+            }
+            catch (Exception exC1)
+            {
+
+                _vm.LogInfo("Building recent layout ListView - Exception", exC1);
+            }
+
 
             //C1 Complement Recent List to 5 items
             //
             //Return the item count has been added into RecentList
             int addCount = ComplementRecentListItem();
-
 
 
             //D Add all custom items which has no Buddy into Recent list
@@ -1731,5 +1813,5 @@ namespace DDPM.UI.Module.EzArrange
         }
         #endregion
 
-    }
+     }
 }

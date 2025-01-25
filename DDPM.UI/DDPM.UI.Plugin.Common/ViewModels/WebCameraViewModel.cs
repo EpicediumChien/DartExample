@@ -90,6 +90,9 @@ namespace DDPM.UI.Plugin.ViewModels
         const int MaxOPs = 30;
         public List<string> MicList = new() { "WB5023", "WB3023" };
 
+        //Derek 2025/01/22 for PIMS-341594
+        public bool isUIHasUpdateByQAM = false;
+
         // 20240926 jim add
         private bool showLockMask = false;
 
@@ -851,6 +854,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool IsSettingProfile = false;
         public void SetProfile()
         {
+            IsSettingProfile = true;
             try
             {
                 if (CurrentProfileName.ToUpper() == "NONE")
@@ -963,6 +967,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs  SetProfile ex:" + ex.Message);
             }
+            IsSettingProfile = false;
         }
 
         public override void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
@@ -1286,7 +1291,9 @@ namespace DDPM.UI.Plugin.ViewModels
                     if (value == CurrentProfile.IsAutoFramingOn)
                         return;
 
-                    DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), value);
+                    if (!isUIHasUpdateByQAM)
+                        DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingOn(CurrentDeviceInfo!.ID.ToString(), value);
+
                     SetProfileProperty(nameof(IsAutoFramingOn), value, OperationModule.CameraControl);
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsAutoFramingOnText));
@@ -1381,7 +1388,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (value == CurrentProfile.FieldOfView)
                     return;
 
-                DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceID.ToString(), value);
+                if (!isUIHasUpdateByQAM)
+                    DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceID.ToString(), value);
+
                 SetProfileProperty(nameof(FieldOfView), value, OperationModule.CameraControl);
                 OnPropertyChanged();
             }
@@ -1414,6 +1423,7 @@ namespace DDPM.UI.Plugin.ViewModels
             try
             {
                 DdpmCommonHelper.DeviceManagerSA!.SetZoom(CurrentDeviceInfo!.ID.ToString(), _zoom);
+
                 SetProfileProperty(nameof(Zoom), _zoom, OperationModule.CameraControl);
                 OnPropertyChanged(nameof(PanArrowVisibility));
             }
@@ -1437,7 +1447,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (value != _isFocusOn) //Derek 1108 for Webcam PIMS-317629 
                 {
                     _isFocusOn = value;
+
                     DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), value);
+
                     SetProfileProperty(nameof(IsFocusOn), value, OperationModule.CameraControl);
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsFocusOnText));
@@ -1471,6 +1483,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public void SetFocus()
         {
             DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), _focus);
+
             SetProfileProperty(nameof(Focus), _focus, OperationModule.CameraControl);
         }
 
@@ -1507,6 +1520,9 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 try
                 {
+                    //OnPropertyChanged(nameof(hdr_enable));
+                    //OnPropertyChanged(nameof(IsHDROnText));
+
                     if (value == CurrentProfile.IsHDROn)
                         return;
 
@@ -1515,9 +1531,11 @@ namespace DDPM.UI.Plugin.ViewModels
                     hdr_change = true;
                     is_hdr_enable = false;
                     OnPropertyChanged(nameof(hdr_enable));
-                    DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), value);
+                    if (!isUIHasUpdateByQAM)
+                        DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), value);
                     SetProfileProperty(nameof(IsHDROn), value, OperationModule.ColorAndImage);
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsHDROn));
                     OnPropertyChanged(nameof(IsHDROnText));
 
                     new Thread(() =>
@@ -1554,7 +1572,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (value == IsAutoWhiteBalanceOn)
                     return;
 
-                DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), value);
+                if (!isUIHasUpdateByQAM)
+                    DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), value);
                 SetProfileProperty(nameof(IsAutoWhiteBalanceOn), value, OperationModule.ColorAndImage);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsAutoWhiteBalanceOnText));
@@ -1584,7 +1603,8 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void SetAutoWhiteBalance()
         {
-            DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), _autoWhiteBalance);
+            if (!isUIHasUpdateByQAM)
+                DdpmCommonHelper.DeviceManagerSA!.SetAutoWhiteBalance(CurrentDeviceInfo!.ID.ToString(), _autoWhiteBalance);
             SetProfileProperty(nameof(AutoWhiteBalance), _autoWhiteBalance, OperationModule.ColorAndImage);
         }
 
@@ -1622,7 +1642,8 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void SetBrightness()
         {
-            DdpmCommonHelper.DeviceManagerSA!.SetBrightness(CurrentDeviceInfo!.ID.ToString(), _brightness);
+            if (!isUIHasUpdateByQAM)
+                DdpmCommonHelper.DeviceManagerSA!.SetBrightness(CurrentDeviceInfo!.ID.ToString(), _brightness);
             SetProfileProperty(nameof(Brightness), _brightness, OperationModule.ColorAndImage);
         }
 
@@ -1652,7 +1673,8 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void SetSharpness()
         {
-            DdpmCommonHelper.DeviceManagerSA!.SetSharpness(CurrentDeviceInfo!.ID.ToString(), _sharpness);
+            if (!isUIHasUpdateByQAM)
+                DdpmCommonHelper.DeviceManagerSA!.SetSharpness(CurrentDeviceInfo!.ID.ToString(), _sharpness);
             SetProfileProperty(nameof(Sharpness), _sharpness, OperationModule.ColorAndImage);
         }
 
@@ -1682,7 +1704,8 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void SetContrast()
         {
-            DdpmCommonHelper.DeviceManagerSA!.SetContrast(CurrentDeviceInfo!.ID.ToString(), _contrast);
+            if (!isUIHasUpdateByQAM)
+                DdpmCommonHelper.DeviceManagerSA!.SetContrast(CurrentDeviceInfo!.ID.ToString(), _contrast);
             SetProfileProperty(nameof(Contrast), _contrast, OperationModule.ColorAndImage);
         }
 
@@ -1728,7 +1751,8 @@ namespace DDPM.UI.Plugin.ViewModels
         public double[] SaturationMargin { get; set; } = { 0 };
         public void SetSaturation()
         {
-            DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), _saturation);
+            if (!isUIHasUpdateByQAM)
+                DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), _saturation);
             SetProfileProperty(nameof(Saturation), _saturation, OperationModule.ColorAndImage);
         }
 

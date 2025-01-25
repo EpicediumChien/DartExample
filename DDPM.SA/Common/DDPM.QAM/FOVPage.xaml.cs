@@ -67,6 +67,9 @@ namespace DDPM.QAM
                     vm.isStatusChangeByDDPM = false;
                     vm.SetNoneProfile(); //Derek 2025/01/16
                     vm.FieldOfView = val;
+
+                    //Derek 2025/01/24 Save FOV to none profile if current select is none
+                    vm.SaveNoneProfileFOV(val);
                 }
                 catch (Exception ex)
                 {

@@ -16,6 +16,7 @@ using DDPM.OSDs;
 using DDPM.PowerMon;
 using DDPM.QAM;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Defer;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Popup;
@@ -2428,6 +2429,20 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
 
             return Task.FromResult(usbUpstream);
+        }
+
+        public Task<string> GetCurrentInput(MonitorInfo monitorInfo)
+        {
+            if (_DisplayManagerPlugin != null)
+            {
+                return _DisplayManagerPlugin.GetCurrentInput(monitorInfo);
+            }
+            else
+            {
+                writelog("[GetCurrentInput] _DisplayManagerPlugin is null.");
+            }
+
+            return Task.FromResult("");
         }
 
         public Task<bool> USBSwitch(MonitorInfo monitorInfo, string inputsource1, string upstream1, string inputsource2, string upstream2)
@@ -8724,7 +8739,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                         SetVCPSequence(monitorInfo, impVCPSequence, vcps);
                                         foreach (VCPCode code in vcps)
                                         {
-                                            if (code.Code != null && code.Value != null)
+                                            if (code.Code != null && (code.Value != null && code.Value.Count > 0))
                                             {
                                                 writelog($"[DisplayImportSettings] VCP code : {code.Code.ToString()}, First Value: {code.Value[0]}");
                                                 if (importVCP.NotImportVCPs.FindIndex(x => x == code.Code) == -1 &&
@@ -17118,12 +17133,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     case OSDType.BatteryLow:
                         {
+                            writelog($"[ShowOSD] OSDType.BatteryLow.");
                             if (Device is OSDType_Device.Headset)
                             {
                                 if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
                                     _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Headset, Content);
                                 else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                    writelog("[_showosd*******] Headset Content error can't be NullOrWhiteSpace");
+
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Keyboard)
@@ -17131,7 +17148,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
                                     _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Keyboard, Content);
                                 else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                    writelog("[_showosd*******] Keyboard Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Mouse)
@@ -17139,7 +17156,15 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
                                     _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Mouse, Content);
                                 else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                    writelog("[_showosd*******] Mouse Content error can't be NullOrWhiteSpace");
+                                return Task.CompletedTask;
+                            }
+                            else if (Device is OSDType_Device.Pen)
+                            {
+                                if (!string.IsNullOrWhiteSpace(Content) && _GlobalSettingParam.GlobalSetting_General.Low_Battery_Level)
+                                    _showosd(monitorInfo, OSDType.BatteryLow, OSDType_Device.Pen, Content);
+                                else
+                                    writelog("[_showosd*******] Pen Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else
@@ -17147,12 +17172,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         }
                     case OSDType.CollaborationNotAvailable:
                         {
+                            writelog($"[ShowOSD] OSDType.CollaborationNotAvailable.");
                             if (Device is OSDType_Device.Headset)
                             {
                                 if (!string.IsNullOrWhiteSpace(Content))
                                     _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Headset, Content);
                                 else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                    writelog("[_showosd*******] Headset Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Keyboard)
@@ -17160,7 +17186,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (!string.IsNullOrWhiteSpace(Content))
                                     _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Keyboard, Content);
                                 else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                    writelog("[_showosd*******] Keyboard Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else if (Device is OSDType_Device.Mouse)
@@ -17168,7 +17194,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (!string.IsNullOrWhiteSpace(Content))
                                     _showosd(monitorInfo, OSDType.CollaborationNotAvailable, OSDType_Device.Mouse, Content);
                                 else
-                                    writelog("[_showosd*******] Content error can't be NullOrWhiteSpace");
+                                    writelog("[_showosd*******] Mouse Content error can't be NullOrWhiteSpace");
                                 return Task.CompletedTask;
                             }
                             else
@@ -17178,8 +17204,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         return Task.CompletedTask;
                 }
             }
-            else
-                return Task.CompletedTask;
+
+            return Task.CompletedTask;
         }
 
         public Task ShowOSD(object monitorInfo, OSDType type, string Content, bool State)
@@ -18285,6 +18311,53 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 default:
                     break;
             }
+        }
+
+        // add @ 20250116 stephen
+        public Task<bool> checkDeviceConnStatus(FwRule rule)
+        {
+
+            if (!rule.devicetype.Equals("display"))
+            {
+                return Task.FromResult(true);
+            }
+
+            bool hasModel = false;
+            bool hasServiceTag = false;
+
+            if (rule.model.Equals(string.Empty))
+            {
+                hasModel = true;
+            }
+
+            if (rule.servicetag.Equals(string.Empty))
+            {
+                hasServiceTag = true;
+            }
+
+            foreach (MonitorInfo info in _AllInfoMonitors)
+            {
+                if (!hasModel)
+                {
+                    if (info.edid.ModelName.ToLower().Equals(rule.model))
+                    {
+                        hasModel = true;
+                    }
+                }
+
+                if (!hasServiceTag)
+                {
+                    if (info.edid.ServiceTag.ToLower().Equals(rule.servicetag))
+                    {
+                        hasServiceTag = true;
+                        break;
+                    }
+                }
+            }
+
+            bool result = hasModel && hasServiceTag;
+
+            return Task.FromResult(result);
         }
 
         public async Task<HeadsetConnectionType> GetAirAudioConnectionTypeAsync(string Guid)

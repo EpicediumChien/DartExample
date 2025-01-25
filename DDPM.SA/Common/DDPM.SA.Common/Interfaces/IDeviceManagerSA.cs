@@ -1,4 +1,5 @@
 ﻿using DdmLibrary.Utility;
+using DDPM.SA.Common.Defer;
 using DDPM.SA.Common.Display;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
@@ -217,6 +218,8 @@ namespace DDPM.SA.Common
         Task<bool> SetUSBUpstream(MonitorInfo monitorInfo, string inputsource, string upstream);
 
         Task<bool> USBSwitch(MonitorInfo monitorInfo, string inputsource1, string upstream1, string inputsource2, string upstream2);
+
+        Task<string> GetCurrentInput(MonitorInfo monitorInfo);
 
         #endregion public for InputSource
 
@@ -1578,6 +1581,8 @@ namespace DDPM.SA.Common
         Task<bool> SetIsMuteStatusNotificationsEnabledValue(bool newValue);
 
         Task<bool> SetIsQuickAccessMenuOSDEnabledValue(bool newValue);
+
+        Task<bool> checkDeviceConnStatus(FwRule rule);    //add @ 20250116 stephen
 
         #endregion globalperipheral
 

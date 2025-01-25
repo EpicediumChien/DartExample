@@ -342,5 +342,40 @@ namespace DDPM.QAM
             }
             
         }
+
+        //如果右边的window有出来，也要跟着隐藏  Derek 2025/01/23
+        private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            //WriteLog($"Window_IsVisibleChanged --> NewValue =  {e.NewValue}, OldValue =  {e.OldValue}");
+
+            bool isQAMVisible = true;
+            try
+            {
+                bool.TryParse(e.NewValue.ToString(), out isQAMVisible);
+
+                if (isQAMVisible && CameraSetting != null)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        CameraSetting?.Show();
+
+                        WriteLog($"Window_IsVisibleChanged show QAM setting window");
+                    });
+                }
+                else if (CameraSetting != null)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        CameraSetting?.Hide();
+
+                        WriteLog($"Window_IsVisibleChanged hide QAM setting window");
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"Window_IsVisibleChanged catch exception; {ex.Message}");
+            }
+        }
     }
 }

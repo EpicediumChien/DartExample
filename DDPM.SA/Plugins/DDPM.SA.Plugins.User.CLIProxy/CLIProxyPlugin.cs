@@ -12,6 +12,7 @@
 
 using DDPM.SA.Common;
 using DDPM.SA.Common.CLI;
+using DDPM.SA.Common.Defer;
 using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.Common.Annotations;
@@ -20,6 +21,7 @@ using Dell.Client.Framework.Interfaces;
 using Microsoft;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using static DDPM.SA.Common.ICLICommandTable;
 
 namespace DDPM.SA.Plugin.User.CLIManager
@@ -390,6 +392,9 @@ namespace DDPM.SA.Plugin.User.CLIManager
 
             // add @ 20241210 stephen
             _CliManagerPlugin.CLIToastEvent += _CliManagerPlugin_CLIToastEvent;
+
+            // add @ 20250116 stephen
+            _CliManagerPlugin.CLIDeviceCheckEvent += _CliManagerPlugin_CLIDeviceCheckEvent;
 
             relay_registered = true;
         }
@@ -796,15 +801,52 @@ namespace DDPM.SA.Plugin.User.CLIManager
         //private void OnEventToast(object sender, EventArgs e) { }
         private void _CliManagerPlugin_CLIToastEvent(object? sender, CLIEventToastArgs e)
         {
+            var header = string.Empty;
+            if (e.defer_item.commanddata.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase) || e.defer_item.commanddata.Contains("dock=fwupdate", StringComparison.OrdinalIgnoreCase))
+            {
+                header = e.is_defer ? "Update available​" : "Update will be applied​";
+
+                var deviceType = e.defer_item.commanddata.ToLower()
+                                                         .Split()
+                                                         .FirstOrDefault(_ => _.Contains("value"));
+
+                var deviceName = "[Device Marketing Name with Model in parenthesis]";
+
+                if (!string.IsNullOrWhiteSpace(deviceType))
+                {
+                    deviceType = deviceType.Split('=')[1].Split(',')[0];
+
+                    if (deviceType.Equals("display"))
+                    {
+                        deviceName = _DevManagerPlugin.GetMonitors().Result.FirstOrDefault()?.modelName ?? deviceType;
+                    }
+                    else
+                    {
+                        deviceName = _DevManagerPlugin.GetDevices().Result?.deviceInfo.FirstOrDefault(_ => _.LogicalDeviceType.Contains(deviceType, StringComparison.OrdinalIgnoreCase))?.ModelNumber ?? deviceType;
+                    }
+                }
+
+                e.toast_message = e.is_defer ? $"{deviceName} has a pending firmware update. During update, device may be intermittently available. Do not disconnect the device during the update. This update can be deferred {e.defer_item.count + 1} times before it is required.​" : $"There is a required firmware update for {deviceName}. During update, device may be intermittently available. Do not disconnect the device during the update.​";
+            }
+            else if (e.toast_message.Contains("app=update", StringComparison.OrdinalIgnoreCase))
+            {
+                header = e.is_defer ? "Update available​" : "Update will be applied​";
+                e.toast_message = e.is_defer ? $"Dell Display and Peripheral Manager has a pending update. This update can be deferred {e.defer_item.count + 1} times before it is required.​" : "There is a required software update for Dell Display and Peripheral Manager.​";
+            }
+            else
+            {
+                header = e.is_defer ? "Pending Changes to settings​" : "Changes to settings will be applied​";
+                e.toast_message = e.is_defer ? $"Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator.​\nThe configuration can be deferred {e.defer_item.count + 1} times before it is required.​" : "Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator​.";
+            }
             //throw new NotImplementedException();
             //Console.WriteLine($"value = {CLIEventToastArgs.toast_message}");
             if (e.is_defer)
             {
-                showToast(e.defer_id, e.toast_message);
+                showToast(e.defer_id, header, e.toast_message);
             }
             else
             {
-                showNotification(e.defer_id, e.toast_message);
+                showNotification(e.defer_id, header, e.toast_message);
             }
 
 
@@ -884,14 +926,14 @@ namespace DDPM.SA.Plugin.User.CLIManager
         private const string DEFER_MSG_HEADER = @"Update available";
         private const string DEFER_MSG_BODY = @"There has a pending update. During update, device may be intermittently available. Do not disconnect the device during the update. This update can be deferred before it is required.";
 
-        public void showNotification(string id, string msg)
+        public void showNotification(string id, string header, string msg)
         {
 
             new ToastContentBuilder()
                 .SetToastScenario(ToastScenario.Reminder)
                 .AddArgument("deferid", id)
-                .AddText(NOTIFICATION_MSG_HEADER)
-                .AddText(NOTIFICATION_MSG_BODY)
+                .AddText(header)
+                .AddText(msg)
                 .AddButton(new ToastButton()
                     .SetContent("Ok")
                 .AddArgument("action", "ok")
@@ -902,14 +944,14 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 }               
                 );
         }
-        public void showToast(string id, string msg)
+        public void showToast(string id, string header, string msg)
         {
 
             new ToastContentBuilder()
                 .SetToastScenario(ToastScenario.Reminder)
                 .AddArgument("deferid", id)
-                .AddText(DEFER_MSG_HEADER)
-                .AddText(DEFER_MSG_BODY)
+                .AddText(header)
+                .AddText(msg)
                 .AddButton(new ToastButton()
                     .SetContent("Update now")
                     .AddArgument("action", "runnow")
@@ -928,5 +970,83 @@ namespace DDPM.SA.Plugin.User.CLIManager
         }
 
         #endregion
+
+        // add @ 20250116 stephen
+        private void _CliManagerPlugin_CLIDeviceCheckEvent(object? sender, CLIEventDeviceConnArgs e)
+        {
+            //throw new NotImplementedException();
+            //Console.WriteLine($"value = {CLIEventToastArgs.toast_message}");
+            bool result = checkDeviceConn(e.commands);
+        }
+
+        private bool checkDeviceConn(string data)
+        {
+            bool isDeviceConn = false;
+
+            FwRule rule = genFwRule(data);
+
+            bool result = _DevManagerPlugin.checkDeviceConnStatus(rule).Result;
+            try
+            {
+                _CliManagerPlugin.sendDeviceCheckResult(result);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            return result;
+        }
+
+        private FwRule genFwRule(string data)
+        {
+            WriteLog($"genFwRule call.");
+            FwRule rule = new FwRule();
+
+            rule.devicetype = string.Empty;
+            rule.model = string.Empty;
+            rule.servicetag = string.Empty;
+
+            string[] args = data.ToLower().Split(' ');
+            foreach (string arg in args)
+            {
+                if (arg.Contains("value"))
+                {
+                    string[] rootArg = arg.Split('=');
+                    
+                    foreach (string subAge in rootArg)
+                    {
+                        if (subAge.Contains("defer") || subAge.Contains("force"))
+                        {
+                            rule.devicetype = subAge.Split(',')[0];
+                            continue;
+                        }
+
+                        if(!subAge.Contains("defer") && !subAge.Contains("force") && !subAge.Contains("model") && !subAge.Contains("servicetag") && !subAge.Contains("value"))
+                        {
+                            rule.devicetype = rootArg[1];
+                            continue;
+                        }
+
+                        if (subAge.Contains("model"))
+                        {
+                            rule.model = subAge.Split(',')[0];
+                            continue;
+                        }
+
+                        if (subAge.Contains("servicetag"))
+                        {
+                            rule.servicetag = subAge.Split(',')[0];
+                            continue;
+                        }
+                    }
+                    
+
+                }
+            }
+
+            return rule;
+        }
+
     }
 }

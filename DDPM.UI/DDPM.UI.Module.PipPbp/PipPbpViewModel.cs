@@ -1581,6 +1581,23 @@ namespace DDPM.UI.Module.PipPbp
         {
             get
             {
+                //Robert_Lin 2025-1-23 [PIMS-302450] P3425WEb Qisda-P1: USB switch always grey out and not work.
+                //Change rule:
+                //NEW:
+                if (SelectedHomeDevice == null)
+                    return false;
+
+
+                if (!SelectedHomeDevice.HasCapability_UsbKvm)
+                        return false;
+
+                if (IsFullscreenItemSelected)
+                    return false;
+
+                return true;
+
+                //OLD:
+                /*
                 if (SelectedHomeDevice == null) return false;
 
                 if (SelectedHomeDevice.HasCapability_UsbKvm)
@@ -1590,7 +1607,9 @@ namespace DDPM.UI.Module.PipPbp
                 {
                     return true;
                 }
+
                 return false;
+                */
             }
         }
 
@@ -1598,6 +1617,19 @@ namespace DDPM.UI.Module.PipPbp
         {
             get
             {
+                //Robert_Lin 2025-1-23 [PIMS-302450] P3425WEb Qisda-P1: USB switch always grey out and not work.
+                //Change rule:
+                //NEW:
+                if (SelectedHomeDevice == null)
+                    return false;
+
+                //If no this capability the USB Switch button will be hidden, but we still check again
+                if (!SelectedHomeDevice.HasCapability_UsbKvm)
+                    return false;
+
+                return !IsNetworkKvmOn;
+                //OLD:
+                /*
                 //Robert_Lin, 2025-1-17 fix with Bee June's comment in PIMS-302450
                 //Tye, Bee June: When PxP id turn out, no need to gray out the USB switch.
                 //if (IsFullscreenItemSelected)
@@ -1613,6 +1645,7 @@ namespace DDPM.UI.Module.PipPbp
                     return !IsNetworkKvmOn;
                 }
                 return false;
+                */
             }
         }
 

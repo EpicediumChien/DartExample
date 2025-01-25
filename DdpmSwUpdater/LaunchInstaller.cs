@@ -100,7 +100,7 @@ namespace DdpmSwUpdater
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Thread thread1 = new Thread(() =>
             {
-                _UpdateProgress = new UpdateProgress(LogManage.logs);
+                _UpdateProgress = new UpdateProgress(LogManage.Logs);
                 _UpdateProgress.Closed += (sender2, e2) =>
                 {
                     _UpdateProgress.Dispatcher.InvokeShutdown();
