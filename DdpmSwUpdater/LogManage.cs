@@ -31,7 +31,7 @@ namespace DdpmSwUpdater
             string ProgramDataPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);// WTSFunction.GetActiveUserLocalAppDataPath(null);
             if (!string.IsNullOrEmpty(ProgramDataPath))
             {
-                path = ProgramDataPath + @"\Dell\Dell Display and Peripheral Manager\DdpmSwUpdater";// "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-DdpmSwUpdater";
+                path = ProgramDataPath + GlobalDefinitions.LogSwUpdater; //@"\Dell\Dell Display and Peripheral Manager\DdpmSwUpdater";// "\\Dell\\Dell Display and Peripheral Manager\\Log\\DDPM-Setup-DdpmSwUpdater";
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
@@ -42,25 +42,25 @@ namespace DdpmSwUpdater
                 LogMessage($"DdpmSwUpdater Ver:{version}");
 
                 //Dean 0124 According to log move into %programdata%\Dell\Dell Display and Peripheral Manager, using oridignal ACL as well 
-/*#if RELEASE
-                try
-                {
-                    bool acl = DDPMFileSecurity.CheckFolderACL(path, out string info);
-                    if(!acl)
-                    {
-                        LogMessage($"SetPath error : {info}");
-                        return;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogMessage($"SetPath error : {ex.Message}");
-                    return;
-                }
-#endif*/
-                
+                /*#if RELEASE
+                                try
+                                {
+                                    bool acl = DDPMFileSecurity.CheckFolderACL(path, out string info);
+                                    if(!acl)
+                                    {
+                                        LogMessage($"SetPath error : {info}");
+                                        return;
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    LogMessage($"SetPath error : {ex.Message}");
+                                    return;
+                                }
+                #endif*/
+
             }
-            
+
         }
         public static SWUpdateHelper GetSWUMetadata(bool isSkipCA)
         {
