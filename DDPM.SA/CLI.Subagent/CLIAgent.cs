@@ -184,6 +184,7 @@ namespace CLI.Subagent
                     return;
                 }
 
+                #region Defer, ForceWithNotice, ForceWithNoNotice command parsing
                 if (commandLineInputs.Count == 1)
                 {
                     var commandLineInput = commandLineInputs[0];
@@ -206,14 +207,10 @@ namespace CLI.Subagent
                                 return;
                         }
 
-                        // SilentFWUpdate not supported defer, forceWithNotice, forceWithNoNotice
-                        if (IsSilentFWUpdate(commandLineInput))
+                        // check if command not supported defer, forceWithNotice, forceWithNoNotice
+                        if (IsNotSupportDeferCommand(commandLineInput))
                         {
-                            if (commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITHNOTICE") || _.Option_Value.Contains("FORCEWITHNONOTICE")))
-                            {
-                                _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput);
-                                return;
-                            }
+                            return;
                         }
 
                         /// FirmwareUpdate & Update
@@ -232,6 +229,7 @@ namespace CLI.Subagent
                                     {
                                         return;
                                     }
+                                    break;
                                 }
                                 else if (option.Option_Value.Contains(",FORCEWITHNOTICE"))
                                 {
@@ -269,6 +267,7 @@ namespace CLI.Subagent
                                     {
                                         return;
                                     }
+                                    break;
                                 }
                                 else if (option.Option_Value.Contains("FORCEWITHNOTICE"))
                                 {
@@ -279,8 +278,7 @@ namespace CLI.Subagent
                                 else if (option.Option_Value.Contains("FORCEWITHNONOTICE"))
                                 {
                                     isForceWithNoNotice = true;
-                                    option.Option_Value = option.Option_Value.Replace(",FORCEWITHNONOTICE", "")
-                                                                             .Replace("FORCEWITHNONOTICE", "");
+                                    CLIForceWithNoNotice(option);
                                     break;
                                 }
                             }
@@ -289,9 +287,17 @@ namespace CLI.Subagent
                             {
                                 CLIForceWithNotice(args);
                             }
+
+                            // After parsing, need to remove empty option
+                            commandLineInput.Options.RemoveAll(_ => string.IsNullOrWhiteSpace(_.Option_Value));
+                        }
+                        else if (!commandLineInput.TargetFeature.Equals("SILENTFWUPDATE"))
+                        {
+                            CLIForceWithNotice(args);
                         }
                     }
                 }
+                #endregion
 
                 /*
                 // add start @ 20250120 stephen: test for defer and firmware with connect check
@@ -369,14 +375,25 @@ namespace CLI.Subagent
             }
         }
 
+        #region Defer, ForceWithNotice, ForceWithNoNotice command parsing function
         private bool IsFWUpdate(CommandLineInput commandLineInput)
         {
-            return commandLineInput.TargetType.Equals("APP") && commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE") && commandLineInput.Options.Count > 0;
+            return commandLineInput.TargetType.Equals("APP") && commandLineInput.TargetFeature.Equals("FIRMWAREUPDATE");
         }
 
-        private bool IsSilentFWUpdate(CommandLineInput commandLineInput)
+        private bool IsNotSupportDeferCommand(CommandLineInput commandLineInput)
         {
-            return commandLineInput.TargetType.Equals("DOCK") && commandLineInput.TargetFeature.Equals("SILENTFWUPDATE") && commandLineInput.Options.Count > 0;
+            var notSupportTargetFeatures = new List<string> { "SILENTFWUPDATE", "UPDATESOURCELOCATION", "TELEMETRYCONSENT", "IMPORTSETTINGS" };
+
+            if (commandLineInput.Options.Count > 0 && 
+                commandLineInput.Options.Any(_ => _.Option_Value.Contains("DEFER") || _.Option_Value.Contains("FORCEWITH")) &&
+                notSupportTargetFeatures.Any(_ => _.Equals(commandLineInput.TargetFeature)))
+            {
+                _exitcode = ICLICommandTable.ResponseNotSupportValue(commandLineInput);
+                return true;
+            }
+
+            return false;
         }
 
         private bool IsSWUpdate(CommandLineInput commandLineInput)
@@ -397,7 +414,7 @@ namespace CLI.Subagent
         }
 
         /// <summary>
-        /// Replace option to empty string if it's not null and run checkDefer
+        /// Replace DEFER option to empty string if it's not null and run checkDefer
         /// </summary>
         /// <param name="args"></param>
         /// <param name="commandLineInput"></param>
@@ -412,7 +429,8 @@ namespace CLI.Subagent
             }
             var cmds = string.Join(" ", args.Select(_ => _.ToUpper()
                                                           .Replace(",DEFER", "")
-                                                          .Replace("DEFER", "")));
+                                                          .Replace("DEFER", ""))
+                                            .Where(_ => !_.Equals("-VALUE=") && !_.Equals("VALUE=")));
 
             if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds).Result)
             {
@@ -423,7 +441,7 @@ namespace CLI.Subagent
         }
 
         /// <summary>
-        /// Replace option to empty string if it's not null and run showNotification
+        /// Replace FORCEWITHNOTICE option to empty string if it's not null and run showNotification
         /// </summary>
         /// <param name="args"></param>
         /// <param name="option"></param>
@@ -441,6 +459,20 @@ namespace CLI.Subagent
             var deferItem = new DeferItem(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), cmds);
             _CliManagerPlugin.showNotification(DeferControlPanel.SRC_FROM_CLI, _UniqueAgentGuid.ToString(), deferItem);
             Thread.Sleep(5000);
+        }
+        #endregion
+
+        /// <summary>
+        /// Replace FORCEWITHNONOTICE option to empty string if it's not null
+        /// </summary>
+        /// <param name="option"></param>
+        private void CLIForceWithNoNotice(CommandType_Option option)
+        {
+            if (option != null)
+            {
+                option.Option_Value = option.Option_Value.Replace(",FORCEWITHNONOTICE", "")
+                                                         .Replace("FORCEWITHNONOTICE", "");
+            }
         }
 
         private void InitializeCliManagerPlugin()
