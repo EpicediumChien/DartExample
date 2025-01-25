@@ -554,6 +554,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             //顯示windos setting設定畫面
                             _vm.MPS_Setting_Visibility = Visibility.Visible;
 
+                            /*
                             if (!is_DellPc)
                             {
                                 print_debug("check_PresenceFunction() s11");
@@ -562,6 +563,24 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                                 _vm.brdHello_show = Visibility.Collapsed;
                                 _vm.MPS_Setting_Visibility = Visibility.Collapsed;
                                 _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                            }
+                            */
+
+                            if (!is_DellPc && is_SUT_internal_presence_sensor) // Jim modify 20250125 PIMS-343711
+                            {
+                                print_debug("check_PresenceFunction() s11-0");
+
+                                //顯示韌體升級
+                                _vm.brdHello_show = Visibility.Collapsed;
+                                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                            }
+                            else if (!is_DellPc && !is_SUT_internal_presence_sensor) // Jim modify 20250125 PIMS-343711
+                            {
+                                print_debug("check_PresenceFunction() s11-2");
+
+                                // PresenceFunction  整個分頁不用顯示
+                                noPresenceFunction = true;
                             }
                             else if (is_DellPc && is_SUT_internal_presence_sensor) // Jim modify 20250124 PIMS-319078
                             {
