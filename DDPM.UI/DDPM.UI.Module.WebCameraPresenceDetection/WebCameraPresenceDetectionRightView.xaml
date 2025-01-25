@@ -90,7 +90,7 @@
                                         </Border.ToolTip>
                                     </Border>
                                 </StackPanel>
-                                <UXControls:UXToggleSwitch IsEnabled="{Binding ProximitySensor_enable}" IsChecked="{Binding Path= IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=ProximitySensorStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
+                                <UXControls:UXToggleSwitch IsEnabled="{Binding ProximitySensor_enable}" IsChecked="{Binding IsChecked_ProximitySensor}" ContentTextVisibility="True" Content="{Binding Path=ProximitySensorStatus_String}" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="White" IsTabStop="{Binding isTabStoppable}"/>
                             </Grid>
                             <Border  CornerRadius="6" Margin="16">
                                 <StackPanel Orientation="Vertical">
