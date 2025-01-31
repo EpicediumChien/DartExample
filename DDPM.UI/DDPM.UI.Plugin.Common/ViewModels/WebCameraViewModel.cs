@@ -668,7 +668,10 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
 
-                _isChecked_ProximitySensor = CurrentDeviceInfo!.IsProximitySensorEnable;
+                if (DdpmCommonHelper.DeviceManagerSA == null)
+                    _isChecked_ProximitySensor = CurrentDeviceInfo!.IsProximitySensorEnable;
+                else
+                    _isChecked_ProximitySensor = DdpmCommonHelper.DeviceManagerSA.GetIsProximitySensorEnable(CurrentDeviceInfo!.ID.ToString()).Result;
                 if (WebcamSettings.IsFirstTime)
                 {
                     IsChecked_ProximitySensor = false;
@@ -690,20 +693,9 @@ namespace DDPM.UI.Plugin.ViewModels
         public bool IsUSB3 = false;
         private void InitializeWebcam()
         {
-
             try
             {
-
                 WebcamSettings = WebcamSettings.ImportWebcamSettings(Model, CurrentDeviceInfo!, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
-                //WebcamSettings.SetJsonToResolution(WebcamSettings, CurrentDeviceInfo!);
-
-                //if (WebcamSettings.SelectedProfileName == "")
-                //{
-                //    IsDTPReady = false;
-                //    return;
-                //}
-                //else
-                //{ IsDTPReady = true; }
 
                 if (CurrentDeviceInfo!.IsPropertyZoomSupported)
                 {

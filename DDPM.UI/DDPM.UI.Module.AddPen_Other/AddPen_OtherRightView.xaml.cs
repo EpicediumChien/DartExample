@@ -5,6 +5,7 @@ using System.Net;
 using System.Reflection.Metadata;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
@@ -65,6 +66,9 @@ namespace DDPM.UI.Module.AddPen_Other
 
         private void Pairing(object sender, System.Windows.Input.StylusDownEventArgs e)
         {
+            StylusDevice stylus = e.StylusDevice;
+            if (stylus.StylusButtons.Count > 2)
+                return;
             MessageModalDialog messageModalDialog;
             Window mainWindow = System.Windows.Application.Current.MainWindow;
             messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.No, Strings.Yes);
