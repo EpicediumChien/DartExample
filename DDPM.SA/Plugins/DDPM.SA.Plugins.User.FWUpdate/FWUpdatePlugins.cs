@@ -2030,7 +2030,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             if (_timeOutCount <= 60)
             {
                 if (_fWUpdateInfo.DeviceType == DeviceType.LogicalHeadset &&
-                    _fWUpdateInfo.Model.Contains("7024") && 
+                    _fWUpdateInfo.Model.Contains("7024") &&
                     _CurrentProcess >= 100)
                 {
                     _updateErrorCode = FWUErrorCode.NoError;
@@ -2315,55 +2315,65 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 if (tPubKeyDev1 != null)
                 {
-                    try
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} string.IsNullOrEmpty(tPubKeyDev1.InnerText) : {string.IsNullOrEmpty(tPubKeyDev1.InnerText)}");
+                    if (!string.IsNullOrEmpty(tPubKeyDev1.InnerText))
                     {
-                        _KeyGenerator = new KeyGenerator(Log);
-                        string result_string = _KeyGenerator.ProcessX0State(tPubKeyDev1.InnerText);
-                        string s = $"<StateFlow>X1</StateFlow><TPubKeyPC1></TPubKeyPC1>";
-                        if (!string.IsNullOrEmpty(result_string))
+                        try
                         {
-                            s = $"<StateFlow>X1</StateFlow><TPubKeyPC1>{result_string.ToLower().Replace("-", "")}</TPubKeyPC1>";
-                            _logs.DebugMsg_1("SendMessage : " + s);
+                            string s = $"<StateFlow>X1</StateFlow><TPubKeyPC1></TPubKeyPC1>";
+                            _KeyGenerator = new KeyGenerator(Log);
+                            string result_string = _KeyGenerator.ProcessX0State(tPubKeyDev1.InnerText);
+                            if (!string.IsNullOrEmpty(result_string))
+                            {
+                                s = $"<StateFlow>X1</StateFlow><TPubKeyPC1>{result_string.ToLower().Replace("-", "")}</TPubKeyPC1>";
+                                _logs.DebugMsg_1("SendMessage : " + s);
+                            }
+                            if (_namedPipeServer != null)
+                            {
+                                _namedPipeServer.SendMessage(s);
+                            }
                         }
-                        if (_namedPipeServer != null)
+                        catch (Exception ex)
                         {
-                            _namedPipeServer.SendMessage(s);
+                            _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} _KeyGenerator ProcessX0State error : {ex.Message}");
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
-                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
-                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} _KeyGenerator ProcessX0State error : {ex.Message}");
-                        resetState();
+                        
                     }
                 }
                 if (encBlock != null)
                 {
-                    try
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} string.IsNullOrEmpty(encBlock.InnerText) : {string.IsNullOrEmpty(encBlock.InnerText)}");
+                    if (!string.IsNullOrEmpty(encBlock.InnerText))
                     {
-                        string s = $"<StateFlow>X3</StateFlow><K2EncBlock></K2EncBlock><CCMTAG>4Bytes</CCMTag><version>01</version>";
-                        if (_KeyGenerator != null)
+                        try
                         {
-                            string result_string = _KeyGenerator.ProcessX2State(encBlock.InnerText);
-                            _KeyGenerator = null;
-                            if (!string.IsNullOrEmpty(result_string))
+                            if (_KeyGenerator != null)
                             {
-                                s = $"<StateFlow>X3</StateFlow><K2EncBlock>{result_string.ToLower().Replace("-", "")}</K2EncBlock><CCMTAG>4Bytes</CCMTag><version>01</version>";
-                                _logs.DebugMsg_1("SendMessage : " + s);
+                                string s = $"<StateFlow>X3</StateFlow><K2EncBlock></K2EncBlock><CCMTAG>4Bytes</CCMTag><version>01</version>";
+                                string result_string = _KeyGenerator.ProcessX2State(encBlock.InnerText);
+                                _KeyGenerator = null;
+                                if (!string.IsNullOrEmpty(result_string))
+                                {
+                                    s = $"<StateFlow>X3</StateFlow><K2EncBlock>{result_string.ToLower().Replace("-", "")}</K2EncBlock><CCMTAG>4Bytes</CCMTag><version>01</version>";
+                                    _logs.DebugMsg_1("SendMessage : " + s);
+                                }
+                                if (_namedPipeServer != null)
+                                {
+                                    _namedPipeServer.SendMessage(s);
+                                }
                             }
                         }
-                        if (_namedPipeServer != null)
+                        catch (Exception ex)
                         {
-                            _namedPipeServer.SendMessage(s);
+                            _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} _KeyGenerator ProcessX2State error : {ex.Message}");
                         }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
-                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
-                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} _KeyGenerator ProcessX2State error : {ex.Message}");
-                        resetState();
+                        if (_KeyGenerator != null)
+                        {
+                            _KeyGenerator = null;
+                        }
                     }
                 }
                 if (progressNode != null)
