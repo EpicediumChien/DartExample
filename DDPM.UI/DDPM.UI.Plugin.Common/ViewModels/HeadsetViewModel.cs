@@ -1125,7 +1125,7 @@ namespace DDPM.UI.Plugin.ViewModels
             OnPropertyChanged(nameof(IsMultimediaChecked));
         }
 
-        private void UpdateResetToDefault()
+        public void UpdateResetToDefault()
         {
             if (CheckIfCurrentSettingsMatchDefault(DeviceInfoDTP, Model))
                 _isRestoreEnable = true;
