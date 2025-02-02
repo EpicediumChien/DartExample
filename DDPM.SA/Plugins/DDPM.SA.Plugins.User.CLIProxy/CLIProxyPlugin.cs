@@ -1022,11 +1022,20 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             continue;
                         }
 
-                        if(!subAge.Contains("defer") && !subAge.Contains("force") && !subAge.Contains("model") && !subAge.Contains("servicetag") && !subAge.Contains("value"))
+                        // modified start @ 20250202 stephen
+                        /*if(!subAge.Contains("defer") && !subAge.Contains("force") && !subAge.Contains("model") && !subAge.Contains("servicetag") && !subAge.Contains("value"))
                         {
                             rule.devicetype = rootArg[1];
                             continue;
+                        }*/
+
+                        if (rule.devicetype.Equals(string.Empty))
+                        {
+                            rule.devicetype = subAge;
+                            continue;
                         }
+
+                        // modified end @ 20250202 stephen
 
                         if (subAge.Contains("model"))
                         {
