@@ -2137,7 +2137,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 DeviceInfoDTP.waitHeadsetFW = true;
                 DeviceInfoDTP.waitHeadsetReady = true;
                 IsDTPReady = true;
-                FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
+                if(!FirmwareVersion2.Contains(Strings.FirmwareVersion))
+                    FirmwareVersion2 = Strings.FirmwareVersion + $" {FirmwareVersion2}";
                 _log.Info($"[HeadsetViewModel] DoWork_PleaseWait ... Firmware Version from DTP ... {FirmwareVersion2} ...");
             }
             if (IsDTPReady)
