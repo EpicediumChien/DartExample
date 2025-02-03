@@ -56,6 +56,30 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
             //_vm._log!.Info("[SpeakerAudioPresetRightView] After Invoke_PleaseWaitAsync");
             if (_vm.SpeakerInfoValueDTP.SpeakerProfile == _vm._default)// || _vm.SpeakerInfoValueDTP.SpeakerProfile == "")
             {
+                if (_vm.IsDTPReady)
+                {
+                    _vm.SpeakerInfoValueDTP.SpeakerProfileName = _vm._deviceManager.GetProfileNameAsync(_vm.CurrentDeviceID.ToString()).Result ?? String.Empty;
+                    if (_vm.SpeakerInfoValueDTP.SpeakerProfile == _vm._default)
+                    {
+                        _vm.SpeakerInfoValueDTP.SpeakerBass = _vm._deviceManager.GetBassAsync(_vm.CurrentDeviceID.ToString()).Result;
+                        _vm.SpeakerInfoValueDTP.SpeakerMidRange = _vm._deviceManager.GetMidRangeAsync(_vm.CurrentDeviceID.ToString()).Result;
+                        _vm.SpeakerInfoValueDTP.SpeakerTreble = _vm._deviceManager.GetTrebleAsync(_vm.CurrentDeviceID.ToString()).Result;
+                    }
+                    else
+                    {
+                        _vm.SpeakerInfoValueDTP.SpeakerBass = 0;
+                        _vm.SpeakerInfoValueDTP.SpeakerMidRange = 0;
+                        _vm.SpeakerInfoValueDTP.SpeakerTreble = 0;
+                    }
+                }
+                else
+                {
+                    //DTH not support EQ read value
+                    _vm.SpeakerInfoValueDTP.SpeakerBass = 0;
+                    _vm.SpeakerInfoValueDTP.SpeakerMidRange = 0;
+                    _vm.SpeakerInfoValueDTP.SpeakerTreble = 0;
+                }
+
                 if (_vm.SpeakerInfoValueDTP.SpeakerBass > 2 || _vm.SpeakerInfoValueDTP.SpeakerBass < -2)
                 {
                     SetNodeValue(Node1, 0);
@@ -63,6 +87,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
                 }
                 else
                 {
+                    //_vm.SpeakerInfoValueDTP.SpeakerBass = _vm._deviceManager.GetBassAsync(_vm.CurrentDeviceID.ToString()).Result;
                     SetNodeValue(Node1, _vm.SpeakerInfoValueDTP.SpeakerBass);
                     _vm._log!.Info($"[SpeakerAudioPresetRightView] SpeakerBass SetNodeValue ... Bass {_vm.SpeakerInfoValueDTP!.SpeakerBass.ToString()}");
                 }
@@ -74,6 +99,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
                 }
                 else
                 {
+                    //_vm.SpeakerInfoValueDTP.SpeakerMidRange = _vm._deviceManager.GetMidRangeAsync(_vm.CurrentDeviceID.ToString()).Result;
                     SetNodeValue(Node2, _vm.SpeakerInfoValueDTP.SpeakerMidRange);
                     _vm._log!.Info($"[SpeakerAudioPresetRightView] SpeakerMidRange SetNodeValue ... MidRange {_vm.SpeakerInfoValueDTP!.SpeakerMidRange.ToString()}");
                 }
@@ -85,6 +111,7 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
                 }
                 else
                 {
+                    //_vm.SpeakerInfoValueDTP.SpeakerTreble = _vm._deviceManager.GetTrebleAsync(_vm.CurrentDeviceID.ToString()).Result;
                     SetNodeValue(Node3, _vm.SpeakerInfoValueDTP.SpeakerTreble);
                     _vm._log!.Info($"[SpeakerAudioPresetRightView] SpeakerTreble SetNodeValue ... Treble {_vm.SpeakerInfoValueDTP!.SpeakerTreble.ToString()}");
                 }
@@ -190,17 +217,20 @@ namespace DDPM.UI.Module.SpeakerAudioPreset
                 {
                     case "Node1":
                         _vm._log!.Info($"[SpeakerAudioPresetRightView] SetBassAsync ...... {Node1Text.Text}");
-                        _vm._deviceManager.SetBassAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node1Text.Text));                       
+                        _vm._deviceManager.SetBassAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node1Text.Text));
+                        _vm.SpeakerInfoValueDTP.SpeakerBass = int.Parse(Node1Text.Text);
                         break;
 
                     case "Node2":
                         _vm._log!.Info($"[SpeakerAudioPresetRightView] SetMidRangeAsync ...... {Node2Text.Text}");
-                        _vm._deviceManager.SetMidRangeAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node2Text.Text));                     
+                        _vm._deviceManager.SetMidRangeAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node2Text.Text));
+                        _vm.SpeakerInfoValueDTP.SpeakerMidRange = int.Parse(Node2Text.Text);
                         break;
 
                     case "Node3":
                         _vm._log!.Info($"[SpeakerAudioPresetRightView] SetTrebleAsync ...... {Node3Text.Text}");
                         _vm._deviceManager.SetTrebleAsync(_vm.CurrentDeviceInfo!.ID.ToString(), int.Parse(Node3Text.Text));
+                        _vm.SpeakerInfoValueDTP.SpeakerTreble = int.Parse(Node3Text.Text);
                         break;
                 }
 

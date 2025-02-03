@@ -108,7 +108,7 @@
                HorizontalAlignment="Center" 
                VerticalAlignment="Center" />
 
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+        <StackPanel x:Name="MainPanel" VerticalAlignment="Top" HorizontalAlignment="Center">
             <Grid Margin="0" Visibility="{Binding PeripheralVisibility}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition MaxWidth="552" />

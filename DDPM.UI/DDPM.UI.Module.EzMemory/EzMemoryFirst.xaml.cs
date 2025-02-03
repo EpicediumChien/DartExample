@@ -161,11 +161,26 @@ namespace DDPM.UI.Module.EzMemory
             subText_DefaultFontSize = SubText.FontSize;
             LeftGrid.SizeChanged -= AdjustFontSizeForWWO;
             LeftGrid.SizeChanged += AdjustFontSizeForWWO;
+            System.Windows.Application.Current.MainWindow.SizeChanged -= MainWindow_SizeChanged;
+            System.Windows.Application.Current.MainWindow.SizeChanged += MainWindow_SizeChanged;
+        }
+
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (System.Windows.Application.Current.MainWindow.ActualHeight > 765)
+            {
+                MainPanel.VerticalAlignment = VerticalAlignment.Center;
+            }
+            else
+            {
+                MainPanel.VerticalAlignment = VerticalAlignment.Top;
+            }
         }
 
         ~EzMemoryFirst()
         {
             LeftGrid.SizeChanged -= AdjustFontSizeForWWO;
+            System.Windows.Application.Current.MainWindow.SizeChanged -= MainWindow_SizeChanged;
         }
 
         /// <summary>

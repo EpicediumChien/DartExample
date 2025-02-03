@@ -327,7 +327,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         private void Mainframe_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (_vm!.VbarSelectedIndex == -1) { return; }
-
+            _vm.UpdateResetToDefault();
             if (!_vm.IsRestoreEnable)
             {
                 btnRestore.Visibility = Visibility.Visible;
