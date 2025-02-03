@@ -445,7 +445,7 @@ namespace DDPM.SA.Common.Settings
             }
             catch (Exception ex)
             {
-                log?.Error("[ImportWebcamSettings][DeserializeObject] exception :　" + ex.Message);
+                log?.Error("[ImportWebcamSettings][DeserializeObject] exception : " + ex.Message);
             }
             //leo fixed end
             return input;
