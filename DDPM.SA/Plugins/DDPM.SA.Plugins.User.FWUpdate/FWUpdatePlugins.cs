@@ -1794,6 +1794,22 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     };
                                 }
                                 _clientProcess.WaitForExit();
+                                if (_fWUpdateInfo.DeviceType == DeviceType.LogicalHeadset &&
+                                    _fWUpdateInfo.Model.Contains("7024") &&
+                                    _CurrentProcess >= 100)
+                                {
+                                    _updateErrorCode = FWUErrorCode.NoError;
+                                    _notificationStr = LangHelper.Instance["A2_Firmware_update_successful"];
+                                    _logs.DebugMsg_1("_timeOutCount <= 60 and is WL7024FWU and _CurrentProcess is 100% so successful");
+                                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                                    {
+                                        DeviceName = _fWUpdateInfo.DeviceName,
+                                        Model = _fWUpdateInfo.Model,
+                                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                                        ProcessName = "A2 Firmware update successful",
+                                    };
+                                    sendMessageToEvent(updateProgressInfo);
+                                }
                                 _logs.DebugMsg_1($"{processName} process is done.");
                             }
                             else
@@ -2337,7 +2353,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         {
                             _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} _KeyGenerator ProcessX0State error : {ex.Message}");
                         }
-                        
+
                     }
                 }
                 if (encBlock != null)
