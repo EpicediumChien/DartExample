@@ -1663,7 +1663,6 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
-        // [sonarqube] This method signature overlaps and no used
         //hashType: SHA256 / SHA512
         //This function is used by NKVM in release build
         public static bool StartProcessSafely(
