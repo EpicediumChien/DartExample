@@ -41,6 +41,7 @@ namespace DDPM.Easy.Common
 
         //SplitCtrl2? ~ 7? are predefined layout, have default value, the EAID may be changed to [1000~1004] if they are customized.
         public int EAID { get; set; } = 29;
+        public string TooltipResourceName { get; } = "EATooltip_61";
         #endregion ISplitCtrl Native Members
 
         #region ViewModel
@@ -215,10 +216,10 @@ namespace DDPM.Easy.Common
 
         #region FriendlyName
         private string _friendlyName = string.Empty;
-        private string _defaultHorzName = LangHelper.Instance[$"EATooltip_61H"];
-        //"Option 6.1: 3 columns, split equally. Columns 1, 2, and 3, each split equally.";
-        private string _defaultVertName = LangHelper.Instance[$"EATooltip_61V"];
-        //"Option 6.1: 2 columns, split equally. Columns 1 and 2, each split equally in 3 sections.";
+        private string _defaultHorzName = //LangHelper.Instance[$"EATooltip_61H"];
+        "Option 6.1: 3 columns, split equally. Columns 1, 2, and 3, each split equally.";
+        private string _defaultVertName = //LangHelper.Instance[$"EATooltip_61V"];
+        "Option 6.1: 2 columns, split equally. Columns 1 and 2, each split equally in 3 sections.";
         public string FriendlyName
         {
             get
@@ -226,9 +227,27 @@ namespace DDPM.Easy.Common
                 if (String.IsNullOrEmpty(_friendlyName))
                 {
                     if (VM.IsVertical)
+                    {
+                        try
+                        {
+                            return LangHelper.Instance[$"{TooltipResourceName}V"];
+                        }
+                        catch (Exception e1)
+                        {
+                        }
                         return _defaultVertName;
+                    }
                     else
+                    {
+                        try
+                        {
+                            return LangHelper.Instance[$"{TooltipResourceName}H"];
+                        }
+                        catch (Exception e1)
+                        {
+                        }
                         return _defaultHorzName;
+                    }
                 }
                 return _friendlyName;
             }

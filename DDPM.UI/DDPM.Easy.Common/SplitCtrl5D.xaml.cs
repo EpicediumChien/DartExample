@@ -41,6 +41,7 @@ namespace DDPM.Easy.Common
 
         //SplitCtrl2? ~ 7? are predefined layout, have default value, the EAID may be changed to [1000~1004] if they are customized.
         public int EAID { get; set; } = 23;
+        public string TooltipResourceName { get; } = "EATooltip_54";
         #endregion ISplitCtrl Native Members
 
         #region ViewModel
@@ -215,10 +216,10 @@ namespace DDPM.Easy.Common
 
         #region FriendlyName
         private string _friendlyName = string.Empty;
-        private string _defaultHorzName = LangHelper.Instance[$"EATooltip_54H"];
-        //"Option 5.4: 2 rows, split 70/30%. Row 1, split equally. Row 2, split equally in 3 sections.";
-        private string _defaultVertName = LangHelper.Instance[$"EATooltip_54V"];
-        //"Option 5.4: 2 columns, split 70/30%. Row 1, split equally, Row 2, split equally in 3 sections.";
+        private string _defaultHorzName = //LangHelper.Instance[$"EATooltip_54H"];
+        "Option 5.4: 2 rows, split 70/30%. Row 1, split equally. Row 2, split equally in 3 sections.";
+        private string _defaultVertName = //LangHelper.Instance[$"EATooltip_54V"];
+        "Option 5.4: 2 columns, split 70/30%. Row 1, split equally, Row 2, split equally in 3 sections.";
         //                                                                     Column                Column
         public string FriendlyName
         {
@@ -227,9 +228,27 @@ namespace DDPM.Easy.Common
                 if (String.IsNullOrEmpty(_friendlyName))
                 {
                     if (VM.IsVertical)
+                    {
+                        try
+                        {
+                            return LangHelper.Instance[$"{TooltipResourceName}V"];
+                        }
+                        catch (Exception e1)
+                        {
+                        }
                         return _defaultVertName;
+                    }
                     else
+                    {
+                        try
+                        {
+                            return LangHelper.Instance[$"{TooltipResourceName}H"];
+                        }
+                        catch (Exception e1)
+                        {
+                        }
                         return _defaultHorzName;
+                    }
                 }
                 return _friendlyName;
             }
