@@ -1029,7 +1029,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             continue;
                         }*/
 
-                        if (rule.devicetype.Equals(string.Empty))
+                        if (rule.devicetype.Equals(string.Empty) && (!subAge.Contains(",")))
                         {
                             rule.devicetype = subAge;
                             continue;
