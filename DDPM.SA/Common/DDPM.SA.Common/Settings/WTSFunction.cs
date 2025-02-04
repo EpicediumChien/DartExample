@@ -10,6 +10,7 @@ using PInvoke;
 using System.Diagnostics;
 using System.Security;
 using System.Collections.Generic;
+using DDPM.SA.Common.Method;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -140,7 +141,9 @@ namespace DDPM.SA.Common.Settings
         private static void WriteLog(ILog Log, string text, log_type log_type = log_type.info)
         {
             text = "[WTSFunction] " + text;
+#if DEBUG
             Console.WriteLine(text);
+#endif
             if (Log != null)
             {
                 if (log_type == log_type.info)
@@ -160,14 +163,14 @@ namespace DDPM.SA.Common.Settings
                 try
                 {
                     string userName = Marshal.PtrToStringAnsi(buffer);
-                    WriteLog(log, $"DirectGetUserID: user name ({userName})");
+                    WriteLog(log, $"DirectGetUserID: user name ({Algorithm.MaskString(userName, 0, userName.Length / 2)})");
 
                     if (!string.IsNullOrEmpty(userName))
                     {
                         string userSid = GetUserSid(log, userName);
                         if (!string.IsNullOrEmpty(userSid))
                         {
-                            WriteLog(log, $"DirectGetUserID: userSid : {userSid}");
+                            WriteLog(log, $"DirectGetUserID: userSid : {Algorithm.MaskString(userSid, 0, userSid.Length / 2)}");
                             return userSid;
                         }
                     }
@@ -201,7 +204,7 @@ namespace DDPM.SA.Common.Settings
             if (!string.IsNullOrEmpty(Environment.UserDomainName))
             {
                 accountName = $"{Environment.UserDomainName}\\{userName}";
-                WriteLog(log, $"GetUserSid: find domain name: {Environment.UserDomainName}, User name:{userName}");
+                WriteLog(log, $"GetUserSid: find domain name: {Algorithm.MaskString(Environment.UserDomainName, 0, Environment.UserDomainName.Length / 2)}, User name:{Algorithm.MaskString(userName, 0, userName.Length / 2)}");
                 f_domain = new NTAccount(Environment.UserDomainName, userName);
             }
             //NTAccount f = new NTAccount(accountName);
@@ -211,7 +214,7 @@ namespace DDPM.SA.Common.Settings
             {
                 SecurityIdentifier s = (SecurityIdentifier)f_normal.Translate(typeof(SecurityIdentifier));
                 sidString = s.ToString();
-                WriteLog(log, $"GetUserSid(normal user): SID: {sidString}");
+                WriteLog(log, $"GetUserSid(normal user): SID: {Algorithm.MaskString(sidString, 0, sidString.Length / 2)}");
             }
             catch (Exception ex)
             {
@@ -225,7 +228,7 @@ namespace DDPM.SA.Common.Settings
                     {
                         SecurityIdentifier s = (SecurityIdentifier)f_domain.Translate(typeof(SecurityIdentifier));
                         sidString = s.ToString();
-                        WriteLog(log, $"GetUserSid(domain user): SID: {sidString}");
+                        WriteLog(log, $"GetUserSid(domain user): SID: {Algorithm.MaskString(sidString, 0, sidString.Length / 2)}");
                     }
                     catch (Exception e)
                     {
@@ -251,7 +254,7 @@ namespace DDPM.SA.Common.Settings
             {
                 string userName = Marshal.PtrToStringAnsi(buffer);
                 _WTSFreeMemory(buffer);
-                WriteLog(log, $"WTSQuerySessionInformation: user name ({userName})");
+                WriteLog(log, $"WTSQuerySessionInformation: user name ({Algorithm.MaskString(userName, 0, userName.Length / 2)})");
 
                 if (!string.IsNullOrEmpty(userName))
                 {
@@ -555,12 +558,16 @@ namespace DDPM.SA.Common.Settings
                 // Get the process by ID
                 Process process = Process.GetProcessById(processId);
                 int sessionId = process.SessionId;
+#if DEBUG
                 Console.WriteLine($"Process with ID {processId} has session ID: {sessionId}");
+#endif
                 return sessionId;
             }
             catch (Exception ex)
             {
+#if DEBUG
                 Console.WriteLine($"Error: {ex.Message}. Process ID {processId} might not exist.");
+#endif
                 return -1;
             }
         }
@@ -576,7 +583,9 @@ namespace DDPM.SA.Common.Settings
             Process[] processes = Process.GetProcessesByName(processName);
             foreach (Process process in processes)
             {
+#if DEBUG
                 Console.WriteLine($"Process {process.ProcessName} with ID {process.Id} has session ID: {process.SessionId}");
+#endif
                 result.Add(process.SessionId);
             }
             return result;

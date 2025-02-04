@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using DDPM.SA.Resources;
+using System.Globalization;
 //using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 //using System.Windows.Navigation;
@@ -16,8 +17,15 @@ namespace DDPM.SA.Common
         {
 
             //CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("fr-FR");
-             //string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
-            string str = resManager.GetString(key, CultureInfo.CurrentUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+            //string str = resManager.GetString(key, cultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+
+            //Robert_Lin 2025-1-22 PIMS-331191 With DDPM installed, observe language in DDPM UI not change for other langauges of Other countries
+            //Add a CultureInfoMap to convert (mapped) CultureInfo.CurrentUICulture to the supported cultureInfo of DDPM
+            //OLD:
+            //string str = resManager.GetString(key, CultureInfo.CurrentUICulture) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+            //NEW:
+            string str = resManager.GetString(key, DdpmCultureMap.MappedCultureInfo) ?? resManager.GetString(key, CultureInfo.InvariantCulture) ?? "";
+
             return System.Text.RegularExpressions.Regex.Unescape(str);
         }
 
@@ -147,6 +155,8 @@ namespace DDPM.SA.Common
         public static readonly string will_be_updated_to0 = GetString("will_be_updated_to");
         public static readonly string Yes0 = GetString("Yes");
         public static readonly string Zoom0 = GetString("Zoom");
+        public static readonly string ICC_notification_SmartHDR0 = GetString("ICC_notification_SmartHDR");
+        public static readonly string ICC_notification_NonSmartHDR0 = GetString("ICC_notification_NonSmartHDR");
 
     }
 }

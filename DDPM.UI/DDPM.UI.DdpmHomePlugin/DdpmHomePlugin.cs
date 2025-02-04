@@ -45,6 +45,7 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using System.Linq;
 using System.Windows.Automation;
 using DDPM.SA.Common.Settings;
+using System.Globalization;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -144,6 +145,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             _log = console.CreateLog("DDPMHOME");
             _log.Info($"{nameof(DdpmHomePlugin)} - Constructed");
             _log.Info($"current process ID: {Process.GetCurrentProcess().Id}");
+
+            //Robert_Lin 2025-1-22 added to force the static contructor of DdpmCultureMap to be called.
+            //PIMS-331191 With DDPM installed, observe language in DDPM UI not change for other langauges of Other countries
+            _log.Info($"CurrentCultureInfo=[{CultureInfo.CurrentCulture.Name}], MappedCultureInfo=[{DDPM.UI.Resources.DdpmCultureMap.MappedCultureInfo.Name}]");
 
             //DdpmCommonHelper.MyConsole = console;
 
@@ -344,22 +349,25 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                             //Call once
                             Task t1 = Task.Run(() =>
                             {
+                                //Use this flag to Debug/Test Gear icon GlowEffect, it will force to trigger the GlowEffect startup
+                                bool forceGlowEffect = DevSettings.ForceGearIconGlowEffectAtStartup();
+
                                 _log.Info("Calling to CheckIfSwFwUpdateAvailable()");
-                                if (CheckIfSwFwUpdateAvailable(_deviceManager))
+                                if (CheckIfSwFwUpdateAvailable(_deviceManager) || forceGlowEffect)
                                 {
                                     _log.Info("Return from CheckIfSwFwUpdateAvailable(), return true");
+                                    //Robert_Lin 2025-1-21 Change GearIcon (InfoPath to GeatButton)
                                     //Robert_Lin, 2024-12-9, Change GlowEffect_Start() to GlowEffect_Trigger()
-                                    if (_iconGear != null)
+                                    if (_gearBtn != null)
+                                    {
+                                        _gearBtn.GlowEffect_Trigger();
+                                    }
+                                    else if (_iconGear != null)
                                     {
                                         //Elapsed= 1, 1 msec
                                         _log.Info("Calling to GlowEffect_Trigger()");
-                                        if (_gearBtn != null)
-                                            _gearBtn.SetOrangeDotVisible(true);
-                                        else if (_iconGear != null)
-                                        {
-                                            _iconGear.GlowEffect_Trigger();
-                                            //_iconGear.GlowEffect_Start();
-                                        }
+                                        _iconGear.GlowEffect_Trigger();
+                                        //_iconGear.GlowEffect_Start();
                                     }
                                     else
                                     {

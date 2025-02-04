@@ -99,7 +99,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
 
             try
             {
-                await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
+                //await _vm.Invoke_PleaseWaitAsync(_vm.Model, _vm);
                 DdpmCommonHelper.WriteUILog($"[SoundBar] LaunchView_LoadedStatus Invoke_PleaseWaitAsync Check Done");
                 if (!_vm.IsRestoreEnable)
                 {
@@ -327,7 +327,7 @@ namespace DDPM.UI.Plugin.SoundBarPlugin
         private void Mainframe_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (_vm!.VbarSelectedIndex == -1) { return; }
-
+            _vm.UpdateResetToDefault();
             if (!_vm.IsRestoreEnable)
             {
                 btnRestore.Visibility = Visibility.Visible;

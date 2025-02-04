@@ -1,5 +1,6 @@
 ﻿//Robert_Lin 2025-1-14, to simple swich betwwen Teesting and Release mode, please comment out the following line in Release mode
 //#define MULTILINGUAL_TEST
+//Robert_Lin, "MULTILINGUAL_TEST" will be removed, to test multilingual, please use registery keys method, read "DdpmCultureMap.cs" for detail.
 
 using System.ComponentModel;
 using System.Globalization;
@@ -41,11 +42,16 @@ namespace DDPM.UI.Resources.Helper
 #if MULTILINGUAL_TEST
                 //Robert_Lin 2025-1-13 To do multilingual test, please remove below comments
                 //
-                CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("uk");
+                CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("zh-TW");
                 string str = _resourceManager.GetString(name, cultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
 #else
                 //And comment out the following line
-                string str = _resourceManager.GetString(name, CultureInfo.CurrentUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+                //Robert_Lin 2025-1-22 PIMS-331191 With DDPM installed, observe language in DDPM UI not change for other langauges of Other countries
+                //Add a CultureInfoMap to convert (mapped) CultureInfo.CurrentUICulture to the supported cultureInfo of DDPM
+                //OLD:
+                //string str = _resourceManager.GetString(name, CultureInfo.CurrentUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+                //NEW:
+                string str = _resourceManager.GetString(name, DdpmCultureMap.MappedCultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
 #endif //MULTILINGUAL_TEST
 
                 //But below statement is requied

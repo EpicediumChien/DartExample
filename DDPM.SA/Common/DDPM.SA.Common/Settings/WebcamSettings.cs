@@ -50,7 +50,7 @@ namespace DDPM.SA.Common.Settings
         public Dictionary<string, WebcamProfile> PresetProfiles = new();
         public Dictionary<string, WebcamProfile> CustomProfiles = new();
 
-        //import 
+        //import  
         public ResolutionItem resolution = null;
         public string SelectedcurrentFPS = string.Empty;
         public string ImportSelectedResolution { get; set; } = string.Empty;
@@ -109,47 +109,15 @@ namespace DDPM.SA.Common.Settings
                             "2160x3840" => "4K UHD",
                             _ => "8K UHD"
                         };
+
                         SupportedFPSs.Add(resName, res.FPS);
                         SelectedFPSs.Add(resName, "30");
                         Resolutions.Add(resName, res.Resolution);
+
                     }
+                    GetMigrationData(di, devMgr, log, ref task, ref str);
                 }
-                log?.Info(@$"task = devMgr.GetSelectedResolution(di.ID.ToString());");
-                try
-                {
-                    task = devMgr.GetSelectedResolution(di.ID.ToString());
-                    str = task.Result;
-                    log?.Info(@$"GetSelectedResolution str:{str}");
-                    if (string.IsNullOrEmpty(str))
-                    {
-                        log?.Error("DTP GetSelectedResolution fail!");
-                        str = "{\"Resolution\":\"1280x720\",\"FPS\":[\"30\"]}";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    log?.Info(@$"GetSelectedResolution Ex:{ex.Message}");
-                }
-                try
-                {
-                    log?.Info(@$"currentRes str:{str}");
-                    var currentRes = JsonConvert.DeserializeObject<ResolutionItem>(str);
-                    if (currentRes != null)
-                    {
-                        string resName = GetResolutionName(log, currentRes);
-                        SelectedResolution = Resolutions.FirstOrDefault(x => x.Key == resName).Key;
-                        log?.Info(@$"currentRes SelectedResolution:{SelectedResolution}");
-                        if (SelectedFPSs.ContainsKey(SelectedResolution))
-                        {
-                            SelectedFPSs[SelectedResolution] = currentRes.FPS?.Count > 0 ? currentRes.FPS[0] : "30";
-                        }
-                        log?.Info(@$"currentRes currentRes.FPS:{currentRes.FPS}");
-                    }
-                }
-                catch (Exception e)
-                {
-                    log?.Info(@$"currentRes Ex:{e.Message}");
-                }
+                
                 log?.Info(@$"Get customProfiles");
                 var customProfiles = di.CustomProfiles.ToObject<List<WebcamProfile>>()?.ToList();
                 if (customProfiles != null)
@@ -270,6 +238,79 @@ namespace DDPM.SA.Common.Settings
             }
         }
 
+        private void GetMigrationData(DeviceInfo di, IDeviceManagerSA devMgr, ILog log, ref Task<string> task, ref string str)
+        {
+            log?.Info(@$"task = devMgr.GetSelectedResolution(di.ID.ToString());");
+            try
+            {
+                task = devMgr.GetSelectedResolution(di.ID.ToString());
+                str = task.Result;
+                log?.Info(@$"GetSelectedResolution str:{str}");
+                if (string.IsNullOrEmpty(str))
+                {
+                    log?.Error("DTP GetSelectedResolution fail!");
+                    str = "{\"Resolution\":\"1280x720\",\"FPS\":[\"30\"]}";
+                }
+            }
+            catch (Exception ex)
+            {
+                log?.Info(@$"GetSelectedResolution Ex:{ex.Message}");
+            }
+            try
+            {
+                log?.Info(@$"currentRes str:{str}");
+                var currentRes = JsonConvert.DeserializeObject<ResolutionItem>(str);
+                if (currentRes != null)
+                {
+                    string resName = GetResolutionName(log, currentRes);
+                    SelectedResolution = Resolutions.FirstOrDefault(x => x.Key == resName).Key;
+                    log?.Info(@$"currentRes SelectedResolution:{SelectedResolution}");
+                    if (SelectedFPSs.ContainsKey(SelectedResolution))
+                    {
+                        SelectedFPSs.Remove(SelectedResolution);
+                        SelectedFPSs.Add(SelectedResolution, currentRes.FPS?.Count > 0 ? currentRes.FPS[0] : "30");
+                        log?.Info(@$"currentRes SelectedFPSs:{JsonConvert.SerializeObject(SelectedFPSs)}");
+                        log?.Info(@$"currentRes CurrentFPS:{CurrentFPS}");
+                    }
+                    log?.Info(@$"currentRes currentRes.FPS:{JsonConvert.SerializeObject(currentRes.FPS)}");
+                    
+                }
+            }
+            catch (Exception e)
+            {
+                log?.Info(@$"currentRes Ex:{e.Message}");
+            }
+        }
+
+        /// <summary>
+        /// //Check And Set SelectedcurrentFPS in DeviceInfo on migration if SelectedcurrentFPS is empty to defualt "30"
+        /// </summary>
+        /// <param name="di"></param>
+        /// <returns></returns>
+        private static string SetCurrentFPS(WebcamSettings di,string resName,ILog log)
+        {
+            log?.Info(@$"di.SelectedResolution Json str {di.SelectedResolution}");
+            if (!string.IsNullOrEmpty(di.SelectedResolution))
+            {
+                try
+                {
+                    if (di.SelectedResolution.Equals(resName))
+                    {
+                        log?.Info(@$"di.SelectedcurrentFPS  {di.SelectedcurrentFPS}");
+                        if (!string.IsNullOrEmpty(di.SelectedcurrentFPS))
+                        {
+                            return di.SelectedcurrentFPS;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            return "30";
+        }
+
         private void SetDPeMDefaultSettings(List<WebcamProfile> presetProfiles)
         {
             if (presetProfiles != null)
@@ -329,6 +370,7 @@ namespace DDPM.SA.Common.Settings
             try
             {
                 log?.Info($"[ExportWebcamSettings] SelectedResolution :{WebcamSettings.SelectedResolution}");
+                WebcamSettings.SelectedcurrentFPS = WebcamSettings.CurrentFPS;
                 string json = JsonConvert.SerializeObject(WebcamSettings, Formatting.Indented);
                 log?.Info($"[ExportWebcamSettings] json json:{json}");
                 var fileFolder = target_folder;
@@ -385,9 +427,12 @@ namespace DDPM.SA.Common.Settings
                             "2160x3840" => "4K UHD",
                             _ => "8K UHD"
                         };
+                        //Check And Set SelectedcurrentFPS in WebCamSetting.json if SelectedcurrentFPS is empty to defualt "30"
+                        
                         tmp.SupportedFPSs.Add(resName, res.FPS);
-                        tmp.SelectedFPSs.Add(resName, "30");
                         tmp.Resolutions.Add(resName, res.Resolution);
+                        string selectFps = SetCurrentFPS(input, resName, log);
+                        tmp.SelectedFPSs.Add(resName, selectFps);
                     }
                     //if (!ExportWebcamSettings(tmp, model, devMgr, log))
                     //{
@@ -400,7 +445,7 @@ namespace DDPM.SA.Common.Settings
             }
             catch (Exception ex)
             {
-                log?.Error("[ImportWebcamSettings][DeserializeObject] exception :　" + ex.Message);
+                log?.Error("[ImportWebcamSettings][DeserializeObject] exception : " + ex.Message);
             }
             //leo fixed end
             return input;
@@ -451,24 +496,8 @@ namespace DDPM.SA.Common.Settings
                 //Init a new data
                 if (tmp == null)
                 {
-
-                    //add by leo 2025/01/16
-                    //Creating a profile for the first time
-                    //ProximitySensor status is restored to original factory initialization to Off.
-                    if (devMgr != null)
-                    {
-                        devMgr.SetIsProximitySensorEnable(di.ID.ToString(), false);
-                    }
-                    else
-                    {
-                        // 處理 devMgr 為 null 的情況
-                        log?.Info("Device manager is not initialized.");
-                    }
-
-
-                    log?.Info(@$"[WebcamSettings][ImportWebcamSettings] init via di(jsonString:{JsonConvert.SerializeObject(di)})");
                     tmp = new WebcamSettings(di, devMgr, log);
-                    tmp = ReAlignWebcamResolution(tmp, model, di, devMgr, log);
+                    //tmp = ReAlignWebcamResolution(tmp, model, di, devMgr, log);
                 }
                 if (!ExportWebcamSettings(tmp, model, devMgr, log))
                 {

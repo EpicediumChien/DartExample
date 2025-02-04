@@ -78,7 +78,7 @@
       </Grid>
       <!-- Layer 2 : Nav -->
       <Grid Grid.Column="0">
-        <Border Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
+        <Border x:Name="LeftBorder" Background="#00FF0000" MouseLeftButtonDown="Mainframe_MouseLeftButtonDown" />
         <!--Image-->
         <Grid>
           <Viewbox Name="largeImage" Margin="30,0" MaxWidth="500">

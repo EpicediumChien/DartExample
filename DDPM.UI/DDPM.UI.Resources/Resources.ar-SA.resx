@@ -934,7 +934,7 @@
     <value>إعداد وحدة KVM عبر USB</value>
   </data>
   <data name="Kvm.3" xml:space="preserve">
-    <value>توصيل الماوس\n ولوحة المفاتيح</value>
+    <value>توصيل الماوس ولوحة المفاتيح</value>
   </data>
   <data name="Kvm.4" xml:space="preserve">
     <value>فيما يخص الماوس ولوحة المفاتيح، قم بتوصيلهما بالجزء الخلفي من الشاشة (USB-A).‏\n ملاحظة: يمكنك أيضًا توصيل أجهزة USB الطرفية الأخرى مثل\n كاميرا الويب.</value>
@@ -955,7 +955,7 @@
     <value>USB</value>
   </data>
   <data name="Kvm.6" xml:space="preserve">
-    <value>الاتصال\n بأجهزتك</value>
+    <value>الاتصال بأجهزتك</value>
   </data>
   <data name="Kvm.7" xml:space="preserve">
     <value>يُرجى توصيل كابل فيديو وكابل USB بين كل جهاز كمبيوتر شخصي إلى\n الشاشة. يمكنك توصيل ما يصل إلى 4 أجهزة كمبيوتر شخصية (أجهزة الكمبيوتر ووحدات التحكم في\n الألعاب وما إلى ذلك). \r\n\r\nيُرجى تحديد نوع الكابل وتعيين اسم لكل مصدر.</value>
@@ -991,7 +991,7 @@
     <value>إعداد PIP/PBP</value>
   </data>
   <data name="Kvm.17" xml:space="preserve">
-    <value>إعداد PIP/PBP‏\nلشاشتك</value>
+    <value>إعداد PIP/PBP‏ لشاشتك</value>
   </data>
   <data name="Kvm.18" xml:space="preserve">
     <value>يمكن لشاشتك عرض جهاز كمبيوتر شخصي واحد أو مصدر واحد في كل مرة (في وضع ملء الشاشة)،\nأو يمكن تقسيمها بين المصادر (صورةin/بجانب صورة).</value>

@@ -1083,8 +1083,8 @@ namespace DDPM.SA.Common.CLI
                         response.Message = $"{commandLineInput.TargetFeature}: value format error with [{value}]";
 #if DEBUG
                         Debug.WriteLine(response.Message);
-                        Console.WriteLine(response.Message);
 #endif
+                        Console.WriteLine(response.Message);
                         WriteLog(Log, response.Message);
                         return CLI_Response_OptionValueNotSupport(commandLineInput, result, op);
                     }
@@ -1262,9 +1262,9 @@ namespace DDPM.SA.Common.CLI
             // IT > /configure -app=InAppUpdate -value=lock / unlock
             // IT > /get -app=InAppUpdate
 #if DEBUG
-            Console.WriteLine($"@@Stephen CLI_FW_Update called ");
+            Console.WriteLine($"CLI_FW_Update called ");
 #endif
-            WriteLog(Log, $"@@Stephen CLI_FW_Update called ");
+            WriteLog(Log, $"CLI_FW_Update called ");
 
             CLIEventResult result = new CLIEventResult();
             result.ticket = DateTime.Now;

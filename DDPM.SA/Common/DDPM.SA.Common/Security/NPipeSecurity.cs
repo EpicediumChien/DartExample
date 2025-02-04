@@ -126,10 +126,12 @@ namespace DDPM.SA.Common.Security
             //    pipeServer.SafePipeHandle.Close();
             //}
 
+#if DEBUG
             Console.WriteLine("pid: " + pid);
+#endif
             Process process = Process.GetProcessById((int)pid);
             string filePath = process.MainModule.FileName;
-            Console.WriteLine("File path: " + filePath);
+            //Console.WriteLine("File path: " + filePath);
 
             //check file path security
             if (!DDPMFileSecurity.IsFilePathValid(filePath, out info))

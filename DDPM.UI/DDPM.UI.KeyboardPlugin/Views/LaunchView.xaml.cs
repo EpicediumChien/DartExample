@@ -112,44 +112,66 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     }
                 }
             }
-            //Unloaded += LaunchView_Unloaded;
-            //if (DdpmCommonHelper.DeviceManagerSA != null)
-            //{
-            //    DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
-            //    DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
-            //}
+            Unloaded += LaunchView_Unloaded;
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                //DdpmCommonHelper.DeviceManagerSA.StartCopilotRegistryMonitor();
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged += DeviceManagerSA_DeviceChanged;
+            }
         }
 
         private void DeviceManagerSA_DeviceChanged(object? sender, SA.Common.DeviceChangedEventArgs e)
         {
-            if (_vm != null && e.type == DeviceChangedType.Peripherals_SettingsChange && e.changedProperty == "CopilotEnableChanged")
+            try
             {
-                _vm.IsCopilotEnabled = e.device_peripherals.Message != "false";
-                if (!_vm.IsCopilotEnabled)
-                    _vm.RemoveCopilotAction();
-                Dispatcher.Invoke(new Action(() =>
+                if (_vm != null && e.type == DeviceChangedType.Peripherals_SettingsChange)
                 {
-                    _vm.RefreshKeyImageFile(_vm.SelectedKey, false, true);
-
-                    if (_vm.VbarSelectedIndex == 0)
+                    switch (e.changedProperty)
                     {
-                        _vm.ActiveModule!.OnActivated();
+                        case "RestoreToDefault":
+                            if (e.device_peripherals?.ModelNumber == _vm.Model)
+                                Dispatcher.Invoke(new Action(() =>
+                                {
+                                    btnRestore.Visibility = Visibility.Collapsed;
+                                }));
+                            break;
+                        default:
+                            return;
                     }
-                    else
-                    {
-                        OnVbarItemClicked(_vm.VbarItems[0]);
-                    }
-                }));
+                }
             }
+            catch (Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog("DDPM.UI.KeyboardPlugin\\Views\\LaunchView.xaml.cs  DeviceManagerSA_DeviceChanged ex:" + ex.Message);
+            }
+            //if (_vm != null && e.type == DeviceChangedType.Peripherals_SettingsChange && e.changedProperty == "CopilotEnableChanged")
+            //{
+            //    _vm.IsCopilotEnabled = e.device_peripherals.Message != "false";
+            //    if (!_vm.IsCopilotEnabled)
+            //        _vm.RemoveCopilotAction();
+            //    Dispatcher.Invoke(new Action(() =>
+            //    {
+            //        _vm.RefreshKeyImageFile(_vm.SelectedKey, false, true);
+
+            //        if (_vm.VbarSelectedIndex == 0)
+            //        {
+            //            _vm.ActiveModule!.OnActivated();
+            //        }
+            //        else
+            //        {
+            //            OnVbarItemClicked(_vm.VbarItems[0]);
+            //        }
+            //    }));
+            //}
         }
 
         private void LaunchView_Unloaded(object sender, RoutedEventArgs e)
         {
-            //if (DdpmCommonHelper.DeviceManagerSA != null)
-            //{
-            //    DdpmCommonHelper.DeviceManagerSA.StopCopilotRegistryMonitor();
-            //    DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
-            //}
+            if (DdpmCommonHelper.DeviceManagerSA != null)
+            {
+                //DdpmCommonHelper.DeviceManagerSA.StopCopilotRegistryMonitor();
+                DdpmCommonHelper.DeviceManagerSA.DeviceChanged -= DeviceManagerSA_DeviceChanged;
+            }
         }
 
         ~LaunchView()
@@ -170,8 +192,8 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                 //Lock Functionality 9/7
                 //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Display]
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA.ReloadAppConfigData().Result;
-                if (data != null && 
-                    data.LockSettings != null && 
+                if (data != null &&
+                    data.LockSettings != null &&
                     DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Keyboard"))
                 {
                     RestoreLockIcon.Visibility = Visibility.Visible;
@@ -508,12 +530,12 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     _vm.ImgBL2 = true;
                     break;
             }
-            if (txtBLHost1.Text.Length > 20)
-                txtBLHost1.Text = txtBLHost1.Text.Substring(0, 20);
-            if (txtBLHost2.Text.Length > 20)
-                txtBLHost2.Text = txtBLHost2.Text.Substring(0, 20);
-            if (txtBLHost3.Text.Length > 20)
-                txtBLHost3.Text = txtBLHost3.Text.Substring(0, 20);
+            if (txtBLHost1.Text.Length > 15 && txtBLHost1.Text != Strings.ReadyToBePaired)
+                txtBLHost1.Text = txtBLHost1.Text.Substring(0, 15);
+            if (txtBLHost2.Text.Length > 15 && txtBLHost1.Text != Strings.ReadyToBePaired)
+                txtBLHost2.Text = txtBLHost2.Text.Substring(0, 15);
+            if (txtBLHost3.Text.Length > 15 && txtBLHost1.Text != Strings.ReadyToBePaired)
+                txtBLHost3.Text = txtBLHost3.Text.Substring(0, 15);
         }
 
         private void BatteryIndicator_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
@@ -596,7 +618,7 @@ namespace DDPM.UI.Plugin.KeyboardPlugin
                     this.Resources["PrtScHeight"] = 32.5;
                     this.Resources["PrtScMargin"] = new Thickness(5.8, 0, 0, 0);
                     this.Resources["SectionBMargin"] = new Thickness(-3, 0, 0, 0);
-                    this.Resources["CalculatorWidth"] = 43.0;
+                    this.Resources["CalculatorWidth"] = 40.0;
                     this.Resources["CalculatorHeight"] = 32.5;
                     this.Resources["CalculatorMargin"] = new Thickness(7, 0, 0, 0);
                     break;

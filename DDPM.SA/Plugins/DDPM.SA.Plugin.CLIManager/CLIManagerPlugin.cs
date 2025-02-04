@@ -1038,15 +1038,19 @@ namespace DDPM.SA.Plugin.CLIManager
         {
 
             DeferItem item = new DeferItem(from, guid, commanddata);
+
             string did = item.deferid;
-
-            onCLIToastEventNotify(new CLIEventToastArgs()
+            if (!string.IsNullOrEmpty(did))
             {
-                defer_id = did,
-                toast_message = commanddata,
-                is_defer = true
-            });
-
+                onCLIToastEventNotify(new CLIEventToastArgs()
+                {
+                    defer_id = did,
+                    toast_message = commanddata,
+                    is_defer = true,
+                    defer_item = item
+                });
+            }
+            
             bool result = checkToastResult(did, item);
 
             return Task.FromResult(result);
@@ -1056,12 +1060,16 @@ namespace DDPM.SA.Plugin.CLIManager
         {
             string did = item.deferid;
 
-            onCLIToastEventNotify(new CLIEventToastArgs()
+            if (!string.IsNullOrEmpty(did))
             {
-                defer_id = did,
-                toast_message = item.commanddata,
-                is_defer = true
-            });
+                onCLIToastEventNotify(new CLIEventToastArgs()
+                {
+                    defer_id = did,
+                    toast_message = item.ToString(),
+                    is_defer = true,
+                    defer_item = item
+                });
+            }
 
             bool result = checkToastResult(did, item);
 
@@ -1096,7 +1104,7 @@ namespace DDPM.SA.Plugin.CLIManager
                     break;
                 }
             }
-            if (Max_Count >= MAX_DEFER_WAIT_TIME_SEC)
+            if (Max_Count >= MAX_DEFER_WAIT_TIME_SEC && item.commandfrom == DeferControlPanel.SRC_FROM_CLI && item.commanddata.ToLower().Contains("firmwareupdate"))
             {
                 //if end user doesn't select witnin 5 min, set defer as default
                 WriteLog($"@@ CLIManagerPlugin::Timeout and then set defer as default");
@@ -1113,12 +1121,16 @@ namespace DDPM.SA.Plugin.CLIManager
         {
             string did = item.deferid == string.Empty ? "NULL" : item.deferid;
 
-            onCLIToastEventNotify(new CLIEventToastArgs()
+            if (!string.IsNullOrEmpty(did))
             {
-                defer_id = did,
-                toast_message = item.commanddata,
-                is_defer = false
-            });
+                onCLIToastEventNotify(new CLIEventToastArgs()
+                {
+                    defer_id = did,
+                    toast_message = item.ToString(),
+                    is_defer = false,
+                    defer_item = item
+                });
+            }
 
             Max_Count = 0;
             for (Max_Count = 0; Max_Count <= MAX_DEFER_WAIT_TIME_SEC; Max_Count++)
@@ -1172,5 +1184,80 @@ namespace DDPM.SA.Plugin.CLIManager
             }
         }
         #endregion
+
+        // add @ 20250116 stephen
+
+        private int MAX_SECOND_WAIT_RESULT = 10;
+        private bool resultDeviceConn = false;
+        private bool resultReset = false;
+
+        // add @ 20250116 stephen
+        private bool checkDeviceConnResult(DeferItem item)
+        {
+            // true: device is connected
+            //FwJobControlPanel.addToSchedule(item);
+
+            for (int i = 0; i < MAX_SECOND_WAIT_RESULT; i++)
+            {
+                Thread.Sleep(1000);
+                WriteLog($"CLIManagerPlugin::checkDeviceConnResult wait = {i} ");
+                if (resultReset)
+                {
+                    Thread.Sleep(1000);
+                    if (!resultDeviceConn)
+                    {
+                        FwJobControlPanel.addToSchedule(item);
+                    }
+                    break;
+                }
+            }
+            WriteLog($"CLIManagerPlugin::checkDeviceConnResult resultReset = {resultReset}");
+            WriteLog($"CLIManagerPlugin::checkDeviceConnResult resultDeviceCheck = {resultDeviceConn}");
+
+            return resultDeviceConn;
+
+        }
+
+        public Task<bool> checkDeviceConn(int from, string guid, string commanddata, string str_command)
+        {
+            DeferItem item = new DeferItem(from, guid, commanddata);
+
+            initResultDeviceCheck();
+
+            onCLIDeviceCheckEventNotify(new CLIEventDeviceConnArgs()
+            {
+                commands = str_command
+            });
+
+            bool result = checkDeviceConnResult(item);
+
+            return Task.FromResult(result);
+        }
+
+        private void initResultDeviceCheck()
+        {
+            resultDeviceConn = false;
+            resultReset = false;
+        }
+
+        public void sendDeviceCheckResult(bool result)
+        {
+            Console.Write("CLIManagerPlugin::sendDeviceCheckResult result = " + result);
+
+            resultDeviceConn = result;
+            resultReset = true;
+        }
+
+        public event EventHandler<CLIEventDeviceConnArgs> CLIDeviceCheckEvent;
+
+        private void onCLIDeviceCheckEventNotify(CLIEventDeviceConnArgs e)
+        {
+            EventHandler<CLIEventDeviceConnArgs> Handler = CLIDeviceCheckEvent;
+            if (Handler != null)
+            {
+                WriteLog($"CLIManagerPlugin::onCLIDeviceCheckEventNotify CLIEventDeviceConnArgs e.commands = {e.commands}");
+                Handler.Invoke(this, e);
+            }
+        }
     }
 }

@@ -199,11 +199,23 @@ namespace DDPM.QAM
             {
                 CameraSetting = new CameraSetting(this);
 
-                CameraSetting.Left = this.Left + this.Width;
-                CameraSetting.Top = this.Top;
                 CameraSetting.Width = 288;
                 CameraSetting.Height = 128;
+
+                //Make sure CameraSetting & QAMPage in same screen
+                var scalingRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
+                System.Drawing.Point cursorPosition = System.Windows.Forms.Cursor.Position;
+                Screen screen = Screen.FromPoint(cursorPosition);
+                if (this.Left + this.Width + CameraSetting.Width > screen.Bounds.Right / scalingRatio)
+                {
+                    this.Left = screen.Bounds.Right / scalingRatio - this.Width - CameraSetting.Width;
+                }
+
+                CameraSetting.Left = this.Left + this.Width;
+                CameraSetting.Top = this.Top;
+
                 CameraSetting.Show();
+
             }
 
 
@@ -265,11 +277,12 @@ namespace DDPM.QAM
                 if (CameraSetting != null)
                 {
                     //Make sure CameraSetting & QAMPage in same screen
+                    var scalingRatio = Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth;
                     System.Drawing.Point cursorPosition = System.Windows.Forms.Cursor.Position;
                     Screen screen = Screen.FromPoint(cursorPosition);
-                    if (this.Left + this.Width + CameraSetting.Width > screen.Bounds.Right)
+                    if (this.Left + this.Width + CameraSetting.Width > screen.Bounds.Right / scalingRatio)
                     {
-                        this.Left = screen.Bounds.Right - this.Width - CameraSetting.Width;
+                        this.Left = screen.Bounds.Right / scalingRatio - this.Width - CameraSetting.Width;
                     }
 
                     CameraSetting.Left = this.Left + this.Width;
@@ -328,6 +341,41 @@ namespace DDPM.QAM
                 WriteLog($"Catch exception {ex.Message} when QAM Window_Closing");
             }
             
+        }
+
+        //如果右边的window有出来，也要跟着隐藏  Derek 2025/01/23
+        private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            //WriteLog($"Window_IsVisibleChanged --> NewValue =  {e.NewValue}, OldValue =  {e.OldValue}");
+
+            bool isQAMVisible = true;
+            try
+            {
+                bool.TryParse(e.NewValue.ToString(), out isQAMVisible);
+
+                if (isQAMVisible && CameraSetting != null)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        CameraSetting?.Show();
+
+                        WriteLog($"Window_IsVisibleChanged show QAM setting window");
+                    });
+                }
+                else if (CameraSetting != null)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        CameraSetting?.Hide();
+
+                        WriteLog($"Window_IsVisibleChanged hide QAM setting window");
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                WriteLog($"Window_IsVisibleChanged catch exception; {ex.Message}");
+            }
         }
     }
 }

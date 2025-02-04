@@ -90,7 +90,19 @@ namespace DDPM.QAM
                                 LogMsg($"QAM ImportWebcamProfiles -> Add {profile.Key}/{profile.Value}");
                             }
 
-                            LogMsg($"ImportWebcamProfiles current SelectedProfileName: {selectedProfileName}, QAM ws.PresetProfiles = {webcamSettings.PresetProfiles.Count}");
+                            //LogMsg($"ImportWebcamProfiles current SelectedProfileName: {selectedProfileName}, QAM ws.PresetProfiles = {webcamSettings.PresetProfiles.Count}");
+                            LogMsg($"ImportWebcamProfiles current SelectedProfileName: {selectedProfileName}, " +
+                                            $"QAM ws.PresetProfiles = {webcamSettings.PresetProfiles.Count}");
+
+                            //for debug
+                            //foreach (var profile in webcamSettings.CustomProfiles)
+                            //{
+                            //    LogMsg($"QAM CustomProfiles -> Add {profile.Key}/{profile.Value}");
+                            //}
+
+                            //LogMsg($"QAM CustomProfiles.count =  {webcamSettings.CustomProfiles.Count}");
+
+                            LogMsg($"webcamSettings.NONE.Name =  {webcamSettings.NONE.Name}");
                         }
 
                         //ImportWebcamProfiles(CurrentDeviceInfo.ModelNumber, devMgr, log);// filePath);
@@ -333,6 +345,10 @@ namespace DDPM.QAM
                 }
 
                 OnPropertyChanged(nameof(UI_ProfileList));
+
+                selectedProfileName = "NONE"; //Derek 2025/01/20
+                webcamSettings.SelectedProfile = selectedProfileName;
+                //webcamSettings.PresetProfiles[4].Zoom
             }
             catch (Exception ex)
             {
@@ -810,6 +826,51 @@ namespace DDPM.QAM
             OnPropertyChanged(nameof(UI_ProfileList));
 
             //DdpmCommonHelper.DeviceManagerSA!.WriteLog($"RefreshUI  --> ZoomValue = {ZoomValue}, FieldOfView = {FieldOfView}, _AutoFramingStatus = {_AutoFramingStatus}");
+        }
+
+        public bool SaveNoneProfileFOV(int fov)
+        {
+            try
+            {
+                if (null != webcamSettings.NONE && selectedProfileName == "NONE")
+                {
+                    if (65 == fov || 78 == fov || 90 == fov)
+                    {
+                        webcamSettings.NONE.FieldOfView = fov;
+
+                        SaveSelectProfile();
+
+                        return true;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                LogMsg($"SaveNoneProfileFOV catch exception: {e.Message}");
+            }
+
+            return false;
+        }
+
+        public bool SaveNoneProfileZOOM()
+        {
+            try
+            {
+                if (null != webcamSettings.NONE && selectedProfileName == "NONE")
+                {
+                    webcamSettings.NONE.Zoom = ZoomValue;
+
+                    SaveSelectProfile();
+
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                LogMsg($"SaveNoneProfileZOOM catch exception: {e.Message}");
+            }
+
+            return false;
         }
     }
     public class UI_Profile

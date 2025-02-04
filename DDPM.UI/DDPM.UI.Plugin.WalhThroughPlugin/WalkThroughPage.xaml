@@ -19,7 +19,7 @@
                Stretch="UniformToFill"
                HorizontalAlignment="Center" VerticalAlignment="Center" />
         <!--<Image x:Name="imgBkGlow" Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png" Stretch="UniformToFill" HorizontalAlignment="Center"  VerticalAlignment="Center" />-->
-        <StackPanel>
+        <StackPanel VerticalAlignment="Center">
             <Grid Margin="0" Visibility="{Binding PeripheralVisibility}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -147,7 +147,7 @@
             </Grid>
         </StackPanel>
 
-        <StackPanel>
+        <StackPanel VerticalAlignment="Center">
             <Grid Margin="0" Visibility="{Binding DDPMVisibility}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -256,7 +256,7 @@
                 </Grid>
             </Grid>
         </StackPanel>
-        <StackPanel>
+        <StackPanel VerticalAlignment="Center">
             <Grid Margin="0" Visibility="{Binding OtherVisibility}">
                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="1378" Height="735">
                     <Image x:Name="img3" Width="1378" Height="671" Source="{Binding Img3Source}" Stretch="UniformToFill" VerticalAlignment="Top"  />

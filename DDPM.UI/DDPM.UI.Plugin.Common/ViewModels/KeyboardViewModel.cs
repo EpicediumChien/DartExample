@@ -213,7 +213,8 @@ namespace DDPM.UI.Plugin.ViewModels
                 CopilotInfoVisibility = Visibility.Visible;
             else
                 CopilotInfoVisibility = Visibility.Collapsed;
-
+            //Elsa 20250122 add for PIMS-332048 All langs tooltip EN in UI issue found in stringID：FirmwareVersion
+            FirmwareVersion2 = FirmwareVersion2.Replace("Firmware Version", Strings.FirmwareVersion);
             return true;
         }
 
@@ -273,6 +274,7 @@ namespace DDPM.UI.Plugin.ViewModels
                             case "CollaborationScreenShareEnable":
                                 _isCollaborationScreenShareEnable = di.IsCollaborationScreenShareEnable;
                                 OnPropertyChanged(nameof(IsCollaborationScreenShareEnable));
+                                IsCollaborationScreenShareEnableText = _isCollaborationScreenShareEnable ? Strings.On : Strings.Off;
                                 break;
 
                             default:

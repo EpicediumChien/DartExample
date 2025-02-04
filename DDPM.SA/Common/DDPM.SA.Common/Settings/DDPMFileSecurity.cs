@@ -918,7 +918,7 @@ namespace DDPM.SA.Common.Settings
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
-                info = $"Invalid file path string - {filePath}";
+                info = $"Invalid file path string - ***{filePath.Substring(filePath.Length / 2)}";
                 //_log.Info(info);
                 return null;
             }
@@ -926,7 +926,7 @@ namespace DDPM.SA.Common.Settings
             //Check for path redirection (symlink, mountpoint, hardlink, etc.) at the path AND along the path
             if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
             {
-                info = $"Redirection detected along file path - {filePath}";
+                info = $"Redirection detected along file path - ***{filePath.Substring(filePath.Length / 2)}";
                 //_log.Info(info);
                 return null;
             }
@@ -939,13 +939,13 @@ namespace DDPM.SA.Common.Settings
             }
             catch(Exception e)
             {
-                info = $"Read data from file path - {filePath}, exception: {e.Message}";
+                info = $"Read data from file path - ***{filePath.Substring(filePath.Length / 2)}";
                 return null;
             }
 
             if (data == null)
             {
-                info = $"Read data from file path - {filePath}, failed";
+                info = $"Read data from file path - ***{filePath.Substring(filePath.Length / 2)}, failed";
                 return null;
             }
             //Bruce 0909 modify
@@ -986,7 +986,7 @@ namespace DDPM.SA.Common.Settings
             // Check our path string for invalid characters, null value, empty value, etc.
             if (PathHelper.ValidateFilePath(filePath, PathCheckOption.None) != PathCheckErrorCodes.SUCCESS)
             {
-                info = $"Invalid file path string - {filePath}";
+                info = $"Invalid file path string - ***{filePath.Substring(filePath.Length/2)}";
                 // _log.Info(info);
                 return null;
             }
@@ -994,7 +994,7 @@ namespace DDPM.SA.Common.Settings
             //Check for path redirection (symlink, mountpoint, hardlink, etc.) at the path AND along the path
             if (PathHelper.CheckPathRedirection(filePath) != PathRedirectionReturn.PathIsNormal)
             {
-                info = $"Redirection detected along file path - {filePath}";
+                info = $"Redirection detected along file path - ***{filePath.Substring(filePath.Length / 2)}";
                 // _log.Info(info);
                 return null;
             }
@@ -1006,13 +1006,13 @@ namespace DDPM.SA.Common.Settings
             }
             catch(Exception e)
             {
-                info = $"Read data from file path - {filePath}, exception: {e.Message}";
+                info = $"Read data from file path - ***{filePath.Substring(filePath.Length / 2)}, exception: {e.Message}";
                 return null;
             }
 
             if (data == null)
             {
-                info = $"Read data from file path - {filePath}, failed";
+                info = $"Read data from file path - ***{filePath.Substring(filePath.Length / 2)}, failed";
                 return null;
             }
             //Bruce 0909 modify
@@ -1294,7 +1294,7 @@ namespace DDPM.SA.Common.Settings
             {
                 if(!SignedFileThumbprintVerifier(null, filePath, targetThumbprint, out info))
                 {
-                    info = $"No matched cert. thumbprint in file {targetThumbprint}";
+                    info = $"No matched cert. thumbprint in file ***{targetThumbprint.Substring(targetThumbprint.Length/2)}";
                     return false;
                 }
             }
@@ -1663,7 +1663,6 @@ namespace DDPM.SA.Common.Settings
             return true;
         }
 
-        // [sonarqube] This method signature overlaps and no used
         //hashType: SHA256 / SHA512
         //This function is used by NKVM in release build
         public static bool StartProcessSafely(
@@ -1756,7 +1755,7 @@ namespace DDPM.SA.Common.Settings
             info = "success";
             if (path.Contains("..\\") || path.Contains("../") || path.Contains("..;\\") || path.Contains("..\\/") || path.Contains("..././") || path.Contains("....\\") || path.Contains(@"\\\") || path.Contains(@"\\\\"))
             {
-                info = ("The path contains invalid characters. Program will not continue {path}");
+                info = ("The path contains invalid characters. Program will not continue");
                 return string.Empty;
             }
 

@@ -4,9 +4,12 @@ using DDPM.UI.Common.Method;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Plugin.DdpmHomePlugin;
 using Dell.Client.Framework.UX.WPF;
+using Dell.Client.Framework.UX.WPF.Controls;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace DDPM.UI.Module.Kvm
 {
@@ -15,6 +18,10 @@ namespace DDPM.UI.Module.Kvm
     /// </summary>
     public partial class InputSourceFullView : UserControl
     {
+        private double gridTxt_Row1_DefaultFontSize = 20;
+        private double gridTxt_Row2_DefaultFontSize = 64;
+        private double gridTxt_Row3_DefaultFontSize = 16;
+
         private KvmViewModel vm
         {
             get
@@ -26,6 +33,16 @@ namespace DDPM.UI.Module.Kvm
         public InputSourceFullView()
         {
             InitializeComponent();
+            gridTxt_Row1_DefaultFontSize = GridTxt_Row1.FontSize;
+            gridTxt_Row2_DefaultFontSize = GridTxt_Row2.FontSize;
+            gridTxt_Row3_DefaultFontSize = GridTxt_Row3.FontSize;
+            LeftGrid.SizeChanged -= AdjustFontSizeForWWO;
+            LeftGrid.SizeChanged += AdjustFontSizeForWWO;
+        }
+
+        ~InputSourceFullView()
+        {
+            LeftGrid.SizeChanged -= AdjustFontSizeForWWO;
         }
 
         private void OpenMKFullView(object sender, RoutedEventArgs e)
@@ -197,6 +214,111 @@ namespace DDPM.UI.Module.Kvm
         {
             TextString textString = new TextString();
             e.Handled = !textString.CheckChar(e.Text);
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+
+            if (CultureInfo.CurrentUICulture.Name == "ar-SA")
+            {
+                LeftArrow.Visibility = System.Windows.Visibility.Visible;
+                RightArrow.Visibility = System.Windows.Visibility.Hidden;
+            }
+            else
+            {
+                LeftArrow.Visibility = System.Windows.Visibility.Hidden;
+                RightArrow.Visibility = System.Windows.Visibility.Visible;
+            }
+
+        }
+
+        private void AdjustFontSizeForWWO(object sender, RoutedEventArgs e)
+        {
+            if (GridTxt_Row1 != null && GridTxt_Row2 != null && GridTxt_Row3 != null)
+            {
+                // Smaller
+                Typeface typeface = new Typeface(new FontFamily("Arial"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+                double txtRowMinWidth = GetLongestWordPixelLength(GridTxt_Row1.Text, typeface, GridTxt_Row1.FontSize);
+                if (txtRowMinWidth > LeftGrid.ActualWidth)
+                {
+                    GridTxt_Row1.FontSize -= 2;
+                    txtRowMinWidth = GetLongestWordPixelLength(GridTxt_Row1.Text, typeface, GridTxt_Row1.FontSize);
+                }
+                else if (GridTxt_Row1.FontSize < gridTxt_Row1_DefaultFontSize)
+                {
+                    // Bigger
+                    txtRowMinWidth = GetLongestWordPixelLength(GridTxt_Row1.Text, typeface, GridTxt_Row1.FontSize + 2);
+                    if (txtRowMinWidth <= LeftGrid.ActualWidth)
+                    {
+                        GridTxt_Row1.FontSize += 2;
+                    }
+                }
+
+                txtRowMinWidth = GetLongestWordPixelLength(GridTxt_Row2.Text, typeface, GridTxt_Row2.FontSize);
+                if (txtRowMinWidth > LeftGrid.ActualWidth)
+                {
+                    GridTxt_Row2.FontSize -= 2;
+                    txtRowMinWidth = GetLongestWordPixelLength(GridTxt_Row2.Text, typeface, GridTxt_Row2.FontSize);
+                }
+                else if (GridTxt_Row2.FontSize < gridTxt_Row2_DefaultFontSize)
+                {
+                    // Bigger
+                    txtRowMinWidth = GetLongestWordPixelLength(GridTxt_Row2.Text, typeface, GridTxt_Row2.FontSize + 2);
+                    if (txtRowMinWidth <= LeftGrid.ActualWidth)
+                    {
+                        GridTxt_Row2.FontSize += 2;
+                    }
+                }
+
+                txtRowMinWidth = GetLongestWordPixelLength(GridTxt_Row3.Text, typeface, GridTxt_Row3.FontSize);
+                if (txtRowMinWidth > LeftGrid.ActualWidth)
+                {
+                    GridTxt_Row3.FontSize -= 2;
+                    txtRowMinWidth = GetLongestWordPixelLength(GridTxt_Row3.Text, typeface, GridTxt_Row3.FontSize);
+                }
+                else if(GridTxt_Row3.FontSize < gridTxt_Row3_DefaultFontSize)
+                {
+                    // Bigger
+                    txtRowMinWidth = GetLongestWordPixelLength(GridTxt_Row3.Text, typeface, GridTxt_Row3.FontSize + 2);
+                    if (txtRowMinWidth <= LeftGrid.ActualWidth)
+                    {
+                        GridTxt_Row3.FontSize += 2;
+                    }
+                }
+            }
+        }
+
+        private double GetLongestWordPixelLength(string text, Typeface typeface, double fontSize)
+        {
+            if (string.IsNullOrEmpty(text))
+                return 0;
+
+            // Split the text into words
+            string[] words = text.Split(new[] { ' ', '\t', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            double maxPixelWidth = 0;
+
+            foreach (string word in words)
+            {
+                double wordWidth = 0;
+
+                if (typeface.TryGetGlyphTypeface(out GlyphTypeface glyphTypeface))
+                {
+                    foreach (char c in word)
+                    {
+                        if (glyphTypeface.CharacterToGlyphMap.TryGetValue(c, out ushort glyphIndex))
+                        {
+                            // Calculate width based on advance widths
+                            double advanceWidth = glyphTypeface.AdvanceWidths[glyphIndex];
+                            wordWidth += advanceWidth * fontSize;
+                        }
+                    }
+                }
+
+                maxPixelWidth = Math.Max(maxPixelWidth, wordWidth);
+            }
+
+            return maxPixelWidth;
         }
     }
 }
