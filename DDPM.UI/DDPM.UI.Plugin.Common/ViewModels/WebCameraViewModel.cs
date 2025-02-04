@@ -796,6 +796,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     _ = DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), false);
                     OnPropertyChanged(nameof(IsHDROn));
+                    OnPropertyChanged(nameof(IsHDROnText));
                 }
                 SetProfile();
                 //if (!IsDTPReady)
@@ -916,6 +917,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _log.Error("DTP SetIsHDROn fail!");
                     }
                     OnPropertyChanged(nameof(IsHDROn));
+                    OnPropertyChanged(nameof(IsHDROnText));
                 }
 
                 if (CurrentDeviceInfo.IsPropertyWhiteBalanceSupported)
@@ -1514,6 +1516,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     CurrentProfile = tmp;
                     OnPropertyChanged(nameof(IsHDROn));
+                    OnPropertyChanged(nameof(IsHDROnText));
                 }
             }
             catch(Exception ex)
