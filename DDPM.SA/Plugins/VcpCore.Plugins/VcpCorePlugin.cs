@@ -1223,6 +1223,8 @@ namespace VcpCore.Plugins
                                         var monitor = _AllInfoMonitors_Mix.FirstOrDefault(t => t.Item1.edid.Equals(monitorInfoX.edid));
                                         if (monitor.Item1 != null && monitor.Item2 != null)
                                         {
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability monitor.Item1 : " + monitor.Item1);
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability monitor.Item2 : " + monitor.Item2);
                                             monitor.Item1.inputSource = tmp.Item2;
                                             monitor.Item1.inputCable = tmp.Item1;
                                             monitor.Item2.inputSource = tmp.Item2;
@@ -1231,6 +1233,10 @@ namespace VcpCore.Plugins
                                             Initialize2TypesMonitorInfo(false, CancellationToken.None);
 
                                             ro = tmp.Item2;
+                                        }
+                                        else
+                                        {
+                                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability monitor.Item1 or monitor.Item2 = null");
                                         }
                                     }
                                     else
