@@ -1093,19 +1093,22 @@
     <value>Tip Sensitivity</value>
   </data>
   <data name="PenSettings.2" xml:space="preserve">
-    <value>Moving the slider to the right will gradually\ndecrease the sensitivity to pressure and you\nneed to apply firmer pen pressure</value>
+    <value>Moving the slider to the right will gradually decrease the sensitivity to pressure and you need to apply firmer pen pressure</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.3" xml:space="preserve">
     <value>Tilt Sensitivity</value>
   </data>
   <data name="PenSettings.4" xml:space="preserve">
-    <value>Moving the slider to the right will gradually\nincrease the tilting effect, and you need to\napply less tilting angle</value>
+    <value>Moving the slider to the right will gradually increase the tilting effect, and you need to apply less tilting angle</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.5" xml:space="preserve">
     <value>Pair with Tile</value>
   </data>
   <data name="PenSettings.6" xml:space="preserve">
-    <value>Pair your pen to your mobile device using\nthe Tile app</value>
+    <value>Pair your pen to your mobile device using the Tile app</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.7" xml:space="preserve">
     <value>Get started</value>

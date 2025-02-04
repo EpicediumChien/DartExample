@@ -1087,19 +1087,22 @@
     <value>Чутливість кінчика</value>
   </data>
   <data name="PenSettings.2" xml:space="preserve">
-    <value>Переміщення повзунка праворуч поступово зменшує чутливість до натискання,\nі вам потрібно буде сильніше\nнатискати на перо</value>
+    <value>Переміщення повзунка праворуч поступово зменшує чутливість до натискання, і вам потрібно буде сильніше натискати на перо</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.3" xml:space="preserve">
     <value>Чутливість до нахилу</value>
   </data>
   <data name="PenSettings.4" xml:space="preserve">
-    <value>Пересування повзунка праворуч поступово збільшує ефект нахилу,\nі вам потрібно буде\nвикористовувати менший кут нахилу</value>
+    <value>Пересування повзунка праворуч поступово збільшує ефект нахилу, і вам потрібно буде використовувати менший кут нахилу</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.5" xml:space="preserve">
     <value>Сполучення з Tile</value>
   </data>
   <data name="PenSettings.6" xml:space="preserve">
-    <value>Сполучення пера з мобільним пристроєм за допомогою\nпрограми Tile</value>
+    <value>Сполучення пера з мобільним пристроєм за допомогою програми Tile</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.7" xml:space="preserve">
     <value>Початок роботи</value>
@@ -2278,7 +2281,7 @@
     <value>Перейменування джерела вхідного сигналу</value>
   </data>
   <data name="Disconnect_all_USB_storage_devices_from_monitor" xml:space="preserve">
-    <value>Від&apos;єднайте всі USB-накопичувачі від монітора.</value>
+    <value>Від'єднайте всі USB-накопичувачі від монітора.</value>
   </data>
   <data name="AddDevice.KnM.14" xml:space="preserve">
     <value>Під’єднання бездротового приймача</value>
