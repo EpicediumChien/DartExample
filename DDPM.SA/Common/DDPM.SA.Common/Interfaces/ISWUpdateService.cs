@@ -7,8 +7,6 @@ namespace DDPM.SA.Common
 {
     public interface ISWUpdateService : IFrameworkPlugin
     {
-        event EventHandler<SWUpdateInfoPackage> CallSaveUpdateInfoPackage;
-
         event EventHandler<PopupContentPackage> CallPopup;
         event EventHandler<(string, string, bool)> CallOSD;
         /// <summary>
@@ -16,15 +14,9 @@ namespace DDPM.SA.Common
         /// </summary>
         event EventHandler<List<SWUpdateInfo>> DownloadAndInstall_Result_Notify;
 
-        Task<SWUpdateInfoPackage> GetSWUpdateInfo(bool isShowNotify, bool isForce, bool isDefer, string currentVersion, bool reScan, bool isUItrigger);
+        Task<SWUpdateInfoPackage> GetSWUpdateInfo(bool isShowNotify, string currentVersion, bool reScan);
 
         Task<List<SWUpdateInfo>> DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUITrigger, string installPath);
-
-        void SetDelaySWUpdateInfoPackage(SWUpdateInfoPackage DelaySWUpdateInfoPackage);
-
-        void DelayEvent();
-
-        void UpdateEvent();
         void SetSkipCA(bool isSkipCA);
         void SetSkipSHA(bool isSkipSHA);
     }
