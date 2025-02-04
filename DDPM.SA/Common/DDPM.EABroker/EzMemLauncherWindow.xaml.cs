@@ -628,6 +628,13 @@ namespace DDPM.EABroker
                     {
                         //Trace.WriteLine($"[LaunchAndArrange] 3 - 3 => Process Name : {processName}");
                         //_vm.WriteLog($"[LaunchAndArrange] 3 - 3 => Process Name : {processName}");
+                        if (handlePath == null)
+                        {
+                            Trace.WriteLine($"[LaunchAndArrange] SpecialGetHandle Zero: handlePath is null");
+                            _vm.WriteLog($"[LaunchAndArrange] SpecialGetHandle Zero: handlePath is null");
+                            return IntPtr.Zero;
+                        }
+
                         if (handlePath.Contains(processName))// 比對 process 啟動的程式名稱
                         {
                             //Trace.WriteLine($"[LaunchAndArrange] 3 - 4 => True Compare ProcessName => GetFilePathFromHandle = {GetFilePathFromHandle(vapp)}, GetWindowTitle = {GetWindowTitle(vapp)}");
