@@ -1800,7 +1800,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 {
                                     _updateErrorCode = FWUErrorCode.NoError;
                                     _notificationStr = LangHelper.Instance["A2_Firmware_update_successful"];
-                                    _logs.DebugMsg_1("_timeOutCount <= 60 and is WL7024FWU and _CurrentProcess is 100% so successful");
+                                    _logs.DebugMsg_1("process is done and is WL7024FWU and _CurrentProcess is 100% so successful");
                                     UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                                     {
                                         DeviceName = _fWUpdateInfo.DeviceName,
