@@ -622,18 +622,17 @@ namespace DDPM.EABroker
                         }
                         no++;
                     }
-
+                    else
+                    {
+                        Trace.WriteLine($"[LaunchAndArrange] SpecialGetHandle Zero: handlePath is null");
+                        _vm.WriteLog($"[LaunchAndArrange] SpecialGetHandle Zero: handlePath is null");
+                        continue;
+                    }
 
                     if (processName != string.Empty && appHandle == IntPtr.Zero)
                     {
                         //Trace.WriteLine($"[LaunchAndArrange] 3 - 3 => Process Name : {processName}");
                         //_vm.WriteLog($"[LaunchAndArrange] 3 - 3 => Process Name : {processName}");
-                        if (handlePath == null)
-                        {
-                            Trace.WriteLine($"[LaunchAndArrange] SpecialGetHandle Zero: handlePath is null");
-                            _vm.WriteLog($"[LaunchAndArrange] SpecialGetHandle Zero: handlePath is null");
-                            return IntPtr.Zero;
-                        }
 
                         if (handlePath.Contains(processName))// 比對 process 啟動的程式名稱
                         {
