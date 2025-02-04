@@ -5687,11 +5687,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool b = _DisplayManagerPlugin.SetSubInputs(monitorInfo, sub1, sub2, sub3).Result;
             if (b && _NKVMPlugin != null)
             {
-                ObjGetVCP obj = new ObjGetVCP();
-                obj = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, 0xE8).Result;
-                if (obj.result)
+                ObjGetVCP localObj = new ObjGetVCP();
+                localObj = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, 0xE8).Result;
+                if (localObj.result)
                 {
-                    _NKVMPlugin.SetVCPNotify(monitorInfo, 0xE8, (int)(uint)obj.value).Wait();
+                    _NKVMPlugin.SetVCPNotify(monitorInfo, 0xE8, (int)(uint)localObj.value).Wait();
                 }
             }
             return Task.FromResult(b);
@@ -12822,9 +12822,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Task.Run(() =>
                         {
                             bool flag = false;
-                            int count = 0;
+                            int loopCount = 0;
                             DeviceHelper di = null;
-                            while (count < 60)
+                            while (loopCount < 60)
                             {
                                 di = GetDevices().Result;
                                 if (_isSysSettingReady)
@@ -12853,9 +12853,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     }
                                 }
                                 Thread.Sleep(1000);
-                                count++;
+                                loopCount++;
                                 writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in a running condition");
-                                writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - WalkThrough GetDevices {count.ToString()}");
+                                writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - WalkThrough GetDevices {loopCount.ToString()}");
                             }
                             if (di != null && di.deviceInfo.Count > 0)
                             {
