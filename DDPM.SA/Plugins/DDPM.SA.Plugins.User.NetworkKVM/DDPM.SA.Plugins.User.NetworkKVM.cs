@@ -166,7 +166,7 @@ namespace NetworkKVM.Plugins
                 if (_AllInfoMonitors.Count == 0)
                 {
                     _logs.DebugMsg("[UpdateMonitorInfo] _AllInfoMonitors count is zero.");
-                    return Task.CompletedTask;//return directly, no change
+                    //return Task.CompletedTask;//return directly, no change
                 }
                 _AllInfoMonitors.Clear();
                 //means unplug all connected dell monitors

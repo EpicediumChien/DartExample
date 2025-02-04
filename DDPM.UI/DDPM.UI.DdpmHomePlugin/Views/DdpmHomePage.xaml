@@ -267,6 +267,13 @@
                     2 Move the Indicators outside Image rect: Use a 2 rows Grid (Height=*,Auto)
                     3 Enlarge Image using ScaleTransform + Animatio ScaleX and ScaleY 
                 
+                Robert_Lin 2025-2-4 Grid.RowDefinition[1].RowDefinition.Height changed from "Auto" to "50"
+                Problem if set to "Auto"
+                   The Product Image will be shink to small image size when Connection Hover UI is displayed.
+                Fixed:
+                   1 Change  Grid.RowDefinition[1].RowDefinition.Height to "50" let Image can be separated with indicators
+                   2 Grid "indicators" will be spanned to entired ListViewItem size but Vert-Align="Bottom"
+                     So it can be overlapped with ProductImage
                 -->
                 <ListView.ItemTemplate>
                     <DataTemplate x:Name="lvItemTemplate" DataType="{x:Type commonModel:HomeDevice}">
@@ -277,7 +284,7 @@
                         <Grid Width="{Binding HoverWidth}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="50"/>
                             </Grid.RowDefinitions>
                             <!-- 
                             
@@ -561,7 +568,8 @@
                             ConnectionType="{Binding ConnectionType}" VerticalAlignment="Bottom" Text1="{Binding Text1}"
                             NoBattery="{Binding NoBattery}" /> -->
 
-                            <Grid Name="Indicators" VerticalAlignment="Bottom"  HorizontalAlignment="Center" Margin="0,0,0,0" Grid.Row="1">
+                            <Grid Name="Indicators" VerticalAlignment="Bottom"  HorizontalAlignment="Center" Margin="0,0,0,0" 
+                                  Grid.Row="0" Grid.RowSpan="2">
                                 <StackPanel>
 
                                     <local:ConnectionHoverView DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListViewItem}}" />

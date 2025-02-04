@@ -538,7 +538,7 @@
     <value>Пример: «Alt + P», «Shift + F» «Ctrl + Shift + F».\nОбратите внимание, что при работе с несколькими мониторами для активации функции горячих клавиш курсор мыши должен находиться на экране целевого монитора.</value>
   </data>
   <data name="ButtonSettings.0" xml:space="preserve">
-    <value>Нажатие колеса прокрутки</value>
+    <value>Настроить нажатие колеса прокрутки</value>
   </data>
   <data name="ButtonSettings.1" xml:space="preserve">
     <value>Наклон колеса прокрутки влево</value>

@@ -669,8 +669,9 @@ namespace DdpmSwUpdater
 
                         //For checkmarx test, [code part2]
                         string fileFullPath_sanitized = DDPMFileSecurity.SanitizePath(fileFullPath, out string info);
+                        string workingDirectory = DDPMFileSecurity.SanitizePath(Path.GetDirectoryName(fileFullPath), out string workingDirectorInfo);
 
-                        if (!string.IsNullOrEmpty(fileFullPath_sanitized))
+                        if (!string.IsNullOrEmpty(fileFullPath_sanitized) && !string.IsNullOrEmpty(workingDirectory))
                         {
                             if (DDPMFileSecurity.ValidateFilePath(fileFullPath, out info))
                             {
@@ -678,7 +679,8 @@ namespace DdpmSwUpdater
                                 {
                                     UseShellExecute = false,
                                     FileName = fileFullPath_sanitized,//fileFullPath,
-                                    Arguments = arguments
+                                    Arguments = arguments,
+                                    WorkingDirectory = workingDirectory
                                 };
                                 //_clientProcess = new Process();                        
                                 _clientProcess.StartInfo = startInfo;
@@ -698,6 +700,7 @@ namespace DdpmSwUpdater
                         else
                         {
                             LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FilePath sanitized check - result : {info}");
+                            LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} workingDirectory sanitized check - result : {workingDirectorInfo}");
                             _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                             NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                             _updateErrorCode = SWUErrorCode.FileIsNoSafe;

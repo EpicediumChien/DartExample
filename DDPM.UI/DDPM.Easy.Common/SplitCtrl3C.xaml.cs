@@ -39,6 +39,7 @@ namespace DDPM.Easy.Common
         public UserControl UC => this;
         //SplitCtrl2? ~ 7? are predefined layout, have default value, the EAID may be changed to [1000~1004] if they are customized.
         public int EAID { get; set; } = 7;
+        public string TooltipResourceName { get; } = "EATooltip_33";
         #endregion ISplitCtrl Native Members
 
         #region ViewModel
@@ -172,10 +173,10 @@ namespace DDPM.Easy.Common
 
         #region FriendlyName
         private string _friendlyName = string.Empty;
-        private string _defaultHorzName = LangHelper.Instance[$"EATooltip_33H"];
-        //"Option 3.3: 3 columns, split 30/40/30%.";
-        private string _defaultVertName = LangHelper.Instance[$"EATooltip_33V"];
-        //"Option 3.3: 3 rows, split 30/40/30%.";
+        private string _defaultHorzName = //LangHelper.Instance[$"EATooltip_33H"];
+        "Option 3.3: 3 columns, split 30/40/30%.";
+        private string _defaultVertName = //LangHelper.Instance[$"EATooltip_33V"];
+        "Option 3.3: 3 rows, split 30/40/30%.";
         public string FriendlyName
         {
             get
@@ -183,9 +184,27 @@ namespace DDPM.Easy.Common
                 if (String.IsNullOrEmpty(_friendlyName))
                 {
                     if (VM.IsVertical)
+                    {
+                        try
+                        {
+                            return LangHelper.Instance[$"{TooltipResourceName}V"];
+                        }
+                        catch (Exception e1)
+                        {
+                        }
                         return _defaultVertName;
+                    }
                     else
+                    {
+                        try
+                        {
+                            return LangHelper.Instance[$"{TooltipResourceName}H"];
+                        }
+                        catch (Exception e1)
+                        {
+                        }
                         return _defaultHorzName;
+                    }
                 }
                 return _friendlyName;
             }

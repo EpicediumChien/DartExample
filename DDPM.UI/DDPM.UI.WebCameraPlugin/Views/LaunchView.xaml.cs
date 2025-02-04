@@ -467,7 +467,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             print_debug("AllSupportedResolutions:" + AllSupportedResolutions);
 
             print_debug("check_PresenceFunction() s0 model-" + model);
-
+            
             if (is_camera_dell7)
             {
                 print_debug("check_PresenceFunction() s1");
@@ -498,7 +498,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
 
                             //2025/01/02 Leo fixed
-                            noPresenceFunction = true;
+                            //noPresenceFunction = true;  // Jim modify 20250203 PIMS-343711 due to the comment from Dell PO
 
                         }
 
@@ -565,6 +565,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                             }
                             */
 
+                            /*
                             if (!is_DellPc && is_SUT_internal_presence_sensor) // Jim modify 20250125 PIMS-343711
                             {
                                 print_debug("check_PresenceFunction() s11-0");
@@ -580,6 +581,17 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                                 // PresenceFunction  整個分頁不用顯示
                                 noPresenceFunction = true;
+                            }
+                            */
+
+                            if (!is_DellPc) // Jim modify 20250203 PIMS-343711 due to the comment from Dell PO
+                            {
+                                print_debug("check_PresenceFunction() s11");
+
+                                //顯示windows setting設定畫面
+                                _vm.brdHello_show = Visibility.Collapsed;
+                                _vm.MPS_Setting_Visibility = Visibility.Visible;
+                                _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
                             }
                             else if (is_DellPc && is_SUT_internal_presence_sensor) // Jim modify 20250124 PIMS-319078
                             {

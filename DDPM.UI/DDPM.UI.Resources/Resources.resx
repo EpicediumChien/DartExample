@@ -538,19 +538,19 @@
     <value>Example: "Alt + P", "Shift + F", "Ctrl + Shift + F".\nNote that for multiple monitors,the mouse cursor should be on the targeted monitor screen to trigger the hotkey function.</value>
   </data>
   <data name="ButtonSettings.0" xml:space="preserve">
-    <value>Scroll Wheel Click</value>
+    <value>Customize Scroll Wheel Click</value>
   </data>
   <data name="ButtonSettings.1" xml:space="preserve">
-    <value>Scroll Tilt Left</value>
+    <value>Customize Scroll Tilt Left</value>
   </data>
   <data name="ButtonSettings.2" xml:space="preserve">
-    <value>Scroll Tilt Right</value>
+    <value>Customize Scroll Tilt Right</value>
   </data>
   <data name="ButtonSettings.3" xml:space="preserve">
-    <value>Side Button Forward</value>
+    <value>Customize Side Button Forward</value>
   </data>
   <data name="ButtonSettings.4" xml:space="preserve">
-    <value>Side Button Back</value>
+    <value>Customize Side Button Back</value>
   </data>
   <data name="ButtonSettings.5" xml:space="preserve">
     <value>To customize, click one of the outlined sections on the image to the left</value>
@@ -3521,5 +3521,20 @@
   </data>
   <data name="Cardi.2" xml:space="preserve">
     <value>Multimedia Presets</value>
+  </data>
+  <data name="CustomizeScrollTiltLCaption" xml:space="preserve">
+    <value>Customize Scroll Tilt Left</value>
+  </data>
+  <data name="CustomizeScrollTiltRCaption" xml:space="preserve">
+    <value>Customize Scroll Tilt Right</value>
+  </data>
+  <data name="CustomizeScrollWheelCaption" xml:space="preserve">
+    <value>Customize Scroll Wheel Click</value>
+  </data>
+  <data name="CustomizeSideButtonBCaption" xml:space="preserve">
+    <value>Customize Side Button Back</value>
+  </data>
+  <data name="CustomizeSideButtonFCaption" xml:space="preserve">
+    <value>Customize Side Button Forward</value>
   </data>
 </root>
