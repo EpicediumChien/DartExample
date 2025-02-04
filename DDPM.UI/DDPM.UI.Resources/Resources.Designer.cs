@@ -6829,7 +6829,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Moving the slider to the right will gradually\ndecrease the sensitivity to pressure and you\nneed to apply firmer pen pressure.
+        ///   Looks up a localized string similar to Moving the slider to the right will gradually decrease the sensitivity to pressure and you need to apply firmer pen pressure.
         /// </summary>
         internal static string PenSettings_2 {
             get {
@@ -6847,7 +6847,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Moving the slider to the right will gradually\nincrease the tilting effect, and you need to\napply less tilting angle.
+        ///   Looks up a localized string similar to Moving the slider to the right will gradually increase the tilting effect, and you need to apply less tilting angle.
         /// </summary>
         internal static string PenSettings_4 {
             get {
@@ -6865,7 +6865,7 @@ namespace DDPM.UI.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pair your pen to your mobile device using\nthe Tile app.
+        ///   Looks up a localized string similar to Pair your pen to your mobile device using the Tile app.
         /// </summary>
         internal static string PenSettings_6 {
             get {
