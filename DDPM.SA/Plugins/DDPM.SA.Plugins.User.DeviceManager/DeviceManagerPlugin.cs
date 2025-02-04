@@ -12860,11 +12860,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             if (di != null && di.deviceInfo.Count > 0)
                             {
                                 writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - di.deviceInfo.Count = {di.deviceInfo.Count.ToString()}");
-                                foreach (var item in di.deviceInfo)
-                                {
-                                    CheckDeviceFirstTimesToConnect(null, item);
-                                    break; // Trigger once then break, do not need to check all devices
-                                }
+
+                                CheckDeviceFirstTimesToConnect(null, di.deviceInfo[0]);
+                                // Trigger once then break, do not need to check all devices
                             }
                             else
                                 writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - di.deviceInfo NULL");
