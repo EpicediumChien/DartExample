@@ -247,12 +247,10 @@ namespace CLI.Subagent
                                 }
                             }
 
-                            if (!(isDefer || isForceWithNotice || isForceWithNoNotice))
+                            if (!(isDefer || isForceWithNotice || isForceWithNoNotice) && 
+                                CLIDefer(args, commandLineInput))
                             {
-                                if (CLIDefer(args, commandLineInput))
-                                {
-                                    return;
-                                }
+                                return;
                             }
                         }
                         /// Set commands

@@ -559,16 +559,14 @@ namespace DDPM.EABroker
                 //process:
                 // WindowClassName="OlkHost"
                 // pathName="C:\\Program Files\\WindowsApps\\Microsoft.OutlookForWindows_1.2024.1216.300_x64_8wekyb3d8bbwe\olk.exe
-                if (app.AppUserModelID.Equals("microsoft.windowscommunicationsapps_8wekyb3d8bbwe!microsoft.windowslive.mail", StringComparison.OrdinalIgnoreCase))
+                if (app.AppUserModelID.Equals("microsoft.windowscommunicationsapps_8wekyb3d8bbwe!microsoft.windowslive.mail", StringComparison.OrdinalIgnoreCase) && 
+                    pathName.StartsWith("C:\\Program Files\\WindowsApps\\Microsoft.OutlookForWindows_"))
                 {
-                    if (pathName.StartsWith("C:\\Program Files\\WindowsApps\\Microsoft.OutlookForWindows_"))
+                    string fileName = System.IO.Path.GetFileName(pathName);
+                    if (fileName.Equals("olk.exe", StringComparison.OrdinalIgnoreCase))
                     {
-                        string fileName = System.IO.Path.GetFileName(pathName);
-                        if (fileName.Equals("olk.exe", StringComparison.OrdinalIgnoreCase))
-                        {
-                            hWndApp = hWnd;
-                            break;
-                        }
+                        hWndApp = hWnd;
+                        break;
                     }
                 }
 
