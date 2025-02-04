@@ -18344,6 +18344,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 return Task.FromResult(true);
             }
 
+            // add @ 20250204 stephen: fix no display connected in list
+            if (_AllInfoMonitors.Count == 0)
+            {
+                return Task.FromResult(false);
+            }
+
             bool hasModel = false;
             bool hasServiceTag = false;
 
