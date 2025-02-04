@@ -538,7 +538,7 @@
     <value>Örnek: "Alt + P", "Shift + F", "Ctrl + Shift + F".\nBirden fazla monitörde kısayol tuşu işlevini tetiklemek için fare imlecinin hedeflenen monitör ekranında olması gerektiğini unutmayın.</value>
   </data>
   <data name="ButtonSettings.0" xml:space="preserve">
-    <value>Kaydırma Tekerleği Tıklaması</value>
+    <value>Kaydırma Tekerleği Tıklamasını Özelleştirme</value>
   </data>
   <data name="ButtonSettings.1" xml:space="preserve">
     <value>Kaydırma Sola Eğme</value>
