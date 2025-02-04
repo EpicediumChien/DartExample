@@ -11447,15 +11447,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 UpdateUINotify e = new UpdateUINotify();
 
-                if (profileName.StartsWith("DDPMSetProfileToNone"))
+                if (profileName.StartsWith("DDPMSetProfileToNone") || profileName.StartsWith("DDPMSetProfileToCurrent"))
                 {
                     e.UI_Field_Name = profileName; //Derek 2025/01/17 DDPMSetProfileToNone
-
-                    writelog($"SyncWebcamProfile DDPMSetProfileToNone by message {profileName}");
-                }
-                else if (profileName.StartsWith("DDPMSetProfileToCurrent"))
-                {
-                    e.UI_Field_Name = profileName; //Derek 2025/01/17 DDPMSetProfileToCurrent
 
                     writelog($"SyncWebcamProfile DDPMSetProfileToNone by message {profileName}");
                 }

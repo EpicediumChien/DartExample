@@ -5083,10 +5083,11 @@ namespace VcpCore.Plugins
                         str_ScalarICID = "2";
                         break;
 
-                    case "09":
-                        D_Ctrl = "Realtek";
-                        str_ScalarICID = "3";
-                        break;
+                    // same as default
+                    //case "09":
+                    //    D_Ctrl = "Realtek";
+                    //    str_ScalarICID = "3";
+                    //    break;
 
                     case "0d":
                         D_Ctrl = "STM";
