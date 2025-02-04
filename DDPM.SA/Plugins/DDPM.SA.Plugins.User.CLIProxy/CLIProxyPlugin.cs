@@ -804,7 +804,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
             var header = string.Empty;
             if (e.defer_item.commanddata.Contains("app=firmwareupdate", StringComparison.OrdinalIgnoreCase) || e.defer_item.commanddata.Contains("dock=fwupdate", StringComparison.OrdinalIgnoreCase))
             {
-                header = e.is_defer ? "Update available​" : "Update will be applied​";
+                header = e.is_defer ? "Update available" : "Update will be applied";
 
                 var deviceType = e.defer_item.commanddata.ToLower()
                                                          .Split()
@@ -826,17 +826,17 @@ namespace DDPM.SA.Plugin.User.CLIManager
                     }
                 }
 
-                e.toast_message = e.is_defer ? $"{deviceName} has a pending firmware update. During update, device may be intermittently available. Do not disconnect the device during the update. This update can be deferred {e.defer_item.count + 1} times before it is required.​" : $"There is a required firmware update for {deviceName}. During update, device may be intermittently available. Do not disconnect the device during the update.​";
+                e.toast_message = e.is_defer ? $"{deviceName} has a pending firmware update. During update, device may be intermittently available. Do not disconnect the device during the update. This update can be deferred {e.defer_item.count + 1} times before it is required." : $"There is a required firmware update for {deviceName}. During update, device may be intermittently available. Do not disconnect the device during the update.";
             }
             else if (e.toast_message.Contains("app=update", StringComparison.OrdinalIgnoreCase))
             {
-                header = e.is_defer ? "Update available​" : "Update will be applied​";
-                e.toast_message = e.is_defer ? $"Dell Display and Peripheral Manager has a pending update. This update can be deferred {e.defer_item.count + 1} times before it is required.​" : "There is a required software update for Dell Display and Peripheral Manager.​";
+                header = e.is_defer ? "Update available" : "Update will be applied";
+                e.toast_message = e.is_defer ? $"Dell Display and Peripheral Manager has a pending update. This update can be deferred {e.defer_item.count + 1} times before it is required." : "There is a required software update for Dell Display and Peripheral Manager.";
             }
             else
             {
-                header = e.is_defer ? "Pending Changes to settings​" : "Changes to settings will be applied​";
-                e.toast_message = e.is_defer ? $"Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator.​\nThe configuration can be deferred {e.defer_item.count + 1} times before it is required.​" : "Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator​.";
+                header = e.is_defer ? "Pending Changes to settings" : "Changes to settings will be applied";
+                e.toast_message = e.is_defer ? $"Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator.\nThe configuration can be deferred {e.defer_item.count + 1} times before it is required." : "Settings are being configured for your Dell Display(s) and/or Peripheral(s) by your system administrator.";
             }
             //throw new NotImplementedException();
             //Console.WriteLine($"value = {CLIEventToastArgs.toast_message}");
@@ -1013,7 +1013,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                 if (arg.Contains("value"))
                 {
                     string[] rootArg = arg.Split('=');
-
+                    
                     foreach (string subAge in rootArg)
                     {
                         if (subAge.Contains("defer") || subAge.Contains("force"))
@@ -1021,9 +1021,10 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             rule.devicetype = subAge.Split(',')[0];
                             continue;
                         }
-                        else if(!subAge.Contains("defer") || !subAge.Contains("force"))
+
+                        if(!subAge.Contains("defer") && !subAge.Contains("force") && !subAge.Contains("model") && !subAge.Contains("servicetag") && !subAge.Contains("value"))
                         {
-                            rule.devicetype = rootArg[0];
+                            rule.devicetype = rootArg[1];
                             continue;
                         }
 
@@ -1039,7 +1040,7 @@ namespace DDPM.SA.Plugin.User.CLIManager
                             continue;
                         }
                     }
-
+                    
 
                 }
             }

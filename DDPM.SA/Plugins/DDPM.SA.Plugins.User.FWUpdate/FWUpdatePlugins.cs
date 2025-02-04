@@ -45,6 +45,7 @@ using System.IO.Compression;
 using DDPM.SA.Resources.Helper;
 using System.Windows;
 using System.Net.NetworkInformation;
+using System.Globalization;
 
 
 namespace DDPM.SA.Plugins.User.FWUpdate
@@ -1675,7 +1676,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     try
                     {
                         _logs.DebugMsg_1($"fwUpdateInfo.ServiceTag is : {fwUpdateInfo.ServiceTag}");
-                        path = @$"{programData}\Dell\FWUpdateLog\{fwUpdateInfo.DeviceName}_{fwUpdateInfo.ServiceTag}_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
+                        //path = @$"{programData}\Dell\FWUpdateLog\{fwUpdateInfo.DeviceName}_{fwUpdateInfo.ServiceTag}_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
+                        path = @$"{programData}{GlobalDefinitions.LogFwUpdater}\{fwUpdateInfo.DeviceName}_{fwUpdateInfo.ServiceTag}_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
                         if (!Directory.Exists(path))
                         {
                             Directory.CreateDirectory(path);
@@ -1684,12 +1686,22 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     catch (Exception ex)
                     {
                         _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName} create log Error : {ex.Message}");
-                        path = @$"{programData}\Dell\FWUpdateLog\ex_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}";
+                        path = @$"{programData}{GlobalDefinitions.LogFwUpdater}\ex_{DateTime.Now.ToString("yy-MM-dd_HH_mm_ss")}"; //move to %programdata%\Dell\Dell Display and Peripheral Manager\
                         if (!Directory.Exists(path))
                         {
                             Directory.CreateDirectory(path);
                         }
                     }
+                    if (!DDPMFileSecurity.ValidateFilePath(@$"{programData}{GlobalDefinitions.LogFwUpdater}", out string info))
+                    {
+                        _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName}[FWUpdateLog] log path Error : {info}");
+                        return FWUErrorCode.FolderIsNotSafe;
+                    }
+                    /*if (!DDPMFileSecurity.CheckFolderACL(@$"{programData}{GlobalDefinitions.LogFwUpdater}", out info, true))
+                    {
+                        _logs.DebugMsg_1($"{fwUpdateInfo.DeviceName}[FWUpdateLog] log path ACL Error : {info}");
+                        return FWUErrorCode.FolderIsNotSafe;
+                    }*/
                     logPath = path;
                     _ProgressLogPath = $"{logPath}\\PrgoressResult";
                     _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " create log path done");
@@ -1782,6 +1794,22 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                     };
                                 }
                                 _clientProcess.WaitForExit();
+                                if (_fWUpdateInfo.DeviceType == DeviceType.LogicalHeadset &&
+                                    _fWUpdateInfo.Model.Contains("7024") &&
+                                    _CurrentProcess >= 100)
+                                {
+                                    _updateErrorCode = FWUErrorCode.NoError;
+                                    _notificationStr = LangHelper.Instance["A2_Firmware_update_successful"];
+                                    _logs.DebugMsg_1("process is done and is WL7024FWU and _CurrentProcess is 100% so successful");
+                                    UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                                    {
+                                        DeviceName = _fWUpdateInfo.DeviceName,
+                                        Model = _fWUpdateInfo.Model,
+                                        TheLatestVersion = _fWUpdateInfo.TheLatestVersion,
+                                        ProcessName = "A2 Firmware update successful",
+                                    };
+                                    sendMessageToEvent(updateProgressInfo);
+                                }
                                 _logs.DebugMsg_1($"{processName} process is done.");
                             }
                             else
@@ -1864,7 +1892,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     {
                         if (!_IsSkipSHA)
                         {
-                            _notificationStr = $"Firmware update unsuccessful.";
+                            _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                             _logs.DebugMsg_1(fwUpdateInfo.DeviceName + " Named Pipe Server Is No Safe.");
                             return FWUErrorCode.NamedPipeServerIsNoSafe;
                         }
@@ -2018,7 +2046,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             if (_timeOutCount <= 60)
             {
                 if (_fWUpdateInfo.DeviceType == DeviceType.LogicalHeadset &&
-                    _fWUpdateInfo.Model.Contains("7024") && 
+                    _fWUpdateInfo.Model.Contains("7024") &&
                     _CurrentProcess >= 100)
                 {
                     _updateErrorCode = FWUErrorCode.NoError;
@@ -2270,10 +2298,10 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     else if (stateFlowNode.InnerText == "0xF001")
                     {
                         //
-                        // Abort success
+                        // Abort success 
                         //
                         _updateErrorCode = FWUErrorCode.UserAborted;
-                        _notificationStr = $"User aborted firmware update";
+                        _notificationStr = LangHelper.Instance["User_aborted_firmware_update"];
                         _logs.DebugMsg_1("Get 0xF001:User aborted firmware update");
                         resetState();
                     }
@@ -2303,55 +2331,65 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 }
                 if (tPubKeyDev1 != null)
                 {
-                    try
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} string.IsNullOrEmpty(tPubKeyDev1.InnerText) : {string.IsNullOrEmpty(tPubKeyDev1.InnerText)}");
+                    if (!string.IsNullOrEmpty(tPubKeyDev1.InnerText))
                     {
-                        _KeyGenerator = new KeyGenerator(Log);
-                        string result_string = _KeyGenerator.ProcessX0State(tPubKeyDev1.InnerText);
-                        string s = $"<StateFlow>X1</StateFlow><TPubKeyPC1></TPubKeyPC1>";
-                        if (!string.IsNullOrEmpty(result_string))
+                        try
                         {
-                            s = $"<StateFlow>X1</StateFlow><TPubKeyPC1>{result_string.ToLower().Replace("-", "")}</TPubKeyPC1>";
-                            _logs.DebugMsg_1("SendMessage : " + s);
+                            string s = $"<StateFlow>X1</StateFlow><TPubKeyPC1></TPubKeyPC1>";
+                            _KeyGenerator = new KeyGenerator(Log);
+                            string result_string = _KeyGenerator.ProcessX0State(tPubKeyDev1.InnerText);
+                            if (!string.IsNullOrEmpty(result_string))
+                            {
+                                s = $"<StateFlow>X1</StateFlow><TPubKeyPC1>{result_string.ToLower().Replace("-", "")}</TPubKeyPC1>";
+                                _logs.DebugMsg_1("SendMessage : " + s);
+                            }
+                            if (_namedPipeServer != null)
+                            {
+                                _namedPipeServer.SendMessage(s);
+                            }
                         }
-                        if (_namedPipeServer != null)
+                        catch (Exception ex)
                         {
-                            _namedPipeServer.SendMessage(s);
+                            _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} _KeyGenerator ProcessX0State error : {ex.Message}");
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
-                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
-                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} _KeyGenerator ProcessX0State error : {ex.Message}");
-                        resetState();
+
                     }
                 }
                 if (encBlock != null)
                 {
-                    try
+                    _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} string.IsNullOrEmpty(encBlock.InnerText) : {string.IsNullOrEmpty(encBlock.InnerText)}");
+                    if (!string.IsNullOrEmpty(encBlock.InnerText))
                     {
-                        string s = $"<StateFlow>X3</StateFlow><K2EncBlock></K2EncBlock><CCMTAG>4Bytes</CCMTag><version>01</version>";
-                        if (_KeyGenerator != null)
+                        try
                         {
-                            string result_string = _KeyGenerator.ProcessX2State(encBlock.InnerText);
-                            _KeyGenerator = null;
-                            if (!string.IsNullOrEmpty(result_string))
+                            if (_KeyGenerator != null)
                             {
-                                s = $"<StateFlow>X3</StateFlow><K2EncBlock>{result_string.ToLower().Replace("-", "")}</K2EncBlock><CCMTAG>4Bytes</CCMTag><version>01</version>";
-                                _logs.DebugMsg_1("SendMessage : " + s);
+                                string s = $"<StateFlow>X3</StateFlow><K2EncBlock></K2EncBlock><CCMTAG>4Bytes</CCMTag><version>01</version>";
+                                string result_string = _KeyGenerator.ProcessX2State(encBlock.InnerText);
+                                _KeyGenerator = null;
+                                if (!string.IsNullOrEmpty(result_string))
+                                {
+                                    s = $"<StateFlow>X3</StateFlow><K2EncBlock>{result_string.ToLower().Replace("-", "")}</K2EncBlock><CCMTAG>4Bytes</CCMTag><version>01</version>";
+                                    _logs.DebugMsg_1("SendMessage : " + s);
+                                }
+                                if (_namedPipeServer != null)
+                                {
+                                    _namedPipeServer.SendMessage(s);
+                                }
                             }
                         }
-                        if (_namedPipeServer != null)
+                        catch (Exception ex)
                         {
-                            _namedPipeServer.SendMessage(s);
+                            _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} _KeyGenerator ProcessX2State error : {ex.Message}");
                         }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        _updateErrorCode = FWUErrorCode.FirmwareUpdateFailed;
-                        _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
-                        _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} _KeyGenerator ProcessX2State error : {ex.Message}");
-                        resetState();
+                        if (_KeyGenerator != null)
+                        {
+                            _KeyGenerator = null;
+                        }
                     }
                 }
                 if (progressNode != null)

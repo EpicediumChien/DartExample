@@ -143,7 +143,7 @@ namespace DDPM.UI.Resources
             //"tr"
             if (cultureIn.TwoLetterISOLanguageName.Equals("tr", StringComparison.OrdinalIgnoreCase))
             {
-                return CultureInfo.CreateSpecificCulture("ru");
+                return CultureInfo.CreateSpecificCulture("tr");
             }
 
             //"uk"

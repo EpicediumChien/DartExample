@@ -251,7 +251,7 @@
         </Grid>
 
         <!-- Please Wait -->
-        <Grid x:Name="PleaseWaitGrid" Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <Grid x:Name="PleaseWaitGrid" Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Background="Transparent">
             <Border Width="587" Height="265"
                      BorderThickness="1" CornerRadius="4"
                     HorizontalAlignment="Center" VerticalAlignment="Center">

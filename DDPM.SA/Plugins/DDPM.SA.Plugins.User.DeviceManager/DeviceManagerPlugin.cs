@@ -10206,7 +10206,29 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 count++;
                 writelog($"[DeviceMangerPlugin] GetGlobalSettingParam Count:{count}...");
                 GetDPeMGlobalSettings();
-                var ck = SaveGlobalSettingParam();
+
+                _ = Task.Run(() =>
+                {
+                    while (true)
+                    {
+                        if (_SettingsPlugin != null)
+                        {
+                            bool SettingInitOk = _SettingsPlugin.QuerySettingsStatus().Result;
+                            if (SettingInitOk)
+                            {
+                                var ck = SaveGlobalSettingParam();
+                                if (ck)
+                                {
+                                    writelog($"[DeviceMangerPlugin] SaveGlobalSettingParam OK...");
+                                    break;
+                                }
+                                writelog($"[DeviceMangerPlugin] SaveGlobalSettingParam False...");
+                            }
+                        }
+                        Thread.Sleep(1000);
+                    }
+
+                });
                 obj = new Object();
                 return true;
             }

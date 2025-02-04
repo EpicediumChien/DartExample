@@ -95,6 +95,8 @@ namespace DDPM.Easy.Common
 
         //public CellJson[] Cells { get; set; }
 
+        public string TooltipResourceName { get; }
+
         #endregion Native members - value not be changed once created
 
         #region ViewModel

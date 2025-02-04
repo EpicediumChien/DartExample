@@ -274,6 +274,7 @@ namespace DDPM.UI.Plugin.ViewModels
                             case "CollaborationScreenShareEnable":
                                 _isCollaborationScreenShareEnable = di.IsCollaborationScreenShareEnable;
                                 OnPropertyChanged(nameof(IsCollaborationScreenShareEnable));
+                                IsCollaborationScreenShareEnableText = _isCollaborationScreenShareEnable ? Strings.On : Strings.Off;
                                 break;
 
                             default:

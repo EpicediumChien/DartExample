@@ -80,7 +80,8 @@ namespace DdpmSwUpdater
         private Mutex? _instanceMutex;
         private string? _applicationName;
         bool _SkipSHA = false;
-        int _Process = 0;
+        int _CurrentProcess = 0;
+        int _CurrentProcessLimit = 10;
         Timer _processTimer = new Timer();
         #region Events
         public event EventHandler<UpdateProgressInfo>? ProgressUpdate_Notify;
@@ -153,13 +154,13 @@ namespace DdpmSwUpdater
             LogManage.LogMessage($"_instanceMutex?.Dispose() go");
             _instanceMutex?.Dispose();
             LogManage.LogMessage($"_instanceMutex?.Dispose() done");
-            Method method = new Method(LogManage.logs);
+            Method method = new Method(LogManage.Logs);
             try
             {
                 string saveFolderName = Guid.NewGuid().ToString();
                 string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                 string savePath;
-                CertificateCheck caCheck = new CertificateCheck(LogManage.logs);
+                CertificateCheck caCheck = new CertificateCheck(LogManage.Logs);
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 LogManage.LogMessage($"Initialize download path start");
                 if (string.IsNullOrEmpty(installPath))
@@ -244,7 +245,7 @@ namespace DdpmSwUpdater
                             swUpdateInfos[i].SWUErrorCode = SWUErrorCode.Unknow;
                             LogManage.LogMessage($"Download start try count : {count++}");
                             _downloadTimer.Start();
-                            download = new Download(LogManage.logs);
+                            download = new Download(LogManage.Logs);
                             string downloadInfo = "";
                             // 將儲存路徑與從 URL 中提取的檔案名稱組合
                             _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
@@ -420,13 +421,13 @@ namespace DdpmSwUpdater
             LogManage.LogMessage($"_instanceMutex?.Dispose() go");
             _instanceMutex?.Dispose();
             LogManage.LogMessage($"_instanceMutex?.Dispose() done");
-            Method method = new Method(LogManage.logs);
+            Method method = new Method(LogManage.Logs);
             try
             {
                 string saveFolderName = Guid.NewGuid().ToString();
                 string path_programdata = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
                 string savePath;
-                CertificateCheck caCheck = new CertificateCheck(LogManage.logs);
+                CertificateCheck caCheck = new CertificateCheck(LogManage.Logs);
                 DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
                 LogManage.LogMessage($"Initialize download path start");
                 if (!string.IsNullOrEmpty(path_programdata))
@@ -493,7 +494,7 @@ namespace DdpmSwUpdater
                         swUpdateInfos[i].SWUErrorCode = SWUErrorCode.Unknow;
                         LogManage.LogMessage($"Download start try count : {count++}");
                         _downloadTimer.Start();
-                        download = new Download(LogManage.logs);
+                        download = new Download(LogManage.Logs);
                         string downloadInfo = "";
                         // 將儲存路徑與從 URL 中提取的檔案名稱組合
                         _installationFileStoragePath = Path.Combine(savePath + Path.GetFileName(url));
@@ -668,8 +669,9 @@ namespace DdpmSwUpdater
 
                         //For checkmarx test, [code part2]
                         string fileFullPath_sanitized = DDPMFileSecurity.SanitizePath(fileFullPath, out string info);
+                        string workingDirectory = DDPMFileSecurity.SanitizePath(Path.GetDirectoryName(fileFullPath), out string workingDirectorInfo);
 
-                        if (!string.IsNullOrEmpty(fileFullPath_sanitized))
+                        if (!string.IsNullOrEmpty(fileFullPath_sanitized) && !string.IsNullOrEmpty(workingDirectory))
                         {
                             if (DDPMFileSecurity.ValidateFilePath(fileFullPath, out info))
                             {
@@ -677,7 +679,8 @@ namespace DdpmSwUpdater
                                 {
                                     UseShellExecute = false,
                                     FileName = fileFullPath_sanitized,//fileFullPath,
-                                    Arguments = arguments
+                                    Arguments = arguments,
+                                    WorkingDirectory = workingDirectory
                                 };
                                 //_clientProcess = new Process();                        
                                 _clientProcess.StartInfo = startInfo;
@@ -697,6 +700,7 @@ namespace DdpmSwUpdater
                         else
                         {
                             LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} FilePath sanitized check - result : {info}");
+                            LogManage.LogMessage($"{nameof(DownloadAndInstall)} {_SWUpdateInfo.SoftwareName} workingDirectory sanitized check - result : {workingDirectorInfo}");
                             _notificationStr = LangHelper.Instance["Firmware_update_unsuccessful"];
                             NotificationFWupdate(LangHelper.Instance["Error"], _notificationStr);
                             _updateErrorCode = SWUErrorCode.FileIsNoSafe;
@@ -762,7 +766,7 @@ namespace DdpmSwUpdater
         }
         private bool CheckSHA(string filePath, out string fileCAInfo)
         {
-            CertificateCheck certificateCheck = new CertificateCheck(LogManage.logs);
+            CertificateCheck certificateCheck = new CertificateCheck(LogManage.Logs);
             bool isCheckSHA = false;
             fileCAInfo = "Error";
             if (!string.IsNullOrEmpty(_SWUpdateInfo.SHA512))
@@ -794,7 +798,7 @@ namespace DdpmSwUpdater
         }
         private bool CheckThumbprint(string filePath, string standThumbprint, out string fileThumbprintInfo)
         {
-            CertificateCheck certificateCheck = new CertificateCheck(LogManage.logs);
+            CertificateCheck certificateCheck = new CertificateCheck(LogManage.Logs);
             bool ishumbprint = false;
             fileThumbprintInfo = "Error";
             ishumbprint = certificateCheck.CheckFile_Thumbprint(filePath, standThumbprint, out string FileCAInfo);
@@ -823,7 +827,7 @@ namespace DdpmSwUpdater
             LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} {nameof(Unzip)} Start");
             _SWUpdateInfo.SWUErrorCode = SWUErrorCode.Unknow;
             bool ret = false;
-            Unzip unzip = new Unzip(LogManage.logs);
+            Unzip unzip = new Unzip(LogManage.Logs);
             exeFilePath = "";
             string FileCAInfo = "Pass";
             LogManage.LogMessage($"{_SWUpdateInfo.SoftwareName} check SHA go.");
@@ -922,35 +926,45 @@ namespace DdpmSwUpdater
                 RegistryKey registryKey = localKey64.OpenSubKey("SOFTWARE\\Dell\\Dell Display and Peripheral Manager\\", false);
                 if (registryKey != null)
                 {
-                    string curProcess = (registryKey.GetValue("Process")?.ToString());
-                    string nextProcess = (registryKey.GetValue("NextProcess")?.ToString());
-                    if (!string.IsNullOrEmpty(nextProcess) && int.TryParse(nextProcess, out int process))
+                    string curProcess_str = (registryKey.GetValue("Process")?.ToString());
+                    string nextProcess_str = (registryKey.GetValue("NextProcess")?.ToString());
+                    if (!string.IsNullOrEmpty(curProcess_str) && int.TryParse(curProcess_str, out int curProcess))
                     {
-                        _Process = process;
-                        ResetTimer();
+                        _CurrentProcess = curProcess;
                         UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                         {
                             DeviceName = _SWUpdateInfo.SoftwareName,
                             TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
                             ProcessName = "Installing",
-                            ProcessProgress = _Process,
+                            ProcessProgress = _CurrentProcess,
                         };
                         sendMessageToEvent(updateProgressInfo);
                     }
+                    if (!string.IsNullOrEmpty(nextProcess_str) && int.TryParse(nextProcess_str, out int nextProcess))
+                    {
+                        _CurrentProcessLimit = nextProcess;
+                    }
+                    LogManage.LogMessage($"OnRegistryValueChanged curProcess :{curProcess_str}");
+                    LogManage.LogMessage($"OnRegistryValueChanged nextProcess :{nextProcess_str}");
+                    ResetTimer();
                 }
             }
         }
         private void InstallingProcessTimer_Elapsed(object? sender, ElapsedEventArgs e)
         {
-            LogManage.LogMessage($"InstallingProcessTimer_Elapsed _Process :{_Process}");
-            UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+            LogManage.LogMessage($"InstallingProcessTimer_Elapsed _CurrentProcess :{_CurrentProcess}");
+            LogManage.LogMessage($"InstallingProcessTimer_Elapsed _CurrentProcessLimit :{_CurrentProcessLimit}");
+            if (_CurrentProcess < _CurrentProcessLimit)
             {
-                DeviceName = _SWUpdateInfo.SoftwareName,
-                TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
-                ProcessName = "Installing",
-                ProcessProgress = _Process++,
-            };
-            sendMessageToEvent(updateProgressInfo);
+                UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
+                {
+                    DeviceName = _SWUpdateInfo.SoftwareName,
+                    TheLatestVersion = _SWUpdateInfo.TheLatestVersion,
+                    ProcessName = "Installing",
+                    ProcessProgress = _CurrentProcess++,
+                };
+                sendMessageToEvent(updateProgressInfo);
+            }
         }
         private void ResetTimer()
         {
@@ -959,7 +973,7 @@ namespace DdpmSwUpdater
             {
                 LogManage.LogMessage($"ResetTimer go");
                 _processTimer.Stop();
-                _processTimer.Interval = TimeSpan.FromSeconds(15).TotalMilliseconds;
+                _processTimer.Interval = TimeSpan.FromSeconds(12).TotalMilliseconds;
                 _processTimer.Start();
             }
             LogManage.LogMessage($"ResetTimer done");
