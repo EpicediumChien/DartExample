@@ -3730,7 +3730,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 "Speaker" => _speakerMethodInfo,
                 "Dongle" => _dongleMethodInfo,
                 "Dock" => _dockMethodInfo,
-                "AirAudio"=> _airaudioMethodInfo,
+                "AirAudio" => _airaudioMethodInfo,
                 _ => null
             };
             Type interfaceType = type switch
@@ -3776,7 +3776,6 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
                     if (value == null)
                     {
-                        Debug.WriteLine($"Not found {type} GUID: {guid}");
                         writelog($"Not found {type} GUID: {guid}");
                         return false;
                     }
@@ -9890,7 +9889,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                 text = "";
 
             text = $"[DTPProxyPlugin] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
-            Console.WriteLine(text);
+            Debug.WriteLine(text);
 
 
             if (Log != null)
