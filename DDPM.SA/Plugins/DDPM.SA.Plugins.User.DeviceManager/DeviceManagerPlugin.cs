@@ -9262,7 +9262,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue)
         {
-            writelog("DeviceMangerPlugin received SetMouseAction requested ...");
+            writelog("DeviceMangerPlugin received SetCurrentSelectedAppSpecificProfile requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetCurrentSelectedAppSpecificProfile(Guid, newValue);
@@ -9271,7 +9271,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task DeleteMouseAssignedAction(string Guid, int newValue)
         {
-            writelog("DeviceMangerPlugin received DeleteAssignedAction requested ...");
+            writelog("DeviceMangerPlugin received DeleteMouseAssignedAction requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.DeleteMouseAssignedAction(Guid, newValue);
