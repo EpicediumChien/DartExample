@@ -102,7 +102,7 @@ namespace DDPM.UI.Common.Tests
         public void TestWindowsActionsKnM()
         {
             // Act
-            var result = Actions.WindowsActionsKnM;
+            var result = Actions.WindowsActionsKnM();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
@@ -111,7 +111,7 @@ namespace DDPM.UI.Common.Tests
         public void TestWindowsActionsPenBarrelButton()
         {
             // Act
-            var result = Actions.WindowsActionsPenBarrelButton;
+            var result = Actions.WindowsActionsPenBarrelButton();
             // Assert
             Assert.That(result, Is.Not.Null);
         }
