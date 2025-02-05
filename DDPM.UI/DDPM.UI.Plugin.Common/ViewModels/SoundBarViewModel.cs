@@ -330,10 +330,16 @@ namespace DDPM.UI.Plugin.ViewModels
                 _isEveryLevelChecked = false;
                 _isMinMaxOnlyChecked = true;
             }
-            else
+            else if(_isVolumeAdjustmentToneMode == 1)
             {
                 _volumeAdjustmentToneStatus = true;
                 _isEveryLevelChecked = true;
+                _isMinMaxOnlyChecked = false;
+            }
+            else 
+            {
+                _volumeAdjustmentToneStatus = false;
+                _isEveryLevelChecked = false;
                 _isMinMaxOnlyChecked = false;
             }
             OnPropertyChanged("IntelligentMicNoiseCancellationStatus");
@@ -995,16 +1001,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _volumeAdjustmentToneStatus = true;
                     _isEveryLevelChecked = true;
                     _isMinMaxOnlyChecked = false;
-                    if (Model == "SB522A")
-                    {
-                        _isVolumeAdjustmentToneMode = 0;
-                        SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = 0;
-                    }
-                    else
-                    {
-                        _isVolumeAdjustmentToneMode = 1;
-                        SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = 1;
-                    }
+                    _isVolumeAdjustmentToneMode = 1;
+                    SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = 1;
                     _supportedolumeAdjustmentToneToggleSwitch = false;
                     if (IsDTPReady)
                         _deviceManager.SetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceInfo!.ID.ToString(), SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone).Wait();
@@ -1024,8 +1022,16 @@ namespace DDPM.UI.Plugin.ViewModels
                     _volumeAdjustmentToneStatus = false;
                     _isEveryLevelChecked = false;
                     _isMinMaxOnlyChecked = false;
-                    _isVolumeAdjustmentToneMode = 3;
-                    SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = 3;
+                    if (Model == "SB522A")
+                    {
+                        _isVolumeAdjustmentToneMode = 0;
+                        SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = 0;
+                    }
+                    else
+                    {
+                        _isVolumeAdjustmentToneMode = 3;
+                        SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = 3;
+                    }
                     _supportedolumeAdjustmentToneToggleSwitch = false;
                     if (IsDTPReady)
                         _deviceManager.SetWiredAudioVolumeAdjustmentToneAsync(CurrentDeviceInfo!.ID.ToString(), SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone).Wait();
@@ -1071,16 +1077,16 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isRestoreEnable = false;
                     _isEveryLevelChecked = true;
                     _isMinMaxOnlyChecked = false;
-                    if (Model == "SB522A")
-                    {
-                        _isVolumeAdjustmentToneMode = 0;
-                        SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = 0;
-                    }
-                    else
-                    {
-                        _isVolumeAdjustmentToneMode = 1;
-                        SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = 1;
-                    }
+                    //if (Model == "SB522A")
+                    //{
+                    //    _isVolumeAdjustmentToneMode = 0;
+                    //    SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = 0;
+                    //}
+                    //else
+                    //{
+                    _isVolumeAdjustmentToneMode = 1;
+                    SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = 1;
+                    //}
                     _debouncerSpeaker.Debounce("VolumeAdjustmentToneCheck");
                     OnPropertyChanged("IsEveryLevelChecked");
                     OnPropertyChanged("IsMinMaxOnlyChecked");
