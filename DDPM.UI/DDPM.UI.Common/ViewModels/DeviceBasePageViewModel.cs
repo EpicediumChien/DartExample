@@ -837,8 +837,8 @@ namespace DDPM.UI.Common.ViewModels
                                 //Need update the index to 0 (InputSource)
                                 SelectedGroup.HeaderSelectedIndex = 0;
 
-                                // any typo?
-                                if (SelectedGroup == SelectedGroup)
+                                // fix typo
+                                if (SelectedGroup == mgGaming)//SelectedGroup)
                                 {
                                     RightViewHeaderSelectedIndex = SelectedGroup.HeaderSelectedIndex;
                                 }

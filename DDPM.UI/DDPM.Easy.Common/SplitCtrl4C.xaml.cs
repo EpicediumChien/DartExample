@@ -110,8 +110,8 @@ namespace DDPM.Easy.Common
 
                 double cx = VM.Settings_Double[4] + VM.Settings_Double[3] + +VM.Settings_Double[2];
 
-                // any typo?
-                if ((cx > 0) && (cx > 0))
+                // fix typo
+                if ((cx > 0) &&(cy > 0))// (cx > 0))
                 {
                     double y = cellListV[0].rcRatio.Bottom;
                     double h = VM.Settings_Double[1] / cy;
