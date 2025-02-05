@@ -277,7 +277,7 @@ namespace DDPM.SA.Plugins.SettingsManager
             InitDDPMITConfigFile();
             InitInfoConfigFile();
             InitRegUpdateLock();
-            GetTelemetryRegistryAndApplyData();
+            //GetTelemetryRegistryAndApplyData();
         }
 
         #endregion
@@ -335,47 +335,6 @@ namespace DDPM.SA.Plugins.SettingsManager
         #endregion
 
         #region Private methods
-        private void GetTelemetryRegistryAndApplyData()
-        {
-            bool ret = false;
-            string URL = null;
-            WriteLog($"{nameof(GetTelemetryRegistryAndApplyData)} start");
-
-            string KeyPath = @"SOFTWARE\Dell\Dell Display And Peripheral Manager";
-            string KeyName = @"TelemetryConsent";
-            object o = ReadRegistryData(DDPMSettings.RegistryHive.LocalMachine, KeyPath, KeyName).Result;
-            if (o == null)
-            {
-                WriteLog($"{nameof(GetTelemetryRegistryAndApplyData)} Telemetry consent key is null");
-                return;
-            }
-            string result = o.ToString();
-            if (result.ToUpper().Equals("TRUE") || result.ToUpper().Equals("FALSE"))
-            {
-                if (_settings != null && _settings.global_setting != null)
-                {
-                    _settings.global_setting.isSetTelemetryOverInstaller = true;//config that no consent page shown in UI, DDPMW-1254
-                    if (result.ToUpper().Equals("TRUE"))
-                        _settings.global_setting.isTelemetryConsentOn = true;
-                    if (result.ToUpper().Equals("FALSE"))
-                        _settings.global_setting.isTelemetryConsentOn = false;
-                    WriteGlobalSettingsToITConfig(_settings.global_setting);
-                    WriteRegistryData(DDPMSettings.RegistryHive.LocalMachine, KeyPath, KeyName, "DONE");
-                }
-                else
-                {
-                    WriteLog($"{nameof(GetTelemetryRegistryAndApplyData)} system _settings/global is null");
-                }
-            }
-            else
-            {
-                WriteLog($"{nameof(GetTelemetryRegistryAndApplyData)} Telemetry consent is {o.ToString()}");
-                return;
-            }
-
-            WriteLog($"{nameof(GetTelemetryRegistryAndApplyData)} done");
-        }
-
         /// <summary>
         /// //
         /// </summary>
@@ -753,6 +712,48 @@ namespace DDPM.SA.Plugins.SettingsManager
             return Task.FromResult(ret);
         }
 
+        //In order to solve timing issue, change to public this method for user setting plugin to call
+        public Task GetTelemetryRegistryAndApplyData()
+        {
+            bool ret = false;
+            string URL = null;
+            WriteLog($"{nameof(GetTelemetryRegistryAndApplyData)} start");
+
+            string KeyPath = @"SOFTWARE\Dell\Dell Display And Peripheral Manager";
+            string KeyName = @"TelemetryConsent";
+            object o = ReadRegistryData(DDPMSettings.RegistryHive.LocalMachine, KeyPath, KeyName).Result;
+            if (o == null)
+            {
+                WriteLog($"{nameof(GetTelemetryRegistryAndApplyData)} Telemetry consent key is null");
+                return Task.CompletedTask;
+            }
+            string result = o.ToString();
+            if (result.ToUpper().Equals("TRUE") || result.ToUpper().Equals("FALSE"))
+            {
+                if (_settings != null && _settings.global_setting != null)
+                {
+                    _settings.global_setting.isSetTelemetryOverInstaller = true;//config that no consent page shown in UI, DDPMW-1254
+                    if (result.ToUpper().Equals("TRUE"))
+                        _settings.global_setting.isTelemetryConsentOn = true;
+                    if (result.ToUpper().Equals("FALSE"))
+                        _settings.global_setting.isTelemetryConsentOn = false;
+                    WriteGlobalSettingsToITConfig(_settings.global_setting);
+                    WriteRegistryData(DDPMSettings.RegistryHive.LocalMachine, KeyPath, KeyName, "DONE");
+                }
+                else
+                {
+                    WriteLog($"{nameof(GetTelemetryRegistryAndApplyData)} system _settings/global is null");
+                }
+            }
+            else
+            {
+                WriteLog($"{nameof(GetTelemetryRegistryAndApplyData)} Telemetry consent is {o.ToString()}");
+                return Task.CompletedTask;
+            }
+
+            WriteLog($"{nameof(GetTelemetryRegistryAndApplyData)} done");
+            return Task.CompletedTask;
+        }
         #endregion
     }
 
