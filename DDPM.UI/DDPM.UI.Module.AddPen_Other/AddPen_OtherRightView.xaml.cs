@@ -113,7 +113,7 @@ namespace DDPM.UI.Module.AddPen_Other
                 }
                 else
                 {
-                    DdpmCommonHelper.WriteUILog($"IsBLE.HasValu : {IsBLE.HasValue}, ");
+                    DdpmCommonHelper.WriteUILog($"IsBLE.HasValu : {IsBLE.HasValue}, !IsBLE.Value : {!IsBLE.Value}");
                 }
             }
             else
