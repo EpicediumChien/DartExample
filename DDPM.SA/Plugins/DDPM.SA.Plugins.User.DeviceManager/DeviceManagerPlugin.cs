@@ -711,7 +711,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if(_DisplayManagerPlugin != null)
             {
-                _DisplayManagerPlugin.SetIsUserActive(false);
+                //_DisplayManagerPlugin.SetIsUserActive(false);
                 WriteLog($"[OnCurrentSessionInactived] set in-active to this user subagent in session({WTSFunction.GetCurrentUserSessionId()})");
             }
         }
@@ -720,7 +720,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             if (_DisplayManagerPlugin != null)
             {
-                _DisplayManagerPlugin.SetIsUserActive(true);
+                //_DisplayManagerPlugin.SetIsUserActive(true);
                 WriteLog($"[OnCurrentSessionActived] set active to this user subagent in session({WTSFunction.GetCurrentUserSessionId()})");
             }
         }
