@@ -1077,16 +1077,8 @@ namespace DDPM.UI.Plugin.ViewModels
                     _isRestoreEnable = false;
                     _isEveryLevelChecked = true;
                     _isMinMaxOnlyChecked = false;
-                    //if (Model == "SB522A")
-                    //{
-                    //    _isVolumeAdjustmentToneMode = 0;
-                    //    SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = 0;
-                    //}
-                    //else
-                    //{
                     _isVolumeAdjustmentToneMode = 1;
                     SpeakerInfoValueDTP.WiredAudioVolumeAdjustmentTone = 1;
-                    //}
                     _debouncerSpeaker.Debounce("VolumeAdjustmentToneCheck");
                     OnPropertyChanged("IsEveryLevelChecked");
                     OnPropertyChanged("IsMinMaxOnlyChecked");
