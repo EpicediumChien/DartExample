@@ -99,7 +99,7 @@ namespace DDPM.UI.Plugin.Common
             if (name.Length > 2 && name.Substring(name.Length - 3, 3) == "...")
             {
                 spOpen.Visibility = Visibility.Visible;
-                if (id == 0 || 0==0)
+                if (id == 0 || 0==0) //any typo?
                 {
                     btnSave.IsEnabled = false;
                     btnBrowse.Visibility = Visibility.Visible;
