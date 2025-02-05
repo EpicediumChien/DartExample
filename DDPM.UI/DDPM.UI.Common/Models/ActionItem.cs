@@ -324,20 +324,14 @@ namespace DDPM.UI.Common
             return PenActions.Where(x => x.Value.IsForTopButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
-        public static List<int> WindowsActionsKnM
+        public static List<int> WindowsActionsKnM()
         {
-            get
-            {
-                return KnMActions.Where(x => x.Value.Category == ActionCategory.WindowsAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return KnMActions.Where(x => x.Value.Category == ActionCategory.WindowsAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
-        public static List<int> WindowsActionsPenBarrelButton
+        public static List<int> WindowsActionsPenBarrelButton()
         {
-            get
-            {
-                return PenActions.Where(x => x.Value.Category == ActionCategory.WindowsAction && x.Value.IsForBarrelButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return PenActions.Where(x => x.Value.Category == ActionCategory.WindowsAction && x.Value.IsForBarrelButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
         public static List<int> WindowsActionsPenTopButton
