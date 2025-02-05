@@ -91,23 +91,37 @@ namespace DDPM.UI.Module.AddPen_Other
         private void Pairing(object sender, System.Windows.Input.StylusDownEventArgs e)
         {
             Thread.Sleep(500);
-            if (IsBLE.HasValue && !IsBLE.Value)
+
+            if (IsBLE != null)
             {
-                MessageModalDialog messageModalDialog;
-                Window mainWindow = System.Windows.Application.Current.MainWindow;
-                messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.No, Strings.Yes);
-                if (mainWindow != null)
+                if (IsBLE.HasValue && !IsBLE.Value)
                 {
-                    messageModalDialog.Owner = mainWindow;
-                    messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
-                    messageModalDialog.Top = mainWindow.Top + 300;
+                    MessageModalDialog messageModalDialog;
+                    Window mainWindow = System.Windows.Application.Current.MainWindow;
+                    messageModalDialog = new(Strings.PairYourPen, Strings.PairYourPenMessage, Strings.No, Strings.Yes);
+                    if (mainWindow != null)
+                    {
+                        messageModalDialog.Owner = mainWindow;
+                        messageModalDialog.Left = mainWindow.Left + (mainWindow!.ActualWidth - 417) / 2;
+                        messageModalDialog.Top = mainWindow.Top + 300;
+                    }
+                    if (messageModalDialog.ShowDialog()!.Value)
+                    {
+                        _vm.StartPairingPen();
+                    }
+                    IsBLE = null;
                 }
-                if (messageModalDialog.ShowDialog()!.Value)
+                else
                 {
-                    _vm.StartPairingPen();
+                    DdpmCommonHelper.WriteUILog($"IsBLE.HasValu : {IsBLE.HasValue}, ");
                 }
-                IsBLE = null;
             }
+            else
+            {
+                DdpmCommonHelper.WriteUILog("Pairing, IsBLE == null");
+            }
+
+
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
