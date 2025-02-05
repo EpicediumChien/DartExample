@@ -292,7 +292,11 @@ namespace DDPM.UI.Common.Models
                                 break;
                         } //switch(deviceInfo.ModelNumber)
 
-                        return DDPM.SA.Common.UI.SACommonHelper.MappingName(model, DeviceInfo.Name) + $" {model}";
+                        // Jim 20250205 modify PIMS-318236
+                        if (model == "P2424HEB" || model == "P2724DEB" || model == "P3424WEB" || model == "U3223QZ" || model == "U3224KB" || model == "U3224KBA")
+                            return DDPM.SA.Common.UI.SACommonHelper.MappingName(model, DeviceInfo.Name);
+                        else
+                            return DDPM.SA.Common.UI.SACommonHelper.MappingName(model, DeviceInfo.Name) + $" {model}";
                     }
 
                     //OLD Code:
