@@ -98,6 +98,28 @@ namespace DDPM.SA.Plugins.SettingsManager
                     WriteLog($"SettingsManagerPlugin constructor ... ACL failed...{info}");
                 }
             }
+
+            string DDM2Path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), @"Dell\Dell Display Manager 2");
+            if (Directory.Exists(DDM2Path))
+            {
+                WriteLog($"SettingsManagerPlugin constructor ... DDM2Path exist, check and delete it");
+                if (DDPMFileSecurity.ValidateFilePath(DDM2Path, out string info))
+                {
+                    try
+                    {
+                        WriteLog($"SettingsManagerPlugin constructor ... DDM2Path is valid, delete it");
+                        Directory.Delete(DDM2Path);//, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteLog($"SettingsManagerPlugin constructor ... DDM2Path delete failed, reason: {ex.Message}");
+                    }
+                }
+                else
+                {
+                    WriteLog($"SettingsManagerPlugin constructor ... DDM2Path is invalid, skip delete it ({info})");
+                }
+            }
         }
 
         #endregion
