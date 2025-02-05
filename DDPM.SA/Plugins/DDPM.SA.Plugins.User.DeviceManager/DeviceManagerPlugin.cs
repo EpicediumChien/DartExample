@@ -9262,7 +9262,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue)
         {
-            writelog("DeviceMangerPlugin received SetMouseAction requested ...");
+            writelog("DeviceMangerPlugin received SetCurrentSelectedAppSpecificProfile requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.SetCurrentSelectedAppSpecificProfile(Guid, newValue);
@@ -9271,7 +9271,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         public Task DeleteMouseAssignedAction(string Guid, int newValue)
         {
-            writelog("DeviceMangerPlugin received DeleteAssignedAction requested ...");
+            writelog("DeviceMangerPlugin received DeleteMouseAssignedAction requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
             _DTPProxyPlugin.DeleteMouseAssignedAction(Guid, newValue);
@@ -11572,6 +11572,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             writelog("[DeviceMangerPlugin] _SystemEvents_DisplaySettingsChanged() into Re-GetDevices ...");
                             //Call VCP to catch updated monitor info
                             _AllInfoMonitors = new List<MonitorInfo>(_DisplayManagerPlugin.Re_GetMonitors(token).Result);
+                            //NKVM monitor change
+                            if (_NKVMPlugin != null)
+                            {
+                                writelog("[DeviceMangerPlugin] NKVM UpdateMonitorInfo ...");
+                                _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, token);
+                            }
 
                             token.ThrowIfCancellationRequested();
                             //review monitor list to check duplicated data
@@ -12008,16 +12014,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             }
             else if ((string.Compare(changedProperty, "DisplayChanged", true) == 0))
             {
-                if (_NKVMPlugin != null)
-                {
-                    //if (mo != null)
-                    //{
-                    //    _NKVMPlugin.MonitorPlug();
-                    //    SupportedNKVMMonitors();
-                    //}
-                    _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, token);
-                    //SupportedNKVMMonitors();
-                }
+                //if (_NKVMPlugin != null)
+                //{
+                //    _NKVMPlugin.UpdateMonitorInfo(_AllInfoMonitors, token);
+                //}
                 DisplayFWCheck();
                 //for USB KVM auto switch kb ms
                 foreach (var monitor in _AllInfoMonitors)
@@ -18342,6 +18342,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             if (!rule.devicetype.Equals("display"))
             {
                 return Task.FromResult(true);
+            }
+
+            // add @ 20250204 stephen: fix no display connected in list
+            if (_AllInfoMonitors.Count == 0)
+            {
+                return Task.FromResult(false);
             }
 
             bool hasModel = false;

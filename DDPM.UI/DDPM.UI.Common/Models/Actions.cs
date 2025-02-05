@@ -427,7 +427,7 @@ namespace DDPM.UI.Common
                             if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
                             {
                                 if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
-                                    buttonAction.OfficeActions["Word"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                                    buttonAction.OfficeActions["Word"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid && x.Key >= 100).Key;
                             }
                             else
                             {
@@ -456,7 +456,7 @@ namespace DDPM.UI.Common
                             if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
                             {
                                 if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
-                                    buttonAction.OfficeActions["Excel"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                                    buttonAction.OfficeActions["Excel"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid && x.Key >= 200).Key;
                             }
                             else
                             {
@@ -485,7 +485,7 @@ namespace DDPM.UI.Common
                             if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
                             {
                                 if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
-                                    buttonAction.OfficeActions["PowerPoint"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                                    buttonAction.OfficeActions["PowerPoint"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid && x.Key >= 300).Key;
                             }
                             else
                             {
@@ -515,7 +515,7 @@ namespace DDPM.UI.Common
                             if (ButtonActions.TryGetValue(btn, out SelectedMouseAction? buttonAction))
                             {
                                 if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
-                                    buttonAction.OfficeActions["Outlook"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                                    buttonAction.OfficeActions["Outlook"] = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid && x.Key >= 400).Key;
                             }
                             else
                             {
