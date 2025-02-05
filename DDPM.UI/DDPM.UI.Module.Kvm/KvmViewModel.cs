@@ -2002,12 +2002,9 @@ namespace DDPM.UI.Module.Kvm
                 }
                 else
                 {
-                    foreach (Process process in processes)
-                    {
-                        NkvmdHandle = process.Handle;
-                        Console.WriteLine($"Process ID: {process.Id}, Handle: {NkvmdHandle}");
-                        break;
-                    }
+                    Process process = processes[0];                    
+                    NkvmdHandle = process.Handle;
+                    Console.WriteLine($"Process ID: {process.Id}, Handle: {NkvmdHandle}");
                 }
 
                 Process proc = new Process();
