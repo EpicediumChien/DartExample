@@ -1234,7 +1234,7 @@ namespace DDPM.UI.Plugin.ViewModels
             get
             {
                 if (_rightViewHeaders.Count == 0 &&
-                    _rightViewHeaders.Count == 0 && ModuleGroups.Count > 0 && // If _vbarItems is empty, will build the list from ModuleGroups
+                    ModuleGroups.Count > 0 && // If _vbarItems is empty, will build the list from ModuleGroups
                     ((VbarSelectedIndex >= 0) || (VbarSelectedIndex < ModuleGroups.Count))) //Get the selected ModuleGroup
                 {
                     ModuleGroup mg = ModuleGroups[VbarSelectedIndex];
