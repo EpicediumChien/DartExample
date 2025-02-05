@@ -671,12 +671,10 @@ namespace DDPM.UI.Common.ViewModels
         {
             get
             {
-                if (FullView != null)
+                if (FullView != null && 
+                    FullView.Visibility == Visibility.Visible)
                 {
-                    if (FullView.Visibility == Visibility.Visible)
-                    {
-                        return true;
-                    }
+                    return true;
                 }
                 return false;
             }

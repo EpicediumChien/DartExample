@@ -291,15 +291,13 @@ namespace DDPM.UI.Common
                             foreach (var actionDetail in assignedActions)
                             {
                                 var btn = (KeyName)actionDetail.ProgrammableKeyId;
-                                if (KeyActions.TryGetValue(btn, out SelectedAction? keyAction))
+                                if (KeyActions.TryGetValue(btn, out SelectedAction? keyAction) && 
+                                    Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
                                 {
-                                    if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                                    keyAction.AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                                    if (keyAction.AssignedAction.ID == 14) //AssignKeystroke
                                     {
-                                        keyAction.AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
-                                        if (keyAction.AssignedAction.ID == 14) //AssignKeystroke
-                                        {
-                                            keyAction.AssignedAction.Parameter = actionDetail.DisplayData;
-                                        }
+                                        keyAction.AssignedAction.Parameter = actionDetail.DisplayData;
                                     }
                                 }
                             }

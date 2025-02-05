@@ -188,14 +188,10 @@ namespace DDPM.UI.Module.Brightness
                 {
                     foreach (HomeDevice hd in _vm.ModuleOwner.HomeDevices)
                     {
-                        if (hd.MonitorInfo.IsDellMonitor)
-                        {
-                            if (hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
-                            {
-                                if (!hd.MonitorInfo.CapabilityDic.ContainsKey("66"))
-                                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, _vm.ScheduleMap);
-                            }
-                        }
+                        if (hd.MonitorInfo.IsDellMonitor && 
+                            hd.MonitorInfo.CapabilityDic.ContainsKey("12") && 
+                            !hd.MonitorInfo.CapabilityDic.ContainsKey("66"))
+                            DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, _vm.ScheduleMap);
                     }
                 });
             }
