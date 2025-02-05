@@ -2534,6 +2534,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         Duration = new Duration(TimeSpan.FromSeconds(0.3)),
                     };
                     AnimatedPanel.Visibility = Visibility.Collapsed;
+                    _vm?.OnUpdateIsHDROn();
                 }
                 else
                 {

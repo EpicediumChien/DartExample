@@ -1087,19 +1087,22 @@
     <value>Sensibilidade da Ponta</value>
   </data>
   <data name="PenSettings.2" xml:space="preserve">
-    <value>Se deslocar o controlo deslizante para a direita, a sensibilidade à pressão diminui gradualmente\ne é necessário aplicar\numa pressão mais firme com a caneta</value>
+    <value>Se deslocar o controlo deslizante para a direita, a sensibilidade à pressão diminui gradualmente e é necessário aplicar uma pressão mais firme com a caneta</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.3" xml:space="preserve">
     <value>Sensibilidade de Inclinação</value>
   </data>
   <data name="PenSettings.4" xml:space="preserve">
-    <value>Se deslocar o cursor para a direita, o efeito de inclinação aumenta gradualmente\ne é necessário aplicar\nmenos ângulo de inclinação</value>
+    <value>Se deslocar o cursor para a direita, o efeito de inclinação aumenta gradualmente e é necessário aplicar menos ângulo de inclinação</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.5" xml:space="preserve">
     <value>Emparelhar com Tile</value>
   </data>
   <data name="PenSettings.6" xml:space="preserve">
-    <value>Emparelhe a caneta com o dispositivo móvel utilizando\na aplicação Tile</value>
+    <value>Emparelhe a caneta com o dispositivo móvel utilizando a aplicação Tile</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.7" xml:space="preserve">
     <value>Começar</value>

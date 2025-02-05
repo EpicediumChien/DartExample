@@ -929,7 +929,8 @@ namespace DDPM.SA.Plugins.CMAManager
 
                         taskInfoQueue.Dequeue();    // add @ 20250124 stephen: bug fix
 
-                        sendDeferNotify(uniqueAgentGuid.ToString(), request.remote_request);
+                        // modified @ 20502024 stephen : send fwjob event
+                        sendFwJobNotify(uniqueAgentGuid.ToString(), request.remote_request);
 
                         result.message = "Device not found";
                         result.output_result = "FAIL";
@@ -1155,6 +1156,10 @@ namespace DDPM.SA.Plugins.CMAManager
             {
                 OnEventDisplayDisconnect(args);
             }
+
+            // add @ 20250204 stephen
+            WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed isDoFwJobChecking = " + isDoFwJobChecking);
+
 
             // add @ 20250117 stephen
             // modify @ 20250119 stephen
@@ -1387,7 +1392,7 @@ namespace DDPM.SA.Plugins.CMAManager
         // add @ 20250117 stephen
         private void initFwJobControlPanel()
         {
-            WriteLog($"[CMA] initDeferControlPanel()");
+            WriteLog($"[CMA] initFwJobControlPanel()");
             FwJobControlPanel.init();
             //startDeferTimer();
 
@@ -1411,59 +1416,77 @@ namespace DDPM.SA.Plugins.CMAManager
             isDoFwJobChecking = true;
 
             List<string> strDefers = FwJobControlPanel.displayConnected(monitors);
+
+            // add @ 20250204 stephen : fix list is null
+            if (null == strDefers)
+            {
+                WriteLog("[CMA] doFwJobChecking: No FwJob.");
+                isDoFwJobChecking = false;
+                return;
+            }
+
+            WriteLog("[CMA] doFwJobChecking strDefers.Count = " + strDefers.Count);
+            // add end @ 20250204
+
             DeferItem deferItem = null;
             // do defer
             foreach (string strDefer in strDefers)
             {
                 WriteLog(strDefer);
                 deferItem = new DeferItem(strDefer);
-                if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, deferItem.guid.ToString(), deferItem.commanddata).Result)
+                // modified start @ 20250204 stephen : check defer in command
+                if (deferItem.commanddata.ToLower().Contains("defer"))
                 {
-                    WriteLog($"[CMA] _CliManagerPlugin.checkDefer = true, do not run command");
-
-                    // feedback event to show in defer status
-                    sendDeferNotify(deferItem.guid.ToString(), deferItem.commanddata);
-                }
-                else
-                {
-
-                    switch (deferItem.commandfrom)
+                    if (_CliManagerPlugin.checkDefer(DeferControlPanel.SRC_FROM_CMA, deferItem.guid.ToString(), deferItem.commanddata).Result)
                     {
-                        case DeferControlPanel.SRC_FROM_CLI:
+                        WriteLog($"[CMA] _CliManagerPlugin.checkDefer = true, do not run command");
 
-                            WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CLI");
-                            ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
-                            CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(deferItem.commanddata.Split(' '));
-
-                            commandLineInput.isCliRunAdmin = true;
-
-                            CLIEventResult result = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
-
-                            break;
-
-                        case DeferControlPanel.SRC_FROM_CMA:
-                            WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CMA");
-                            try
-                            {
-                                initCommandTask(deferItem.guid.ToString(), deferItem.commanddata);
-
-                                TaskInfo taskInfo = taskInfoQueue.Peek();
-                                WriteLog($"[CMA] before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
-                                _ = Task.Run(async () => await runCommandTaskAsync(taskInfo.sid, taskInfo.gid));
-                            }
-                            catch (Exception e)
-                            {
-
-                                NotifyArgs args = new NotifyArgs();
-                                args.eventType = Params.EventType.UNKNOWN_ERROR.ToString();
-                                args.notification = e.ToString() + "; " + deferItem.commanddata;
-                                OnEventNotify(args);
-                            }
-                            break;
+                        // feedback event to show in defer status
+                        sendDeferNotify(deferItem.guid.ToString(), deferItem.commanddata);
+                        isDoFwJobChecking = false;
+                        return;
                     }
-
                 }
+
+                switch (deferItem.commandfrom)
+                {
+                    case DeferControlPanel.SRC_FROM_CLI:
+
+                        WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CLI");
+                        ICLICommandTable iCLICommandTable = new ICLICommandTable(null);
+                        CommandLineInput commandLineInput = iCLICommandTable.StringProcessing(deferItem.commanddata.Split(' '));
+
+                        commandLineInput.isCliRunAdmin = true;
+
+                        CLIEventResult result = _CliManagerPlugin.PerformCommandLineRelay(commandLineInput).Result;
+
+                        break;
+
+                    case DeferControlPanel.SRC_FROM_CMA:
+                        WriteLog($"[CMA] checkDeferSchedule::DeferControlPanel.SRC_FROM_CMA");
+                        try
+                        {
+                            initCommandTask(deferItem.guid.ToString(), deferItem.commanddata);
+
+                            TaskInfo taskInfo = taskInfoQueue.Peek();
+                            WriteLog($"[CMA] before runCommandTask, taskInfo.sid = {taskInfo.sid} ; taskInfo.gid = {taskInfo.gid} ; taskInfo.tid = {taskInfo.tid} ; taskInfo.eventtype = {taskInfo.eventtype} ; taskInfo.command = {taskInfo.command}");
+                            _ = Task.Run(async () => await runCommandTaskAsync(taskInfo.sid, taskInfo.gid));
+                        }
+                        catch (Exception e)
+                        {
+
+                            NotifyArgs args = new NotifyArgs();
+                            args.eventType = Params.EventType.UNKNOWN_ERROR.ToString();
+                            args.notification = e.ToString() + "; " + deferItem.commanddata;
+                            OnEventNotify(args);
+                        }
+                        break;
+                }
+                // modified end @ 20250204 stephen
+            
+
             }
+        
             Thread.Sleep(30000);
             isDoFwJobChecking = false;
         }

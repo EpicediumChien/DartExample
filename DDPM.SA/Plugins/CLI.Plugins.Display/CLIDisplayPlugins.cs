@@ -12272,6 +12272,8 @@ namespace DDPM.CLI.Plugins.Display
                 else
                     somethingfail |= 0x10;
 
+                retcode = true;
+
                 if (retcode)
                 {
                     cli_Response.Result = "PASS";

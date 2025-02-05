@@ -1225,7 +1225,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     for (int i = 0; i < AllALSConfig.Count; i++)
                     {
-                        AllALSConfig[i].isBusy = true;
+                        if (AllALSConfig[i].isSupportALS == 2)
+                            AllALSConfig[i].isBusy = true;
+                        else
+                            AllALSConfig[i].isBusy = false;
                         _logs.DebugMsg($"[DisplayMangerPlugin] SetALSFeatureValue ... {AllALSConfig[i].Edid.ModelName} ... Busy ... ");
                     }
                 }
@@ -2180,17 +2183,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (config.AutoBrightnessRangeLevel.Count > 0)
             {
                 var level = config.AutoBrightnessRangeLevel[0];
-                if (level.level_name == "Low" && level.level_value == 0)
+                if (level.level_value == 0)
                 {
                     value &= ~((uint)1 << 6); // Clear bit6 to 0
                     value &= ~((uint)1 << 7); // Clear bit7 to 0
                 }
-                else if (level.level_name == "Mid" && level.level_value == 1)
+                else if (level.level_value == 1)
                 {
                     value |= (uint)1 << 6; // Set bit6 to 1
                     value &= ~((uint)1 << 7); // Clear bit7 to 0
                 }
-                else if (level.level_name == "High" && level.level_value == 2)
+                else if (level.level_value == 2)
                 {
                     value &= ~((uint)1 << 6); // Clear bit6 to 0
                     value |= (uint)1 << 7; // Set bit7 to 1

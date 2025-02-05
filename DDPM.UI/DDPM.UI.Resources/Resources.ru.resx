@@ -538,7 +538,7 @@
     <value>Пример: «Alt + P», «Shift + F» «Ctrl + Shift + F».\nОбратите внимание, что при работе с несколькими мониторами для активации функции горячих клавиш курсор мыши должен находиться на экране целевого монитора.</value>
   </data>
   <data name="ButtonSettings.0" xml:space="preserve">
-    <value>Нажатие колеса прокрутки</value>
+    <value>Настроить нажатие колеса прокрутки</value>
   </data>
   <data name="ButtonSettings.1" xml:space="preserve">
     <value>Наклон колеса прокрутки влево</value>
@@ -1087,19 +1087,22 @@
     <value>Чувствительность наконечника</value>
   </data>
   <data name="PenSettings.2" xml:space="preserve">
-    <value>Перемещение ползунка вправо приведет к постепенному\nснижению чувствительности к нажиму, \nтак что потребуется более жесткий нажим пера</value>
+    <value>Перемещение ползунка вправо приведет к постепенному снижению чувствительности к нажиму,  так что потребуется более жесткий нажим пера</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.3" xml:space="preserve">
     <value>Чувствительность к наклону</value>
   </data>
   <data name="PenSettings.4" xml:space="preserve">
-    <value>Перемещение ползунка вправо приведет к\nпостепенному увеличению эффекта наклона, так что потребуется\nуменьшить угол наклона</value>
+    <value>Перемещение ползунка вправо приведет к постепенному увеличению эффекта наклона, так что потребуется уменьшить угол наклона</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.5" xml:space="preserve">
     <value>Сопряжение с Tile</value>
   </data>
   <data name="PenSettings.6" xml:space="preserve">
-    <value>Выполните сопряжение пера с мобильным устройством при помощи\nприложения Tile</value>
+    <value>Выполните сопряжение пера с мобильным устройством при помощи приложения Tile</value>
+    <comment>Robert_Lin 2025-2-4 remove "\n"</comment>
   </data>
   <data name="PenSettings.7" xml:space="preserve">
     <value>Начало работы</value>
