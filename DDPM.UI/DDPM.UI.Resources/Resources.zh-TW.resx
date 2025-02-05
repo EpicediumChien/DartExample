@@ -538,19 +538,19 @@
     <value>範例：「Alt + P」、「Shift + F」、「Ctrl + Shift + F」。\n請注意，若使用多個顯示器，滑鼠游標應位於目標顯示器畫面上，以觸發快速鍵功能。</value>
   </data>
   <data name="ButtonSettings.0" xml:space="preserve">
-    <value>滾輪可點擊</value>
+    <value>自訂按一下滾輪的動作</value>
   </data>
   <data name="ButtonSettings.1" xml:space="preserve">
-    <value>捲動向左傾斜</value>
+    <value>自訂滾輪向左傾斜的動作</value>
   </data>
   <data name="ButtonSettings.2" xml:space="preserve">
-    <value>捲動向右傾斜</value>
+    <value>自訂滾輪向右傾斜的動作</value>
   </data>
   <data name="ButtonSettings.3" xml:space="preserve">
-    <value>側邊按鈕向前</value>
+    <value>自訂側邊前按鈕的動作</value>
   </data>
   <data name="ButtonSettings.4" xml:space="preserve">
-    <value>側邊按鈕背面</value>
+    <value>自訂側邊後按鈕的動作</value>
   </data>
   <data name="ButtonSettings.5" xml:space="preserve">
     <value>若要自訂，請按一下左側影像上概述的其中一個部分</value>

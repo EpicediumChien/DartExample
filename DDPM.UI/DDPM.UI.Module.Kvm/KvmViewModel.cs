@@ -669,6 +669,11 @@ namespace DDPM.UI.Module.Kvm
 
                         if (selectedHomeDevice != null && selectedHomeDevice.HasCapability_PipPbp)
                         {
+                            //Robert_Lin 2025-2-3 Change the displayed tooltips
+                            // PxpMode          Tooltip example:
+                            // Off              "Hotkeys - Switch between PCs: None"
+                            // PIP or PBP mode  "Hotkeys - Switch Keyboard and Mouse: None
+                            //                   Hotkeys - Change PIP position: None"
                             if (_curPxpMode == 0)
                             {
                                 ObjGetVCP ret_PxP = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(selectedHomeDevice.MonitorInfo).Result;
@@ -677,7 +682,12 @@ namespace DDPM.UI.Module.Kvm
                                     UInt16 curPxpMode = Convert.ToUInt16(ret_PxP.value);
                                     if (curPxpMode != 0)
                                     {
-                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
+                                        //Robert_Lin 2025-2-3 
+                                        //OLD:
+                                        //_kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
+                                        //NEW:
+                                        //
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
                                     }
                                     else
                                     {
@@ -687,7 +697,11 @@ namespace DDPM.UI.Module.Kvm
                             }
                             else
                             {
-                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
+                                //Robert_Lin 2025-2-3 
+                                //OLD:
+                                //_kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
+                                //NEW:
+                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchKbMsKeyCaption}: {SwitchKbMsKey}\r\n{HeadCaption} - {ChangePipKeyCaption}: {ChangePipKey}";
                             }
                         }
                         else
@@ -708,7 +722,11 @@ namespace DDPM.UI.Module.Kvm
                                     UInt16 curPxpMode = Convert.ToUInt16(ret_PxP.value);
                                     if (curPxpMode != 0)
                                     {
-                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
+                                        //Robert_Lin 2025-2-3 
+                                        //OLD:
+                                        //_kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
+                                        //NEW:
+                                        _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
                                     }
                                     else
                                     {
@@ -718,7 +736,11 @@ namespace DDPM.UI.Module.Kvm
                             }
                             else
                             {
-                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
+                                //Robert_Lin 2025-2-3 
+                                //OLD:
+                                //_kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {SwitchPCsKey}\r\n{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
+                                //NEW:
+                                _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchKbMsKeyCaption}: {StrNone}\r\n{HeadCaption} - {ChangePipKeyCaption}: {StrNone}";
                             }
 
                         }

@@ -30,6 +30,7 @@ namespace DDPM.Easy.Common
         public UserControl UC => this;
         public int EAID { get => 0; set { } }
 
+        public string TooltipResourceName { get; } = "EATooltip_00";
         #endregion ISplitCtrl Native Members
 
         #region ViewModel
@@ -130,8 +131,25 @@ namespace DDPM.Easy.Common
         #endregion Settings
 
         #region FriendlyName
-
-        public string FriendlyName { get; set; } = LangHelper.Instance[$"EATooltip_00"]; //"Empty Layout";
+        private string _friendlyName = "Empty Layout";
+        public string FriendlyName
+        {
+            get
+            {
+                try
+                {
+                    return LangHelper.Instance[$"{TooltipResourceName}"];
+                }
+                catch (Exception e1)
+                {
+                }
+                return _friendlyName;
+            }
+            set
+            {
+                _friendlyName = value;
+            }
+        }
 
         #endregion FriendlyName
 

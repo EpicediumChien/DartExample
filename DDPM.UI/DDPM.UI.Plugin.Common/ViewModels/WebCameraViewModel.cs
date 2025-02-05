@@ -802,6 +802,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     _ = DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), false);
                     OnPropertyChanged(nameof(IsHDROn));
+                    OnPropertyChanged(nameof(IsHDROnText));
                 }
                 SetProfile();
                 //if (!IsDTPReady)
@@ -875,7 +876,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 CurrentProfile.AutoFramingSensitivity = _autoFramingSensitivity;
 
                 if (!IsUSB3)
-                    CurrentProfile.IsHDROn = false;
+                    CurrentProfile.IsHDROn = false;                
 
                 //var IsNormalProfile = CurrentProfileName != "Smooth" && CurrentProfileName != "Vibrant" && CurrentProfileName != "Warm";
                 Task<bool> task;
@@ -922,6 +923,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         _log.Error("DTP SetIsHDROn fail!");
                     }
                     OnPropertyChanged(nameof(IsHDROn));
+                    OnPropertyChanged(nameof(IsHDROnText));
                 }
 
                 if (CurrentDeviceInfo.IsPropertyWhiteBalanceSupported)
@@ -1512,6 +1514,24 @@ namespace DDPM.UI.Plugin.ViewModels
             get => CurrentDeviceInfo!.IsPropertyHDRSupported ? Visibility.Visible : Visibility.Collapsed;
         }
         public bool hdr_change = false;
+
+        public void OnUpdateIsHDROn()
+        {
+            try
+            {
+                WebcamProfile tmp = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(WebcamSettings.PresetProfiles[CurrentProfileName]));
+                if (tmp != null)
+                {
+                    CurrentProfile = tmp;
+                    OnPropertyChanged(nameof(IsHDROn));
+                    OnPropertyChanged(nameof(IsHDROnText));
+                }
+            }
+            catch(Exception ex)
+            {
+                DdpmCommonHelper.WriteUILog($"[WebCameraViewModel][OnUpdateIsHDROn] exception: {ex.Message}");
+            }
+        }
 
         public bool IsHDROn
         {
