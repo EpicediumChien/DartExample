@@ -105,8 +105,15 @@ namespace DDPM.SA.Plugins.SettingsManager
                 WriteLog($"SettingsManagerPlugin constructor ... DDM2Path exist, check and delete it");
                 if (DDPMFileSecurity.ValidateFilePath(DDM2Path, out string info))
                 {
-                    WriteLog($"SettingsManagerPlugin constructor ... DDM2Path is valid, delete it");
-                    Directory.Delete(DDM2Path, true);
+                    try
+                    {
+                        WriteLog($"SettingsManagerPlugin constructor ... DDM2Path is valid, delete it");
+                        Directory.Delete(DDM2Path, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        WriteLog($"SettingsManagerPlugin constructor ... DDM2Path delete failed, reason: {ex.Message}");
+                    }
                 }
                 else
                 {
