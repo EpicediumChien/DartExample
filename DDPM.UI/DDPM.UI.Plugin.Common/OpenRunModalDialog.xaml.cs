@@ -126,7 +126,7 @@ namespace DDPM.UI.Plugin.Common
         private int idx = 0;
         private void ActionButtonLoaded(object sender, RoutedEventArgs e)
         {
-            int id;
+            //int id;
             if (sender is UXRadioButton rb)
             {
                 //id = (int)((UXRadioButton)sender).DataContext;
