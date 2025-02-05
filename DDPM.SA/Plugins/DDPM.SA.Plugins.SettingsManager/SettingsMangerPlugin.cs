@@ -108,7 +108,7 @@ namespace DDPM.SA.Plugins.SettingsManager
                     try
                     {
                         WriteLog($"SettingsManagerPlugin constructor ... DDM2Path is valid, delete it");
-                        Directory.Delete(DDM2Path, true);
+                        Directory.Delete(DDM2Path);//, true);
                     }
                     catch (Exception ex)
                     {
