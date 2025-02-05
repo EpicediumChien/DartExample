@@ -16,6 +16,7 @@ using VcpCore.Common;
 using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
 using DDPM.SA.Common.Settings;
 using System.Diagnostics;
+using DDPM.SA.Common.Display;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -124,13 +125,14 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 modalDialog.Left = windowLeft;
                                 modalDialog.Top = windowTop;
                                 modalDialog.ShowDialog();
-
-                                if (modalDialog.DialogResult != null && 
-                                    modalDialog.DialogResult == true &&
-                                    (int)DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result > 0 && //For jason to do import
-                                    modalDialog.isChecked) //ignore next check for this model
-                                {
-                                    DdpmCommonHelper.DeviceManagerSA.SetSameModel(mo, true);
+                                if (modalDialog.DialogResult != null 
+                                && modalDialog.DialogResult == true) {
+                                    DisplayImportResultCode importResult = DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result;
+                                    if (importResult > 0 && //For jason to do import
+                                        modalDialog.isChecked) //ignore next check for this model
+                                    {
+                                        DdpmCommonHelper.DeviceManagerSA.SetSameModel(mo, true);
+                                    }
                                 }
                             }
                         }
@@ -1094,7 +1096,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private void AttachImportNotification()
         {
             _ddpmHomePageViewModel.ImportNotify -= ImportNotifyEventHandler;
-            _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
+            if (_ddpmHomePageViewModel != null && _ddpmHomePageViewModel.ImportNotify == null
+                || !_ddpmHomePageViewModel.ImportNotify.GetInvocationList().Where(e => e.Method.Name == nameof(ImportNotifyEventHandler)).Any())
+            {
+                _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
+            }
         }
 
         ~DdpmHomePage()

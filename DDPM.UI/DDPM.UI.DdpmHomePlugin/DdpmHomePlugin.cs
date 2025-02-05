@@ -575,6 +575,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
                 string path = localAppDataPath + "\\Dell Display and Peripheral Manager\\Export";
 
+                _log.Info($"[CheckIfNeedImportSetting_Display] Monitor count is {monitorInfos.Count}.");
                 foreach (MonitorInfo info in monitorInfos)
                 {
                     string model = info.modelName;//"U2724DE";
