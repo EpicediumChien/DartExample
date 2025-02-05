@@ -276,6 +276,11 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 IsWALTimerEnable = value;
                 IsSnoozeEnable = value;
+
+                // jim modify for PIMS - PIMS-344510
+                if (_isChecked_WalkAwayLock == false)
+                    IsChecked_Snooze = value;
+
                 // jim add for PIMS-328195
                 _isEnable_WalkAwayLock = _isChecked_WalkAwayLock && _isChecked_ProximitySensor;
 
@@ -283,6 +288,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
                 OnPropertyChanged("IsEnable_WalkAwayLock");
                 OnPropertyChanged("IsEnable_Snooze"); // jim modify for PIMS - 328195
+                OnPropertyChanged("IsChecked_Snooze"); // jim modify for PIMS - PIMS-344510
             }
         }
 
@@ -1331,7 +1337,9 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 if (value != _isAutoFramingTransitionOn)
                 {
-                    _isAutoFramingTransitionOn = value;
+                    //_isAutoFramingTransitionOn = value;
+                    CurrentProfile.IsAutoFramingTransitionOn = _isAutoFramingTransitionOn = value; // 20250205 Kidd to fix AutoFramingTransition text is always "On"  
+
                     DdpmCommonHelper.DeviceManagerSA!.SetIsAutoFramingTransitionOn(CurrentDeviceInfo!.ID.ToString(), value);
                     SetProfileProperty(nameof(IsAutoFramingTransitionOn), value, OperationModule.CameraControl);
                     OnPropertyChanged();
