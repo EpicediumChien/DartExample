@@ -2235,6 +2235,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (inputSourcelist != null &&
                                     inputSourcelist.Count != 0)
                                 {
+                                    //Migration change input...
+                                    copyinputlist = inputSourcelist;
+                                    foreach (var input in inputSourcelist)
+                                    {
+                                        if (input.Value.USBUpstream == string.Empty)
+                                        {
+                                            readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
+                                            if (readinputlist != null)
+                                            {
+                                                if (readinputlist.Count != 0)
+                                                {
+                                                    foreach (var readinput in readinputlist)
+                                                    {
+                                                        foreach (var copyinput in copyinputlist)
+                                                        {
+                                                            if (readinput.Value.Code == copyinput.Value.Code)
+                                                            {
+                                                                readinput.Value.InputName = copyinput.Value.InputName;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                    bool b1 = SetInputSourcelist(monitorInfo, readinputlist).Result;
+                                                    return Task.FromResult(readinputlist);
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
                                     return Task.FromResult(inputSourcelist);
                                 }
                             }
