@@ -109,6 +109,8 @@ namespace DDPM.Easy.Common
                 }
 
                 double cx = VM.Settings_Double[4] + VM.Settings_Double[3] + +VM.Settings_Double[2];
+
+                // any bug?
                 if ((cx > 0) && (cx > 0))
                 {
                     double y = cellListV[0].rcRatio.Bottom;
