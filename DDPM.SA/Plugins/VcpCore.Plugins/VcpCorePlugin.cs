@@ -199,7 +199,7 @@ namespace VcpCore.Plugins
 
             _IsUserActive = IsUserActive;
 
-            if (!IsUserActive)
+            if (!_IsUserActive)
             {
                 if (_CacheTimer.Enabled) _CacheTimer.Stop();
                 if (_StatusTimer.Enabled) _StatusTimer.Stop();
