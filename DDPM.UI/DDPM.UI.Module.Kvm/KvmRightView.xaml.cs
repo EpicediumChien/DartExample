@@ -102,12 +102,12 @@ namespace DDPM.UI.Module.Kvm
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
-                    KvmViewModel vm = (KvmViewModel)this.DataContext;
-                    if (vm != null)
+                    KvmViewModel localVm = (KvmViewModel)this.DataContext;
+                    if (localVm != null)
                     {
                         IsLockinNKVMUI((bool)isLocked);
                         Trace.WriteLine($"[SettingsPage] Apply NetworkKVM(Lock) : {isLocked}");
-                        vm.OnPropertyChanged_Lock();
+                        localVm.OnPropertyChanged_Lock();
                     }
                 }));
             }
@@ -117,13 +117,13 @@ namespace DDPM.UI.Module.Kvm
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
-                    KvmViewModel vm = (KvmViewModel)this.DataContext;
-                    if (vm != null)
+                    KvmViewModel localVm = (KvmViewModel)this.DataContext;
+                    if (localVm != null)
                     {
                         //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
                         IsLockinUSBKVMUI((bool)isLocked);
                         Trace.WriteLine($"[SettingsPage] Apply USBKVM(Lock) : {isLocked}");
-                        vm.OnPropertyChanged_Lock();
+                        localVm.OnPropertyChanged_Lock();
                     }
                 }));
             }

@@ -1024,14 +1024,14 @@ namespace DDPM.UI.Plugin.ViewModels
             return tooltip;
         }
 
-        public ObservableCollection<int> SuggestedActions { get => new(Actions.SuggestedActionsM); }
-        public ObservableCollection<int> ProductivityActions { get; set; } = new(Actions.ProductivityActionsKnM);
+        public ObservableCollection<int> SuggestedActions { get => new(Actions.SuggestedActionsM()); }
+        public ObservableCollection<int> ProductivityActions { get; set; } = new(Actions.ProductivityActionsKnM());
         public ObservableCollection<int> WindowsActions { get; set; } = new(Actions.WindowsActionsKnM());
-        public ObservableCollection<int> MultimediaActions { get; set; } = new(Actions.MultimediaActionsKnM);
-        public ObservableCollection<int> WordActions { get; set; } = new(Actions.WordActions);
-        public ObservableCollection<int> ExcelActions { get; set; } = new(Actions.ExcelActions);
-        public ObservableCollection<int> PowerPointActions { get; set; } = new(Actions.PowerPointActions);
-        public ObservableCollection<int> OutlookActions { get; set; } = new(Actions.OutlookActions);
+        public ObservableCollection<int> MultimediaActions { get; set; } = new(Actions.MultimediaActionsKnM());
+        public ObservableCollection<int> WordActions { get; set; } = new(Actions.WordActions());
+        public ObservableCollection<int> ExcelActions { get; set; } = new(Actions.ExcelActions());
+        public ObservableCollection<int> PowerPointActions { get; set; } = new(Actions.PowerPointActions());
+        public ObservableCollection<int> OutlookActions { get; set; } = new(Actions.OutlookActions());
         public void UpdateAction(int actionID, string parameter = "", bool RefreshImage = true)
         {
             try

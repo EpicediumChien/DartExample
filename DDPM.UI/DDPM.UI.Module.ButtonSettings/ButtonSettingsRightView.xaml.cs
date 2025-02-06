@@ -191,10 +191,10 @@ namespace DDPM.UI.Module.ButtonSettings
                     sourceList = _vm.SelectedApp switch
                     {
                         "AllApp" => Actions.AllActionsKnM(),
-                        "Word" => Actions.WordActions,
-                        "Excel" => Actions.ExcelActions,
-                        "PowerPoint" => Actions.PowerPointActions,
-                        _ => Actions.OutlookActions
+                        "Word" => Actions.WordActions(),
+                        "Excel" => Actions.ExcelActions(),
+                        "PowerPoint" => Actions.PowerPointActions(),
+                        _ => Actions.OutlookActions()
                     };
                 }
                 searchText = txtSearchText.Text;

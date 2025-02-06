@@ -99,7 +99,7 @@ namespace DDPM.UI.Plugin.Common
             if (name.Length > 2 && name.Substring(name.Length - 3, 3) == "...")
             {
                 spOpen.Visibility = Visibility.Visible;
-                if (id == 0 || 0==0)
+                if (id == 0)
                 {
                     btnSave.IsEnabled = false;
                     btnBrowse.Visibility = Visibility.Visible;
@@ -126,7 +126,7 @@ namespace DDPM.UI.Plugin.Common
         private int idx = 0;
         private void ActionButtonLoaded(object sender, RoutedEventArgs e)
         {
-            int id;
+            //int id;
             if (sender is UXRadioButton rb)
             {
                 //id = (int)((UXRadioButton)sender).DataContext;
