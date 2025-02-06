@@ -83,7 +83,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
         private UpdateItemInfo _updateItems = new();
 
         private static List<Guid> PhysicalDevices = new();
-        private static List<Guid> PhysicalDevices1 = new();
+        private static List<Guid> PhysicalPenDevices = new();
         private static List<Guid> PhysicalDevices2 = new();
         private static List<Guid> LogicalDevices = new();
         private static List<Guid> LogicalDevices2 = new();
@@ -1433,9 +1433,15 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         }
                         // >>
 
-                        if (device.Type == DeviceType.PhysicalPen)
+                        if (device is IPhysicalPenDevice penDevice)
                         {
-                            _deviceHelper.IsdDriverVersion = ((IPhysicalPenDevice)device).IsdServiceVersion;
+                            _deviceHelper.IsdDriverVersion = penDevice.IsdServiceVersion;
+                            if (!PhysicalPenDevices.Contains(device.Id))
+                            {
+                                PhysicalPenDevices.Add(penDevice.Id);
+                                penDevice.ActivePenInformationChanged += PenDevice_ActivePenInformationChanged;
+                            }
+
                         }
 
                         foreach (var item in device.Devices)
@@ -1968,6 +1974,20 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     writelog(_deviceHelper.ToString());
                 }
             }
+        }
+
+        private void PenDevice_ActivePenInformationChanged(IPhysicalPenDevice arg1, string arg2, string arg3, string arg4, bool arg5, bool arg6, bool arg7, int arg8)
+        {
+            writelog($"ActivePenInformationChanged: Guid:{arg1.Id} PenID:{arg1.PenId} arg2:{arg2} arg3:{arg3} arg4:{arg4} arg5:{arg5} arg6:{arg6} arg7:{arg7} arg8:{arg8}");
+            var deviceInfo = new DeviceInfo();
+            deviceInfo.IsBLE = !string.IsNullOrEmpty(arg4);
+            DeviceChangedEventArgs _EventArgs = new()
+            {
+                type = DeviceChangedType.Peripherals_SettingsChange,
+                device_peripherals = deviceInfo,
+                changedProperty = "ActivePenInformationChanged"
+            };
+            OnNotify(_EventArgs);
         }
 
         private void OnDeviceNameChanged(IDevice device, string newValue)
@@ -2550,13 +2570,14 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     iPhysicalDevice.DeviceAddedEvent -= IPhysicalDevice_DeviceAddedEvent;
                     iPhysicalDevice.DeviceRemovedEvent -= IPhysicalDevice_DeviceRemovedEvent;
 
+                    if (iPhysicalDevice is IPhysicalPenDevice penDevice && PhysicalPenDevices.Contains(penDevice.Id))
+                    {
+                        penDevice.ActivePenInformationChanged -= PenDevice_ActivePenInformationChanged;
+                        PhysicalPenDevices.Remove(penDevice.Id);
+                    }
+
                     ScanDevices();
 
-                    if (PhysicalDevices1.Contains(iPhysicalDevice.Id))
-                    {
-                        PhysicalDevices1.Remove(iPhysicalDevice.Id);
-
-                    }
                     if (iPhysicalDevice.Type == DeviceType.PhysicalAudioDongle || iPhysicalDevice.Type == DeviceType.PhysicalDongle)
                     {
                         DeviceChangedEventArgs _EventArgs = new();
@@ -3788,7 +3809,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 text = "";
 
             text = $"[PeripheralsPlugin] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
-            Console.WriteLine(text);
+            Debug.WriteLine(text);
             if (Log != null)
             {
                 if (log_type == log_type.info)
