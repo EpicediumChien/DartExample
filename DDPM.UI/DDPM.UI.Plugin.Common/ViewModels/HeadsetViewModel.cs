@@ -2082,7 +2082,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 FirmwareVersion2 = _deviceManager.GetAirAudioFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
             }
-            Thread.Sleep(1000);
+            Thread.Sleep(100);
             if ((FirmwareVersion2 == null || FirmwareVersion2 == "0.0.0.0"))
             {
                 
