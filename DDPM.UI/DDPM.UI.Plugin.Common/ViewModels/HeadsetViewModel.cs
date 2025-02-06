@@ -1049,7 +1049,10 @@ namespace DDPM.UI.Plugin.ViewModels
                     default:
                         break;
                 }
-
+                if (isAirAudio)
+                {
+                    isAirAudioChange = SetDefualAirAudioChange();
+                }
                 if (PropertyChange)
                 {
                     UpdateCollaborationAndultimediaUI(false, true);
@@ -2989,8 +2992,8 @@ namespace DDPM.UI.Plugin.ViewModels
                         if (isAirAudio) 
                         {
                             IsRestoreEnable = false;
-                            DeviceInfoDTP.SelectedPreset = 1;
                             OnPropertyChanged(nameof(IsDefaultChecked));
+                            OnPropertyChanged(nameof(IsRestoreEnable));
                         }
                         _debouncerHeadset.Debounce("DefaultCheck");
                         OnPropertyChanged(nameof(IsBassBoostChecked));
