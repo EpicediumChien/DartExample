@@ -39,27 +39,7 @@ namespace DDPM.UI.Module.HeadsetAudioForSB725Settings
             converter.ViewModel = _vm;
 
             InitializeAsync();
-            _vm!.AirAudioChanged += AirAudioChanged;
-        }
 
-        private void AirAudioChanged(object? sender, string e)
-        {
-            switch (e) 
-            {
-                case "RestoreToDefault":
-                    _vm.IsDefaultChecked = true;
-                    SetNodeValue(Node1, 0);
-                    SetNodeValue(Node2, 0);
-                    SetNodeValue(Node3, 0);
-                    SetNodeValue(Node4, 0);
-                    SetNodeValue(Node5, 0);
-                    _vm._deviceManager.SetAirAudioBand1GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), 0).Wait();
-                    _vm._deviceManager.SetAirAudioBand2GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), 0).Wait();
-                    _vm._deviceManager.SetAirAudioBand3GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), 0).Wait();
-                    _vm._deviceManager.SetAirAudioBand4GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), 0).Wait();
-                    _vm._deviceManager.SetAirAudioBand5GainAsync(_vm.CurrentDeviceInfo!.ID.ToString(), 0).Wait();
-                    break;
-            }
         }
 
         private async void InitializeAsync()
