@@ -521,12 +521,12 @@ namespace DDPM.UI.Module.EzArrange
 
                         //If it's a Window item
                         if (spj.CustomId == 0)
-                        {
+                        { // do same thing?
                             itemRecent.Buddy = itemBuddy;
                             itemBuddy.Buddy = itemRecent;
                         }
                         else //It's a Custom item
-                        {
+                        { // do same thing?
                             itemRecent.Buddy = itemBuddy;
                             itemBuddy.Buddy = itemRecent;
                         }
