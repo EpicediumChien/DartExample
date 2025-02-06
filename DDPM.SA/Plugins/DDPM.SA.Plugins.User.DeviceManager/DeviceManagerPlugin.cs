@@ -247,6 +247,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         DisplayUpdateHelper displayUpdateHelper;
 
         private bool _isSysSettingReady = false;
+
+        private DDMtoDDPM dDMtodDPM = new DDMtoDDPM();
+        private HotkeySettings hotkeySettings = new HotkeySettings();
         #endregion
 
         #region Constructor
@@ -16569,6 +16572,10 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     {
                         //Hotkey
                         //DDMtoDDPM_Hotkey(ddmUserSettings);
+                        //HotkeySettings hotkeySettings = new HotkeySettings();
+                        hotkeySettings.ServiceTag = "DDPM";
+                        hotkeySettings.SerialNumber = "DDPM";
+                        hotkeySettings.ModelName = "DDPM";
                         foreach (var file in di.GetFiles("*_*"))
                         {
                             DDMMonitorSettings DDMmonitorsettings = new DDMMonitorSettings();
@@ -16690,16 +16697,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                             if (Hotkey.Keys != null &&
                                 Hotkey.Keys.Count != 0)
                             {
-                                DDMtoDDPM dDMtodDPM = new DDMtoDDPM();
+                                //DDMtoDDPM dDMtodDPM = new DDMtoDDPM();
                                 if (dDMtodDPM.HotkeyMap.TryGetValue(Hotkey.Function, out HotkeyType hotkeyType))
                                 {
                                     writelog($"[DDMtoDDPM_Hotkey] Fun is {Hotkey.Function}");
-                                    HotkeySettings hotkeySettings = new HotkeySettings();
+                                    //HotkeySettings hotkeySettings = new HotkeySettings();
                                     HotkeyInfo hotkeyInfo = new HotkeyInfo();
-                                    hotkeySettings.ServiceTag = "DDPM";
-                                    hotkeySettings.SerialNumber = "DDPM";
-                                    hotkeySettings.ModelName = "DDPM";
-                                    hotkeyInfo = new HotkeyInfo();
+                                    //hotkeySettings.ServiceTag = "DDPM";
+                                    //hotkeySettings.SerialNumber = "DDPM";
+                                    //hotkeySettings.ModelName = "DDPM";
+                                    //hotkeyInfo = new HotkeyInfo();
                                     hotkeyInfo.Job = hotkeyType;
                                     hotkeyInfo.Hotkey = new List<VirtualKey>();
                                     if (hotkeyInfo.Hotkey != null)
@@ -16729,16 +16736,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                                 hotkeyInfo.Hotkey.Add(Vkey);
                                             }
                                         }
-                                        if (hotkeyInfo.Hotkey.Count != 0)
+                                        if (hotkeyInfo.Hotkey.Count != 0 && !hotkeySettings.HotkeyInfo.Exists(x => x.Job == hotkeyInfo.Job))
                                         {
                                             hotkeySettings.HotkeyInfo.Add(hotkeyInfo);
                                         }
                                     }
-                                    hotkeySettingList.Add(hotkeySettings);
-                                    bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
                                 }
                             }
                         }
+                        hotkeySettingList.Clear();
+                        hotkeySettingList.Add(hotkeySettings);
+                        bool b = _SettingsPlugin.WriteHotkeySettings(hotkeySettingList).Result;
                     }
                     if (ddmMonitorSettings != null)
                     {
