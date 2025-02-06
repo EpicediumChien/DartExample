@@ -268,7 +268,8 @@ namespace DDPM.SA.Plugins.CMAManager
                 command = command + ("app=" + task.command);
                 command = command + (" value=" + task.devicetype + "," + ("x:\\config.json"));
 
-                if (option.index != null && option.index.Length > 0)
+                // modefied start @ 20250206 stephen : base on CLI spec change
+                /*if (option.index != null && option.index.Length > 0)
                 {
                     command = command + (" index=" + option.index);
                 }
@@ -277,11 +278,36 @@ namespace DDPM.SA.Plugins.CMAManager
                     command = command + (" index=1");
                 }
 
-                return command;
+                return command;*/
+            }
+            else
+            {
+                command = command + (task.devicetype + "=" + task.command);
+                command = command + (" value=" + task.value);
             }
 
-            command = command + (task.devicetype + "=" + task.command);
-            command = command + (" value=" + task.value);
+            //command = command + (task.devicetype + "=" + task.command);
+            //command = command + (" value=" + task.value);
+            // modified end @ 20250206 stephen
+
+            // check options
+
+            if (option.index != null && option.index.Length > 0)
+            {
+                command = command + (" index=" + option.index);
+            }
+
+            if (option.servicetag != null && option.servicetag.Length > 0)
+            {
+                command = command + (" servicetag=" + option.servicetag);
+            }
+
+            if (option.model != null && option.model.Length > 0)
+            {
+                command = command + (" model=" + option.model);
+            }
+
+            return command;
 
             // check options
 
