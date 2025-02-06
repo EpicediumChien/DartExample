@@ -11539,11 +11539,14 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("[DeviceMangerPlugin] YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
 
-            _SystemEvents_DisplaySettingsChanged(new DebouncerArg()
+            if (!(WTSFunction.IsYourProcessInActiveSession(Log)))
             {
-                sender = sender,
-                eventArgs = e,
-            });
+                _SystemEvents_DisplaySettingsChanged(new DebouncerArg()
+                {
+                    sender = sender,
+                    eventArgs = e,
+                });
+            }
         }
 
         private void _SystemEvents_DisplaySettingsChanged(object _arg)

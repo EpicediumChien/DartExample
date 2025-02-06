@@ -92,7 +92,7 @@ namespace VcpCore.Plugins
 
         private bool IsOutInitialize
         {
-            get => ((_InitialThreadCounter < 1) && _IsUserActive);
+            get => (_InitialThreadCounter < 1);
         }
 
         #endregion
@@ -199,17 +199,35 @@ namespace VcpCore.Plugins
 
             _IsUserActive = IsUserActive;
 
-            if (IsUserActive)
-            {
-                if (_cancellationTokenSource != null)
-                    Task.Run(() => InitializeMonitorsList(false, _cancellationTokenSource.Token)).ConfigureAwait(false);
-                else
-                    Task.Run(() => InitializeMonitorsList(false, CancellationToken.None)).ConfigureAwait(false);
-            }
-            else
+            if (!IsUserActive)
             {
                 if (_CacheTimer.Enabled) _CacheTimer.Stop();
                 if (_StatusTimer.Enabled) _StatusTimer.Stop();
+
+                _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                _AllInfoMonitors = new List<MonitorInfo_complex>();
+
+                while (!_TaskQueue.IsEmpty())
+                {
+                    if (_TaskQueueExecutor.IsBusy) _TaskQueueExecutor.CancelAsync();
+                    else
+                    {
+                        _TaskQueue = new TaskLockQueue<ParameterType>();
+                        _TaskQueueResult = new ResultLockPool();
+                    }
+                }
+
+                _AddSignalfor0X52 = 0;
+                _AddSignalforStatusCheck = 0;
+
+                //------------------------------------------------------------------------------------------------//
+                DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs()
+                {
+                    count = _AllInfoMonitors_Mix.Count,
+                    monitors = new List<MonitorInfo>(),
+                };
+                OnDisplaychanged(_displaychangedEventArgss);
+                //------------------------------------------------------------------------------------------------//
             }
 
             return Task.CompletedTask;
@@ -219,19 +237,11 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received Monitors List requested ...");
 
-            if (_IsUserActive)
-            {
-                List<MonitorInfo> _AllDisplays = new List<MonitorInfo>(_AllInfoMonitors_Mix.Select(M => M.Item2).ToList());
+            List<MonitorInfo> _AllDisplays = new List<MonitorInfo>(_AllInfoMonitors_Mix.Select(M => M.Item2).ToList());
 
-                _logs.DebugMsg("[VcpCorePlugin] AllInfoMonitors count is " + _AllDisplays.Count.ToString());
+            _logs.DebugMsg("[VcpCorePlugin] AllInfoMonitors count is " + _AllDisplays.Count.ToString());
 
-                return Task.FromResult(_AllDisplays);
-            }
-            else
-            {
-                _logs.DebugMsg("[VcpCorePlugin] this User is not Active.");
-                return Task.FromResult(new List<MonitorInfo>());
-            }
+            return Task.FromResult(_AllDisplays);
         }
 
         public async Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken Token)
@@ -240,34 +250,26 @@ namespace VcpCore.Plugins
 
             try
             {
-                if (_IsUserActive)
+                bool IsFinishedAlready = false;
+                var CancelStatusCheck = Task.Run(() => CancellationCheck(Token, in IsFinishedAlready));
+                var ReGetTask = Task.Run(() => InitializeMonitorsList(true, Token));
+
+                List<MonitorInfo> _AllDisplays = new List<MonitorInfo>();
+
+                if (await Task.WhenAny(ReGetTask, CancelStatusCheck) == ReGetTask)
                 {
-                    bool IsFinishedAlready = false;
-                    var CancelStatusCheck = Task.Run(() => CancellationCheck(Token, in IsFinishedAlready));
-                    var ReGetTask = Task.Run(() => InitializeMonitorsList(true, Token));
-
-                    List<MonitorInfo> _AllDisplays = new List<MonitorInfo>();
-
-                    if (await Task.WhenAny(ReGetTask, CancelStatusCheck) == ReGetTask)
-                    {
-                        IsFinishedAlready = true;
-                        _logs.DebugMsg("[VcpCorePlugin] ReGetTask finished faster than CancelStatusCheck");
-                        _logs.DebugMsg("[VcpCorePlugin] Re_GetMonitors() _AllInfoMonitors_Mix.Count is " + _AllInfoMonitors_Mix.Count);
-                    }
-                    else
-                    {
-                        IsFinishedAlready = true;
-                        _logs.DebugMsg("[VcpCorePlugin] CancelStatusCheck finished faster than ReGetTask");
-                        _logs.DebugMsg("[VcpCorePlugin] Re_GetMonitors() _AllInfoMonitors_Mix.Count is " + _AllInfoMonitors_Mix.Count);
-                    }
-
-                    return _AllInfoMonitors_Mix.Select(x => x.Item2).ToList();
+                    IsFinishedAlready = true;
+                    _logs.DebugMsg("[VcpCorePlugin] ReGetTask finished faster than CancelStatusCheck");
+                    _logs.DebugMsg("[VcpCorePlugin] Re_GetMonitors() _AllInfoMonitors_Mix.Count is " + _AllInfoMonitors_Mix.Count);
                 }
                 else
                 {
-                    _logs.DebugMsg("[VcpCorePlugin] this User is not Active.");
-                    return new List<MonitorInfo>();
+                    IsFinishedAlready = true;
+                    _logs.DebugMsg("[VcpCorePlugin] CancelStatusCheck finished faster than ReGetTask");
+                    _logs.DebugMsg("[VcpCorePlugin] Re_GetMonitors() _AllInfoMonitors_Mix.Count is " + _AllInfoMonitors_Mix.Count);
                 }
+
+                return _AllInfoMonitors_Mix.Select(x => x.Item2).ToList();
             }
             catch (Exception e)
             {
@@ -280,57 +282,49 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetCapabilitiesString requested ...");
 
-            if (_IsUserActive)
+            _pauseEvent.WaitOne(Timeout.Infinite);
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin GetCapabilitiesString overgo WaitOne ...");
+
+            if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
-                _pauseEvent.WaitOne(Timeout.Infinite);
-                _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin GetCapabilitiesString overgo WaitOne ...");
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
 
-                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
+                foreach (var moX in _AllInfoMonitors_Mix)
                 {
-                    _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
-                    _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
-
-                    foreach (var moX in _AllInfoMonitors_Mix)
+                    if (monitorInfo.Equals(moX.Item2))
                     {
-                        if (monitorInfo.Equals(moX.Item2))
+                        if (moX.Item2.DDCisON)
                         {
-                            if (moX.Item2.DDCisON)
-                            {
-                                //
-                                Guid _guid = Guid.NewGuid();
-                                _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
+                            //
+                            Guid _guid = Guid.NewGuid();
+                            _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetCapabilitiesString, new Type_GetCapabilitiesString(_guid, moX.Item1));
-                                _TaskQueue.Enqueue(parameterType);
+                            ParameterType parameterType = new ParameterType(Queue_CommandType.GetCapabilitiesString, new Type_GetCapabilitiesString(_guid, moX.Item1));
+                            _TaskQueue.Enqueue(parameterType);
 
-                                Launch_TaskQueueExecutor();
+                            Launch_TaskQueueExecutor();
 
-                                object or = GetResultObjectAsync(_guid).Result;
-                                string r = (or != null) ? or.ToString() : string.Empty;
+                            object or = GetResultObjectAsync(_guid).Result;
+                            string r = (or != null) ? or.ToString() : string.Empty;
 
-                                return Task.FromResult(r);
-                                //
-                            }
-                            else
-                            {
-                                _logs.DebugMsg("[VcpCorePlugin] GetCapabilitiesString Fail => DDCisON is false");
-                                return Task.FromResult(string.Empty);
-                            }
+                            return Task.FromResult(r);
+                            //
+                        }
+                        else
+                        {
+                            _logs.DebugMsg("[VcpCorePlugin] GetCapabilitiesString Fail => DDCisON is false");
+                            return Task.FromResult(string.Empty);
                         }
                     }
+                }
 
-                    _logs.DebugMsg("[VcpCorePlugin] No target display to work. So, ignor requested");
-                    return Task.FromResult(string.Empty);
-                }
-                else
-                {
-                    _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
-                    return Task.FromResult(string.Empty);
-                }
+                _logs.DebugMsg("[VcpCorePlugin] No target display to work. So, ignor requested");
+                return Task.FromResult(string.Empty);
             }
             else
             {
-                _logs.DebugMsg("[VcpCorePlugin] this User is not Active.");
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
                 return Task.FromResult(string.Empty);
             }
         }
@@ -339,57 +333,49 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapabilities requested ...");
 
-            if (_IsUserActive)
+            _pauseEvent.WaitOne(Timeout.Infinite);
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin GetVCPCapabilities overgo WaitOne ...");
+
+            if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
-                _pauseEvent.WaitOne(Timeout.Infinite);
-                _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin GetVCPCapabilities overgo WaitOne ...");
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
 
-                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
+                foreach (var moX in _AllInfoMonitors_Mix)
                 {
-                    _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
-                    _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
-
-                    foreach (var moX in _AllInfoMonitors_Mix)
+                    if (monitorInfo.Equals(moX.Item2))
                     {
-                        if (monitorInfo.Equals(moX.Item2))
+                        if (moX.Item2.DDCisON)
                         {
-                            if (moX.Item2.DDCisON)
-                            {
-                                //
-                                Guid _guid = Guid.NewGuid();
-                                _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
+                            //
+                            Guid _guid = Guid.NewGuid();
+                            _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapabilities, new Type_GetVCPCapabilities(_guid, moX.Item1));
-                                _TaskQueue.Enqueue(parameterType);
+                            ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapabilities, new Type_GetVCPCapabilities(_guid, moX.Item1));
+                            _TaskQueue.Enqueue(parameterType);
 
-                                Launch_TaskQueueExecutor();
+                            Launch_TaskQueueExecutor();
 
-                                object or = GetResultObjectAsync(_guid).Result;
-                                string r = (or != null) ? or.ToString() : string.Empty;
+                            object or = GetResultObjectAsync(_guid).Result;
+                            string r = (or != null) ? or.ToString() : string.Empty;
 
-                                return Task.FromResult(r);
-                                //
-                            }
-                            else
-                            {
-                                _logs.DebugMsg("[VcpCorePlugin] GetVCPCapabilities Fail => DDCisON is false");
-                                return Task.FromResult(string.Empty);
-                            }
+                            return Task.FromResult(r);
+                            //
+                        }
+                        else
+                        {
+                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapabilities Fail => DDCisON is false");
+                            return Task.FromResult(string.Empty);
                         }
                     }
+                }
 
-                    _logs.DebugMsg("[VcpCorePlugin] No target display to work. So, ignor requested");
-                    return Task.FromResult(string.Empty);
-                }
-                else
-                {
-                    _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
-                    return Task.FromResult(string.Empty);
-                }
+                _logs.DebugMsg("[VcpCorePlugin] No target display to work. So, ignor requested");
+                return Task.FromResult(string.Empty);
             }
             else
             {
-                _logs.DebugMsg("[VcpCorePlugin] this User is not Active.");
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
                 return Task.FromResult(string.Empty);
             }
         }
@@ -398,98 +384,29 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapability requested ...");
 
-            if (_IsUserActive)
+            _pauseEvent.WaitOne(Timeout.Infinite);
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin GetVCPCapability overgo WaitOne ...");
+
+            if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
-                _pauseEvent.WaitOne(Timeout.Infinite);
-                _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin GetVCPCapability overgo WaitOne ...");
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
+                _logs.DebugMsg("[VcpCorePlugin] VcpCode is " + BitConverter.ToString(new byte[] { code }));
+                _logs.DebugMsg("[VcpCorePlugin] opt is " + opt.ToString());
 
-                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
+                foreach (var moX in _AllInfoMonitors_Mix)
                 {
-                    _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
-                    _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
-                    _logs.DebugMsg("[VcpCorePlugin] VcpCode is " + BitConverter.ToString(new byte[] { code }));
-                    _logs.DebugMsg("[VcpCorePlugin] opt is " + opt.ToString());
-
-                    foreach (var moX in _AllInfoMonitors_Mix)
+                    if (monitorInfo.Equals(moX.Item2))
                     {
-                        if (monitorInfo.Equals(moX.Item2))
+                        if (moX.Item2.DDCisON)
                         {
-                            if (moX.Item2.DDCisON)
-                            {
-                                if (IsVcpFunctionSupport(moX.Item1, code))
-                                {
-                                    //
-                                    Guid _guid = Guid.NewGuid();
-                                    _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
-
-                                    ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_I, new Type_GetVCPCapability_I(_guid, moX.Item1, code, opt));
-                                    _TaskQueue.Enqueue(parameterType);
-
-                                    Launch_TaskQueueExecutor();
-
-                                    object or = GetResultObjectAsync(_guid).Result;
-                                    ObjGetVCP r = (or != null) ? (new ObjGetVCP() { value = or, result = true }) : (new ObjGetVCP() { value = or, result = false });
-
-                                    return Task.FromResult(r);
-                                    //
-                                }
-                                else
-                                {
-                                    _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability Fail => IsVcpFunctionSupport is false");
-                                    return Task.FromResult(new ObjGetVCP() { value = null, result = false });
-                                }
-                            }
-                            else
-                            {
-                                _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability Fail => DDCisON is false");
-                                return Task.FromResult(new ObjGetVCP() { value = null, result = false });
-                            }
-                        }
-                    }
-
-                    _logs.DebugMsg("[VcpCorePlugin] No target display to work. So, ignor requested");
-                    return Task.FromResult(new ObjGetVCP() { value = null, result = false });
-                }
-                else
-                {
-                    _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
-                    return Task.FromResult(new ObjGetVCP() { value = null, result = false });
-                }
-            }
-            else
-            {
-                _logs.DebugMsg("[VcpCorePlugin] this User is not Active.");
-                return Task.FromResult(new ObjGetVCP() { value = null, result = false });
-            }
-        }
-
-        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, int opt = 0)
-        {
-            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapability requested ...");
-
-            if (_IsUserActive)
-            {
-                _pauseEvent.WaitOne(Timeout.Infinite);
-                _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin GetVCPCapability overgo WaitOne ...");
-
-                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
-                {
-                    _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
-                    _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
-                    _logs.DebugMsg("[VcpCorePlugin] VcpCode is " + FunctionName);
-                    _logs.DebugMsg("[VcpCorePlugin] opt is " + opt.ToString());
-
-                    foreach (var moX in _AllInfoMonitors_Mix)
-                    {
-                        if (monitorInfo.Equals(moX.Item2))
-                        {
-                            if (moX.Item2.DDCisON)
+                            if (IsVcpFunctionSupport(moX.Item1, code))
                             {
                                 //
                                 Guid _guid = Guid.NewGuid();
                                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_II, new Type_GetVCPCapability_II(_guid, moX.Item1, FunctionName, opt));
+                                ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_I, new Type_GetVCPCapability_I(_guid, moX.Item1, code, opt));
                                 _TaskQueue.Enqueue(parameterType);
 
                                 Launch_TaskQueueExecutor();
@@ -502,24 +419,77 @@ namespace VcpCore.Plugins
                             }
                             else
                             {
-                                _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability Fail => DDCisON is false");
+                                _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability Fail => IsVcpFunctionSupport is false");
                                 return Task.FromResult(new ObjGetVCP() { value = null, result = false });
                             }
                         }
+                        else
+                        {
+                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability Fail => DDCisON is false");
+                            return Task.FromResult(new ObjGetVCP() { value = null, result = false });
+                        }
                     }
+                }
 
-                    _logs.DebugMsg("[VcpCorePlugin] No target display to work. So, ignor requested");
-                    return Task.FromResult(new ObjGetVCP() { value = null, result = false });
-                }
-                else
-                {
-                    _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
-                    return Task.FromResult(new ObjGetVCP() { value = null, result = false });
-                }
+                _logs.DebugMsg("[VcpCorePlugin] No target display to work. So, ignor requested");
+                return Task.FromResult(new ObjGetVCP() { value = null, result = false });
             }
             else
             {
-                _logs.DebugMsg("[VcpCorePlugin] this User is not Active.");
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
+                return Task.FromResult(new ObjGetVCP() { value = null, result = false });
+            }
+        }
+
+        public Task<ObjGetVCP> GetVCPCapability(MonitorInfo monitorInfo, string FunctionName, int opt = 0)
+        {
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetVCPCapability requested ...");
+
+            _pauseEvent.WaitOne(Timeout.Infinite);
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin GetVCPCapability overgo WaitOne ...");
+
+            if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
+                _logs.DebugMsg("[VcpCorePlugin] VcpCode is " + FunctionName);
+                _logs.DebugMsg("[VcpCorePlugin] opt is " + opt.ToString());
+
+                foreach (var moX in _AllInfoMonitors_Mix)
+                {
+                    if (monitorInfo.Equals(moX.Item2))
+                    {
+                        if (moX.Item2.DDCisON)
+                        {
+                            //
+                            Guid _guid = Guid.NewGuid();
+                            _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
+
+                            ParameterType parameterType = new ParameterType(Queue_CommandType.GetVCPCapability_II, new Type_GetVCPCapability_II(_guid, moX.Item1, FunctionName, opt));
+                            _TaskQueue.Enqueue(parameterType);
+
+                            Launch_TaskQueueExecutor();
+
+                            object or = GetResultObjectAsync(_guid).Result;
+                            ObjGetVCP r = (or != null) ? (new ObjGetVCP() { value = or, result = true }) : (new ObjGetVCP() { value = or, result = false });
+
+                            return Task.FromResult(r);
+                            //
+                        }
+                        else
+                        {
+                            _logs.DebugMsg("[VcpCorePlugin] GetVCPCapability Fail => DDCisON is false");
+                            return Task.FromResult(new ObjGetVCP() { value = null, result = false });
+                        }
+                    }
+                }
+
+                _logs.DebugMsg("[VcpCorePlugin] No target display to work. So, ignor requested");
+                return Task.FromResult(new ObjGetVCP() { value = null, result = false });
+            }
+            else
+            {
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
                 return Task.FromResult(new ObjGetVCP() { value = null, result = false });
             }
         }
@@ -528,98 +498,29 @@ namespace VcpCore.Plugins
         {
             _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received SetVCPCapability requested ...");
 
-            if (_IsUserActive)
+            _pauseEvent.WaitOne(Timeout.Infinite);
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin SetVCPCapability overgo WaitOne ...");
+
+            if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
             {
-                _pauseEvent.WaitOne(Timeout.Infinite);
-                _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin SetVCPCapability overgo WaitOne ...");
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
+                _logs.DebugMsg("[VcpCorePlugin] VcpCode is " + BitConverter.ToString(new byte[] { code }));
+                _logs.DebugMsg("[VcpCorePlugin] val is " + val.ToString());
 
-                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
+                foreach (var moX in _AllInfoMonitors_Mix)
                 {
-                    _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
-                    _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
-                    _logs.DebugMsg("[VcpCorePlugin] VcpCode is " + BitConverter.ToString(new byte[] { code }));
-                    _logs.DebugMsg("[VcpCorePlugin] val is " + val.ToString());
-
-                    foreach (var moX in _AllInfoMonitors_Mix)
+                    if (monitorInfo.Equals(moX.Item2))
                     {
-                        if (monitorInfo.Equals(moX.Item2))
+                        if (moX.Item2.DDCisON)
                         {
-                            if (moX.Item2.DDCisON)
-                            {
-                                if (IsVcpFunctionSupport(moX.Item1, code))
-                                {
-                                    //
-                                    Guid _guid = Guid.NewGuid();
-                                    _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
-
-                                    ParameterType parameterType = new ParameterType(Queue_CommandType.SetVCPCapability_I, new Type_SetVCPCapability_I(_guid, moX.Item1, code, val));
-                                    _TaskQueue.Enqueue(parameterType);
-
-                                    Launch_TaskQueueExecutor();
-
-                                    object or = GetResultObjectAsync(_guid).Result;
-                                    bool r = (or != null) ? ((bool)or) : false;
-
-                                    return Task.FromResult(r);
-                                    //
-                                }
-                                else
-                                {
-                                    _logs.DebugMsg("[VcpCorePlugin] SetVCPCapability Fail => IsVcpFunctionSupport is false");
-                                    return Task.FromResult(false);
-                                }
-                            }
-                            else
-                            {
-                                _logs.DebugMsg("[VcpCorePlugin] SetVCPCapability Fail => DDCisON is false");
-                                return Task.FromResult(false);
-                            }
-                        }
-                    }
-
-                    _logs.DebugMsg("[VcpCorePlugin] No target display to work. So, ignor requested");
-                    return Task.FromResult(false);
-                }
-                else
-                {
-                    _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
-                    return Task.FromResult(false);
-                }
-            }
-            else
-            {
-                _logs.DebugMsg("[VcpCorePlugin] this User is not Active.");
-                return Task.FromResult(false);
-            }
-        }
-
-        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, string FunctionName, string val)
-        {
-            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received SetVCPCapability requested ...");
-
-            if (_IsUserActive)
-            {
-                _pauseEvent.WaitOne(Timeout.Infinite);
-                _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin SetVCPCapability overgo WaitOne ...");
-
-                if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
-                {
-                    _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
-                    _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
-                    _logs.DebugMsg("[VcpCorePlugin] VcpCode is " + FunctionName);
-                    _logs.DebugMsg("[VcpCorePlugin] val is " + val);
-
-                    foreach (var moX in _AllInfoMonitors_Mix)
-                    {
-                        if (monitorInfo.Equals(moX.Item2))
-                        {
-                            if (moX.Item2.DDCisON)
+                            if (IsVcpFunctionSupport(moX.Item1, code))
                             {
                                 //
                                 Guid _guid = Guid.NewGuid();
                                 _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
 
-                                ParameterType parameterType = new ParameterType(Queue_CommandType.SetVCPCapability_II, new Type_SetVCPCapability_II(_guid, moX.Item1, FunctionName, val));
+                                ParameterType parameterType = new ParameterType(Queue_CommandType.SetVCPCapability_I, new Type_SetVCPCapability_I(_guid, moX.Item1, code, val));
                                 _TaskQueue.Enqueue(parameterType);
 
                                 Launch_TaskQueueExecutor();
@@ -632,24 +533,77 @@ namespace VcpCore.Plugins
                             }
                             else
                             {
-                                _logs.DebugMsg("[VcpCorePlugin] SetVCPCapability Fail => DDCisON is false");
+                                _logs.DebugMsg("[VcpCorePlugin] SetVCPCapability Fail => IsVcpFunctionSupport is false");
                                 return Task.FromResult(false);
                             }
                         }
+                        else
+                        {
+                            _logs.DebugMsg("[VcpCorePlugin] SetVCPCapability Fail => DDCisON is false");
+                            return Task.FromResult(false);
+                        }
                     }
+                }
 
-                    _logs.DebugMsg("[VcpCorePlugin] No target display to work. So, ignore requested");
-                    return Task.FromResult(false);
-                }
-                else
-                {
-                    _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignore requested");
-                    return Task.FromResult(false);
-                }
+                _logs.DebugMsg("[VcpCorePlugin] No target display to work. So, ignor requested");
+                return Task.FromResult(false);
             }
             else
             {
-                _logs.DebugMsg("[VcpCorePlugin] this User is not Active.");
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignor requested");
+                return Task.FromResult(false);
+            }
+        }
+
+        public Task<bool> SetVCPCapability(MonitorInfo monitorInfo, string FunctionName, string val)
+        {
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received SetVCPCapability requested ...");
+
+            _pauseEvent.WaitOne(Timeout.Infinite);
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin SetVCPCapability overgo WaitOne ...");
+
+            if (IsOutInitialize && _AllInfoMonitors_Mix.Count > 0)
+            {
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
+                _logs.DebugMsg("[VcpCorePlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
+                _logs.DebugMsg("[VcpCorePlugin] VcpCode is " + FunctionName);
+                _logs.DebugMsg("[VcpCorePlugin] val is " + val);
+
+                foreach (var moX in _AllInfoMonitors_Mix)
+                {
+                    if (monitorInfo.Equals(moX.Item2))
+                    {
+                        if (moX.Item2.DDCisON)
+                        {
+                            //
+                            Guid _guid = Guid.NewGuid();
+                            _logs.DebugMsg("[VcpCorePlugin] New Job Guid is " + _guid.ToString());
+
+                            ParameterType parameterType = new ParameterType(Queue_CommandType.SetVCPCapability_II, new Type_SetVCPCapability_II(_guid, moX.Item1, FunctionName, val));
+                            _TaskQueue.Enqueue(parameterType);
+
+                            Launch_TaskQueueExecutor();
+
+                            object or = GetResultObjectAsync(_guid).Result;
+                            bool r = (or != null) ? ((bool)or) : false;
+
+                            return Task.FromResult(r);
+                            //
+                        }
+                        else
+                        {
+                            _logs.DebugMsg("[VcpCorePlugin] SetVCPCapability Fail => DDCisON is false");
+                            return Task.FromResult(false);
+                        }
+                    }
+                }
+
+                _logs.DebugMsg("[VcpCorePlugin] No target display to work. So, ignore requested");
+                return Task.FromResult(false);
+            }
+            else
+            {
+                _logs.DebugMsg("[VcpCorePlugin] No monitors to work or is Initialize. So, ignore requested");
                 return Task.FromResult(false);
             }
         }
@@ -892,7 +846,7 @@ namespace VcpCore.Plugins
             {
                 _logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork TaskQueueExecutor is Starting ...");
 
-                while ((!_TaskQueue.IsEmpty()) && _IsUserActive)
+                while (!_TaskQueue.IsEmpty())
                 {
                     _logs.DebugMsg("[VcpCorePlugin] TaskQueueExecutorDoWork _TaskQueue SIZE : " + _TaskQueue.Count().ToString());
 
