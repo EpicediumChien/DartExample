@@ -975,6 +975,7 @@ namespace DDPM.SA.Common
         Task<string> GetMouseKeystrokeDisplayData(string Guid);
         Task<bool> StartMouseKeystrokeRecording(string Guid);
         Task<bool> StopMouseKeystrokeRecording(string Guid);
+        Task<int> GetTouchScrollSensitivityLevel(string Guid);
 
         Task SetDPIValue(string Guid, int newValue);
         Task SetMouseAction(string Guid, byte[] newValue);
@@ -984,6 +985,7 @@ namespace DDPM.SA.Common
         Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue);
         Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true);
         Task<bool> SetReportRate(string Guid, int newValue);
+        Task<bool> SetTouchScrollSensitivityLevel(string Guid, int newValue);
 
         #endregion Mouse
 

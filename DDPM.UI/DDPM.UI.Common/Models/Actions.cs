@@ -281,6 +281,12 @@ namespace DDPM.UI.Common
                     {
                         Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA.GetKbAssignedActions(guid);
                         var jArray = JArray.FromObject(task1.Result);
+                        if (jArray == null)
+                        {
+                            DdpmCommonHelper.WriteUILog("[GetKbAssignedActions]Failed to convert task result to JArray.");
+                            return;
+                        }
+
                         DdpmCommonHelper.WriteUILog($"[GetKbAssignedActions] :{jArray}");
                         List<ActionDetail>? assignedActions = jArray.ToObject<List<ActionDetail>>();
 
@@ -301,6 +307,10 @@ namespace DDPM.UI.Common
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    DdpmCommonHelper.WriteUILog("[KeyboardActions] - KeyActions.TryGetValue == false. ");
+                                }
                             }
                             //List<ProgrambleKey> ProgrambleKeys = jArray.ToObject<List<ProgrambleKey>>()!;
                             //foreach (var programbleKey in ProgrambleKeys)
@@ -312,10 +322,14 @@ namespace DDPM.UI.Common
                             //    }
                             //}
                         }
+                        else
+                        {
+                            DdpmCommonHelper.WriteUILog("[KeyboardActions] - GetKbAssignedActions assignedActions is null");
+                        }
                     }
                     catch (Exception ex)
                     {
-                        DdpmCommonHelper.WriteUILog($"  Exception: {ex.Message}");
+                        DdpmCommonHelper.WriteUILog($"  [KeyboardActions] - GetKbAssignedActions Exception: {ex.Message}");
                     }
                 }
                 else
