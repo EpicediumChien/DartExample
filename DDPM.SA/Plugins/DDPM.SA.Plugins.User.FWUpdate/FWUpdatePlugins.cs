@@ -1800,7 +1800,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                                 {
                                     _updateErrorCode = FWUErrorCode.NoError;
                                     _notificationStr = LangHelper.Instance["A2_Firmware_update_successful"];
-                                    _logs.DebugMsg_1("_timeOutCount <= 60 and is WL7024FWU and _CurrentProcess is 100% so successful");
+                                    _logs.DebugMsg_1("process is done and is WL7024FWU and _CurrentProcess is 100% so successful");
                                     UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                                     {
                                         DeviceName = _fWUpdateInfo.DeviceName,
@@ -2768,6 +2768,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _logs.DebugMsg_1($"Check_CanBeOTAUpdate Webcam FW is support HPD : {fwUpdateInfo.IsESISupported}");
                 //Updates can only be displayed if the firmware is HPD and the OS supports MPS.
                 ret = fwUpdateInfo.IsESISupported && ret;
+            }
+            else if (fwUpdateInfo.DeviceType == DeviceType.LogicalAirAudio)//0205 Added by Bruce, to skip CADI FWU.
+            {
+                _logs.DebugMsg_1($"Check_CanBeOTAUpdate DeviceType is DeviceType.LogicalAirAudio can not be update");
+                ret = false;
             }
             _logs.DebugMsg_1($"Check_CanBeOTAUpdate finish. ret : {ret}");
             return ret;

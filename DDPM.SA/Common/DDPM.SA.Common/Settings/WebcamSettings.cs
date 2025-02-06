@@ -13,6 +13,7 @@ using Microsoft.VisualBasic.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using VcpCore.Common;
+using IndiLogic.DPeM.Broker;
 
 namespace DDPM.SA.Common.Settings
 {
@@ -117,7 +118,7 @@ namespace DDPM.SA.Common.Settings
                     }
                     GetMigrationData(di, devMgr, log, ref task, ref str);
                 }
-                
+
                 log?.Info(@$"Get customProfiles");
                 var customProfiles = di.CustomProfiles.ToObject<List<WebcamProfile>>()?.ToList();
                 if (customProfiles != null)
@@ -125,6 +126,7 @@ namespace DDPM.SA.Common.Settings
                     for (var l = customProfiles.Count - 1; l >= 0; l--)
                     {
                         CustomProfiles.TryAdd(customProfiles[l].Name, customProfiles[l]);
+                        log?.Info(@$"Get customProfiles {JsonConvert.SerializeObject(customProfiles[l])}");
                     }
                 }
                 log?.Info(@$"Get PresetProfiles {CustomProfiles.Keys}");
@@ -233,8 +235,9 @@ namespace DDPM.SA.Common.Settings
                         break;
                 }
                 log?.Error($"if (presetProfiles != null) {PresetProfiles.Keys}");
-                SelectedProfileName = "Default";
-                SetDPeMDefaultSettings(presetProfiles);
+                SetDPeMDefaultSettings(presetProfiles, PresetProfiles, log);
+                var HasNewDefault = CustomProfiles.Values.Any(x => x.Name.Contains(di.ProfileName)) && WebcamProfileNames.Any(y => y == di.ProfileName);
+                SelectedProfileName = di.ProfileName != string.Empty ? HasNewDefault == true ? di.ProfileName + "*" : di.ProfileName : "Default";
             }
         }
 
@@ -273,7 +276,7 @@ namespace DDPM.SA.Common.Settings
                         log?.Info(@$"currentRes CurrentFPS:{CurrentFPS}");
                     }
                     log?.Info(@$"currentRes currentRes.FPS:{JsonConvert.SerializeObject(currentRes.FPS)}");
-                    
+
                 }
             }
             catch (Exception e)
@@ -287,7 +290,7 @@ namespace DDPM.SA.Common.Settings
         /// </summary>
         /// <param name="di"></param>
         /// <returns></returns>
-        private static string SetCurrentFPS(WebcamSettings di,string resName,ILog log)
+        private static string SetCurrentFPS(WebcamSettings di, string resName, ILog log)
         {
             log?.Info(@$"di.SelectedResolution Json str {di.SelectedResolution}");
             if (!string.IsNullOrEmpty(di.SelectedResolution))
@@ -311,13 +314,27 @@ namespace DDPM.SA.Common.Settings
             return "30";
         }
 
-        private void SetDPeMDefaultSettings(List<WebcamProfile> presetProfiles)
+        private void SetDPeMDefaultSettings(List<WebcamProfile> presetProfiles, Dictionary<string, WebcamProfile> DefaultPresetProfiles, ILog log)
         {
             if (presetProfiles != null)
             {
                 foreach (var PresetProfile in presetProfiles)
                 {
-                    if (PresetProfile.Name.ToUpper() == "Default".ToUpper())
+                    WebcamProfile webcamProfile = null;
+                    bool IsGetFile = DefaultPresetProfiles.TryGetValue(PresetProfile.Name, out webcamProfile);
+                    if (!IsGetFile)
+                    {
+                        continue;
+                    }
+                    WebcamProfile webcamProfile1 = PresetProfile.Clone();
+                    webcamProfile1.Description = string.Empty;
+                    webcamProfile1.Id = string.Empty;
+                    WebcamProfile webcamProfile2 = webcamProfile.Clone();
+                    webcamProfile2.Description = string.Empty;
+                    webcamProfile2.Id = string.Empty;
+                    log?.Info(@$"webcamProfile1:{JsonConvert.SerializeObject(webcamProfile1)}");
+                    log?.Info(@$"webcamProfile2:{JsonConvert.SerializeObject(webcamProfile2)}");
+                    if (webcamProfile1.Equals(webcamProfile2))
                     {
                         continue;
                     }
@@ -428,7 +445,7 @@ namespace DDPM.SA.Common.Settings
                             _ => "8K UHD"
                         };
                         //Check And Set SelectedcurrentFPS in WebCamSetting.json if SelectedcurrentFPS is empty to defualt "30"
-                        
+
                         tmp.SupportedFPSs.Add(resName, res.FPS);
                         tmp.Resolutions.Add(resName, res.Resolution);
                         string selectFps = SetCurrentFPS(input, resName, log);
@@ -497,6 +514,7 @@ namespace DDPM.SA.Common.Settings
                 if (tmp == null)
                 {
                     tmp = new WebcamSettings(di, devMgr, log);
+                    log?.Info(@$"[WebcamSettings] ImportWebcamSettings DeviceInfo:{di}!");
                     //tmp = ReAlignWebcamResolution(tmp, model, di, devMgr, log);
                 }
                 if (!ExportWebcamSettings(tmp, model, devMgr, log))
@@ -542,6 +560,10 @@ namespace DDPM.SA.Common.Settings
         public int AutoFramingSensitivity { get; set; } = -1;
         public int AutoFramingFrameSize { get; set; } = -1;
         public bool IsAutoFramingTransitionOn { get; set; } = false;
+        public WebcamProfile Clone()
+        {
+            return (WebcamProfile)MemberwiseClone();
+        }
     }
 
     public enum OperationModule

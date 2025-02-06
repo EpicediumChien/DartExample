@@ -559,16 +559,14 @@ namespace DDPM.EABroker
                 //process:
                 // WindowClassName="OlkHost"
                 // pathName="C:\\Program Files\\WindowsApps\\Microsoft.OutlookForWindows_1.2024.1216.300_x64_8wekyb3d8bbwe\olk.exe
-                if (app.AppUserModelID.Equals("microsoft.windowscommunicationsapps_8wekyb3d8bbwe!microsoft.windowslive.mail", StringComparison.OrdinalIgnoreCase))
+                if (app.AppUserModelID.Equals("microsoft.windowscommunicationsapps_8wekyb3d8bbwe!microsoft.windowslive.mail", StringComparison.OrdinalIgnoreCase) && 
+                    pathName.StartsWith("C:\\Program Files\\WindowsApps\\Microsoft.OutlookForWindows_"))
                 {
-                    if (pathName.StartsWith("C:\\Program Files\\WindowsApps\\Microsoft.OutlookForWindows_"))
+                    string fileName = System.IO.Path.GetFileName(pathName);
+                    if (fileName.Equals("olk.exe", StringComparison.OrdinalIgnoreCase))
                     {
-                        string fileName = System.IO.Path.GetFileName(pathName);
-                        if (fileName.Equals("olk.exe", StringComparison.OrdinalIgnoreCase))
-                        {
-                            hWndApp = hWnd;
-                            break;
-                        }
+                        hWndApp = hWnd;
+                        break;
                     }
                 }
 
@@ -624,12 +622,18 @@ namespace DDPM.EABroker
                         }
                         no++;
                     }
-
+                    else
+                    {
+                        Trace.WriteLine($"[LaunchAndArrange] SpecialGetHandle Zero: handlePath is null");
+                        _vm.WriteLog($"[LaunchAndArrange] SpecialGetHandle Zero: handlePath is null");
+                        continue;
+                    }
 
                     if (processName != string.Empty && appHandle == IntPtr.Zero)
                     {
                         //Trace.WriteLine($"[LaunchAndArrange] 3 - 3 => Process Name : {processName}");
                         //_vm.WriteLog($"[LaunchAndArrange] 3 - 3 => Process Name : {processName}");
+
                         if (handlePath.Contains(processName))// 比對 process 啟動的程式名稱
                         {
                             //Trace.WriteLine($"[LaunchAndArrange] 3 - 4 => True Compare ProcessName => GetFilePathFromHandle = {GetFilePathFromHandle(vapp)}, GetWindowTitle = {GetWindowTitle(vapp)}");
