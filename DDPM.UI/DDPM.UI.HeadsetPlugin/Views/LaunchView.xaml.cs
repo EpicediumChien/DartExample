@@ -451,11 +451,11 @@ namespace DDPM.UI.Plugin.HeadsetPlugin
                 string PairedHostName1 = string.Empty;
                 string PairedHostName2 = string.Empty;
                 if (string.IsNullOrEmpty(_vm.PairedHostName1))
-                    PairedHostName1 =_vm.isAirAudio==false? DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result: DdpmCommonHelper.DeviceManagerSA.GetAirAudioPairingHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
+                    PairedHostName1 =_vm.isAirAudio==false? DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName2Async(_vm.CurrentDeviceInfo.ID.ToString()).Result: null; //DTP
                 else
                     PairedHostName1 = _vm.PairedHostName1; //DTH
                 if (string.IsNullOrEmpty(_vm.PairedHostName2))
-                    PairedHostName2 = _vm.isAirAudio == false ? DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result : DdpmCommonHelper.DeviceManagerSA.GetAirAudioPairingHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result; //DTP
+                    PairedHostName2 = _vm.isAirAudio == false ? DdpmCommonHelper.DeviceManagerSA.GetHeadsetPairedHostName3Async(_vm.CurrentDeviceInfo.ID.ToString()).Result : null; //DTP
                 else
                     PairedHostName2 = _vm.PairedHostName2;  //DTH
 
