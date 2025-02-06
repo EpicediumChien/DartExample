@@ -365,7 +365,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                                 {
                                     List<InputSourceObj> inputSourceObjs = hotkeyData.inputSource.Join(inputList.Values, a => a.Code, b => b.Code, (a, b) => new InputSourceObj()
                                     {
-                                        Name = b.InputName,
+                                        Name = inputList.First(kv => kv.Value.Code == a.Code).Key,
                                         Code = a.Code,
                                     }).ToList();
                                     if (inputSourceObjs == null || list.Count == 0)
