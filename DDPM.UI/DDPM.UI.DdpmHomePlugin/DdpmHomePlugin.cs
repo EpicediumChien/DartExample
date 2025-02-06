@@ -578,6 +578,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 _log.Info($"[CheckIfNeedImportSetting_Display] Monitor count is {monitorInfos.Count}.");
                 foreach (MonitorInfo info in monitorInfos)
                 {
+                    _log.Info($"[CheckIfNeedImportSetting_Display] Monitor ServiceTag: {info.edid.ServiceTag} Model: {info.modelName} search for previous exported data.");
                     string model = info.modelName;//"U2724DE";
                     string serviceTag = info.edid.ServiceTag;
                     string exportpath = path + "\\" + model + ".json";
