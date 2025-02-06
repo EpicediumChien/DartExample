@@ -66,6 +66,7 @@ using static DDPM.SA.Plugins.User.DeviceManager.DisplayDeviceHelper;
 using static VcpCore.Common.User32;
 using IDs = DDPM.SA.Common.IDs;
 using Point = System.Windows.Point;
+
 //using MonitorProfile = DDPM.SA.Utility.MonitorProfile;
 
 namespace DDPM.SA.Plugins.User.DeviceManager
@@ -198,7 +199,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         //FW update progress bar
         private UpdateProgress _UpdateProgress;
-        PopupBaseViewModel popupBaseViewModel = new PopupBaseViewModel();
+
+        private PopupBaseViewModel popupBaseViewModel = new PopupBaseViewModel();
         private PopupBase _PopupBase = null;
 
         //Bruce 07-30 Added total screens
@@ -240,11 +242,13 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         private OSThemeEnum previousOsTheme = OSThemeEnum.Dark;
 
         private List<NKVMVCPValue> _nKVMVCPValues = new List<NKVMVCPValue>();
+
         /// <summary>
         ///Check software and firmware update timers
         /// </summary>
         private System.Timers.Timer _checkUpdateScheduleTimer;//Added 01/07 by Bruce
-        DisplayUpdateHelper displayUpdateHelper;
+
+        private DisplayUpdateHelper displayUpdateHelper;
 
         private bool _isSysSettingReady = false;
 
@@ -691,6 +695,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     _pwr_Mon.Enable_Event();
                     _pwr_Mon.HotkeyPressed += HotkeyPressed;
                     _pwr_Mon.Enable_HotkeyHook();
+                    _pwr_Mon.CurrentSessionActived += OnCurrentSessionActived;
+                    _pwr_Mon.CurrentSessionInactived += OnCurrentSessionInactived;
                     _pwr_Mon.Enable_SessionEvent();
                 }
                 System.Windows.Threading.Dispatcher.Run();
@@ -700,6 +706,26 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             thread.Start();
 
             _disDevHelper = new DisplayDeviceHelper(Log);
+        }
+
+        private void OnCurrentSessionInactived(object sender, EventArgs e)
+        {
+            WriteLog($"[OnCurrentSessionInactived] set in-active to this user subagent in session({WTSFunction.GetCurrentUserSessionId()})");
+            _isSubagentActive = false;
+            SetIsUserActive(false);
+        }
+
+        private void OnCurrentSessionActived(object sender, EventArgs e)
+        {
+            WriteLog($"[OnCurrentSessionActived] set active to this user subagent in session({WTSFunction.GetCurrentUserSessionId()})");
+
+            bool PreActiveStatus = _isSubagentActive;
+
+            _isSubagentActive = true;
+            SetIsUserActive(true);
+
+            if (_isSubagentActive && (!PreActiveStatus))
+                Task.Run(()=>_SystemEvents_DisplaySettingsChanged(null));
         }
 
         private void HotkeyPressed(object sender, KeyPressedEventArgs e)
@@ -1912,10 +1938,24 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("DeviceMangerPlugin received Reset0x52TimerTick: " + millisecond.ToString() + $" requested, process ID[{processID}]");
 
-            _DisplayManagerPlugin.Reset0x52TimerTick(millisecond, processID);
+            if (_DisplayManagerPlugin != null)
+                _DisplayManagerPlugin.Reset0x52TimerTick(millisecond, processID);
+
             _millisecond = millisecond;
 
-            return Task.FromResult(Task.CompletedTask);
+            return Task.CompletedTask;
+        }
+
+        public Task SetIsUserActive(bool IsUserActive)
+        {
+            writelog("DeviceMangerPlugin received SetIsUserActive: " + IsUserActive.ToString() + " requested ...");
+
+            if (_DisplayManagerPlugin != null)
+                _DisplayManagerPlugin.SetIsUserActive(IsUserActive);
+            else
+                writelog("_DisplayManagerPlugin is Null");
+
+            return Task.CompletedTask;
         }
 
         public Task<List<MonitorInfo>> GetMonitors()
@@ -1985,7 +2025,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<List<MonitorInfo>> Re_GetMonitors()
         {
             writelog("DeviceMangerPlugin received Re_GetMonitors requested ...");
-            _SystemEvents_DisplaySettingsChanged(null);
+            Task.Run(() => _SystemEvents_DisplaySettingsChanged(null)).Wait();
             return Task.FromResult(_AllInfoMonitors.ToList());
         }
 
@@ -1997,7 +2037,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             string r = string.Empty;
 
-            r = _DisplayManagerPlugin.GetCapabilitiesString(monitorInfo).Result;
+            if (_DisplayManagerPlugin != null)
+                r = _DisplayManagerPlugin.GetCapabilitiesString(monitorInfo).Result;
 
             return Task.FromResult(r);
         }
@@ -2010,7 +2051,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             string r = string.Empty;
 
-            r = _DisplayManagerPlugin.GetVCPCapabilities(monitorInfo).Result;
+            if (_DisplayManagerPlugin != null)
+                r = _DisplayManagerPlugin.GetVCPCapabilities(monitorInfo).Result;
 
             return Task.FromResult(r);
         }
@@ -2025,7 +2067,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             ObjGetVCP r = new ObjGetVCP();
 
-            r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, code, opt).Result;
+            if (_DisplayManagerPlugin != null)
+                r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, code, opt).Result;
 
             return Task.FromResult(r);
         }
@@ -2040,7 +2083,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             ObjGetVCP r = new ObjGetVCP();
 
-            r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, FunctionName, opt).Result;
+            if (_DisplayManagerPlugin != null)
+                r = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, FunctionName, opt).Result;
 
             return Task.FromResult(r);
         }
@@ -2055,7 +2099,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             bool r = false;
 
-            r = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, code, val).Result;
+            if (_DisplayManagerPlugin != null)
+                r = _DisplayManagerPlugin.SetVCPCapability(monitorInfo, code, val).Result;
 
             //0715 Jason add
             if (r && code == 0x04 && _NKVMPlugin != null)
@@ -2146,7 +2191,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 if (!string.IsNullOrEmpty(val))
                 {
-                    r = _DisplayManagerPlugin.SetVCPCapability(monitorInfoX, FunctionName, val).Result;
+                    if (_DisplayManagerPlugin != null)
+                        r = _DisplayManagerPlugin.SetVCPCapability(monitorInfoX, FunctionName, val).Result;
 
                     //Telementry Collection
                     var Displaysettings_Function = new Displaysettings_Function();
@@ -11517,11 +11563,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("[DeviceMangerPlugin] YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
 
-            _SystemEvents_DisplaySettingsChanged(new DebouncerArg()
+            if (WTSFunction.IsYourProcessInActiveSession(Log))
             {
-                sender = sender,
-                eventArgs = e,
-            });
+                writelog("[DeviceMangerPlugin] WTSFunction.IsYourProcessInActiveSession return True");
+
+                _SystemEvents_DisplaySettingsChanged(new DebouncerArg()
+                {
+                    sender = sender,
+                    eventArgs = e,
+                });
+            }
+            else
+                writelog("[DeviceMangerPlugin] WTSFunction.IsYourProcessInActiveSession return False");
         }
 
         private void _SystemEvents_DisplaySettingsChanged(object _arg)
@@ -11536,7 +11589,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog($"Receive DisplaySettingsChanged: {arg.sender}, e:{arg.eventArgs}, rescan monitor");
                 }
                 else
-                    writelog($"Receive Re-GetMonitor, rescan monitor");
+                    writelog($"Receive Re-GetMonitor or session changed, rescan monitor");
 
                 if (displayInOut)
                 {

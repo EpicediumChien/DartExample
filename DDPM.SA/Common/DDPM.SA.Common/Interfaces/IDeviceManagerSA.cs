@@ -40,8 +40,6 @@ namespace DDPM.SA.Common
         public string UI_Field_Name { get; set; } = string.Empty;
     }
 
-
-
     public class UpdateDTPProxyNotify : EventArgs
     {
         public string State { get; set; } = string.Empty;
@@ -166,6 +164,8 @@ namespace DDPM.SA.Common
         #region public for Displays
 
         Task Reset0x52TimerTick(int millisecond, int processID = -0xFF);
+
+        Task SetIsUserActive(bool IsUserActive);
 
         Task<List<MonitorInfo>> GetMonitors();
 
@@ -682,8 +682,11 @@ namespace DDPM.SA.Common
         Task<int> GetSnooze(Guid deviceId);
 
         Task<int> GetSnoozeLength(Guid deviceId);
+
         Task<bool> StartCopilotRegistryMonitor();
+
         Task<bool> StopCopilotRegistryMonitor();
+
         Task<int> GetIODongleCountGen3AgoCount();
 
         #endregion public for Peripherals
@@ -805,6 +808,7 @@ namespace DDPM.SA.Common
         //Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false);
 
         Task<FWUpdateInfoPackage> GetFWUpdateInfo(bool isShowNotify = true, bool isForce = false, bool isDefer = false, List<DeviceType> deviceTypeList = null, bool UODMode = false, bool isOnlyDisplay = false, bool reScan = true, bool isUITrigger = false, List<string> giuds = null, List<string> serviceTags = null, List<string> models = null, string minVersion = "");
+
         Task<FWUErrorCode> Install(string installPath, bool isOnlyDisplay = false, DeviceType deviceType = DeviceType.Unknown);
 
         //0531 Bruce 因應IL的現有安裝包修改判斷，IDeviceManagerSA.cs中三個關於FWUpdate的方法移除並修改DownloadAndInstall回傳值
@@ -967,23 +971,38 @@ namespace DDPM.SA.Common
         #region Mouse
 
         Task<int> GetDpiValue(string Guid);
+
         Task<JArray> GetMouseProgrammableKeys(string Guid);
+
         Task<JArray> GetAppSpecificProfiles(string Guid);
+
         Task<bool> DeleteMouseAllAssignedActions(string Guid);
+
         Task<JArray> GetMouseAssignableActions(string Guid);
+
         Task<JArray> GetMouseAssignedActions(string Guid);
+
         Task<string> GetMouseKeystrokeDisplayData(string Guid);
+
         Task<bool> StartMouseKeystrokeRecording(string Guid);
+
         Task<bool> StopMouseKeystrokeRecording(string Guid);
         Task<int> GetTouchScrollSensitivityLevel(string Guid);
 
         Task SetDPIValue(string Guid, int newValue);
+
         Task SetMouseAction(string Guid, byte[] newValue);
+
         Task SetCurrentSelectedAppSpecificProfile(string Guid, string newValue);
+
         Task DeleteMouseAssignedAction(string Guid, int newValue);
+
         Task SetMouseAssignDialogAction(string Guid, byte[] newValue);
+
         Task SetMouseAssignKeystrokeAction(string Guid, byte[] newValue);
+
         Task<bool> RestoreToDefaultMouse(string Guid, bool isFromCli = true);
+
         Task<bool> SetReportRate(string Guid, int newValue);
         Task<bool> SetTouchScrollSensitivityLevel(string Guid, int newValue);
 
@@ -998,6 +1017,7 @@ namespace DDPM.SA.Common
         Task<bool> DeleteKeyboardAllAssignedActions(string Guid);
 
         Task<JArray> GetKbAssignableActions(string Guid);
+
         Task<JArray> GetKbAssignedActions(string Guid);
 
         Task<string> GetKeyboardKeystrokeDisplayData(string Guid);
@@ -1021,41 +1041,73 @@ namespace DDPM.SA.Common
         #region Pen
 
         Task<string> GetEraserDoublePressValues();
+
         Task<string> GetEraserSinglePressValues();
+
         Task<string> GetEraserLongPressValues();
+
         Task<string> GetSideSwitchSinglePressValues();
+
         Task<string> GetMenuSinglePressValues();
+
         Task<string> GetLaunchableAppValues();
+
         Task<string> GetEraserDoublePressSetting();
+
         Task<string> GetEraserSinglePressSetting();
+
         Task<string> GetEraserLongPressSetting();
+
         Task<string> GetSideTopSwitchSinglePressSetting();
+
         Task<string> GetSideBottomSwitchSinglePressSetting();
+
         Task<string> GetMenuSinglePressSetting();
+
         Task<bool> GetMenuCenterRightClickSetting();
+
         Task<bool> GetIsSideTopButtonHoverClick();
+
         Task<bool> GetIsSideBottomButtonHoverClick();
+
         Task<string> PairingPen();
+
         Task<JArray> GetPenDeviceItemsEx();
+
         Task<bool> StartKeyCapturePen();
+
         Task<bool> FinishKeyCapturePen();
+
         Task<string> KeyCaptureData();
+
         Task<string> GetIsdDriverVersion();
 
         Task UnPairPen(string Guid);
 
         Task SetEraserDoublePressSetting(string itemID, byte[] newValue);
+
         Task SetEraserLongPressSetting(string itemID, byte[] newValue);
+
         Task SetEraserSinglePressSetting(string itemID, byte[] newValue);
+
         Task SetIsSideBottomButtonHoverClick(string itemID, bool newValue);
+
         Task SetIsSideTopButtonHoverClick(string itemID, bool newValue);
+
         Task SetMenuSinglePressSetting(string itemID, byte[] newValue);
+
         Task SetMenuCenterRightClickSetting(string itemID, bool newValue);
+
         Task SetSideBottomSwitchSinglePressSetting(string itemID, byte[] newValue);
+
         Task SetSideTopSwitchSinglePressSetting(string itemID, byte[] newValue);
+
         Task SetTiltSensitivity(string itemID, int newValue);
+
         Task SetTipSensitivity(string itemID, int newValue);
+
         Task<bool> RestoreToDefaultPen();
+
         Task<bool> RestoreRadialMenuToDefault();
 
         #endregion Pen
@@ -1110,9 +1162,13 @@ namespace DDPM.SA.Common
         Task<bool?> GetIsFocusOn(string Guid);
 
         Task<int> GetPriority(string Guid);
+
         Task<bool?> GetIsAutoFramingTransitionOn(string Guid);
+
         Task<int> GetAutoFramingFrameSize(string Guid);
+
         Task<int> GetAutoFramingSensitivity(string Guid);
+
         Task<string> GetWebcamSerialNumber(string Guid);
 
         Task SetIsMicEnumerationOn(string Guid, bool newValue);
@@ -1247,6 +1303,7 @@ namespace DDPM.SA.Common
         Task<bool> SetFactoryResetAsyncValueForHeadset(string Guid, bool newValue);
 
         Task<bool> SetFactoryResetAsyncValueForHeadsetForCLI(string Guid, bool newValue);
+
         Task<bool> SetBoomMicAsync(string Guid, bool newValue);
 
         #endregion Headset Set
@@ -1404,6 +1461,7 @@ namespace DDPM.SA.Common
         ////////////////////////////////Get////////////////////////////////
 
         Task<string> GetProfileNameAsync(string item);
+
         Task<string> GetProfileAsync(string item);
 
         Task<int> GetBassAsync(string Guid);
