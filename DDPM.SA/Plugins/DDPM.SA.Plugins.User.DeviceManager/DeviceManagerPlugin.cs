@@ -725,7 +725,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             SetIsUserActive(true);
 
             if (_isSubagentActive && (!PreActiveStatus))
-                _SystemEvents_DisplaySettingsChanged(null);
+                Task.Run(()=>_SystemEvents_DisplaySettingsChanged(null));
         }
 
         private void HotkeyPressed(object sender, KeyPressedEventArgs e)
@@ -2025,7 +2025,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<List<MonitorInfo>> Re_GetMonitors()
         {
             writelog("DeviceMangerPlugin received Re_GetMonitors requested ...");
-            _SystemEvents_DisplaySettingsChanged(null);
+            Task.Run(() => _SystemEvents_DisplaySettingsChanged(null)).Wait();
             return Task.FromResult(_AllInfoMonitors.ToList());
         }
 
