@@ -176,9 +176,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
         /// <inheritdoc/>
         public void OnActivated()
         {
-            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
-            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += WebCameraplugin_UIUpdateNotify;
-            Mouse.OverrideCursor = null;
+            //DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+            //DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += WebCameraplugin_UIUpdateNotify;
+            //Mouse.OverrideCursor = null;
 
             //DdpmCommonHelper.WriteUILog($"Webcam plugin OnActivated start");
             //DdpmCommonHelper.DeviceManagerSA!.SetIsDDPMLaunchByQAMAsync(false);
@@ -755,6 +755,9 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
             {
                 _viewModel.SetCurrentDevice(parameter);
             }
+            DdpmCommonHelper.DeviceManagerSA!.DeviceChanged += DeviceManager_DeviceChanged;
+            DdpmCommonHelper.DeviceManagerSA!.UIUpdateNotify += WebCameraplugin_UIUpdateNotify;
+            Mouse.OverrideCursor = null;
         }
 
         #endregion Interface IConsolePluginSupportsActivations

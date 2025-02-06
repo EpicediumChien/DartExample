@@ -2235,6 +2235,35 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 if (inputSourcelist != null &&
                                     inputSourcelist.Count != 0)
                                 {
+                                    //Migration change input...
+                                    copyinputlist = inputSourcelist;
+                                    foreach (var input in inputSourcelist)
+                                    {
+                                        if (input.Value.USBUpstream == string.Empty)
+                                        {
+                                            readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
+                                            if (readinputlist != null)
+                                            {
+                                                if (readinputlist.Count != 0)
+                                                {
+                                                    foreach (var readinput in readinputlist)
+                                                    {
+                                                        foreach (var copyinput in copyinputlist)
+                                                        {
+                                                            if (readinput.Value.Code == copyinput.Value.Code)
+                                                            {
+                                                                readinput.Value.InputName = copyinput.Value.InputName;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                    bool b1 = SetInputSourcelist(monitorInfo, readinputlist).Result;
+                                                    return Task.FromResult(readinputlist);
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
                                     return Task.FromResult(inputSourcelist);
                                 }
                             }
@@ -5687,11 +5716,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             bool b = _DisplayManagerPlugin.SetSubInputs(monitorInfo, sub1, sub2, sub3).Result;
             if (b && _NKVMPlugin != null)
             {
-                ObjGetVCP obj = new ObjGetVCP();
-                obj = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, 0xE8).Result;
-                if (obj.result)
+                ObjGetVCP localObj = new ObjGetVCP();
+                localObj = _DisplayManagerPlugin.GetVCPCapability(monitorInfo, 0xE8).Result;
+                if (localObj.result)
                 {
-                    _NKVMPlugin.SetVCPNotify(monitorInfo, 0xE8, (int)(uint)obj.value).Wait();
+                    _NKVMPlugin.SetVCPNotify(monitorInfo, 0xE8, (int)(uint)localObj.value).Wait();
                 }
             }
             return Task.FromResult(b);
@@ -11447,15 +11476,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                 UpdateUINotify e = new UpdateUINotify();
 
-                if (profileName.StartsWith("DDPMSetProfileToNone"))
+                if (profileName.StartsWith("DDPMSetProfileToNone") || profileName.StartsWith("DDPMSetProfileToCurrent"))
                 {
                     e.UI_Field_Name = profileName; //Derek 2025/01/17 DDPMSetProfileToNone
-
-                    writelog($"SyncWebcamProfile DDPMSetProfileToNone by message {profileName}");
-                }
-                else if (profileName.StartsWith("DDPMSetProfileToCurrent"))
-                {
-                    e.UI_Field_Name = profileName; //Derek 2025/01/17 DDPMSetProfileToCurrent
 
                     writelog($"SyncWebcamProfile DDPMSetProfileToNone by message {profileName}");
                 }
@@ -12822,9 +12845,9 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         Task.Run(() =>
                         {
                             bool flag = false;
-                            int count = 0;
+                            int loopCount = 0;
                             DeviceHelper di = null;
-                            while (count < 60)
+                            while (loopCount < 60)
                             {
                                 di = GetDevices().Result;
                                 if (_isSysSettingReady)
@@ -12853,18 +12876,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     }
                                 }
                                 Thread.Sleep(1000);
-                                count++;
+                                loopCount++;
                                 writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - Peripherals Plugin is in a running condition");
-                                writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - WalkThrough GetDevices {count.ToString()}");
+                                writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - WalkThrough GetDevices {loopCount.ToString()}");
                             }
                             if (di != null && di.deviceInfo.Count > 0)
                             {
                                 writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - di.deviceInfo.Count = {di.deviceInfo.Count.ToString()}");
-                                foreach (var item in di.deviceInfo)
-                                {
-                                    CheckDeviceFirstTimesToConnect(null, item);
-                                    break; // Trigger once then break, do not need to check all devices
-                                }
+
+                                CheckDeviceFirstTimesToConnect(null, di.deviceInfo[0]);
+                                // Trigger once then break, do not need to check all devices
                             }
                             else
                                 writelog($"{nameof(GetCurrentPeripheralsPluginCondition)} - di.deviceInfo NULL");

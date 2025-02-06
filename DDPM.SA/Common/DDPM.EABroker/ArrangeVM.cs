@@ -1354,7 +1354,14 @@ namespace DDPM.EABroker
             {
                 if (HoveringAwsIcon == null)
                     return "(null)";
-                return $"{HoveringAwsIcon.CtrlClass}[{HoveringAwsIcon.FriendlyName}]";
+                //Robert_Lin, 2025-2-5 To prevent null exception: FriendName will be loaded from Multilingual resource, may be null.
+                //OLD:
+                //return $"{HoveringAwsIcon.CtrlClass}[{HoveringAwsIcon.FriendlyName}]";
+                //NEW:
+                if (string.IsNullOrEmpty(HoveringAwsIcon.FriendlyName))
+                    return $"{HoveringAwsIcon.CtrlClass}[]";
+                else
+                    return $"{HoveringAwsIcon.CtrlClass}[{HoveringAwsIcon.FriendlyName}]";
             }
         }
 
@@ -1625,7 +1632,14 @@ namespace DDPM.EABroker
             {
                 if (HoveringSplit == null)
                     return "(null)";
-                return $"{HoveringSplit.CtrlClass}[{HoveringSplit.FriendlyName}]";
+                //Robert_Lin, 2025-2-5 To prevent null exception: FriendName will be loaded from Multilingual resource, may be null.
+                //OLD:
+                //return $"{HoveringSplit.CtrlClass}[{HoveringSplit.FriendlyName}]";
+                //NEW:
+                if (string.IsNullOrEmpty(HoveringAwsIcon.FriendlyName))
+                    return $"{HoveringAwsIcon.CtrlClass}[]";
+                else
+                    return $"{HoveringAwsIcon.CtrlClass}[{HoveringAwsIcon.FriendlyName}]";
             }
         }
         #endregion HoveringSplit
