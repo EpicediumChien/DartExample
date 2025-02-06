@@ -524,7 +524,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                     MonitorInfo newPlugIn = null;
                     // If is a plugin event
-                    if(_monitorInfos.Count() >= _monitorCache.Count())
+                    if(_monitorInfos.Count >= _monitorCache.Count)
                     {
                         foreach (MonitorInfo monitor in _monitorInfos)
                         {
