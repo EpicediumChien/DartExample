@@ -16,7 +16,6 @@ using VcpCore.Common;
 using IDdpmHomePageViewModel = DDPM.UI.Plugin.DdpmHomePlugin.Interfaces.IDdpmHomePageViewModel;
 using DDPM.SA.Common.Settings;
 using System.Diagnostics;
-using DDPM.SA.Common.Display;
 
 namespace DDPM.UI.Plugin.DdpmHomePlugin
 {
@@ -110,7 +109,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 double windowTop = 0;
                                 double actualWidth = 0;
                                 double actualHeight = 0;
-                                if (parentWindow == null) {
+                                if (parentWindow == null)
+                                {
                                     DdpmCommonHelper.WriteUILog($"[DdpmHomePlugin] Error cannot get MainWindow value", memberName: nameof(parentWindow));
                                     return;
                                 }
@@ -125,18 +125,17 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 modalDialog.Left = windowLeft;
                                 modalDialog.Top = windowTop;
                                 modalDialog.ShowDialog();
-                                if (modalDialog.DialogResult != null 
-                                && modalDialog.DialogResult == true) {
-                                    DisplayImportResultCode importResult = DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result;
-                                    if (importResult > 0 && //For jason to do import
-                                        modalDialog.isChecked) //ignore next check for this model
-                                    {
-                                        DdpmCommonHelper.DeviceManagerSA.SetSameModel(mo, true);
-                                    }
+
+                                if (modalDialog.DialogResult != null &&
+                                    modalDialog.DialogResult == true &&
+                                    (int)DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result > 0 && //For jason to do import
+                                    modalDialog.isChecked) //ignore next check for this model
+                                {
+                                    DdpmCommonHelper.DeviceManagerSA.SetSameModel(mo, true);
                                 }
                             }
                         }
-                        
+
                     });
                 }
             }
