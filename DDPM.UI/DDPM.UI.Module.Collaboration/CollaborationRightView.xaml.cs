@@ -170,7 +170,7 @@ namespace DDPM.UI.Module.Collaboration
                 txtLearnMore2.Text = Strings.LearnMoreLink;
                 LearnMoreText = Strings.LearnMoreText2;
             }
-            else if (CTKMessage == "ZoomUpToDate, TeamsNotRunning")
+            else if (CTKMessage == "ZoomUpToDate, TeamsNotRunning") //duplicated Scenario 5 ? 
             { // Scenario 9
                 txtAlert2.Text = Strings.Alert5;
                 bdrAlert2.Visibility = Visibility.Visible;
