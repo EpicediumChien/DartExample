@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DDPM.SA.Resources.Helper;
+using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -19,7 +20,11 @@ namespace DDPM.OSDs
         {
             InitializeComponent();
             DataContext = this;
-            showString = Content + " is Unmuted";
+            //Robert_Lin 2025-2-5, PIMS-336458 [R19_Headset]OSD language not translate to user selecting display language
+            //OLD:
+            //showString = Content + " is Unmuted";
+            //NEW:
+            showString = Content + " " + LangHelper.Instance["is_Unmuted"];
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

@@ -441,11 +441,11 @@ namespace DDPM.Easy.Common
 
         public List<double> DefaultSettings => new List<double>() { 1, 1 };
 
-         #endregion Settings
+        #endregion Settings
 
         #region FriendlyName
 
-        public string FriendlyName { get; set; }
+        public string FriendlyName { get; set; } = "";
 
         #endregion FriendlyName
 

@@ -257,15 +257,25 @@ namespace DDPM.EABroker
                 
                 double extendedFrameBoundsHorz = 3;
                 rcArrange.Inflate(6+ extendedFrameBoundsHorz, 6);
+
+                //To prevent the rcArrange acrouss screen boundary after Inflated
                 if (_vm.WorkScreen != null)
                 {
+                    //Check if Left border across screen boundary?
                     int scrLeft = _vm.WorkScreen.Bounds.Left;
-                    if (rcArrange.Left < scrLeft)
+                    if ((rcArrange.Left < scrLeft) && (rcArrange.Right > scrLeft))
                     {
+                        //Robert_Lin 2025-2-5 to prevent raArrange.Width assign a <0 value
+                        //OLD:
+                        //double dx = scrLeft - rcArrange.Left;
+                        //rcArrange.X = scrLeft;
+                        //rcArrange.Width -= dx;
+                        //NEW:
                         double dx = scrLeft - rcArrange.Left;
+                        double w = rcArrange.Width - dx;
                         rcArrange.X = scrLeft;
-                        rcArrange.Width -= dx;
-
+                        if (w >= 0)
+                            rcArrange.Width = w;
                     }
                 }
             }

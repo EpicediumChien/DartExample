@@ -1008,7 +1008,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public ObservableCollection<int> SuggestedActions { get => new(Actions.SuggestedActionsM); }
         public ObservableCollection<int> ProductivityActions { get; set; } = new(Actions.ProductivityActionsKnM);
-        public ObservableCollection<int> WindowsActions { get; set; } = new(Actions.WindowsActionsKnM);
+        public ObservableCollection<int> WindowsActions { get; set; } = new(Actions.WindowsActionsKnM());
         public ObservableCollection<int> MultimediaActions { get; set; } = new(Actions.MultimediaActionsKnM);
         public ObservableCollection<int> WordActions { get; set; } = new(Actions.WordActions);
         public ObservableCollection<int> ExcelActions { get; set; } = new(Actions.ExcelActions);
