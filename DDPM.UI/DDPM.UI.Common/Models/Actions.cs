@@ -281,27 +281,38 @@ namespace DDPM.UI.Common
                     {
                         Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA.GetKbAssignedActions(guid);
                         var jArray = JArray.FromObject(task1.Result);
+                        if (jArray == null)
+                        {
+                            DdpmCommonHelper.WriteUILog("[GetKbAssignedActions]Failed to convert task result to JArray.");
+                            return;
+                        }
 
                         DdpmCommonHelper.WriteUILog($"[GetKbAssignedActions] :{jArray}");
+                        List<ActionDetail>? assignedActions = jArray.ToObject<List<ActionDetail>>();
 
-                        try
+                        if (assignedActions != null)
                         {
-                            List<ActionDetail> assignedActions = jArray.ToObject<List<ActionDetail>>();
-
                             foreach (var actionDetail in assignedActions)
                             {
-                                var btn = (KeyName)actionDetail.ProgrammableKeyId;
-                                if (KeyActions.TryGetValue(btn, out SelectedAction? keyAction) && 
-                                    Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
+                                //var btn = (KeyName)actionDetail.ProgrammableKeyId;
+                                var btn = GetKeyName(_model, actionDetail);
+                                if (KeyActions.TryGetValue(btn, out SelectedAction? keyAction))
                                 {
-                                    keyAction.AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
-                                    if (keyAction.AssignedAction.ID == 14) //AssignKeystroke
+                                    if (Actions.ActionIdToGuid.Any(x => x.Value == actionDetail.BaseGuid))
                                     {
-                                        keyAction.AssignedAction.Parameter = actionDetail.DisplayData;
+                                        keyAction.AssignedAction.ID = Actions.ActionIdToGuid.FirstOrDefault(x => x.Value == actionDetail.BaseGuid).Key;
+                                        if (keyAction.AssignedAction.ID == 14) //AssignKeystroke
+                                        {
+                                            keyAction.AssignedAction.Parameter = actionDetail.DisplayData;
+                                        }
                                     }
                                 }
+                                else
+                                {
+                                    DdpmCommonHelper.WriteUILog("[KeyboardActions] - KeyActions.TryGetValue == false. ");
+                                }
                             }
-                            List<ProgrambleKey> ProgrambleKeys = jArray.ToObject<List<ProgrambleKey>>()!;
+                            //List<ProgrambleKey> ProgrambleKeys = jArray.ToObject<List<ProgrambleKey>>()!;
                             //foreach (var programbleKey in ProgrambleKeys)
                             //{
                             //    var btn = (KeyName)programbleKey.Id;
@@ -311,20 +322,37 @@ namespace DDPM.UI.Common
                             //    }
                             //}
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            DdpmCommonHelper.WriteUILog($"  Exception: {ex.Message}");
+                            DdpmCommonHelper.WriteUILog("[KeyboardActions] - GetKbAssignedActions assignedActions is null");
                         }
                     }
                     catch (Exception ex)
                     {
-                        DdpmCommonHelper.WriteUILog($"  Exception: {ex.Message}");
+                        DdpmCommonHelper.WriteUILog($"  [KeyboardActions] - GetKbAssignedActions Exception: {ex.Message}");
                     }
                 }
                 else
                 {
                     DdpmCommonHelper.WriteUILog("[KeyboardActions] DdpmCommonHelper.DeviceManagerSA == null");
                 }
+            }
+        }
+
+        private KeyName GetKeyName(string _model, ActionDetail actionDetail)
+        {
+            switch (_model)
+            {
+                case "KB525C":
+                case "KB900":
+                    if (actionDetail.ProgrammableKeyId == 14)      // M2
+                        return (KeyName)19;                        // ScrollLock
+                    else if (actionDetail.ProgrammableKeyId == 15) // M3
+                        return (KeyName)20;                        // PauseBreak
+                    else
+                        return (KeyName)actionDetail.ProgrammableKeyId;
+                default:
+                    return (KeyName)actionDetail.ProgrammableKeyId;
             }
         }
     }
@@ -371,9 +399,9 @@ namespace DDPM.UI.Common
 
             if (guid != "")
             {
-                //AllApp
                 if (DdpmCommonHelper.DeviceManagerSA != null)
                 {
+                    //AllApp
                     DdpmCommonHelper.DeviceManagerSA.SetCurrentSelectedAppSpecificProfile(guid, "{76824745-CE06-4358-835D-7BB991CB71A0}");
                     DdpmCommonHelper.WriteUILog("[SetCurrentSelectedAppSpecificProfile] AllApp Guid:{76824745-CE06-4358-835D-7BB991CB71A0}");
                     Task<JArray> task1 = DdpmCommonHelper.DeviceManagerSA.GetMouseAssignedActions(guid);

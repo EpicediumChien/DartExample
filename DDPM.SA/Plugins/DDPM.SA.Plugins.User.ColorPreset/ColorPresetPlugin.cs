@@ -2739,6 +2739,9 @@ namespace ColorPreset.Plugins
                         string strAppName = string.Empty;
                         strAppName = colorPresetSetting_Migration.AppInfos[i].Name;
 
+                        string strExeName = string.Empty;
+                        strExeName = colorPresetSetting_Migration.AppInfos[i].ExeName;
+
                         if (Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.ContainsKey(strAppName))
                         {
                             Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo[strAppName].Color = colorPresetSetting_Migration.AppInfos[i].Color;
@@ -2755,7 +2758,7 @@ namespace ColorPreset.Plugins
                             {
                                 if (strAppName == kvp_applist.Value.AppName)
                                 {
-                                    temp.IconName = _SettingsPlugin.GetAppIconFolderPath() + "\\" + strAppName + ".png";
+                                    temp.IconName = _SettingsPlugin.GetAppIconFolderPath().Result + "\\" + strExeName + ".png"; // Jim 20250206 modify  PIMS-344233 for Color : auto list
                                 }
 
                             }

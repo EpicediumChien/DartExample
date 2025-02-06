@@ -37,10 +37,10 @@ namespace DDPM.SA.Common.Alert
             var newAlertType = (AlertType)e.NewValue;
             switch (newAlertType)
             {
-                case AlertType.Info:
-                    control.AlertColorBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0E92F2"));
-                    control.AlertImagePath.Style = (Style)control.Resources["InfoPathStyle"];
-                    break;
+                //case AlertType.Info:
+                //    control.AlertColorBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#0E92F2"));
+                //    control.AlertImagePath.Style = (Style)control.Resources["InfoPathStyle"];
+                //    break;
 
                 case AlertType.Error:
                     control.AlertColorBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D0353F"));

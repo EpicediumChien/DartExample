@@ -1157,6 +1157,9 @@ namespace DDPM.SA.Plugins.CMAManager
                 OnEventDisplayDisconnect(args);
             }
 
+            // add @ 20250206 stephen
+            Thread.Sleep(3000);
+
             // add @ 20250204 stephen
             WriteLog("[ICMAManagerSA] Update_DeviceChanged() executed isDoFwJobChecking = " + isDoFwJobChecking);
 

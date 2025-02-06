@@ -832,16 +832,14 @@ namespace DDPM.QAM
         {
             try
             {
-                if (null != webcamSettings.NONE && selectedProfileName == "NONE")
+                if (null != webcamSettings.NONE && selectedProfileName == "NONE" && 
+                    (65 == fov || 78 == fov || 90 == fov))
                 {
-                    if (65 == fov || 78 == fov || 90 == fov)
-                    {
-                        webcamSettings.NONE.FieldOfView = fov;
+                    webcamSettings.NONE.FieldOfView = fov;
 
-                        SaveSelectProfile();
+                    SaveSelectProfile();
 
-                        return true;
-                    }
+                    return true;
                 }
             }
             catch (Exception e)

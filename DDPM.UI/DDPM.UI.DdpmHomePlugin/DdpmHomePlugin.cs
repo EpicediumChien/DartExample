@@ -575,8 +575,10 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 string localAppDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Dell");
                 string path = localAppDataPath + "\\Dell Display and Peripheral Manager\\Export";
 
+                _log.Info($"[CheckIfNeedImportSetting_Display] Monitor count is {monitorInfos.Count}.");
                 foreach (MonitorInfo info in monitorInfos)
                 {
+                    _log.Info($"[CheckIfNeedImportSetting_Display] Monitor ServiceTag: {info.edid.ServiceTag} Model: {info.modelName} search for previous exported data.");
                     string model = info.modelName;//"U2724DE";
                     string serviceTag = info.edid.ServiceTag;
                     string exportpath = path + "\\" + model + ".json";
