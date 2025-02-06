@@ -11539,14 +11539,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         {
             writelog("[DeviceMangerPlugin] YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
 
-            if (!(WTSFunction.IsYourProcessInActiveSession(Log)))
+            if (WTSFunction.IsYourProcessInActiveSession(Log))
             {
+                writelog("[DeviceMangerPlugin] WTSFunction.IsYourProcessInActiveSession return True");
+
                 _SystemEvents_DisplaySettingsChanged(new DebouncerArg()
                 {
                     sender = sender,
                     eventArgs = e,
                 });
             }
+            else
+                writelog("[DeviceMangerPlugin] WTSFunction.IsYourProcessInActiveSession return False");
         }
 
         private void _SystemEvents_DisplaySettingsChanged(object _arg)
