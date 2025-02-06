@@ -1092,7 +1092,7 @@ namespace DDPM.UI.Module.EzArrange
                         if (delCustom != null)
                         {
                             //Delete its Buddy from RecentList
-                            if (itemCustom.Buddy != null)
+                            if (itemCustom != null && itemCustom.Buddy != null)
                             {
                                 splitListView_Recent.DeleteSplitItem(itemCustom.Buddy);
                             }
@@ -1311,7 +1311,11 @@ namespace DDPM.UI.Module.EzArrange
                 {
                     customList.Add(itemCustom.ToSplitJson);
                 }
-                res &= _deviceManagerSA.WriteEACustomList(customList.ToArray()).Result;
+
+                if(_deviceManagerSA != null)
+                {
+                    res &= _deviceManagerSA.WriteEACustomList(customList.ToArray()).Result;
+                }
             }
             return res;
         }
