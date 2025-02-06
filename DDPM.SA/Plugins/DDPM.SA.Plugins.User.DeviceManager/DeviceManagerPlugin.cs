@@ -709,20 +709,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void OnCurrentSessionInactived(object sender, EventArgs e)
         {
-            if(_DisplayManagerPlugin != null)
-            {
-                _DisplayManagerPlugin.SetIsUserActive(false);
-                WriteLog($"[OnCurrentSessionInactived] set in-active to this user subagent in session({WTSFunction.GetCurrentUserSessionId()})");
-            }
+            WriteLog($"[OnCurrentSessionInactived] set in-active to this user subagent in session({WTSFunction.GetCurrentUserSessionId()})");
+            _isSubagentActive = false;
+            SetIsUserActive(false);
         }
 
         private void OnCurrentSessionActived(object sender, EventArgs e)
         {
-            if (_DisplayManagerPlugin != null)
-            {
-                _DisplayManagerPlugin.SetIsUserActive(true);
-                WriteLog($"[OnCurrentSessionActived] set active to this user subagent in session({WTSFunction.GetCurrentUserSessionId()})");
-            }
+            WriteLog($"[OnCurrentSessionActived] set active to this user subagent in session({WTSFunction.GetCurrentUserSessionId()})");
+
+            bool PreActiveStatus = _isSubagentActive;
+
+            _isSubagentActive = true;
+            SetIsUserActive(true);
+
+            if (_isSubagentActive && (!PreActiveStatus))
+                _SystemEvents_DisplaySettingsChanged(null);
         }
 
         private void HotkeyPressed(object sender, KeyPressedEventArgs e)
@@ -1949,6 +1951,8 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             if (_DisplayManagerPlugin != null)
                 _DisplayManagerPlugin.SetIsUserActive(IsUserActive);
+            else
+                writelog("_DisplayManagerPlugin is Null");
 
             return Task.CompletedTask;
         }
@@ -11565,7 +11569,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     writelog($"Receive DisplaySettingsChanged: {arg.sender}, e:{arg.eventArgs}, rescan monitor");
                 }
                 else
-                    writelog($"Receive Re-GetMonitor, rescan monitor");
+                    writelog($"Receive Re-GetMonitor or session changed, rescan monitor");
 
                 if (displayInOut)
                 {
