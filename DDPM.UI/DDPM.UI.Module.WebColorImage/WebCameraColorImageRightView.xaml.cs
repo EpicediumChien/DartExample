@@ -67,7 +67,7 @@ namespace DDPM.UI.Module.WebCameraColorImage
                     BSCS.Visibility = Visibility.Visible;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebColorImage\\WebCameraColorImageRightView.xaml.cs WebCameraColorImageRightView() ex:" + ex.Message);
             }
@@ -101,7 +101,7 @@ namespace DDPM.UI.Module.WebCameraColorImage
                     }));
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebColorImage\\WebCameraColorImageRightView.xaml.cs DeviceManagerSA_ITSettingsActionEvent() ex:" + ex.Message);
             }
@@ -177,7 +177,7 @@ namespace DDPM.UI.Module.WebCameraColorImage
                         break;
 
                     case 2:
-                        infoType = "DDPMSetProfileToNoneByContrast"; 
+                        infoType = "DDPMSetProfileToNoneByContrast";
                         break;
 
                     case 3:
@@ -249,7 +249,7 @@ namespace DDPM.UI.Module.WebCameraColorImage
                     _vm.AntiFlicker = val;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebColorImage\\WebCameraColorImageRightView.xaml.cs AntiFlicker_Click() ex:" + ex.Message);
             }
@@ -268,9 +268,9 @@ namespace DDPM.UI.Module.WebCameraColorImage
                         _vm.Redo();
                 }
             }
-            catch ( Exception ex) 
+            catch (Exception ex)
             {
-                    DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebColorImage\\WebCameraColorImageRightView.xaml.cs mage_MouseLeftButtonDown() ex:" + ex.Message);
+                DdpmCommonHelper.WriteUILog("DDPM.UI.Module.WebColorImage\\WebCameraColorImageRightView.xaml.cs mage_MouseLeftButtonDown() ex:" + ex.Message);
             }
         }
 

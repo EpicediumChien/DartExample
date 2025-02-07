@@ -357,7 +357,7 @@ namespace DDPM.UI.Plugin.ViewModels
                                 default:
                                     break;
                             }
-                            GenerateInfo();
+                            //GenerateInfo();
                         }
                         break;
 

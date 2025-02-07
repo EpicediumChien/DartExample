@@ -114,7 +114,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         private void OnShowInfoClicked()
         {
-            MessageBox.Show(DeviceInfo, Name, MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show(DeviceInfo, Name, MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         public Visibility MultiDevicesInfoVisibility { get; set; } = Visibility.Collapsed;
@@ -347,7 +347,7 @@ namespace DDPM.UI.Plugin.ViewModels
             VisiblePairedHostName3 = CurrentDeviceInfo.VisiblePairedHostName3;
 
             CheckMultiDevice();
-            GenerateInfo();
+            //GenerateInfo();
 
             CurrentCursor = Cursors.Arrow;
             return true;
@@ -481,6 +481,7 @@ namespace DDPM.UI.Plugin.ViewModels
             timer.Stop();
         }
 
+#if DEBUG
         protected void GenerateInfo()
         {
             StringBuilder localDeviceInfo = new();
@@ -768,6 +769,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             this.DeviceInfo = localDeviceInfo.ToString();
         }
+#endif
 
         public virtual new void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
@@ -1238,7 +1240,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     ((VbarSelectedIndex >= 0) || (VbarSelectedIndex < ModuleGroups.Count))) //Get the selected ModuleGroup
                 {
                     ModuleGroup mg = ModuleGroups[VbarSelectedIndex];
-                    _rightViewHeaders = mg.Headers;                                            
+                    _rightViewHeaders = mg.Headers;
                 }
                 return _rightViewHeaders;
             }
