@@ -1,5 +1,6 @@
 ﻿using DDPM.SA.Common;
 using DDPM.SA.Common.Display;
+using DDPM.SA.Common.Settings;
 using Dell.Client.Framework.Common;
 using Microsoft.Win32;
 using System;
@@ -293,9 +294,12 @@ namespace DDPM.PowerMon
 
         private void CheckCurrentSessionState()
         {
-            bool isSessionActive = SystemInformation.UserInteractive;
-            WriteLog($"Current session({Process.GetCurrentProcess().SessionId}) is {(isSessionActive ? "active" : "inactive")}.");
-            if (isSessionActive)
+            int curId = WTSFunction.GetCurrentUserSessionId();
+            int activeId = WTSFunction.GetCurrentActiveSessionId();
+            //bool isSessionActive = SystemInformation.UserInteractive;
+            //WriteLog($"Current session({Process.GetCurrentProcess().SessionId})[SystemInformation.UserInteractive] is {(isSessionActive ? "active" : "inactive")}.");
+            WriteLog($"Active session({activeId}): current session({curId}) is {(curId == activeId ? "active" : "inactive")}.");
+            if (curId == activeId)//isSessionActive)
             {
                 CurrentSessionActived?.Invoke(this, EventArgs.Empty);
             }

@@ -55,10 +55,10 @@ namespace DDPM.UI.Module.Brightness
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
-                    BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
-                    if (vm != null)
+                    BrightnessViewModel localVm = (BrightnessViewModel)this.DataContext;
+                    if (localVm != null)
                     {
-                        vm.Update_BriContLockStatus(isLocked_BriCont ?? false);
+                        localVm.Update_BriContLockStatus(isLocked_BriCont ?? false);
                         log = $"[SettingsPage] Apply Brightness/Contrast(Lock) : {isLocked_BriCont}";
                         DdpmCommonHelper.WriteUILog(log);
                     }
@@ -69,11 +69,11 @@ namespace DDPM.UI.Module.Brightness
             {
                 Dispatcher.Invoke(new Action(() =>
                 {
-                    BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
-                    if (vm != null)
+                    BrightnessViewModel localVm = (BrightnessViewModel)this.DataContext;
+                    if (localVm != null)
                     {
                         //vm.LockMaskVisible = (bool)isLocked ? Visibility.Visible : Visibility.Collapsed;
-                        vm.Update_ALSLockStatus(isLocked_ALS ?? false);
+                        localVm.Update_ALSLockStatus(isLocked_ALS ?? false);
                         log = $"[SettingsPage] Apply Auto Brightness(Lock) : {isLocked_ALS}";
                         DdpmCommonHelper.WriteUILog(log);
                     }
@@ -84,10 +84,10 @@ namespace DDPM.UI.Module.Brightness
                 bool isSyncLocked = DdpmCommonHelper.GetUINotify_IsSynchronizeBetweenMonitors_Locked(data);
                 Dispatcher.Invoke(new Action(() =>
                 {
-                    BrightnessViewModel vm = (BrightnessViewModel)this.DataContext;
-                    if (vm != null)
+                    BrightnessViewModel localVm = (BrightnessViewModel)this.DataContext;
+                    if (localVm != null)
                     {
-                        vm.Update_SyncLockStatus(isSyncLocked);
+                        localVm.Update_SyncLockStatus(isSyncLocked);
                         log = $"[SettingsPage] Apply Synchronize Button(Lock) : {isSyncLocked}";
                         DdpmCommonHelper.WriteUILog(log);
                     }
@@ -188,14 +188,10 @@ namespace DDPM.UI.Module.Brightness
                 {
                     foreach (HomeDevice hd in _vm.ModuleOwner.HomeDevices)
                     {
-                        if (hd.MonitorInfo.IsDellMonitor)
-                        {
-                            if (hd.MonitorInfo.CapabilityDic.ContainsKey("12"))
-                            {
-                                if (!hd.MonitorInfo.CapabilityDic.ContainsKey("66"))
-                                    DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, _vm.ScheduleMap);
-                            }
-                        }
+                        if (hd.MonitorInfo.IsDellMonitor && 
+                            hd.MonitorInfo.CapabilityDic.ContainsKey("12") && 
+                            !hd.MonitorInfo.CapabilityDic.ContainsKey("66"))
+                            DdpmCommonHelper.DeviceManagerSA.WriteScheduleMonitorSettings(hd.MonitorInfo, _vm.ScheduleMap);
                     }
                 });
             }

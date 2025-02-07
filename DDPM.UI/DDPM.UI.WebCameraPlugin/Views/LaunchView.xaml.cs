@@ -178,13 +178,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
 
                             //Lock Functionality 9/7
                             //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Webcam]                        
-                            if (data.LockSettings != null)
+                            if (data.LockSettings != null && DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
                             {
-                                if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
-                                {
-                                    //RestoreLockIcon.Visibility = Visibility.Visible;
-                                    //txtRestore.IsEnabled = false;
-                                }
+                                //RestoreLockIcon.Visibility = Visibility.Visible;
+                                //txtRestore.IsEnabled = false;
                             }
                         }
                     }
@@ -488,19 +485,32 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.MPS_Setting_Visibility = Visibility.Collapsed;
                         _vm.MPS_UpdateFW_Visibility = Visibility.Collapsed;
 
-                        if (!is_DellPc)
+                        if (AllSupportedResolutions)//如果是USB 3.0
                         {
-                            //韌體升級
-                            print_debug("check_PresenceFunction() s4");
-                            _vm.UPD_Visibility = Visibility.Collapsed;
-                            _vm.brdHello_show = Visibility.Collapsed;
-                            _vm.MPS_Setting_Visibility = Visibility.Collapsed;
-                            _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                            if (!is_DellPc)
+                            {
+                                //韌體升級
+                                print_debug("check_PresenceFunction() s4");
+                                _vm.UPD_Visibility = Visibility.Collapsed;
+                                _vm.brdHello_show = Visibility.Collapsed;
+                                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
 
-                            //2025/01/02 Leo fixed
-                            //noPresenceFunction = true;  // Jim modify 20250203 PIMS-343711 due to the comment from Dell PO
+                                //2025/01/02 Leo fixed
+                                //noPresenceFunction = true;  // Jim modify 20250203 PIMS-343711 due to the comment from Dell PO
 
-                        }
+                            }
+                            else if (is_DellPc && is_SUT_internal_presence_sensor) // Jim modify 20250206 PIMS-344423
+                            {
+                                print_debug("check_PresenceFunction() s4-1");
+
+                                //顯示韌體升級
+                                _vm.UPD_Visibility = Visibility.Collapsed;
+                                _vm.brdHello_show = Visibility.Collapsed;
+                                _vm.MPS_Setting_Visibility = Visibility.Collapsed;
+                                _vm.MPS_UpdateFW_Visibility = Visibility.Visible;
+                            }
+                        }                       
 
                         //dell 7 韌體升級畫面需要在 usb 3.0下,如果在2.0模式整個分頁關閉
                         if (!AllSupportedResolutions)
@@ -767,7 +777,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return true;
 
             string model = WinVersion.GetComputerModel();
-            if (model != null && model.Contains("Latitude 7350", StringComparison.OrdinalIgnoreCase))
+            if (model != null && (model.Contains("Latitude 7350", StringComparison.OrdinalIgnoreCase) || model.Contains("XPS 9345", StringComparison.OrdinalIgnoreCase)))
             {
                 return true;
             }
@@ -1599,13 +1609,10 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 //Lock Functionality 9/7
                 //When a 1 or more settings are locked, automatically lock 'Restore to default'/'factory reset' control [Webcam]
                 DDPMSettings data = DdpmCommonHelper.DeviceManagerSA!.ReloadAppConfigData().Result;
-                if (data != null && data.LockSettings != null)
+                if (data != null && data.LockSettings != null && DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
                 {
-                    if (DdpmCommonHelper.GetUINotifyPropertyValue_isAnyLocked(data, "Lock_Webcam"))
-                    {
-                        //RestoreLockIcon.Visibility = Visibility.Visible;
-                        //txtRestore.IsEnabled = false;
-                    }
+                    //RestoreLockIcon.Visibility = Visibility.Visible;
+                    //txtRestore.IsEnabled = false;
                 }
             }));
         }
