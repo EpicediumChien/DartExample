@@ -25,7 +25,9 @@ namespace DdpmSwUpdater
         private static string version = string.Empty;
         public static string Version { get => version; set => version = value; }
 
-        public static bool fromDDPM = true;
+        private static bool fromDDPM = true;
+        public static bool FromDDPM { get => fromDDPM; set => fromDDPM = value; }
+
         public static void SetPath()
         {
             //DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();
