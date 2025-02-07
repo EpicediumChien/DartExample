@@ -142,6 +142,7 @@ namespace DDPM.UI.Module.EzArrange
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //InitRecentListView();
+            CleanUpListViewItems();
             InitListViewItems();
 
             //Robert_Lin, 2025-1-7, the DDPMDebug.txt solution will be removed, use DevSettings instaed.
