@@ -985,17 +985,15 @@ namespace DDPM.UI.Plugin.ViewModels
                         {
                             switch (property)
                             {
-                                //case "IsHDROnChanged":
-                                //    if (bool.TryParse(di.Message, out bool on))
-                                //    {
-                                //        if (CurrentProfile.IsHDROn != on)
-                                //        {
-                                //            CurrentProfile.IsHDROn = on;
-                                //            OnPropertyChanged(nameof(IsHDROn));
-                                //            OnPropertyChanged(nameof(IsHDROnText));
-                                //        }
-                                //    }
-                                //    break;
+                                case "IsHDROnChanged":
+                                    if (bool.TryParse(di.Message, out bool isHDROn))
+                                    {
+                                        if (IsHDROn != isHDROn)
+                                        {
+                                            IsHDROn = isHDROn;
+                                        }
+                                    }
+                                    break;
                                 default:
                                     break;
                             }
@@ -1548,6 +1546,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsHDROn));
                     OnPropertyChanged(nameof(IsHDROnText));
+                    CurrentProfile.IsHDROn = value;
 
                     new Thread(() =>
                     {

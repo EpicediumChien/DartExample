@@ -2,7 +2,7 @@
   "profiles": {
     "CLI.Subagent": {
       "commandName": "Project",
-      "commandLineArgs": "/set -Mouse=restorefactorydefaults"
+      "commandLineArgs": "/set -webcam=hdr -value=off"
     }
   }
 }
