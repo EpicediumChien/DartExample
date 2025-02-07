@@ -3809,6 +3809,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 text = "";
 
             text = $"[PeripheralsPlugin] {text}, Caller Name:{memberName}, Source Line {sourceLineNumber}";
+            Console.WriteLine(text);
             Debug.WriteLine(text);
             if (Log != null)
             {
