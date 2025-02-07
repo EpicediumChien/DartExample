@@ -1299,10 +1299,6 @@ namespace DDPM.UI.Plugin.ViewModels
                     switch (DeviceInfoDTP.AncMode)
                     {
                         case 0:
-                            DeviceInfoDTP.Sidetone = true;
-                            _isSidetoneStatus = true;
-                            break;
-
                         case 1:
                             DeviceInfoDTP.Sidetone = true;
                             _isSidetoneStatus = true;
