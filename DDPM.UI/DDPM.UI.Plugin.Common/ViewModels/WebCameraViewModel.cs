@@ -774,7 +774,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     if (autoFramingSensitivity == -1)
                     {
                         _log.Error("DTP GetAutoFramingSensitivity fail!");
-                        _autoFramingSensitivity = 0;
+                        _autoFramingSensitivity = 1;
                     }
                     else
                         _autoFramingSensitivity = autoFramingSensitivity;
@@ -1355,7 +1355,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private int _autoFramingSensitivity = 0;
+        private int _autoFramingSensitivity = 1;
         public int AutoFramingSensitivity
         {
             get => _autoFramingSensitivity;
