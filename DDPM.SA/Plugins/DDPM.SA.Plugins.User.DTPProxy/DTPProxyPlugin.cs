@@ -11324,8 +11324,10 @@ namespace DDPM.SA.Plugins.User.DTPProxy
 
         private void Webcam_IsHDROnChanged(object sender, IsHDROnChangedArgs e)
         {
-            var message = $"Camera|IsHDROnChanged|{e.DeviceId}|{e.IsHDROn}";
-            SendDTPEventToUI(message);
+            // << 250207 updated by Hess to prevent cli duplicate event
+            //SendDTPEventToUI(CreateEventMsg("Webcam", "Webcam_IsHDROnChanged",
+            //                        e.DeviceId, $"NewValue:{e.IsHDROn}"));
+            // >> 
 
             writelog($"Catch event IsHDROnChanged, Guid: {e.DeviceId} NewValue:{e.IsHDROn}: {DateTime.Now.ToString("hh.mm.ss.ffffff")}");
         }
