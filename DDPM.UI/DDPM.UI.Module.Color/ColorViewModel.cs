@@ -430,8 +430,8 @@ namespace DDPM.UI.Module.Color
                         if (System.String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
                             return -1;
 
-                        if (System.String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
-                            return -1;
+                        //if (System.String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber)) // Jim 20250207 modify  PIMS-344233 for Color : auto list
+                        //    return -1;
                     }
                 }
 
