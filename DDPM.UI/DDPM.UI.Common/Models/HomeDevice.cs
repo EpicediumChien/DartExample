@@ -42,7 +42,7 @@ namespace DDPM.UI.Common.Models
         /// </summary>
 
         //Robert_Lin, 2024-12-27 add an additional ctor with ILog to let it can write log
-        public HomeDevice(ILog? log = null)
+        public HomeDevice(ILog? log)
         {
             NormalWidth = 400;
             _log = log;

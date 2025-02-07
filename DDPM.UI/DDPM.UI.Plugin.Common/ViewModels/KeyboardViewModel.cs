@@ -280,7 +280,7 @@ namespace DDPM.UI.Plugin.ViewModels
                             default:
                                 break;
                         }
-                        GenerateInfo();
+                        //GenerateInfo();
                     }
                     break;
 
@@ -1206,10 +1206,10 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        public ObservableCollection<int> SuggestedActions { get => new(Actions.SuggestedActionsK); }
-        public ObservableCollection<int> ProductivityActions { get; set; } = new(Actions.ProductivityActionsKnM);
-        public ObservableCollection<int> WindowsActions { get; set; } = new(Actions.WindowsActionsKnM);
-        public ObservableCollection<int> MultimediaActions { get; set; } = new(Actions.MultimediaActionsKnM);
+        public ObservableCollection<int> SuggestedActions { get => new(Actions.SuggestedActionsK()); }
+        public ObservableCollection<int> ProductivityActions { get; set; } = new(Actions.ProductivityActionsKnM());
+        public ObservableCollection<int> WindowsActions { get; set; } = new(Actions.WindowsActionsKnM());
+        public ObservableCollection<int> MultimediaActions { get; set; } = new(Actions.MultimediaActionsKnM());
 
         public void UpdateAction(int actionID, string parameter = "", bool RefreshImage = true)
         {

@@ -109,7 +109,8 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 double windowTop = 0;
                                 double actualWidth = 0;
                                 double actualHeight = 0;
-                                if (parentWindow == null) {
+                                if (parentWindow == null)
+                                {
                                     DdpmCommonHelper.WriteUILog($"[DdpmHomePlugin] Error cannot get MainWindow value", memberName: nameof(parentWindow));
                                     return;
                                 }
@@ -125,7 +126,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 modalDialog.Top = windowTop;
                                 modalDialog.ShowDialog();
 
-                                if (modalDialog.DialogResult != null && 
+                                if (modalDialog.DialogResult != null &&
                                     modalDialog.DialogResult == true &&
                                     (int)DdpmCommonHelper.DeviceManagerSA.DisplayImportSettings(mo, true, exportpath).Result > 0 && //For jason to do import
                                     modalDialog.isChecked) //ignore next check for this model
@@ -134,7 +135,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                                 }
                             }
                         }
-                        
+
                     });
                 }
             }
@@ -1094,7 +1095,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         private void AttachImportNotification()
         {
             _ddpmHomePageViewModel.ImportNotify -= ImportNotifyEventHandler;
-            _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
+            if (_ddpmHomePageViewModel != null && _ddpmHomePageViewModel.ImportNotify == null
+                || !_ddpmHomePageViewModel.ImportNotify.GetInvocationList().Where(e => e.Method.Name == nameof(ImportNotifyEventHandler)).Any())
+            {
+                _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
+            }
         }
 
         ~DdpmHomePage()

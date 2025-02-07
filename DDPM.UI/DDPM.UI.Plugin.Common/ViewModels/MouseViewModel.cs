@@ -246,8 +246,26 @@ namespace DDPM.UI.Plugin.ViewModels
             //IsTouchScrollSensitivitySupported = true;
             if (IsTouchScrollSensitivitySupported)
             {
-                TouchScrollSensitivityLevel = CurrentDeviceInfo.TouchScrollSensitivityLevel;
+                if (DdpmCommonHelper.DeviceManagerSA == null)
+                {
+                    if (CurrentDeviceInfo.TouchScrollSensitivityLevel > 0 && CurrentDeviceInfo.TouchScrollSensitivityLevel < 4)
+                        _touchScrollSensitivityLevel = 4 - CurrentDeviceInfo.TouchScrollSensitivityLevel;
+                    else
+                        _touchScrollSensitivityLevel = 1;
+                }
+                else
+                {
+                    _touchScrollSensitivityLevel = DdpmCommonHelper.DeviceManagerSA.GetTouchScrollSensitivityLevel(CurrentDeviceInfo!.ID.ToString()).Result;
+                    if (_touchScrollSensitivityLevel == -1)
+                    {
+                        DdpmCommonHelper.WriteUILog("Get TouchScrollSensitivityLevel fail!");
+                        _touchScrollSensitivityLevel = 1;
+                    }
+                    else
+                        _touchScrollSensitivityLevel = 4 - _touchScrollSensitivityLevel;
+                }
             }
+            OnPropertyChanged(nameof(TouchScrollSensitivityLevel));
             OnPropertyChanged(nameof(IsTouchScrollSensitivitySupported));
 
             //IsDPIValueVisible = CurrentDeviceInfo.IsDPIValueSupported;
@@ -508,7 +526,7 @@ namespace DDPM.UI.Plugin.ViewModels
                                     break;
 
                                 case "TouchScrollSensitivityLevelChanged":
-                                    _touchScrollSensitivityLevel = di.TouchScrollSensitivityLevel;
+                                    _touchScrollSensitivityLevel = 4 - di.TouchScrollSensitivityLevel;
                                     OnPropertyChanged(nameof(TouchScrollSensitivityLevel));
                                     break;
 
@@ -544,7 +562,7 @@ namespace DDPM.UI.Plugin.ViewModels
                                 default:
                                     break;
                             }
-                            GenerateInfo();
+                            //GenerateInfo();
                         }
                         break;
 
@@ -598,8 +616,8 @@ namespace DDPM.UI.Plugin.ViewModels
         }
         public void SetTouchScrollSensitivityLevel()
         {
-            if (_touchScrollSensitivityLevel != CurrentDeviceInfo!.TouchScrollSensitivityLevel)
-                DdpmCommonHelper.DeviceManagerSA!.SetTouchScrollSensitivityLevel(_touchScrollSensitivityLevel, CurrentDeviceInfo.ID);
+            //DdpmCommonHelper.DeviceManagerSA!.SetTouchScrollSensitivityLevel(4 - _touchScrollSensitivityLevel, CurrentDeviceInfo!.ID);
+            DdpmCommonHelper.DeviceManagerSA!.SetTouchScrollSensitivityLevel(CurrentDeviceInfo!.ID.ToString(), 4 - _touchScrollSensitivityLevel);
         }
 
         public bool IsTouchScrollSensitivitySupported { get; set; }
@@ -1006,14 +1024,14 @@ namespace DDPM.UI.Plugin.ViewModels
             return tooltip;
         }
 
-        public ObservableCollection<int> SuggestedActions { get => new(Actions.SuggestedActionsM); }
-        public ObservableCollection<int> ProductivityActions { get; set; } = new(Actions.ProductivityActionsKnM);
-        public ObservableCollection<int> WindowsActions { get; set; } = new(Actions.WindowsActionsKnM);
-        public ObservableCollection<int> MultimediaActions { get; set; } = new(Actions.MultimediaActionsKnM);
-        public ObservableCollection<int> WordActions { get; set; } = new(Actions.WordActions);
-        public ObservableCollection<int> ExcelActions { get; set; } = new(Actions.ExcelActions);
-        public ObservableCollection<int> PowerPointActions { get; set; } = new(Actions.PowerPointActions);
-        public ObservableCollection<int> OutlookActions { get; set; } = new(Actions.OutlookActions);
+        public ObservableCollection<int> SuggestedActions { get => new(Actions.SuggestedActionsM()); }
+        public ObservableCollection<int> ProductivityActions { get; set; } = new(Actions.ProductivityActionsKnM());
+        public ObservableCollection<int> WindowsActions { get; set; } = new(Actions.WindowsActionsKnM());
+        public ObservableCollection<int> MultimediaActions { get; set; } = new(Actions.MultimediaActionsKnM());
+        public ObservableCollection<int> WordActions { get; set; } = new(Actions.WordActions());
+        public ObservableCollection<int> ExcelActions { get; set; } = new(Actions.ExcelActions());
+        public ObservableCollection<int> PowerPointActions { get; set; } = new(Actions.PowerPointActions());
+        public ObservableCollection<int> OutlookActions { get; set; } = new(Actions.OutlookActions());
         public void UpdateAction(int actionID, string parameter = "", bool RefreshImage = true)
         {
             try

@@ -53,7 +53,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (deviceInfo.LogicalDeviceType.Contains("Dock") &&
                     !DeviceInfos.ContainsKey(deviceInfo.ID))
                 {
-                    DeviceInfos.Add(deviceInfo.ID, deviceInfo);                    
+                    DeviceInfos.Add(deviceInfo.ID, deviceInfo);
                 }
             }
         }
@@ -108,7 +108,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
 
-                        GenerateInfo();
+                        //GenerateInfo();
                     }
                     break;
 

@@ -1068,7 +1068,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             set
             {
-                if (_isVolumeAdjustmentToneMode == 3)
+                if (_isVolumeAdjustmentToneMode == 3 || _isVolumeAdjustmentToneMode == 0)
                 {
                     return;
                 }
@@ -1096,7 +1096,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
             set
             {
-                if (_isVolumeAdjustmentToneMode == 3)
+                if (_isVolumeAdjustmentToneMode == 3 || _isVolumeAdjustmentToneMode == 0)
                 {
                     return;
                 }

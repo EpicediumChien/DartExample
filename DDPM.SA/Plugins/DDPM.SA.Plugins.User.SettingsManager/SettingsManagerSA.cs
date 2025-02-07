@@ -303,9 +303,9 @@ namespace DDPM.SA.Plugins.User.SettingsManager
             InitGlobalSettingConfigFile();
             InitInterruptScreenFile();
 
-            updateITandGlobalSetting();
 
-            
+            _SysSettingsPlugin.GetTelemetryRegistryAndApplyData();
+            updateITandGlobalSetting();
 
             SettingReadyEvent?.Invoke(this, new EventArgs());
             _isAllSettingsReady = true;

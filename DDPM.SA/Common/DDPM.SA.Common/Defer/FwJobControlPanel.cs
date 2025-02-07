@@ -92,6 +92,13 @@ namespace DDPM.SA.Common.Defer
             {
                 foreach (string fwjob in listFwJob)
                 {
+                    // add @ 20250206 stephen : fix bug
+                    if (!fwjob.ToLower().Contains("model") && !fwjob.ToLower().Contains("servicetag"))
+                    {
+                        deferItems.Add(fwjob);
+                        continue;
+                    }
+
                     if (fwjob.ToLower().Contains(fwRule.model) || fwjob.ToLower().Contains(fwRule.servicetag))
                     {
                         deferItems.Add(fwjob);

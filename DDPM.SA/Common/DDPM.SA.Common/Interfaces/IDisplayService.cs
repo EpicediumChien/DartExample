@@ -20,6 +20,8 @@ namespace DDPM.SA.Common
 
         Task Reset0x52TimerTick(int millisecond, int processID = -0xFF);
 
+        Task SetIsUserActive(bool IsUserActive);
+
         Task<List<MonitorInfo>> GetMonitors();
 
         Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken Token);

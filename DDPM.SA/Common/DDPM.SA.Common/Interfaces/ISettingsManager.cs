@@ -58,7 +58,7 @@ namespace DDPM.SA.Common
         Task<bool> WriteGlobalSettingsToITConfig(GlobalSettingParam globalSettingParam, bool needExceptionString = false);
         Task<bool> SaveLog(string saveFolderPath);
 
-
+        Task GetTelemetryRegistryAndApplyData();
     }
 
     /// <summary>

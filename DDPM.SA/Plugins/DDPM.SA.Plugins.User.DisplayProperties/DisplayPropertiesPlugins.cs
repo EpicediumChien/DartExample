@@ -332,7 +332,7 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                         _logs?.DebugMsg_1($"{nameof(_ChangeDisplaySettingsEx)} test set result:{result} try count:{retryCount}");
                         if (result != DISP_CHANGE_SUCCESSFUL)
                         {
-                            if (retryCount == 1)
+                            if (retryCount == 1 || retryCount == 3)
                             {
                                 int temp = devMode.dmPelsWidth;
                                 devMode.dmPelsWidth = devMode.dmPelsHeight;
@@ -342,13 +342,6 @@ namespace DDPM.SA.Plugins.User.DisplayProperties
                             else if (retryCount == 2)
                             {
                                 (devMode.dmPelsWidth, devMode.dmPelsHeight) = GetBestResolution(DisplayName, orientation);
-                                devMode.dmDisplayFrequency = GetMaxRefreshRateByWidthAndHeight(DisplayName, devMode.dmPelsWidth, devMode.dmPelsHeight);
-                            }
-                            else if (retryCount == 3)
-                            {
-                                int temp = devMode.dmPelsWidth;
-                                devMode.dmPelsWidth = devMode.dmPelsHeight;
-                                devMode.dmPelsHeight = temp;
                                 devMode.dmDisplayFrequency = GetMaxRefreshRateByWidthAndHeight(DisplayName, devMode.dmPelsWidth, devMode.dmPelsHeight);
                             }
                         }

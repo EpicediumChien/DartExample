@@ -88,6 +88,7 @@ namespace VcpCore.Plugins
         private int _InitialThreadCounter = 0;
         private int _AddSignalfor0X52 = 0;
         private int _AddSignalforStatusCheck = 0;
+        private bool _IsUserActive = true;
 
         private bool IsOutInitialize
         {
@@ -134,6 +135,7 @@ namespace VcpCore.Plugins
             _StatusTimer.Elapsed += OnStatusTimedRaise;
             _StatusTimer.AutoReset = true;
             _StatusTimer.Enabled = false;
+            _IsUserActive = true;
 
             _logs.DebugMsg("[VcpCorePlugin] Does VcpCorePlugin have Administrator: " + _IsAdministrator.ToString());
 
@@ -188,7 +190,47 @@ namespace VcpCore.Plugins
 
             if (Orig) _CacheTimer.Start();
 
-            return Task.FromResult(Task.CompletedTask);
+            return Task.CompletedTask;
+        }
+
+        public Task SetIsUserActive(bool IsUserActive)
+        {
+            _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received SetIsUserActive: " + IsUserActive.ToString() + " requested ...");
+
+            _IsUserActive = IsUserActive;
+
+            if (!_IsUserActive)
+            {
+                if (_CacheTimer.Enabled) _CacheTimer.Stop();
+                if (_StatusTimer.Enabled) _StatusTimer.Stop();
+
+                _AllInfoMonitors_Mix = new List<(MonitorInfo_complex, MonitorInfo)>();
+                _AllInfoMonitors = new List<MonitorInfo_complex>();
+
+                while (!_TaskQueue.IsEmpty())
+                {
+                    if (_TaskQueueExecutor.IsBusy) _TaskQueueExecutor.CancelAsync();
+                    else
+                    {
+                        _TaskQueue = new TaskLockQueue<ParameterType>();
+                        _TaskQueueResult = new ResultLockPool();
+                    }
+                }
+
+                _AddSignalfor0X52 = 0;
+                _AddSignalforStatusCheck = 0;
+
+                //------------------------------------------------------------------------------------------------//
+                DisplaychangedEventArgs _displaychangedEventArgss = new DisplaychangedEventArgs()
+                {
+                    count = _AllInfoMonitors_Mix.Count,
+                    monitors = new List<MonitorInfo>(),
+                };
+                OnDisplaychanged(_displaychangedEventArgss);
+                //------------------------------------------------------------------------------------------------//
+            }
+
+            return Task.CompletedTask;
         }
 
         public Task<List<MonitorInfo>> GetMonitors()
@@ -684,7 +726,7 @@ namespace VcpCore.Plugins
                 _logs.DebugMsg("[VcpCorePlugin] VcpCorePlugin received GetResultObjectAsync requested ...");
                 _logs.DebugMsg("[VcpCorePlugin] Guid is " + guid.ToString());
 
-                using (var tokenSource = new CancellationTokenSource(10 * 1000))
+                using (var tokenSource = new CancellationTokenSource(30 * 1000))
                 {
                     CancellationTokenSource newGetResultCancellationTokenSource;
 

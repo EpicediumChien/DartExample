@@ -2004,6 +2004,11 @@ namespace DDPM.UI.Module.Kvm
                 {
                     foreach (Process process in processes)
                     {
+                        if (process == null || process.Handle == 0)
+                        {
+                            continue;
+                        }
+
                         NkvmdHandle = process.Handle;
                         Console.WriteLine($"Process ID: {process.Id}, Handle: {NkvmdHandle}");
                         break;
