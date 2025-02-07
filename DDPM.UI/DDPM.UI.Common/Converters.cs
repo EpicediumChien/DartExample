@@ -76,12 +76,9 @@ namespace DDPM.UI.Common
                     {
                         fontSize = parsedFontSize;
                     }
-                    if (parts.Length > 1)
+                    if (parts.Length > 1 && double.TryParse(parts[1], out double parsedMaxLines))
                     {
-                        if (double.TryParse(parts[1], out double parsedMaxLines))
-                        {
-                            maxLines = parsedMaxLines;
-                        }
+                        maxLines = parsedMaxLines;
                     }
                 }
 

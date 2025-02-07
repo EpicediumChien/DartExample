@@ -662,6 +662,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     break;
             }
             CheckHeadsetFunc();
+            HidePleaseWait();
         }
         public void ReadQRCodeReg()
         {
@@ -1422,7 +1423,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 CheckHeadsetFunc();
                 UpdateResetToDefault();
-                HeadsetSettingChanged?.Invoke(this, EventArgs.Empty);
+                //HeadsetSettingChanged?.Invoke(this, EventArgs.Empty); //CheckHeadsetFunc();裡已經有執行
                 //_showPluginManager?.ShowHomePage();
             }
             catch (Exception ex)
@@ -2199,7 +2200,7 @@ namespace DDPM.UI.Plugin.ViewModels
             {
                 FirmwareVersion2 = _deviceManager.GetAirAudioFirmwareVersionAsync(CurrentDeviceID.ToString()).Result;
             }
-            Thread.Sleep(1000);
+            Thread.Sleep(500);
             if ((FirmwareVersion2 == null || FirmwareVersion2 == "0.0.0.0"))
             {
                 
@@ -2286,10 +2287,10 @@ namespace DDPM.UI.Plugin.ViewModels
                 vm._log!.Error($"[HeadsetViewModel] Invoke_PleaseWaitAsync exception: {ex.Message}");
                 throw;
             }
-            finally
-            {
-                vm.HidePleaseWait();
-            }
+            //finally
+            //{
+            //    vm.HidePleaseWait();
+            //}
         }
 
         private void RunWorkerCompleted_PleaseWait(object sender, RunWorkerCompletedEventArgs e)

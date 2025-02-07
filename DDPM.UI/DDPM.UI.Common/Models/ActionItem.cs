@@ -334,124 +334,79 @@ namespace DDPM.UI.Common
             return PenActions.Where(x => x.Value.Category == ActionCategory.WindowsAction && x.Value.IsForBarrelButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
-        public static List<int> WindowsActionsPenTopButton
+        public static List<int> WindowsActionsPenTopButton()
         {
-            get
-            {
-                return PenActions.Where(x => x.Value.Category == ActionCategory.WindowsAction && x.Value.IsForTopButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return PenActions.Where(x => x.Value.Category == ActionCategory.WindowsAction && x.Value.IsForTopButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
-        public static List<int> ProductivityActionsKnM
+        public static List<int> ProductivityActionsKnM()
         {
-            get
-            {
-                return KnMActions.Where(x => x.Value.Category == ActionCategory.ProductivityAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return KnMActions.Where(x => x.Value.Category == ActionCategory.ProductivityAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
-        public static List<int> ProductivityActionsPenBarrelButton
+        public static List<int> ProductivityActionsPenBarrelButton()
         {
-            get
-            {
-                return PenActions.Where(x => x.Value.Category == ActionCategory.ProductivityAction && x.Value.IsForBarrelButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return PenActions.Where(x => x.Value.Category == ActionCategory.ProductivityAction && x.Value.IsForBarrelButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
-        public static List<int> ProductivityActionsPenTopButton
+        public static List<int> ProductivityActionsPenTopButton()
         {
-            get
-            {
-                return PenActions.Where(x => x.Value.Category == ActionCategory.ProductivityAction && x.Value.IsForTopButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return PenActions.Where(x => x.Value.Category == ActionCategory.ProductivityAction && x.Value.IsForTopButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
-        public static List<int> MultimediaActionsKnM
+        public static List<int> MultimediaActionsKnM()
         {
-            get
-            {
-                return KnMActions.Where(x => x.Value.Category == ActionCategory.MultimediaAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return KnMActions.Where(x => x.Value.Category == ActionCategory.MultimediaAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
-        public static List<int> MultimediaActionsPenBarrelButton
+        public static List<int> MultimediaActionsPenBarrelButton()
         {
-            get
-            {
-                return PenActions.Where(x => x.Value.Category == ActionCategory.MultimediaAction && x.Value.IsForBarrelButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return PenActions.Where(x => x.Value.Category == ActionCategory.MultimediaAction && x.Value.IsForBarrelButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
-        public static List<int> MultimediaActionsPenTopButton
+        public static List<int> MultimediaActionsPenTopButton()
         {
-            get
-            {
-                return PenActions.Where(x => x.Value.Category == ActionCategory.MultimediaAction && x.Value.IsForTopButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return PenActions.Where(x => x.Value.Category == ActionCategory.MultimediaAction && x.Value.IsForTopButton).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
-        public static List<int> WordActions
+        public static List<int> WordActions()
         {
-            get
-            {
-                return OfficeActions.Where(x => x.Value.Category == ActionCategory.WordAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return OfficeActions.Where(x => x.Value.Category == ActionCategory.WordAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
-        public static List<int> ExcelActions
+        public static List<int> ExcelActions()
         {
-            get
-            {
-                return OfficeActions.Where(x => x.Value.Category == ActionCategory.ExcelAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return OfficeActions.Where(x => x.Value.Category == ActionCategory.ExcelAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
-        public static List<int> PowerPointActions
+        public static List<int> PowerPointActions()
         {
-            get
-            {
-                return OfficeActions.Where(x => x.Value.Category == ActionCategory.PowerPointAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return OfficeActions.Where(x => x.Value.Category == ActionCategory.PowerPointAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
-        public static List<int> OutlookActions
+        public static List<int> OutlookActions()
         {
-            get
-            {
-                return OfficeActions.Where(x => x.Value.Category == ActionCategory.OutlookAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
-            }
+            return OfficeActions.Where(x => x.Value.Category == ActionCategory.OutlookAction).OrderBy(x => x.Value.Caption).Select(x => x.Key).ToList();
         }
 
-        public static List<int> SuggestedActionsK
+        public static List<int> SuggestedActionsK()
         {
-            get
-            {
-                return KnMActions.Where(x => x.Value.IsSuggestedForKeyboard).OrderBy(x => x.Value.SuggestedOrderK).Select(x => x.Key).ToList();
-            }
+            return KnMActions.Where(x => x.Value.IsSuggestedForKeyboard).OrderBy(x => x.Value.SuggestedOrderK).Select(x => x.Key).ToList();
         }
 
-        public static List<int> SuggestedActionsM
+        public static List<int> SuggestedActionsM()
         {
-            get
-            {
-                return KnMActions.Where(x => x.Value.IsSuggestedForMouse).OrderBy(x => x.Value.SuggestedOrderM).Select(x => x.Key).ToList();
-            }
+            return KnMActions.Where(x => x.Value.IsSuggestedForMouse).OrderBy(x => x.Value.SuggestedOrderM).Select(x => x.Key).ToList();
         }
 
-        public static List<int> SuggestedActionsPenTopButton
+        public static List<int> SuggestedActionsPenTopButton()
         {
-            get
-            {
-                return new() { 8, 0, 23, 73 };
-            }
+            return new() { 8, 0, 23, 73 };
         }
 
-        public static List<int> SuggestedActionsPenBarrelButton
+        public static List<int> SuggestedActionsPenBarrelButton()
         {
-            get
-            {
-                return new() { 8, 0, 81, 41 };
-            }
+            return new() { 8, 0, 81, 41 };
         }
 
         //Robert_Lin, 2024-6-26, fix SAST issue: [Bug] Use an immutable collection or reduce the accessibiity of the non-private readonly field.

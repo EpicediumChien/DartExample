@@ -753,7 +753,7 @@ namespace DDPM.UI.Module.Brightness
                 if ((data?.isSupportALS > 0) && (data?.isAutoBrightness == true
                     || data?.isAutoColorTemp == true || data?.isPrimaryMonitorSync == true
                     || (data?.AutoBrightnessRangeLevel.Count > 1 && data?.AutoBrightnessRangeLevel[0].level_value != 1)
-                    || (data?.isAutoColorTemp == true && data?.isAutoColorTemp == true)
+                    || (data?.isAutoColorTemp == true && data?.isAutoColorTemp == true) // any typo?
                     ))
                 {
                     if ((MyModule.GetRightView() is BrightnessRightView))

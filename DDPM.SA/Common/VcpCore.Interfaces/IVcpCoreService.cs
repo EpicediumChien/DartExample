@@ -11,6 +11,8 @@ namespace VcpCore.Interfaces
     {
         Task Reset0x52TimerTick(int millisecond);
 
+        Task SetIsUserActive(bool IsUserActive);
+
         Task<List<MonitorInfo>> GetMonitors();
 
         Task<List<MonitorInfo>> Re_GetMonitors(CancellationToken Token);

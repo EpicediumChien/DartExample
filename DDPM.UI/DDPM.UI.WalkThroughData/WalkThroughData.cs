@@ -266,11 +266,11 @@ namespace DDPM.UI.WalkThroughData
                 // Dell Conferencing Monitor (U3224KB/A)
                 { "U3224KB", new List<WalkThroughPageData>
                     {
-                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main0, SubText = Strings.WalkThroughWebCamWB3023_Sub0, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KB_1.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main1, SubText = Strings.WalkThroughWebCamWB3023_Sub1, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KB_2.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCam_Main2, SubText = Strings.WalkThroughWebCam_Sub2, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KB_3.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main2, SubText = Strings.WalkThroughWebCam_Sub3, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KB_4.png" },
-                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCam_Main4, SubText = Strings.WalkThroughWebCam_Sub4, MainImageSource = "WalkThrough/Webcam/U3224KBA/U3224KB_5.png" }
+                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main0, SubText = Strings.WalkThroughWebCamWB3023_Sub0, MainImageSource = "WalkThrough/Webcam/U3224KB/U3224KB_1.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main1, SubText = Strings.WalkThroughWebCamWB3023_Sub1, MainImageSource = "WalkThrough/Webcam/U3224KB/U3224KB_2.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCam_Main2, SubText = Strings.WalkThroughWebCam_Sub2, MainImageSource = "WalkThrough/Webcam/U3224KB/U3224KB_3.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCamWB3023_Main2, SubText = Strings.WalkThroughWebCam_Sub3, MainImageSource = "WalkThrough/Webcam/U3224KB/U3224KB_4.png" },
+                        new WalkThroughPageData { MainText = Strings.WalkThroughWebCam_Main4, SubText = Strings.WalkThroughWebCam_Sub4, MainImageSource = "WalkThrough/Webcam/U3224KB/U3224KB_5.png" }
                     }
                 },
                 { "U3224KBA", new List<WalkThroughPageData>

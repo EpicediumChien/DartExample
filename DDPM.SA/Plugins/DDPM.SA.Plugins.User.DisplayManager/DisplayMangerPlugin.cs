@@ -155,6 +155,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         private readonly object _SettingsPluginConditionLock = new object();
         private bool IsDDPMLaunchEarly = false;
         private bool IsDDPMLaunchNow = false;
+
         #endregion
 
         #region Constructor
@@ -210,10 +211,12 @@ namespace DDPM.SA.Plugins.User.DisplayManager
         {
             return Task.FromResult(IsDDPMLaunchNow);
         }
+
         public Task<bool> GetIsDDPMLaunchEarly()
         {
             return Task.FromResult(IsDDPMLaunchEarly);
         }
+
         public Task<bool> LauncDDPM(string UserId, string ddpmExePath)
         {
             _logs.DebugMsg($"LauncDDPM CheckDeviceFirstTimesToConnect UserId : {UserId}, StartProcess ... ");
@@ -239,6 +242,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             }
             return Task.FromResult(result);
         }
+
         public Task Reset0x52TimerTick(int millisecond, int processID = -0xFF)
         {
             _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Reset0x52TimerTick: " +
@@ -247,7 +251,9 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (-0xFF != processID)
                 CreateProcessExitEvent(processID);
 
-            _VcpCorePlugin.Reset0x52TimerTick(millisecond);
+            if (_VcpCorePlugin != null)
+                _VcpCorePlugin.Reset0x52TimerTick(millisecond);
+
             IsDDPMLaunchEarly = IsDDPMLaunchNow;
             if (millisecond == 2000) // 8000 mean UI close, 2000 mean UI open
             {
@@ -286,7 +292,17 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             //        _logs.DebugMsg($"LauncDDPM From Reset0x52TimerTick Reg Exit ... ");
             //    }
             //}
-            return Task.FromResult(Task.CompletedTask);
+            return Task.CompletedTask;
+        }
+
+        public Task SetIsUserActive(bool IsUserActive)
+        {
+            _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received SetIsUserActive: " + IsUserActive.ToString() + " requested ...");
+
+            if (_VcpCorePlugin != null)
+                _VcpCorePlugin.SetIsUserActive(IsUserActive);
+
+            return Task.CompletedTask;
         }
 
         private Task<bool> CreateProcessExitEvent(int processID)
@@ -325,7 +341,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received GetMonitors requested ...");
 
-                _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.GetMonitors().Result);
+                if (_VcpCorePlugin != null)
+                    _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.GetMonitors().Result);
 
                 _logs.DebugMsg("[DisplayMangerPlugin] GetMonitors() AllInfoMonitors.count is " + _AllInfoMonitors.Count);
 
@@ -345,7 +362,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             {
                 _logs.DebugMsg("[DisplayMangerPlugin] DisplayMangerPlugin received Re_GetMonitors requested ...");
 
-                _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.Re_GetMonitors(Token).Result);
+                if (_VcpCorePlugin != null)
+                    _AllInfoMonitors = new List<MonitorInfo>(_VcpCorePlugin.Re_GetMonitors(Token).Result);
 
                 InitializeAllALSInfo();
 
@@ -369,7 +387,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
 
-            string r = _VcpCorePlugin.GetCapabilitiesString(monitorInfo).Result;
+            string r = string.Empty;
+
+            if (_VcpCorePlugin != null)
+                r = _VcpCorePlugin.GetCapabilitiesString(monitorInfo).Result;
 
             return Task.FromResult(r);
         }
@@ -380,7 +401,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor DisplayName is " + monitorInfo.DisplayName);
             _logs.DebugMsg("[DisplayMangerPlugin] TargetMonitor AliasDeviceName is " + monitorInfo.AliasDeviceName);
 
-            string r = _VcpCorePlugin.GetVCPCapabilities(monitorInfo).Result;
+            string r = string.Empty;
+
+            if (_VcpCorePlugin != null)
+                r = _VcpCorePlugin.GetVCPCapabilities(monitorInfo).Result;
 
             return Task.FromResult(r);
         }
@@ -393,7 +417,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg("[DisplayMangerPlugin] VcpCode is " + BitConverter.ToString(new byte[] { code }));
             _logs.DebugMsg("[DisplayMangerPlugin] opt is " + opt.ToString());
 
-            ObjGetVCP result = _VcpCorePlugin.GetVCPCapability(monitorInfo, code, opt).Result;
+            ObjGetVCP result = new ObjGetVCP();
+
+            if (_VcpCorePlugin != null)
+                result = _VcpCorePlugin.GetVCPCapability(monitorInfo, code, opt).Result;
 
             return Task.FromResult(result);
         }
@@ -406,7 +433,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg("[DisplayMangerPlugin] VcpCode is " + FunctionName);
             _logs.DebugMsg("[DisplayMangerPlugin] opt is " + opt.ToString());
 
-            ObjGetVCP result = _VcpCorePlugin.GetVCPCapability(monitorInfo, FunctionName, opt).Result;
+            ObjGetVCP result = new ObjGetVCP();
+
+            if (_VcpCorePlugin != null)
+                result = _VcpCorePlugin.GetVCPCapability(monitorInfo, FunctionName, opt).Result;
 
             return Task.FromResult(result);
         }
@@ -419,7 +449,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg("[DisplayMangerPlugin] VcpCode is " + BitConverter.ToString(new byte[] { code }));
             _logs.DebugMsg("[DisplayMangerPlugin] val is " + val.ToString());
 
-            bool r = _VcpCorePlugin.SetVCPCapability(monitorInfo, code, val).Result;
+            bool r = false;
+
+            if (_VcpCorePlugin != null)
+                r = _VcpCorePlugin.SetVCPCapability(monitorInfo, code, val).Result;
 
             return Task.FromResult(r);
         }
@@ -432,7 +465,10 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             _logs.DebugMsg("[DisplayMangerPlugin] FunctionName is " + FunctionName);
             _logs.DebugMsg("[DisplayMangerPlugin] val is " + val);
 
-            bool r = _VcpCorePlugin.SetVCPCapability(monitorInfoX, FunctionName, val).Result;
+            bool r = false;
+
+            if (_VcpCorePlugin != null)
+                r = _VcpCorePlugin.SetVCPCapability(monitorInfoX, FunctionName, val).Result;
 
             if (r && FunctionName == "Input Select")
             {
@@ -1018,8 +1054,8 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 if (strSP_16.Length == 16 &&
                     strSP_16.Substring(7, 1) == "1")
                 {
-                    return Task.FromResult(true);                    
-                }                
+                    return Task.FromResult(true);
+                }
             }
             return Task.FromResult(false);
         }
@@ -1435,7 +1471,6 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             Trace.WriteLine($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Other Monitor = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag} ");  // Jim 20250120 modify for PIMS-314608
             _logs.DebugMsg($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp Other Monitor = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag} ");   // Jim 20250120 modify for PIMS-314608
 
-
             var aconfig = AllALSConfig.Find(x => x.Edid.Equals(monitorvalue.edid));
             if (aconfig == null)
                 return false;
@@ -1451,15 +1486,15 @@ namespace DDPM.SA.Plugins.User.DisplayManager
             if (vcpcode == "68")
             {
                 //uint contrastValue = temp & 0xFF;
-                if (aconfig.ContrastValue == temp) // same as last time 
+                if (aconfig.ContrastValue == temp) // same as last time
                     return true;
 
                 // Jim 20250120 modify for PIMS-314608 - U2725QEt Wistron- P3:DDPM(Windows)-Shine a torch or cover the sensor of DUT1,DUT2 screen has not changed
                 //ALS_CT control values
                 //LL: 0~255.Nx100K
                 //HH: Reserved
-                uint contrastValue = temp & 0xFF;                
-                uint ColorTempValue = contrastValue * (uint) 100;  // Jim 20250120 add for PIMS-314608
+                uint contrastValue = temp & 0xFF;
+                uint ColorTempValue = contrastValue * (uint)100;  // Jim 20250120 add for PIMS-314608
 
                 aconfig.ContrastValue = (int)contrastValue;
                 Trace.WriteLine($" [DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp 68 SetVCPCapability, ModelName = {monitorvalue.edid.ModelName} | {monitorvalue.edid.ServiceTag}, temp = {temp.ToString()}, contrastValue = {contrastValue.ToString()}");
@@ -1487,7 +1522,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                     return true;
                 }
 
-                if (aconfig.BrightnessValue == temp)  // same as last time 
+                if (aconfig.BrightnessValue == temp)  // same as last time
                     return true;
 
                 aconfig.BrightnessValue = (int)temp;
@@ -2604,7 +2639,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                             {
                                 try
                                 {
-                                    //待定義，先KEEP                                   
+                                    //待定義，先KEEP
                                     if (!SyncPrimaryMonitorBrightnessAndColorTemp(e.monitor, targetMonitor, e.vcpcode, e.value).Result)
                                     {
                                         Trace.WriteLine($"[DisplayMangerPlugin] SyncPrimaryMonitorBrightnessAndColorTemp false ...");
@@ -3479,6 +3514,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 GetCurrentPipPbpCondition();
             }
         }
+
         public Task GetSettingsPlugin(ISettingsManagerDev SettingsPlugin)
         {
             _SettingsPlugin = SettingsPlugin;

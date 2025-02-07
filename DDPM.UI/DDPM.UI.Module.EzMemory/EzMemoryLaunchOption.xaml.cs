@@ -342,7 +342,7 @@ namespace DDPM.UI.Module.EzMemory
                 // Handle Monitor Settings
                 if(_vm.IsAutoLaunch)
                 {
-                    if(_vm.SelectedHour == string.Empty || _vm.SelectedHour == string.Empty || _vm.SelectedAMPM == string.Empty) return;
+                    if(_vm.SelectedHour == string.Empty || _vm.SelectedAMPM == string.Empty) return;
                 }
                 if(_vm.IsLaunchAtStartup)
                 {

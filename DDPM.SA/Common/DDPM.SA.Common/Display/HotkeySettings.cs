@@ -151,7 +151,7 @@ namespace DDPM.SA.Common.Display
             {6, HotkeyType.KvmSwitchKbMsKey },
             //{8, HotkeyType.None},
             //{9, HotkeyType.None },
-            {10, HotkeyType.None},
+            {10, HotkeyType.ToggleEzRecentSetting},
             {12, HotkeyType.SwitchInputSource},
             {13, HotkeyType.ToggleInputSource},
             {14, HotkeyType.FavoriteInputSource},
