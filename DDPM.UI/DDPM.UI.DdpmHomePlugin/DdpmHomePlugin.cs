@@ -1196,20 +1196,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
 
                 bool isEnabled = param[1];
-                if (isEnabled) // do same thing?
-                {
-                    if (_gearBtn != null)
-                        _gearBtn.IsEnabled = isEnabled;
-                    if (_iconGear != null)
-                        _iconGear.IsEnabled = isEnabled;
-                }
-                else // do same thing?
-                {
-                    if (_gearBtn != null)
-                        _gearBtn.IsEnabled = isEnabled;
-                    if (_iconGear != null)
-                        _iconGear.IsEnabled = isEnabled;
-                }
+
+                if (_gearBtn != null)
+                    _gearBtn.IsEnabled = isEnabled;
+                if (_iconGear != null)
+                    _iconGear.IsEnabled = isEnabled;
             }
         }
 
