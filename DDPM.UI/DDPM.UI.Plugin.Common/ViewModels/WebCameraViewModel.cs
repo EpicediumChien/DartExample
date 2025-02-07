@@ -990,7 +990,10 @@ namespace DDPM.UI.Plugin.ViewModels
                                     {
                                         if (IsHDROn != isHDROn)
                                         {
-                                            IsHDROn = isHDROn;
+                                            Application.Current.Dispatcher.Invoke(() =>
+                                            {
+                                                IsHDROn = isHDROn;
+                                            });
                                         }
                                     }
                                     break;
