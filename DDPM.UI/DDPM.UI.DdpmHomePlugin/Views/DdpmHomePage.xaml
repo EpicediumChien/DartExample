@@ -14,7 +14,7 @@
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:lang="clr-namespace:DDPM.UI.Resources.Helper;assembly=DDPM.UI.Resources"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800"
+             d:DesignHeight="450" d:DesignWidth="500"
              x:Name="rootUserControl"
              Loaded="UserControl_Loaded" SizeChanged="rootUserControl_SizeChanged">
     <UserControl.Resources>
@@ -143,6 +143,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <!-- #region UIDebugPanel -->
         <StackPanel x:Name="UIDebugPanel" Grid.Row="0" Orientation="Horizontal" Visibility="Hidden" d:Visibility="Visible">
 
             <!--<UXControls:UXTextBlock TextBlock.Text="DDPM 2.0"
@@ -163,66 +164,91 @@
                 <Button Content="+" Margin="12,0" Click="addItem_Click" Visibility="Collapsed" />
                 
                 <local:AddDeviceButton Width="12" Height="12" Visibility="Collapsed"/>
+
+                <TextBlock Text="{Binding ElementName=rootUserControl, Path=ActualWidth}"
+                           Foreground="DarkBlue"/>
             </StackPanel>
         </StackPanel>
+        <!-- #endregion UIDebugPanel -->
 
         <Grid Grid.Row="2">
 
-            <!-- Add Your first device -->
-            <Grid Width="860" Height="220">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+            <!-- #region Add Your first device -->
+            <UXControls:UXScrollViewer HorizontalScrollBarVisibility="Visible"
+                                       VerticalScrollBarVisibility="Hidden">
+                <!-- 
+                Original:
+                <Grid Width="860" Height="220" d:Visibility="Visible">
+                
+                Fix for PIMS-343306 Observed UI truncation when switching to certain screen resolutions
+                1 Put the "Add your first device" <Grid> into a UXScrollViewer
+                2 If Grid Width=860, then the Horz scrollbar will never appear, because the ActualWidth of this Gird
+                  will be MinWidth=1050 with unknown reason.
+                3 When we change the screen resolution to 800x600, the DDPM MainWindow cannot be resize to < 1050
+                  (to be checked with DUCA team for the reason)
+                4 But if we maximiumize MainWindow, the MainWindow.Width=800, but the DdpmHomePage.ActualWidth will
+                  be >= 1050. So the horz scrollbar will not appear if we set Grid.Width=860
+                  For these reason, we will set Grid.Width=1050 or larger (for example 1051) to force enable horz 
+                  scrollbar when MainWindow.Width <= 1050
+                -->
+                <Grid MinWidth="1050" Height="220" d:Visibility="Visible" Margin="40,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
-                <Grid.Style>
-                    <Style TargetType="Grid">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                        <Style.Triggers>
-                            <!-- Robert_Lin, 2024-11-30, for LightMode, After remove to balck background of Please Wait 
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <!-- Robert_Lin, 2024-11-30, for LightMode, After remove to balck background of Please Wait 
                             "Add your first device" will be seen in dark mode. So change the DataTrigger to MultiDataTrigger
                             Only when HomeDeviceCount==0 AND IsPleaseWaitVisible==False will show the "Add your first device"
                             -->
-                            <!-- OLD 
+                                <!-- OLD 
                             <DataTrigger Binding="{Binding HomeDeviceCount}" Value="0">
                                 <Setter Property="Visibility" Value="Visible" />
                             </DataTrigger>-->
-                            <!-- NEW -->
-                            <MultiDataTrigger>
-                                <MultiDataTrigger.Conditions>
-                                    <Condition Binding="{Binding HomeDeviceCount}" Value="0"/>
-                                    <Condition Binding="{Binding IsPleaseWaitVisible}" Value="False"/>
-                                </MultiDataTrigger.Conditions>
-                                <Setter Property="Visibility" Value="Visible" />
-                            </MultiDataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Grid.Style>
+                                <!-- NEW -->
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding HomeDeviceCount}" Value="0"/>
+                                        <Condition Binding="{Binding IsPleaseWaitVisible}" Value="False"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
 
-                <UXControls:UXTextBlock Grid.Row="0" Text="{Binding [NoDeviceDetected], Source={x:Static lang:LangHelper.Instance}}" 
-                                        FontSize="20"
-                                        Foreground="{DynamicResource HomePageFeature_TxtColor}" HorizontalAlignment="Center"/>
-                <UXControls:UXTextBlock Grid.Row="1" Text="{Binding [Add1sDevice], Source={x:Static lang:LangHelper.Instance}}" 
-                                        FontSize="64"
-                                        Margin="0,16,0,50"
-                                        Foreground="{DynamicResource HomePageKeyFeature_TxtColor}" HorizontalAlignment="Center"/>
-                <UXControls:UXButton Grid.Row="2" Content="{Binding [Connect], Source={x:Static lang:LangHelper.Instance}}" ButtonType="Primary"
-                                     MinWidth="160" Padding="24,2" FontSize="14"
-                                     Command="{Binding ConnectButtonClickCommand}" />
-            </Grid>
-            <!-- Old,Unused, horizontal design, Dell UI team had changed the design
-            <ListBox Style="{StaticResource ListBoxStyle_Devices}" Visibility="Collapsed"
-            ItemTemplate="{StaticResource DeviceItemTemplate}"
-            ItemsSource="{Binding DeviceCollection, Mode=TwoWay}"
-            SelectedItem="{Binding SelDevice, Mode=OneWay}"
-            SelectionChanged="deviceCollectionListBox_SelectionChanged" />
-            -->
-            <!-- Multi rows design -->
+                    <UXControls:UXTextBlock Grid.Row="0" FontSize="20"
+                                            Text="{Binding [NoDeviceDetected], Source={x:Static lang:LangHelper.Instance}}" 
+                                            Foreground="{DynamicResource HomePageFeature_TxtColor}" 
+                                            HorizontalAlignment="Center"/>
+                    <UXControls:UXTextBlock Grid.Row="1" FontSize="64" Margin="0,16,0,50"
+                                            Text="{Binding [Add1sDevice], Source={x:Static lang:LangHelper.Instance}}" 
+                                            Foreground="{DynamicResource HomePageKeyFeature_TxtColor}" 
+                                            HorizontalAlignment="Center"/>
+                    <UXControls:UXButton Grid.Row="2" MinWidth="160" Padding="24,2" FontSize="14"
+                                         Content="{Binding [Connect], Source={x:Static lang:LangHelper.Instance}}" 
+                                         ButtonType="Primary"
+                                         Command="{Binding ConnectButtonClickCommand}" />
+                </Grid>
+
+            </UXControls:UXScrollViewer>
+            <!-- #endregion Add Your first device -->
+
             <!-- Robert_Lin, 2024-8-5 Add handle PreviewKeyboard to eneble slecte a device with keyboard -->
-            <ListView x:Name="HomeDevicesListView"  StylusDown="Pairing"
+            <ListView x:Name="HomeDevicesListView"  StylusDown="Pairing" d:Visibility="Hidden"
                       Style="{StaticResource ListViewStyle1}"
                       ItemsSource="{Binding HomeDevices}" PreviewKeyDown="HomeDevicesListView_PreviewKeyDown">
+                <ListView.Resources>
+                    <!-- Setup for Narrator -->
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="AutomationProperties.Name" Value="{Binding TooltipModelName}"/>
+                    </Style>
+                </ListView.Resources>
                 <ListView.ItemContainerStyle>
                     <!-- ListView.ItemContainerStyle : Apply custom style to remove selection hover border -->
                     <Style TargetType="ListViewItem">
@@ -234,6 +260,7 @@
                         <Setter Property="MaxHeight" Value="{Binding ItemMaxWidth}" />
                         <Setter Property="Width" Value="{Binding ItemWidth}"/>
                         <Setter Property="Height" Value="{Binding ItemWidth}"/>
+                        <Setter Property="AutomationProperties.Name" Value="{Binding TooltipModelName}"/>
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="ListViewItem">
@@ -242,7 +269,6 @@
                                             BorderThickness="{TemplateBinding BorderThickness}"
                                             Background="{TemplateBinding Background}"
                                             Padding="{TemplateBinding Padding}"
-                                            AutomationProperties.Name="Home device read"
                                             SnapsToDevicePixels="True">
                                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                               SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
@@ -255,9 +281,6 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <!--
-                        <WrapPanel HorizontalAlignment="Center" />
-                        -->
                         <local:HomeDevicesPanel HorizontalContentAlignment="Center" VerticalAlignment="Center" />
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
@@ -274,12 +297,16 @@
                    1 Change  Grid.RowDefinition[1].RowDefinition.Height to "50" let Image can be separated with indicators
                    2 Grid "indicators" will be spanned to entired ListViewItem size but Vert-Align="Bottom"
                      So it can be overlapped with ProductImage
+                
+                
+                    <DataTemplate x:Name="lvItemTemplate" DataType="{x:Type commonModel:HomeDevice}">
                 -->
                 <ListView.ItemTemplate>
                     <DataTemplate x:Name="lvItemTemplate" DataType="{x:Type commonModel:HomeDevice}">
                         <!-- 
                         
                         <DockPanel>
+                        AutomationProperties.Name="{Binding TooltipModelName}"  Focusable="True"
                         -->
                         <Grid Width="{Binding HoverWidth}">
                             <Grid.RowDefinitions>
@@ -293,43 +320,13 @@
                                  HorizontalAlignment="Stretch"
                                  VerticalAlignment="Stretch"
                                  MouseLeftButtonDown="devListViewItemRoot_MouseLeftButtonDown">
-                      -->
+                              -->
  
                             <Grid Name="devListViewItemRoot"
                                   Margin="0"
                                   HorizontalAlignment="Center"
                                   VerticalAlignment="Center"
                                   MouseLeftButtonDown="devListViewItemRoot_MouseLeftButtonDown">
-                                
-                                
-                                <!--<Grid.Triggers>
-                                    <EventTrigger RoutedEvent="MouseEnter">
-                                        <EventTrigger.Actions>
-                                            <BeginStoryboard>
-                                                <Storyboard AutoReverse="False">
-                                                    <DoubleAnimation Storyboard.TargetName="devImg"
-                                                                     Storyboard.TargetProperty="Width"
-                                                                     To="{Binding HoverWidth}"
-                                                                     BeginTime="0:0:0.1"
-                                                                     Duration="0:0:0.5" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </EventTrigger.Actions>
-                                    </EventTrigger>
-                                    <EventTrigger RoutedEvent="MouseLeave">
-                                        <EventTrigger.Actions>
-                                            <BeginStoryboard>
-                                                <Storyboard AutoReverse="False">
-                                                    <DoubleAnimation
-                                                        Storyboard.TargetName="devImg"
-                                                        Storyboard.TargetProperty="Width"
-                                                        To="{Binding NormalWidth}"
-                                                        Duration="0:0:0.5" />
-                                                </Storyboard>
-                                            </BeginStoryboard>
-                                        </EventTrigger.Actions>
-                                    </EventTrigger>
-                                </Grid.Triggers>-->
 
                                 <!-- BorderBrush="{StaticResource FocusDotBrush}" 
                                   <Border Name="bdItem" BorderBrush="{StaticResource FocusDotBrush}" Background="#02000000"
@@ -344,7 +341,7 @@
                                 <Border Name="bdItem" BorderBrush="{StaticResource FocusDotBrush}" Background="#02000000"
                                         Margin="0" Padding="0"
                                         Width="auto" Height="auto"
-                                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                         Focusable="False"
                                         >
                                     <Border.Style>
@@ -370,20 +367,13 @@
                                     </Border.Style>
 
                                     <!-- 
-                                    
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                    
-                                                              <Image.Style>
-                                           <Style TargetType="Image">
-                                               <Setter Property="Width" Value="{Binding NormalWidth}" />
-                                               <Style.Triggers>
-                                                   <Trigger Property="IsMouseOver" Value="True">
-                                                       <Setter Property="Width" Value="{Binding HoverWidth}" />
-                                                   </Trigger>
-             
-                                    -->
                                     <Image x:Name="devImg" Source="{Binding DeviceImage}" Stretch="Uniform"
                                            Focusable="True"
+                                           AutomationProperties.Name="{Binding TooltipModelName}"
+                                           Margin="0">
+                                    -->
+                                    <Image x:Name="devImg" Source="{Binding DeviceImage}" Stretch="Uniform"
+                                           Focusable="False"
                                            AutomationProperties.Name="{Binding TooltipModelName}"
                                            Margin="0">
                                         <Image.RenderTransform>
@@ -411,52 +401,7 @@
                                                 </BeginStoryboard>
                                             </EventTrigger>
                                         </Image.Triggers>
-                                        <!--<Image.Style>
-                                            <Style TargetType="Image">
-                                                <Setter Property="Width" Value="{Binding NormalWidth}" />
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Width" Value="{Binding HoverWidth}" />
-                                                    </Trigger>-->
 
-                                                    <!-- Cannot add EventTrigger here -->
-                                                    <!--
-                                                    <EventTrigger RoutedEvent="MouseEnter">
-                                                    <BeginStoryboard>
-                                                    <Storyboard AutoReverse="False">
-                                                    <DoubleAnimation
-                                                    Storyboard.TargetProperty="Width"
-                                                    To="{Binding HoverWidth}"
-                                                    Duration="0:0:0.5" />
-                                                    </Storyboard>
-                                                    </BeginStoryboard>
-                                                    </EventTrigger>
-                                                    -->
-                                                <!--</Style.Triggers>
-                                            </Style>
-                                        </Image.Style>-->
-                                        <!-- RobertLin, 2024-7-10, test, move to Border -->
-                                        <!--
-                                        <Image.ToolTip>
-                                        <ToolTip Placement="Center"  HorizontalOffset="8" VerticalOffset="-8"
-                                        ToolTipService.HasDropShadow="True"
-                                        ToolTipService.InitialShowDelay="1000"
-                                        ToolTipService.BetweenShowDelay="2000">
-                                        <Border Background="{StaticResource ToolipBkColor}"
-                                        BorderBrush="{StaticResource ToolipBdColor}"
-                                        CornerRadius="4" Padding="8,12">
-                                        <Border.Resources>
-                                        <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground" Value="{StaticResource ToolipTextColor}" />
-                                        <Setter Property="FontSize" Value="12" />
-                                        </Style>
-                                        </Border.Resources>
-                                        <StackPanel>
-                                        <TextBlock Text="{Binding TooltipModelName}" />
-                                        </StackPanel>
-                                        </Border>
-                                        </ToolTip>
-                                        </Image.ToolTip>-->
                                     </Image>
 
                                     <!-- Robert_Lin, 2024-7-10, move the tooltip owner from Image to Border.
@@ -587,27 +532,15 @@
                             </Grid>
 
                         </Grid>
-                        <!-- Add below code will cause all items are invisible
-                        <DataTemplate.Triggers>
-                        <EventTrigger RoutedEvent="MouseEnter">
-                        <BeginStoryboard>
-                        <Storyboard AutoReverse="False">
-                        <DoubleAnimation Storyboard.TargetName="devImg"
-                        Storyboard.TargetProperty="Width"
-                        To="{Binding HoverWidth}"
-                        Duration="0:0:0.5" />
-                        </Storyboard>
-                        </BeginStoryboard>
-                        </EventTrigger>
-                        </DataTemplate.Triggers>
-                        -->
+
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
 
             <!-- Please Wait -->
             <!-- Robert_Lin, 2024-11-30, for LightMode, remove to balck background of Please Wait -->
-            <Grid Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid Visibility="{Binding IsPleaseWaitVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                  d:Visibility="Collapsed">
                 <Border Width="587" Height="265" Background="{DynamicResource SpinnerBkColor}"
                         BorderThickness="1" CornerRadius="4" BorderBrush="#777777" 
                         HorizontalAlignment="Center" VerticalAlignment="Center">
