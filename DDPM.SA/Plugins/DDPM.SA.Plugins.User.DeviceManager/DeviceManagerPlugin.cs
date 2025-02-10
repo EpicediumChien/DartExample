@@ -290,7 +290,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private void _DTPProxyPlugin_DTPEventHandler(object sender, UpdateUINotify e)
         {
-            if (e.UI_Field_Name.StartsWith("Keyboard") || e.UI_Field_Name.StartsWith("Mouse") || e.UI_Field_Name.StartsWith("Pen"))
+            if (e.UI_Field_Name.StartsWith("Keyboard") || e.UI_Field_Name.StartsWith("Mouse") || e.UI_Field_Name.StartsWith("Pen") || e.UI_Field_Name.StartsWith("Camera"))
             {
                 var paras = e.UI_Field_Name.Split('|');
                 if (paras.Length < 4)
@@ -299,8 +299,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     return;
                 }
                 DeviceInfo di = new();
-                di.LogicalDeviceType = paras[0];
-                di.ModelNumber = paras[3];
+                if (paras[0] == "Camera")
+                {
+                    di.LogicalDeviceType = "Webcam";
+                    di.ID = new Guid(paras[2]);
+                    di.Message = paras[3];
+                }
+                else
+                {
+                    di.LogicalDeviceType = paras[0];
+                    di.ModelNumber = paras[3];
+                }
                 DeviceChangedEventArgs _EventArgs = new DeviceChangedEventArgs();
                 _EventArgs.type = DeviceChangedType.Peripherals_SettingsChange;
                 _EventArgs.device_peripherals = di;
@@ -725,7 +734,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             SetIsUserActive(true);
 
             if (_isSubagentActive && (!PreActiveStatus))
-                Task.Run(()=>_SystemEvents_DisplaySettingsChanged(null));
+                Task.Run(() => _SystemEvents_DisplaySettingsChanged(null));
         }
 
         private void HotkeyPressed(object sender, KeyPressedEventArgs e)
@@ -9963,7 +9972,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetIsHDROn requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetIsHDROn(Guid, newValue);
+            var result = _DTPProxyPlugin.SetIsHDROn(Guid, newValue);
+            DeviceInfo di = new()
+            {
+                LogicalDeviceType = "Webcam",
+                ID = new Guid(Guid),
+                Message = newValue.ToString()
+            };
+            DeviceChangedEventArgs _EventArgs = new DeviceChangedEventArgs
+            {
+                type = DeviceChangedType.Peripherals_SettingsChange,
+                device_peripherals = di,
+                changedProperty = "IsHDROnChanged"
+            };
+            DeviceChanged?.Invoke(this, _EventArgs);
+
+            return result;
         }
 
         public Task<bool> SetIsAutoWhiteBalanceOn(string Guid, bool newValue)

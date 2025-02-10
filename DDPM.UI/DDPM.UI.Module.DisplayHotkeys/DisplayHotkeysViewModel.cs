@@ -468,7 +468,7 @@ namespace DDPM.UI.Module.DisplayHotkeys
                                         //set default
                                         _switchInput1Selected = InputsList.SingleOrDefault(x => (x.inputSource == DisplayHotkeysModule.SelectedHomeDevice.MonitorInfo.inputSource));
                                         if (_switchInput1Selected != null)
-                                            _switchInput2Selected = _inputsList.Where(x => x.inputSource != _switchInput1Selected.inputSource).First();
+                                            _switchInput2Selected = _inputsList.First(x => x.inputSource != _switchInput1Selected.inputSource);
                                         if (_switchInput1Selected != null && _switchInput2Selected != null)
                                         {
                                             SaveHotkeySettings(new InputSourceObj((ushort)_switchInput1Selected.inputCode, _switchInput1Selected.inputSource), "SwitchCombobox1");

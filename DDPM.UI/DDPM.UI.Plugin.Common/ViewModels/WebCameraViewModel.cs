@@ -774,7 +774,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     if (autoFramingSensitivity == -1)
                     {
                         _log.Error("DTP GetAutoFramingSensitivity fail!");
-                        _autoFramingSensitivity = 0;
+                        _autoFramingSensitivity = 1;
                     }
                     else
                         _autoFramingSensitivity = autoFramingSensitivity;
@@ -876,7 +876,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 CurrentProfile.AutoFramingSensitivity = _autoFramingSensitivity;
 
                 if (!IsUSB3)
-                    CurrentProfile.IsHDROn = false;                
+                    CurrentProfile.IsHDROn = false;
 
                 //var IsNormalProfile = CurrentProfileName != "Smooth" && CurrentProfileName != "Vibrant" && CurrentProfileName != "Warm";
                 Task<bool> task;
@@ -981,36 +981,41 @@ namespace DDPM.UI.Plugin.ViewModels
                 switch (changeType)
                 {
                     case DeviceChangedType.Peripherals_SettingsChange:
-                        if (DeviceInfos.ContainsKey(di.ID))
                         {
-                            DeviceInfos.Remove(di.ID);
-                            DeviceInfos.Add(di.ID, di);
-                        }
-                        else
-                        {
-                            return;
-                        }
-                        if (di.ID == CurrentDeviceID)
-                        {
-                            CurrentDeviceInfo = DeviceInfos[CurrentDeviceID];
-                            switch (property)
+                            if (DeviceInfos.ContainsKey(di.ID))
                             {
-                                //case "MousePrimaryButtonChanged":
-                                //  PrimaryButtonIndex = (int)di.MousePrimaryButton;
-                                //  break;
-                                //case "TouchScrollSensitivityLevelChanged":
-                                //  TouchScrollSensitivityLevel = di.TouchScrollSensitivityLevel;
-                                //  break;
-                                //case "DpiValueChanged":
-                                //  DPIValue = int.Parse(di.DPIValue);
-                                //  break;
-                                default:
-                                    break;
+                                DeviceInfos.Remove(di.ID);
+                                DeviceInfos.Add(di.ID, di);
                             }
-                            GenerateInfo();
-                        }
-                        break;
+                            else
+                            {
+                                return;
+                            }
 
+                            if (di.ID == CurrentDeviceID)
+                            {
+                                switch (property)
+                                {
+                                    case "IsHDROnChanged":
+                                        if (bool.TryParse(di.Message, out bool isHDROn))
+                                        {
+                                            if (IsHDROn != isHDROn)
+                                            {
+                                                Application.Current.Dispatcher.Invoke(() =>
+                                                {
+                                                    IsHDROn = isHDROn;
+                                                });
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                GenerateInfo();
+                            }
+                        }
+                      
+                        break;
                     default:
                         break;
                 }
@@ -1350,7 +1355,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private int _autoFramingSensitivity = 0;
+        private int _autoFramingSensitivity = 1;
         public int AutoFramingSensitivity
         {
             get => _autoFramingSensitivity;
@@ -1527,7 +1532,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged(nameof(IsHDROnText));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DdpmCommonHelper.WriteUILog($"[WebCameraViewModel][OnUpdateIsHDROn] exception: {ex.Message}");
             }
@@ -1557,6 +1562,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsHDROn));
                     OnPropertyChanged(nameof(IsHDROnText));
+                    CurrentProfile.IsHDROn = value;
 
                     new Thread(() =>
                     {
@@ -1646,12 +1652,8 @@ namespace DDPM.UI.Plugin.ViewModels
                         {
                             SetBrightness();
                         }
-                        //var v = (value * 1.0 - CurrentDeviceInfo!.BrightnessMin) / (CurrentDeviceInfo.BrightnessMax - CurrentDeviceInfo!.BrightnessMin);
-                        BrightnessMargin = GetTextmargin(value, CurrentDeviceInfo?.BrightnessMax, CurrentDeviceInfo?.BrightnessMin, out string text);
-                        BrightnessText = text;
                         OnPropertyChanged();
-                        OnPropertyChanged(nameof(BrightnessText));
-                        OnPropertyChanged(nameof(BrightnessMargin));
+                        UpdateBrightnessMargin(value);
                     }
                 }
                 catch (Exception ex)
@@ -1659,6 +1661,14 @@ namespace DDPM.UI.Plugin.ViewModels
                     DdpmCommonHelper.WriteUILog("DDPM.UI.Plugin.Common\\ViewModels\\WebCameraViewModel.cs Brightness set ex:" + ex.Message);
                 }
             }
+        }
+        private void UpdateBrightnessMargin(int value)
+        {
+            //var v = (value * 1.0 - CurrentDeviceInfo!.BrightnessMin) / (CurrentDeviceInfo.BrightnessMax - CurrentDeviceInfo!.BrightnessMin);
+            BrightnessMargin = GetTextmargin(value, CurrentDeviceInfo?.BrightnessMax, CurrentDeviceInfo?.BrightnessMin, out string text);
+            BrightnessText = text;
+            OnPropertyChanged(nameof(BrightnessText));
+            OnPropertyChanged(nameof(BrightnessMargin));
         }
         public void SetBrightness()
         {
@@ -1682,14 +1692,17 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetSharpness();
                     }
-                    //var v = (value * 1.0 - CurrentDeviceInfo!.SharpnessMin) / (CurrentDeviceInfo.SharpnessMax - CurrentDeviceInfo!.SharpnessMin);
-                    SharpnessMargin = GetTextmargin(value, CurrentDeviceInfo?.SharpnessMax, CurrentDeviceInfo?.SharpnessMin, out string text);
-                    SharpnessText = text;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(SharpnessText));
-                    OnPropertyChanged(nameof(SharpnessMargin));
+                    UpdateSharpnessMargin(value);
                 }
             }
+        }
+        private void UpdateSharpnessMargin(int value)
+        {
+            SharpnessMargin = GetTextmargin(value, CurrentDeviceInfo?.SharpnessMax, CurrentDeviceInfo?.SharpnessMin, out string text);
+            SharpnessText = text;
+            OnPropertyChanged(nameof(SharpnessText));
+            OnPropertyChanged(nameof(SharpnessMargin));
         }
         public void SetSharpness()
         {
@@ -1713,14 +1726,17 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetContrast();
                     }
-                    //var v = (value * 1.0 - CurrentDeviceInfo!.ContrastMin) / (CurrentDeviceInfo.ContrastMax - CurrentDeviceInfo!.ContrastMin);
-                    ContrastMargin = GetTextmargin(value, CurrentDeviceInfo?.ContrastMax, CurrentDeviceInfo?.ContrastMin, out string text);
-                    ContrastText = text;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(ContrastText));
-                    OnPropertyChanged(nameof(ContrastMargin));
+                    UpdateContrastMargin(value);
                 }
             }
+        }
+        private void UpdateContrastMargin(int value)
+        {
+            ContrastMargin = GetTextmargin(value, CurrentDeviceInfo?.ContrastMax, CurrentDeviceInfo?.ContrastMin, out string text);
+            ContrastText = text;
+            OnPropertyChanged(nameof(ContrastText));
+            OnPropertyChanged(nameof(ContrastMargin));
         }
         public void SetContrast()
         {
@@ -1742,14 +1758,17 @@ namespace DDPM.UI.Plugin.ViewModels
                     {
                         SetSaturation();
                     }
-                    //var v = (value * 1.0 - CurrentDeviceInfo!.SaturationMin) / (CurrentDeviceInfo.SaturationMax - CurrentDeviceInfo!.SaturationMin);
-                    SaturationMargin = GetTextmargin(value, CurrentDeviceInfo?.SaturationMax, CurrentDeviceInfo?.SaturationMin, out string text);
-                    SaturationText = text;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(SaturationText));
-                    OnPropertyChanged(nameof(SaturationMargin));
+                    UpdateSaturationMargin(value);
                 }
             }
+        }
+        private void UpdateSaturationMargin(int value)
+        {
+            SaturationMargin = GetTextmargin(value, CurrentDeviceInfo?.SaturationMax, CurrentDeviceInfo?.SaturationMin, out string text);
+            SaturationText = text;
+            OnPropertyChanged(nameof(SaturationText));
+            OnPropertyChanged(nameof(SaturationMargin));
         }
 
         private static double[] GetTextmargin(double value, double? max, double? min, out string text)
@@ -2134,8 +2153,26 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "IsFocusOn":
                         DdpmCommonHelper.DeviceManagerSA!.SetIsFocusOn(CurrentDeviceInfo!.ID.ToString(), (bool)value);
                         _isFocusOn = (bool)value;
-                        OnPropertyChanged(nameof(IsFocusOn));
                         OnPropertyChanged(nameof(IsFocusOnText));
+                        break;
+                    case "IsHDROn":
+                        AlertType = WebcamAlert.Alert1;
+                        AlertVisibility = Visibility.Visible;
+                        hdr_change = true;
+                        is_hdr_enable = false;
+                        OnPropertyChanged(nameof(hdr_enable));
+                        DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), (bool)value);
+                        new Thread(() =>
+                        {
+                            Thread.Sleep(3000);
+                            AlertVisibility = Visibility.Collapsed;
+
+                            //is_hdr_enable = true;
+                            is_hdr_enable = usb_hdr_enable;
+                            OnPropertyChanged(nameof(hdr_enable));
+
+                        }).Start();
+                        OnPropertyChanged(nameof(IsHDROnText));
                         break;
                     case "Focus":
                         DdpmCommonHelper.DeviceManagerSA!.SetFocus(CurrentDeviceInfo!.ID.ToString(), (int)value);

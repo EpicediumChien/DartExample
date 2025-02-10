@@ -287,7 +287,7 @@ namespace DDPM.UI.Module.DisplayOthers
                             return;
                         }
                     }
-                    if (strReadJson == string.Empty || strReadJson.Length == 0)
+                    if (string.IsNullOrEmpty(strReadJson) || strReadJson.Length == 0)
                     {
                         OnMessageDlgInvoke("close_loading");
                         OnMessageDlgInvoke("file_corrupted");

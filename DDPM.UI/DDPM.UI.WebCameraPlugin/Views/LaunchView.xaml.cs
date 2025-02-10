@@ -777,7 +777,7 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 return true;
 
             string model = WinVersion.GetComputerModel();
-            if (model != null && (model.Contains("Latitude 7350", StringComparison.OrdinalIgnoreCase) || model.Contains("XPS 9345", StringComparison.OrdinalIgnoreCase)))
+            if (model != null && (model.Contains("Latitude 7350", StringComparison.OrdinalIgnoreCase) || model.Contains("XPS 9345", StringComparison.OrdinalIgnoreCase) || model.Contains("XPS 13 9345", StringComparison.OrdinalIgnoreCase)))
             {
                 return true;
             }

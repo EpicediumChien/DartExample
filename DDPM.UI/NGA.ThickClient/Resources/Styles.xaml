@@ -8,8 +8,8 @@
     <system:Double x:Key="DefaultWindowHeight">735</system:Double>
     <system:Double x:Key="DefaultWindowWidth">1378</system:Double>
 
-    <system:Double x:Key="DdpmMinWindowHeight">40</system:Double>
-    <system:Double x:Key="DdpmMinWindowWidth">60</system:Double>
+    <system:Double x:Key="DdpmMinWindowHeight">400</system:Double>
+    <system:Double x:Key="DdpmMinWindowWidth">600</system:Double>
 
     <!-- this is break point value and the minwidth of main window  -->
     <system:Int16 x:Key="breakPoint">1050</system:Int16>
@@ -22,15 +22,21 @@
     <Setter Property="Width" Value="{StaticResource DefaultWindowWidth}" />
     <Setter Property="ResizeMode" Value="CanMinimize" />
 
+    DDPM v69 Settings:
+        <Setter Property="MinHeight" Value="{StaticResource DefaultWindowHeight}" />
+        <Setter Property="Height" Value="{StaticResource DefaultWindowHeight}" />
+        <Setter Property="MinWidth" Value="{StaticResource DefaultWindowWidth}" />
+        <Setter Property="Width" Value="{StaticResource DefaultWindowWidth}" />
+        <Setter Property="ResizeMode" Value="CanMinimize" />
     -->
     <Style TargetType="thickClient:MainWindow" BasedOn="{StaticResource UXWindowBaseStyle}">
         <Setter Property="Icon" Value="pack://application:,,,/Resources/Icons/MyDell_Blue.ico" />
         <!-- If _isMainWindowResizable == false, please comment out below line
         <Setter Property="ResizeMode" Value="CanResize" />-->
         <!-- If _isMainWindowResizable == true, please comment out below code  -->
-        <Setter Property="MinHeight" Value="{StaticResource DefaultWindowHeight}" />
+        <Setter Property="MinHeight" Value="{StaticResource DdpmMinWindowHeight}" />
         <Setter Property="Height" Value="{StaticResource DefaultWindowHeight}" />
-        <Setter Property="MinWidth" Value="{StaticResource DefaultWindowWidth}" />
+        <Setter Property="MinWidth" Value="{StaticResource DdpmMinWindowWidth}" />
         <Setter Property="Width" Value="{StaticResource DefaultWindowWidth}" />
         <Setter Property="ResizeMode" Value="CanMinimize" />
         <!-- If _isMainWindowResizable == true, please comment out above code-->
