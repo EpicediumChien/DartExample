@@ -134,7 +134,7 @@ namespace DDPM.UI.Module.Kvm
                 }
                 else
                 {
-                    vm._log?.Debug("[BackMKFullView]PxPcodeDictionary is null or PxPCode not found.");
+                    vm._log?.Info("[BackMKFullView]PxPcodeDictionary is null or PxPCode not found.");
                 }
                 if (vm.ToProgressValue > 3 || vm.ToProgressValue < 0)
                 {
@@ -240,7 +240,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     else
                     {
-                        vm._log.Debug("PC1 not found in pcsList.");
+                        vm._log.Info("PC1 not found in pcsList.");
                     }
                     //Get the Content of the new selected SplitItem
                     //vm.PxPCode = 0x0;
@@ -277,7 +277,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     else
                     {
-                        vm._log.Debug("PC1 or PC2 not found in pcsList.");
+                        vm._log.Info("PC1 or PC2 not found in pcsList.");
                     }
                     //Get the Content of the new selected SplitItem
                     //PIPSplitCtrl1A splitCtrl1A = new PIPSplitCtrl1A();
@@ -317,7 +317,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     else
                     {
-                        vm._log.Debug("PC1 or PC2 not found in pcsList.");
+                        vm._log.Info("PC1 or PC2 not found in pcsList.");
                     }
                     //Get the Content of the new selected SplitItem
                     //vm.PxPCode = 0x12;
@@ -366,7 +366,7 @@ namespace DDPM.UI.Module.Kvm
                     }
                     else
                     {
-                        vm._log?.Debug("[OnPbpItemClicked]PxPcodeDictionary is null or PxPCode not found.");
+                        vm._log?.Info("[OnPbpItemClicked]PxPcodeDictionary is null or PxPCode not found.");
                     }
                 }
             }
@@ -460,7 +460,7 @@ namespace DDPM.UI.Module.Kvm
                 }
                 else
                 {
-                    vm._log?.Debug("[CloseUSBKVM]PxPcodeDictionary is null or PxPCode not found.");
+                    vm._log?.Info("[CloseUSBKVM]PxPcodeDictionary is null or PxPCode not found.");
                 }
                 vm.isPxPFullView = false;
                 //vm.VideoSwapContent_Left = vm.PxPcodeDictionary[vm.PxPCode];
