@@ -578,6 +578,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 WebcamSettings.SelectedResolution = _resolutions[index];
                 //if (!WebcamSettings.SelectedFPSs.ContainsKey(WebcamSettings.SelectedResolution))
                 //    WebcamSettings.SelectedFPSs.Add(WebcamSettings.SelectedResolution, "30");
+                WebcamSettings.NONE = CurrentProfile;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
                 OnPropertyChanged(nameof(Resolution_IsSelected));
             }
@@ -603,6 +604,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 FPS_IsSelected[index] = true;
                 WebcamSettings.SelectedFPSs[WebcamSettings.SelectedResolution] = WebcamSettings.SupportedFPSs[WebcamSettings.SelectedResolution][index];
+                WebcamSettings.NONE = CurrentProfile;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
                 OnPropertyChanged(nameof(FPS_IsSelected));
             }
@@ -625,6 +627,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     FOV_IsSelected[j] = false;
                 }
                 FOV_IsSelected[index] = true;
+                WebcamSettings.NONE = CurrentProfile;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
                 OnPropertyChanged(nameof(FOV_IsSelected));
             }
@@ -682,6 +685,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     IsChecked_ProximitySensor = false;
                     WebcamSettings.IsFirstTime = false;
+                    WebcamSettings.NONE = CurrentProfile;
                     WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
                     _log.Info("WebCameraViewModel ExportWebcamSettings Finish");
                 }
@@ -1033,6 +1037,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 WebcamSettings.SelectedProfileName = value;
+                WebcamSettings.NONE = CurrentProfile;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
             }
         }
@@ -1178,6 +1183,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 WebcamSettings.VideoCaptureFolder = value;
+                WebcamSettings.NONE = CurrentProfile;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
             }
         }
@@ -1187,6 +1193,7 @@ namespace DDPM.UI.Plugin.ViewModels
             set
             {
                 WebcamSettings.WebcamCountdown = value;
+                WebcamSettings.NONE = CurrentProfile;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
             }
         }
@@ -1199,6 +1206,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     return;
 
                 WebcamSettings.WebcamGrid = value;
+                WebcamSettings.NONE = CurrentProfile;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(WebcamGridVisibity));
@@ -2064,6 +2072,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     // >>
                 }
                 propertyInfo.SetValue(CurrentProfile, convertedValue);
+                WebcamSettings.NONE = CurrentProfile;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
                 OnPropertyChanged(nameof(UndoVisibility));
                 OnPropertyChanged(nameof(Undo2Visibility));
@@ -2137,6 +2146,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             try
             {
+                WebcamSettings.NONE = CurrentProfile;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
                 switch (property)
                 {
