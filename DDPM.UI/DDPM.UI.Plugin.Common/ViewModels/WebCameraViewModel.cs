@@ -658,7 +658,7 @@ namespace DDPM.UI.Plugin.ViewModels
             try
             {
                 _log.Info("WebCameraViewModel SetCurrentDevice");
-                instanceIDs ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
+                instanceIDs ??= DeviceInfos.Values.FirstOrDefault()!.ID.ToString();
 
                 if (!base.SetCurrentDevice(instanceIDs))
                 { return false; }

@@ -487,7 +487,7 @@ namespace DDPM.UI.Plugin.ViewModels
         public override bool SetCurrentDevice(string instanceIDs)
         {
             _log.Info($"[SoundBarViewModel] SetCurrentDevice ...");
-            instanceIDs ??= DeviceInfos.Values.ToList().FirstOrDefault()!.ID.ToString();
+            instanceIDs ??= DeviceInfos.Values.FirstOrDefault()!.ID.ToString();
 
             if (!base.SetCurrentDevice(instanceIDs))
                 return false;
