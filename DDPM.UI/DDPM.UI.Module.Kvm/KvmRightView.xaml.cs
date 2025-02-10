@@ -29,7 +29,7 @@ namespace DDPM.UI.Module.Kvm
             _vm = vm;
             //DataContext = new KvmViewModel();
             DataContext = vm;
-            vm.Invoke_RefreshData();
+            //vm.Invoke_RefreshData();
             vm.Invoke_RefreshHotkeySettings();
 
             //lock/unlock

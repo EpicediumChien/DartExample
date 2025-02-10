@@ -318,9 +318,8 @@ namespace DDPM.UI.Module.Kvm
                 {
                     isOnUSBKVM(false);
                     USBKVMisON = false;
-                    _isUSBKVM = false;
-                    _isNKVM = false;
-                    _isNoKVM = true;
+                    isUSBKVM = false;
+                    isNKVM = false;
                     DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM");
                 }
             }
@@ -334,8 +333,8 @@ namespace DDPM.UI.Module.Kvm
                 SetProperty(ref _isUSBKVM, value);
                 if (value)
                 {
-                    _isNKVM = false;
-                    _isNoKVM = false;
+                    isNKVM = false;
+                    isNoKVM = false;
                 }
             }
         }
@@ -350,9 +349,8 @@ namespace DDPM.UI.Module.Kvm
                 {
                     isOnUSBKVM(false);
                     USBKVMisON = false;
-                    _isUSBKVM = false;
-                    _isNoKVM = false;
-                    _isNKVM = true;
+                    isUSBKVM = false;
+                    isNoKVM = false;
                 }
             }
         }
@@ -1398,19 +1396,19 @@ namespace DDPM.UI.Module.Kvm
         private void RunWorkerCompleted_USBKVM(object sender, RunWorkerCompletedEventArgs e)
         {
             _log.Debug("[KvmViewModel] RunWorkerCompleted_USBKVM start");
-            OnPropertyChanged("PC1_Input");
-            OnPropertyChanged("PC2_Input");
-            OnPropertyChanged("PC3_Input");
-            OnPropertyChanged("PC4_Input");
-            OnPropertyChanged("PC1Inputs_Selected");
-            OnPropertyChanged("PC2Inputs_Selected");
-            OnPropertyChanged("PC3Inputs_Selected");
-            OnPropertyChanged("PC4Inputs_Selected");
-            OnPropertyChanged("PC1USB_Selected");
-            OnPropertyChanged("PC2USB_Selected");
-            OnPropertyChanged("PC3USB_Selected");
-            OnPropertyChanged("PC4USB_Selected");
-            OnPropertyChanged("PCImage");
+            //OnPropertyChanged("PC1_Input");
+            //OnPropertyChanged("PC2_Input");
+            //OnPropertyChanged("PC3_Input");
+            //OnPropertyChanged("PC4_Input");
+            //OnPropertyChanged("PC1Inputs_Selected");
+            //OnPropertyChanged("PC2Inputs_Selected");
+            //OnPropertyChanged("PC3Inputs_Selected");
+            //OnPropertyChanged("PC4Inputs_Selected");
+            //OnPropertyChanged("PC1USB_Selected");
+            //OnPropertyChanged("PC2USB_Selected");
+            //OnPropertyChanged("PC3USB_Selected");
+            //OnPropertyChanged("PC4USB_Selected");
+            //OnPropertyChanged("PCImage");
             if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E9"))
             {
                 PxPCode = _curPxpMode;
@@ -1467,19 +1465,19 @@ namespace DDPM.UI.Module.Kvm
         private void RunWorkerCompleted_USBKVMisON(object sender, RunWorkerCompletedEventArgs e)
         {
             _log.Debug("[KvmViewModel] RunWorkerCompleted_USBKVM start");
-            OnPropertyChanged("PC1_Input");
-            OnPropertyChanged("PC2_Input");
-            OnPropertyChanged("PC3_Input");
-            OnPropertyChanged("PC4_Input");
-            OnPropertyChanged("PC1Inputs_Selected");
-            OnPropertyChanged("PC2Inputs_Selected");
-            OnPropertyChanged("PC3Inputs_Selected");
-            OnPropertyChanged("PC4Inputs_Selected");
-            OnPropertyChanged("PC1USB_Selected");
-            OnPropertyChanged("PC2USB_Selected");
-            OnPropertyChanged("PC3USB_Selected");
-            OnPropertyChanged("PC4USB_Selected");
-            OnPropertyChanged("PCImage");
+            //OnPropertyChanged("PC1_Input");
+            //OnPropertyChanged("PC2_Input");
+            //OnPropertyChanged("PC3_Input");
+            //OnPropertyChanged("PC4_Input");
+            //OnPropertyChanged("PC1Inputs_Selected");
+            //OnPropertyChanged("PC2Inputs_Selected");
+            //OnPropertyChanged("PC3Inputs_Selected");
+            //OnPropertyChanged("PC4Inputs_Selected");
+            //OnPropertyChanged("PC1USB_Selected");
+            //OnPropertyChanged("PC2USB_Selected");
+            //OnPropertyChanged("PC3USB_Selected");
+            //OnPropertyChanged("PC4USB_Selected");
+            //OnPropertyChanged("PCImage");
             if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo.CapabilityDic.ContainsKey("E9"))
             {
                 PxPCode = _curPxpMode;
@@ -1546,34 +1544,34 @@ namespace DDPM.UI.Module.Kvm
             if (pcnum == "PC1")
             {
                 _PC1selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
+                OnPropertyChanged("PC1_Input");
+                OnPropertyChanged("PC1Inputs_Selected");
+                OnPropertyChanged("PC1USB_Selected");
             }
             else if (pcnum == "PC2")
             {
                 _PC2selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
+                OnPropertyChanged("PC2_Input");
+                OnPropertyChanged("PC2Inputs_Selected");
+                OnPropertyChanged("PC2USB_Selected");
             }
             else if (pcnum == "PC3")
             {
                 _PC3selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
+                OnPropertyChanged("PC3_Input");
+                OnPropertyChanged("PC3Inputs_Selected");
+                OnPropertyChanged("PC3USB_Selected");
             }
             else if (pcnum == "PC4")
             {
                 _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
+                OnPropertyChanged("PC4_Input");
+                OnPropertyChanged("PC4Inputs_Selected");
+                OnPropertyChanged("PC4USB_Selected");
             }
             ModifiedPCinputList();
             USBDisenable();
             //bool b = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
-            OnPropertyChanged("PC1_Input");
-            OnPropertyChanged("PC2_Input");
-            OnPropertyChanged("PC3_Input");
-            OnPropertyChanged("PC4_Input");
-            OnPropertyChanged("PC1Inputs_Selected");
-            OnPropertyChanged("PC2Inputs_Selected");
-            OnPropertyChanged("PC3Inputs_Selected");
-            OnPropertyChanged("PC4Inputs_Selected");
-            OnPropertyChanged("PC1USB_Selected");
-            OnPropertyChanged("PC2USB_Selected");
-            OnPropertyChanged("PC3USB_Selected");
-            OnPropertyChanged("PC4USB_Selected");
         }
 
         private void SelectUSB(string usb, string pcnum)
@@ -1636,10 +1634,10 @@ namespace DDPM.UI.Module.Kvm
             OnPropertyChanged("HasCap_PipSmall");
             OnPropertyChanged("HasCap_PipLarge");
             OnPropertyChanged("HasCap_PipTogglePosition");
-            OnPropertyChanged("PC1_Input");
-            OnPropertyChanged("PC2_Input");
-            OnPropertyChanged("PC3_Input");
-            OnPropertyChanged("PC4_Input");
+            //OnPropertyChanged("PC1_Input");
+            //OnPropertyChanged("PC2_Input");
+            //OnPropertyChanged("PC3_Input");
+            //OnPropertyChanged("PC4_Input");
         }
 
         public bool HasPxpCap(UInt16 cap)
