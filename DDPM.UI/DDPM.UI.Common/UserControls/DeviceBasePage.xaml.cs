@@ -208,6 +208,14 @@ namespace DDPM.UI.Common.UserControls
                 LeftArrowClick(sender, e);
             }
         }
+        private void leftArrow_Click(object sender, RoutedEventArgs e)
+        {
+            if (LeftArrowClick != null)
+                LeftArrowClick(sender, e);
+
+            //System.Windows.MessageBox.Show("leftArrow_MouseLeftButtonDown");
+            isFirstEntryNonLandingMode = false;
+        }
 
         #region Lock/Unlock
         public bool SetLockModuleGroup(string groupName, bool isLocked)
@@ -471,6 +479,7 @@ namespace DDPM.UI.Common.UserControls
             LeftGrid.Width = this.ActualWidth - RightGrid.Width - 20;
             LeftFrame.Width = LeftGrid.Width;
         }
+
 
         private void ShowVBar(bool bShowLeft = true)
         {
