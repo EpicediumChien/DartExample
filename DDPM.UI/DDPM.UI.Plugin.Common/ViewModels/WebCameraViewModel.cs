@@ -774,7 +774,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     if (autoFramingSensitivity == -1)
                     {
                         _log.Error("DTP GetAutoFramingSensitivity fail!");
-                        _autoFramingSensitivity = 0;
+                        _autoFramingSensitivity = 1;
                     }
                     else
                         _autoFramingSensitivity = autoFramingSensitivity;
@@ -981,26 +981,40 @@ namespace DDPM.UI.Plugin.ViewModels
                 switch (changeType)
                 {
                     case DeviceChangedType.Peripherals_SettingsChange:
-                        if (di.ID == CurrentDeviceID)
                         {
-                            switch (property)
+                            if (DeviceInfos.ContainsKey(di.ID))
                             {
-                                //case "IsHDROnChanged":
-                                //    if (bool.TryParse(di.Message, out bool on))
-                                //    {
-                                //        if (CurrentProfile.IsHDROn != on)
-                                //        {
-                                //            CurrentProfile.IsHDROn = on;
-                                //            OnPropertyChanged(nameof(IsHDROn));
-                                //            OnPropertyChanged(nameof(IsHDROnText));
-                                //        }
-                                //    }
-                                //    break;
-                                default:
-                                    break;
+                                DeviceInfos.Remove(di.ID);
+                                DeviceInfos.Add(di.ID, di);
                             }
-                            //GenerateInfo();
+                            else
+                            {
+                                return;
+                            }
+
+                            if (di.ID == CurrentDeviceID)
+                            {
+                                switch (property)
+                                {
+                                    case "IsHDROnChanged":
+                                        if (bool.TryParse(di.Message, out bool isHDROn))
+                                        {
+                                            if (IsHDROn != isHDROn)
+                                            {
+                                                Application.Current.Dispatcher.Invoke(() =>
+                                                {
+                                                    IsHDROn = isHDROn;
+                                                });
+                                            }
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                GenerateInfo();
+                            }
                         }
+                      
                         break;
                     default:
                         break;
@@ -1341,7 +1355,7 @@ namespace DDPM.UI.Plugin.ViewModels
             }
         }
 
-        private int _autoFramingSensitivity = 0;
+        private int _autoFramingSensitivity = 1;
         public int AutoFramingSensitivity
         {
             get => _autoFramingSensitivity;
@@ -1548,6 +1562,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsHDROn));
                     OnPropertyChanged(nameof(IsHDROnText));
+                    CurrentProfile.IsHDROn = value;
 
                     new Thread(() =>
                     {
@@ -2178,12 +2193,12 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "Brightness":
                         DdpmCommonHelper.DeviceManagerSA!.SetBrightness(CurrentDeviceInfo!.ID.ToString(), (int)value);
                         _brightness = (int)value;
-                        UpdateBrightnessMargin(_brightness);
+                        OnPropertyChanged(nameof(Brightness));
                         break;
                     case "Contrast":
                         DdpmCommonHelper.DeviceManagerSA!.SetContrast(CurrentDeviceInfo!.ID.ToString(), (int)value);
                         _contrast = (int)value;
-                        UpdateContrastMargin(_contrast);
+                        OnPropertyChanged(nameof(Contrast));
                         break;
                     case "AntiFlicker":
                         DdpmCommonHelper.DeviceManagerSA!.SetAntiFlicker(CurrentDeviceInfo!.ID.ToString(), (int)value);
@@ -2193,12 +2208,12 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "Saturation":
                         DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), (int)value);
                         _saturation = (int)value;
-                        UpdateSaturationMargin(_saturation);
+                        OnPropertyChanged(nameof(Saturation));
                         break;
                     case "Sharpness":
                         DdpmCommonHelper.DeviceManagerSA!.SetSharpness(CurrentDeviceInfo!.ID.ToString(), (int)value);
                         _sharpness = (int)value;
-                        UpdateSharpnessMargin(_sharpness);
+                        OnPropertyChanged(nameof(Sharpness));
                         break;
                     case "IsAutoWhiteBalanceOn":
                         DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), (bool)value);

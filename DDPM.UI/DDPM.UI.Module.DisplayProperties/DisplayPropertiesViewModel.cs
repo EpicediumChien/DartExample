@@ -396,7 +396,7 @@ namespace DDPM.UI.Module.DisplayProperties
                 RefreshUI();
             }
         }
-        public void OSDOrientationChang(object o, DisplayOrientation e)
+        public void OSDOrientationChang(object o, DisplayOrientation? e)
         {
             if (e != null)
             {

@@ -525,7 +525,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
 
                     MonitorInfo newPlugIn = null;
                     // If is a plugin event
-                    if(_monitorInfos.Count() >= _monitorCache.Count())
+                    if(_monitorInfos.Count >= _monitorCache.Count)
                     {
                         foreach (MonitorInfo monitor in _monitorInfos)
                         {
@@ -1230,20 +1230,11 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
                 }
 
                 bool isEnabled = param[1];
-                if (isEnabled)
-                {
-                    if (_gearBtn != null)
-                        _gearBtn.IsEnabled = isEnabled;
-                    if (_iconGear != null)
-                        _iconGear.IsEnabled = isEnabled;
-                }
-                else
-                {
-                    if (_gearBtn != null)
-                        _gearBtn.IsEnabled = isEnabled;
-                    if (_iconGear != null)
-                        _iconGear.IsEnabled = isEnabled;
-                }
+
+                if (_gearBtn != null)
+                    _gearBtn.IsEnabled = isEnabled;
+                if (_iconGear != null)
+                    _iconGear.IsEnabled = isEnabled;
             }
         }
 

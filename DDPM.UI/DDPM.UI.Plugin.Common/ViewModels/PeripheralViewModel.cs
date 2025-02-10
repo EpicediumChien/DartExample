@@ -481,9 +481,10 @@ namespace DDPM.UI.Plugin.ViewModels
             timer.Stop();
         }
 
-#if DEBUG
+
         protected void GenerateInfo()
         {
+#if DEBUG
             StringBuilder localDeviceInfo = new();
             if (CurrentDeviceInfo!.Name.ToUpper().Contains("HEADSET"))
             {
@@ -768,8 +769,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 localDeviceInfo.Append($"VisiblePairedHostName3 : {CurrentDeviceInfo.VisiblePairedHostName3}");
             }
             this.DeviceInfo = localDeviceInfo.ToString();
-        }
 #endif
+        }
+
 
         public virtual new void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {

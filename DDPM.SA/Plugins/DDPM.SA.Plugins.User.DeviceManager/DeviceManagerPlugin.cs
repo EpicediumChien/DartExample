@@ -9972,7 +9972,22 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceMangerPlugin received SetIsHDROn requested ...");
             writelog($"Target Guid is {Guid}");
             writelog($"Target Value is {newValue}");
-            return _DTPProxyPlugin.SetIsHDROn(Guid, newValue);
+            var result = _DTPProxyPlugin.SetIsHDROn(Guid, newValue);
+            DeviceInfo di = new()
+            {
+                LogicalDeviceType = "Webcam",
+                ID = new Guid(Guid),
+                Message = newValue.ToString()
+            };
+            DeviceChangedEventArgs _EventArgs = new DeviceChangedEventArgs
+            {
+                type = DeviceChangedType.Peripherals_SettingsChange,
+                device_peripherals = di,
+                changedProperty = "IsHDROnChanged"
+            };
+            DeviceChanged?.Invoke(this, _EventArgs);
+
+            return result;
         }
 
         public Task<bool> SetIsAutoWhiteBalanceOn(string Guid, bool newValue)
