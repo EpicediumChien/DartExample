@@ -2047,6 +2047,8 @@ namespace DDPM.UI.Plugin.ViewModels
                                 propertyInfo.SetValue(CurrentProfile, convertedValue);
                                 WebcamSettings.NONE = CurrentProfile;
                                 CurrentProfileName = "NONE";
+                                if (propertyName == "IsHDROn")
+                                    WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
                             }
                             break;
                         default:
