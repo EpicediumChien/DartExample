@@ -1128,6 +1128,9 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
             //Robert_Lin, 2024-7-17, fix PIMS-286435 in AddDevice menu, the AddDevice icon is in Top Right side.
             if (_iconGear != null)
                 _iconGear.Visibility = Visibility.Collapsed;
+            if (_gearBtn != null)
+                _gearBtn.Visibility = Visibility.Collapsed;
+
             if(_IsAnyUpdate) _showPluginManager?.ShowPluginById(DDPM.UI.Common.Constants.SettingsPluginId, "1");
             else _console.ShowPluginById(UI.Common.Constants.SettingsPluginId);
         }

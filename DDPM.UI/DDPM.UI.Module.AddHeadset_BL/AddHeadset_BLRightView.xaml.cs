@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace DDPM.UI.Module.AddHeadset_BL
 {
@@ -97,6 +98,25 @@ namespace DDPM.UI.Module.AddHeadset_BL
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             AdjustBorderHeight();
+        }
+
+        //Robert_Lin 2025-2-9 for Narrator, when user press [Enter] on "Windows Settings" text
+        private void windowsSettings_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                e.Handled = true;
+                //Redirect to OpenWindowsSettings()
+                var mouseDevice = InputManager.Current.PrimaryMouseDevice;
+                if (mouseDevice != null)
+                {
+                    var args = new MouseButtonEventArgs(mouseDevice, 0, MouseButton.Left)
+                    {
+                        RoutedEvent = UIElement.MouseLeftButtonDownEvent
+                    };
+                    OpenWindowsSettings(sender, args);
+                }
+            }
         }
     }
 }

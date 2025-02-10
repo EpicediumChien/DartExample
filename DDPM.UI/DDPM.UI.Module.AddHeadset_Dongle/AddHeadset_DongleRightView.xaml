@@ -58,8 +58,9 @@
                                 <Image x:Name="InfoIcon" Margin="12,0,0,0" Source="/DDPM.UI.Common;component/Resources/alert.png" Stretch="Fill"
                                VerticalAlignment="Center" HorizontalAlignment="Left" Width="18" Height="18">
                                 </Image>
-                                <UXControls:UXTextBlock Name="txtAlert" AutomationProperties.Name="Description" FontSize="13" Background="{DynamicResource bdrAlert_BgColor}" Foreground="{DynamicResource bdrAlert_FgColor}" 
-                                                TextWrapping="WrapWithOverflow"
+                                <UXControls:UXTextBlock Name="txtAlert" FontSize="13" Background="{DynamicResource bdrAlert_BgColor}" Foreground="{DynamicResource bdrAlert_FgColor}" 
+                                                TextWrapping="WrapWithOverflow"  Focusable="True"
+                                                        AutomationProperties.Name="{Binding DongleAlertHeadset}"
                                                 Margin="36,16,0,13" LineHeight="19.5" Padding="0,3" 
                                                 Text="{Binding DongleAlertHeadset}" FontFamily="Roboto" FontWeight="Normal" />
                             </Grid>
@@ -72,7 +73,7 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                                     <UXControls:UXTextBlock Text="1." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                                    <UXControls:UXTextBlock Name="txtStep1" Style="{StaticResource TextStyle1}" 
+                                    <UXControls:UXTextBlock Name="txtStep1" Style="{StaticResource TextStyle1}"  Focusable="True"
                                                     Text="{Binding [AddDevice.KnM.6], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                             </StackPanel>
@@ -83,7 +84,7 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                                     <UXControls:UXTextBlock Text="2." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                                    <UXControls:UXTextBlock Name="txtStep2" Style="{StaticResource TextStyle1}" 
+                                    <UXControls:UXTextBlock Name="txtStep2" Style="{StaticResource TextStyle1}"  Focusable="True"
 
                                                     Text="{Binding [AddDevice.Headset.4], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
@@ -95,7 +96,7 @@
                                HorizontalAlignment="Left" VerticalAlignment="Top" Cursor="" Width="46" Height="46" />
                                 <StackPanel Orientation="Horizontal" Margin="0,15,0,0">
                                     <UXControls:UXTextBlock Text="3." Margin="20,0,0,0" Style="{StaticResource TextStyle1}" />
-                                    <UXControls:UXTextBlock Name="txtStep3" Style="{StaticResource TextStyle1}" 
+                                    <UXControls:UXTextBlock Name="txtStep3" Style="{StaticResource TextStyle1}"  Focusable="True"
                                                     Text="{Binding [AddDevice.Headset.5], Source={x:Static lang:LangHelper.Instance}}"/>
                                 </StackPanel>
                             </StackPanel>
