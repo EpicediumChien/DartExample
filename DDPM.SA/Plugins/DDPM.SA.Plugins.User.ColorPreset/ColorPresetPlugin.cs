@@ -446,7 +446,7 @@ namespace ColorPreset.Plugins
         {
             writelog("ColorPresetPlugin AutoSetColorPresetForMonitorConfig requested ...");
 
-            _DeviceManagerPlugin_SA= _DeviceManagerPlugin;
+            _DeviceManagerPlugin_SA = _DeviceManagerPlugin;
 
             List<ColorPresetSettings> config = _SettingsPlugin.ReadColorPresetSettings().Result;
 
@@ -474,7 +474,7 @@ namespace ColorPreset.Plugins
                         // create and show the window
                         // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
                         Launch_MonitorBorker(_AllInfoMonitors, mo, _DeviceManagerPlugin, Is_Game_DeviceName, SmartHDR_ON, ColorPresetSupportList);
-                        
+
                         // start the Dispatcher processing
                         // 啟動消息循環
                         System.Windows.Threading.Dispatcher.Run();
@@ -524,7 +524,7 @@ namespace ColorPreset.Plugins
                 {
                     MonitorBorkerWin.Set_AllMonitors(_AllInfoMonitors); // // jim 20241218 modify for PIMS-326072
                     // jim 20241207 modify for The DDPM color profile can not be applied by DDPM on Smart HDR mode.(Gaming monitor ex: AW2724DM)
-                    MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false, Is_Game_DeviceName, SmartHDR_ON, ColorPresetSupportList);                    
+                    MonitorBorkerWin.Set_AUTO_ColorPresetConfig(false, Is_Game_DeviceName, SmartHDR_ON, ColorPresetSupportList);
                 }
 
             }
@@ -618,11 +618,11 @@ namespace ColorPreset.Plugins
                                 registryMonitor_ICC.Start();
                                 writelog("Monitor ICC change started");
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
                                 writelog($"Monitor ICC change Exception, message: {ex.Message}");
                             }
-                        }                        
+                        }
                     }
 
                 }
@@ -653,7 +653,7 @@ namespace ColorPreset.Plugins
 
                     if (registryMonitor_ICC.IsMonitoring)
                         registryMonitor_ICC.Dispose();
-                    registryMonitor_ICC = null;                    
+                    registryMonitor_ICC = null;
                 }
             }
             else if (off_bymonitor_byhost.Equals("BYMONITOR", StringComparison.OrdinalIgnoreCase))
@@ -738,7 +738,7 @@ namespace ColorPreset.Plugins
                     string keyName = string.Format("{0}\\{1}", "HKEY_CURRENT_USER", @"Software\Microsoft\Windows NT\CurrentVersion\ICM\ProfileAssociations\Display\{4d36e96e-e325-11ce-bfc1-08002be10318}");
 
                     if (registryMonitor_ICC == null)
-                    {                            
+                    {
                         try
                         {
                             writelog("Monitor ICC change initiate...");
@@ -827,7 +827,7 @@ namespace ColorPreset.Plugins
                                 if (string.Equals(strICC_ColorPresets[0], "DisplayHDR", StringComparison.OrdinalIgnoreCase) || string.Equals(strICC_ColorPresets[0], "Display HDR", StringComparison.OrdinalIgnoreCase))
                                 {
                                     Coloreset_manual_ChangeEvent?.AsyncFireAndForget(this, strICC_ColorPresets[0], System.Threading.CancellationToken.None);
-                                }                              
+                                }
                                 else
                                 {
                                     PopupContentPackage popupContentPackage = new PopupContentPackage()
@@ -871,8 +871,8 @@ namespace ColorPreset.Plugins
 
                                     CallPopup(this, popupContentPackage);
                                 }
-                            }                            
-                        }                        
+                            }
+                        }
                     }
 
                     break;
@@ -910,7 +910,7 @@ namespace ColorPreset.Plugins
                 registryMonitor_ICC.Start();
                 writelog("Monitor ICC change started");
                 return System.Threading.Tasks.Task.FromResult(true);
-            }          
+            }
 
             return System.Threading.Tasks.Task.FromResult(false);
         }
@@ -937,7 +937,7 @@ namespace ColorPreset.Plugins
 
             StopRegistryMonitor_ICC();
         }
-        
+
         public Task<bool> StopRegistryMonitor_NightLight()
         {
             writelog("ColorPresetPlugin StopRegistryMonitor_NightLight requested ...");
@@ -1076,7 +1076,7 @@ namespace ColorPreset.Plugins
                                     System.Threading.Tasks.Task.Run(() =>
                                     {
                                         _DeviceManagerPlugin_SA.Send_NightLightStatus_Telementry_SA(Active_monitorInfo, "On");
-                                    });                                    
+                                    });
                                 }
                             }
                             else if (ch == 0x13)
@@ -1118,7 +1118,7 @@ namespace ColorPreset.Plugins
                         }
                     }
 
-                    registryKey.Close();  
+                    registryKey.Close();
                 }
                 else
                 {
@@ -1190,7 +1190,7 @@ namespace ColorPreset.Plugins
                         //bool nightLightIsOn = false;
 
                         if (array.Length == 51)
-                        {                           
+                        {
 
                             if (_DeviceManagerPlugin_SA != null && Active_monitorInfo != null)
                             {
@@ -1199,7 +1199,7 @@ namespace ColorPreset.Plugins
                                     _DeviceManagerPlugin_SA.Send_NightLightschedulerStatus_Telementry_SA(Active_monitorInfo, "Off");
                                 });
                             }
-                         
+
                         }
                         else if (array.Length == 53)
                         {
@@ -1226,10 +1226,10 @@ namespace ColorPreset.Plugins
 
                         }
                     }
-                    registryKey.Close();   
+                    registryKey.Close();
                 }
                 localKey64.Close();
-            }           
+            }
 
             return System.Threading.Tasks.Task.FromResult(true);
         }
@@ -1414,16 +1414,16 @@ namespace ColorPreset.Plugins
                                     ColorPresetSupportList_.Clear();
 
                                     foreach (var tmp in colorrreset)
-                                        ColorPresetSupportList_.Add(new string(tmp.ToString()));                                   
+                                        ColorPresetSupportList_.Add(new string(tmp.ToString()));
                                 }
                                 catch (Exception ex)
                                 {
-                                    writelog($"[ReadColorPreset] collect colore presets from VCP E2 , message: {ex.Message}");                                  
-                                }                                                         
+                                    writelog($"[ReadColorPreset] collect colore presets from VCP E2 , message: {ex.Message}");
+                                }
 
                             }
                         }
-                    }                      
+                    }
 
                     else if (CapsDataMap.ContainsKey("ColorPreset"))
                     {
@@ -1698,9 +1698,9 @@ namespace ColorPreset.Plugins
                     catch (Exception ex)
                     {
                         writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
-                    }                        
+                    }
                 }
-                
+
             }
 
             return System.Threading.Tasks.Task.FromResult(blRes);
@@ -1808,7 +1808,7 @@ namespace ColorPreset.Plugins
             Trace.WriteLine($" ColorPreset_Name = {ColorPreset_Name}");
 
             var colorPresetsUP32 = new Dictionary<string, string>
-            {                
+            {
                 { "AdobeRGB1 (D65G2.2L250)", "Adobe RGB D65 G2.2 L160" },// add 1127
                 { "AdobeRGB2 (D50G2.2L250)", "Adobe RGB D50 G2.2 L160" },// add 1127
                 { "AdobeRGB1/Adobe RGB D65 G2.2 L160/Adobe RGB D65 G2.2 L250", "Adobe RGB D65 G2.2 L160" },// add 1127
@@ -1830,7 +1830,7 @@ namespace ColorPreset.Plugins
                 { "AdobeRGB2", "Adobe RGB D50 G2.2 L250" },
                 { "sRGB", "sRGB D65 sRGB L250" },
                 { "Rec.709 / BT.709", "BT.709 D65 BT1886 L100" },
-                { "Rec.2020 / BT.2020", "BT.2020 D65 BT1886 L100" }                
+                { "Rec.2020 / BT.2020", "BT.2020 D65 BT1886 L100" }
             };
 
 
@@ -1847,7 +1847,7 @@ namespace ColorPreset.Plugins
                     Trace.WriteLine($" ColorPreset_Name = {ColorPreset_Name}");
 
                     if (ColorPreset_Name == "Standard/Native")
-                        strSync_ColorPreset_Name = "Native";                    
+                        strSync_ColorPreset_Name = "Native";
 
                     if (ColorPreset_Name == "DCI-P3")
                         strSync_ColorPreset_Name = "DCI P3 D65 G2.4 L100";
@@ -1860,7 +1860,7 @@ namespace ColorPreset.Plugins
 
                 // check Color Preset Strings Custom 1/2/3 or User 1/2/3
 
-                if (monitorInfo.modelName.StartsWith("UP3221Q") || (monitorInfo.modelName.StartsWith("UP32") && !monitorInfo.modelName.Contains("UP3218K")) )
+                if (monitorInfo.modelName.StartsWith("UP3221Q") || (monitorInfo.modelName.StartsWith("UP32") && !monitorInfo.modelName.Contains("UP3218K")))
                 {
                     if (ColorPreset_Name == "Custom 1 / User 1")
                         strSync_ColorPreset_Name = "User 1";
@@ -1945,7 +1945,7 @@ namespace ColorPreset.Plugins
             }
 
 
-            if (monitorInfo.modelName.StartsWith("UP32") && !monitorInfo.modelName.Contains("UP3218K")  )
+            if (monitorInfo.modelName.StartsWith("UP32") && !monitorInfo.modelName.Contains("UP3218K"))
             {
                 if (colorPresetsUP32.TryGetValue(ColorPreset_Name, out var presetValue))
                 {
@@ -2227,7 +2227,7 @@ namespace ColorPreset.Plugins
         /// </summary>
         /// <param name="m">Monitor Info</param>
         /// <returns> Run Deserialize ICC.json後的 object   </returns>
-        public Task<IIC_Metadata> DownloadICCData(MonitorInfo m, ISettingsManagerDev _SettingsPlugin, bool blICCProfile = false ,string savelPath = "")
+        public Task<IIC_Metadata> DownloadICCData(MonitorInfo m, ISettingsManagerDev _SettingsPlugin, bool blICCProfile = false, string savelPath = "")
         {
             writelog("ColorPresetPlugin DownloadICCData requested ...");
 
@@ -2277,48 +2277,58 @@ namespace ColorPreset.Plugins
                 string Display_ICC_URL = Download.GetTestServerURL();//@$"https://clientperipherals.dell.com/DDPM/";
                 string Display_ICC_URL_Folder = GlobalDefinitions.Display_ICC_URL_Folder;//@"ICC/";
                 string str_url_prefix = Display_ICC_URL + Display_ICC_URL_Folder;
- 
+
                 url = str_url_prefix + @"icc_profile_sha256.json";
 
                 if (!string.IsNullOrEmpty(url))
                 {
-                    string info = string.Empty;
-                    if(!DDPMFileSecurity.IsFolderPathValid(strICC_Folder, out info))
-                    {
-                        writelog($"[DownloadICCData][IsFolderPathValid] {info}");
-                        return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
-                    }
-
+                    //Bruce 02/10 Change color profile download ICC 
                     strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
                     string Info;
-                    if (download.DownloadFile(url, strFilePath, out downloadInfo))
+                    HttpClient client = new HttpClient();
+                    client.Timeout = TimeSpan.FromSeconds(5);
+                    HttpResponseMessage response = client.GetAsync(url).Result;
+                    response.EnsureSuccessStatusCode();
+                    string jsonContent = response.Content.ReadAsStringAsync().Result;
+                    if (!string.IsNullOrEmpty(jsonContent))
                     {
-                        if (System.IO.File.Exists(strFilePath))
+                        strReadJson = string.Empty;
+                        //if (!CheckICC_JSON_Security(strFilePath, out strReadJson))
+                        //{
+                        //    writelog($"[DownloadICCData] CheckICC_JSON_Security Fail. {strFilePath}");
+                        //    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                        //}
+                        List<string> InfoPkey = new List<string>();
+                        if (_SettingsPlugin_internal != null)
                         {
-                            //Elsa Add Security
-                            if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out Info))
-                            {
-                                writelog($"[DownloadICCData] {Info}");
-                                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
-                            }
+                            InfoPkey = _SettingsPlugin_internal.GetInfos().Result;
+                        }
+                        if (InfoPkey == null || InfoPkey.Count == 0)
+                        {
+                            //if read info failed, load default key as well
+                            InfoPkey = new List<string>(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                            //InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
+                        }
+                        string szInfo = string.Empty;
+                        strReadJson = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, jsonContent, InfoPkey, out szInfo);
+                        if (!string.IsNullOrEmpty(strReadJson))
+                        {
+                            ////Elsa Add Security
+                            //if (!DDPM.SA.Common.Settings.DDPMFileSecurity.IsFilePathValid(strFilePath, out Info))
+                            //{
+                            //    writelog($"[DownloadICCData] {Info}");
+                            //    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                            //}
+                            //if (strReadJson.Length < 1)
+                            //{
+                            //    using (var reader = new StreamReader(strFilePath))
+                            //    {
+                            //        strReadJson = reader.ReadToEnd();
+                            //    }
+                            //}
 
-                            strReadJson = string.Empty;
-                            if (!CheckICC_JSON_Security(strFilePath, out strReadJson))
-                            {
-                                writelog($"[DownloadICCData] CheckICC_JSON_Security Fail. {strFilePath}");
-                                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
-                            }
-
-                            if (strReadJson.Length < 1)
-                            {
-                                using (var reader = new StreamReader(strFilePath))
-                                {
-                                    strReadJson = reader.ReadToEnd();
-                                }
-                            }
-
-                            if (strReadJson == string.Empty || strReadJson.Length == 0)
-                                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                            //if (strReadJson == string.Empty || strReadJson.Length == 0)
+                            //    return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
 
                             try
                             {
@@ -2331,6 +2341,11 @@ namespace ColorPreset.Plugins
                                 //Console.WriteLine("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
                                 writelog("[DownloadICCData] RunDeserializeObject error:" + ex.Message.ToString());
                             }
+                        }
+                        else
+                        {
+                            writelog($"[DownloadICCData] CheckICC_JSON_Security Fail. {strFilePath}");
+                            return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
                         }
 
                         foreach (var kvp in _ICC_Metadata._support_ICC_DeviceName)
@@ -2372,7 +2387,12 @@ namespace ColorPreset.Plugins
                             str_url_prefix += m.modelName;
                             str_url_prefix += @"/";
 
-                            info = string.Empty;
+                            string info = string.Empty;
+                            if (!DDPMFileSecurity.IsFolderPathValid(strICC_Folder, out info))
+                            {
+                                writelog($"[DownloadICCData][IsFolderPathValid] {info}");
+                                return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
+                            }
                             for (int i = 0; i < count; i++)
                             {
                                 url = string.Empty;
@@ -2380,33 +2400,40 @@ namespace ColorPreset.Plugins
                                 url = str_url_prefix + _ICC_Metadata._match_ICC_DeviceName[i].File;
 
                                 strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
-
-                                if (download.DownloadFile(url, strFilePath, out downloadInfo))
+                                if (File.Exists(strFilePath) && _certChecker?.CheckFile_SHA256(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, out info) == true && _certChecker?.CheckFile_SHA512(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, out info) == true)
                                 {
-                                    //string txtSha256 = BytesToString(GetHashSha256(strFilePath));
-                                    //
-                                    //if (!string.Equals(txtSha256, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, StringComparison.OrdinalIgnoreCase))
-                                    bool? rst = _certChecker?.CheckFile_SHA256(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, out info);
-                                    if (rst == null || rst == false)
-                                    {
-                                        writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha256 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA256} mismatch!");
-                                    }
-
-                                    //string txtSha512 = BytesToString(GetHashSha512(strFilePath));
-                                    //
-                                    //if (!string.Equals(txtSha512, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, StringComparison.OrdinalIgnoreCase))
-                                    rst = _certChecker?.CheckFile_SHA512(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, out info);
-                                    if (rst == null || rst == false)
-                                    {
-                                        writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha512 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA512} mismatch!");
-                                    }
+                                    writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i].File} icc profile is exists and not change");
                                 }
                                 else
                                 {
-                                    writelog($"[DownloadICCData] download icc {_ICC_Metadata._match_ICC_DeviceName[i]} failed");
+                                    writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i].File} icc profile is no exists go download");
+                                    if (download.DownloadFile(url, strFilePath, out downloadInfo))
+                                    {
+                                        //string txtSha256 = BytesToString(GetHashSha256(strFilePath));
+                                        //
+                                        //if (!string.Equals(txtSha256, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, StringComparison.OrdinalIgnoreCase))
+                                        bool? rst = _certChecker?.CheckFile_SHA256(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, out info);
+                                        if (rst == null || rst == false)
+                                        {
+                                            writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha256 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA256} mismatch!");
+                                        }
+
+                                        //string txtSha512 = BytesToString(GetHashSha512(strFilePath));
+                                        //
+                                        //if (!string.Equals(txtSha512, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, StringComparison.OrdinalIgnoreCase))
+                                        rst = _certChecker?.CheckFile_SHA512(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, out info);
+                                        if (rst == null || rst == false)
+                                        {
+                                            writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i]} icc profile sha512 json = {_ICC_Metadata._match_ICC_DeviceName[i].SHA512} mismatch!");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        writelog($"[DownloadICCData] download icc {_ICC_Metadata._match_ICC_DeviceName[i]} failed");
+                                    }
                                 }
                             }
-                        }  
+                        }
                     }
                     else
                     {
@@ -2424,7 +2451,7 @@ namespace ColorPreset.Plugins
                 return System.Threading.Tasks.Task.FromResult(_ICC_Metadata);
             }
         }
-        
+
 
         /// <summary>
         ///  Set Monitor ICC color Profile
@@ -2460,7 +2487,7 @@ namespace ColorPreset.Plugins
                             {
                                 writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
                             }
-                            
+
                             writelog($"ColorPresetPlugin SetMonitorProfile = {_ICC_Metadata._match_ICC_DeviceName[i].File}");
                             Trace.WriteLine($"ColorPresetPlugin SetMonitorProfile = {_ICC_Metadata._match_ICC_DeviceName[i].File}");
                             break;
@@ -2479,7 +2506,7 @@ namespace ColorPreset.Plugins
                             {
                                 writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
                             }
-                            
+
                             writelog($"ColorPresetPlugin SetMonitorProfile = {_ICC_Metadata._match_ICC_DeviceName[i].File}");
                             Trace.WriteLine($"ColorPresetPlugin SetMonitorProfile = {_ICC_Metadata._match_ICC_DeviceName[i].File}");
                             break;
@@ -2498,7 +2525,7 @@ namespace ColorPreset.Plugins
                             {
                                 writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
                             }
-                            
+
                             writelog($"ColorPresetPlugin SetMonitorProfile = {_ICC_Metadata._match_ICC_DeviceName[i].File}");
                             Trace.WriteLine($"ColorPresetPlugin SetMonitorProfile = {_ICC_Metadata._match_ICC_DeviceName[i].File}");
                             break;
@@ -2517,7 +2544,7 @@ namespace ColorPreset.Plugins
                         {
                             writelog($"SetMonitorProfile Exception {ex.Message.ToString()}");
                         }
-                        
+
                         writelog($"ColorPresetPlugin SetMonitorProfile = {_ICC_Metadata._match_ICC_DeviceName[i].File}");
                         Trace.WriteLine($"ColorPresetPlugin SetMonitorProfile = {_ICC_Metadata._match_ICC_DeviceName[i].File}");
                         break;
@@ -2695,7 +2722,7 @@ namespace ColorPreset.Plugins
 
                 Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = ColorForManual_VCPE2Code_value;
 
-                if (colorPresetSetting_Migration.ColorManagement == 0 || 
+                if (colorPresetSetting_Migration.ColorManagement == 0 ||
                     colorPresetSetting_Migration.ColorManagement == 1)
                 {
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status = 0;
@@ -2802,7 +2829,7 @@ namespace ColorPreset.Plugins
                     index = Test_AddAppCollectionData.GetInstance()._monitorConfigs.FindIndex(x =>
                                                     x.ModelName.Trim() == Model.Trim() &&
                                                     x.ServiceTag.Trim() == ServiceTag.Trim());
-                    
+
                 }
 
                 if (index >= 0)
@@ -2814,7 +2841,7 @@ namespace ColorPreset.Plugins
 
                     Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorForManual = ColorForManual_VCPE2Code_value;
 
-                    if (colorPresetSetting_Migration.ColorManagement == 0 || 
+                    if (colorPresetSetting_Migration.ColorManagement == 0 ||
                         colorPresetSetting_Migration.ColorManagement == 1)
                     {
                         Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].ColorManagement_Status = 0;
@@ -2886,7 +2913,7 @@ namespace ColorPreset.Plugins
                                     }
 
                                 }
-                            }                           
+                            }
 
                             Test_AddAppCollectionData.GetInstance()._monitorConfigs[index].AppInfo.Add(strAppName, temp);
                         }
