@@ -1871,6 +1871,15 @@ namespace DDPM.UI.Module.Color
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
         }
+
+        // Busy Text
+        private string _preparingProfileText = "Please Wait...";
+
+        public string PreparingProfileText
+        {
+            get => _preparingProfileText;
+            set => SetProperty(ref _preparingProfileText, value);
+        }
         #endregion UI Enable Flags
 
         //Robert_Lin 2025-1-18 added to handle Advanced Settings / ICC profile hylerlink click command
@@ -1898,6 +1907,5 @@ namespace DDPM.UI.Module.Color
         }
         //Robert_Lin 2025-1-18 added to handle Advanced Settings / ICC profile hylerlink click command
         ////////////////////////////
-
     }
 }
