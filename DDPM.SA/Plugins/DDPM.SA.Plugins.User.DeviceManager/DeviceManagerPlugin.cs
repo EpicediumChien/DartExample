@@ -254,6 +254,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private DDMtoDDPM dDMtodDPM = new DDMtoDDPM();
         private HotkeySettings hotkeySettings = new HotkeySettings();
+
+        /// <summary>
+        ///Check ICC profile update timers
+        /// </summary>
+        private System.Timers.Timer _checkICCProfileScheduleTimer;//Added 02/10 by Bruce
         #endregion
 
         #region Constructor
@@ -1806,7 +1811,34 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
             return Task.FromResult(true);
         }
-
+        /// <summary>
+        /// 定期檢查color profile排程
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckICCProfileScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)//Bruce 02/10 added timer to check icm
+        {
+            writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} start");
+            if (_checkICCProfileScheduleTimer != null)
+            {
+                _checkICCProfileScheduleTimer.Stop();
+                _checkICCProfileScheduleTimer.Interval = TimeSpan.FromHours(24).TotalMilliseconds;
+                _checkICCProfileScheduleTimer.Start();
+            }
+            if (_ColorPresetPlugin != null && _SettingsPlugin != null)
+            {
+                writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} _AllInfoMonitors.Count : {_AllInfoMonitors.Count}");
+                for (int i = 0; i < _AllInfoMonitors.Count; i++)
+                {
+                    _ColorPresetPlugin.DownloadICCData(_AllInfoMonitors[i], _SettingsPlugin, true).Wait();
+                }
+            }
+            else
+            {
+                writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} _ColorPresetPlugin is null");
+            }
+            writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} done");
+        }
         #endregion
 
         #region Schedule Manger implementation
@@ -10655,6 +10687,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             SetSkipSHA().Wait();
             SetDelayFWUpdateInfoPackage();
             CheckUODFWUInfoPackage();
+            //CheckICCProfileScheduleTimer_Elapsed(this, null);
             //hook keyboard
             //if (_HotkeyPlugin != null)
             //{
@@ -12145,6 +12178,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (monitor.CapabilityDic.ContainsKey("E9") && monitor.CapabilityDic.ContainsKey("E7"))
                         Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
+                    if (_ColorPresetPlugin != null && _SettingsPlugin != null)//Bruce 02/10 added display In/Out to check icm
+                    {
+                        writelog($"OnDeviceChanged: _ColorPresetPlugin.DownloadICCData go");
+                        _ColorPresetPlugin.DownloadICCData(monitor, _SettingsPlugin, true).Wait();
+                        writelog($"OnDeviceChanged: _ColorPresetPlugin.DownloadICCData done");
+                    }
                 }
             }
         }
@@ -12889,6 +12928,16 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         _ColorPresetPlugin.Coloreset_manual_ChangeEvent += OnColoresetManualChangeHandler;
 
                         _ColorPresetPlugin.NightLightStatus_ChangeEvent += OnNightLightStatusChangeHandler;
+
+                        //Bruce 02/10 added timer to check icm
+                        if (_checkICCProfileScheduleTimer == null)
+                        {
+                            writelog($"_checkICCProfileScheduleTimer initialize");
+                            _checkICCProfileScheduleTimer = new System.Timers.Timer();
+                            _checkICCProfileScheduleTimer.Interval = TimeSpan.FromSeconds(10).TotalMilliseconds;
+                            _checkICCProfileScheduleTimer.Elapsed += new ElapsedEventHandler(CheckICCProfileScheduleTimer_Elapsed);
+                            _checkICCProfileScheduleTimer.Start();
+                        }
 
                         if (_SettingsPlugin != null)
                         {
