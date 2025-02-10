@@ -1544,34 +1544,34 @@ namespace DDPM.UI.Module.Kvm
             if (pcnum == "PC1")
             {
                 _PC1selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
-                OnPropertyChanged("PC1_Input");
-                OnPropertyChanged("PC1Inputs_Selected");
-                OnPropertyChanged("PC1USB_Selected");
             }
             else if (pcnum == "PC2")
             {
                 _PC2selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
-                OnPropertyChanged("PC2_Input");
-                OnPropertyChanged("PC2Inputs_Selected");
-                OnPropertyChanged("PC2USB_Selected");
             }
             else if (pcnum == "PC3")
             {
                 _PC3selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
-                OnPropertyChanged("PC3_Input");
-                OnPropertyChanged("PC3Inputs_Selected");
-                OnPropertyChanged("PC3USB_Selected");
             }
             else if (pcnum == "PC4")
             {
                 _PC4selectUSB = _usbsList.Find(x => (x.Type == pcsList[pcnum].USBUpstream));
-                OnPropertyChanged("PC4_Input");
-                OnPropertyChanged("PC4Inputs_Selected");
-                OnPropertyChanged("PC4USB_Selected");
             }
             ModifiedPCinputList();
             USBDisenable();
             //bool b = DdpmCommonHelper.DeviceManagerSA.SetUSBKVMPCsList(KvmModule.SelectedHomeDevice.MonitorInfo, pcsList).Result;
+            OnPropertyChanged("PC1_Input");
+            OnPropertyChanged("PC1Inputs_Selected");
+            OnPropertyChanged("PC1USB_Selected");
+            OnPropertyChanged("PC2_Input");
+            OnPropertyChanged("PC2Inputs_Selected");
+            OnPropertyChanged("PC2USB_Selected");
+            OnPropertyChanged("PC3_Input");
+            OnPropertyChanged("PC3Inputs_Selected");
+            OnPropertyChanged("PC3USB_Selected");
+            OnPropertyChanged("PC4_Input");
+            OnPropertyChanged("PC4Inputs_Selected");
+            OnPropertyChanged("PC4USB_Selected");
         }
 
         private void SelectUSB(string usb, string pcnum)
