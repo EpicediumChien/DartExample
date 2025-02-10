@@ -318,9 +318,8 @@ namespace DDPM.UI.Module.Kvm
                 {
                     isOnUSBKVM(false);
                     USBKVMisON = false;
-                    isUSBKVM = false;
-                    isNKVM = false;
-                    DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM");
+                    //isUSBKVM = false;
+                    //isNKVM = false;
                 }
             }
         }
@@ -331,11 +330,11 @@ namespace DDPM.UI.Module.Kvm
             set
             {
                 SetProperty(ref _isUSBKVM, value);
-                if (value)
-                {
-                    isNKVM = false;
-                    isNoKVM = false;
-                }
+                //if (value)
+                //{
+                //    isNKVM = false;
+                //    isNoKVM = false;
+                //}
             }
         }
 
@@ -349,8 +348,8 @@ namespace DDPM.UI.Module.Kvm
                 {
                     isOnUSBKVM(false);
                     USBKVMisON = false;
-                    isUSBKVM = false;
-                    isNoKVM = false;
+                    //isUSBKVM = false;
+                    //isNoKVM = false;
                 }
             }
         }
@@ -908,42 +907,32 @@ namespace DDPM.UI.Module.Kvm
 
         public void Invoke_RefreshData()
         {
+            _log.Debug("[KvmViewModel] Invoke_RefreshData start");
             BackgroundWorker bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
-            SupportNKVM = Visibility.Collapsed;
-            SupportUSBKVM = Visibility.Collapsed;
 
-            if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
+            bw.DoWork -= DoWork_RefreshData;
+            bw.DoWork += DoWork_RefreshData;
+            if (USBKVMisON)
             {
-                MonitorInfo mi = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
-
-                USBKVMisON = /*KvmModule.isUSBKVM;*/ DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(mi).Result;
-
-                bw.DoWork -= DoWork_RefreshData;
-                bw.DoWork += DoWork_RefreshData;
-                if (USBKVMisON)
-                {
-                    bw.DoWork -= DoWork_USBKVM;
-                    bw.DoWork += DoWork_USBKVM;
-                    bw.RunWorkerCompleted -= RunWorkerCompleted_USBKVMisON;
-                    bw.RunWorkerCompleted += RunWorkerCompleted_USBKVMisON;
-                }
-                bw.RunWorkerCompleted -= RunWorkerCompleted_RefreshData;
-                bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
-                bw.RunWorkerAsync(); //myArg is the optional argument
-                IsKVMBusy = true;
+                bw.DoWork -= DoWork_USBKVM;
+                bw.DoWork += DoWork_USBKVM;
+                bw.RunWorkerCompleted -= RunWorkerCompleted_USBKVMisON;
+                bw.RunWorkerCompleted += RunWorkerCompleted_USBKVMisON;
             }
-            else
-            {
-                _log?.Debug("MonitorInfo is null.");
-            }
+            bw.RunWorkerCompleted -= RunWorkerCompleted_RefreshData;
+            bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
+            bw.RunWorkerAsync(); //myArg is the optional argument
+            IsKVMBusy = true;
+            _log.Debug("[KvmViewModel] Invoke_RefreshData end");
         }
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
+            _log.Debug("[KvmViewModel] DoWork_RefreshData start");
             try // 2024-06-19 Fix exception when close Main UI or device remove.
             {
                 //sender is the ‘bw’ object
@@ -960,6 +949,20 @@ namespace DDPM.UI.Module.Kvm
                 {
                     e.Result = "MonitorInfo is null";
                     return;
+                }
+
+                SupportNKVM = Visibility.Collapsed;
+                SupportUSBKVM = Visibility.Collapsed;
+
+                if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
+                {
+                    //MonitorInfo mi = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
+
+                    USBKVMisON = /*KvmModule.isUSBKVM;*/ DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(mi).Result;
+                }
+                else
+                {
+                    _log?.Debug("MonitorInfo is null.");
                 }
 
                 var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -1009,36 +1012,37 @@ namespace DDPM.UI.Module.Kvm
                 {
                     NKVMisON = false;
                 }
+                if (USBKVMisON)
+                {
+                    isUSBKVM = true;
+                    //EnableUSBKVM = Visibility.Visible;
+                    //DisenableUSBKVM = Visibility.Collapsed;
+                }
+                else if (NKVMisON)
+                {
+                    isNKVM = true;
+                    //EnableUSBKVM = Visibility.Collapsed;
+                    //DisenableUSBKVM = Visibility.Visible;
+                }
+                else
+                {
+                    isNoKVM = true;
+                    //EnableUSBKVM = Visibility.Collapsed;
+                    //DisenableUSBKVM = Visibility.Visible;
+                }
+                OnPropertyChanged("SupportUSBKVM");
+                OnPropertyChanged("SupportNKVM");
             }
             catch (Exception ex)
             {
                 _log.Error(ex, "[DoWork_RefreshData] exception");
             }
+            _log.Debug("[KvmViewModel] DoWork_RefreshData end");
         }
 
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
             _log.Debug("[KvmViewModel] RunWorkerCompleted_RefreshData start");
-            if (USBKVMisON)
-            {
-                isUSBKVM = true;
-                //EnableUSBKVM = Visibility.Visible;
-                //DisenableUSBKVM = Visibility.Collapsed;
-            }
-            else if (NKVMisON)
-            {
-                isNKVM = true;
-                //EnableUSBKVM = Visibility.Collapsed;
-                //DisenableUSBKVM = Visibility.Visible;
-            }
-            else
-            {
-                isNoKVM = true;
-                //EnableUSBKVM = Visibility.Collapsed;
-                //DisenableUSBKVM = Visibility.Visible;
-            }
-            OnPropertyChanged("SupportUSBKVM");
-            OnPropertyChanged("SupportNKVM");
             IsKVMBusy = false;
             _log.Debug("[KvmViewModel] RunWorkerCompleted_RefreshData End");
             //Handling the result and final process

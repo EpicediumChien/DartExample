@@ -204,8 +204,8 @@ namespace DDPM.UI.Module.Kvm
                         button_OnUSB.Visibility = Visibility.Collapsed;
                         button_USBHotkeys.Visibility = Visibility.Collapsed;
                     }
-                    vm.isNKVM = false;
-                    vm.isNoKVM = false;
+                    //vm.isNKVM = false;
+                    //vm.isNoKVM = false;
                 }
                 else
                 {
@@ -228,18 +228,20 @@ namespace DDPM.UI.Module.Kvm
                 button_OnUSB.Visibility = Visibility.Collapsed;
                 button_USBHotkeys.Visibility = Visibility.Collapsed;
                 button_Net.Visibility = Visibility.Visible;
-                if (vm != null)
-                {
-                    vm.isNKVM = true;
-                }
+                //if (vm != null)
+                //{
+                //    vm.isNKVM = true;
+                //}
+                vm.isOnUSBKVM(false);
+                vm.USBKVMisON = false;
             }
         }
 
         private void SelectNoKVM(object sender, RoutedEventArgs e)
         {
-            RadioButton radioButton = sender as RadioButton;
+            //RadioButton radioButton = sender as RadioButton;
 
-            radioButton.IsEnabled = false;
+            //radioButton.IsEnabled = false;
 
             Button button_USB = (Button)FindName("USBKVM");
             Button button_OnUSB = (Button)FindName("ONUSBKVM");
@@ -251,13 +253,16 @@ namespace DDPM.UI.Module.Kvm
                 button_OnUSB.Visibility = Visibility.Collapsed;
                 button_USBHotkeys.Visibility = Visibility.Collapsed;
                 button_Net.Visibility = Visibility.Collapsed;
-                if (vm != null)
-                {
-                    vm.isNoKVM = true;
-                }
+                //if (vm != null)
+                //{
+                //    vm.isNoKVM = true;
+                //}
+                vm.isOnUSBKVM(false);
+                vm.USBKVMisON = false;
+                DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM");
             }
 
-            radioButton.IsEnabled = true;
+            //radioButton.IsEnabled = true;
 
             //Robert_Lin debug purpose, can be removed at release build
             //if (DdpmCommonHelper.ModuleOwner != null)
