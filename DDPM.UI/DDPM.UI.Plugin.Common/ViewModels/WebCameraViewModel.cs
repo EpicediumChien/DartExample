@@ -2044,7 +2044,7 @@ namespace DDPM.UI.Plugin.ViewModels
                             if (!IsSettingProfile)
                             {
                                 ProfilePropertyChanged?.Invoke(this, EventArgs.Empty);
-                                propertyInfo.SetValue(CurrentProfile, convertedValue);
+                                //propertyInfo.SetValue(CurrentProfile, convertedValue);
                                 WebcamSettings.NONE = CurrentProfile;
                                 CurrentProfileName = "NONE";
                                 if (propertyName == "IsHDROn")
@@ -2063,6 +2063,7 @@ namespace DDPM.UI.Plugin.ViewModels
                     //}
                     // >>
                 }
+                propertyInfo.SetValue(CurrentProfile, convertedValue);
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
                 OnPropertyChanged(nameof(UndoVisibility));
                 OnPropertyChanged(nameof(Undo2Visibility));
