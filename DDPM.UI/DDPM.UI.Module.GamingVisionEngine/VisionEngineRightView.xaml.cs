@@ -69,75 +69,88 @@ namespace DDPM.UI.Module.GamingVisionEngine
             }
 
         }
-
-        private void doLostFocus(HotkeyInfo hotkeyInfo, string prStr, string crStr, ref List<VirtualKey> keys)
-        {
-            if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
-            {
-                //save hotkey
-                // SaveHotkeysSetting(_strTbBrightnessMinsPreviousKey, vm.BrightnessMinsKey, HotkeyType.BrightnessReduce, ref BrightnessMinsNewKeys, "Brightness-");
-                bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(vm.MyModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
-                vm.Invoke_RefreshHotkeySettings();
-            }
-            else
-            {
-                switch (hotkeyInfo.Job)
-                {
-                    case HotkeyType.VisionEngineToggle:
-                        vm.VisionEngineToggleKey = prStr;
-                        break;
-                }
-            }
-            keys.Clear();
-        }
         private void tbVisionEngineToggle_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             KeysHelper.setUXTextBoxPreviewKey(sender, e, ref newKeys, ref BundleNewKeys, ref alphabetKey);
         }
 
+        private void SaveHotkeySettings(HotkeyInfo hotkeyInfo)
+        {
+            tbCleanFocus.Focus();
+            VisionEngineViewModel dataContext = (VisionEngineViewModel)DataContext;
+            if (dataContext != null)
+            {
+                dataContext.IsBusy = true;
+                Task.Run(() =>
+                {
+                    if (DdpmCommonHelper.DeviceManagerSA != null)
+                    {
+                        bool saveSettings = DdpmCommonHelper.DeviceManagerSA.SaveHotkeySetting(dataContext.MyModule.SelectedHomeDevice.MonitorInfo, hotkeyInfo).Result;
+                        if (saveSettings)
+                        {
+                            DdpmCommonHelper.isHotkeyBypass = DdpmCommonHelper.DeviceManagerSA.ByPassHotkey(false).Result;
+                        }
+                    }
+
+                }).ContinueWith((t) =>
+                {
+                    dataContext.IsBusy = false;
+                    dataContext.Invoke_RefreshData();
+                });
+            }
+
+        }
         private void tbVisionEngineToggle_PreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
             e.Handled = true;
+            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.ToggleInputSource);
+            if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
+            {
+                if (KeysHelper.onlyContainModifyKeys(hotkeyInfo.Hotkey) || BundleNewKeys.Count == 0 && newKeys.Count == 0)
+                {
+                    vm.VisionEngineToggleKey = _strPreviousKey;
+                    BundleNewKeys.Clear();
+                    var texBox = (sender as UXTextBox);
+                    if (texBox == null) return;
+                    texBox.Text = vm.VisionEngineToggleKey;
+                    texBox.Select(vm.VisionEngineToggleKey.Length, 1);
+                }
+                else
+                {
+                    //for single key
+                    alphabetKey = false;
+                    newKeys.Clear();
+
+                    if (KeysHelper.hotKeyConflictsCheck(hotkeyInfo))
+                    {
+                        SaveHotkeySettings(hotkeyInfo);
+                    }
+                    else
+                    {
+                        vm.VisionEngineToggleKey = _strPreviousKey;
+                    }
+
+                    BundleNewKeys.Clear();
+
+                }
+            }
         }
 
         private void tbVisionEngineToggle_GotFocus(object sender, RoutedEventArgs e)
         {
-            bool isUnhook = DdpmCommonHelper.DeviceManagerSA.UnHook().Result;
-            if (isUnhook)
-            {
-                alphabetKey = false;
-                newKeys.Clear();
-                _strPreviousKey = vm.VisionEngineToggleKey;
-                //vm.VisionEngineToggleKey = string.Empty;
-                var texBox = (sender as UXTextBox);
-                texBox?.Select(vm.VisionEngineToggleKey.Length, 1);
-            }
+            alphabetKey = false;
+            newKeys.Clear();
+            //_strTbToggleInputSourcePreviousKey = vm.ToggleInputSourceKey;
+            _strPreviousKey = vm.VisionEngineToggleKey;
+            //vm.ToggleInputSourceKey = string.Empty;
+            var texBox = (sender as UXTextBox);
+            texBox?.Select(vm.VisionEngineToggleKey.Length, 1);
         }
 
         private void tbVisionEngineToggle_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (BundleNewKeys.Count == 0 && newKeys.Count == 0)
-            {
-                vm.VisionEngineToggleKey = _strPreviousKey;
-                BundleNewKeys.Clear();
-            }
-            else
-            {
-                //for single key
-                alphabetKey = false;
-                newKeys.Clear();
-
-                //save hotkey
-                //SaveHotkeysSetting(_strTbBrightnessAddPreviousKey, vm.BrightnessAddKey, HotkeyType.BrightnessIncrease, ref BrightnessAddNewKeys, "Brightness+");
-                HotkeyInfo hotkeyInfo = new HotkeyInfo();
-                hotkeyInfo.Job = HotkeyType.VisionEngineToggle;
-                hotkeyInfo.Hotkey = BundleNewKeys.Distinct().ToList();
-                hotkeyInfo.Description = "VisionEngineToggle";
-                doLostFocus(hotkeyInfo, _strPreviousKey, vm.VisionEngineToggleKey, ref BundleNewKeys);
-                BundleNewKeys.Clear();
-            }
             //hook
-            bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
+            //bool isHook = DdpmCommonHelper.DeviceManagerSA.Hook().Result;
         }
 
         private void tbVisionEngineToggle_ContextMenuOpening(object sender, ContextMenuEventArgs e)
