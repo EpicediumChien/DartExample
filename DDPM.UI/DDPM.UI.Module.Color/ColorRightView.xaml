@@ -38,13 +38,13 @@
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
                                     <Border
-                        Grid.Column="0"
-                        Width="7"
-                        CornerRadius="5,0,0,5" />
-                                    <Grid
-                        Grid.Column="1"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
+                                            Grid.Column="0"
+                                            Width="7"
+                                            CornerRadius="5,0,0,5" />
+                                                        <Grid
+                                            Grid.Column="1"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
                                         <Path Data="M9 1.125C13.3313 1.125 16.875 4.66875 16.875 9C16.875 13.3312 13.3313 16.875 9 16.875C4.66875 16.875 1.125 13.3312 1.125 9C1.125 4.66875 4.66875 1.125 9 1.125ZM9 0C4.05 0 0 4.05 0 9C0 13.95 4.05 18 9 18C13.95 18 18 13.95 18 9C18 4.05 13.95 0 9 0Z" Fill="white" />
                                         <Path Data="M9.5625 7.3125L8.4375 7.3125L8.4375 14.2875L9.5625 14.2875L9.5625 7.3125Z" Fill="white" />
                                         <Path Data="M9 5.40039C9.46599 5.40039 9.84375 5.02263 9.84375 4.55664C9.84375 4.09065 9.46599 3.71289 9 3.71289C8.53401 3.71289 8.15625 4.09065 8.15625 4.55664C8.15625 5.02263 8.53401 5.40039 9 5.40039Z" Fill="white" />
@@ -619,12 +619,15 @@
                         </Style>
                     </Border.Style>
                     <!-- Add a UXBusyIndicator from Robert -->
-                    <UXControls:UXBusyIndicator BusyIndicatorType="Secondary"
-                                Width="64"
-                                Height="64"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                IsActive="{Binding IsBusy}" />
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <UXControls:UXBusyIndicator BusyIndicatorType="Secondary"
+                                    Width="64"
+                                    Height="64"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    IsActive="{Binding IsBusy}" />
+                        <UXControls:UXTextBlock Margin="0, 20, 0, 0" Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="#FF797F84" />
+                    </StackPanel>
                 </Border>
             </Grid>
         </UXControls:UXScrollViewer>
