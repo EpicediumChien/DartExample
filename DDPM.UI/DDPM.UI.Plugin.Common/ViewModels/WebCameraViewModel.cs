@@ -2073,7 +2073,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
                 propertyInfo.SetValue(CurrentProfile, convertedValue);
                 WebcamSettings.NONE = CurrentProfile;
-                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model);
+                WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
                 OnPropertyChanged(nameof(UndoVisibility));
                 OnPropertyChanged(nameof(Undo2Visibility));
                 OnPropertyChanged(nameof(RedoVisibility));
