@@ -2151,6 +2151,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         is_hdr_enable = false;
                         OnPropertyChanged(nameof(hdr_enable));
                         DdpmCommonHelper.DeviceManagerSA!.SetIsHDROn(CurrentDeviceInfo!.ID.ToString(), (bool)value);
+                        WebcamSettingChanged?.Invoke(this, EventArgs.Empty);
                         new Thread(() =>
                         {
                             Thread.Sleep(3000);
