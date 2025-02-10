@@ -2282,7 +2282,7 @@ namespace ColorPreset.Plugins
 
                 if (!string.IsNullOrEmpty(url))
                 {
-                    //Bruce 02/10 Change color profile download ICC 
+                    //Bruce 02/10 get color profile metadata, no save in local 
                     strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
                     string Info;
                     HttpClient client = new HttpClient();
@@ -2309,6 +2309,7 @@ namespace ColorPreset.Plugins
                             InfoPkey = new List<string>(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
                             //InfoPkey.Add(DDPM.SA.Obfuscation.InfoHash.Info_Hash);
                         }
+                        //Bruce 02/10 verify color profile metadata
                         string szInfo = string.Empty;
                         strReadJson = DDPM.SA.Common.Settings.DDPMFileSecurity.VerifyDDPMMetadata(Log, jsonContent, InfoPkey, out szInfo);
                         if (!string.IsNullOrEmpty(strReadJson))
@@ -2400,6 +2401,7 @@ namespace ColorPreset.Plugins
                                 url = str_url_prefix + _ICC_Metadata._match_ICC_DeviceName[i].File;
 
                                 strFilePath = Path.Combine(strICC_Folder, Path.GetFileName(url));
+                                //Bruce 02/10 if file is exists and sha is same no go to download
                                 if (File.Exists(strFilePath) && _certChecker?.CheckFile_SHA256(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA256, out info) == true && _certChecker?.CheckFile_SHA512(strFilePath, _ICC_Metadata._match_ICC_DeviceName[i].SHA512, out info) == true)
                                 {
                                     writelog($"[DownloadICCData] {_ICC_Metadata._match_ICC_DeviceName[i].File} icc profile is exists and not change");

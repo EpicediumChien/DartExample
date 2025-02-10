@@ -1803,11 +1803,11 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             return Task.FromResult(true);
         }
         /// <summary>
-        /// 定期檢查更新排程
+        /// 定期檢查color profile排程
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CheckICCProfileScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)
+        private void CheckICCProfileScheduleTimer_Elapsed(object? sender, ElapsedEventArgs e)//Bruce 02/10 added timer to check icm
         {
             writelog($"{nameof(CheckICCProfileScheduleTimer_Elapsed)} start");
             if (_checkICCProfileScheduleTimer != null)
@@ -12169,7 +12169,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (monitor.CapabilityDic.ContainsKey("E9") && monitor.CapabilityDic.ContainsKey("E7"))
                         Task.Run(() => updatePBPModeStatus(monitor, "E9")).ConfigureAwait(false);
-                    if (_ColorPresetPlugin != null && _SettingsPlugin != null)
+                    if (_ColorPresetPlugin != null && _SettingsPlugin != null)//Bruce 02/10 added display In/Out to check icm
                     {
                         writelog($"OnDeviceChanged: _ColorPresetPlugin.DownloadICCData go");
                         _ColorPresetPlugin.DownloadICCData(monitor, _SettingsPlugin, true).Wait();
@@ -12920,7 +12920,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
                         _ColorPresetPlugin.NightLightStatus_ChangeEvent += OnNightLightStatusChangeHandler;
 
-                        //CheckICCProfileScheduleTimer_Elapsed(this, null);
+                        //Bruce 02/10 added timer to check icm
                         if (_checkICCProfileScheduleTimer == null)
                         {
                             writelog($"_checkICCProfileScheduleTimer initialize");
