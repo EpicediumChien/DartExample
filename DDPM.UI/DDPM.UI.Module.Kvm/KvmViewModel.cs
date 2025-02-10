@@ -609,6 +609,9 @@ namespace DDPM.UI.Module.Kvm
 
         public void Invoke_RefreshHotkeySettings()
         {
+            _log.Info("[KvmViewModel] Invoke_RefreshHotkeySettings start");
+            DateTime entryUSBKVM = DateTime.Now;
+            _log.Info($"[Invoke_RefreshHotkeySettings Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
             BackgroundWorker bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
@@ -617,10 +620,16 @@ namespace DDPM.UI.Module.Kvm
             bw.DoWork += DoWork_RefreshHotkeyData;
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshHotkeyData;
             bw.RunWorkerAsync(); //myArg is the optional argument
+            _log.Info("[KvmViewModel] Invoke_RefreshHotkeySettings end");
+            entryUSBKVM = DateTime.Now;
+            _log.Info($"[Invoke_RefreshHotkeySettings Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
         }
 
         private void DoWork_RefreshHotkeyData(object sender, DoWorkEventArgs e)
         {
+            _log.Info("[KvmViewModel] DoWork_RefreshHotkeyData start");
+            DateTime entryUSBKVM = DateTime.Now;
+            _log.Info($"[DoWork_RefreshHotkeyData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
             try
             {
                 //sender is the ‘bw’ object
@@ -768,6 +777,9 @@ namespace DDPM.UI.Module.Kvm
             {
                 Debug.WriteLine(ex.Message);
             }
+            _log.Info("[KvmViewModel] DoWork_RefreshHotkeyData end");
+            entryUSBKVM = DateTime.Now;
+            _log.Info($"[DoWork_RefreshHotkeyData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
         }
 
         private bool IsPBPMode(MonitorInfo mo, UInt16 curPxpMode)
@@ -837,9 +849,15 @@ namespace DDPM.UI.Module.Kvm
         }
         private void RunWorkerCompleted_RefreshHotkeyData(object sender, RunWorkerCompletedEventArgs e)
         {
+            _log.Info("[KvmViewModel] RunWorkerCompleted_RefreshHotkeyData start");
+            DateTime entryUSBKVM = DateTime.Now;
+            _log.Info($"[RunWorkerCompleted_RefreshHotkeyData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
             Debug.WriteLine("load kvm hotkey setting done");
             //Handling the result and final process
             OnPropertyChanged("IsSwitchPCsVisible");
+            _log.Info("[KvmViewModel] RunWorkerCompleted_RefreshHotkeyData end");
+            entryUSBKVM = DateTime.Now;
+            _log.Info($"[RunWorkerCompleted_RefreshHotkeyData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
         }
 
         //Robert_Lin 2025-1-20 for [PIMS-339501] [DDPM Win 2.0][R19] USB KVM Setup -It doesn't show "Switch between PCs" hotkey when set up to PIP mode finished
@@ -907,12 +925,24 @@ namespace DDPM.UI.Module.Kvm
 
         public void Invoke_RefreshData()
         {
-            _log.Debug("[KvmViewModel] Invoke_RefreshData start");
+            _log.Info("[KvmViewModel] Invoke_RefreshData start");
+            DateTime entryUSBKVM = DateTime.Now;
+            _log.Info($"[Invoke_RefreshData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
             BackgroundWorker bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
+            if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
+            {
+                MonitorInfo mi = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
+
+                USBKVMisON = /*KvmModule.isUSBKVM;*/ DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(mi).Result;
+            }
+            else
+            {
+                _log?.Info("MonitorInfo is null.");
+            }
 
             bw.DoWork -= DoWork_RefreshData;
             bw.DoWork += DoWork_RefreshData;
@@ -927,12 +957,16 @@ namespace DDPM.UI.Module.Kvm
             bw.RunWorkerCompleted += RunWorkerCompleted_RefreshData;
             bw.RunWorkerAsync(); //myArg is the optional argument
             IsKVMBusy = true;
-            _log.Debug("[KvmViewModel] Invoke_RefreshData end");
+            _log.Info("[KvmViewModel] Invoke_RefreshData end");
+            entryUSBKVM = DateTime.Now;
+            _log.Info($"[Invoke_RefreshData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
         }
 
         private void DoWork_RefreshData(object sender, DoWorkEventArgs e)
         {
-            _log.Debug("[KvmViewModel] DoWork_RefreshData start");
+            _log.Info("[KvmViewModel] DoWork_RefreshData start");
+            DateTime entryUSBKVM = DateTime.Now;
+            _log.Info($"[DoWork_RefreshData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
             try // 2024-06-19 Fix exception when close Main UI or device remove.
             {
                 //sender is the ‘bw’ object
@@ -953,17 +987,6 @@ namespace DDPM.UI.Module.Kvm
 
                 SupportNKVM = Visibility.Collapsed;
                 SupportUSBKVM = Visibility.Collapsed;
-
-                if (DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo != null)
-                {
-                    //MonitorInfo mi = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo;
-
-                    USBKVMisON = /*KvmModule.isUSBKVM;*/ DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(mi).Result;
-                }
-                else
-                {
-                    _log?.Debug("MonitorInfo is null.");
-                }
 
                 var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
@@ -987,7 +1010,7 @@ namespace DDPM.UI.Module.Kvm
                         {
                             isUSBKVMButton = false;
                             USBKVMButtonOpacity = 0.5;
-                            _log?.Debug("[KvmViewModel]isScreenPartition.");
+                            _log?.Info("[KvmViewModel]isScreenPartition.");
                             return;
                         }
                     }
@@ -1037,19 +1060,28 @@ namespace DDPM.UI.Module.Kvm
             {
                 _log.Error(ex, "[DoWork_RefreshData] exception");
             }
-            _log.Debug("[KvmViewModel] DoWork_RefreshData end");
+            _log.Info("[KvmViewModel] DoWork_RefreshData end");
+            entryUSBKVM = DateTime.Now;
+            _log.Info($"[DoWork_RefreshData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
         }
 
         private void RunWorkerCompleted_RefreshData(object sender, RunWorkerCompletedEventArgs e)
         {
-            _log.Debug("[KvmViewModel] RunWorkerCompleted_RefreshData start");
+            _log.Info("[KvmViewModel] RunWorkerCompleted_RefreshData start");
+            DateTime entryUSBKVM = DateTime.Now;
+            _log.Info($"[RunWorkerCompleted_RefreshData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
             IsKVMBusy = false;
-            _log.Debug("[KvmViewModel] RunWorkerCompleted_RefreshData End");
+            _log.Info("[KvmViewModel] RunWorkerCompleted_RefreshData End");
+            entryUSBKVM = DateTime.Now;
+            _log.Info($"[RunWorkerCompleted_RefreshData Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
             //Handling the result and final process
         }
 
         public void Invoke_USBKVM()
         {
+            _log.Info("[KvmViewModel] Invoke_USBKVM start");
+            DateTime entryUSBKVM = DateTime.Now;
+            _log.Info($"[Invoke_USBKVM Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
             BackgroundWorker bw = new BackgroundWorker()
             {
                 WorkerReportsProgress = false,
@@ -1069,12 +1101,18 @@ namespace DDPM.UI.Module.Kvm
             }
             else
             {
-                _log?.Debug("MonitorInfo is null.");
+                _log?.Info("MonitorInfo is null.");
             }
+            _log.Info("[KvmViewModel] Invoke_USBKVM end");
+            entryUSBKVM = DateTime.Now;
+            _log.Info($"[Invoke_USBKVM Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
         }
 
         private void DoWork_USBKVM(object sender, DoWorkEventArgs e)
         {
+            _log.Info("[KvmViewModel] DoWork_USBKVM start");
+            DateTime entryUSBKVM = DateTime.Now;
+            _log.Info($"[DoWork_USBKVM Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
             try // 2024-06-19 Fix exception when close Main UI or device remove.
             {
                 //sender is the ‘bw’ object
@@ -1095,13 +1133,13 @@ namespace DDPM.UI.Module.Kvm
 
                 //if (DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
                 //{
-                //    _log?.Debug("[KvmViewModel]isScreenPartition.");
+                //    _log?.Info("[KvmViewModel]isScreenPartition.");
                 //    return;
                 //}
 
                 if (mi.CapabilityDic.ContainsKey("E7"))
                 {
-                    _log?.Debug("[KvmViewModel]Have 0xEE");
+                    _log?.Info("[KvmViewModel]Have 0xEE");
                     //If arg is specified, you can get it with below code
                     //myArgType arg = (myArgType)e.Argument;
                     inputList = new Dictionary<string, InputInfo>();
@@ -1135,12 +1173,12 @@ namespace DDPM.UI.Module.Kvm
                         usbsList = DdpmCommonHelper.DeviceManagerSA.GetUSBUpstreamList(KvmModule.SelectedHomeDevice.MonitorInfo).Result;
                         if (pcsList == null)
                         {
-                            _log?.Debug("No value return from `DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList` for pcsList.");
+                            _log?.Info("No value return from `DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList` for pcsList.");
                             return;
                         }
                         if (usbsList == null)
                         {
-                            _log?.Debug("No value return from `DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList` for pcsList.");
+                            _log?.Info("No value return from `DdpmCommonHelper.DeviceManagerSA.GetUSBKVMPCsList` for pcsList.");
                             return;
                         }
                         original_pcsList = pcsList.ToDictionary(entry => entry.Key, entry => entry.Value);
@@ -1220,7 +1258,7 @@ namespace DDPM.UI.Module.Kvm
                                                 }
                                                 else
                                                 {
-                                                    _log?.Debug("PC4 not found in pcsList.");
+                                                    _log?.Info("PC4 not found in pcsList.");
                                                 }
                                             }
                                             else
@@ -1230,7 +1268,7 @@ namespace DDPM.UI.Module.Kvm
                                         }
                                         else
                                         {
-                                            _log?.Debug("PC3 not found in pcsList.");
+                                            _log?.Info("PC3 not found in pcsList.");
                                         }
                                     }
                                     else
@@ -1242,24 +1280,24 @@ namespace DDPM.UI.Module.Kvm
                                 }
                                 else
                                 {
-                                    _log?.Debug("PC1 or PC2 not found in pcsList.");
+                                    _log?.Info("PC1 or PC2 not found in pcsList.");
                                 }
                             }
 
                         }
                         else
                         {
-                            _log?.Debug("inputList is null or pcsList is null or count < 2.");
+                            _log?.Info("inputList is null or pcsList is null or count < 2.");
                             //isUSBKVMButton = false;
                             //USBKVMButtonOpacity = 0.5;
                         }
 
 
                         #region PIP/PBP
-                        _log?.Debug("[KvmViewModel]PIP/PBP...");
+                        _log?.Info("[KvmViewModel]PIP/PBP...");
                         if (mi.CapabilityDic.ContainsKey("E9"))
                         {
-                            _log?.Debug("[KvmViewModel]Have 0xE9");
+                            _log?.Info("[KvmViewModel]Have 0xE9");
                             if (!DdpmCommonHelper.DeviceManagerSA.isScreenPartition(mi).Result)
                             {
                                 //isPxP = Visibility.Visible;
@@ -1350,7 +1388,7 @@ namespace DDPM.UI.Module.Kvm
                                 }
                                 else
                                 {
-                                    _log.Debug("[KvmViewModel] _pipPbpCaps is null or Length not > 0");
+                                    _log.Info("[KvmViewModel] _pipPbpCaps is null or Length not > 0");
                                 }
 
                                 //else
@@ -1395,11 +1433,16 @@ namespace DDPM.UI.Module.Kvm
             {
                 _log.Error(ex, "[DoWork_RefreshData] exception");
             }
+            _log.Info("[KvmViewModel] DoWork_USBKVM end");
+            entryUSBKVM = DateTime.Now;
+            _log.Info($"[DoWork_USBKVM Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
         }
 
         private void RunWorkerCompleted_USBKVM(object sender, RunWorkerCompletedEventArgs e)
         {
-            _log.Debug("[KvmViewModel] RunWorkerCompleted_USBKVM start");
+            _log.Info("[KvmViewModel] RunWorkerCompleted_USBKVM start");
+            DateTime entryUSBKVM = DateTime.Now;
+            _log.Info($"[RunWorkerCompleted_USBKVM Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
             //OnPropertyChanged("PC1_Input");
             //OnPropertyChanged("PC2_Input");
             //OnPropertyChanged("PC3_Input");
@@ -1444,7 +1487,7 @@ namespace DDPM.UI.Module.Kvm
                 }
                 else
                 {
-                    _log?.Debug("[RunWorkerCompleted_USBKVM] PxPcodeDictionary is null or PxPCode not found.");
+                    _log?.Info("[RunWorkerCompleted_USBKVM] PxPcodeDictionary is null or PxPCode not found.");
                 }
             }
             else
@@ -1462,13 +1505,17 @@ namespace DDPM.UI.Module.Kvm
             _inputSourceFullView.DataContext = this;
             DdpmCommonHelper.ModuleOwner?.OpenFullView(_inputSourceFullView);
             
-            _log.Debug("[KvmViewModel] RunWorkerCompleted_USBKVM End");
+            _log.Info("[KvmViewModel] RunWorkerCompleted_USBKVM End");
+            entryUSBKVM = DateTime.Now;
+            _log.Info($"[RunWorkerCompleted_USBKVM Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
             //Handling the result and final process
         }
 
         private void RunWorkerCompleted_USBKVMisON(object sender, RunWorkerCompletedEventArgs e)
         {
-            _log.Debug("[KvmViewModel] RunWorkerCompleted_USBKVM start");
+            _log.Info("[KvmViewModel] RunWorkerCompleted_USBKVMisON start");
+            DateTime entryUSBKVM = DateTime.Now;
+            _log.Info($"[RunWorkerCompleted_USBKVMisON Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
             //OnPropertyChanged("PC1_Input");
             //OnPropertyChanged("PC2_Input");
             //OnPropertyChanged("PC3_Input");
@@ -1513,7 +1560,7 @@ namespace DDPM.UI.Module.Kvm
                 }
                 else
                 {
-                    _log?.Debug("[RunWorkerCompleted_USBKVM] PxPcodeDictionary is null or PxPCode not found.");
+                    _log?.Info("[RunWorkerCompleted_USBKVM] PxPcodeDictionary is null or PxPCode not found.");
                 }
             }
             else
@@ -1526,7 +1573,9 @@ namespace DDPM.UI.Module.Kvm
             SetPXP = Visibility.Visible;
             EditInput = Visibility.Collapsed;
             EditPXP = Visibility.Collapsed;
-            _log.Debug("[KvmViewModel] RunWorkerCompleted_USBKVM End");
+            _log.Info("[KvmViewModel] RunWorkerCompleted_USBKVM End");
+            entryUSBKVM = DateTime.Now;
+            _log.Info($"[RunWorkerCompleted_USBKVMisON Time]:{entryUSBKVM.ToString("yyyy-MM-dd hh:mm:ss.fff")}");
             //Handling the result and final process
         }
 
@@ -1591,7 +1640,7 @@ namespace DDPM.UI.Module.Kvm
             }
             else
             {
-                _log?.Debug(pcnum + " not found in pcsList.");
+                _log?.Info(pcnum + " not found in pcsList.");
             }
         }
 
@@ -1603,7 +1652,7 @@ namespace DDPM.UI.Module.Kvm
                 //{
                 bool b = DdpmCommonHelper.DeviceManagerSA.SetVCPCapability(KvmModule.SelectedHomeDevice.MonitorInfo, "Input Select", pcsList["PC1"].InputType).Result;
                 string result = b ? "Success" : "Failed";
-                _log.Debug($"[KvmViewModel] MainInput PC1-{pcsList["PC1"].InputType} Done with {result}.");
+                _log.Info($"[KvmViewModel] MainInput PC1-{pcsList["PC1"].InputType} Done with {result}.");
                 if (b)
                 {
                     KvmModule.SelectedHomeDevice.MonitorInfo.inputSource = pcsList["PC1"].InputType;
@@ -1612,7 +1661,7 @@ namespace DDPM.UI.Module.Kvm
             }
             else
             {
-                _log.Debug("PC1 not found in pcsList.");
+                _log.Info("PC1 not found in pcsList.");
             }
         }
 
@@ -2101,13 +2150,13 @@ namespace DDPM.UI.Module.Kvm
             {
                 if (i == 70 && !DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
                 {
-                    _log.Debug("Named pipe is not Connected, so CreatNewNamedpipe again.");
+                    _log.Info("Named pipe is not Connected, so CreatNewNamedpipe again.");
                     DdpmCommonHelper.DeviceManagerSA.CreatNewNamedpipe().Wait();
                 }
                 if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
                 {
                     isOnNKVM(true);
-                    _log.Debug("NKVMOpenUI i = " + i);
+                    _log.Info("NKVMOpenUI i = " + i);
                     DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
                     e.Result = true;
                     break;
@@ -2117,18 +2166,18 @@ namespace DDPM.UI.Module.Kvm
             }
             if (i == 120)
             {
-                _log.Debug("Named pipe is not Connected or time out");
+                _log.Info("Named pipe is not Connected or time out");
                 e.Result = false;
             }
             //if (DdpmCommonHelper.DeviceManagerSA.IsNamedpipeConnected().Result)
             //{
             //    isOnNKVM(true);
-            //    _log.Debug("NKVMOpenUI...");
+            //    _log.Info("NKVMOpenUI...");
             //    DdpmCommonHelper.DeviceManagerSA.CallShowNKVM(0, 100, 100).Wait();
             //}
             //else
             //{
-            //    _log.Debug("Named pipe is not Connected or time out");
+            //    _log.Info("Named pipe is not Connected or time out");
             //}
         }
         private void NKVMOpenUI_Done(object sender, RunWorkerCompletedEventArgs e)
@@ -2200,7 +2249,7 @@ namespace DDPM.UI.Module.Kvm
                                         DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                                         pc2input, pc3input, pc4input).Result;
                                     string result = res ? "Success" : "Failed";
-                                    _log.Debug($"[KvmViewModel] SubInputs PC2-{pc2input.Name}, PC3-{pc3input.Name}, PC4-{pc4input.Name} Done with {result}.");
+                                    _log.Info($"[KvmViewModel] SubInputs PC2-{pc2input.Name}, PC3-{pc3input.Name}, PC4-{pc4input.Name} Done with {result}.");
                                     if (res)
                                     {
                                         Thread.Sleep(1000);
@@ -2208,7 +2257,7 @@ namespace DDPM.UI.Module.Kvm
                                 }
                                 else
                                 {
-                                    _log?.Debug("PC4 not found in pcsList.");
+                                    _log?.Info("PC4 not found in pcsList.");
                                 }
                             }
                             else
@@ -2217,7 +2266,7 @@ namespace DDPM.UI.Module.Kvm
                                     DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                                     pc2input, pc3input, null).Result;
                                 string result = res ? "Success" : "Failed";
-                                _log.Debug($"[KvmViewModel] SubInputs PC2-{pc2input.Name}, PC3-{pc3input.Name} Done with {result}.");
+                                _log.Info($"[KvmViewModel] SubInputs PC2-{pc2input.Name}, PC3-{pc3input.Name} Done with {result}.");
                                 if (res)
                                 {
                                     Thread.Sleep(1000);
@@ -2226,7 +2275,7 @@ namespace DDPM.UI.Module.Kvm
                         }
                         else
                         {
-                            _log?.Debug("PC3 not found in pcsList.");
+                            _log?.Info("PC3 not found in pcsList.");
                         }
                     }
                     else
@@ -2235,7 +2284,7 @@ namespace DDPM.UI.Module.Kvm
                                 DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo,
                                 pc2input, null, null).Result;
                         string result = res ? "Success" : "Failed";
-                        _log.Debug($"[KvmViewModel] SubInputs PC2-{pc2input.Name} Done with {result}.");
+                        _log.Info($"[KvmViewModel] SubInputs PC2-{pc2input.Name} Done with {result}.");
                         if (res)
                         {
                             Thread.Sleep(1000);
@@ -2261,7 +2310,7 @@ namespace DDPM.UI.Module.Kvm
                             //if (pcs.Value.USBUpstream != original_pcsList[pcs.Key].USBUpstream)
                             //{
                             bool bUSBuptream = DdpmCommonHelper.DeviceManagerSA.SetUSBUpstream(KvmModule.SelectedHomeDevice.MonitorInfo, pcs.Value.InputType, pcs.Value.USBUpstream).Result;
-                            _log.Debug($"[KvmViewModel] SetUSBUpstream {pcs.Key}-{pcs.Value.InputType}: {pcs.Value.USBUpstream} Done");
+                            _log.Info($"[KvmViewModel] SetUSBUpstream {pcs.Key}-{pcs.Value.InputType}: {pcs.Value.USBUpstream} Done");
                             if (bUSBuptream)
                             {
                                 Thread.Sleep(1000);
@@ -2280,13 +2329,13 @@ namespace DDPM.UI.Module.Kvm
                 }
                 else
                 {
-                    _log?.Debug("PC1 or PC2 not found in pcsList.");
+                    _log?.Info("PC1 or PC2 not found in pcsList.");
                 }
                 // }
             }
             else
             {
-                _log?.Debug("pcsList is null");
+                _log?.Info("pcsList is null");
             }
         }
 
@@ -2432,7 +2481,7 @@ namespace DDPM.UI.Module.Kvm
             }
             else
             {
-                _log.Debug("[PBP_MouseLeftDown]PxPcodeDictionary not find key " + PbpCapabilityCode);
+                _log.Info("[PBP_MouseLeftDown]PxPcodeDictionary not find key " + PbpCapabilityCode);
             }
         }
 
@@ -2613,13 +2662,13 @@ namespace DDPM.UI.Module.Kvm
                                         }
                                         else
                                         {
-                                            _log?.Debug("PC4 not found in pcsList.");
+                                            _log?.Info("PC4 not found in pcsList.");
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    _log?.Debug("PC3 not found in pcsList.");
+                                    _log?.Info("PC3 not found in pcsList.");
                                 }
                             }
                             OnPropertyChanged("PC1USB_Selected");
@@ -2629,17 +2678,17 @@ namespace DDPM.UI.Module.Kvm
                         }
                         else
                         {
-                            _log?.Debug("PC1 or PC2 not found in pcsList.");
+                            _log?.Info("PC1 or PC2 not found in pcsList.");
                         }
                     }
                     else
                     {
-                        _log?.Debug("[KvmViewModel] usbsList is null or count is 0");
+                        _log?.Info("[KvmViewModel] usbsList is null or count is 0");
                     }
                 }
                 else
                 {
-                    _log?.Debug("[KvmViewModel] inputList is null or count is 0");
+                    _log?.Info("[KvmViewModel] inputList is null or count is 0");
                 }
             }
         }

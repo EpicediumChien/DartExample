@@ -2297,7 +2297,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                     copyinputlist = inputSourcelist;
                                     foreach (var input in inputSourcelist)
                                     {
-                                        if (input.Value.USBUpstream == "Migration")
+                                        if (input.Value.USBUpstream == GlobalDefinitions.MigrationInput)
                                         {
                                             readinputlist = _DisplayManagerPlugin.GetInputSourcelist(monitorInfo).Result;
                                             if (readinputlist != null)
@@ -15972,7 +15972,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                                 {
                                     inputInfo.InputName = friendlyName.Name;
                                     inputInfo.Code = vcpcode.Value;
-                                    inputInfo.USBUpstream = "Migration";
+                                    inputInfo.USBUpstream = GlobalDefinitions.MigrationInput;
                                     DDMinputlist.Add(vcpcode.Key, inputInfo);
                                     break;
                                 }

@@ -77,7 +77,7 @@ namespace DDPM.UI.Module.Kvm
         //Handle new device coming
         private void InitNewViewModel()
         {
-            vm._log.Debug("[InitNewViewModel] running...");
+            vm._log.Info("[InitNewViewModel] running...");
             vm.ModuleOwner = DdpmCommonHelper.ModuleOwner;
             this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
             vm.Invoke_RefreshData();
@@ -85,7 +85,7 @@ namespace DDPM.UI.Module.Kvm
 
         public void OnActivated()
         {
-            vm._log.Debug("[OnActivated] running....");
+            vm._log.Info("[OnActivated] running....");
             if (isSelectChanged)
             {
                 isSelectChanged = false;
