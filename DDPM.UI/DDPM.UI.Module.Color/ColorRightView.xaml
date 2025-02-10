@@ -626,7 +626,7 @@
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     IsActive="{Binding IsBusy}" />
-                        <UXControls:UXTextBlock Margin="0, 20, 0, 0" Text="{Binding PreparingProfileText}" Foreground="#FF797F84" />
+                        <UXControls:UXTextBlock Margin="0, 20, 0, 0" Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="#FF797F84" />
                     </StackPanel>
                 </Border>
             </Grid>
