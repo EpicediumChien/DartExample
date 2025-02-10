@@ -981,40 +981,27 @@ namespace DDPM.UI.Plugin.ViewModels
                 switch (changeType)
                 {
                     case DeviceChangedType.Peripherals_SettingsChange:
+                        if (di.ID == CurrentDeviceID)
                         {
-                            if (DeviceInfos.ContainsKey(di.ID))
+                            switch (property)
                             {
-                                DeviceInfos.Remove(di.ID);
-                                DeviceInfos.Add(di.ID, di);
-                            }
-                            else
-                            {
-                                return;
-                            }
-
-                            if (di.ID == CurrentDeviceID)
-                            {
-                                switch (property)
-                                {
-                                    case "IsHDROnChanged":
-                                        if (bool.TryParse(di.Message, out bool isHDROn))
+                                case "IsHDROnChanged":
+                                    if (bool.TryParse(di.Message, out bool isHDROn))
+                                    {
+                                        if (IsHDROn != isHDROn)
                                         {
-                                            if (IsHDROn != isHDROn)
+                                            Application.Current.Dispatcher.Invoke(() =>
                                             {
-                                                Application.Current.Dispatcher.Invoke(() =>
-                                                {
-                                                    IsHDROn = isHDROn;
-                                                });
-                                            }
+                                                IsHDROn = isHDROn;
+                                            });
                                         }
-                                        break;
-                                    default:
-                                        break;
-                                }
-                                GenerateInfo();
+                                    }
+                                    break;
+                                default:
+                                    break;
                             }
+                            //GenerateInfo();
                         }
-                      
                         break;
                     default:
                         break;
@@ -2193,12 +2180,12 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "Brightness":
                         DdpmCommonHelper.DeviceManagerSA!.SetBrightness(CurrentDeviceInfo!.ID.ToString(), (int)value);
                         _brightness = (int)value;
-                        OnPropertyChanged(nameof(Brightness));
+                        UpdateBrightnessMargin(_brightness);
                         break;
                     case "Contrast":
                         DdpmCommonHelper.DeviceManagerSA!.SetContrast(CurrentDeviceInfo!.ID.ToString(), (int)value);
                         _contrast = (int)value;
-                        OnPropertyChanged(nameof(Contrast));
+                        UpdateContrastMargin(_contrast);
                         break;
                     case "AntiFlicker":
                         DdpmCommonHelper.DeviceManagerSA!.SetAntiFlicker(CurrentDeviceInfo!.ID.ToString(), (int)value);
@@ -2208,12 +2195,12 @@ namespace DDPM.UI.Plugin.ViewModels
                     case "Saturation":
                         DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), (int)value);
                         _saturation = (int)value;
-                        OnPropertyChanged(nameof(Saturation));
+                        UpdateSaturationMargin(_saturation);
                         break;
                     case "Sharpness":
                         DdpmCommonHelper.DeviceManagerSA!.SetSharpness(CurrentDeviceInfo!.ID.ToString(), (int)value);
                         _sharpness = (int)value;
-                        OnPropertyChanged(nameof(Sharpness));
+                        UpdateSharpnessMargin(_sharpness);
                         break;
                     case "IsAutoWhiteBalanceOn":
                         DdpmCommonHelper.DeviceManagerSA!.SetIsAutoWhiteBalanceOn(CurrentDeviceInfo!.ID.ToString(), (bool)value);
