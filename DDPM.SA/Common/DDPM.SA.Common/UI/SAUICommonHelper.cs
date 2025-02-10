@@ -13,7 +13,7 @@ using Windows.UI.ViewManagement;
 
 namespace DDPM.SA.Common.UI
 {
-    public static partial class SACommonHelper
+    public static partial class SAUICommonHelper
     {
         //default theme is dark
         private static OSThemeEnum previousOsTheme = OSThemeEnum.Dark;

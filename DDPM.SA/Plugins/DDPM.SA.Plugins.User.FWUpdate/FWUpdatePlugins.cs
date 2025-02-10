@@ -46,6 +46,7 @@ using DDPM.SA.Resources.Helper;
 using System.Windows;
 using System.Net.NetworkInformation;
 using System.Globalization;
+using DDDPM.SA.Common;
 
 
 namespace DDPM.SA.Plugins.User.FWUpdate
@@ -193,6 +194,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             _forCLI_FWUpdateInfoPackage = new FWUpdateInfoPackage();
             _ForceFWUpdateInfoPackage = new FWUpdateInfoPackage();
             _ForceFWUpdateInfoPackage.FWUpdateInfo = new List<FWUpdateInfo>();
+            DdpmSACommonHelper.SAPluginReady(nameof(FWUpdatePlugins));
         }
 
         #region Overriding methods

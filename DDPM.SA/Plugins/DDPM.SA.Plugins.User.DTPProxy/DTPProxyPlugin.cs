@@ -1001,7 +1001,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
                     await DeleteMouseAllAssignedActions(Guid);
                     await SetCurrentSelectedAppSpecificProfile(Guid, profileID);
 
-                    model = SACommonHelper.MappingModel(model);
+                    model = SAUICommonHelper.MappingModel(model);
                     var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
                     if (File.Exists(filePath))
                     {
@@ -1401,7 +1401,7 @@ namespace DDPM.SA.Plugins.User.DTPProxy
             if (!result)
                 return false;
 
-            model = SACommonHelper.MappingModel(model);
+            model = SAUICommonHelper.MappingModel(model);
             var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @$"Dell\Dell Display and Peripheral Manager\Actions\{model}.json");
             if (File.Exists(filePath))
             {

@@ -1,4 +1,5 @@
-﻿using DDPM.SA.Common;
+﻿using DDDPM.SA.Common;
+using DDPM.SA.Common;
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Security;
 using DDPM.SA.Common.Settings;
@@ -123,6 +124,7 @@ namespace DDPM.SA.Plugins.SWUpdate
             _SWUpdateInfoPackage = new SWUpdateInfoPackage();
             _ForceSWUpdateInfoPackage = new SWUpdateInfoPackage();
             _ForceSWUpdateInfoPackage.SWUpdateInfo = new List<SWUpdateInfo>();
+            DdpmSACommonHelper.SAPluginReady(nameof(SWUpdatePlugins));
         }
         #region Overriding methods
 

@@ -2943,7 +2943,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                 {
                     OSDType_Device type = OSDType_Device.Unknown;
                     var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
-                    var model = SACommonHelper.MappingModel(deviceInfo.ModelNumber);
+                    var model = SAUICommonHelper.MappingModel(deviceInfo.ModelNumber);
                     var message = $"{deviceInfo.Name.Replace(deviceInfo.ModelNumber, "").Trim()} {model}";
                     if (deviceType.Contains("PEN"))
                     {
@@ -2964,15 +2964,15 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                         type = OSDType_Device.Headset;
                         //message = "Dell Headset ";
                     }
-                    else if (SACommonHelper.EOLKBList.Contains(deviceInfo.ModelNumber))
+                    else if (SAUICommonHelper.EOLKBList.Contains(deviceInfo.ModelNumber))
                     {
                         type = OSDType_Device.Keyboard;
-                        message = SACommonHelper.MappingEOLName(model);
+                        message = SAUICommonHelper.MappingEOLName(model);
                     }
-                    else if (SACommonHelper.EOLMouseList.Contains(deviceInfo.ModelNumber))
+                    else if (SAUICommonHelper.EOLMouseList.Contains(deviceInfo.ModelNumber))
                     {
                         type = OSDType_Device.Mouse;
-                        message = SACommonHelper.MappingEOLName(model);
+                        message = SAUICommonHelper.MappingEOLName(model);
                     }
 
                     //_ = _DeviceManagerPlugin.ShowOSD(Screen.PrimaryScreen.DeviceName, OSDType.BatteryLow, type, deviceInfo.Name);
@@ -3073,7 +3073,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     //}
                     OSDType_Device type = OSDType_Device.Unknown;
                     var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
-                    var model = SACommonHelper.MappingModel(deviceInfo.ModelNumber);
+                    var model = SAUICommonHelper.MappingModel(deviceInfo.ModelNumber);
                     var message = $"{deviceInfo.Name.Replace(deviceInfo.ModelNumber, "").Trim()} {model}";
 
                     OSDEventArgs args = new OSDEventArgs()
@@ -3278,7 +3278,7 @@ namespace DDPM.SA.Plugins.PeripheralsPlugin
                     //}
                     OSDType_Device type = OSDType_Device.Unknown;
                     var deviceType = deviceInfo.LogicalDeviceType.ToUpper();
-                    var model = SACommonHelper.MappingModel(deviceInfo.ModelNumber);
+                    var model = SAUICommonHelper.MappingModel(deviceInfo.ModelNumber);
                     var message = $"{deviceInfo.Name.Replace(deviceInfo.ModelNumber, "").Trim()} {model}";
                     OSDEventArgs args = new OSDEventArgs()
                     {
