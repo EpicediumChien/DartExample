@@ -1012,10 +1012,6 @@ namespace DDPM.UI.Module.Kvm
                     NKVMisON = false;
                 }
 
-                //Robert_Lin 2025-2-11 added to refresh BatteryIndicator.Text1 (User input for ConnectedCable)
-                Text1 = selHomeDevice.Text1 ?? string.Empty;
-                OnPropertyChanged("Text1");
-
             }
             catch (Exception ex)
             {
