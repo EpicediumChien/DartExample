@@ -10790,6 +10790,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private bool SaveMonitorAssetReport(List<MonitorAssetReport> monitorAssetReports, string savePath)
         {
+            writelog($"{nameof(SaveMonitorAssetReport)} start");
             bool ret = false;
             try
             {
@@ -10826,14 +10827,17 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         object value = property.GetValue(report);
                         contentToSave += $"      Value = \"{value}\"\r\n";
                         contentToSave += $"    End Attribute\r\n";
+                        writelog($"{nameof(SaveMonitorAssetReport)} propertyName : {propertyName}");
                     }
                     contentToSave += $"  End Group\r\n";
                 }
                 File.WriteAllText(filePath, contentToSave);
             }
-            catch
+            catch (Exception ex)
             {
+                writelog($"{nameof(SaveMonitorAssetReport)} error :{ex.Message}");
             }
+            writelog($"{nameof(SaveMonitorAssetReport)} end");
             return ret;
         }
 

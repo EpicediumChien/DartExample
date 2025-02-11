@@ -4141,6 +4141,7 @@ namespace DDPM.SA.Plugins.User.DisplayManager
                 {
                     optimalResolution = $"{Resolutions_Width}x{Resolutions_High} at {Frequency}Hz";
                 }
+                _logs.DebugMsg($"[DisplayMangerPlugin] {nameof(GetMonitorAssetReport)} ret.Add : {modelName}");
                 ret.Add(new MonitorAssetReport()
                 {
                     ModelName = modelName,
