@@ -154,6 +154,7 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" Margin="0" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                      Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
                       Visibility="{Binding ConsentPageVisibility, FallbackValue=Collapsed}"
                       VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Border CornerRadius="4" Height="320" Width="801" BorderBrush="#2D000000" BorderThickness="0.5" Background="{StaticResource FakeTransparent}">
