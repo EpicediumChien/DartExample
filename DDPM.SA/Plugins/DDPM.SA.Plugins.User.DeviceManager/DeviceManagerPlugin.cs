@@ -10845,6 +10845,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     contentToSave += $"  End Group\r\n";
                 }
                 File.WriteAllText(filePath, contentToSave);
+                ret = true;
             }
             catch (Exception ex)
             {
