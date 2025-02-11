@@ -155,9 +155,14 @@
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" Margin="0" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}" Visibility="{Binding ConsentPageVisibility, FallbackValue=Collapsed}"
                       VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Border CornerRadius="4" Height="320" Width="801" Background="Transparent">
+                    <Border CornerRadius="4" Height="320" Width="801" BorderBrush="#2D000000" BorderThickness="0.5" Background="{StaticResource FakeTransparent}">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#2D000000" BlurRadius="5" ShadowDepth="1" Opacity="0.4"/>
+                        </Border.Effect>
+                    </Border>
+                    <Border CornerRadius="4" Height="320" Width="801" Background="{DynamicResource DDPMBackground}">
                         <Grid>
-                            <Image Source="/DDPM.UI.Resources;component/Resources/Images/ConsentBg.png" Stretch="Fill" Opacity="0.2" />
+                            <!--<Image Source="/DDPM.UI.Resources;component/Resources/Images/ConsentBg.png" Stretch="Fill" Opacity="0.2" />-->
                             <StackPanel Orientation="Vertical" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <UXControls:UXTextBlock Name="txtCaption" VerticalAlignment="Center" FontWeight="Light" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="40" Margin="0" />
                                 <UXControls:UXTextBlock Name="txtCaption2" VerticalAlignment="Center" FontWeight="Light" HorizontalAlignment="Center" FontFamily="Roboto" FontSize="40" Margin="0,0,0,10" />
