@@ -147,6 +147,11 @@ namespace DDPM.UI.Module.InputSource
                     NameHColumn = "0";
                     isUSB = true;
                 }
+                OnPropertyChanged("NameHWidth");
+                OnPropertyChanged("USBHWidth");
+                OnPropertyChanged("InputTitle");
+                OnPropertyChanged("NameHColumn");
+                OnPropertyChanged("IsUSBH");
 
                 inputList = new Dictionary<string, InputInfo>();
                 try
