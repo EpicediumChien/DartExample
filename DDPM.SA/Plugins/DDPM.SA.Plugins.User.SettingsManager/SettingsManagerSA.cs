@@ -1289,7 +1289,7 @@ namespace DDPM.SA.Plugins.User.SettingsManager
                     if (settings != null)
                     {
                         if(settings.UserSettings.EAProfile != null
-                            && settings.UserSettings.EAProfile.Count() > 0)
+                            && settings.UserSettings.EAProfile.Count > 0)
                             isEzMemoryOverride = true;
                         settings.UserSettings = userSettings;
                         if (SetAppConfigData(settings).Result)
