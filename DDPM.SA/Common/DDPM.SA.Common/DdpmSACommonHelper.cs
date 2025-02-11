@@ -37,6 +37,10 @@ namespace DDDPM.SA.Common
 
         public static void SAPluginReady(string NameOfPlugin)
         {
+            if (!SAPluginList.ContainsKey(NameOfPlugin))
+            {
+                throw new ArgumentException($"Plugin '{NameOfPlugin}' does not exist in SA plugin list.");
+            }
             SAPluginList[NameOfPlugin] = true;
             if (SAPluginList.Values.Where(v => v).Count() == SAPluginList.Count)
             {
@@ -49,6 +53,10 @@ namespace DDDPM.SA.Common
 
         public static void SAUserPluginReady(string NameOfPlugin)
         {
+            if (!SAUserPluginList.ContainsKey(NameOfPlugin))
+            {
+                throw new ArgumentException($"Plugin '{NameOfPlugin}' does not exist in SAUser plugin list.");
+            }
             SAUserPluginList[NameOfPlugin] = true;
             if (SAUserPluginList.Values.Where(v => v).Count() == SAUserPluginList.Count)
             {
