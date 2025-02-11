@@ -158,6 +158,11 @@ namespace DDPM.UI.Plugin.SettingsPlugin
         private void leftArrow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             IConsole? console = SettingsPlugin.PluginIoc.GetService<IConsole>();
+            var args = new EventManagerArgs();
+            bool isShow = true;
+            bool isEnabled = true;
+            args.Tag = new List<bool> { isShow, IsEnabled }; //true=Show, false=Hide
+            console.RaiseEvent(ConsoleEventNames.Masthead_ShowSettingsIcon, this, args);
             console?.ShowPluginById(DDPM.UI.Common.Constants.DdpmHomePluginId);
         }
         //0614 將按鈕改成UXTextBlock，事件也變更，讓風格更像figma，不影響功能作動
@@ -226,6 +231,70 @@ namespace DDPM.UI.Plugin.SettingsPlugin
             }
             else
                 DdpmCommonHelper.WriteUILog($"DdpmCommonHelper.isDDPMSwitchToSettingPageByQAM == false");
+        }
+
+        private void leftArrow_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                e.Handled = true;
+                //Invoke a MouseLeftButtonDown event to the TextBlock which will calling to leftArrow_MouseLeftButtonDown()
+                var mouseDevice = InputManager.Current.PrimaryMouseDevice;
+                if (mouseDevice != null)
+                {
+                    var args = new MouseButtonEventArgs(mouseDevice, 0, MouseButton.Left)
+                    {
+                        RoutedEvent = UIElement.MouseLeftButtonDownEvent
+                    };
+                    leftArrow_MouseLeftButtonDown(sender, args);
+                }
+            }
+        }
+
+        private void GeneralButton_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                vm.SetSelected(0);
+            }
+        }
+
+        private void UpdatesButton_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                vm.SetSelected(1);
+            }
+        }
+
+        private void AnalyticsButton_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            //Dean 0618 add analytics page
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                vm.SetSelected(2);
+            }
+        }
+
+        private void WidgetSettingsButton_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                vm.SetSelected(3);
+            }
+        }
+
+        private void AboutButton_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                vm.SetSelected(4);
+            }
         }
     }
 }

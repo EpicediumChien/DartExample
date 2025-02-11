@@ -17,13 +17,17 @@ namespace DdpmSwUpdater
     public class LogManage
     {
         static string logFilePath = "DdpmSwUpdater.log";
-        private static Logs logs;
-        public static string Version = string.Empty;
         static string path = string.Empty;
 
+        private static Logs logs;
         public static Logs Logs { get => logs; set => logs = value; }
 
-        public static bool fromDDPM = true;
+        private static string version = string.Empty;
+        public static string Version { get => version; set => version = value; }
+
+        private static bool fromDDPM = true;
+        public static bool FromDDPM { get => fromDDPM; set => fromDDPM = value; }
+
         public static void SetPath()
         {
             //DDPMFileSecurity DDPMFileSecurity = new DDPMFileSecurity();

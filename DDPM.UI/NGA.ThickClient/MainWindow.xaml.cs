@@ -50,6 +50,7 @@ namespace NGA.ThickClient
         /// </summary>
         private const double UsableWidthPercentage = 0.75;
 
+        //Robert_Lin 2025-2-8 DDPM support resizable, should change this flag to true
         //Robert_Lin 2024-6-19 a flag for switch Resizable MainWindow
         private bool _isMainWindowResizable = false;
 

@@ -51,5 +51,8 @@ namespace DDPM.SA.Common.Settings
         public const string LogDDPMSYSSA = @"\Dell\DDPM.Subagent";
         public const string LogDDPMGUI = @"\Dell\Dell Display and Peripheral Manager\Log\DDPM.GUI";
         public const string LogDDPMUSERSA = @"\Dell\Dell Display and Peripheral Manager\Log\DDPM.Subagent.User";
+
+        //Migration
+        public const string MigrationInput = "Migration";
     }
 }
