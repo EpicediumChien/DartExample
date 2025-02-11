@@ -12,14 +12,14 @@ namespace DDDPM.SA.Common
 
         public static Stopwatch SAUserLaunchTimer = new Stopwatch();
 
-        private static Dictionary<string, bool> SAPluginList = new Dictionary<string, bool>
+        private static readonly Dictionary<string, bool> SAPluginList = new Dictionary<string, bool>
         {
             { "SettingsMangerPlugin", false},
             { "SWUpdatePlugins", false},
             { "FWUpdatePlugins", false}
         };
 
-        private static Dictionary<string, bool> SAUserPluginList = new Dictionary<string, bool>
+        private static readonly Dictionary<string, bool> SAUserPluginList = new Dictionary<string, bool>
         {
             { "DeviceMangerPlugin", false}
         };
