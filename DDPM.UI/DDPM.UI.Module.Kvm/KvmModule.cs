@@ -81,6 +81,7 @@ namespace DDPM.UI.Module.Kvm
             {
                 _leftView = new KvmLeftView(vm);
                 _leftView.DataContext = vm;
+                DdpmCommonHelper.ModuleOwner.LoadLeftView();
             }
             else
             {
