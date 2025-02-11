@@ -1,6 +1,7 @@
 ﻿using Dell.Client.Framework.Common;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace DDPM.SA.Common
@@ -19,7 +20,7 @@ namespace DDPM.SA.Common
         Task<SWUpdateInfoPackage> GetSWUpdateInfo(bool isShowNotify, bool isForce, bool isDefer, string currentVersion, bool reScan, bool isUItrigger);
 
         Task<List<SWUpdateInfo>> DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUITrigger, string installPath);
-
+        void SetLang(CultureInfo cultureInfo);
         void SetDelaySWUpdateInfoPackage(SWUpdateInfoPackage DelaySWUpdateInfoPackage);
 
         void DelayEvent();
