@@ -8,8 +8,6 @@ namespace DDDPM.SA.Common
 {
     public class DdpmSACommonHelper
     {
-        private const string EventSource = "DDPM.SA.Launcher";
-
         public static Stopwatch SALaunchTimer = new Stopwatch();
 
         public static Stopwatch SAUserLaunchTimer = new Stopwatch();
@@ -43,7 +41,8 @@ namespace DDDPM.SA.Common
             if (SAPluginList.Values.Where(v => v).Count() == SAPluginList.Count)
             {
                 if(isTimerOn)
-                    WriteToEventLog($"{SALaunchTimer.Elapsed.TotalMilliseconds:F2} ms - {nameof(SAPluginReady)} started.", EventLogEntryType.Information, $"{nameof(SAPluginReady)}");
+                    WriteToEventLog($"{SALaunchTimer.Elapsed.TotalMilliseconds:F2} ms - {nameof(SAPluginReady)} started.", EventLogEntryType.Information
+                        , "DDPM.SA.Launcher", $"{nameof(SAPluginReady)}");
                 SALaunchTimer.Stop();
             }
         }
@@ -54,16 +53,17 @@ namespace DDDPM.SA.Common
             if (SAUserPluginList.Values.Where(v => v).Count() == SAUserPluginList.Count)
             {
                 if (isTimerOn)
-                    WriteToEventLog($"{SAUserLaunchTimer.Elapsed.TotalMilliseconds:F2} ms - {nameof(SAUserPluginReady)}.", EventLogEntryType.Information, $"{nameof(SAUserPluginReady)}");
+                    WriteToEventLog($"{SAUserLaunchTimer.Elapsed.TotalMilliseconds:F2} ms - {nameof(SAUserPluginReady)}.", EventLogEntryType.Information
+                        , "DDPM.SA.User.Launcher", $"{nameof(SAUserPluginReady)}");
                 SAUserLaunchTimer.Stop();
             }
         }
 
-        private static void WriteToEventLog(string message, EventLogEntryType type, string LogName)
+        private static void WriteToEventLog(string message, EventLogEntryType type, string eventSource, string LogName)
         {
             using (EventLog eventLog = new EventLog(LogName))
             {
-                eventLog.Source = EventSource;
+                eventLog.Source = eventSource;
                 eventLog.WriteEntry(message, type);
             }
         }
