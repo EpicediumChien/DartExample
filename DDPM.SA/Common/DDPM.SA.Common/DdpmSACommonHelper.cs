@@ -51,7 +51,7 @@ namespace DDDPM.SA.Common
         public static void SAUserPluginReady(string NameOfPlugin)
         {
             SAUserPluginList[NameOfPlugin] = true;
-            if (SAUserPluginList.Values.Where(v => v).Count() == SAPluginList.Count)
+            if (SAUserPluginList.Values.Where(v => v).Count() == SAUserPluginList.Count)
             {
                 if (isTimerOn)
                     WriteToEventLog($"{SAUserLaunchTimer.Elapsed.TotalMilliseconds:F2} ms - {nameof(SAUserPluginReady)}.", EventLogEntryType.Information, $"{nameof(SAUserPluginReady)}");
