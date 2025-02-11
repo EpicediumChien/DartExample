@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
-using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
@@ -20,8 +19,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.UI.ViewManagement;
 using static DDPM.UI.Common.User32;
@@ -460,7 +457,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         dev.SortOrder = (int)dev.DeviceCategory + idxSpeaker;
                         idxSpeaker++;
                     }
-                    //0211 Bruce 新增Dock UI
+                    //0211 Bruce 新增Bootloader UI
                     else if (devType.Equals(DeviceType.PhysicalBootloader) ||
                         devType.Equals(DeviceType.LogicalBootloader))
                     {

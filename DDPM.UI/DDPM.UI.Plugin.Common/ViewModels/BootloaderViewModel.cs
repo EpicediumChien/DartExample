@@ -29,9 +29,6 @@ namespace DDPM.UI.Plugin.ViewModels
         public ICommand TabAdaptiveLightClickedCommand { get; }
         public ICommand TabManualClickedCommand { get; }
 
-        //0614 Bruce 判斷是否需要顯示更新按鈕
-        public bool IsEnableUpdate { get => _isEnableUpdate; }
-
         public BootloaderViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
         {
             Requires.NotNull(console, nameof(console));
@@ -63,7 +60,7 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             if (!base.SetCurrentDevice(instanceIDs))
                 return false;
-            FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false).Result;
+            /*FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false).Result;
             _isEnableUpdate = false;
             foreach (FWUpdateInfo fWUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)
             {
@@ -75,7 +72,7 @@ namespace DDPM.UI.Plugin.ViewModels
                         break;
                     }
                 }
-            }
+            }*/
             return true;
         }
 
