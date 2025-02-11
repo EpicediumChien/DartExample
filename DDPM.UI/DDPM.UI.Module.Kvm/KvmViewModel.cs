@@ -991,7 +991,7 @@ namespace DDPM.UI.Module.Kvm
                 var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
                 directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
-                string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
+                string strFullPath = string.Format("{0}\\Plugins\\NKVM\\{1}", directory, GlobalDefinitions.DDMExeName);
 
                 if (mi.CapabilityDic.ContainsKey("E7"))
                 {
@@ -2028,7 +2028,7 @@ namespace DDPM.UI.Module.Kvm
             var directory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 
             directory = $"C:\\Program Files\\Dell\\Dell Display and Peripheral Manager";
-            string strFullPath = string.Format("{0}\\Plugins\\NKVM\\DDM.exe", directory);
+            string strFullPath = string.Format("{0}\\Plugins\\NKVM\\{1}", directory, GlobalDefinitions.DDMExeName);
             //Elsa Add Security
             string FileInfo;
             if (!DDPMFileSecurity.IsFilePathValid(strFullPath, out FileInfo))
@@ -2040,7 +2040,7 @@ namespace DDPM.UI.Module.Kvm
             try
             {
                 IntPtr NkvmdHandle = IntPtr.Zero;
-                string processName = "DDM";
+                string processName = GlobalDefinitions.DDMProcessName;// "DDM";
                 Process[] processes = Process.GetProcessesByName(processName);
 
                 if (processes.Length == 0)
