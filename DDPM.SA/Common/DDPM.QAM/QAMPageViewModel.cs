@@ -347,8 +347,8 @@ namespace DDPM.QAM
                 OnPropertyChanged(nameof(UI_ProfileList));
 
                 selectedProfileName = "NONE"; //Derek 2025/01/20
-                webcamSettings.SelectedProfile = selectedProfileName;
-                //webcamSettings.PresetProfiles[4].Zoom
+                webcamSettings.SelectedProfileName = selectedProfileName;
+                SaveSelectProfile(); //Derek 2025/02/11 for PIMS 330862 FOV test fail
             }
             catch (Exception ex)
             {
