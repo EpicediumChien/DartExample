@@ -612,11 +612,20 @@ namespace DDPM.UI.Module.DisplayHotkeys
                 }
                 else
                 {
-                    ToggleInputSourceKey = "None";
-                    FavoriteInputSourceKey = "None";
-                    SwitchInputSourceKey = "None";
-                    SwapPIPPBPInputSourceKey = "None";
-                    ChangePIPPositionKey = "None";
+                    //Robert_Lin 2025-2-10 [PIMS-345543] Non-English Language -All Hotkey default value displays show English "None"
+                    //OLD:
+                    //ToggleInputSourceKey = "None";
+                    //FavoriteInputSourceKey = "None";
+                    //SwitchInputSourceKey = "None";
+                    //SwapPIPPBPInputSourceKey = "None";
+                    //ChangePIPPositionKey = "None";
+                    //NEW:
+                    ToggleInputSourceKey = LangHelper.Instance["None"];
+                    FavoriteInputSourceKey = LangHelper.Instance["None"];
+                    SwitchInputSourceKey = LangHelper.Instance["None"];
+                    SwapPIPPBPInputSourceKey = LangHelper.Instance["None"];
+                    ChangePIPPositionKey = LangHelper.Instance["None"];
+
                 }
             }
             catch (Exception ex)

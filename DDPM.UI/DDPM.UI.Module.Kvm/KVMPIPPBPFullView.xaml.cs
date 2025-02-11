@@ -6,6 +6,7 @@ using DDPM.UI.Common.Interfaces;
 using DDPM.UI.Common.Models;
 using DDPM.UI.Common.UserControls;
 using DDPM.UI.Plugin.DdpmHomePlugin;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.UX.WPF;
 using System.Windows;
 using System.Windows.Controls;
@@ -44,9 +45,15 @@ namespace DDPM.UI.Module.Kvm
                 new TabHeader() { Text = "PBP" }
             };
 
-            pipOff.InnerContent = new SplitCtrl0A(null) { Description = "Full screen" };
-            pipSmall.InnerContent = new SplitCtrl1A(null) { Description = "PIP Small" };
-            pipLarge.InnerContent = new SplitCtrl1B(null) { Description = "PIP Large" };
+            //Robert_Lin 2025-2-1 for Multilingal strings
+            //NEW:
+            pipOff.InnerContent = new SplitCtrl0A(null) { Description = LangHelper.Instance["Fullscreen.1"] };
+            pipSmall.InnerContent = new SplitCtrl1A(null) { Description = LangHelper.Instance["PIPSmall"] };
+            pipLarge.InnerContent = new SplitCtrl1B(null) { Description = LangHelper.Instance["PIPLarge"] };
+            //OLD:
+            //pipOff.InnerContent = new SplitCtrl0A(null) { Description = "Full screen" };
+            //pipSmall.InnerContent = new SplitCtrl1A(null) { Description = "PIP Small" };
+            //pipLarge.InnerContent = new SplitCtrl1B(null) { Description = "PIP Large" };
 
             //Assign SplitOwner to all SplitItems
             //  pipOff : PxpOff group
