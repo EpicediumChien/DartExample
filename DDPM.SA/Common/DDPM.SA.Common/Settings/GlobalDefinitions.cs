@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define SUPPORT_200
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,7 +56,12 @@ namespace DDPM.SA.Common.Settings
 
         //Migration
         public const string MigrationInput = "Migration";
+
         //DDM(NKVM) executable file name
-        public const string DDMExeName = "DDPM-NKVM.exe";//"DDM.exe";
+#if SUPPORT_200
+        public const string DDMExeName = "DDM.exe";
+#else
+        public const string DDMExeName = "DDPM-NKVM.exe";
+#endif
     }
 }
