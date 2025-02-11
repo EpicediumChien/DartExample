@@ -2,6 +2,7 @@
 using DDPM.UI.Common;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
+using DPeMPublic.Common.Enums;
 using Microsoft;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,7 +13,7 @@ using System.Windows.Input;
 
 namespace DDPM.UI.Plugin.ViewModels
 {
-    public class DockPageViewModel : PeripheralViewModel, INotifyPropertyChanged
+    public class BootloaderViewModel : PeripheralViewModel, INotifyPropertyChanged
     {
         #region Variables
 
@@ -31,7 +32,7 @@ namespace DDPM.UI.Plugin.ViewModels
         //0614 Bruce 判斷是否需要顯示更新按鈕
         public bool IsEnableUpdate { get => _isEnableUpdate; }
 
-        public DockPageViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
+        public BootloaderViewModel(IConsole console, ILog log, IDeviceManagerSA deviceManager) : base(console, log, deviceManager)
         {
             Requires.NotNull(console, nameof(console));
             Requires.NotNull(log, nameof(log));
@@ -50,7 +51,7 @@ namespace DDPM.UI.Plugin.ViewModels
             DeviceInfos.Clear();
             foreach (DeviceInfo deviceInfo in deviceInfos)
             {
-                if (deviceInfo.LogicalDeviceType.Contains("Dock") &&
+                if ((deviceInfo.PhysicalDeviceType.Equals(DeviceType.LogicalBootloader) || deviceInfo.PhysicalDeviceType.Equals(DeviceType.PhysicalBootloader)) &&
                     !DeviceInfos.ContainsKey(deviceInfo.ID))
                 {
                     DeviceInfos.Add(deviceInfo.ID, deviceInfo);
@@ -62,20 +63,6 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             if (!base.SetCurrentDevice(instanceIDs))
                 return false;
-            //0821 Bruce Add show Dock Fw Version
-            Model = Model.Replace("_", " ");
-            //_deviceManager.GetDockData(instanceID).Wait();
-            FirmwareVersion2 = $"{Strings.FirmwareVersion} {CurrentDeviceInfo.FirmwareVersion}";
-            //if (!string.IsNullOrEmpty(CurrentDeviceInfo.DockPackageFwVersion))
-            //{
-            //    var fv = Regex.Replace(CurrentDeviceInfo.DockPackageFwVersion, @"(\d{2})(?=\d)", "$1.");
-            //    FirmwareVersion2 += $" {fv}";
-            //}
-            FirmwareVersion2 += $"\n{Strings.ServiceTag} {CurrentDeviceInfo.DockServiceTag}";
-            //if (!string.IsNullOrEmpty(CurrentDeviceInfo.DockServiceTag))
-            //{
-            //    FirmwareVersion2 += $" {CurrentDeviceInfo.DockServiceTag}";
-            //}
             FWUpdateInfoPackage fwUpdateInfoPackage = _deviceManager.GetFWUpdateInfo(false).Result;
             _isEnableUpdate = false;
             foreach (FWUpdateInfo fWUpdateInfo in fwUpdateInfoPackage.FWUpdateInfo)

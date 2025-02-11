@@ -338,24 +338,32 @@
                                        >
                              
                                 -->
-                                <Border Name="bdItem" BorderBrush="{StaticResource FocusDotBrush}" Background="#02000000"
-                                        Margin="0" Padding="0"
-                                        Width="auto" Height="auto"
-                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                        Focusable="False"
-                                        >
+                                <Border Name="bdItem"
+                                        BorderBrush="{StaticResource FocusDotBrush}"
+                                        Background="#02000000"
+                                        Margin="0"
+                                        Padding="0"
+                                        Width="auto"
+                                        Height="auto"
+                                        HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        Focusable="False">
                                     <Border.Style>
                                         <Style TargetType="Border">
-                                            <Setter Property="BorderThickness" Value="0" />
+                                            <Setter Property="BorderThickness"
+                                                    Value="0" />
                                             <Style.Triggers>
                                                 <!-- Engineer debug, when checkbox is check will show ListViewItem border -->
-                                                <DataTrigger Binding="{Binding ElementName=ckbGreenBorder, Path=IsChecked}" Value="True">
-                                                    <Setter Property="BorderThickness" Value="1" />
+                                                <DataTrigger Binding="{Binding ElementName=ckbGreenBorder, Path=IsChecked}"
+                                                             Value="True">
+                                                    <Setter Property="BorderThickness"
+                                                            Value="1" />
                                                 </DataTrigger>
                                                 <!-- When the ListViewItem is focus will show gray dot border -->
                                                 <DataTrigger Binding="{Binding IsFocused, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListViewItem}}}"
                                                              Value="True">
-                                                    <Setter Property="BorderThickness" Value="1" />
+                                                    <Setter Property="BorderThickness"
+                                                            Value="1" />
                                                 </DataTrigger>
                                                 <!--
                                                 <DataTrigger Binding="{Binding IsConnectionHoverViewShow}" Value="True">
@@ -365,55 +373,77 @@
                                             </Style.Triggers>
                                         </Style>
                                     </Border.Style>
-
                                     <!-- 
                                     <Image x:Name="devImg" Source="{Binding DeviceImage}" Stretch="Uniform"
                                            Focusable="True"
                                            AutomationProperties.Name="{Binding TooltipModelName}"
                                            Margin="0">
                                     -->
-                                    <Image x:Name="devImg" Source="{Binding DeviceImage}" Stretch="Uniform"
-                                           Focusable="False"
-                                           AutomationProperties.Name="{Binding TooltipModelName}"
-                                           Margin="0">
-                                        <Image.RenderTransform>
-                                            <ScaleTransform x:Name="ImageScaleTransform" ScaleX="1" ScaleY="1"/>
-                                        </Image.RenderTransform>
-                                        <Image.Triggers>
-                                            <EventTrigger RoutedEvent="Image.MouseEnter">
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform" Storyboard.TargetProperty="ScaleX"
-                                                                         To="1.1" Duration="0:0:0.5" />
-                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform" Storyboard.TargetProperty="ScaleY"
-                                                                         To="1.1" Duration="0:0:0.5" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </EventTrigger>
-                                            <EventTrigger RoutedEvent="Image.MouseLeave">
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform" Storyboard.TargetProperty="ScaleX"
-                                                                         To="1" Duration="0:0:0.5" />
-                                                        <DoubleAnimation Storyboard.TargetName="ImageScaleTransform" Storyboard.TargetProperty="ScaleY"
-                                                                         To="1" Duration="0:0:0.5" />
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </EventTrigger>
-                                        </Image.Triggers>
-
-                                    </Image>
-
+                                    <Grid>
+                                        <Image x:Name="devImg"
+                                               Source="{Binding DeviceImage}"
+                                               Stretch="Uniform"
+                                               Focusable="False"
+                                               AutomationProperties.Name="{Binding TooltipModelName}"
+                                               Margin="0"
+                                               Visibility="{Binding IsNotBootloader, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <Image.RenderTransform>
+                                                <ScaleTransform x:Name="ImageScaleTransform"
+                                                                ScaleX="1"
+                                                                ScaleY="1" />
+                                            </Image.RenderTransform>
+                                            <Image.Triggers>
+                                                <EventTrigger RoutedEvent="Image.MouseEnter">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="ImageScaleTransform"
+                                                                             Storyboard.TargetProperty="ScaleX"
+                                                                             To="1.1"
+                                                                             Duration="0:0:0.5" />
+                                                            <DoubleAnimation Storyboard.TargetName="ImageScaleTransform"
+                                                                             Storyboard.TargetProperty="ScaleY"
+                                                                             To="1.1"
+                                                                             Duration="0:0:0.5" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                                <EventTrigger RoutedEvent="Image.MouseLeave">
+                                                    <BeginStoryboard>
+                                                        <Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetName="ImageScaleTransform"
+                                                                             Storyboard.TargetProperty="ScaleX"
+                                                                             To="1"
+                                                                             Duration="0:0:0.5" />
+                                                            <DoubleAnimation Storyboard.TargetName="ImageScaleTransform"
+                                                                             Storyboard.TargetProperty="ScaleY"
+                                                                             To="1"
+                                                                             Duration="0:0:0.5" />
+                                                        </Storyboard>
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Image.Triggers>
+                                        </Image>
+                                        <TextBlock x:Name="devModel"
+                                                   Text="{Binding DeviceModel}"
+                                                   Foreground="{DynamicResource DefaultTheme_TxtColor}"
+                                                   Focusable="False"
+                                                   FontSize="24"
+                                                   AutomationProperties.Name="{Binding TooltipModelName}"
+                                                   Margin="0"
+                                                   Visibility="{Binding IsBootloader, Converter={StaticResource BoolToVisibilityConverter}}"></TextBlock>
+                                    </Grid>
+                                   
                                     <!-- Robert_Lin, 2024-7-10, move the tooltip owner from Image to Border.
                                         So that when a device has no image can show the device info in tooltip
                                         -->
                                     <!-- -->
                                     <Border.ToolTip>
-                                        <ToolTip Placement="Center"  HorizontalOffset="8" VerticalOffset="-8"
-                                                     ToolTipService.HasDropShadow="True"
-                                                     ToolTipService.InitialShowDelay="1000"
-                                                     ToolTipService.BetweenShowDelay="2000">
-
+                                        <ToolTip Placement="Center"
+                                                 HorizontalOffset="8"
+                                                 VerticalOffset="-8"
+                                                 ToolTipService.HasDropShadow="True"
+                                                 ToolTipService.InitialShowDelay="1000"
+                                                 ToolTipService.BetweenShowDelay="2000">
                                             <!-- Robert_Lin, 2025-1-9 Apply the tooltip to DDPM standard style defined 
                                                  in ModuleStyle.xaml
                                             OLD:
@@ -436,27 +466,29 @@
                                                     </Style>
                                                 </Border.Resources>-->
                                                 <Border.Style>
-                                                    <Style TargetType="Border" BasedOn="{StaticResource Tooltip_OutterBorderStyle}">
-                                                        <Setter Property="Visibility" Value="Visible" />
+                                                    <Style TargetType="Border"
+                                                           BasedOn="{StaticResource Tooltip_OutterBorderStyle}">
+                                                        <Setter Property="Visibility"
+                                                                Value="Visible" />
                                                         <Style.Triggers>
                                                             <!-- When ConnectionHoverView is shown, then force tooltip to hide -->
                                                             <DataTrigger Binding="{Binding IsConnectionHoverViewShow}"
                                                                          Value="True">
-                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                                <Setter Property="Visibility"
+                                                                        Value="Collapsed" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Border.Style>
                                                 <StackPanel>
                                                     <!-- Robert_Lin, 2025-1-9, apply DDPM Standrd style in ModuleStyle.xaml -->
-                                                    <TextBlock Text="{Binding TooltipModelName}" 
-                                                               Style="{StaticResource Tooltip_TextBlockStyle}"/>
+                                                    <TextBlock Text="{Binding TooltipModelName}"
+                                                               Style="{StaticResource Tooltip_TextBlockStyle}" />
                                                 </StackPanel>
                                             </Border>
                                         </ToolTip>
                                     </Border.ToolTip>
                                 </Border>
-
                                 <!-- Robert_Lin, 2024-7-20, Add Connection hover UI
                                 1 Create a new <Grid> Name=Indicators to replace original single BatteryIndicator element.
                                 2 Move the BatteryIndicator into the Indicators Grid.
@@ -514,7 +546,8 @@
                             NoBattery="{Binding NoBattery}" /> -->
 
                             <Grid Name="Indicators" VerticalAlignment="Bottom"  HorizontalAlignment="Center" Margin="0,0,0,0" 
-                                  Grid.Row="0" Grid.RowSpan="2">
+                                  Grid.Row="0" Grid.RowSpan="2"
+                                  Visibility="{Binding IsNotBootloader, Converter={StaticResource BoolToVisibilityConverter}}">
                                 <StackPanel>
 
                                     <local:ConnectionHoverView DataContext="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ListViewItem}}" />

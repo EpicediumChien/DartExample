@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DDPM.SA.Common;
+using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Settings;
 using DDPM.UI.Common;
 using DDPM.UI.Common.Models;
@@ -19,6 +20,8 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using VcpCore.Common;
 using Windows.UI.ViewManagement;
 using static DDPM.UI.Common.User32;
@@ -228,7 +231,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 //Determine the SortOrder in the foreach loop.
                 //Each Category have their index, would be in order of ModelNumber
                 int idxWebcam = 0, idxKB = 0, idxMouse = 0,
-                    idxPen = 0, idxHeadset = 0, idxSpeaker = 0, idxDock = 0;
+                    idxPen = 0, idxHeadset = 0, idxSpeaker = 0, idxDock = 0, idxBootloader = 0;
 
                 //Robert_Lin 2024-5-16 This method should be called once, provide all
                 //monitor in this call. So it will clear original list at first
@@ -457,6 +460,15 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                         dev.SortOrder = (int)dev.DeviceCategory + idxSpeaker;
                         idxSpeaker++;
                     }
+                    //0211 Bruce 新增Dock UI
+                    else if (devType.Equals(DeviceType.PhysicalBootloader) ||
+                        devType.Equals(DeviceType.LogicalBootloader))
+                    {
+                        dev.DeviceCategory = eDeviceCategory.Bootloader;
+                        System.Windows.Media.Color textColor = Colors.White;
+                        dev.DeviceModel = di.ModelNumber;
+                        dev.SortOrder = (int)dev.DeviceCategory + idxBootloader;
+                    }
 
                     //Robert_Lin, 2024-8-6, assign InstanceNo for the new adding device (dev)
                     //
@@ -490,7 +502,6 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin.ViewModels
                 //RefreshCollectionView();
             }
         }
-
         public void ResetDevices()
         {
             System.Windows.Application.Current.Dispatcher.Invoke(() =>
