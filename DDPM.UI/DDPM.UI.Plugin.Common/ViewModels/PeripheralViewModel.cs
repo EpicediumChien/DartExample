@@ -386,7 +386,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public virtual void HandleNotification(DeviceChangedType changeType, DeviceInfo di, string property = "")
         {
-            if (DeviceInfo == null)
+            if (di == null)
             {
                 DdpmCommonHelper.WriteUILog($"Error: DeviceChanged Event with no device info!");
                 return;
@@ -768,7 +768,7 @@ namespace DDPM.UI.Plugin.ViewModels
                 localDeviceInfo.Append(Environment.NewLine);
                 localDeviceInfo.Append($"VisiblePairedHostName3 : {CurrentDeviceInfo.VisiblePairedHostName3}");
             }
-            this.DeviceInfo = localDeviceInfo.ToString();
+            //this.DeviceInfo = localDeviceInfo.ToString();
 #endif
         }
 
@@ -805,7 +805,7 @@ namespace DDPM.UI.Plugin.ViewModels
 
         public string Model2 { get; set; } = "";
 
-        public string? DeviceInfo { get; set; }
+        //public string? DeviceInfo { get; set; }
         public Guid CurrentDeviceID { get; set; }
         public int CurrentInstanceID { get; set; }
         public bool IsCollabsKeysSupported { get; set; }

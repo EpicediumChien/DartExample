@@ -10,7 +10,7 @@ namespace DDPM.UI.Interfaces
         /// <summary>
         /// Device Info
         /// </summary>
-        string? DeviceInfo { get; set; }
+        //string? DeviceInfo { get; set; }
 
         /// <summary>
         /// Device Name

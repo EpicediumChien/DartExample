@@ -21,8 +21,19 @@ namespace DDPM.UI.Common
             {
                 #region Background Color
                 UpdateFreezable("DDPMBackground", (ref LinearGradientBrush brush) => {
+                    brush.StartPoint = new System.Windows.Point(0.913, 0.407);
+                    brush.EndPoint = new System.Windows.Point(0.0, 1.0);
+                    brush.Opacity = 0.05;
+                    GradientStop ? gs1 = brush.GradientStops.FirstOrDefault(gs => gs.Offset == 0.0537);
+                    if (gs1 != null) gs1.Color = (Color)ColorConverter.ConvertFromString("#80306CC7");
+                    GradientStop? gs2 = brush.GradientStops.FirstOrDefault(gs => gs.Offset == 0.2371);
+                    if (gs2 != null) gs2.Color = (Color)ColorConverter.ConvertFromString("#800063B8");
+                    GradientStop? gs3 = brush.GradientStops.FirstOrDefault(gs => gs.Offset == 0.504);
+                    if (gs3 != null) gs3.Color = (Color)ColorConverter.ConvertFromString("#E0003ACE");
                     GradientStop? gs4 = brush.GradientStops.FirstOrDefault(gs => gs.Offset == 0.7923);
-                    if (gs4 != null) gs4.Color = (Color)ColorConverter.ConvertFromString("#7F00B9FF");
+                    if (gs4 != null) gs4.Color = (Color)ColorConverter.ConvertFromString("#80674AB8");
+                    GradientStop? gs5 = brush.GradientStops.FirstOrDefault(gs => gs.Offset == 0.9724);
+                    if (gs5 != null) gs5.Color = (Color)ColorConverter.ConvertFromString("#800063B8");
                 });
                 #endregion
 

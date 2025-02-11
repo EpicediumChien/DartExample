@@ -23,12 +23,12 @@ internal class Program
                 {
                     if (args[0].ToLower().Equals("/fromddpm"))
                     {
-                        LogManage.fromDDPM = true;
+                        LogManage.FromDDPM = true;
                         LogManage.LogMessage($"Is DDPM call");
                     }
                     else
                     {
-                        LogManage.fromDDPM = false;
+                        LogManage.FromDDPM = false;
                         LogManage.LogMessage($"Is DDM call");
                     }
                     string registryKey = @"SOFTWARE\Dell\Dell Display and Peripheral Manager";
@@ -84,7 +84,7 @@ internal class Program
             }
             else
             {
-                LogManage.fromDDPM = false;
+                LogManage.FromDDPM = false;
                 LogManage.LogMessage($"args.Length <= 0 go to copy");
                 bool isSkipCA = LogManage.GetCheckCAStatus();
                 bool isSkipSHA = LogManage.GetCheckSHAStatus();

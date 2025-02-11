@@ -222,11 +222,11 @@
                         </Style>
                     </Grid.Style>
 
-                    <UXControls:UXTextBlock Grid.Row="0" FontSize="20"
+                    <UXControls:UXTextBlock Grid.Row="0" FontSize="20" Focusable="True"
                                             Text="{Binding [NoDeviceDetected], Source={x:Static lang:LangHelper.Instance}}" 
                                             Foreground="{DynamicResource HomePageFeature_TxtColor}" 
                                             HorizontalAlignment="Center"/>
-                    <UXControls:UXTextBlock Grid.Row="1" FontSize="64" Margin="0,16,0,50"
+                    <UXControls:UXTextBlock Grid.Row="1" FontSize="64" Margin="0,16,0,50" Focusable="True"
                                             Text="{Binding [Add1sDevice], Source={x:Static lang:LangHelper.Instance}}" 
                                             Foreground="{DynamicResource HomePageKeyFeature_TxtColor}" 
                                             HorizontalAlignment="Center"/>
@@ -543,6 +543,7 @@
                   d:Visibility="Collapsed">
                 <Border Width="587" Height="265" Background="{DynamicResource SpinnerBkColor}"
                         BorderThickness="1" CornerRadius="4" BorderBrush="#777777" 
+                        AutomationProperties.Name="{Binding PleaseWaitMessage}"
                         HorizontalAlignment="Center" VerticalAlignment="Center">
                     <StackPanel>
                         <Grid Height="40" HorizontalAlignment="Center" VerticalAlignment="Top"

@@ -1898,6 +1898,5 @@ namespace DDPM.UI.Module.Color
         }
         //Robert_Lin 2025-1-18 added to handle Advanced Settings / ICC profile hylerlink click command
         ////////////////////////////
-
     }
 }

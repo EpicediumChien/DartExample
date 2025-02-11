@@ -517,7 +517,7 @@ namespace DDPM.UI.Common.Models
 
                     //Robert_Lin, 2024-10-15 Change the Text1 of BatteryIndicator to inputCable.
                     //The inputCable has been remove unwant - and number, so we should show it directly
-                    string strOut = MonitorInfo.inputCable;
+                    //string strOut = MonitorInfo.inputCable;
 
                     ////2024-5-24 Robert_Lin, remove the tail number and dash
                     //// "USB-C1" => "USB-C"; "HDMI-1" => "HDMI"

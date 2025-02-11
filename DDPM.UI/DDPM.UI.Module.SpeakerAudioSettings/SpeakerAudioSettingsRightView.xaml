@@ -46,10 +46,12 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <!--Chewlin 20250107 for PIMS-334384 Add TextTrimming="CharacterEllipsis" Width="220" -->
-                                    <UXControls:UXTextBlock x:Name="IntelligentMicNoiseCancellationText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [SpeakerAudioSettings.0], Source={x:Static lang:LangHelper.Instance}}" TextTrimming="CharacterEllipsis" Width="220" Margin="16,16,0,10" />
+                                    <!--Chewlin 20250210 for PIMS-334384 Change Width="220" to MaxWidth="220" -->
+                                    <UXControls:UXTextBlock x:Name="IntelligentMicNoiseCancellationText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [SpeakerAudioSettings.0], Source={x:Static lang:LangHelper.Instance}}" TextTrimming="CharacterEllipsis" MaxWidth="220" Margin="16,16,0,10" />
                                     <Image x:Name="IntelligentMicNoiseCancellationImage" Grid.Column="1" Width="16" Height="16" Margin="8,8,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                         <Image.ToolTip>
-                                            <ToolTip>
+                                            <!--Chwewlin 20250210 fix Speakerphone AudioSetting ToolTip over the e DDPM page border issue  ADD Placement="Left" VerticalOffset="30" HorizontalOffset="30"-->
+                                            <ToolTip Placement="Left" VerticalOffset="30" HorizontalOffset="30">
                                                 <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                     <Border.Resources>
                                                         <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
@@ -77,7 +79,8 @@
                                         <UXControls:UXTextBlock x:Name="MuteSoundNotificationText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" Foreground="{DynamicResource TextBlock_ForegroundColor}" Text="{Binding [SpeakerAudioSettings.1], Source={x:Static lang:LangHelper.Instance}}" Margin="16,16,0,10" />
                                         <Image x:Name="MuteSoundNotificationImage" Grid.Column="1" Width="16" Height="16" Margin="8,8,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                             <Image.ToolTip>
-                                                <ToolTip>
+                                                <!--Chwewlin 20250210 fix Speakerphone AudioSetting ToolTip over the DDPM page border issue  ADD Placement="Left" VerticalOffset="30" HorizontalOffset="30"-->
+                                                <ToolTip Placement="Left" VerticalOffset="30" HorizontalOffset="30">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <Border.Resources>
                                                             <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />
@@ -103,7 +106,8 @@
                                         <UXControls:UXTextBlock x:Name="VolumeAdjustmentToneText" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16"  Text="{Binding [SpeakerAudioSettings.2], Source={x:Static lang:LangHelper.Instance}}" Foreground="{DynamicResource TextBlock_ForegroundColor}" Margin="16,16,0,0" />
                                         <Image x:Name="VolumeAdjustmentToneImage" Grid.Column="1" Width="16" Height="16" Margin="8,8,0,0" Source="/DDPM.UI.Common;component/Resources/info.png" Stretch="Uniform">
                                             <Image.ToolTip>
-                                                <ToolTip>
+                                                <!--Chwewlin 20250210 fix Speakerphone AudioSetting ToolTip over the DDPM page border issue  ADD Placement="Left" VerticalOffset="30" HorizontalOffset="30"-->
+                                                <ToolTip Placement="Left" VerticalOffset="30" HorizontalOffset="30">
                                                     <Border Style="{StaticResource Tooltip_OutterBorderStyle}">
                                                         <Border.Resources>
                                                             <Style BasedOn="{StaticResource Tooltip_TextBlockStyle}" TargetType="TextBlock" />

@@ -230,7 +230,10 @@
                 </Style>
             </Border.Style>
             <!--  Add a UXBusyIndicator from Robert  -->
-            <UXControls:UXBusyIndicator Width="64" Height="64" HorizontalAlignment="Center" VerticalAlignment="Center" BusyIndicatorType="Secondary" IsActive="{Binding IsBusy}" />
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <UXControls:UXBusyIndicator Width="64" Height="64" HorizontalAlignment="Center" VerticalAlignment="Center" BusyIndicatorType="Secondary" IsActive="{Binding IsBusy}" />
+                <UXControls:UXTextBlock Margin="0, 20, 0, 0" Text="{Binding [HomePage.0], Source={x:Static lang:LangHelper.Instance}}" Foreground="#FF797F84" />
+            </StackPanel>
         </Border>
     </Grid>
 </UserControl>

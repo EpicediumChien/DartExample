@@ -415,5 +415,14 @@ namespace DDPM.UI.Plugin.AddDevicePlugin
             DdpmCommonHelper.DeviceManagerSA!.DeviceChanged -= AddDeviceView_DeviceChanged;
             _vm!.StopPairing();
         }
+
+        private void ArrowLeft_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                _console.ShowHomePage();
+            }
+        }
     }
 }

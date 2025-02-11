@@ -269,6 +269,13 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 _DeviceInfos = DeviceInfos;
             }
         }
+        public void SetLang(CultureInfo cultureInfo)
+        {
+            _logs.DebugMsg_1($"SetLang start");
+            _logs.DebugMsg_1($"cultureInfo : {cultureInfo}");
+            LangHelper.UserMappedCultureInfo = cultureInfo;
+            _logs.DebugMsg_1($"SetLang done");
+        }
 
         public void CheckUODFWUInfo(DokcUODUpdateInfoPackage UODFWUInfo, List<DeviceInfo>? DeviceInfos)
         {

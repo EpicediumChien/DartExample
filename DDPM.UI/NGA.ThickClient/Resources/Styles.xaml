@@ -11,7 +11,16 @@
     <system:Double x:Key="DdpmMinWindowHeight">400</system:Double>
     <system:Double x:Key="DdpmMinWindowWidth">600</system:Double>
 
-    <!-- this is break point value and the minwidth of main window  -->
+    <!-- this is break point value and the minwidth of main window 
+    Robert_Lin, Test, Original settings:
+    
+    <system:Int16 x:Key="breakPoint">1050</system:Int16>
+    <system:Int16 x:Key="minHeight">645</system:Int16>
+    
+    Suggest settings for small resolution (800x600 125%)
+    <system:Int16 x:Key="breakPoint">640</system:Int16>
+    <system:Int16 x:Key="minHeight">590</system:Int16>
+    -->
     <system:Int16 x:Key="breakPoint">1050</system:Int16>
     <system:Int16 x:Key="minHeight">645</system:Int16>
 
