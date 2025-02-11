@@ -668,7 +668,7 @@ namespace DDPM.SA.Plugin.CLIManager
         private (int exitCode, string value, string message) RunDDMCommand(string command)
         {
             WriteLog($"RunDDMCommand({command}) Entry");
-            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\" + GlobalDefinitions.DDMExeName;
             int exitCode = -1;
             string value = _commandLineInput.Options.Count > 0 ? _commandLineInput.Options[0].Option_Value : "N/A";
             string message = "N/A";
@@ -721,7 +721,7 @@ namespace DDPM.SA.Plugin.CLIManager
                 TargetFeature = _commandLineInput.TargetFeature
             };
 
-            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\DDM.exe";
+            string filePath = @"C:\Program Files\Dell\Dell Display and Peripheral Manager\Plugins\NKVM\" + GlobalDefinitions.DDMExeName;
 
             if (File.Exists(filePath))
             {
