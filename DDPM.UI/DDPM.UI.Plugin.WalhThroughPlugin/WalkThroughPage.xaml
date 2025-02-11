@@ -13,7 +13,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </UserControl.Resources>
 
-    <Grid Width="1378" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}">
+    <Grid Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=UserControl}}">
         <Image x:Name="imgBkGlow"
                Source="pack://application:,,,/DDPM.UI.Common;component/Resources/Background_Glow.png"
                Stretch="UniformToFill"
@@ -153,7 +153,8 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Grid Grid.Row="0" Margin="0" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}" Visibility="{Binding ConsentPageVisibility, FallbackValue=Collapsed}"
+                <Grid Grid.Row="0" Margin="0" Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                      Visibility="{Binding ConsentPageVisibility, FallbackValue=Collapsed}"
                       VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Border CornerRadius="4" Height="320" Width="801" BorderBrush="#2D000000" BorderThickness="0.5" Background="{StaticResource FakeTransparent}">
                         <Border.Effect>
