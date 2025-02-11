@@ -77,7 +77,7 @@ namespace DDPM.SA.Plugins.CMAManager
 
         private string loadFile(string guid)
         {
-            string response = string.Empty;
+            string responseString = string.Empty;
 
             try
             {
@@ -106,7 +106,7 @@ namespace DDPM.SA.Plugins.CMAManager
                 listResponse = new List<string>();
             }
 
-            return response;
+            return responseString;
 
         }
         public void writeToFile(string guid, string json)
