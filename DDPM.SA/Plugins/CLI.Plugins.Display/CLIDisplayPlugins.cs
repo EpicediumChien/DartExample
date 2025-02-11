@@ -4166,7 +4166,7 @@ namespace DDPM.CLI.Plugins.Display
                         writelog($"ActiveInputSource set entry");
                         serviceTagList = _AllInfoMonitors.DistinctBy(_ => _.edid.ServiceTag).ToDictionary(_ => _.edid.ServiceTag, _ => _.edid.ServiceTag);
                         targetList = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).ToList();
-                        outCount = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).ToList().Count();
+                        outCount = _AllInfoMonitors.Select(_ => _.edid.ServiceTag).Count();
                         //CLI_Set_Input_RESPONSE _Set_Input_RESPONSE = new CLI_Set_Input_RESPONSE();
                         //foreach (var monitor in _AllInfoMonitors)
                         //for (int i = 0; i < _AllInfoMonitors.Count; i++)
