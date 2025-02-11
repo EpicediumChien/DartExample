@@ -24,7 +24,7 @@ namespace DDDPM.SA.Common
             { "DeviceMangerPlugin", false}
         };
 
-        private const string fullPath = $@"HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings";
+        private const string fullPath = @"HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings";
 
         private const string keyName_DebugWinEventLogTime = "DebugWinEventLogTime";
 
