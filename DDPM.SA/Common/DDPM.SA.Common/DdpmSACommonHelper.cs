@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -25,12 +26,24 @@ namespace DDDPM.SA.Common
             { "DeviceMangerPlugin", false}
         };
 
+        private const string fullPath = $@"HKEY_LOCAL_MACHINE\SOFTWARE\Dell\Dell Display And Peripheral Manager\UserSettings";
+
+        private const string keyName_DebugWinEventLogTime = "DebugWinEventLogTime";
+
+        private static bool isTimerOn = false;
+
+        static DdpmSACommonHelper()
+        {
+             isTimerOn = (string)Registry.GetValue(fullPath, keyName_DebugWinEventLogTime, null) == "1";
+        }
+
         public static void SAPluginReady(string NameOfPlugin)
         {
             SAPluginList[NameOfPlugin] = true;
             if (SAPluginList.Values.Where(v => v).Count() == SAPluginList.Count)
             {
-                WriteToEventLog($"{SALaunchTimer.Elapsed.TotalMilliseconds:F2} ms - {nameof(SAPluginReady)} started.", EventLogEntryType.Information, $"[{nameof(SAPluginReady)}]");
+                if(isTimerOn)
+                    WriteToEventLog($"{SALaunchTimer.Elapsed.TotalMilliseconds:F2} ms - {nameof(SAPluginReady)} started.", EventLogEntryType.Information, $"{nameof(SAPluginReady)}");
                 SALaunchTimer.Stop();
             }
         }
@@ -40,7 +53,8 @@ namespace DDDPM.SA.Common
             SAUserPluginList[NameOfPlugin] = true;
             if (SAUserPluginList.Values.Where(v => v).Count() == SAPluginList.Count)
             {
-                WriteToEventLog($"{SAUserLaunchTimer.Elapsed.TotalMilliseconds:F2} ms - {nameof(SAUserPluginReady)}.", EventLogEntryType.Information, $"[{nameof(SAUserPluginReady)}]");
+                if (isTimerOn)
+                    WriteToEventLog($"{SAUserLaunchTimer.Elapsed.TotalMilliseconds:F2} ms - {nameof(SAUserPluginReady)}.", EventLogEntryType.Information, $"{nameof(SAUserPluginReady)}");
                 SAUserLaunchTimer.Stop();
             }
         }
