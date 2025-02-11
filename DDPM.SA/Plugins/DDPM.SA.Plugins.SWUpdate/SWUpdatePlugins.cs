@@ -16,6 +16,7 @@ using PInvoke;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -184,6 +185,13 @@ namespace DDPM.SA.Plugins.SWUpdate
         }
 
         #endregion Overriding methods
+        public void SetLang(CultureInfo cultureInfo)
+        {
+            _logs.DebugMsg_1($"SetLang start");
+            _logs.DebugMsg_1($"cultureInfo : {cultureInfo}");
+            LangHelper.UserMappedCultureInfo = cultureInfo;
+            _logs.DebugMsg_1($"SetLang done");
+        }
         /// <summary>
         /// 設定檔儲存的延遲更新資訊包
         /// </summary>

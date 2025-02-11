@@ -16,7 +16,7 @@ namespace DDPM.SA.Resources.Helper
         public static LangHelper Instance => _lazy.Value;
 
         public event PropertyChangedEventHandler PropertyChanged;
-
+        public static CultureInfo? UserMappedCultureInfo;
         public LangHelper()
         {
             //Get the resources of the Lang of the Resources in this namespace, which can be modified.
@@ -54,7 +54,16 @@ namespace DDPM.SA.Resources.Helper
                 //OLD:
                 //string str = _resourceManager.GetString(name, CultureInfo.CurrentUICulture) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
                 //NEW:
-                string str = _resourceManager.GetString(name, DdpmCultureMap.MappedCultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+                //Bruce 02/11 Fix PIMS-344808 modify the language used by System to be the same as that captured by user.
+                string str;
+                if (UserMappedCultureInfo != null)
+                {
+                    str = _resourceManager.GetString(name, UserMappedCultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+                }
+                else
+                {
+                    str = _resourceManager.GetString(name, DdpmCultureMap.MappedCultureInfo) ?? _resourceManager.GetString(name, CultureInfo.InvariantCulture) ?? "";
+                }
                 return System.Text.RegularExpressions.Regex.Unescape(str);
 #endif
             }
@@ -65,6 +74,11 @@ namespace DDPM.SA.Resources.Helper
             CultureInfo.CurrentCulture = cultureInfo;
             CultureInfo.CurrentUICulture = cultureInfo;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("item[]"));  //A collection of strings, corresponding to the values of the resources
+        }
+        public static CultureInfo GetLanguage()
+        {
+            //Bruce 02/11 Fix PIMS-344808 modify the language used by System to be the same as that captured by user.
+            return DdpmCultureMap.MappedCultureInfo;
         }
     }
 }
