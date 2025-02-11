@@ -333,30 +333,30 @@ namespace DDPM.SA.Plugins.CMAManager
             private int responseCode(int code)
             {
 
-                int result = -1;
+                int resultCode = -1;
 
                 switch (code)
                 {
                     case (int)FWUErrorCode.NoError:
-                        result = Params.Response.STATUS_FW_UPDATE_SUCCESS;
+                        resultCode = Params.Response.STATUS_FW_UPDATE_SUCCESS;
                         break;
 
                     case (int)FWUErrorCode.DeviceDisconnected:
-                        result = Params.Response.STATUS_FW_UPDATE_DEVICE_NOT_CONNECTED;
+                        resultCode = Params.Response.STATUS_FW_UPDATE_DEVICE_NOT_CONNECTED;
                         break;
 
                     case (int)FWUErrorCode.Unknow:
-                        result = Params.Response.UNKNOWN_ERROR;
+                        resultCode = Params.Response.UNKNOWN_ERROR;
                         break;
 
                     default:
-                        result = Params.Response.STATUS_FW_UPDATE_ERROR;
+                        resultCode = Params.Response.STATUS_FW_UPDATE_ERROR;
                         break;
 
                 }
 
 
-                return result;
+                return resultCode;
             }
 
             public string ToString()
@@ -391,22 +391,22 @@ namespace DDPM.SA.Plugins.CMAManager
                 return response;
             }
 
-            private bool checkResult(string _result)
+            private bool checkResult(string inputString)
             {
 
-                string result = _result.ToLower();
+                string lowerString = inputString.ToLower();
 
-                if (result.Equals("success"))
+                if (lowerString.Equals("success"))
                 {
                     return true;
                 }
 
-                if (result.Equals("pass"))
+                if (lowerString.Equals("pass"))
                 {
                     return true;
                 }
 
-                if (result.Equals("completed"))
+                if (lowerString.Equals("completed"))
                 {
                     return true;
                 }
