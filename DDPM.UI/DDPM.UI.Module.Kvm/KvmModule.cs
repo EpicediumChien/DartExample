@@ -75,6 +75,7 @@ namespace DDPM.UI.Module.Kvm
         private void InitNewViewModel()
         {
             vm._log.Info("[InitNewViewModel] running...");
+            this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
             isUSBKVM = DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
             if (isUSBKVM)
             {

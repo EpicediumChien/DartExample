@@ -2114,10 +2114,10 @@ namespace DDPM.UI.Module.Kvm
         {
             DdpmCommonHelper.DeviceManagerSA.SetOnUSBKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, ison).Wait();
             KvmModule.isUSBKVM = ison;
-            if (USBKVMisON && !ison)
+            if (!ison)
             {
                 KvmModule._leftView = null;
-                ModuleOwner.LoadLeftView();
+                DdpmCommonHelper.ModuleOwner.LoadLeftView();
             }
         }
 
