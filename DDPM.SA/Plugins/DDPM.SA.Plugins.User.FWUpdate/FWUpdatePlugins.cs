@@ -1718,7 +1718,15 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 if (!fwUpdateInfo.IsDisplay)
                 {
                     _CurrentProcess = 0;
-                    _fwTimeOutCount = 120;
+                    if (_fWUpdateInfo.DeviceType == DeviceType.LogicalKeyboard ||
+                        _fWUpdateInfo.DeviceType == DeviceType.LogicalMouse)
+                    {
+                        _fwTimeOutCount = 60;
+                    }
+                    else
+                    {
+                        _fwTimeOutCount = 120;
+                    }
                     _timeOutCount = _fwTimeOutCount;
                     _timerTimeOut = new Timer();
                     _timerTimeOut.Interval = TimeSpan.FromSeconds(1).TotalMilliseconds;
@@ -2105,14 +2113,14 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         private void pasreMessage(string message)
         {
+            message = Regex.Replace(message, @"(<.*?>)", match => match.Value.ToUpper());
             string messageWithRoot = "<Root>" + message;
             messageWithRoot += "</Root>";
 
             XmlDocument xmlDoc = new XmlDocument();
             try
             {
-                xmlDoc.LoadXml(messageWithRoot.ToUpper());
-                _logs.DebugMsg_1($"xmlDoc.LoadXml message : {message}");
+                xmlDoc.LoadXml(messageWithRoot);
             }
             catch (Exception ex)
             {
@@ -2128,12 +2136,12 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             XmlNode? tPubKeyDev1;
             XmlNode? encBlock;
 
-            if (message.Contains("InvokeDisplay"))
+            if (message.Contains("InvokeDisplay".ToUpper()))
             {
-                msg1Node = xmlDoc.SelectSingleNode("Root/InvokeDisplay/MSG1");//鍵盤滑鼠才會觸發
-                progressNode = xmlDoc.SelectSingleNode("Root/InvokeDisplay/Progress");
-                buttonCaptionNode = xmlDoc.SelectSingleNode("Root/InvokeDisplay/Button-Caption");
-                buttonStateNode = xmlDoc.SelectSingleNode("Root/InvokeDisplay/Button-State");
+                msg1Node = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/MSG1".ToUpper());//鍵盤滑鼠才會觸發
+                progressNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Progress".ToUpper());
+                buttonCaptionNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Button-Caption".ToUpper());
+                buttonStateNode = xmlDoc.SelectSingleNode("Root/" + "InvokeDisplay/Button-State".ToUpper());
                 if (msg1Node != null)
                 {
                     if (msg1Node.InnerText == "M1")
@@ -2421,9 +2429,20 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                 {
                     int.TryParse(timeOut.InnerText, out _fwTimeOutCount);
                     _logs.DebugMsg_1($"{_fWUpdateInfo.DeviceName} Get timeOut value : {_fwTimeOutCount}");
-                    if (_fwTimeOutCount < 120)
+                    if (_fWUpdateInfo.DeviceType == DeviceType.LogicalKeyboard ||
+                        _fWUpdateInfo.DeviceType == DeviceType.LogicalMouse)
                     {
-                        _fwTimeOutCount = 120;
+                        if (_fwTimeOutCount < 60)
+                        {
+                            _fwTimeOutCount = 60;
+                        }
+                    }
+                    else
+                    {
+                        if (_fwTimeOutCount < 120)
+                        {
+                            _fwTimeOutCount = 120;
+                        }
                     }
                     UpdateProgressInfo updateProgressInfo = new UpdateProgressInfo()
                     {
