@@ -279,13 +279,19 @@ namespace DDPM.SA.Plugins.User.FWUpdate
 
         public void CheckUODFWUInfo(DokcUODUpdateInfoPackage UODFWUInfo, List<DeviceInfo>? DeviceInfos)
         {
+            _logs.DebugMsg_1($"CheckUODFWUInfo start");
             string s = "";
             if (DeviceInfos != null && DeviceInfos.Count > 0)
             {
+                _logs.DebugMsg_1($"CheckUODFWUInfo if 1");
                 foreach (DeviceInfo deviceInfo in DeviceInfos)
                 {
+                    _logs.DebugMsg_1($"CheckUODFWUInfo deviceInfo.DockServiceTag : {deviceInfo.DockServiceTag}");
+                    _logs.DebugMsg_1($"CheckUODFWUInfo UODFWUInfo.FWUpdateInfo.ServiceTag : {UODFWUInfo.FWUpdateInfo.ServiceTag}");
                     if (deviceInfo.DockServiceTag.Equals(UODFWUInfo.FWUpdateInfo.ServiceTag))
                     {
+                        _logs.DebugMsg_1($"CheckUODFWUInfo deviceInfo.FirmwareVersion : {deviceInfo.FirmwareVersion}");
+                        _logs.DebugMsg_1($"CheckUODFWUInfo UODFWUInfo.FWUpdateInfo.TheLatestVersion : {UODFWUInfo.FWUpdateInfo.TheLatestVersion}");
                         string Ver = deviceInfo.FirmwareVersion;
                         if (Ver.Equals(UODFWUInfo.FWUpdateInfo.TheLatestVersion))
                         {
@@ -307,6 +313,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             }
             else if (!string.IsNullOrEmpty(UODFWUInfo.FWUpdateInfo.ServiceTag))
             {
+                _logs.DebugMsg_1($"CheckUODFWUInfo UODFWUInfo.FWUpdateInfo.ServiceTag is null : {string.IsNullOrEmpty(UODFWUInfo.FWUpdateInfo.ServiceTag)}");
                 TimeSpan difference = new TimeSpan(0);
                 if (UODFWUInfo.SaveTime != null)
                 {
@@ -342,6 +349,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             {
                 NotificationFWupdate(LangHelper.Instance["Dock_UOD_FW_update_info"], s);
             }
+            _logs.DebugMsg_1($"CheckUODFWUInfo done");
         }
 
         /// <summary>

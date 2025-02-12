@@ -6366,7 +6366,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 {
                     if (isDevuceTrigger)
                     {
-                        _FWUpdatePlugin.CheckUODFWUInfo(config.UserSettings.UODFWUInfoPackage, _PeripheralsPlugin.GetDevices().Result.deviceInfo);
+                        _FWUpdatePlugin.CheckUODFWUInfo(config.UserSettings.UODFWUInfoPackage, GetDevices().Result.deviceInfo);
                     }
                     else
                     {
