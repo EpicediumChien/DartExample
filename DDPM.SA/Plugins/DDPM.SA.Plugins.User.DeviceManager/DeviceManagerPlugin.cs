@@ -10,6 +10,7 @@
 
 #endregion
 
+using DDDPM.SA.Common;
 using DdmLibrary.Utility;
 using DDPM.MonitorBorker;
 using DDPM.OSDs;
@@ -278,7 +279,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog("DeviceManagerPlugin constructor ...");
 
             _isSubagentActive = WTSFunction.IsYourProcessInActiveSession(Log);
-            SACommonHelper.GetResourceDictionary();
+            SAUICommonHelper.GetResourceDictionary();
             loadResourceDictionary(UXSystemParameters.Instance.OSTheme);
 
             //Robert_Lin, 2024-12-1 added, to let TextBox highlight text color can be changed with TextBox.SelectionTextBrush
@@ -290,6 +291,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             writelog($"CurrentCultureInfo=[{CultureInfo.CurrentCulture.Name}], MappedCultureInfo=[{DDPM.SA.Resources.DdpmCultureMap.MappedCultureInfo.Name}]");
 
             Microsoft.Win32.SystemEvents.PowerModeChanged += OnPowerModeChanged;//Added 01/07 by Bruce
+            DdpmSACommonHelper.SAUserPluginReady(nameof(DeviceMangerPlugin));
         }
 
 
@@ -18293,12 +18295,12 @@ namespace DDPM.SA.Plugins.User.DeviceManager
             {
                 case OSThemeEnum.Light:
                     appModeTelementryData = "Light";
-                    SACommonHelper.SwitchToLightMode();
+                    SAUICommonHelper.SwitchToLightMode();
                     break;
 
                 case OSThemeEnum.Dark:
                     appModeTelementryData = "Dark";
-                    SACommonHelper.SwitchToDarkMode();
+                    SAUICommonHelper.SwitchToDarkMode();
                     break;
 
                 default:

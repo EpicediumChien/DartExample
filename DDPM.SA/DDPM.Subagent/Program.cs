@@ -20,6 +20,7 @@ using System.Reflection;
 using DDPM.SA.Obfuscation;
 using DDPM.SA.Common.Method;
 using DDPM.SA.Common.Settings;
+using DDDPM.SA.Common;
 
 namespace DDPM.Subagent
 {
@@ -57,6 +58,8 @@ namespace DDPM.Subagent
 
         private static void Main(string[] args)
         {
+            DdpmSACommonHelper.SALaunchTimer.Start();
+
             ProcessMitigationPolicy.ApplySystemProcessPolicy();
             //#if DEBUG
             /*

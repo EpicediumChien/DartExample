@@ -254,7 +254,7 @@ namespace DDPM.UI.Common.Models
                     //    Some of Keyboard/Mouse need to convert ModelNumber to model
                     //    Show "{Name} + " {model}"
                     //NEW Code:
-                    if (DDPM.SA.Common.UI.SACommonHelper.IsPeripheralEOLModel(DeviceInfo.ModelNumber))//change function source from SA, collect all related function together
+                    if (DDPM.SA.Common.UI.SAUICommonHelper.IsPeripheralEOLModel(DeviceInfo.ModelNumber))//change function source from SA, collect all related function together
                     {
                         //EOL 的 Keyboard/Mouse, Name已包含 {ModelNumber}, homepage tooltip 直接顯示 {Name}
                         return DeviceInfo.Name;
@@ -294,9 +294,9 @@ namespace DDPM.UI.Common.Models
 
                         // Jim 20250205 modify PIMS-318236
                         if (model == "P2424HEB" || model == "P2724DEB" || model == "P3424WEB" || model == "U3223QZ" || model == "U3224KB" || model == "U3224KBA")
-                            return DDPM.SA.Common.UI.SACommonHelper.MappingName(model, DeviceInfo.Name);
+                            return DDPM.SA.Common.UI.SAUICommonHelper.MappingName(model, DeviceInfo.Name);
                         else
-                            return DDPM.SA.Common.UI.SACommonHelper.MappingName(model, DeviceInfo.Name) + $" {model}";
+                            return DDPM.SA.Common.UI.SAUICommonHelper.MappingName(model, DeviceInfo.Name) + $" {model}";
                     }
 
                     //OLD Code:
