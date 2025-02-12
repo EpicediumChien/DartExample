@@ -2111,7 +2111,8 @@ namespace DDPM.SA.Plugins.User.FWUpdate
             XmlDocument xmlDoc = new XmlDocument();
             try
             {
-                xmlDoc.LoadXml(messageWithRoot);
+                xmlDoc.LoadXml(messageWithRoot.ToUpper());
+                _logs.DebugMsg_1($"xmlDoc.LoadXml message : {message}");
             }
             catch (Exception ex)
             {
