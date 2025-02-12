@@ -217,7 +217,7 @@ namespace DDPM.UI.Module.Color
         //
         //Dean 0612 add for ALS syncup
         //
-        private int _colorPresetSelectedIndex = -1;//no choose
+        private int _colorPresetSelectedIndex { get; set; } = -1;//no choose
 
         public int ColorPresetSelectedIndex
         {
@@ -271,10 +271,12 @@ namespace DDPM.UI.Module.Color
         //User to update selected index but do not trigger set VCP
         public void UpdateColorPresetSelectedIndex(int selIndex)
         {
-            _colorPresetSelectedIndex = selIndex;
-            OnPropertyChanged("ColorPresetSelectedIndex");
+            _colorPresetSelectedIndex = selIndex;            
+            
             if (ColorPresets_ItemsCollection != null && selIndex < ColorPresets_ItemsCollection.Count)
                 last_selected_value = ColorPresets_ItemsCollection[selIndex];
+            
+            OnPropertyChanged("ColorPresetSelectedIndex"); // Jim 20250211 fix 0x52 color preset no synchronization issue.
         }
 
         //
