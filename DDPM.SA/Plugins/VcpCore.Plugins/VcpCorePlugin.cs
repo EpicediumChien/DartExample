@@ -1541,7 +1541,7 @@ namespace VcpCore.Plugins
 
                                     if (rc)
                                     {
-                                        _CacheTable.SetToCacheTable(monitorInfoX, FunctionName.ToLower(), val);
+                                        //_CacheTable.SetToCacheTable(monitorInfoX, FunctionName.ToLower(), val); // Jim modify to fix 0x52 colore preset no Synchronization issue 
 
                                         VCPchangedEventArgs _VCPchangedEventArgs = new VCPchangedEventArgs();
                                         _VCPchangedEventArgs.vcpcode = FunctionName.ToLower();
