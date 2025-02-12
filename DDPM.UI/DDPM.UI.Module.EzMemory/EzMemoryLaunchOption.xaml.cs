@@ -340,11 +340,10 @@ namespace DDPM.UI.Module.EzMemory
                 }
 
                 // Handle Monitor Settings
-                if(_vm.IsAutoLaunch)
-                {
-                    if(_vm.SelectedHour == string.Empty || _vm.SelectedAMPM == string.Empty) return;
-                }
-                if(_vm.IsLaunchAtStartup)
+                if (_vm.IsAutoLaunch && (_vm.SelectedHour == string.Empty || _vm.SelectedAMPM == string.Empty))
+                    return;
+
+                if (_vm.IsLaunchAtStartup)
                 {
                     _log.Info($"@{nameof(EzMemoryLaunchOption)} _vm.IsLaunchAtStartup True ");
 
@@ -390,14 +389,11 @@ namespace DDPM.UI.Module.EzMemory
                 if (isEditMode)
                 {
                     //Check if layout is changed, if yes, then remove the old layout from SplitList
-                    if (_vm.currentEditprofile.Layout != layout)
+                    if (_vm.currentEditprofile.Layout != layout && _vm.OrgEditSplitItem != null)
                     {
-                        if (_vm.OrgEditSplitItem != null)
-                        {
-                            _vm.CurrentEditSelectspItem.ProfileID = _vm.OrgEditSplitItem.ProfileID;
-                            _vm.CurrentEditSelectspItem.ISplitCtrl.FriendlyName = profileName;
-                            _vm.OrgEditSplitItem.ReplaceWithISplitICtrl(_vm.CurrentEditSelectspItem.ISplitCtrl);
-                        }
+                        _vm.CurrentEditSelectspItem.ProfileID = _vm.OrgEditSplitItem.ProfileID;
+                        _vm.CurrentEditSelectspItem.ISplitCtrl.FriendlyName = profileName;
+                        _vm.OrgEditSplitItem.ReplaceWithISplitICtrl(_vm.CurrentEditSelectspItem.ISplitCtrl);
                     }
                     //SplitItem tooltip
                     _vm.CurrentEditSelectspItem.ISplitCtrl.FriendlyName = profileName;
@@ -521,11 +517,8 @@ namespace DDPM.UI.Module.EzMemory
                         spItem.IsSelected = true;
 
                         //Set new added SplitItem as Current selected
-                        if (_vm.CurrentSelectspItem != null)
-                        {
-                            if (_vm.CurrentSelectspItem.ProfileID != profileID)
-                                _vm.CurrentSelectspItem.IsSelected = false;
-                        }
+                        if (_vm.CurrentSelectspItem != null && _vm.CurrentSelectspItem.ProfileID != profileID)
+                            _vm.CurrentSelectspItem.IsSelected = false;
                         _vm.CurrentSelectspItem = spItem;
                         //_vm.CurrentSelectspItem.IsSelected = true;
                     }

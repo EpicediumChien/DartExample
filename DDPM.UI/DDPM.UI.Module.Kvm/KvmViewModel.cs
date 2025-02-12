@@ -755,18 +755,17 @@ namespace DDPM.UI.Module.Kvm
                             _kvmHotkeyTooltip = $"{HeadCaption} - {SwitchPCsKeyCaption}: {StrNone}";
                         }
                     }
-                    if (curHotkey.HotkeyOptions.Count > 0 && curHotkey.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)))
+                    if (curHotkey.HotkeyOptions.Count > 0 && 
+                        curHotkey.HotkeyOptions.Any(x => x.Equals(HotkeyOption.KvmAutoApply)) && 
+                        selectedHomeDevice != null && selectedHomeDevice.MonitorInfo != null)
                     {
-                        if (selectedHomeDevice != null && selectedHomeDevice.MonitorInfo != null)
+                        if (IsPBPMode(selectedHomeDevice.MonitorInfo, _curPxpMode))
                         {
-                            if (IsPBPMode(selectedHomeDevice.MonitorInfo, _curPxpMode))
-                            {
-                                _autoSwitchChecked = true;
-                            }
-                            else
-                            {
-                                _autoSwitchChecked = false;
-                            }
+                            _autoSwitchChecked = true;
+                        }
+                        else
+                        {
+                            _autoSwitchChecked = false;
                         }
                     }
                 }
@@ -788,23 +787,21 @@ namespace DDPM.UI.Module.Kvm
             UInt16 pxpModeValue = 0;
             if (!mo.CapabilityDic.ContainsKey("E9"))
                 return ret;
-            if (curPxpMode == 0)
+            if (curPxpMode == 0 && 
+                DdpmCommonHelper.DeviceManagerSA != null)
             {
-                if (DdpmCommonHelper.DeviceManagerSA != null)
+                ObjGetVCP ret_PxP = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(mo).Result;
+                if (ret_PxP != null && ret_PxP.result)
                 {
-                    ObjGetVCP ret_PxP = DdpmCommonHelper.DeviceManagerSA.GetPxpMode(mo).Result;
-                    if (ret_PxP != null && ret_PxP.result)
-                    {
-                        //pxpModeValue = Convert.ToUInt16(ret_PxP.value);
-                        if (!ushort.TryParse(ret_PxP.value.ToString(), out pxpModeValue))
-                        {
-                            pxpModeValue = curPxpMode;
-                        }
-                    }
-                    else
+                    //pxpModeValue = Convert.ToUInt16(ret_PxP.value);
+                    if (!ushort.TryParse(ret_PxP.value.ToString(), out pxpModeValue))
                     {
                         pxpModeValue = curPxpMode;
                     }
+                }
+                else
+                {
+                    pxpModeValue = curPxpMode;
                 }
             }
             switch (pxpModeValue)

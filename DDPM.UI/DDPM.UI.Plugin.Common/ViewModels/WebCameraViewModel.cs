@@ -990,15 +990,13 @@ namespace DDPM.UI.Plugin.ViewModels
                             switch (property)
                             {
                                 case "IsHDROnChanged":
-                                    if (bool.TryParse(di.Message, out bool isHDROn))
+                                    if (bool.TryParse(di.Message, out bool isHDROn) && 
+                                        IsHDROn != isHDROn)
                                     {
-                                        if (IsHDROn != isHDROn)
+                                        Application.Current.Dispatcher.Invoke(() =>
                                         {
-                                            Application.Current.Dispatcher.Invoke(() =>
-                                            {
-                                                IsHDROn = isHDROn;
-                                            });
-                                        }
+                                            IsHDROn = isHDROn;
+                                        });
                                     }
                                     break;
                                 default:
