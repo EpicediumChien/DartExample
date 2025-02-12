@@ -53,6 +53,7 @@ using static Windows.Foundation.UniversalApiContract;
 using Dell.Client.Framework.Common;
 using Dell.Client.Framework.UX.WPF;
 using System.Linq.Expressions;
+using DDPM.SA.Common.Alert;
 
 namespace DDPM.UI.Plugin.WebCameraPlugin
 {
@@ -2489,6 +2490,18 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                     isProfilePropertyChanged = false;
                 }
                 btnPreset_Click(this, null);
+
+                _vm.AlertType = WebcamAlert.Alert1;
+                _vm.AlertVisibility = Visibility.Visible;
+
+                new Thread(() =>
+                {
+                    Thread.Sleep(3000);
+                    _vm.AlertVisibility = Visibility.Collapsed;
+                }).Start();
+
+                //Derek 2025/02/12 force preview refresh to apply changed settings when change profile
+                Preview();
 
                 //Derek 1212
                 DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm!.CurrentProfileName, false);
