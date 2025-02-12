@@ -107,9 +107,12 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             try
             {
-                //JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues))!;
-                Task<string> task = DdpmCommonHelper.DeviceManagerSA!.GetEraserSinglePressValues();
-                JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
+                ////JsonElement jsonObject = JsonSerializer.Deserialize<JsonElement>(Encoding.UTF8.GetString(CurrentDeviceInfo!.EraserDoublePressValues))!;
+                Task<string> task;
+                task = DdpmCommonHelper.DeviceManagerSA!.GetEraserSinglePressValues();
+                var str1 = task.Result;
+                JsonElement jsonObject;
+                jsonObject = JsonSerializer.Deserialize<JsonElement>(str1)!;
                 foreach (var jo in jsonObject.EnumerateArray())
                 {
                     _EraserActions.Add(jo.GetProperty("actionId").GetInt32(), jo.GetProperty("actionName").GetString()!);
@@ -544,8 +547,8 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                //string tooltip1 = Actions.PenActions[PenAction.TopButtonClickAction.AssignedAction.ID].Caption;
-                string tooltip1 = _EraserActions[PenAction.TopButtonClickAction.AssignedAction.ID];
+                string tooltip1 = Actions.PenActions[PenAction.TopButtonClickAction.AssignedAction.ID].Caption;
+                //string tooltip1 = _EraserActions[PenAction.TopButtonClickAction.AssignedAction.ID];
                 string parameter1 = PenAction.TopButtonClickAction.AssignedAction.Parameter;
                 if (parameter1 != "")
                 {
@@ -571,9 +574,9 @@ namespace DDPM.UI.Plugin.ViewModels
                 if (SelectedBehavior == ButtonBehavior.ClickOnce.ToString())
                     return $"{Strings.PenButtonClickOnce}: {tooltip1}";
 
-                //string tooltip2 = Actions.PenActions[PenAction.TopButtonDoubleClickAction.AssignedAction.ID].Caption;
+                string tooltip2 = Actions.PenActions[PenAction.TopButtonDoubleClickAction.AssignedAction.ID].Caption;
                 var id2 = PenAction.TopButtonDoubleClickAction.AssignedAction.ID;
-                string tooltip2 = _EraserActions[id2];
+                //string tooltip2 = _EraserActions[id2];
                 string parameter2 = PenAction.TopButtonDoubleClickAction.AssignedAction.Parameter;
                 if (parameter2 != "")
                 {
@@ -633,8 +636,8 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                //string tooltip = Actions.PenActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID].Caption;
-                string tooltip = _SideSwitchActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID];
+                string tooltip = Actions.PenActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID].Caption;
+                //string tooltip = _SideSwitchActions[PenAction.TopBarrelButtonClickAction.AssignedAction.ID];
                 string parameter = PenAction.TopBarrelButtonClickAction.AssignedAction.Parameter;
                 if (parameter != "")
                 {
@@ -663,8 +666,8 @@ namespace DDPM.UI.Plugin.ViewModels
         {
             get
             {
-                //string tooltip = Actions.PenActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID].Caption;
-                string tooltip = _SideSwitchActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID];
+                string tooltip = Actions.PenActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID].Caption;
+                //string tooltip = _SideSwitchActions[PenAction.BottomBarrelButtonClickAction.AssignedAction.ID];
                 string parameter = PenAction.BottomBarrelButtonClickAction.AssignedAction.Parameter;
                 if (parameter != "")
                 {
