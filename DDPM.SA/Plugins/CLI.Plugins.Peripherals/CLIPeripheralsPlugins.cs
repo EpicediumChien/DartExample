@@ -2898,7 +2898,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(rsp, Formatting.Indented));
             }
         }
-
+        /*
         private bool? GetFWUpdateList(CommandLineInput commandLineInput, CLI_FWU_RESPONSE cli_FWU_RESPONSE, bool isShowInfo = true, bool isDefer = false)
         {
             List<DeviceType> deviceTypes = new List<DeviceType>();
@@ -2998,7 +2998,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                 return false;
             }
         }
-
+        */
         //0531 Bruce 因應IL的現有安裝包修改判斷，CLIPeripheralsPlugins.cs中Auto_FWUpdate方法修改回傳值型態和新增判斷
         private List<FWUpdateInfo> retFWUpdateInfos;
 
@@ -3041,9 +3041,16 @@ namespace DDPM.CLI.Plugins.Peripherals
                 }
                 else
                 {
-                    FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, isDefer, deviceTypes, isUODMode, false, true, false, guid, serviceTag, model, miniver).Result;
+                    FWUpdateInfoPackage allFWUpdateInfo = _devMgr.GetFWUpdateInfo(isShowInfo, true).Result;
+                    var fwUpdateInfoPackage = Filter(allFWUpdateInfo, guid, serviceTag, model, miniver);
+
                     if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
                     {
+                        fwUpdateDeviceInfos.ForEach(_ =>
+                        {
+                            var msg = $"No updates available: {_.ModelNumber}" + (_.LogicalDeviceType.Contains("DOCK", StringComparison.OrdinalIgnoreCase) ? $", ServiceTag: {_.DockServiceTag}" : "") + $" Version: {_.FirmwareVersion}";
+                            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
+                        });
                         cli_FWU_RESPONSE.Message = "No updates available";
                         cli_FWU_RESPONSE.Result = "PASS";
                         cli_FWU_RESPONSE.Model = string.Join(",", fwUpdateDeviceInfos.Select(_ => _.ModelNumber));
@@ -3068,6 +3075,21 @@ namespace DDPM.CLI.Plugins.Peripherals
                         cli_FWU_RESPONSE.ServiceTag = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => _.ServiceTag ?? "N/A"));
                         cli_FWU_RESPONSE.FWVersion = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"[{_.DeviceVersion}]"));
                         cli_FWU_RESPONSE.FWUpdateRESPONSE.AddRange(fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.DeviceName} to Version:{_.TheLatestVersion}"));
+
+                        fwUpdateInfoPackage.FWUpdateInfo.ForEach(_ =>
+                        {
+                            var msg = $"Ready to start updating Device: {_.DeviceName}" + (string.IsNullOrWhiteSpace(_.ServiceTag) ? $", ServiceTag: {_.ServiceTag}" : "") + $" to Version: {_.TheLatestVersion}";
+                            cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
+                        });
+
+                        fwUpdateDeviceInfos.Where(_ => !string.IsNullOrWhiteSpace(_.DockServiceTag) && !fwUpdateInfoPackage.FWUpdateInfo.Select(x => x.ServiceTag).Contains(_.DockServiceTag))
+                                           .ToList()
+                                           .ForEach(_ => 
+                                           {
+                                               var msg = $"No updates available: {_.ModelNumber}" + (string.IsNullOrWhiteSpace(_.DockServiceTag) ? $", ServiceTag: {_.DockServiceTag}" : "") + $" Version: {_.FirmwareVersion}";
+                                               cli_FWU_RESPONSE.FWUpdateRESPONSE.Add(msg);
+                                           });
+
                         cli_FWU_RESPONSE.Result = "PASS";
                         Task.Run(new Action(() =>
                         {
@@ -3148,10 +3170,12 @@ namespace DDPM.CLI.Plugins.Peripherals
                 }
                 else
                 {
-                    FWUpdateInfoPackage fwUpdateInfoPackage = _devMgr.GetFWUpdateInfo(isShowInfo, isForce, isDefer, null, false, true, true, false, null, serviceTags, null, miniver).Result;
+                    FWUpdateInfoPackage allFWUpdateInfo = _devMgr.GetFWUpdateInfo(isShowInfo, true).Result;
+                    var fwUpdateInfoPackage = Filter(allFWUpdateInfo, null, null, model, miniver);
 
                     if (fwUpdateInfoPackage.FWUpdateInfo.Count <= 0)
                     {
+                        fwUpdateMonitorInfos.ForEach(_ => cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {_.modelName}, ServiceTag: {_.edid.ServiceTag} Version: {_.FwVersion}"));
                         cli_FWU_RESPONSE.Message = "No updates available";
                         cli_FWU_RESPONSE.Result = "PASS";
                         cli_FWU_RESPONSE.FWVersion = string.Join(",", fwUpdateMonitorInfos.Select(_ => $"[{_.FwVersion}]"));
@@ -3167,7 +3191,12 @@ namespace DDPM.CLI.Plugins.Peripherals
                     cli_FWU_RESPONSE.Model = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => _.Model));
                     cli_FWU_RESPONSE.ServiceTag = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => _.ServiceTag ?? "N/A"));
                     cli_FWU_RESPONSE.FWVersion = string.Join(",", fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"[{_.DeviceVersion}]"));
-                    cli_FWU_RESPONSE.FWUpdateRESPONSE.AddRange(fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.DeviceName} to Version:{_.TheLatestVersion}"));
+                    cli_FWU_RESPONSE.FWUpdateRESPONSE.AddRange(fwUpdateInfoPackage.FWUpdateInfo.Select(_ => $"Ready to start updating Device:{_.DeviceName}, ServiceTag: {_.ServiceTag} to Version: {_.TheLatestVersion}"));
+
+                    fwUpdateMonitorInfos.Where(_ => !fwUpdateInfoPackage.FWUpdateInfo.Select(x => x.ServiceTag).Contains(_.edid.ServiceTag))
+                            .ToList()
+                            .ForEach(_ => cli_FWU_RESPONSE.FWUpdateRESPONSE.Add($"No updates available: {_.modelName}, ServiceTag: {_.edid.ServiceTag} Version: {_.FwVersion}"));
+
                     cli_FWU_RESPONSE.Result = "PASS";
                     Task.Run(new Action(() =>
                     {
@@ -3204,6 +3233,154 @@ namespace DDPM.CLI.Plugins.Peripherals
                 cli_FWU_RESPONSE.Result = "FAIL";
                 return ((int)CLI_ExitCode.fail_FWUpdate, JsonConvert.SerializeObject(cli_FWU_RESPONSE, Formatting.Indented));
             }
+        }
+
+        private FWUpdateInfoPackage Filter(FWUpdateInfoPackage _fWUpdateInfoPackage, List<string> giuds, List<string> serviceTags, List<string> models, string minVersion)
+        {
+            writelog($"{nameof(Filter)} start");
+            FWUpdateInfoPackage _forCLI_FWUpdateInfoPackage = new FWUpdateInfoPackage();
+            _forCLI_FWUpdateInfoPackage.FWUpdateInfo = new List<FWUpdateInfo>();
+            List<FWUpdateInfo> FWU_List = new List<FWUpdateInfo>();
+            if (FWU_List != null)
+            {
+                if (giuds != null)
+                {
+                    writelog($"{nameof(Filter)} Giuds go");
+                    foreach (string s in giuds)
+                    {
+                        writelog($"{nameof(Filter)} Giuds : {s}");
+                        foreach (FWUpdateInfo fWUpdateInfo in _fWUpdateInfoPackage.FWUpdateInfo.FindAll(o => o.DeviceId.ToLower().Replace("{", "").Replace("}", "").Equals(s.ToLower())))
+                        {
+                            writelog($"{nameof(Filter)} fWUpdateInfo.DeviceId : {fWUpdateInfo.DeviceId}");
+                            FWU_List.Add(fWUpdateInfo);
+                        }
+                    }
+                    writelog($"{nameof(Filter)} Giuds done");
+                }
+                else if (serviceTags != null)
+                {
+                    writelog($"{nameof(Filter)} serviceTags go");
+                    foreach (string s in serviceTags)
+                    {
+                        writelog($"{nameof(Filter)} serviceTags : {s}");
+                        foreach (FWUpdateInfo fWUpdateInfo in _fWUpdateInfoPackage.FWUpdateInfo.FindAll(o => o.ServiceTag.ToLower().Equals(s.ToLower())))
+                        {
+                            writelog($"{nameof(Filter)} fWUpdateInfo.ServiceTag : {fWUpdateInfo.ServiceTag}");
+                            FWU_List.Add(fWUpdateInfo);
+                        }
+                    }
+                    writelog($"{nameof(Filter)} serviceTags go");
+                }
+                else
+                {
+                    writelog($"{nameof(Filter)} no filter start");
+                    foreach (FWUpdateInfo fWUpdateInfo in _fWUpdateInfoPackage.FWUpdateInfo)
+                    {
+                        FWU_List.Add(fWUpdateInfo);
+                    }
+                    writelog($"{nameof(Filter)} no filter done");
+                }
+                if (models != null)
+                {
+                    writelog($"{nameof(Filter)} models go");
+                    if (FWU_List.Count > 0)
+                    {
+                        List<FWUpdateInfo> FWU_ListByModel = new List<FWUpdateInfo>();
+                        foreach (string s in models)
+                        {
+                            writelog($"{nameof(Filter)} models : {s}");
+                            foreach (FWUpdateInfo fWUpdateInfo in _fWUpdateInfoPackage.FWUpdateInfo.FindAll(o => o.Model.ToLower().Equals(s.ToLower())))
+                            {
+                                writelog($"{nameof(Filter)} fWUpdateInfo.Model : {fWUpdateInfo.Model}");
+                                FWU_ListByModel.Add(fWUpdateInfo);
+                            }
+                        }
+                        FWU_List.Clear();
+                        FWU_List = FWU_ListByModel;
+                    }
+                    writelog($"{nameof(Filter)} models done");
+                }
+                if (!string.IsNullOrEmpty(minVersion))
+                {
+                    writelog($"{nameof(Filter)} minVersion go");
+                    writelog($"{nameof(Filter)} minVersion : {minVersion}");
+                    if (FWU_List.Count > 0)
+                    {
+                        foreach (FWUpdateInfo fWUpdateInfo in FWU_List)
+                        {
+                            int currentVersion = -1;
+                            int new_MinVersion = -1;
+                            if (fWUpdateInfo.IsDisplay)
+                            {
+                                writelog($"{nameof(Filter)} minVersion IsDisplay");
+                                for (int j = minVersion.Length - 1; j >= 0; j--)
+                                {
+                                    if (char.IsLetter(minVersion[j]))
+                                    {
+                                        int index = j + 1;
+                                        int.TryParse(minVersion.Substring(index, minVersion.Length - index), out new_MinVersion);
+                                        break;
+                                    }
+                                }
+                                for (int j = fWUpdateInfo.DeviceVersion.Length - 1; j >= 0; j--)
+                                {
+                                    if (char.IsLetter(fWUpdateInfo.DeviceVersion[j]))
+                                    {
+                                        int index = j + 1;
+                                        int.TryParse(fWUpdateInfo.DeviceVersion.Substring(index, fWUpdateInfo.DeviceVersion.Length - index), out currentVersion);
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                writelog($"{nameof(Filter)} minVersion Is not Display");
+                                string temp = string.Empty;
+                                if (fWUpdateInfo.DeviceVersion.Contains("."))
+                                {
+                                    temp = fWUpdateInfo.DeviceVersion.Replace(".", "");
+                                }
+                                else
+                                {
+                                    temp = fWUpdateInfo.DeviceVersion;
+                                }
+                                if (int.TryParse(temp, out currentVersion))
+                                {
+
+                                }
+                                string temp_NewVersion = string.Empty;
+                                if (minVersion.Contains("."))
+                                {
+                                    temp_NewVersion = minVersion.Replace(".", "");
+                                }
+                                else
+                                {
+                                    temp_NewVersion = minVersion;
+                                }
+                                if (int.TryParse(temp_NewVersion, out new_MinVersion))
+                                {
+
+                                }
+                            }
+                            writelog($"{nameof(Filter)} minVersion currentVersion:{currentVersion}");
+                            writelog($"{nameof(Filter)} minVersion new_MinVersion:{new_MinVersion}");
+                            if (currentVersion > 0 && new_MinVersion > 0 &&
+                                currentVersion < new_MinVersion)
+                            {
+                                _forCLI_FWUpdateInfoPackage.FWUpdateInfo.Add(fWUpdateInfo);
+                            }
+                        }
+                    }
+                    writelog($"{nameof(Filter)} minVersion done");
+                }
+                else
+                {
+                    writelog($"{nameof(Filter)} no minVersion");
+                    _forCLI_FWUpdateInfoPackage.FWUpdateInfo = FWU_List;
+                }
+            }
+            writelog($"{nameof(Filter)} done");
+            return _forCLI_FWUpdateInfoPackage;
         }
 
         private (DeviceType deviceType, List<DeviceType> deviceTypes) SetDevice(CommandLineInput commandLineInput)
@@ -3375,7 +3552,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     if (ss_1[1].ToUpper().Equals("FORCEWITHNOTICE") && commandLineInput.Options.Count == 1)
                                     {
                                         writelog("FWUpdate_Line 3912");
-                                        SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, true, false, true, false).Result;
+                                        SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, true).Result;
                                         Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
                                         ret = true;
                                         _devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, false, installPath);
@@ -3385,7 +3562,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     else if (ss_1[1].ToUpper().Equals("FORCEWITHNONOTICE") && commandLineInput.Options.Count == 1)
                                     {
                                         writelog("FWUpdate_Line 3922");
-                                        SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(false, true, false, true, false).Result;
+                                        SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(false, true).Result;
                                         Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
                                         ret = true;
                                         _devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, false, installPath);
@@ -3394,7 +3571,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                                     else if (ss_1[1].ToUpper().Equals("DEFER") && commandLineInput.Options.Count == 1)
                                     {
                                         writelog("FWUpdate_Line 3931");
-                                        SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, false, true, true, false).Result;
+                                        SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, false).Result;
                                         Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
                                         ret = true;
                                     }
@@ -3588,7 +3765,7 @@ namespace DDPM.CLI.Plugins.Peripherals
                         }
                         else if (commandLineInput.Options.Count == 0)
                         {
-                            SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, false, true).Result;
+                            SWUpdateInfoPackage swUpdateInfoPackage = _devMgr.SW_GetSWUpdateInfo(true, false).Result;
                             Trace.WriteLine($"swUpdateInfoPackage {swUpdateInfoPackage}");
                             ret = true;
                             //_devMgr.SW_DownloadAndInstall(swUpdateInfoPackage.SWUpdateInfo, installPath);
