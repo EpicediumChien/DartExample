@@ -2,6 +2,7 @@
 using DDPM.UI.Common.EAEM;
 using DDPM.UI.Common.UserControls;
 using DDPM.UI.Plugin.DdpmHomePlugin;
+using DDPM.UI.Resources.Helper;
 using Dell.Client.Framework.UX.WPF;
 using System.Diagnostics;
 using System.Windows;
@@ -32,9 +33,15 @@ namespace DDPM.UI.Module.PipPbp
             pipLarge.SplitOwner = eSplitOwner.PipList;
             spliListView_Pbp.SplitOwner = eSplitOwner.PbpList;
 
-            pipOff.InnerContent = new SplitCtrl0A(null) { Description = "Full screen" };
-            pipSmall.InnerContent = new SplitCtrl1A(null) { Description = "PIP Small" };
-            pipLarge.InnerContent = new SplitCtrl1B(null) { Description = "PIP Large" };
+            //Robert_Lin 2025-2-11 for Multilingual 
+            //NEW:
+            pipOff.InnerContent = new SplitCtrl0A(null) { Description = LangHelper.Instance["Fullscreen.1"] };
+            pipSmall.InnerContent = new SplitCtrl1A(null) { Description = LangHelper.Instance["PIPSmall"] };
+            pipLarge.InnerContent = new SplitCtrl1B(null) { Description = LangHelper.Instance["PIPLarge"] };
+            //OLD:
+            //pipOff.InnerContent = new SplitCtrl0A(null) { Description = "Full screen" };
+            //pipSmall.InnerContent = new SplitCtrl1A(null) { Description = "PIP Small" };
+            //pipLarge.InnerContent = new SplitCtrl1B(null) { Description = "PIP Large" };
 
             //Robert_Lin, 2024-11-20 Do not RefreshData at ctor, it will  call RefreshData in Onactivate() later
             //_vm.RefreshData();

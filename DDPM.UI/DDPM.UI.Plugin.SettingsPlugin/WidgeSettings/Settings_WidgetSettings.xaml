@@ -27,7 +27,7 @@
                 <StackPanel>
                     <Grid Margin="20,20,8,8">
                         <UXControls:UXTextBlock Text="{Binding [Widget_Settings], Source={x:Static lang:LangHelper.Instance}}"
-                                                FontSize="20"
+                                                FontSize="20" Focusable="True"
                                                 TextBlockType="Header1"
                                                 TextWrapping="WrapWithOverflow"
                                                 Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
@@ -43,7 +43,7 @@
                                         <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
                                     
-                                    <UXControls:UXTextBlock Grid.Column="0" x:Name="activateTextBlock"
+                                    <UXControls:UXTextBlock Grid.Column="0" x:Name="activateTextBlock" Focusable="True"
                                                             Text="{Binding [Activate_Quick_Access_widget_during_Zoom_conference_calls], Source={x:Static lang:LangHelper.Instance}}"
                                                             FontSize="16"
                                                             FontFamily="Roboto"
@@ -62,7 +62,7 @@
                                                                Click="EnableQuickAccessWidget_Click" />
                                 </Grid>
                                 <UXControls:UXTextBlock Text="{Binding [Widget_will_automatically_appear_when_meeting_begins], Source={x:Static lang:LangHelper.Instance}}"
-                                                        FontSize="14"
+                                                        FontSize="14" Focusable="True"
                                                         TextBlockType="Caption"
                                                         TextWrapping="WrapWithOverflow"
                                                         Foreground="{DynamicResource DefaultTheme_TxtColor}"/>
@@ -72,7 +72,7 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="auto" />
                                     </Grid.ColumnDefinitions>
-                                    <UXControls:UXTextBlock Grid.Column="0"
+                                    <UXControls:UXTextBlock Grid.Column="0" Focusable="True"
                                                             x:Name="enableShortcutTextBlock"
                                                             Text="{Binding [Enable_shortcut_reminder_for_Quick_Accesswidget], Source={x:Static lang:LangHelper.Instance}}"
                                                             FontSize="16"
