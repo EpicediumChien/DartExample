@@ -8,7 +8,7 @@ namespace DDPM.UI.Module.Kvm
 {
     public class KvmModule : IDdpmModule
     {
-        private UserControl? _leftView; // = new KvmLeftView();
+        public UserControl? _leftView; // = new KvmLeftView();
         private UserControl _rightView;
         private KvmViewModel vm = new KvmViewModel();
 
@@ -33,9 +33,6 @@ namespace DDPM.UI.Module.Kvm
             {
                 _leftView = null;
             }
-            //vm.Invoke_RefreshData();
-            //Jason 12/11 add loadleftview
-            //moduleOwner.LoadLeftView();
         }
 
         public string ModuleName { get => Constants.ModuleName_KVM; } //"KvmModule"
@@ -78,8 +75,18 @@ namespace DDPM.UI.Module.Kvm
         private void InitNewViewModel()
         {
             vm._log.Info("[InitNewViewModel] running...");
-            vm.ModuleOwner = DdpmCommonHelper.ModuleOwner;
             this.SelectedHomeDevice = DdpmCommonHelper.ModuleOwner.SelectedHomeDevice;
+            isUSBKVM = DdpmCommonHelper.DeviceManagerSA.GetOnUSBKVM(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo).Result;
+            if (isUSBKVM)
+            {
+                _leftView = new KvmLeftView(vm);
+                _leftView.DataContext = vm;
+                DdpmCommonHelper.ModuleOwner.LoadLeftView();
+            }
+            else
+            {
+                _leftView = null;
+            }
             vm.Invoke_RefreshData();
         }
 

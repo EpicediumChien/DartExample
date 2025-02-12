@@ -103,7 +103,7 @@ namespace DDPM.UI.Module.GamingVisionEngine
         private void tbVisionEngineToggle_PreviewKeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
             e.Handled = true;
-            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.ToggleInputSource);
+            HotkeyInfo hotkeyInfo = KeysHelper.getUXTextBoxHotkeyInfo(sender, e, ref newKeys, HotkeyType.VisionEngineToggle);
             if (hotkeyInfo.Hotkey != null && hotkeyInfo.Hotkey.Count > 0)
             {
                 if (KeysHelper.onlyContainModifyKeys(hotkeyInfo.Hotkey) || BundleNewKeys.Count == 0 && newKeys.Count == 0)

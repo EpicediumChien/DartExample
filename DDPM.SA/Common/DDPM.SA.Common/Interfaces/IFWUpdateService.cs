@@ -2,6 +2,7 @@
 using DPeMPublic.Common.Enums;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace DDPM.SA.Common
@@ -38,6 +39,7 @@ namespace DDPM.SA.Common
         Task<bool> RestartService();
 
         void SetDeviceinfo(List<DeviceInfo> DeviceInfos, int Gen3AgeDongleCount);
+        void SetLang(CultureInfo cultureInfo);
 
         void CheckUODFWUInfo(DokcUODUpdateInfoPackage UODFWUInfo, List<DeviceInfo> DeviceInfos);
 

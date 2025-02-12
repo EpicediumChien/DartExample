@@ -5894,6 +5894,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 writelog("[DeviceMangerPlugin] _FWUpdatePlugin is null");
                 return Task.FromResult(new List<FWUpdateInfo>());
             }
+            _FWUpdatePlugin.SetLang(LangHelper.GetLanguage());
             _UpdateProgress = null;
             writelog($"[DeviceMangerPlugin] SetDelayFWUpdateInfoPackage go");
             SetDelayFWUpdateInfoPackage();
@@ -5950,6 +5951,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                 _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
                 writelog($"[DeviceMangerPlugin] Install SetDelayFWUpdateInfoPackage go");
                 SetDelayFWUpdateInfoPackage();
+                _FWUpdatePlugin.SetLang(LangHelper.GetLanguage());
                 //if (_UpdateProgress != null)
                 //{
                 writelog($"[DeviceMangerPlugin] Install _FWUpdatePlugin.Install go");
@@ -6530,6 +6532,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                     if (_SWUpdatePlugin != null)
                     {
                         writelog("[UpdateEvent], go to _SWUpdatePlugin.UpdateEvent.");
+                        _SWUpdatePlugin.SetLang(LangHelper.GetLanguage());
                         _SWUpdatePlugin.UpdateEvent();
                     }
                 }
@@ -6541,6 +6544,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         List<FWUpdateInfo> fWUpdateInfos = new List<FWUpdateInfo>();
                         _FWUpdatePlugin.ProgressUpdate_Notify += show_fwProgressUpdateEvent;
                         GetDeviceinfos().Wait();
+                        _FWUpdatePlugin.SetLang(LangHelper.GetLanguage());
                         fWUpdateInfos = _FWUpdatePlugin.UpdateEvent().Result;
                         _FWUpdatePlugin.ProgressUpdate_Notify -= show_fwProgressUpdateEvent;
                         List<FWUpdateInfo> DisplayList = fWUpdateInfos.FindAll(o => o.IsDisplay);
@@ -8304,40 +8308,49 @@ namespace DDPM.SA.Plugins.User.DeviceManager
         public Task<List<SWUpdateInfo>> SW_DownloadAndInstall(List<SWUpdateInfo> swUpdateInfos, bool isUITrigger = false, string installPath = "")
         {
             writelog("[SW_DownloadAndInstall], start.");
-            try
+            if (_SWUpdatePlugin != null)
             {
-                if (swUpdateInfos != null && swUpdateInfos.Count > 0)
+                try
                 {
-                    MiniMizeDDPMUI().Wait();
-                    writelog("[SW_DownloadAndInstall], WriteRegistryData go.");
-                    string registryKey = @"SOFTWARE\Dell\Dell Display and Peripheral Manager";
-                    string SW_Available_date = swUpdateInfos[0].Available_date;
-                    bool b = WriteRegistryData(RegistryHive.LocalMachine, registryKey, nameof(SW_Available_date), SW_Available_date).Result;
-                    writelog($"[SW_DownloadAndInstall], WriteRegistryData ret : {b}");
-                }
-            }
-            catch (Exception ex)
-            {
-                writelog($"[SW_DownloadAndInstall], Error : {ex.Message}");
-            }
-            List<SWUpdateInfo> retSWUpdateInfos = _SWUpdatePlugin.DownloadAndInstall(swUpdateInfos, isUITrigger, installPath).Result;
-            bool isRestoreDDPM = false;
-            if (retSWUpdateInfos != null)
-            {
-                foreach (SWUpdateInfo swUpdateInfo in retSWUpdateInfos)
-                {
-                    if (swUpdateInfo.SWUErrorCode != SWUErrorCode.NoError)
+                    if (swUpdateInfos != null && swUpdateInfos.Count > 0)
                     {
-                        isRestoreDDPM = true;
-                        break;
+                        MiniMizeDDPMUI().Wait();
+                        writelog("[SW_DownloadAndInstall], WriteRegistryData go.");
+                        string registryKey = @"SOFTWARE\Dell\Dell Display and Peripheral Manager";
+                        string SW_Available_date = swUpdateInfos[0].Available_date;
+                        bool b = WriteRegistryData(RegistryHive.LocalMachine, registryKey, nameof(SW_Available_date), SW_Available_date).Result;
+                        writelog($"[SW_DownloadAndInstall], WriteRegistryData ret : {b}");
                     }
                 }
+                catch (Exception ex)
+                {
+                    writelog($"[SW_DownloadAndInstall], Error : {ex.Message}");
+                }
+                _SWUpdatePlugin.SetLang(LangHelper.GetLanguage());
+                List<SWUpdateInfo> retSWUpdateInfos = _SWUpdatePlugin.DownloadAndInstall(swUpdateInfos, isUITrigger, installPath).Result;
+                bool isRestoreDDPM = false;
+                if (retSWUpdateInfos != null)
+                {
+                    foreach (SWUpdateInfo swUpdateInfo in retSWUpdateInfos)
+                    {
+                        if (swUpdateInfo.SWUErrorCode != SWUErrorCode.NoError)
+                        {
+                            isRestoreDDPM = true;
+                            break;
+                        }
+                    }
+                }
+                if (isRestoreDDPM)
+                {
+                    RestoreDDPMUI();
+                }
+                return Task.FromResult(retSWUpdateInfos);
             }
-            if (isRestoreDDPM)
+            else
             {
-                RestoreDDPMUI();
+                writelog($"[SW_DownloadAndInstall], _SWUpdatePlugin is null");
+                return Task.FromResult(new List<SWUpdateInfo>());
             }
-            return Task.FromResult(retSWUpdateInfos);
         }
 
         public Task<InterruptScreenRoot> InterruptScreen_Metadata()
@@ -10792,6 +10805,7 @@ namespace DDPM.SA.Plugins.User.DeviceManager
 
         private bool SaveMonitorAssetReport(List<MonitorAssetReport> monitorAssetReports, string savePath)
         {
+            writelog($"{nameof(SaveMonitorAssetReport)} start");
             bool ret = false;
             try
             {
@@ -10828,14 +10842,18 @@ namespace DDPM.SA.Plugins.User.DeviceManager
                         object value = property.GetValue(report);
                         contentToSave += $"      Value = \"{value}\"\r\n";
                         contentToSave += $"    End Attribute\r\n";
+                        writelog($"{nameof(SaveMonitorAssetReport)} propertyName : {propertyName}");
                     }
                     contentToSave += $"  End Group\r\n";
                 }
                 File.WriteAllText(filePath, contentToSave);
+                ret = true;
             }
-            catch
+            catch (Exception ex)
             {
+                writelog($"{nameof(SaveMonitorAssetReport)} error :{ex.Message}");
             }
+            writelog($"{nameof(SaveMonitorAssetReport)} end");
             return ret;
         }
 
