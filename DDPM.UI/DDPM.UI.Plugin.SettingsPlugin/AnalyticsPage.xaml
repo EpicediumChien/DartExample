@@ -20,7 +20,7 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <UXControls:UXTextBlock Text="{Binding [Analytics.0], Source={x:Static lang:LangHelper.Instance}}"
-                                        Foreground="{DynamicResource DefaultTheme_TxtColor}"
+                                        Foreground="{DynamicResource DefaultTheme_TxtColor}" Focusable="True"
                                         Margin="20" FontSize="24" Grid.Row="0" />
                 <Border Style="{StaticResource PartBorderStyle}" BorderThickness="0" CornerRadius="13" Grid.Row="1" Margin="20,0,20,0" >
                     <Grid>
@@ -57,7 +57,7 @@
                 </Border>
             </Grid>
         </Border>
-        <Border Background="#132F54"
+        <Border Background="#132F54" d:Visibility="Collapsed"
                 Opacity="0.2"
                 CornerRadius="13" Visibility="{Binding LockMaskVisible}"/>
     </Grid>

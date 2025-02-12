@@ -19,13 +19,13 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Header[0] -->
-                <Border Grid.Column="0" CornerRadius="4,0,0,4" MouseLeftButtonDown="header0_MouseLeftButtonDown">
+                <Border Grid.Column="0" CornerRadius="4,0,0,4" MouseLeftButtonDown="header0_MouseLeftButtonDown" PreviewKeyDown="header0_PreviewKeyDown">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Text1, Mode=TwoWay}">
+                        <TextBlock Grid.Column="0" Text="{Binding Text1, Mode=TwoWay}" Focusable="True">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
                                     <Style.Triggers>
@@ -68,14 +68,14 @@
                 </Border>
 
                 <!-- Header[1] -->
-                <Border Grid.Column="1" CornerRadius="0,0,0,0" MouseLeftButtonDown="header1_MouseLeftButtonDown">
+                <Border Grid.Column="1" CornerRadius="0,0,0,0" MouseLeftButtonDown="header1_MouseLeftButtonDown" PreviewKeyDown="header1_PreviewKeyDown">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
                         <!--Chewlin 20250116 Fix pip/pbp Clipping issue ADD TextTrimming="CharacterEllipsis" Padding="10,0,10,0"-->
-                        <TextBlock Grid.Column="0" Text="{Binding Text2, Mode=TwoWay}" TextTrimming="CharacterEllipsis" Padding="10,0,10,0">
+                        <TextBlock Grid.Column="0" Text="{Binding Text2, Mode=TwoWay}" TextTrimming="CharacterEllipsis" Padding="10,0,10,0" Focusable="True">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
                                     <Style.Triggers>
@@ -118,13 +118,13 @@
                 </Border>
 
                 <!-- Header[2] -->
-                <Border Grid.Column="2" CornerRadius="0,4,4,0" MouseLeftButtonDown="header2_MouseLeftButtonDown">
+                <Border Grid.Column="2" CornerRadius="0,4,4,0" MouseLeftButtonDown="header2_MouseLeftButtonDown" PreviewKeyDown="header2_PreviewKeyDown">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Text3, Mode=TwoWay}">
+                        <TextBlock Grid.Column="0" Text="{Binding Text3, Mode=TwoWay}" Focusable="True">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock" BasedOn="{StaticResource RigthViewHeaderCtrl_TextBlock_HeaderTextStyle}">
                                     <Style.Triggers>
