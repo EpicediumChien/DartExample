@@ -287,12 +287,7 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                     if (deviceInfo.DockServiceTag.Equals(UODFWUInfo.FWUpdateInfo.ServiceTag))
                     {
                         string Ver = deviceInfo.FirmwareVersion;
-                        if (!int.TryParse(Ver, out _))
-                        {
-                            Ver = Convert.ToInt32(Ver, 16).ToString();
-                        }
-                        string deviceVersion = Regex.Replace(Convert.ToInt32(Ver).ToString("D4"), ".{1}", "$0.").Substring(0, (Convert.ToInt32(Ver).ToString("D4").Length * 2) - 1);
-                        if (deviceVersion.Equals(UODFWUInfo.FWUpdateInfo.TheLatestVersion))
+                        if (Ver.Equals(UODFWUInfo.FWUpdateInfo.TheLatestVersion))
                         {
                             s = $"{deviceInfo.ModelNumber} UOD update completed.";
                         }
@@ -302,8 +297,11 @@ namespace DDPM.SA.Plugins.User.FWUpdate
                         }
                         UODFWUInfo = new DokcUODUpdateInfoPackage();
                         CallSaveUODFWDeviceInfos?.AsyncFireAndForget(this, UODFWUInfo, System.Threading.CancellationToken.None);
-                        _checkUODTimer.Stop();
-                        _checkUODTimer = null;
+                        if (_checkUODTimer != null)
+                        {
+                            _checkUODTimer.Stop();
+                            _checkUODTimer = null;
+                        }
                     }
                 }
             }
