@@ -2486,7 +2486,6 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                 {
                     //DdpmCommonHelper.DeviceManagerSA!.SetProfile(_vm.CurrentDeviceInfo!.ID.ToString(), _vm.ProfileIDs[profileName]);
                     _vm!.CurrentProfileName = profileName;
-                    _vm.SetProfile();
                     isProfilePropertyChanged = false;
 
                     _vm.AlertType = WebcamAlert.Alert1;
@@ -2498,13 +2497,15 @@ namespace DDPM.UI.Plugin.WebCameraPlugin
                         _vm.AlertVisibility = Visibility.Collapsed;
                     }).Start();
 
+                    _vm.SetProfile();
+
                     //Derek 2025/02/12 force preview refresh to apply changed settings when change profile
                     Preview();
+
+                    //Derek 1212
+                    DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm!.CurrentProfileName, false);
                 }
                 btnPreset_Click(this, null);
-
-                //Derek 1212
-                DdpmCommonHelper.DeviceManagerSA!.SyncWebcamProfile(_vm!.CurrentProfileName, false);
             }
             catch (Exception ex)
             {
