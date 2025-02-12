@@ -10,6 +10,12 @@ namespace DDPM.SA.Common.Settings
 {
     public class GlobalDefinitions
     {
+#if SUPPORT_200
+        public const bool isSupport200 = true;
+#else
+        public const bool isSupport200 = false;//for 2.0.1
+#endif
+
         public const string major_url = "https://clientperipherals.dell.com/DDPM/";
         public const string percent_two_url = "https://downloads.dell.com";
         public const string Display_FWU_URL_Folder = @$"/Windows/Display/Firmware/";
