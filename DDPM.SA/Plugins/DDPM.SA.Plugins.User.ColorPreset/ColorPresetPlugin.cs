@@ -185,8 +185,8 @@ namespace ColorPreset.Plugins
                         if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].ModelName))
                             return -1;
 
-                        if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
-                            return -1;
+                        //if (String.IsNullOrEmpty(Test_AddAppCollectionData.GetInstance()._monitorConfigs[i].SerialNumber))
+                        //    return -1;
                     }
                 }
 
