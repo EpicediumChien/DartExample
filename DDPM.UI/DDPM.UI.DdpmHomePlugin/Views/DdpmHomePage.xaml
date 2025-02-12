@@ -423,14 +423,18 @@
                                                 </EventTrigger>
                                             </Image.Triggers>
                                         </Image>
-                                        <TextBlock x:Name="devModel"
-                                                   Text="{Binding DeviceModel}"
-                                                   Foreground="{DynamicResource DefaultTheme_TxtColor}"
-                                                   Focusable="False"
-                                                   FontSize="24"
-                                                   AutomationProperties.Name="{Binding TooltipModelName}"
-                                                   Margin="0"
-                                                   Visibility="{Binding IsBootloader, Converter={StaticResource BoolToVisibilityConverter}}"></TextBlock>
+                                        <Viewbox>
+                                            <Border Background="Transparent">
+                                                <TextBlock x:Name="devModel"
+                                                           Text="{Binding DeviceModel}"
+                                                           Foreground="{DynamicResource DefaultTheme_TxtColor}"
+                                                           Focusable="False"
+                                                           FontSize="24"
+                                                           AutomationProperties.Name="{Binding TooltipModelName}"
+                                                           Margin="0"
+                                                           Visibility="{Binding IsBootloader, Converter={StaticResource BoolToVisibilityConverter}}"></TextBlock>
+                                            </Border>
+                                        </Viewbox>
                                     </Grid>
                                    
                                     <!-- Robert_Lin, 2024-7-10, move the tooltip owner from Image to Border.
