@@ -869,16 +869,6 @@ namespace DDPM.UI.Plugin.ViewModels
                     else
                         CurrentProfile = JsonConvert.DeserializeObject<WebcamProfile>(JsonConvert.SerializeObject(WebcamSettings.PresetProfiles[CurrentProfileName]))!;
                 }
-
-                CurrentProfile.Zoom = _zoom;
-                CurrentProfile.IsFocusOn = _isFocusOn;
-                CurrentProfile.Focus = _focus;
-                CurrentProfile.Priority = _priority;
-                CurrentProfile.AntiFlicker = _antiFlicker;
-                CurrentProfile.IsAutoFramingTransitionOn = _isAutoFramingTransitionOn;
-                CurrentProfile.AutoFramingFrameSize = _autoFramingFrameSize;
-                CurrentProfile.AutoFramingSensitivity = _autoFramingSensitivity;
-
                 if (!IsUSB3)
                     CurrentProfile.IsHDROn = false;
 
@@ -894,7 +884,40 @@ namespace DDPM.UI.Plugin.ViewModels
                     OnPropertyChanged(nameof(IsAutoFramingOn));
                     OnPropertyChanged(nameof(IsAutoFramingOnText));
                 }
+                if (_priority != CurrentProfile.Priority)
+                {
+                    Priority = CurrentProfile.Priority;
+                    OnPropertyChanged(nameof(Priority));
+                }
+                if (CurrentDeviceInfo.IsPropertyFocusSupported)
+                {
+                    IsFocusOn = CurrentProfile.IsFocusOn;
+                    OnPropertyChanged(nameof(IsFocusOn));
+                    OnPropertyChanged(nameof(IsFocusOnText));
+                    Focus = CurrentProfile.Focus;
+                    OnPropertyChanged(nameof(Focus));
 
+                }
+                if (CurrentDeviceInfo.IsPropertyAutoFramingTransitionSupported)
+                {
+                    IsAutoFramingTransitionOn = CurrentProfile.IsAutoFramingTransitionOn;
+                    OnPropertyChanged(nameof(IsAutoFramingTransitionOn));
+                }
+                if (CurrentDeviceInfo.IsPropertyAntiFlickerSupported)
+                {
+                    AntiFlicker = CurrentProfile.AntiFlicker;
+                    OnPropertyChanged(nameof(AntiFlicker));
+                }
+                if (CurrentDeviceInfo.IsPropertyAutoFramingSensitivitySupported)
+                {
+                    AutoFramingSensitivity = CurrentProfile.AutoFramingSensitivity;
+                    OnPropertyChanged(nameof(AutoFramingSensitivity));
+                }
+                if (CurrentDeviceInfo.IsPropertyAutoFramingSizeSupported)
+                {
+                    AutoFramingFrameSize = CurrentProfile.AutoFramingFrameSize;
+                    OnPropertyChanged(nameof(AutoFramingFrameSize));
+                }
                 if (CurrentDeviceInfo.IsPropertyFOVSupported)
                 {
                     task = DdpmCommonHelper.DeviceManagerSA!.SetFieldOfView(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.FieldOfView);
@@ -961,6 +984,11 @@ namespace DDPM.UI.Plugin.ViewModels
                 {
                     DdpmCommonHelper.DeviceManagerSA!.SetSaturation(CurrentDeviceInfo!.ID.ToString(), CurrentProfile.Saturation);
                     Saturation = CurrentProfile.Saturation;
+                }
+                if (_zoom != CurrentProfile.Zoom)
+                {
+                    _zoom = CurrentProfile.Zoom;
+                    SetZoom();
                 }
                 WebcamSettings.NONE = CurrentProfile;
                 WebcamSettings.ExportWebcamSettings(WebcamSettings, Model, DdpmCommonHelper.DeviceManagerSA, DdpmCommonHelper.Log);
