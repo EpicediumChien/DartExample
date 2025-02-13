@@ -32,7 +32,7 @@ namespace DDPM.UI.Plugin.ViewModels
         private Dictionary<int, string> _EraserActions = new();
         private Dictionary<int, string> _SideSwitchActions = new();
         private Dictionary<int, string> _MenuActions = new();
-        //private Dictionary<int, string> LaunchableAppValues = new();
+        private Dictionary<string, string> OpenRunActionBrowseCaptionMapping = new();
 
         #endregion Variables
 
@@ -137,24 +137,35 @@ namespace DDPM.UI.Plugin.ViewModels
                 }
 
                 task = DdpmCommonHelper.DeviceManagerSA!.GetLaunchableAppValues();
-                jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
-                //var i = 1;
-                //LaunchableAppValues.Add(Strings.Browse);
-                foreach (var jo in jsonObject.EnumerateArray())
+                var str = task.Result;
+                if (string.IsNullOrEmpty(str))
                 {
-                    LaunchableAppValues.Add(jo.GetString()!);
+                    DdpmCommonHelper.WriteUILog("Error: Pen GetLaunchableAppValues fail!");
                 }
-                LaunchableAppValues.Sort();
-                for (int i = 0; i < LaunchableAppValues.Count; i++)
+                else
                 {
-                    string str = LaunchableAppValues[i];
-                    if (str.Length > 2 && str.Substring(str.Length - 3, 3) == "...")
+                    jsonObject = JsonSerializer.Deserialize<JsonElement>(task.Result)!;
+                    foreach (var jo in jsonObject.EnumerateArray())
                     {
-                        LaunchableAppValues.Remove(str);
-                        LaunchableAppValues.Insert(0, str);
-                        i = 100;
+                        string? str2 = jo.GetString();
+                        if (!string.IsNullOrEmpty(str2))
+                            LaunchableAppValues.Add(str2);
+                    }
+                    LaunchableAppValues.Sort();
+                    for (int i = 0; i < LaunchableAppValues.Count; i++)
+                    {
+                        string st = LaunchableAppValues[i];
+                        if (st.Contains("...", StringComparison.OrdinalIgnoreCase))
+                        {
+                            var str3 = st.Replace("...", "");
+                            LaunchableAppValues.Remove(st);
+                            LaunchableAppValues.Insert(0, str3);
+                            OpenRunActionBrowseCaptionMapping.TryAdd(str3, st);
+                            i = 100;
+                        }
                     }
                 }
+
                 ActionNames = _EraserActions.Union(_SideSwitchActions).Union(_MenuActions).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
                 RadialMenuActions = _MenuActions.OrderBy(x => x.Value).Select(x => x.Key).ToList();
                 IsActionItemsReady = true;

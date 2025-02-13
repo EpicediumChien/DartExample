@@ -85,6 +85,7 @@ namespace DDPM.UI.Plugin.Common
             btnSave.IsEnabled = false;
         }
 
+        private string selectedActionName = "";
         private void ActionRadioButton_Click(object sender, RoutedEventArgs e)
         {
             var rb = (UXRadioButton)sender;
@@ -92,31 +93,20 @@ namespace DDPM.UI.Plugin.Common
             //if (id == ID)
             //{ return; }
             var name = rb.Content.ToString()!;
-            if (name == Parameter)
+            if (name == selectedActionName)
             { return; }
 
+            selectedActionName = name;
             //ID = id;
-            if (name.Length > 2 && name.Substring(name.Length - 3, 3) == "...")
+            if (name == OpenRunApps[0])
             {
                 spOpen.Visibility = Visibility.Visible;
-                if (id == 0)
-                {
-                    btnSave.IsEnabled = false;
-                    btnBrowse.Visibility = Visibility.Visible;
-                    FilePath.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    btnSave.IsEnabled = true;
-                    btnBrowse.Visibility = Visibility.Collapsed;
-                    FilePath.Visibility = Visibility.Visible;
-                }
+                btnSave.IsEnabled = false;
+                btnBrowse.Visibility = Visibility.Visible;
+                FilePath.Visibility = Visibility.Collapsed;
             }
             else
             {
-                //Parameter = "";
-                //spOpen.Visibility = Visibility.Collapsed;
-                //btnSave.IsEnabled = true;
                 Parameter = name;
                 spOpen.Visibility = Visibility.Collapsed;
                 btnSave.IsEnabled = true;
@@ -137,6 +127,11 @@ namespace DDPM.UI.Plugin.Common
                 //rb.Name = $"{name}";
                 rb.Content = name;
                 rb.IsChecked = name == Parameter || (idx == 0 && Parameter.Contains('\\'));
+                if(name == Parameter || (idx == 0 && Parameter.Contains('\\')))
+                {
+                    selectedActionName = name!;
+                    rb.IsChecked = true;
+                }
             }
             idx++;
         }
