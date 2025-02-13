@@ -1106,7 +1106,7 @@ namespace DDPM.UI.Plugin.DdpmHomePlugin
         {
             _ddpmHomePageViewModel.ImportNotify -= ImportNotifyEventHandler;
             if (_ddpmHomePageViewModel != null && _ddpmHomePageViewModel.ImportNotify == null
-                || !_ddpmHomePageViewModel.ImportNotify.GetInvocationList().Where(e => e.Method.Name == nameof(ImportNotifyEventHandler)).Any())
+                || !_ddpmHomePageViewModel.ImportNotify.GetInvocationList().Any(e => e.Method.Name == nameof(ImportNotifyEventHandler)))
             {
                 _ddpmHomePageViewModel.ImportNotify += ImportNotifyEventHandler;
             }
