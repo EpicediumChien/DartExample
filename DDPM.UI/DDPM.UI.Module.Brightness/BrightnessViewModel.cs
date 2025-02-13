@@ -3402,6 +3402,8 @@ namespace DDPM.UI.Module.Brightness
             {
                 if (Start_ALSConfig.AutoBrightnessRangeLevel.Count == 0)
                     return "";
+
+                //all return same string? no need to use if-else
                 if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 0)
                     return LangHelper.Instance["BrightnessLevel"] + ": " + BrightnessValue.ToString() + "%";//40%";
                 else if (Start_ALSConfig.AutoBrightnessRangeLevel[0].level_value == 1)
