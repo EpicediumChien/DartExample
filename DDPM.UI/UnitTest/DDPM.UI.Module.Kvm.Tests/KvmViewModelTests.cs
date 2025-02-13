@@ -844,7 +844,7 @@ namespace DDPM.UI.Module.Kvm.Tests
             try
             {
                 kvmViewModel.OpenNKVMUI(1, 3, 4);
-                var process = Process.GetProcessesByName("DDM");
+                var process = Process.GetProcessesByName(GlobalDefinitions.DDMProcessName);// "DDM");
                 Assert.True(true);
                 //Assert.That(process.Count, Is.GreaterThan(0));
             }

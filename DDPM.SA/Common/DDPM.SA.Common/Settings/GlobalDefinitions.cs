@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define SUPPORT_200
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,12 @@ namespace DDPM.SA.Common.Settings
 {
     public class GlobalDefinitions
     {
+#if SUPPORT_200
+        public const bool isSupport200 = true;
+#else
+        public const bool isSupport200 = false;//for 2.0.1
+#endif
+
         public const string major_url = "https://clientperipherals.dell.com/DDPM/";
         public const string percent_two_url = "https://downloads.dell.com";
         public const string Display_FWU_URL_Folder = @$"/Windows/Display/Firmware/";
@@ -54,5 +62,14 @@ namespace DDPM.SA.Common.Settings
 
         //Migration
         public const string MigrationInput = "Migration";
+
+        //DDM(NKVM) executable file name
+#if SUPPORT_200
+        public const string DDMExeName = "DDM.exe";
+        public const string DDMProcessName = "DDM";
+#else
+        public const string DDMExeName = "DDPM-NKVM.exe";
+        public const string DDMProcessName = "DDPM-NKVM";
+#endif
     }
 }

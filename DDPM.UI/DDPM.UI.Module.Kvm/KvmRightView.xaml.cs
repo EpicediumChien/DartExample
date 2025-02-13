@@ -257,8 +257,8 @@ namespace DDPM.UI.Module.Kvm
                 //{
                 //    vm.isNoKVM = true;
                 //}
-                vm.isOnUSBKVM(false);
                 vm.USBKVMisON = false;
+                vm.isOnUSBKVM(false);
                 DdpmCommonHelper.DeviceManagerSA.SentKVMtoTelementry(DdpmCommonHelper.ModuleOwner.SelectedHomeDevice.MonitorInfo, "KVMMode", "NoKVM");
             }
 

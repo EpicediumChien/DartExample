@@ -371,6 +371,8 @@ namespace DDPM.SA.Common
 
     public class CLI_SWU_RESPONSE : CLI_RESPONSE
     {
+        public string SWVersion { get; set; }
+        public string SWname { get; set; }
         public List<string> SWUpdateRESPONSE { get; set; }
 
         public CLI_SWU_RESPONSE(CLI_RESPONSE cli_RESPONSE)
