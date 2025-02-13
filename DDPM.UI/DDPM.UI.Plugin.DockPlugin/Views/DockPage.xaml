@@ -76,7 +76,9 @@
                             </Image.InputBindings>
                         </Image>
                         <UXControls:UXTextBlock Text="{Binding Name}" Margin="12,19,0,0" HorizontalAlignment="Left"
-                                                Cursor="" VerticalAlignment="Top" />
+                                                Cursor=""
+                                                VerticalAlignment="Top"
+                                                Style="{StaticResource ProductNameTextStyle}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <UXControls:UXTextBlock Text="{Binding Model}" Margin="101,18,0,0" HorizontalAlignment="Left"

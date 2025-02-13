@@ -26,6 +26,7 @@ namespace DDPM.UI.Common.Models
         private string _deviceName = string.Empty;
         private ImageSource? _deviceImage;
         private double _normalWidth = 400;
+        private string _deviceModel = string.Empty;
 
         private MonitorInfo? _monitorInfo;
         private DeviceInfo? _deviceInfo;
@@ -64,13 +65,25 @@ namespace DDPM.UI.Common.Models
             get => _deviceName;
             set => SetProperty<string>(ref _deviceName, value);
         }
+        public string DeviceModel
+        {
+            get => _deviceModel;
+            set => SetProperty<string>(ref _deviceModel, value);
+        }
 
         public eDeviceCategory DeviceCategory
         {
             get => _deviceCategory;
             set => SetProperty(ref _deviceCategory, value);
         }
-
+        public bool IsBootloader
+        {
+            get => _deviceCategory.Equals(eDeviceCategory.Bootloader);
+        }
+        public bool IsNotBootloader
+        {
+            get => !_deviceCategory.Equals(eDeviceCategory.Bootloader);
+        }
         public MonitorInfo? MonitorInfo
         {
             get => _monitorInfo;
